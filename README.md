@@ -1,7 +1,7 @@
 # cefingo
 This is experimental go binding for CEF.
 
-## Supoorted Environment
+## Supported Environment
 * Windows 10 64bit (msys2 environment is recomended)
 
 ## How to Start
