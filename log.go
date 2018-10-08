@@ -7,14 +7,21 @@ import (
 	"strings"
 )
 
+// enable Log Output
+var LogOutput bool = false
+
 func Logf(message string, v ...interface{}) {
-	fn := caller_name()
-	log.Printf("("+fn+") "+message+"\n", v...)
+	if LogOutput {
+		fn := caller_name()
+		log.Printf("("+fn+") "+message+"\n", v...)	
+	}
 }
 
 //export cefingo_cslog
 func cefingo_cslog(fn *C.char, s *C.char) {
-	log.Println("(C."+C.GoString(fn)+")", strings.TrimRight(C.GoString(s), "\n"))
+	if LogOutput {
+		log.Println("(C."+C.GoString(fn)+")", strings.TrimRight(C.GoString(s), "\n"))
+	}
 }
 
 //export cefingo_panic
