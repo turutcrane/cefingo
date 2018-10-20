@@ -142,8 +142,8 @@ func get_life_span_handler(self *CClientT) *CLifeSpanHandlerT {
 ///
 // Return the handler for browser load status events.
 ///
-//export get_load_handler
-func get_load_handler(self *CClientT) *CLoadHandlerT {
+//export client_get_load_handler
+func client_get_load_handler(self *CClientT) *CLoadHandlerT {
 	return nil
 }
 
@@ -164,8 +164,8 @@ func get_request_handler(self *CClientT) *CRequestHandlerT {
 }
 
 //on_process_mesage_received call OnProcessMessageRecived method
-//export on_process_message_received
-func on_process_message_received(
+//export client_on_process_message_received
+func client_on_process_message_received(
 	self *CClientT, browser *CBrowserT, source_process CProcessIdT, message *CProcessMessageT) Cint {
 
 	Logf("L46: client: %p", self)

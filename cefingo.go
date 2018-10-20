@@ -38,11 +38,17 @@ type Settings struct {
 // Go Equivalent Type of C.cef_xxx
 type CAppT C.cef_app_t
 type CBrowserT C.cef_browser_t
+type CFrameT C.cef_frame_t
+type CDomnodeT C.cef_domnode_t
+type CListValueT C.cef_list_value_t
 type CProcessIdT C.cef_process_id_t
 type CProcessMessageT C.cef_process_message_t
 type CStringT C.cef_string_t
 type CCommandLineT C.cef_command_line_t
 type CSchemeRegistrarT C.cef_scheme_registrar_t
+type CV8contextT C.cef_v8context_t
+type CV8exceptionT C.cef_v8exception_t
+type CV8stackTraceT C.cef_v8stack_trace_t
 
 type CBrowserProcessHandlerT C.cef_browser_process_handler_t
 type CClientT C.cef_client_t

@@ -44,7 +44,7 @@ func AllocCApp(a App) (cApp *CAppT) {
 
 	C.construct_cefingo_app((*C.cefingo_app_wrapper_t)(p))
 	BaseAddRef(p)
-	
+
 	cApp = (*CAppT)(p)
 	app_method[cApp] = a
 

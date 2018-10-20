@@ -13,7 +13,7 @@ var LogOutput bool = false
 func Logf(message string, v ...interface{}) {
 	if LogOutput {
 		fn := caller_name()
-		log.Printf("("+fn+") "+message+"\n", v...)	
+		log.Printf("("+fn+") "+message+"\n", v...)
 	}
 }
 
