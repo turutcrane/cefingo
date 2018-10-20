@@ -80,3 +80,15 @@ void construct_cefingo_render_process_handler(cefingo_render_process_handler_wra
     handler->body.on_process_message_received = render_process_handler_on_process_message_received;
 
 }
+
+cef_v8value_t *v8context_get_global(cef_v8context_t *self) {
+    return self->get_global(self);
+}
+
+int v8context_set_value_bykey(cef_v8value_t* self,
+    cef_string_t* key,
+    cef_v8value_t* value,
+    cef_v8_propertyattribute_t attribute
+) {
+    return self->set_value_bykey(self, (const cef_string_t*) key, value, attribute);
+}

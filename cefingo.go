@@ -38,6 +38,7 @@ type Settings struct {
 // Go Equivalent Type of C.cef_xxx
 type CAppT C.cef_app_t
 type CBrowserT C.cef_browser_t
+type CClientT C.cef_client_t
 type CFrameT C.cef_frame_t
 type CDomnodeT C.cef_domnode_t
 type CListValueT C.cef_list_value_t
@@ -46,12 +47,14 @@ type CProcessMessageT C.cef_process_message_t
 type CStringT C.cef_string_t
 type CCommandLineT C.cef_command_line_t
 type CSchemeRegistrarT C.cef_scheme_registrar_t
+type CV8accessorT C.cef_v8accessor_t
 type CV8contextT C.cef_v8context_t
 type CV8exceptionT C.cef_v8exception_t
+type CV8interceptorT C.cef_v8interceptor_t
 type CV8stackTraceT C.cef_v8stack_trace_t
+type CV8valueT C.cef_v8value_t
 
 type CBrowserProcessHandlerT C.cef_browser_process_handler_t
-type CClientT C.cef_client_t
 type CContextMenuHandlerT C.cef_context_menu_handler_t
 type CDialogHandlerT C.cef_dialog_handler_t
 type CDisplayHandlerT C.cef_display_handler_t
@@ -240,4 +243,20 @@ func calloc(num C.size_t, size C.size_t) unsafe.Pointer {
 		log.Panicln("L58: Cannot Allocated.")
 	}
 	return p
+}
+
+func create_cef_string(s string) *C.cef_string_t {
+	c_string := C.CString(s)
+	defer C.free(unsafe.Pointer(c_string))
+	cs := C.cef_string_t{}
+
+	status := C.cef_string_from_utf8(c_string, C.strlen(c_string), &cs)
+	if status == 0 {
+		log.Panicln("Error cef_string_from_utf8")
+	}
+	return &cs
+}
+
+func clear_cef_string(s *C.cef_string_t) {
+	C.cef_string_clear(s)
 }

@@ -3,6 +3,7 @@
 #define CEFINGO_H_
 #include "include/capi/cef_app_capi.h"
 #include "include/capi/cef_client_capi.h"
+#include "include/capi/cef_v8_capi.h"
 #include "include/cef_version.h"
 #include "cefingo_base.h"
 
@@ -20,5 +21,9 @@ extern void construct_cefingo_browser_process_handler(cefingo_browser_process_ha
 extern void construct_cefingo_client(cefingo_client_wrapper_t* client);
 extern void construct_cefingo_app(cefingo_app_wrapper_t* app);
 extern void construct_cefingo_render_process_handler(cefingo_render_process_handler_wrapper_t* handler);
+
+extern cef_v8value_t *v8context_get_global(cef_v8context_t *self);
+extern int v8context_set_value_bykey(cef_v8value_t* self, cef_string_t* key,
+    cef_v8value_t* value, cef_v8_propertyattribute_t attribute);
 
 #endif // CEFINGO_H_

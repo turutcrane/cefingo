@@ -21,4 +21,8 @@ extern void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self);
 extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self);
 extern int CEF_CALLBACK cefingo_has_one_ref(cef_base_ref_counted_t* self);
 
+extern void cefingo_base_add_ref(cef_base_ref_counted_t *self);
+extern int cefingo_base_release(cef_base_ref_counted_t *self);
+extern int cefingo_base_has_one_ref(cef_base_ref_counted_t *self);
+
 #endif // CEFINGO_BASE_H_

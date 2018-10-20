@@ -10,6 +10,7 @@ import (
 
 var app_method = map[*CAppT]App{}
 var browser_process_handler = map[*CAppT]*CBrowserProcessHandlerT{}
+var render_process_handler = map[*CAppT]*CRenderProcessHandlerT{}
 
 // Client is Go interface of C.cef_app_t
 type App interface {
@@ -62,7 +63,7 @@ func get_resource_bundle_handler(self *CAppT) *CResourceBundleHanderT {
 	return nil
 }
 
-// AssocBrowserProcessHandler associate hander to app
+// AssocBrowserProcessHandler associate a hander to app
 func AssocBrowserProcessHandler(app *CAppT, handler *CBrowserProcessHandlerT) {
 	p := (unsafe.Pointer)(handler)
 	C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
@@ -88,13 +89,29 @@ func get_browser_process_handler(self *CAppT) *CBrowserProcessHandlerT {
 
 }
 
+// AssocRenderProcessHandler associate a hander to app
+func AssocRenderProcessHandler(app *CAppT, handler *CRenderProcessHandlerT) {
+	p := (unsafe.Pointer)(handler)
+	C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
+	render_process_handler[app] = handler
+}
+
 ///
 // Return the handler for functionality specific to the render process. This
 // function is called on the render process main thread.
 ///
 //export get_render_process_handler
 func get_render_process_handler(self *CAppT) *CRenderProcessHandlerT {
-	return nil
+	Logf("L97:")
+
+	handler := render_process_handler[self]
+	if handler == nil {
+		Logf("L77: No Render Process Handler")
+	} else {
+		p := (unsafe.Pointer)(handler)
+		C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
+	}
+	return handler
 }
 
 //on_process_mesage_received call OnProcessMessageRecived method
