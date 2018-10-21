@@ -111,7 +111,7 @@ func ExecuteProcess(app *CAppT) {
 	// cef_sandbox_win.h for details).
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L116-L130
 	///
-	BaseAddRef(unsafe.Pointer(app))
+	BaseAddRef(app)
 	code := C.cef_execute_process(&main_args, (*C.cef_app_t)(unsafe.Pointer(app)), nil)
 	Logf("L37: code: %d", code)
 	if code >= 0 {
@@ -151,7 +151,7 @@ func Initialize(s Settings, app *CAppT) {
 	// be NULL (see cef_sandbox_win.h for details).
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L131-L142
 	///
-	BaseAddRef(unsafe.Pointer(app))
+	BaseAddRef(app)
 	c_status = C.cef_initialize(&main_args, &settings, (*C.cef_app_t)(unsafe.Pointer(app)), nil)
 	Logf("L51: cef_initialize: %d", c_status)
 

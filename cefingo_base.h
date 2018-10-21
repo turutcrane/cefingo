@@ -16,6 +16,8 @@ typedef struct { \
     cefingo_ref_counter counter;\
 } wapper_name
 
+extern int REF_COUNT_LOG_OUTPUT;
+
 extern void initialize_cefingo_base_ref_counted(size_t size, cef_base_ref_counted_t* base);
 extern void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self);
 extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self);

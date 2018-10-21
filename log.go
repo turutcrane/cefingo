@@ -8,10 +8,14 @@ import (
 )
 
 // enable Log Output
-var LogOutput bool = false
+var log_output bool = false
+
+func LogOutput(enable bool) {
+	log_output = enable
+}
 
 func Logf(message string, v ...interface{}) {
-	if LogOutput {
+	if log_output {
 		fn := caller_name()
 		log.Printf("("+fn+") "+message+"\n", v...)
 	}
@@ -19,7 +23,7 @@ func Logf(message string, v ...interface{}) {
 
 //export cefingo_cslog
 func cefingo_cslog(fn *C.char, s *C.char) {
-	if LogOutput {
+	if log_output {
 		log.Println("(C."+C.GoString(fn)+")", strings.TrimRight(C.GoString(s), "\n"))
 	}
 }

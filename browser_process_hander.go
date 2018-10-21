@@ -37,9 +37,9 @@ func AllocCBrowserProcessHandler(handler BrowserProcessHandler) (cHandler *CBrow
 	p := C.calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t)
 	Logf("L39: p: %v", p)
 	C.construct_cefingo_browser_process_handler((*C.cefingo_browser_process_handler_wrapper_t)(p))
-	BaseAddRef(p)
 
 	cHandler = (*CBrowserProcessHandlerT)(p)
+	BaseAddRef(cHandler)
 	browserProcessHandlers[cHandler] = handler
 
 	return cHandler

@@ -3,7 +3,7 @@
 #include "cefingo_base.h"
 #include "_cgo_export.h"
 
-#define REF_COUNT_LOG_OUTPUT 0
+int REF_COUNT_LOG_OUTPUT = 0;
 
 #define MAXLOGBUF 1000
 void cefingo_cslogf(const char *fn, const char *format, ...) {

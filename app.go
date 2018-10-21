@@ -44,9 +44,9 @@ func AllocCApp(a App) (cApp *CAppT) {
 	Logf("L22: p: %v", p)
 
 	C.construct_cefingo_app((*C.cefingo_app_wrapper_t)(p))
-	BaseAddRef(p)
 
 	cApp = (*CAppT)(p)
+	BaseAddRef(cApp)
 	app_method[cApp] = a
 
 	return cApp

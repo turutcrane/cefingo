@@ -31,9 +31,9 @@ func AllocCClient(c Client) (cClient *CClientT) {
 	p := C.calloc(1, C.sizeof_cefingo_client_wrapper_t)
 	Logf("L26: p: %v", p)
 	C.construct_cefingo_client((*C.cefingo_client_wrapper_t)(p))
-	BaseAddRef(p)
 
 	cClient = (*CClientT)(p)
+	BaseAddRef(cClient)
 	client_method[cClient] = c
 
 	return cClient

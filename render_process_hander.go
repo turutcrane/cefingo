@@ -119,12 +119,12 @@ func AllocCRenderProcessHandler(handler RenderProcessHandler) (cHandler *CRender
 	p := C.calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t)
 	Logf("L120: p:%v", p)
 	C.construct_cefingo_render_process_handler((*C.cefingo_render_process_handler_wrapper_t)(p))
-	BaseAddRef(p)
 
-	ch := (*CRenderProcessHandlerT)(p)
-	renderProcessHandlers[ch] = handler
+	rph := (*CRenderProcessHandlerT)(p)
+	BaseAddRef(rph)
+	renderProcessHandlers[rph] = handler
 
-	return ch
+	return rph
 }
 
 //export on_render_thread_created
