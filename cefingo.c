@@ -92,3 +92,13 @@ int v8context_set_value_bykey(cef_v8value_t* self,
 ) {
     return self->set_value_bykey(self, (const cef_string_t*) key, value, attribute);
 }
+
+void construct_cefingo_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t *callback) {
+
+    initialize_cefingo_base_ref_counted(
+        offsetof(cefingo_v8array_buffer_release_callback_wrapper_t, counter),
+        (cef_base_ref_counted_t*) callback);
+
+    callback->body.release_buffer = v8array_buffer_release_buffer;
+
+}

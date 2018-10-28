@@ -14,7 +14,7 @@ func RefCountLogOutput(enable bool) {
 	} else {
 		C.REF_COUNT_LOG_OUTPUT = C.FALSE
 	}
-};
+}
 
 func cast_to_base_ref_counted_t(ptr interface{}) (cp *C.cef_base_ref_counted_t) {
 	switch p := ptr.(type) {
@@ -32,8 +32,13 @@ func cast_to_base_ref_counted_t(ptr interface{}) (cp *C.cef_base_ref_counted_t) 
 		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 	case *CV8contextT:
 		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+	case *CV8arrayBufferReleaseCallbackT:
+		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 	default:
 		log.Panicf("Not Refcounted Object: T: %t V: %v", p, p)
+	}
+	if cp == nil {
+		log.Panicln("L21: Null passed!")
 	}
 	return cp
 }

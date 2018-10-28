@@ -48,6 +48,7 @@ type CStringT C.cef_string_t
 type CCommandLineT C.cef_command_line_t
 type CSchemeRegistrarT C.cef_scheme_registrar_t
 type CV8accessorT C.cef_v8accessor_t
+type CV8arrayBufferReleaseCallbackT C.cef_v8array_buffer_release_callback_t
 type CV8contextT C.cef_v8context_t
 type CV8exceptionT C.cef_v8exception_t
 type CV8interceptorT C.cef_v8interceptor_t
@@ -194,26 +195,14 @@ func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) 
 	window_info.width = C.CW_USEDEFAULT
 	window_info.height = C.CW_USEDEFAULT
 
-	cef_window_name := C.cef_string_t{}
+	cef_window_name := create_cef_string(window_name)
+	defer clear_cef_string(cef_window_name)
 
-	c_window_name := C.CString(window_name)
-	defer C.free(unsafe.Pointer(c_window_name))
-	_ = C.cef_string_utf8_to_utf16(c_window_name, C.strlen(c_window_name),
-		&cef_window_name)
-	window_info.window_name = cef_window_name
+	window_info.window_name = *cef_window_name // Do not clear window_info.window_name
 
 	// Initial url
-	url := C.CString(url_string)
-	defer C.free(unsafe.Pointer(url))
-
-	cef_url := C.cef_string_t{} // (*C.cef_string_t)(calloc(1, C.sizeof_cef_string_t))
-	// defer func() {
-	// 	C.cef_string_clear(cef_url)
-	// 	C.free(unsafe.Pointer(cef_url))
-	// }()
-
-	_ = C.cef_string_utf8_to_utf16(url, C.strlen(url), &cef_url)
-	// Logf("L88: cef_string_utf8_to_utf16: %d", c_status)
+	cef_url := create_cef_string(url_string)
+	defer clear_cef_string(cef_url)
 
 	// Browser settings. It is mandatory to set the
 	// "size" member.
@@ -231,7 +220,7 @@ func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) 
 	C.cef_browser_host_create_browser(
 		&window_info,
 		(*C.cef_client_t)(client),
-		&cef_url,
+		cef_url,
 		&browser_settings, nil,
 	)
 
