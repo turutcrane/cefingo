@@ -19,8 +19,8 @@ This is experimental go binding for CEF.
 1. Setup CGO Environment values.
 
     ```bat
-    CGO_LDFLAGS=-L\path\to\gopath\bin -lcef
-    CGO_CFLAGS=-I\path\to\expand_dir
+    C:\> set CGO_LDFLAGS=-L\path\to\gopath\bin -lcef
+    C:\> set CGO_CFLAGS=-I\path\to\expand_dir
     ```
 
 1. go get this package.
