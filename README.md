@@ -11,21 +11,21 @@ This is experimental go binding for CEF.
 
 1. Copy library files and Resouce files to a Directory in PATH Envrironment Variables (eg. $GOPATH/bin).
 
-    ```cmd
+    ```Batchfile
     C:\> xcopy /e \path\to\expand_dir\Release \path\to\gopath\bin
     C:\> xcopy /e \path\to\expand_dir\Resources \path\to\gopath\bin
     ```
 
 1. Setup CGO Environment values.
 
-    ```cmd
+    ```Batchfile
     CGO_LDFLAGS=-L\path\to\gopath\bin -lcef
     CGO_CFLAGS=-I\path\to\expand_dir
     ```
 
 1. go get this package.
 
-    ```cmd
+    ```Batchfile
     C:\> go get github.com/turutcrane/cefingo
     ```
 
