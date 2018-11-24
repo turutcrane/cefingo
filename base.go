@@ -3,10 +3,10 @@ package cefingo
 import (
 	"log"
 	"unsafe"
-
-	// #include "cefingo.h"
-	"C"
 )
+
+// #include "cefingo.h"
+import "C"
 
 func RefCountLogOutput(enable bool) {
 	if enable {

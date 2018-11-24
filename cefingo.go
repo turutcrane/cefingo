@@ -6,14 +6,13 @@ import (
 	"unsafe"
 
 	"github.com/alexbrainman/gowingui/winapi"
-
-	/*
-		#include "cefingo.h"
-	*/
-	"C"
 )
 
+//	#include "cefingo.h"
+import "C"
+
 type Cint C.int
+type CSizeT C.size_t
 type LogSeverityT C.cef_log_severity_t
 
 const (
@@ -51,6 +50,7 @@ type CV8accessorT C.cef_v8accessor_t
 type CV8arrayBufferReleaseCallbackT C.cef_v8array_buffer_release_callback_t
 type CV8contextT C.cef_v8context_t
 type CV8exceptionT C.cef_v8exception_t
+type CV8handlerT C.cef_v8handler_t
 type CV8interceptorT C.cef_v8interceptor_t
 type CV8stackTraceT C.cef_v8stack_trace_t
 type CV8valueT C.cef_v8value_t

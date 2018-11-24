@@ -1,11 +1,11 @@
 package cefingo
 
 import (
-	"C"
 	"log"
 	"runtime"
 	"strings"
 )
+import "C"
 
 // enable Log Output
 var log_output bool = false

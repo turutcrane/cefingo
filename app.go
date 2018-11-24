@@ -3,10 +3,10 @@ package cefingo
 import (
 	"log"
 	"unsafe"
-
-	// #include "cefingo.h"
-	"C"
 )
+
+// #include "cefingo.h"
+import "C"
 
 var app_method = map[*CAppT]App{}
 var browser_process_handler = map[*CAppT]*CBrowserProcessHandlerT{}
@@ -43,12 +43,13 @@ func AllocCApp(a App) (cApp *CAppT) {
 	p := C.calloc(1, C.sizeof_cefingo_app_wrapper_t)
 	Logf("L22: p: %v", p)
 
-	C.construct_cefingo_app((*C.cefingo_app_wrapper_t)(p))
+	ap := (*C.cefingo_app_wrapper_t)(p)
+	C.construct_cefingo_app(ap)
 
 	cApp = (*CAppT)(p)
 	BaseAddRef(cApp)
 	app_method[cApp] = a
-
+	
 	return cApp
 }
 

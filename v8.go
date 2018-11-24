@@ -8,6 +8,26 @@ import (
 // #include "cefingo.h"
 import "C"
 
+type V8handler interface {
+  ///
+  // Handle execution of the function identified by |name|. |object| is the
+  // receiver ('this' object) of the function. |arguments| is the list of
+  // arguments passed to the function. If execution succeeds set |retval| to the
+  // function return value. If execution fails set |exception| to the exception
+  // that will be thrown. Return true (1) if execution was handled.
+  // https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_v8_capi.h#L158-L183
+  ///
+  Execute(self *CV8handlerT,
+	name *CStringT,
+	object *CV8valueT,
+	argumentsCount CSizeT,
+	arguments *CV8valueT,
+	retval **CV8valueT,
+	exception *CStringT) Cint
+}
+
+var v8handlerMap = map[*CV8handlerT]V8handler{}
+
 // AllocCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT and construct it
 func AllocCV8arrayBufferReleaseCallbackT() (cv8ab_release_callback *CV8arrayBufferReleaseCallbackT) {
 	p := C.calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t)
@@ -68,4 +88,39 @@ func SetValueBykey(self *CV8valueT, key string, value *CV8valueT) {
 	if status == 0 {
 		log.Panicln("can not set_value_bykey")
 	}
+}
+
+// AllocCV8handlerT allocates CV8handlerT and construct it
+func AllocCV8handlerT(handler V8handler) (v8handler *CV8handlerT) {
+	p := C.calloc(1, C.sizeof_cefingo_v8handler_wrapper_t)
+	Logf("L22: p: %v", p)
+
+	hp := (*C.cefingo_v8handler_wrapper_t)(p)
+	C.construct_cefingo_v8handler(hp)
+
+	v8handler = (*CV8handlerT)(p)
+	BaseAddRef(v8handler)
+	v8handlerMap[v8handler] = handler
+
+	return v8handler
+}
+
+// Excute Handler
+//export execute
+func execute(self *CV8handlerT,
+	name *CStringT,
+	object *CV8valueT,
+	argumentsCount CSizeT,
+	arguments *CV8valueT,
+	retval **CV8valueT,
+	exception *CStringT) Cint {
+
+	handler := v8handlerMap[self]
+	var ret Cint
+	if handler == nil {
+		Logf("L121: No V8 Execute Handler")
+	} else {
+		ret = handler.Execute(self, name, object, argumentsCount, arguments, retval, exception)
+	}
+	return ret
 }

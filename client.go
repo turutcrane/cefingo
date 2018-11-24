@@ -3,10 +3,10 @@ package cefingo
 import (
 	"log"
 	"unsafe"
-
-	// #include "cefingo.h"
-	"C"
 )
+
+// #include "cefingo.h"
+import "C"
 
 // Client is Go interface of C.cef_client_t
 type Client interface {

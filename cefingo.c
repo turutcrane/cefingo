@@ -4,7 +4,7 @@
 void construct_cefingo_life_span_handler(cefingo_life_span_handler_wrapper_t *handler) {
     // cefingo_cslogf(__func__, "L14: 0x%llx", handler);
     initialize_cefingo_base_ref_counted(
-        offsetof(cefingo_life_span_handler_wrapper_t, counter),
+        offsetof(__typeof(*handler), counter),
         (cef_base_ref_counted_t*) handler);
     handler->body.on_before_close = life_span_on_before_close;
     handler->body.do_close = life_span_do_close;
@@ -13,14 +13,14 @@ void construct_cefingo_life_span_handler(cefingo_life_span_handler_wrapper_t *ha
 
 void construct_cefingo_browser_process_handler(cefingo_browser_process_handler_wrapper_t *handler) {
     initialize_cefingo_base_ref_counted(
-        offsetof(cefingo_browser_process_handler_wrapper_t, counter),
+        offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
     handler->body.on_context_initialized = browser_process_on_context_initialized;
 }
 
 void construct_cefingo_client(cefingo_client_wrapper_t* client) {
     initialize_cefingo_base_ref_counted(
-        offsetof(cefingo_client_wrapper_t, counter),
+        offsetof(__typeof__(*client), counter),
         (cef_base_ref_counted_t*) client);
 
 //     // callbacks
@@ -40,21 +40,27 @@ void construct_cefingo_client(cefingo_client_wrapper_t* client) {
     client->body.on_process_message_received = client_on_process_message_received;
 }
 
-static void CEF_CALLBACK c_on_before_command_line_processing(
-        struct _cef_app_t* self, const cef_string_t* process_type,
-        struct _cef_command_line_t* command_line) {
+// static void CEF_CALLBACK c_on_before_command_line_processing(
+//         struct _cef_app_t* self, const cef_string_t* process_type,
+//         struct _cef_command_line_t* command_line) {
 
-    // simply call go func with type cast
-    on_before_command_line_processing(self, (cef_string_t *) process_type, command_line);
-}
+//     // simply call go func with type cast
+//     on_before_command_line_processing(self, (cef_string_t *) process_type, command_line);
+// }
+
+typedef void(CEF_CALLBACK* cefingo_on_before_command_line_processing_t)(
+      struct _cef_app_t* self,
+      const cef_string_t* process_type,
+      struct _cef_command_line_t* command_line);
 
 void construct_cefingo_app(cefingo_app_wrapper_t* app) {
     initialize_cefingo_base_ref_counted(
-        offsetof(cefingo_app_wrapper_t, counter),
+        offsetof(__typeof__(*app), counter),
         (cef_base_ref_counted_t*) app);
 
     // callbacks
-    app->body.on_before_command_line_processing = c_on_before_command_line_processing;
+    app->body.on_before_command_line_processing =
+     (cefingo_on_before_command_line_processing_t) on_before_command_line_processing;
     app->body.on_register_custom_schemes = on_register_custom_schemes;
 
     app->body.get_resource_bundle_handler = get_resource_bundle_handler;
@@ -64,7 +70,7 @@ void construct_cefingo_app(cefingo_app_wrapper_t* app) {
 
 void construct_cefingo_render_process_handler(cefingo_render_process_handler_wrapper_t* handler) {
     initialize_cefingo_base_ref_counted(
-        offsetof(cefingo_render_process_handler_wrapper_t, counter),
+        offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
 
     // callbacks
@@ -96,9 +102,25 @@ int v8context_set_value_bykey(cef_v8value_t* self,
 void construct_cefingo_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t *callback) {
 
     initialize_cefingo_base_ref_counted(
-        offsetof(cefingo_v8array_buffer_release_callback_wrapper_t, counter),
+        offsetof(__typeof__(*callback), counter),
         (cef_base_ref_counted_t*) callback);
 
     callback->body.release_buffer = v8array_buffer_release_buffer;
 
+}
+
+typedef   int(CEF_CALLBACK* cefingo_execute_t)(struct _cef_v8handler_t* self,
+                             const cef_string_t* name,
+                             struct _cef_v8value_t* object,
+                             size_t argumentsCount,
+                             struct _cef_v8value_t* const* arguments,
+                             struct _cef_v8value_t** retval,
+                             cef_string_t* exception);
+
+void construct_cefingo_v8handler(cefingo_v8handler_wrapper_t *handler) {
+    initialize_cefingo_base_ref_counted(
+        offsetof(__typeof__(*handler), counter),
+        (cef_base_ref_counted_t*) handler);
+
+    handler->body.execute = (cefingo_execute_t) execute;
 }

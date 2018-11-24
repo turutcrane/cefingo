@@ -3,10 +3,10 @@ package cefingo
 //
 import (
 	"log"
-
-	// #include "cefingo.h"
-	"C"
 )
+
+// #include "cefingo.h"
+import "C"
 
 // LifeSpanHandler is Go interface of C.cef_life_span_handler_t
 type LifeSpanHandler interface {
