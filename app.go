@@ -49,7 +49,7 @@ func AllocCApp(a App) (cApp *CAppT) {
 	cApp = (*CAppT)(p)
 	BaseAddRef(cApp)
 	app_method[cApp] = a
-	
+
 	return cApp
 }
 

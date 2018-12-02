@@ -16,39 +16,49 @@ func RefCountLogOutput(enable bool) {
 	}
 }
 
-func cast_to_base_ref_counted_t(ptr interface{}) (cp *C.cef_base_ref_counted_t) {
+func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t) {
+	var up unsafe.Pointer
 	switch p := ptr.(type) {
 	case *CAppT:
-		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+		up = unsafe.Pointer(p)
 	case *CBrowserProcessHandlerT:
-		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+		up = unsafe.Pointer(p)
 	case *CClientT:
-		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+		up = unsafe.Pointer(p)
 	case *CLifeSpanHandlerT:
-		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+		up = unsafe.Pointer(p)
 	case *CRenderProcessHandlerT:
-		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+		up = unsafe.Pointer(p)
 	case *CV8valueT:
-		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+		up = unsafe.Pointer(p)
 	case *CV8contextT:
-		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+		up = unsafe.Pointer(p)
 	case *CV8arrayBufferReleaseCallbackT:
-		cp = (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+		up = unsafe.Pointer(p)
+	case *CV8handlerT:
+		up = unsafe.Pointer(p)
 	default:
 		log.Panicf("Not Refcounted Object: T: %t V: %v", p, p)
 	}
-	if cp == nil {
+	if up == nil {
 		log.Panicln("L21: Null passed!")
 	}
-	return cp
+	refp = (*C.cef_base_ref_counted_t)(up)
+	return refp
 }
 
 func BaseAddRef(ptr interface{}) {
 	C.cefingo_base_add_ref(cast_to_base_ref_counted_t(ptr))
 }
 
+///
+// Called to decrement the reference count for the object. If the reference
+// count falls to 0 the object should self-delete. Returns true (1) if the
+// resulting reference count is 0.
+///
 func BaseRelease(ptr interface{}) Cint {
 	status := C.cefingo_base_release(cast_to_base_ref_counted_t(ptr))
+
 	return Cint(status)
 }
 

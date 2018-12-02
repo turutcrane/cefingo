@@ -114,7 +114,7 @@ func ExecuteProcess(app *CAppT) {
 	///
 	BaseAddRef(app)
 	code := C.cef_execute_process(&main_args, (*C.cef_app_t)(unsafe.Pointer(app)), nil)
-	Logf("L37: code: %d", code)
+	Logf("L37: code: %d: %d", code, BaseHasOneRef(app))
 	if code >= 0 {
 		os.Exit(int(code))
 	}
@@ -129,6 +129,7 @@ func construct_settings(s Settings) C.cef_settings_t {
 	settings.log_severity = (C.cef_log_severity_t)(s.LogSeverity) // C.LOGSEVERITY_WARNING // Show only warnings/errors
 	settings.no_sandbox = (C.int)(s.NoSandbox)
 	settings.multi_threaded_message_loop = (C.int)(s.MultiThreadedMessageLoop)
+	// settings.remote_debugging_port = 8088
 
 	return settings
 }

@@ -9,21 +9,21 @@ import (
 import "C"
 
 type V8handler interface {
-  ///
-  // Handle execution of the function identified by |name|. |object| is the
-  // receiver ('this' object) of the function. |arguments| is the list of
-  // arguments passed to the function. If execution succeeds set |retval| to the
-  // function return value. If execution fails set |exception| to the exception
-  // that will be thrown. Return true (1) if execution was handled.
-  // https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_v8_capi.h#L158-L183
-  ///
-  Execute(self *CV8handlerT,
-	name *CStringT,
-	object *CV8valueT,
-	argumentsCount CSizeT,
-	arguments *CV8valueT,
-	retval **CV8valueT,
-	exception *CStringT) Cint
+	///
+	// Handle execution of the function identified by |name|. |object| is the
+	// receiver ('this' object) of the function. |arguments| is the list of
+	// arguments passed to the function. If execution succeeds set |retval| to the
+	// function return value. If execution fails set |exception| to the exception
+	// that will be thrown. Return true (1) if execution was handled.
+	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_v8_capi.h#L158-L183
+	///
+	Execute(self *CV8handlerT,
+		name string,
+		object *CV8valueT,
+		argumentsCount CSizeT,
+		arguments *CV8valueT,
+		retval **CV8valueT,
+		exception *CStringT) Cint
 }
 
 var v8handlerMap = map[*CV8handlerT]V8handler{}
@@ -43,12 +43,14 @@ func AllocCV8arrayBufferReleaseCallbackT() (cv8ab_release_callback *CV8arrayBuff
 
 //export v8array_buffer_release_buffer
 func v8array_buffer_release_buffer(self *C.cef_v8array_buffer_release_callback_t, buffer unsafe.Pointer) {
-	Logf("L26: p:%", buffer)
+	Logf("L46: p:%v", buffer)
 	// C.free(buffer)
 }
 
 func GetGlobal(self *CV8contextT) *CV8valueT {
-	return (*CV8valueT)(C.v8context_get_global((*C.cef_v8context_t)(self)))
+	g := (*CV8valueT)(C.v8context_get_global((*C.cef_v8context_t)(self)))
+	BaseAddRef(g)
+	return g
 }
 
 func V8valueCreateString(s string) *CV8valueT {
@@ -90,6 +92,22 @@ func SetValueBykey(self *CV8valueT, key string, value *CV8valueT) {
 	}
 }
 
+// V8valueCreateFunction create V8 function
+///
+// Create a new cef_v8value_t object of type function. This function should only
+// be called from within the scope of a cef_render_process_handler_t,
+// cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
+// enter() and exit() on a stored cef_v8context_t reference.
+// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_v8_capi.h#L812-L819
+///
+func V8valueCreateFunction(name string, handler *CV8handlerT) (function *CV8valueT) {
+	cef_name := create_cef_string(name)
+	defer clear_cef_string(cef_name)
+
+	BaseAddRef(handler)
+	return (*CV8valueT)(C.cef_v8value_create_function(cef_name, (*C.cef_v8handler_t)(handler)))
+}
+
 // AllocCV8handlerT allocates CV8handlerT and construct it
 func AllocCV8handlerT(handler V8handler) (v8handler *CV8handlerT) {
 	p := C.calloc(1, C.sizeof_cefingo_v8handler_wrapper_t)
@@ -115,12 +133,13 @@ func execute(self *CV8handlerT,
 	retval **CV8valueT,
 	exception *CStringT) Cint {
 
+	goname := C.GoString((*C.char)(unsafe.Pointer(name.str)))
 	handler := v8handlerMap[self]
 	var ret Cint
 	if handler == nil {
 		Logf("L121: No V8 Execute Handler")
 	} else {
-		ret = handler.Execute(self, name, object, argumentsCount, arguments, retval, exception)
+		ret = handler.Execute(self, goname, object, argumentsCount, arguments, retval, exception)
 	}
 	return ret
 }
