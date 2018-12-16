@@ -17,12 +17,14 @@ CEFINGO_REF_COUNTER_WRAPPER(cef_life_span_handler_t, cefingo_life_span_handler_w
 CEFINGO_REF_COUNTER_WRAPPER(cef_render_process_handler_t, cefingo_render_process_handler_wrapper_t);
 CEFINGO_REF_COUNTER_WRAPPER(cef_v8array_buffer_release_callback_t, cefingo_v8array_buffer_release_callback_wrapper_t);
 CEFINGO_REF_COUNTER_WRAPPER(cef_v8handler_t, cefingo_v8handler_wrapper_t);
+CEFINGO_REF_COUNTER_WRAPPER(cef_load_handler_t, cefingo_load_handler_wrapper_t);
 
 extern void construct_cefingo_life_span_handler(cefingo_life_span_handler_wrapper_t *handler);
 extern void construct_cefingo_browser_process_handler(cefingo_browser_process_handler_wrapper_t *handler);
 extern void construct_cefingo_client(cefingo_client_wrapper_t* client);
 extern void construct_cefingo_app(cefingo_app_wrapper_t* app);
 extern void construct_cefingo_render_process_handler(cefingo_render_process_handler_wrapper_t* handler);
+extern void construct_cefingo_load_handler(cefingo_load_handler_wrapper_t* handler);
 
 extern cef_v8value_t *v8context_get_global(cef_v8context_t *self);
 extern int v8context_set_value_bykey(cef_v8value_t* self, cef_string_t* key,

@@ -124,3 +124,21 @@ void construct_cefingo_v8handler(cefingo_v8handler_wrapper_t *handler) {
 
     handler->body.execute = (cefingo_execute_t) execute;
 }
+
+typedef void(CEF_CALLBACK* on_load_error_t)(struct _cef_load_handler_t* self,
+                                    struct _cef_browser_t* browser,
+                                    struct _cef_frame_t* frame,
+                                    cef_errorcode_t errorCode,
+                                    const cef_string_t* errorText,
+                                    const cef_string_t* failedUrl);
+
+void construct_cefingo_load_handler(cefingo_load_handler_wrapper_t *handler) {
+    initialize_cefingo_base_ref_counted(
+        offsetof(__typeof__(*handler), counter),
+        (cef_base_ref_counted_t*) handler);
+
+    handler->body.on_loading_state_change = on_loading_state_change;
+    handler->body.on_load_start = on_load_start;
+    handler->body.on_load_end = on_load_end;
+    handler->body.on_load_error = (on_load_error_t)on_load_error;
+}

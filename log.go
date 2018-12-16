@@ -7,31 +7,28 @@ import (
 )
 import "C"
 
-// enable Log Output
-var log_output bool = false
-
-func LogOutput(enable bool) {
-	log_output = enable
-}
+var Logger *log.Logger
 
 func Logf(message string, v ...interface{}) {
-	if log_output {
+	if Logger != nil {
 		fn := caller_name()
-		log.Printf("("+fn+") "+message+"\n", v...)
+		Logger.Printf("("+fn+") "+message+"\n", v...)
 	}
 }
 
 //export cefingo_cslog
 func cefingo_cslog(fn *C.char, s *C.char) {
-	if log_output {
-		log.Println("(C."+C.GoString(fn)+")", strings.TrimRight(C.GoString(s), "\n"))
+	if Logger != nil {
+		Logger.Println("(C."+C.GoString(fn)+")", strings.TrimRight(C.GoString(s), "\n"))
 	}
 }
 
 //export cefingo_panic
 func cefingo_panic(s *C.char) {
-	fn := caller_name()
-	log.Panicln("("+fn+")", strings.TrimRight(C.GoString(s), "\n"))
+	if Logger != nil {
+		fn := caller_name()
+		Logger.Panicln("("+fn+")", strings.TrimRight(C.GoString(s), "\n"))
+	}
 }
 
 func caller_name() (fn string) {

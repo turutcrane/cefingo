@@ -13,8 +13,70 @@ import "C"
 
 type Cint C.int
 type CSizeT C.size_t
+type CErrorcodeT C.cef_errorcode_t
 type LogSeverityT C.cef_log_severity_t
+type CStringT C.cef_string_t
+type CTransitionTypeT C.cef_transition_type_t
 
+const (
+	ErrNone            = C.ERR_NONE
+	ErrFailed          = C.ERR_FAILED
+	ErrAborted         = C.ERR_ABORTED
+	ErrInvalidArgument = C.ERR_INVALID_ARGUMENT
+	ErrInvalidHandle   = C.ERR_INVALID_HANDLE
+	ErrFileNotFound    = C.ERR_FILE_NOT_FOUND
+	ErrTimedOut        = C.ERR_TIMED_OUT
+	ErrFileTooBig      = C.ERR_FILE_TOO_BIG
+	ErrUnexpected      = C.ERR_UNEXPECTED
+	ErrAccessDenied    = C.ERR_ACCESS_DENIED
+	ErrNotImplemented  = C.ERR_NOT_IMPLEMENTED
+
+// ERR_CONNECTION_CLOSED = -100,
+// ERR_CONNECTION_RESET = -101,
+// ERR_CONNECTION_REFUSED = -102,
+// ERR_CONNECTION_ABORTED = -103,
+// ERR_CONNECTION_FAILED = -104,
+// ERR_NAME_NOT_RESOLVED = -105,
+// ERR_INTERNET_DISCONNECTED = -106,
+// ERR_SSL_PROTOCOL_ERROR = -107,
+// ERR_ADDRESS_INVALID = -108,
+// ERR_ADDRESS_UNREACHABLE = -109,
+// ERR_SSL_CLIENT_AUTH_CERT_NEEDED = -110,
+// ERR_TUNNEL_CONNECTION_FAILED = -111,
+// ERR_NO_SSL_VERSIONS_ENABLED = -112,
+// ERR_SSL_VERSION_OR_CIPHER_MISMATCH = -113,
+// ERR_SSL_RENEGOTIATION_REQUESTED = -114,
+// ERR_CERT_COMMON_NAME_INVALID = -200,
+// ERR_CERT_BEGIN = ERR_CERT_COMMON_NAME_INVALID,
+// ERR_CERT_DATE_INVALID = -201,
+// ERR_CERT_AUTHORITY_INVALID = -202,
+// ERR_CERT_CONTAINS_ERRORS = -203,
+// ERR_CERT_NO_REVOCATION_MECHANISM = -204,
+// ERR_CERT_UNABLE_TO_CHECK_REVOCATION = -205,
+// ERR_CERT_REVOKED = -206,
+// ERR_CERT_INVALID = -207,
+// ERR_CERT_WEAK_SIGNATURE_ALGORITHM = -208,
+// // -209 is available: was ERR_CERT_NOT_IN_DNS.
+// ERR_CERT_NON_UNIQUE_NAME = -210,
+// ERR_CERT_WEAK_KEY = -211,
+// ERR_CERT_NAME_CONSTRAINT_VIOLATION = -212,
+// ERR_CERT_VALIDITY_TOO_LONG = -213,
+// ERR_CERT_END = ERR_CERT_VALIDITY_TOO_LONG,
+// ERR_INVALID_URL = -300,
+// ERR_DISALLOWED_URL_SCHEME = -301,
+// ERR_UNKNOWN_URL_SCHEME = -302,
+// ERR_TOO_MANY_REDIRECTS = -310,
+// ERR_UNSAFE_REDIRECT = -311,
+// ERR_UNSAFE_PORT = -312,
+// ERR_INVALID_RESPONSE = -320,
+// ERR_INVALID_CHUNKED_ENCODING = -321,
+// ERR_METHOD_NOT_SUPPORTED = -322,
+// ERR_UNEXPECTED_PROXY_AUTH = -323,
+// ERR_EMPTY_RESPONSE = -324,
+// ERR_RESPONSE_HEADERS_TOO_BIG = -325,
+// ERR_CACHE_MISS = -400,
+// ERR_INSECURE_RESPONSE = -501,
+)
 const (
 	LogSeverityDefault = C.LOGSEVERITY_DEFAULT
 	LogSeverityVerbose = C.LOGSEVERITY_VERBOSE
@@ -23,6 +85,24 @@ const (
 	LogSeverityWarning = C.LOGSEVERITY_WARNING
 	LogSeverityError   = C.LOGSEVERITY_ERROR
 	LogSeverityDisable = C.LOGSEVERITY_DISABLE
+)
+
+const (
+	TtLink               = C.TT_LINK
+	TtExplicit           = C.TT_EXPLICIT
+	TtAutoSubframe       = C.TT_AUTO_SUBFRAME
+	TtManualSubframe     = C.TT_MANUAL_SUBFRAME
+	TtFormSubmit         = C.TT_FORM_SUBMIT
+	TtReload             = C.TT_RELOAD
+	TtSourceMask         = C.TT_SOURCE_MASK
+	TtBlockedFlag        = C.TT_BLOCKED_FLAG
+	TtForwardBackFlag    = C.TT_FORWARD_BACK_FLAG
+	TtChainStartFlag     = C.TT_CHAIN_START_FLAG
+	TtChainEndFlag       = C.TT_CHAIN_END_FLAG
+	TtClientRedirectFlag = C.TT_CLIENT_REDIRECT_FLAG
+	TtServerRedirectFlag = C.TT_SERVER_REDIRECT_FLAG
+	TtIsRedirectMask     = C.TT_IS_REDIRECT_MASK
+	TtQualifierMask      = C.TT_QUALIFIER_MASK
 )
 
 type Settings struct {
@@ -43,7 +123,6 @@ type CDomnodeT C.cef_domnode_t
 type CListValueT C.cef_list_value_t
 type CProcessIdT C.cef_process_id_t
 type CProcessMessageT C.cef_process_message_t
-type CStringT C.cef_string_t
 type CCommandLineT C.cef_command_line_t
 type CSchemeRegistrarT C.cef_scheme_registrar_t
 type CV8accessorT C.cef_v8accessor_t

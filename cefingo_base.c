@@ -37,7 +37,7 @@ void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self) {
 
     // counter->ref_count++;
     int64 count = __atomic_add_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L12: 0x%llx +count: %d", self, count);
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L40: 0x%llx +count: %d", self, count);
 }
 
 ///
@@ -50,7 +50,7 @@ extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self) {
     // counter->ref_count--;
     int64 count = __atomic_sub_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
 
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L24: 0x%llx -count: %d", self, count);
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L53: 0x%llx -count: %d", self, count);
     return (count == 0 ? 1 : 0);
 }
 
@@ -61,7 +61,7 @@ int CEF_CALLBACK cefingo_has_one_ref(cef_base_ref_counted_t* self) {
     cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
     int64 count = __atomic_load_n(&counter->ref_count, __ATOMIC_SEQ_CST);
 
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L24: 0x%llx -count: %d", self, count);
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L64: 0x%llx has-one: %d", self, count);
     return (count == 1 ? 1 : 0);
 }
 
