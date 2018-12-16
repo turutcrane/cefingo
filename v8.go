@@ -20,10 +20,10 @@ type V8handler interface {
 	Execute(self *CV8handlerT,
 		name string,
 		object *CV8valueT,
-		argumentsCount CSizeT,
+		argumentsCount int,
 		arguments *CV8valueT,
 		retval **CV8valueT,
-		exception *CStringT) Cint
+		exception *CStringT) bool
 }
 
 var v8handlerMap = map[*CV8handlerT]V8handler{}
@@ -47,7 +47,7 @@ func v8array_buffer_release_buffer(self *C.cef_v8array_buffer_release_callback_t
 	// C.free(buffer)
 }
 
-func GetGlobal(self *CV8contextT) *CV8valueT {
+func (self *CV8contextT) GetGlobal() *CV8valueT {
 	g := (*CV8valueT)(C.v8context_get_global((*C.cef_v8context_t)(self)))
 	BaseAddRef(g)
 	return g
@@ -80,7 +80,7 @@ func V8valueCreateArrayBuffer(buffer []byte) *CV8valueT {
 	return (*CV8valueT)(v8array_buffer)
 }
 
-func SetValueBykey(self *CV8valueT, key string, value *CV8valueT) {
+func (self *CV8valueT) SetValueBykey(key string, value *CV8valueT) {
 	key_string := create_cef_string(key)
 	defer clear_cef_string(key_string)
 
@@ -90,6 +90,28 @@ func SetValueBykey(self *CV8valueT, key string, value *CV8valueT) {
 	if status == 0 {
 		log.Panicln("can not set_value_bykey")
 	}
+}
+
+func (self *CV8valueT) HasValueBykey(key string) bool {
+	key_string := create_cef_string(key)
+	defer clear_cef_string(key_string)
+
+	status := C.v8context_has_value_bykey((*C.cef_v8value_t)(self), key_string)
+	return (status == 1)
+}
+
+func (self *CV8valueT) GetValueBykey(key string) (value *CV8valueT) {
+	key_string := create_cef_string(key)
+	defer clear_cef_string(key_string)
+
+	value = (*CV8valueT)(C.v8context_get_value_bykey((*C.cef_v8value_t)(self), key_string))
+	BaseAddRef(value)
+	return value
+}
+
+func (self *CV8valueT) IsFunction() bool {
+	status := C.cefingo_v8value_is_function((*C.cef_v8value_t)(self))
+	return status == 1
 }
 
 // V8valueCreateFunction create V8 function
@@ -128,18 +150,40 @@ func AllocCV8handlerT(handler V8handler) (v8handler *CV8handlerT) {
 func execute(self *CV8handlerT,
 	name *CStringT,
 	object *CV8valueT,
-	argumentsCount CSizeT,
+	argumentsCount C.int,
 	arguments *CV8valueT,
 	retval **CV8valueT,
-	exception *CStringT) Cint {
+	exception *CStringT,
+) (ret C.int) {
 
 	goname := C.GoString((*C.char)(unsafe.Pointer(name.str)))
 	handler := v8handlerMap[self]
-	var ret Cint
 	if handler == nil {
 		Logf("L121: No V8 Execute Handler")
+		ret = 0
 	} else {
-		ret = handler.Execute(self, goname, object, argumentsCount, arguments, retval, exception)
+		if handler.Execute(self, goname, object, (int)(argumentsCount), arguments, retval, exception) {
+			ret = 1
+		} else {
+			ret = 0
+		}
 	}
 	return ret
+}
+
+func V8contextInContext() bool {
+	// Returns true (1) if V8 is currently inside a context.
+	inContext := C.cef_v8context_in_context()
+	Logf("L150: %d", inContext)
+	return (inContext == 1)
+}
+
+func (self *CV8contextT) Enter() bool {
+	c := C.cefingo_v8context_enter((*C.cef_v8context_t)(self))
+	return (c == 1)
+}
+
+func (self *CV8contextT) Exit() bool {
+	c := C.cefingo_v8context_exit((*C.cef_v8context_t)(self))
+	return (c == 1)
 }

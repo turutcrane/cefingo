@@ -37,6 +37,8 @@ func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t
 		up = unsafe.Pointer(p)
 	case *CV8handlerT:
 		up = unsafe.Pointer(p)
+	case *CLoadHandlerT:
+		up = unsafe.Pointer(p)
 	default:
 		log.Panicf("Not Refcounted Object: T: %t V: %v", p, p)
 	}
@@ -56,13 +58,13 @@ func BaseAddRef(ptr interface{}) {
 // count falls to 0 the object should self-delete. Returns true (1) if the
 // resulting reference count is 0.
 ///
-func BaseRelease(ptr interface{}) Cint {
+func BaseRelease(ptr interface{}) bool {
 	status := C.cefingo_base_release(cast_to_base_ref_counted_t(ptr))
 
-	return Cint(status)
+	return status == 1
 }
 
-func BaseHasOneRef(ptr interface{}) Cint {
+func BaseHasOneRef(ptr interface{}) bool {
 	status := C.cefingo_base_has_one_ref(cast_to_base_ref_counted_t(ptr))
-	return Cint(status)
+	return status == 1
 }

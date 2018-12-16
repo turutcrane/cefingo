@@ -20,7 +20,7 @@ type Client interface {
 		browser *CBrowserT,
 		source_process CProcessIdT,
 		message *CProcessMessageT,
-	) Cint
+	) bool
 }
 
 var client_method = map[*CClientT]Client{}
@@ -116,9 +116,8 @@ func get_keyboard_handler(self *CClientT) *CKeyboardHandlerT {
 }
 
 // AssocLifeSpanHandler associate hander to client
-func AssocLifeSpanHandler(client *CClientT, handler *CLifeSpanHandlerT) {
-	p := (unsafe.Pointer)(handler)
-	C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
+func (client *CClientT) AssocLifeSpanHandler(handler *CLifeSpanHandlerT) {
+	BaseAddRef(handler)
 	life_span_handler[client] = handler
 }
 
@@ -166,7 +165,11 @@ func get_request_handler(self *CClientT) *CRequestHandlerT {
 //on_process_mesage_received call OnProcessMessageRecived method
 //export client_on_process_message_received
 func client_on_process_message_received(
-	self *CClientT, browser *CBrowserT, source_process CProcessIdT, message *CProcessMessageT) Cint {
+	self *CClientT,
+	browser *CBrowserT,
+	source_process CProcessIdT,
+	message *CProcessMessageT,
+) (ret C.int) {
 
 	Logf("L46: client: %p", self)
 	f := client_method[self]
@@ -174,7 +177,12 @@ func client_on_process_message_received(
 		log.Panicln("L48: on_process_message_received: Noo!")
 	}
 
-	return f.OnProcessMessageRecived(self, browser, source_process, message)
+	if f.OnProcessMessageRecived(self, browser, source_process, message) {
+		ret = 1
+	} else {
+		ret = 0
+	}
+	return ret
 }
 
 // DefaultClient is dummy implementation of CClientT
@@ -184,7 +192,7 @@ type DefaultClient struct {
 func (*DefaultClient) OnProcessMessageRecived(self *CClientT,
 	browser *CBrowserT,
 	source_process CProcessIdT,
-	message *CProcessMessageT) Cint {
-
-	return 0
+	message *CProcessMessageT,
+) bool {
+	return false
 }

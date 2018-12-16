@@ -117,12 +117,12 @@ type LifeSpanHandler interface {
 	//     exist.
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_life_span_handler_capi.h#L106-#L194
 	///
-	DoClose(self *CLifeSpanHandlerT, brwoser *CBrowserT) int
+	DoClose(self *CLifeSpanHandlerT, brwoser *CBrowserT) bool
 }
 
 var lifeSpanHandlers = map[*CLifeSpanHandlerT]LifeSpanHandler{}
 
-func AllocCLifeSpanHandler(handler LifeSpanHandler) (cHandler *CLifeSpanHandlerT) {
+func AllocCLifeSpanHandlerT(handler LifeSpanHandler) (cHandler *CLifeSpanHandlerT) {
 	p := C.calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t)
 	Logf("L23: p: %v", p)
 	C.construct_cefingo_life_span_handler((*C.cefingo_life_span_handler_wrapper_t)(p))
@@ -148,15 +148,19 @@ func life_span_on_before_close(self *CLifeSpanHandlerT, browser *CBrowserT) {
 }
 
 //export life_span_do_close
-func life_span_do_close(self *CLifeSpanHandlerT, brwoser *CBrowserT) C.int {
+func life_span_do_close(self *CLifeSpanHandlerT, brwoser *CBrowserT) (ret C.int) {
 	Logf("L50:")
 	f := lifeSpanHandlers[self]
 	if f == nil {
 		log.Panicln("L58: life_span_do_close: Noo!")
 	}
 
-	r := f.DoClose(self, brwoser)
-	return (C.int)(r)
+	if f.DoClose(self, brwoser) {
+		ret = 1
+	} else {
+		ret = 0
+	}
+	return ret
 }
 
 // void on_after_created(struct _cef_life_span_handler_t* self,
@@ -180,9 +184,9 @@ func (*DefaultLifeSpanHandler) OnBeforeClose(self *CLifeSpanHandlerT, brwoser *C
 	Logf("L79:")
 }
 
-func (*DefaultLifeSpanHandler) DoClose(self *CLifeSpanHandlerT, brwoser *CBrowserT) int {
+func (*DefaultLifeSpanHandler) DoClose(self *CLifeSpanHandlerT, brwoser *CBrowserT) bool {
 	Logf("L83:")
-	return 0
+	return false
 }
 
 func (*DefaultLifeSpanHandler) OnAfterCreated(self *CLifeSpanHandlerT, brwoser *CBrowserT) {

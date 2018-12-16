@@ -2,10 +2,10 @@ package cefingo
 
 import (
 	"log"
-
-	// #include "cefingo.h"
-	"C"
 )
+
+// #include "cefingo.h"
+import "C"
 
 type RenderProcessHandler interface {
 	///
@@ -43,7 +43,7 @@ type RenderProcessHandler interface {
 	// Return the handler for browser load status events.
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_render_process_handler_capi.h#L99-L103
 	///
-	GetLoadHandler(self *CRenderProcessHandlerT) *CLoadHandlerT
+	// GetLoadHandler(self *CRenderProcessHandlerT) *CLoadHandlerT
 
 	///
 	// Called immediately after the V8 context for a frame has been created. To
@@ -110,12 +110,13 @@ type RenderProcessHandler interface {
 		self *CRenderProcessHandlerT,
 		browser *CBrowserT,
 		source_process CProcessIdT,
-		message *CProcessMessageT) Cint
+		message *CProcessMessageT) bool
 }
 
 var renderProcessHandlers = map[*CRenderProcessHandlerT]RenderProcessHandler{}
+var rphLoadHandlers = map[*CRenderProcessHandlerT]*CLoadHandlerT{}
 
-func AllocCRenderProcessHandler(handler RenderProcessHandler) (cHandler *CRenderProcessHandlerT) {
+func AllocCRenderProcessHandlerT(handler RenderProcessHandler) (cHandler *CRenderProcessHandlerT) {
 	p := C.calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t)
 	Logf("L120: p:%v", p)
 	C.construct_cefingo_render_process_handler((*C.cefingo_render_process_handler_wrapper_t)(p))
@@ -182,15 +183,12 @@ func on_browser_destroyed(self *CRenderProcessHandlerT, browser *CBrowserT) {
 
 //export render_process_hander_get_load_handler
 func render_process_hander_get_load_handler(self *CRenderProcessHandlerT) *CLoadHandlerT {
-	Logf("L173: self: %p", self)
-
-	f := renderProcessHandlers[self]
-	if f == nil {
-		log.Panicln("36: Noo!")
+	h := rphLoadHandlers[self]
+	if h == nil {
+		Logf("L188: No Handler %v", self)
 	}
-
-	return f.GetLoadHandler(self)
-
+	BaseAddRef(h)
+	return h
 }
 
 //export on_context_created
@@ -269,7 +267,8 @@ func render_process_handler_on_process_message_received(
 	self *CRenderProcessHandlerT,
 	browser *CBrowserT,
 	source_process CProcessIdT,
-	message *CProcessMessageT) Cint {
+	message *CProcessMessageT,
+) (ret C.int) {
 	Logf("L261: self: %p", self)
 
 	f := renderProcessHandlers[self]
@@ -277,7 +276,12 @@ func render_process_handler_on_process_message_received(
 		log.Panicln("36: Noo!")
 	}
 
-	return f.OnProcessMessageReceived(self, browser, source_process, message)
+	if f.OnProcessMessageReceived(self, browser, source_process, message) {
+		ret = 1
+	} else {
+		ret = 0
+	}
+	return ret
 }
 
 type DefaultRenderProcessHander struct {
@@ -300,11 +304,6 @@ func (*DefaultRenderProcessHander) OnBrowserCreated(self *CRenderProcessHandlerT
 
 func (*DefaultRenderProcessHander) OnBrowserDestroyed(self *CRenderProcessHandlerT, browser *CBrowserT) {
 	Logf("L290:")
-}
-
-func (*DefaultRenderProcessHander) GetLoadHandler(self *CRenderProcessHandlerT) *CLoadHandlerT {
-	Logf("L294:")
-	return nil
 }
 
 func (*DefaultRenderProcessHander) OnContextCreated(self *CRenderProcessHandlerT,
@@ -348,8 +347,15 @@ func (*DefaultRenderProcessHander) OnProcessMessageReceived(
 	self *CRenderProcessHandlerT,
 	browser *CBrowserT,
 	source_process CProcessIdT,
-	message *CProcessMessageT) Cint {
+	message *CProcessMessageT,
+) bool {
 	Logf("L341:")
 
-	return 1
+	return true
+}
+
+// AssocLoadHandler associate hander to CRenderProcessHandlerT
+func (rph *CRenderProcessHandlerT) AssocLoadHandler(h *CLoadHandlerT) {
+	BaseAddRef(h)
+	rphLoadHandlers[rph] = h
 }

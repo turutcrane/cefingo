@@ -39,7 +39,7 @@ type App interface {
 }
 
 // AllocCClient allocates CAppT and construct it
-func AllocCApp(a App) (cApp *CAppT) {
+func AllocCAppT(a App) (cApp *CAppT) {
 	p := C.calloc(1, C.sizeof_cefingo_app_wrapper_t)
 	Logf("L22: p: %v", p)
 
@@ -91,9 +91,8 @@ func get_browser_process_handler(self *CAppT) *CBrowserProcessHandlerT {
 }
 
 // AssocRenderProcessHandler associate a hander to app
-func AssocRenderProcessHandler(app *CAppT, handler *CRenderProcessHandlerT) {
-	p := (unsafe.Pointer)(handler)
-	C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
+func (app *CAppT) AssocRenderProcessHandler(handler *CRenderProcessHandlerT) {
+	BaseAddRef(handler)
 	render_process_handler[app] = handler
 }
 

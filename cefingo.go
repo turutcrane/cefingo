@@ -11,8 +11,9 @@ import (
 //	#include "cefingo.h"
 import "C"
 
-type Cint C.int
-type CSizeT C.size_t
+// type Cint C.int
+// type CSizeT C.size_t
+
 type CErrorcodeT C.cef_errorcode_t
 type LogSeverityT C.cef_log_severity_t
 type CStringT C.cef_string_t
@@ -107,8 +108,8 @@ const (
 
 type Settings struct {
 	LogSeverity              LogSeverityT
-	NoSandbox                Cint
-	MultiThreadedMessageLoop Cint
+	NoSandbox                int
+	MultiThreadedMessageLoop int
 }
 
 // type CefSettingsT struct {
@@ -193,7 +194,7 @@ func ExecuteProcess(app *CAppT) {
 	///
 	BaseAddRef(app)
 	code := C.cef_execute_process(&main_args, (*C.cef_app_t)(unsafe.Pointer(app)), nil)
-	Logf("L37: code: %d: %d", code, BaseHasOneRef(app))
+	Logf("L37: code: %d: %t", code, BaseHasOneRef(app))
 	if code >= 0 {
 		os.Exit(int(code))
 	}

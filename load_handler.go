@@ -18,9 +18,9 @@ type LoadHandler interface {
 	OnLoadingStateChange(
 		self *CLoadHandlerT,
 		browser *CBrowserT,
-		isLoading Cint,
-		canGoBack Cint,
-		canGoForward Cint,
+		isLoading int,
+		canGoBack int,
+		canGoForward int,
 	)
 
 	///
@@ -56,7 +56,7 @@ type LoadHandler interface {
 		self *CLoadHandlerT,
 		browser *CBrowserT,
 		frame *CFrameT,
-		httpStatusCode Cint,
+		httpStatusCode int,
 	)
 
 	///
@@ -79,14 +79,16 @@ type LoadHandler interface {
 var loadHandlerMap = map[*CLoadHandlerT]LoadHandler{}
 
 // AllocCLoadHandlerT allocates CLoadHandlerT and construct it
-func AllocCLoadHandlerT() (loadHandler *CLoadHandlerT) {
+func AllocCLoadHandlerT(h LoadHandler) (loadHandler *CLoadHandlerT) {
 	p := C.calloc(1, C.sizeof_cefingo_load_handler_wrapper_t)
-	Logf("L22: p: %v", p)
+	Logf("L84: p: %v", p)
 
 	C.construct_cefingo_load_handler((*C.cefingo_load_handler_wrapper_t)(p))
 
 	loadHandler = (*CLoadHandlerT)(p)
 	BaseAddRef(loadHandler)
+
+	loadHandlerMap[loadHandler] = h
 
 	return loadHandler
 }
@@ -95,15 +97,15 @@ func AllocCLoadHandlerT() (loadHandler *CLoadHandlerT) {
 func on_loading_state_change(
 	self *CLoadHandlerT,
 	browser *CBrowserT,
-	isLoading Cint,
-	canGoBack Cint,
-	canGoForward Cint,
+	isLoading C.int,
+	canGoBack C.int,
+	canGoForward C.int,
 ) {
 	h := loadHandlerMap[self]
 	if h == nil {
 		log.Panicln("L100: on_loading_state_change: Noo!")
 	}
-	h.OnLoadingStateChange(self, browser, isLoading, canGoBack, canGoForward)
+	h.OnLoadingStateChange(self, browser, (int)(isLoading), (int)(canGoBack), (int)(canGoForward))
 }
 
 //export on_load_start
@@ -125,13 +127,13 @@ func on_load_end(
 	self *CLoadHandlerT,
 	browser *CBrowserT,
 	frame *CFrameT,
-	httpStatusCode Cint,
+	httpStatusCode C.int,
 ) {
 	h := loadHandlerMap[self]
 	if h == nil {
 		log.Panicln("L100: on_load_end: Noo!")
 	}
-	h.OnLoadEnd(self, browser, frame, httpStatusCode)
+	h.OnLoadEnd(self, browser, frame, (int)(httpStatusCode))
 }
 
 //export on_load_error
@@ -148,4 +150,48 @@ func on_load_error(
 		log.Panicln("L100: on_load_error: Noo!")
 	}
 	h.OnLoadError(self, browser, frame, errorCode, errorText, failedUrl)
+}
+
+// Default LoadHander is dummy implementaion of CLoadHanderT
+type DefaultLoadHandler struct {
+}
+
+func (*DefaultLoadHandler) OnLoadingStateChange(
+	self *CLoadHandlerT,
+	browser *CBrowserT,
+	isLoading int,
+	canGoBack int,
+	canGoForward int,
+
+) {
+	// No Operation
+}
+
+func (*DefaultLoadHandler) OnLoadStart(
+	self *CLoadHandlerT,
+	browser *CBrowserT,
+	frame *CFrameT,
+	transitionType CTransitionTypeT,
+) {
+	// No Operation
+}
+
+func (*DefaultLoadHandler) OnLoadEnd(
+	self *CLoadHandlerT,
+	browser *CBrowserT,
+	frame *CFrameT,
+	httpStatusCode int,
+) {
+	// No Operation
+}
+
+func (*DefaultLoadHandler) OnLoadError(
+	self *CLoadHandlerT,
+	browser *CBrowserT,
+	frame *CFrameT,
+	errorCode CErrorcodeT,
+	errorText *CStringT,
+	failedUrl *CStringT,
+) {
+	// No Operaion
 }

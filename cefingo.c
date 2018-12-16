@@ -96,8 +96,41 @@ int v8context_set_value_bykey(cef_v8value_t* self,
     cef_v8value_t* value,
     cef_v8_propertyattribute_t attribute
 ) {
-    return self->set_value_bykey(self, (const cef_string_t*) key, value, attribute);
+    return self->set_value_bykey(self, key, value, attribute);
+    // return self->set_value_bykey(self, (const cef_string_t*) key, value, attribute);
 }
+
+int v8context_has_value_bykey(cef_v8value_t* self,
+    const cef_string_t* key) {
+    return self->has_value_bykey(self, key);
+}
+cef_v8value_t* v8context_get_value_bykey(
+    struct _cef_v8value_t* self,
+    const cef_string_t* key) {
+    return self->get_value_bykey(self, key);
+
+}
+
+int cefingo_v8value_is_function(cef_v8value_t* self) {
+    return self->is_function(self);
+}
+
+  ///
+  // Execute the function using the current V8 context. This function should
+  // only be called from within the scope of a cef_v8handler_t or
+  // cef_v8accessor_t callback, or in combination with calling enter() and
+  // exit() on a stored cef_v8context_t reference. |object| is the receiver
+  // ('this' object) of the function. If |object| is NULL the current context's
+  // global object will be used. |arguments| is the list of arguments that will
+  // be passed to the function. Returns the function return value on success.
+  // Returns NULL if this function is called incorrectly or an exception is
+  // thrown.
+  ///
+//   struct _cef_v8value_t*(CEF_CALLBACK* execute_function)(
+//       struct _cef_v8value_t* self,
+//       struct _cef_v8value_t* object,
+//       size_t argumentsCount,
+//       struct _cef_v8value_t* const* arguments);
 
 void construct_cefingo_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t *callback) {
 
@@ -141,4 +174,16 @@ void construct_cefingo_load_handler(cefingo_load_handler_wrapper_t *handler) {
     handler->body.on_load_start = on_load_start;
     handler->body.on_load_end = on_load_end;
     handler->body.on_load_error = (on_load_error_t)on_load_error;
+}
+
+extern cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self) {
+    return self->get_v8context(self);
+}
+
+extern int cefingo_v8context_enter(cef_v8context_t* self) {
+    return self->enter(self);
+}
+
+extern int cefingo_v8context_exit(cef_v8context_t* self) {
+    return self->exit(self);
 }
