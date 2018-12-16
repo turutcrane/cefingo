@@ -184,10 +184,11 @@ func on_browser_destroyed(self *CRenderProcessHandlerT, browser *CBrowserT) {
 //export render_process_hander_get_load_handler
 func render_process_hander_get_load_handler(self *CRenderProcessHandlerT) *CLoadHandlerT {
 	h := rphLoadHandlers[self]
-	if h == nil {
+	if h != nil {
+		BaseAddRef(h)
+	} else {
 		Logf("L188: No Handler %v", self)
 	}
-	BaseAddRef(h)
 	return h
 }
 
