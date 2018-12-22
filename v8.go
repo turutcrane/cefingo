@@ -21,7 +21,7 @@ type V8handler interface {
 		name string,
 		object *CV8valueT,
 		argumentsCount int,
-		arguments *CV8valueT,
+		arguments []*CV8valueT,
 		retval **CV8valueT,
 		exception *CStringT) bool
 }
@@ -150,8 +150,8 @@ func AllocCV8handlerT(handler V8handler) (v8handler *CV8handlerT) {
 func execute(self *CV8handlerT,
 	name *CStringT,
 	object *CV8valueT,
-	argumentsCount C.int,
-	arguments *CV8valueT,
+	argumentsCount C.size_t,
+	arguments **CV8valueT,
 	retval **CV8valueT,
 	exception *CStringT,
 ) (ret C.int) {
@@ -162,7 +162,12 @@ func execute(self *CV8handlerT,
 		Logf("L121: No V8 Execute Handler")
 		ret = 0
 	} else {
-		if handler.Execute(self, goname, object, (int)(argumentsCount), arguments, retval, exception) {
+		var slice []*CV8valueT
+		if arguments != nil {
+			slice = (*[1<<30]*CV8valueT)(unsafe.Pointer(arguments))[:argumentsCount:argumentsCount]
+		}
+		if handler.Execute(self, goname, object, (int)(argumentsCount), slice, retval, exception) {
+			// Is required release of member of arguments ?
 			ret = 1
 		} else {
 			ret = 0
