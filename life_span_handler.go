@@ -125,7 +125,7 @@ var lifeSpanHandlers = map[*CLifeSpanHandlerT]LifeSpanHandler{}
 func AllocCLifeSpanHandlerT(handler LifeSpanHandler) (cHandler *CLifeSpanHandlerT) {
 	p := C.calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t)
 	Logf("L23: p: %v", p)
-	C.construct_cefingo_life_span_handler((*C.cefingo_life_span_handler_wrapper_t)(p))
+	C.cefingo_construct_life_span_handler((*C.cefingo_life_span_handler_wrapper_t)(p))
 
 	ch := (*CLifeSpanHandlerT)(p)
 	BaseAddRef(ch)

@@ -327,6 +327,14 @@ func create_cef_string(s string) *C.cef_string_t {
 	return &cs
 }
 
+func string_from_cef_string(s *C.cef_string_t) (str string) {
+	cs := C.cef_string_utf8_t{}
+	C.cef_string_to_utf8(s.str, s.length, &cs)
+	str = C.GoString(cs.str)
+	C.cef_string_utf8_clear(&cs)
+	return str
+}
+
 func clear_cef_string(s *C.cef_string_t) {
 	C.cef_string_clear(s)
 }

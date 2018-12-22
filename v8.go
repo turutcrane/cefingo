@@ -2,10 +2,12 @@ package cefingo
 
 import (
 	"log"
+	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
+// #include "cefingo_v8.h"
 import "C"
 
 type V8handler interface {
@@ -33,7 +35,7 @@ func AllocCV8arrayBufferReleaseCallbackT() (cv8ab_release_callback *CV8arrayBuff
 	p := C.calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t)
 	Logf("L22: p: %v", p)
 
-	C.construct_cefingo_v8array_buffer_release_callback((*C.cefingo_v8array_buffer_release_callback_wrapper_t)(p))
+	C.cefingo_construct_v8array_buffer_release_callback((*C.cefingo_v8array_buffer_release_callback_wrapper_t)(p))
 
 	cv8ab_release_callback = (*CV8arrayBufferReleaseCallbackT)(p)
 	BaseAddRef(cv8ab_release_callback)
@@ -48,7 +50,7 @@ func v8array_buffer_release_buffer(self *C.cef_v8array_buffer_release_callback_t
 }
 
 func (self *CV8contextT) GetGlobal() *CV8valueT {
-	g := (*CV8valueT)(C.v8context_get_global((*C.cef_v8context_t)(self)))
+	g := (*CV8valueT)(C.cefingo_v8context_get_global((*C.cef_v8context_t)(self)))
 	BaseAddRef(g)
 	return g
 }
@@ -85,7 +87,7 @@ func (self *CV8valueT) SetValueBykey(key string, value *CV8valueT) {
 	defer clear_cef_string(key_string)
 
 	BaseAddRef(value)
-	status := C.v8context_set_value_bykey((*C.cef_v8value_t)(self),
+	status := C.cefingo_v8context_set_value_bykey((*C.cef_v8value_t)(self),
 		key_string, (*C.cef_v8value_t)(value), C.V8_PROPERTY_ATTRIBUTE_NONE)
 	if status == 0 {
 		log.Panicln("can not set_value_bykey")
@@ -96,7 +98,7 @@ func (self *CV8valueT) HasValueBykey(key string) bool {
 	key_string := create_cef_string(key)
 	defer clear_cef_string(key_string)
 
-	status := C.v8context_has_value_bykey((*C.cef_v8value_t)(self), key_string)
+	status := C.cefingo_v8context_has_value_bykey((*C.cef_v8value_t)(self), key_string)
 	return (status == 1)
 }
 
@@ -104,7 +106,7 @@ func (self *CV8valueT) GetValueBykey(key string) (value *CV8valueT) {
 	key_string := create_cef_string(key)
 	defer clear_cef_string(key_string)
 
-	value = (*CV8valueT)(C.v8context_get_value_bykey((*C.cef_v8value_t)(self), key_string))
+	value = (*CV8valueT)(C.cefingo_v8context_get_value_bykey((*C.cef_v8value_t)(self), key_string))
 	BaseAddRef(value)
 	return value
 }
@@ -112,6 +114,18 @@ func (self *CV8valueT) GetValueBykey(key string) (value *CV8valueT) {
 func (self *CV8valueT) IsFunction() bool {
 	status := C.cefingo_v8value_is_function((*C.cef_v8value_t)(self))
 	return status == 1
+}
+
+func (self *CV8valueT) IsString() bool {
+	status := C.cefingo_v8value_is_string((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) GetString() string {
+	usfs := C.cefingo_v8value_get_string((*C.cef_v8value_t)(self));
+	s := string_from_cef_string((*C.cef_string_t)(usfs))
+	C.cef_string_userfree_free(usfs)
+	return s
 }
 
 // V8valueCreateFunction create V8 function
@@ -136,7 +150,7 @@ func AllocCV8handlerT(handler V8handler) (v8handler *CV8handlerT) {
 	Logf("L22: p: %v", p)
 
 	hp := (*C.cefingo_v8handler_wrapper_t)(p)
-	C.construct_cefingo_v8handler(hp)
+	C.cefingo_construct_v8handler(hp)
 
 	v8handler = (*CV8handlerT)(p)
 	BaseAddRef(v8handler)
@@ -155,23 +169,25 @@ func execute(self *CV8handlerT,
 	retval **CV8valueT,
 	exception *CStringT,
 ) (ret C.int) {
-
-	goname := C.GoString((*C.char)(unsafe.Pointer(name.str)))
+	goname := string_from_cef_string((*C.cef_string_t)(name))
 	handler := v8handlerMap[self]
+
 	if handler == nil {
 		Logf("L121: No V8 Execute Handler")
 		ret = 0
 	} else {
 		var slice []*CV8valueT
 		if arguments != nil {
-			slice = (*[1<<30]*CV8valueT)(unsafe.Pointer(arguments))[:argumentsCount:argumentsCount]
+			slice = (*[1 << 30]*CV8valueT)(unsafe.Pointer(arguments))[:argumentsCount:argumentsCount]
 		}
+		runtime.LockOSThread()
 		if handler.Execute(self, goname, object, (int)(argumentsCount), slice, retval, exception) {
 			// Is required release of member of arguments ?
 			ret = 1
 		} else {
 			ret = 0
 		}
+		runtime.UnlockOSThread()
 	}
 	return ret
 }

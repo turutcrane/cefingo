@@ -1,7 +1,7 @@
 #include "cefingo.h"
 #include "_cgo_export.h"
 
-void construct_cefingo_life_span_handler(cefingo_life_span_handler_wrapper_t *handler) {
+void cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t *handler) {
     // cefingo_cslogf(__func__, "L14: 0x%llx", handler);
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof(*handler), counter),
@@ -11,14 +11,14 @@ void construct_cefingo_life_span_handler(cefingo_life_span_handler_wrapper_t *ha
     handler->body.on_after_created = life_span_on_after_created;
 }
 
-void construct_cefingo_browser_process_handler(cefingo_browser_process_handler_wrapper_t *handler) {
+void cefingo_construct_browser_process_handler(cefingo_browser_process_handler_wrapper_t *handler) {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
     handler->body.on_context_initialized = browser_process_on_context_initialized;
 }
 
-void construct_cefingo_client(cefingo_client_wrapper_t* client) {
+void cefingo_construct_client(cefingo_client_wrapper_t* client) {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*client), counter),
         (cef_base_ref_counted_t*) client);
@@ -33,27 +33,19 @@ void construct_cefingo_client(cefingo_client_wrapper_t* client) {
     client->body.get_focus_handler = get_focus_handler;
     client->body.get_jsdialog_handler = get_jsdialog_handler;
     client->body.get_keyboard_handler = get_keyboard_handler;
-    client->body.get_life_span_handler = get_life_span_handler;  // Implemented!
+    client->body.get_life_span_handler = get_life_span_handler;
     client->body.get_load_handler = client_get_load_handler;
     client->body.get_render_handler = get_render_handler;
     client->body.get_request_handler = get_request_handler;
     client->body.on_process_message_received = client_on_process_message_received;
 }
 
-// static void CEF_CALLBACK c_on_before_command_line_processing(
-//         struct _cef_app_t* self, const cef_string_t* process_type,
-//         struct _cef_command_line_t* command_line) {
-
-//     // simply call go func with type cast
-//     on_before_command_line_processing(self, (cef_string_t *) process_type, command_line);
-// }
-
 typedef void(CEF_CALLBACK* cefingo_on_before_command_line_processing_t)(
       struct _cef_app_t* self,
       const cef_string_t* process_type,
       struct _cef_command_line_t* command_line);
 
-void construct_cefingo_app(cefingo_app_wrapper_t* app) {
+void cefingo_construct_app(cefingo_app_wrapper_t* app) {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*app), counter),
         (cef_base_ref_counted_t*) app);
@@ -68,7 +60,7 @@ void construct_cefingo_app(cefingo_app_wrapper_t* app) {
     app->body.get_render_process_handler = get_render_process_handler;
 }
 
-void construct_cefingo_render_process_handler(cefingo_render_process_handler_wrapper_t* handler) {
+void cefingo_construct_render_process_handler(cefingo_render_process_handler_wrapper_t* handler) {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
@@ -87,76 +79,6 @@ void construct_cefingo_render_process_handler(cefingo_render_process_handler_wra
 
 }
 
-cef_v8value_t *v8context_get_global(cef_v8context_t *self) {
-    return self->get_global(self);
-}
-
-int v8context_set_value_bykey(cef_v8value_t* self,
-    cef_string_t* key,
-    cef_v8value_t* value,
-    cef_v8_propertyattribute_t attribute
-) {
-    return self->set_value_bykey(self, key, value, attribute);
-    // return self->set_value_bykey(self, (const cef_string_t*) key, value, attribute);
-}
-
-int v8context_has_value_bykey(cef_v8value_t* self,
-    const cef_string_t* key) {
-    return self->has_value_bykey(self, key);
-}
-cef_v8value_t* v8context_get_value_bykey(
-    struct _cef_v8value_t* self,
-    const cef_string_t* key) {
-    return self->get_value_bykey(self, key);
-
-}
-
-int cefingo_v8value_is_function(cef_v8value_t* self) {
-    return self->is_function(self);
-}
-
-  ///
-  // Execute the function using the current V8 context. This function should
-  // only be called from within the scope of a cef_v8handler_t or
-  // cef_v8accessor_t callback, or in combination with calling enter() and
-  // exit() on a stored cef_v8context_t reference. |object| is the receiver
-  // ('this' object) of the function. If |object| is NULL the current context's
-  // global object will be used. |arguments| is the list of arguments that will
-  // be passed to the function. Returns the function return value on success.
-  // Returns NULL if this function is called incorrectly or an exception is
-  // thrown.
-  ///
-//   struct _cef_v8value_t*(CEF_CALLBACK* execute_function)(
-//       struct _cef_v8value_t* self,
-//       struct _cef_v8value_t* object,
-//       size_t argumentsCount,
-//       struct _cef_v8value_t* const* arguments);
-
-void construct_cefingo_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t *callback) {
-
-    initialize_cefingo_base_ref_counted(
-        offsetof(__typeof__(*callback), counter),
-        (cef_base_ref_counted_t*) callback);
-
-    callback->body.release_buffer = v8array_buffer_release_buffer;
-
-}
-
-typedef   int(CEF_CALLBACK* cefingo_execute_t)(struct _cef_v8handler_t* self,
-                             const cef_string_t* name,
-                             struct _cef_v8value_t* object,
-                             size_t argumentsCount,
-                             struct _cef_v8value_t* const* arguments,
-                             struct _cef_v8value_t** retval,
-                             cef_string_t* exception);
-
-void construct_cefingo_v8handler(cefingo_v8handler_wrapper_t *handler) {
-    initialize_cefingo_base_ref_counted(
-        offsetof(__typeof__(*handler), counter),
-        (cef_base_ref_counted_t*) handler);
-
-    handler->body.execute = (cefingo_execute_t) execute;
-}
 
 typedef void(CEF_CALLBACK* on_load_error_t)(struct _cef_load_handler_t* self,
                                     struct _cef_browser_t* browser,
@@ -165,7 +87,7 @@ typedef void(CEF_CALLBACK* on_load_error_t)(struct _cef_load_handler_t* self,
                                     const cef_string_t* errorText,
                                     const cef_string_t* failedUrl);
 
-void construct_cefingo_load_handler(cefingo_load_handler_wrapper_t *handler) {
+void cefingo_construct_load_handler(cefingo_load_handler_wrapper_t *handler) {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
@@ -178,12 +100,4 @@ void construct_cefingo_load_handler(cefingo_load_handler_wrapper_t *handler) {
 
 extern cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self) {
     return self->get_v8context(self);
-}
-
-extern int cefingo_v8context_enter(cef_v8context_t* self) {
-    return self->enter(self);
-}
-
-extern int cefingo_v8context_exit(cef_v8context_t* self) {
-    return self->exit(self);
 }

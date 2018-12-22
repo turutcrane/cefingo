@@ -83,7 +83,7 @@ func AllocCLoadHandlerT(h LoadHandler) (loadHandler *CLoadHandlerT) {
 	p := C.calloc(1, C.sizeof_cefingo_load_handler_wrapper_t)
 	Logf("L84: p: %v", p)
 
-	C.construct_cefingo_load_handler((*C.cefingo_load_handler_wrapper_t)(p))
+	C.cefingo_construct_load_handler((*C.cefingo_load_handler_wrapper_t)(p))
 
 	loadHandler = (*CLoadHandlerT)(p)
 	BaseAddRef(loadHandler)

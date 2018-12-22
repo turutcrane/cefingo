@@ -30,7 +30,7 @@ var life_span_handler = map[*CClientT]*CLifeSpanHandlerT{}
 func AllocCClient(c Client) (cClient *CClientT) {
 	p := C.calloc(1, C.sizeof_cefingo_client_wrapper_t)
 	Logf("L26: p: %v", p)
-	C.construct_cefingo_client((*C.cefingo_client_wrapper_t)(p))
+	C.cefingo_construct_client((*C.cefingo_client_wrapper_t)(p))
 
 	cClient = (*CClientT)(p)
 	BaseAddRef(cClient)
