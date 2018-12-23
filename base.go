@@ -42,9 +42,9 @@ func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t
 	default:
 		log.Panicf("Not Refcounted Object: T: %t V: %v", p, p)
 	}
-	if up == nil {
-		log.Panicln("L21: Null passed!")
-	}
+	// if up == nil {
+	// 	Logf("L21: Null passed!")
+	// }
 	refp = (*C.cef_base_ref_counted_t)(up)
 	return refp
 }
@@ -58,9 +58,8 @@ func BaseAddRef(ptr interface{}) {
 // count falls to 0 the object should self-delete. Returns true (1) if the
 // resulting reference count is 0.
 ///
-func BaseRelease(ptr interface{}) bool {
+func BaseRelease(ptr interface{}) (b bool) {
 	status := C.cefingo_base_release(cast_to_base_ref_counted_t(ptr))
-
 	return status == 1
 }
 

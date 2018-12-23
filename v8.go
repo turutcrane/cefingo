@@ -1,9 +1,10 @@
 package cefingo
 
 import (
-	"log"
 	"runtime"
 	"unsafe"
+
+	"github.com/pkg/errors"
 )
 
 // #include "cefingo.h"
@@ -82,23 +83,21 @@ func V8valueCreateArrayBuffer(buffer []byte) *CV8valueT {
 	return (*CV8valueT)(v8array_buffer)
 }
 
-func (self *CV8valueT) SetValueBykey(key string, value *CV8valueT) {
+func (self *CV8valueT) SetValueBykey(key string, value *CV8valueT) bool {
 	key_string := create_cef_string(key)
 	defer clear_cef_string(key_string)
 
 	BaseAddRef(value)
 	status := C.cefingo_v8context_set_value_bykey((*C.cef_v8value_t)(self),
 		key_string, (*C.cef_v8value_t)(value), C.V8_PROPERTY_ATTRIBUTE_NONE)
-	if status == 0 {
-		log.Panicln("can not set_value_bykey")
-	}
+	return status == 1
 }
 
 func (self *CV8valueT) HasValueBykey(key string) bool {
 	key_string := create_cef_string(key)
 	defer clear_cef_string(key_string)
 
-	status := C.cefingo_v8context_has_value_bykey((*C.cef_v8value_t)(self), key_string)
+	status := C.cefingo_v8value_has_value_bykey((*C.cef_v8value_t)(self), key_string)
 	return (status == 1)
 }
 
@@ -106,9 +105,14 @@ func (self *CV8valueT) GetValueBykey(key string) (value *CV8valueT) {
 	key_string := create_cef_string(key)
 	defer clear_cef_string(key_string)
 
-	value = (*CV8valueT)(C.cefingo_v8context_get_value_bykey((*C.cef_v8value_t)(self), key_string))
+	value = (*CV8valueT)(C.cefingo_v8value_get_value_bykey((*C.cef_v8value_t)(self), key_string))
 	BaseAddRef(value)
 	return value
+}
+
+func (self *CV8valueT) IsValid() bool {
+	status := C.cefingo_v8value_is_valid((*C.cef_v8value_t)(self))
+	return status == 1
 }
 
 func (self *CV8valueT) IsFunction() bool {
@@ -121,11 +125,53 @@ func (self *CV8valueT) IsString() bool {
 	return status == 1
 }
 
+func (self *CV8valueT) IsObject() bool {
+	status := C.cefingo_v8value_is_object((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
 func (self *CV8valueT) GetString() string {
-	usfs := C.cefingo_v8value_get_string((*C.cef_v8value_t)(self));
+	usfs := C.cefingo_v8value_get_string((*C.cef_v8value_t)(self))
 	s := string_from_cef_string((*C.cef_string_t)(usfs))
 	C.cef_string_userfree_free(usfs)
 	return s
+}
+
+func (self *CV8valueT) GetFunctionName() string {
+	usfs := C.cefingo_v8value_get_function_name((*C.cef_v8value_t)(self))
+	s := string_from_cef_string((*C.cef_string_t)(usfs))
+	C.cef_string_userfree_free(usfs)
+	return s
+}
+
+func (self *CV8valueT) ExecuteFunction(
+	this *CV8valueT,
+	argumentsCount int,
+	arguments []*CV8valueT,
+) (v *CV8valueT, err error) {
+
+	if !self.IsFunction() {
+		cause := errors.Errorf("Object is Not Function")
+		return nil, cause
+	}
+	ca := C.calloc((C.size_t)(argumentsCount), (C.size_t)(unsafe.Sizeof(this)))
+	slice := (*[1 << 30]*CV8valueT)(ca)[:argumentsCount:argumentsCount]
+
+	BaseAddRef(this)
+	for i, v := range arguments {
+		BaseAddRef(v)
+		slice[i] = v
+	}
+	v = (*CV8valueT)(C.cefingo_v8value_execute_function(
+		(*C.cef_v8value_t)(self),
+		(*C.cef_v8value_t)(this),
+		(C.size_t)(argumentsCount),
+		(**C.cef_v8value_t)(ca)))
+	if v == nil {
+		name := self.GetFunctionName()
+		err = errors.Errorf("%s returns NULL", name)
+	}
+	return v, err
 }
 
 // V8valueCreateFunction create V8 function
@@ -199,12 +245,42 @@ func V8contextInContext() bool {
 	return (inContext == 1)
 }
 
+func V8contextGetEnterdContext() (context *CV8contextT) {
+	c := C.cef_v8context_get_entered_context()
+	context = (*CV8contextT)(c)
+	BaseAddRef(context)
+	return context
+}
+
 func (self *CV8contextT) Enter() bool {
+	runtime.LockOSThread()
 	c := C.cefingo_v8context_enter((*C.cef_v8context_t)(self))
 	return (c == 1)
 }
 
 func (self *CV8contextT) Exit() bool {
 	c := C.cefingo_v8context_exit((*C.cef_v8context_t)(self))
+	runtime.UnlockOSThread()
 	return (c == 1)
+}
+
+func (self *CV8contextT) IsSame(that *CV8contextT) bool {
+	BaseAddRef(that)
+	s := C.cefingo_v8context_is_same(
+		(*C.cef_v8context_t)(self),
+		(*C.cef_v8context_t)(that),
+	)
+	return s == 1
+}
+
+func (self *CV8contextT) EvalString(code string, retval **CV8valueT, e **CV8exceptionT) bool {
+	s := create_cef_string(code)
+	defer clear_cef_string(s)
+	var r *C.cef_v8value_t
+	var exc *C.cef_v8exception_t
+	status := C.cefingo_v8context_eval(
+		(*C.cef_v8context_t)(self), s, nil, 0,
+		&r, &exc)
+	*retval = (*CV8valueT)(r)
+	return status == 1
 }

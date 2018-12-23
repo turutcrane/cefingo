@@ -19,11 +19,20 @@ void cefingo_cslogf(const char *fn, const char *format, ...) {
 }
 
 void cefingo_base_add_ref(cef_base_ref_counted_t *self) {
-    self->add_ref(self);
+    if (self != NULL) {
+        self->add_ref(self);
+    }
 }
 int cefingo_base_release(cef_base_ref_counted_t *self) {
-    return self->release(self);
+    int status = 0;
+    
+    if (self != NULL) {
+        status = self->release(self);
+    }
+
+    return status;
 }
+
 int cefingo_base_has_one_ref(cef_base_ref_counted_t *self) {
     return self->has_one_ref(self);
 }

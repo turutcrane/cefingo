@@ -16,6 +16,15 @@ func Logf(message string, v ...interface{}) {
 	}
 }
 
+func Panicf(message string, v ...interface{}) {
+	fn := caller_name()
+	if Logger != nil {
+		Logger.Panicf("("+fn+") "+message+"\n", v...)
+	} else {
+		log.Panicf("("+fn+") "+message+"\n", v...)
+	}
+}
+
 //export cefingo_cslog
 func cefingo_cslog(fn *C.char, s *C.char) {
 	if Logger != nil {
