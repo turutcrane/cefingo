@@ -98,6 +98,79 @@ void cefingo_construct_load_handler(cefingo_load_handler_wrapper_t *handler) {
     handler->body.on_load_error = (on_load_error_t)on_load_error;
 }
 
-extern cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self) {
+cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self) {
     return self->get_v8context(self);
+}
+
+typedef struct _cef_resource_handler_t*(CEF_CALLBACK* cefingo_resource_hander_create_t)(
+      struct _cef_scheme_handler_factory_t* self,
+      struct _cef_browser_t* browser,
+      struct _cef_frame_t* frame,
+      const cef_string_t* scheme_name,
+      struct _cef_request_t* request);
+
+void cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_factory_wrapper_t *factory) {
+    initialize_cefingo_base_ref_counted(
+        offsetof(__typeof__(*factory), counter),
+        (cef_base_ref_counted_t*) factory);
+
+        factory->body.create = (cefingo_resource_hander_create_t) cefingo_scheme_handler_factory_create;
+}
+
+int cefingo_scheme_registrar_add_custom_scheme(struct _cef_scheme_registrar_t* self,
+                                       const cef_string_t* scheme_name,
+                                       int is_standard,
+                                       int is_local,
+                                       int is_display_isolated,
+                                       int is_secure,
+                                       int is_cors_enabled,
+                                       int is_csp_bypassing) {
+    return self->add_custom_scheme(self, scheme_name,
+     is_standard, is_local, is_display_isolated, is_secure, is_cors_enabled, is_csp_bypassing );
+}
+
+typedef   int(CEF_CALLBACK* can_xxx_cookie_t)(struct _cef_resource_handler_t* self,
+                                    const struct _cef_cookie_t* cookie);
+
+void cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t *handler) {
+    initialize_cefingo_base_ref_counted(
+        offsetof(__typeof__(*handler), counter),
+        (cef_base_ref_counted_t*) handler);
+
+        handler->body.process_request = cefingo_resource_handler_process_request;
+        handler->body.get_response_headers = cefingo_resource_handler_get_response_headers;
+        handler->body.read_response = cefingo_resource_handler_read_response;
+        handler->body.can_get_cookie = (can_xxx_cookie_t) cefingo_resource_handler_can_get_cookie;
+        handler->body.can_set_cookie = (can_xxx_cookie_t) cefingo_resource_handler_can_set_cookie;
+        handler->body.cancel = cefingo_resource_handler_cancel;
+}
+
+void cefingo_callback_cont(struct _cef_callback_t* self) {
+    self->cont(self);
+}
+
+void cefingo_callback_cancel(struct _cef_callback_t* self) {
+    self->cancel(self);
+};
+
+void cefingo_response_set_error(struct _cef_response_t* self, cef_errorcode_t error) {
+    self->set_error(self, error);
+}
+
+void cefingo_response_set_status(struct _cef_response_t* self, int status) {
+    self->set_status(self, status);
+}
+
+void cefingo_response_set_status_text(struct _cef_response_t* self,
+                                      const cef_string_t* statusText) {
+    self->set_status_text(self, statusText);
+}
+
+void cefingo_response_set_mime_type(struct _cef_response_t* self,
+                        const cef_string_t* mimeType) {
+    self->set_mime_type(self, mimeType);
+}
+
+cef_string_userfree_t cefingo_request_get_url(struct _cef_request_t* self) {
+    return self->get_url(self);
 }

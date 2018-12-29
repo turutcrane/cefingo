@@ -1,4 +1,4 @@
-package js
+package v8
 
 import (
 	"fmt"

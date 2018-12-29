@@ -1,7 +1,6 @@
 package cefingo
 
 import (
-	"log"
 	"unsafe"
 )
 
@@ -121,7 +120,7 @@ func on_before_command_line_processing(self *CAppT, process_type *CStringT, comm
 
 	f := app_method[self]
 	if f == nil {
-		log.Panicln("L48: on_before_command_line_processing: Noo!")
+		Logger.Panicln("L48: on_before_command_line_processing: Noo!")
 	}
 
 	f.OnBeforeCommandLineProcessing(self, process_type, command_line)
@@ -134,7 +133,7 @@ func on_register_custom_schemes(self *CAppT, registrar *CSchemeRegistrarT) {
 
 	f := app_method[self]
 	if f == nil {
-		log.Panicln("L48: on_before_command_line_processing: Noo!")
+		Logger.Panicln("L48: on_before_command_line_processing: Noo!")
 	}
 	f.OnRegisterCustomSchemes(self, registrar)
 }

@@ -33,10 +33,9 @@ func cefingo_cslog(fn *C.char, s *C.char) {
 }
 
 //export cefingo_panic
-func cefingo_panic(s *C.char) {
+func cefingo_panic(fn *C.char, s *C.char) {
 	if Logger != nil {
-		fn := caller_name()
-		Logger.Panicln("("+fn+")", strings.TrimRight(C.GoString(s), "\n"))
+		Logger.Panicln("(C."+C.GoString(fn)+")", strings.TrimRight(C.GoString(s), "\n"))
 	}
 }
 

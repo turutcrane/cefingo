@@ -39,8 +39,12 @@ func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t
 		up = unsafe.Pointer(p)
 	case *CLoadHandlerT:
 		up = unsafe.Pointer(p)
+	case *CSchemeHandlerFactoryT:
+		up = unsafe.Pointer(p)
+	case *CResourceHandlerT:
+		up = unsafe.Pointer(p)
 	default:
-		log.Panicf("Not Refcounted Object: T: %t V: %v", p, p)
+		log.Panicf("Not Refcounted Object: T: %T V: %v", p, p)
 	}
 	// if up == nil {
 	// 	Logf("L21: Null passed!")

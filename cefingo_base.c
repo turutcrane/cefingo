@@ -18,6 +18,18 @@ void cefingo_cslogf(const char *fn, const char *format, ...) {
     cefingo_cslog((char *) fn, buf);
 }
 
+void cefingo_panicf(const char *fn, const char *format, ...) {
+    static char buf[MAXLOGBUF + 1];
+
+    va_list ap;
+    va_start(ap, format);
+    int n = vsnprintf(buf, MAXLOGBUF, format, ap);
+    va_end(ap);
+    buf[MAXLOGBUF] = '\0';
+
+    cefingo_panic((char *) fn, buf);
+}
+
 void cefingo_base_add_ref(cef_base_ref_counted_t *self) {
     if (self != NULL) {
         self->add_ref(self);
@@ -59,7 +71,11 @@ extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self) {
     // counter->ref_count--;
     int64 count = __atomic_sub_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
 
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L53: 0x%llx -count: %d", self, count);
+    if (count >= 0) {
+        if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L75: 0x%llx -count: %d", self, count);
+    } else {
+        cefingo_panicf(__func__, "L77: 0x%llx -count:%d", self, count);
+    }
     return (count == 0 ? 1 : 0);
 }
 

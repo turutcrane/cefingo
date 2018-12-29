@@ -110,21 +110,25 @@ type Settings struct {
 	LogSeverity              LogSeverityT
 	NoSandbox                int
 	MultiThreadedMessageLoop int
+	RemoteDebuggingPort      int
 }
-
-// type CefSettingsT struct {
-// }
 
 // Go Equivalent Type of C.cef_xxx
 type CAppT C.cef_app_t
 type CBrowserT C.cef_browser_t
+type CCallbackT C.cef_callback_t
 type CClientT C.cef_client_t
 type CFrameT C.cef_frame_t
+type CCookieT C.cef_cookie_t
+type CCommandLineT C.cef_command_line_t
 type CDomnodeT C.cef_domnode_t
 type CListValueT C.cef_list_value_t
 type CProcessIdT C.cef_process_id_t
 type CProcessMessageT C.cef_process_message_t
-type CCommandLineT C.cef_command_line_t
+type CRequestT C.cef_request_t
+type CResourceHandlerT C.cef_resource_handler_t
+type CResponseT C.cef_response_t
+type CSchemeHandlerFactoryT C.cef_scheme_handler_factory_t
 type CSchemeRegistrarT C.cef_scheme_registrar_t
 type CV8accessorT C.cef_v8accessor_t
 type CV8arrayBufferReleaseCallbackT C.cef_v8array_buffer_release_callback_t
@@ -209,7 +213,7 @@ func construct_settings(s Settings) C.cef_settings_t {
 	settings.log_severity = (C.cef_log_severity_t)(s.LogSeverity) // C.LOGSEVERITY_WARNING // Show only warnings/errors
 	settings.no_sandbox = (C.int)(s.NoSandbox)
 	settings.multi_threaded_message_loop = (C.int)(s.MultiThreadedMessageLoop)
-	// settings.remote_debugging_port = 8088
+	settings.remote_debugging_port = (C.int)(s.RemoteDebuggingPort) //8088
 
 	return settings
 }
