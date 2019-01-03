@@ -14,8 +14,8 @@ type BrowserProcessHandler interface {
 
 var browserProcessHandlers = map[*CBrowserProcessHandlerT]BrowserProcessHandler{}
 
-//export browser_process_on_context_initialized
-func browser_process_on_context_initialized(self *CBrowserProcessHandlerT) {
+//export cefingo_browser_process_handler_on_context_initialized
+func cefingo_browser_process_handler_on_context_initialized(self *CBrowserProcessHandlerT) {
 	// Logf("L19: self: %p", self)
 
 	f := browserProcessHandlers[self]
@@ -27,10 +27,6 @@ func browser_process_on_context_initialized(self *CBrowserProcessHandlerT) {
 }
 
 type DefaultBrowserProcessHandler struct {
-}
-
-func (*DefaultBrowserProcessHandler) OnBeforeClose(self *CBrowserProcessHandlerT) {
-	Logf("L79:")
 }
 
 func AllocCBrowserProcessHandlerT(handler BrowserProcessHandler) (cHandler *CBrowserProcessHandlerT) {

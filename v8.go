@@ -26,7 +26,7 @@ type V8handler interface {
 		argumentsCount int,
 		arguments []*CV8valueT,
 		retval **CV8valueT,
-		exception *CStringT) bool
+		exception *string) bool
 }
 
 var v8handlerMap = map[*CV8handlerT]V8handler{}
@@ -44,8 +44,8 @@ func AllocCV8arrayBufferReleaseCallbackT() (cv8ab_release_callback *CV8arrayBuff
 	return cv8ab_release_callback
 }
 
-//export v8array_buffer_release_buffer
-func v8array_buffer_release_buffer(self *C.cef_v8array_buffer_release_callback_t, buffer unsafe.Pointer) {
+//export cefingo_v8array_buffer_release_callback_release_buffer
+func cefingo_v8array_buffer_release_callback_release_buffer(self *C.cef_v8array_buffer_release_callback_t, buffer unsafe.Pointer) {
 	Logf("L46: p:%v", buffer)
 	// C.free(buffer)
 }
@@ -206,16 +206,16 @@ func AllocCV8handlerT(handler V8handler) (v8handler *CV8handlerT) {
 }
 
 // Excute Handler
-//export execute
-func execute(self *CV8handlerT,
-	name *CStringT,
+//export cefingo_v8handler_execute
+func cefingo_v8handler_execute(self *CV8handlerT,
+	name *C.cef_string_t,
 	object *CV8valueT,
 	argumentsCount C.size_t,
 	arguments **CV8valueT,
 	retval **CV8valueT,
-	exception *CStringT,
+	exception *C.cef_string_t,
 ) (ret C.int) {
-	goname := string_from_cef_string((*C.cef_string_t)(name))
+	goname := string_from_cef_string(name)
 	handler := v8handlerMap[self]
 
 	if handler == nil {
@@ -227,8 +227,10 @@ func execute(self *CV8handlerT,
 			slice = (*[1 << 30]*CV8valueT)(unsafe.Pointer(arguments))[:argumentsCount:argumentsCount]
 		}
 		runtime.LockOSThread()
-		if handler.Execute(self, goname, object, (int)(argumentsCount), slice, retval, exception) {
+		var exc string
+		if handler.Execute(self, goname, object, (int)(argumentsCount), slice, retval, &exc) {
 			// Is required release of member of arguments ?
+			set_cef_string(exception, exc)
 			ret = 1
 		} else {
 			ret = 0

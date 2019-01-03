@@ -43,8 +43,8 @@ func AllocCClient(c Client) (cClient *CClientT) {
 // Return the handler for context menus. If no handler is
 // provided the default implementation will be used.
 ///
-//export get_context_menu_handler
-func get_context_menu_handler(self *CClientT) *CContextMenuHandlerT {
+//export cefingo_client_get_context_menu_handler
+func cefingo_client_get_context_menu_handler(self *CClientT) *CContextMenuHandlerT {
 	return nil
 }
 
@@ -52,16 +52,16 @@ func get_context_menu_handler(self *CClientT) *CContextMenuHandlerT {
 // Return the handler for dialogs. If no handler is provided the default
 // implementation will be used.
 ///
-//export get_dialog_handler
-func get_dialog_handler(self *CClientT) *CDialogHandlerT {
+//export cefingo_client_get_dialog_handler
+func cefingo_client_get_dialog_handler(self *CClientT) *CDialogHandlerT {
 	return nil
 }
 
 ///
 // Return the handler for browser display state events.
 ///
-//export get_display_handler
-func get_display_handler(self *CClientT) *CDisplayHandlerT {
+//export cefingo_client_get_display_handler
+func cefingo_client_get_display_handler(self *CClientT) *CDisplayHandlerT {
 	return nil
 }
 
@@ -69,32 +69,32 @@ func get_display_handler(self *CClientT) *CDisplayHandlerT {
 // Return the handler for download events. If no handler is returned downloads
 // will not be allowed.
 ///
-//export get_download_handler
-func get_download_handler(self *CClientT) *CDownloaddHanderT {
+//export cefingo_client_get_download_handler
+func cefingo_client_get_download_handler(self *CClientT) *CDownloaddHanderT {
 	return nil
 }
 
 ///
 // Return the handler for drag events.
 ///
-//export get_drag_handler
-func get_drag_handler(self *CClientT) *CDragHandlerT {
+//export cefingo_client_get_drag_handler
+func cefingo_client_get_drag_handler(self *CClientT) *CDragHandlerT {
 	return nil
 }
 
 ///
 // Return the handler for find result events.
 ///
-//export get_find_handler
-func get_find_handler(self *CClientT) *CFindHandlerT {
+//export cefingo_client_get_find_handler
+func cefingo_client_get_find_handler(self *CClientT) *CFindHandlerT {
 	return nil
 }
 
 ///
 // Return the handler for focus events.
 ///
-//export get_focus_handler
-func get_focus_handler(self *CClientT) *CFocusHanderT {
+//export cefingo_client_get_focus_handler
+func cefingo_client_get_focus_handler(self *CClientT) *CFocusHanderT {
 	return nil
 }
 
@@ -102,16 +102,16 @@ func get_focus_handler(self *CClientT) *CFocusHanderT {
 // Return the handler for JavaScript dialogs. If no handler is provided the
 // default implementation will be used.
 ///
-//export get_jsdialog_handler
-func get_jsdialog_handler(self *CClientT) *CJsdialogHandlerT {
+//export cefingo_client_get_jsdialog_handler
+func cefingo_client_get_jsdialog_handler(self *CClientT) *CJsdialogHandlerT {
 	return nil
 }
 
 ///
 // Return the handler for keyboard events.
 ///
-//export get_keyboard_handler
-func get_keyboard_handler(self *CClientT) *CKeyboardHandlerT {
+//export cefingo_client_get_keyboard_handler
+func cefingo_client_get_keyboard_handler(self *CClientT) *CKeyboardHandlerT {
 	return nil
 }
 
@@ -124,8 +124,8 @@ func (client *CClientT) AssocLifeSpanHandler(handler *CLifeSpanHandlerT) {
 ///
 // Return the handler for browser life span events.
 ///
-//export get_life_span_handler
-func get_life_span_handler(self *CClientT) *CLifeSpanHandlerT {
+//export cefingo_client_get_life_span_handler
+func cefingo_client_get_life_span_handler(self *CClientT) *CLifeSpanHandlerT {
 	Logf("L70:")
 
 	handler := life_span_handler[self]
@@ -141,30 +141,30 @@ func get_life_span_handler(self *CClientT) *CLifeSpanHandlerT {
 ///
 // Return the handler for browser load status events.
 ///
-//export client_get_load_handler
-func client_get_load_handler(self *CClientT) *CLoadHandlerT {
+//export cefingo_client_client_get_load_handler
+func cefingo_client_client_get_load_handler(self *CClientT) *CLoadHandlerT {
 	return nil
 }
 
 ///
 // Return the handler for off-screen rendering events.
 ///
-//export get_render_handler
-func get_render_handler(self *CClientT) *CRenderHandlerT {
+//export cefingo_client_get_render_handler
+func cefingo_client_get_render_handler(self *CClientT) *CRenderHandlerT {
 	return nil
 }
 
 ///
 // Return the handler for browser request events.
 ///
-//export get_request_handler
-func get_request_handler(self *CClientT) *CRequestHandlerT {
+//export cefingo_client_get_request_handler
+func cefingo_client_get_request_handler(self *CClientT) *CRequestHandlerT {
 	return nil
 }
 
 //on_process_mesage_received call OnProcessMessageRecived method
-//export client_on_process_message_received
-func client_on_process_message_received(
+//export cefingo_client_on_process_message_received
+func cefingo_client_on_process_message_received(
 	self *CClientT,
 	browser *CBrowserT,
 	source_process CProcessIdT,

@@ -71,8 +71,8 @@ type LoadHandler interface {
 		browser *CBrowserT,
 		frame *CFrameT,
 		errorCode CErrorcodeT,
-		errorText *CStringT,
-		failedUrl *CStringT,
+		errorText string,
+		failedUrl string,
 	)
 }
 
@@ -93,8 +93,8 @@ func AllocCLoadHandlerT(h LoadHandler) (loadHandler *CLoadHandlerT) {
 	return loadHandler
 }
 
-//export on_loading_state_change
-func on_loading_state_change(
+//export cefingo_load_handler_on_loading_state_change
+func cefingo_load_handler_on_loading_state_change(
 	self *CLoadHandlerT,
 	browser *CBrowserT,
 	isLoading C.int,
@@ -108,8 +108,8 @@ func on_loading_state_change(
 	h.OnLoadingStateChange(self, browser, (int)(isLoading), (int)(canGoBack), (int)(canGoForward))
 }
 
-//export on_load_start
-func on_load_start(
+//export cefingo_load_handler_on_load_start
+func cefingo_load_handler_on_load_start(
 	self *CLoadHandlerT,
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -122,8 +122,8 @@ func on_load_start(
 	h.OnLoadStart(self, browser, frame, transitionType)
 }
 
-//export on_load_end
-func on_load_end(
+//export cefingo_load_handler_on_load_end
+func cefingo_load_handler_on_load_end(
 	self *CLoadHandlerT,
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -136,20 +136,22 @@ func on_load_end(
 	h.OnLoadEnd(self, browser, frame, (int)(httpStatusCode))
 }
 
-//export on_load_error
-func on_load_error(
+//export cefingo_load_handler_on_load_error
+func cefingo_load_handler_on_load_error(
 	self *CLoadHandlerT,
 	browser *CBrowserT,
 	frame *CFrameT,
 	errorCode CErrorcodeT,
-	errorText *CStringT,
-	failedUrl *CStringT,
+	errorText *C.cef_string_t,
+	failedUrl *C.cef_string_t,
 ) {
 	h := loadHandlerMap[self]
 	if h == nil {
 		log.Panicln("L100: on_load_error: Noo!")
 	}
-	h.OnLoadError(self, browser, frame, errorCode, errorText, failedUrl)
+	t := string_from_cef_string(errorText)
+	u := string_from_cef_string(failedUrl)
+	h.OnLoadError(self, browser, frame, errorCode, t, u)
 }
 
 // Default LoadHander is dummy implementaion of CLoadHanderT
@@ -190,8 +192,8 @@ func (*DefaultLoadHandler) OnLoadError(
 	browser *CBrowserT,
 	frame *CFrameT,
 	errorCode CErrorcodeT,
-	errorText *CStringT,
-	failedUrl *CStringT,
+	errorText string,
+	failedUrl string,
 ) {
 	// No Operaion
 }

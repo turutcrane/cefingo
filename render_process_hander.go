@@ -128,8 +128,8 @@ func AllocCRenderProcessHandlerT(handler RenderProcessHandler) (cHandler *CRende
 	return rph
 }
 
-//export on_render_thread_created
-func on_render_thread_created(
+//export cefingo_render_process_handler_on_render_thread_created
+func cefingo_render_process_handler_on_render_thread_created(
 	self *CRenderProcessHandlerT,
 	extra_info *CListValueT) {
 	Logf("L122: self: %p", self)
@@ -142,8 +142,8 @@ func on_render_thread_created(
 	f.OnRenderThreadCreated(self, extra_info)
 }
 
-//export on_web_kit_initialized
-func on_web_kit_initialized(self *CRenderProcessHandlerT) {
+//export cefingo_render_process_handler_on_web_kit_initialized
+func cefingo_render_process_handler_on_web_kit_initialized(self *CRenderProcessHandlerT) {
 	Logf("L134: self: %p", self)
 
 	f := renderProcessHandlers[self]
@@ -155,8 +155,8 @@ func on_web_kit_initialized(self *CRenderProcessHandlerT) {
 
 }
 
-//export on_browser_created
-func on_browser_created(self *CRenderProcessHandlerT, browser *CBrowserT) {
+//export cefingo_render_process_handler_on_browser_created
+func cefingo_render_process_handler_on_browser_created(self *CRenderProcessHandlerT, browser *CBrowserT) {
 	Logf("L147: self: %p", self)
 
 	f := renderProcessHandlers[self]
@@ -168,8 +168,8 @@ func on_browser_created(self *CRenderProcessHandlerT, browser *CBrowserT) {
 
 }
 
-//export on_browser_destroyed
-func on_browser_destroyed(self *CRenderProcessHandlerT, browser *CBrowserT) {
+//export cefingo_render_process_handler_on_browser_destroyed
+func cefingo_render_process_handler_on_browser_destroyed(self *CRenderProcessHandlerT, browser *CBrowserT) {
 	Logf("L160: self: %p", self)
 
 	f := renderProcessHandlers[self]
@@ -181,8 +181,8 @@ func on_browser_destroyed(self *CRenderProcessHandlerT, browser *CBrowserT) {
 
 }
 
-//export render_process_hander_get_load_handler
-func render_process_hander_get_load_handler(self *CRenderProcessHandlerT) *CLoadHandlerT {
+//export cefingo_render_process_handler_get_load_handler
+func cefingo_render_process_handler_get_load_handler(self *CRenderProcessHandlerT) *CLoadHandlerT {
 	h := rphLoadHandlers[self]
 	if h != nil {
 		BaseAddRef(h)
@@ -192,8 +192,8 @@ func render_process_hander_get_load_handler(self *CRenderProcessHandlerT) *CLoad
 	return h
 }
 
-//export on_context_created
-func on_context_created(
+//export cefingo_render_process_handler_on_context_created
+func cefingo_render_process_handler_on_context_created(
 	self *CRenderProcessHandlerT,
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -209,8 +209,8 @@ func on_context_created(
 	f.OnContextCreated(self, browser, frame, context)
 }
 
-//export on_context_released
-func on_context_released(
+//export cefingo_render_process_handler_on_context_released
+func cefingo_render_process_handler_on_context_released(
 	self *CRenderProcessHandlerT,
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -226,8 +226,8 @@ func on_context_released(
 
 }
 
-//export on_uncaught_exception
-func on_uncaught_exception(
+//export cefingo_render_process_handler_on_uncaught_exception
+func cefingo_render_process_handler_on_uncaught_exception(
 	self *CRenderProcessHandlerT,
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -246,8 +246,8 @@ func on_uncaught_exception(
 
 }
 
-//export on_focused_node_changed
-func on_focused_node_changed(
+//export cefingo_render_process_handler_on_focused_node_changed
+func cefingo_render_process_handler_on_focused_node_changed(
 	self *CRenderProcessHandlerT,
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -263,8 +263,8 @@ func on_focused_node_changed(
 	f.OnFocusedNodeChanged(self, browser, frame, node)
 }
 
-//export render_process_handler_on_process_message_received
-func render_process_handler_on_process_message_received(
+//export cefingo_render_process_handler_on_process_message_received
+func cefingo_render_process_handler_on_process_message_received(
 	self *CRenderProcessHandlerT,
 	browser *CBrowserT,
 	source_process CProcessIdT,

@@ -16,7 +16,7 @@ import "C"
 
 type CErrorcodeT C.cef_errorcode_t
 type LogSeverityT C.cef_log_severity_t
-type CStringT C.cef_string_t
+// type CStringT C.cef_string_t
 type CTransitionTypeT C.cef_transition_type_t
 
 const (
@@ -197,7 +197,8 @@ func ExecuteProcess(app *CAppT) {
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L116-L130
 	///
 	BaseAddRef(app)
-	code := C.cef_execute_process(&main_args, (*C.cef_app_t)(unsafe.Pointer(app)), nil)
+	// code := C.cef_execute_process(&main_args, (*C.cef_app_t)(unsafe.Pointer(app)), nil)
+	code := C.cef_execute_process(&main_args, (*C.cef_app_t)(app), nil)
 	Logf("L37: code: %d: %t", code, BaseHasOneRef(app))
 	if code >= 0 {
 		os.Exit(int(code))
@@ -319,23 +320,29 @@ func calloc(num C.size_t, size C.size_t) unsafe.Pointer {
 	return p
 }
 
-func create_cef_string(s string) *C.cef_string_t {
+func set_cef_string(cs *C.cef_string_t, s string) {
 	c_string := C.CString(s)
 	defer C.free(unsafe.Pointer(c_string))
-	cs := C.cef_string_t{}
 
-	status := C.cef_string_from_utf8(c_string, C.strlen(c_string), &cs)
+	status := C.cef_string_from_utf8(c_string, C.strlen(c_string), cs)
 	if status == 0 {
 		log.Panicln("Error cef_string_from_utf8")
 	}
+}
+
+func create_cef_string(s string) *C.cef_string_t {
+	cs := C.cef_string_t{}
+	set_cef_string(&cs, s)
 	return &cs
 }
 
 func string_from_cef_string(s *C.cef_string_t) (str string) {
-	cs := C.cef_string_utf8_t{}
-	C.cef_string_to_utf8(s.str, s.length, &cs)
-	str = C.GoString(cs.str)
-	C.cef_string_utf8_clear(&cs)
+	if s != nil {
+		cs := C.cef_string_utf8_t{}
+		C.cef_string_to_utf8(s.str, s.length, &cs)
+		str = C.GoString(cs.str)
+		C.cef_string_utf8_clear(&cs)
+	}
 	return str
 }
 

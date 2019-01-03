@@ -45,5 +45,7 @@ extern void cefingo_response_set_error(struct _cef_response_t* self, cef_errorco
 extern void cefingo_response_set_status(struct _cef_response_t* self, int status);
 extern void cefingo_response_set_status_text(struct _cef_response_t* self, const cef_string_t* statusText);
 extern void cefingo_response_set_mime_type(struct _cef_response_t* self, const cef_string_t* mimeType);
+extern void cefingo_response_get_header_map(struct _cef_response_t* self, cef_string_multimap_t map);
+extern void cefingo_response_set_header_map(struct _cef_response_t* self, cef_string_multimap_t headerMap);
 
 #endif // CEFINGO_H_

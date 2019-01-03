@@ -135,8 +135,8 @@ func AllocCLifeSpanHandlerT(handler LifeSpanHandler) (cHandler *CLifeSpanHandler
 	return ch
 }
 
-//export life_span_on_before_close
-func life_span_on_before_close(self *CLifeSpanHandlerT, browser *CBrowserT) {
+//export cefingo_life_span_handler_on_before_close
+func cefingo_life_span_handler_on_before_close(self *CLifeSpanHandlerT, browser *CBrowserT) {
 	Logf("L39:")
 
 	f := lifeSpanHandlers[self]
@@ -147,8 +147,8 @@ func life_span_on_before_close(self *CLifeSpanHandlerT, browser *CBrowserT) {
 	f.OnBeforeClose(self, browser)
 }
 
-//export life_span_do_close
-func life_span_do_close(self *CLifeSpanHandlerT, brwoser *CBrowserT) (ret C.int) {
+//export cefingo_life_span_handler_do_close
+func cefingo_life_span_handler_do_close(self *CLifeSpanHandlerT, brwoser *CBrowserT) (ret C.int) {
 	Logf("L50:")
 	f := lifeSpanHandlers[self]
 	if f == nil {
@@ -163,11 +163,8 @@ func life_span_do_close(self *CLifeSpanHandlerT, brwoser *CBrowserT) (ret C.int)
 	return ret
 }
 
-// void on_after_created(struct _cef_life_span_handler_t* self,
-//                               struct _cef_browser_t* browser) {
-// }
-//export life_span_on_after_created
-func life_span_on_after_created(self *CLifeSpanHandlerT, brwoser *CBrowserT) {
+//export cefingo_life_span_handler_on_after_created
+func cefingo_life_span_handler_on_after_created(self *CLifeSpanHandlerT, brwoser *CBrowserT) {
 	Logf("L60:")
 	f := lifeSpanHandlers[self]
 	if f == nil {

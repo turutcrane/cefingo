@@ -74,14 +74,14 @@ func cefingo_scheme_handler_factory_create(
 	self *CSchemeHandlerFactoryT,
 	browser *CBrowserT,
 	frame *CFrameT,
-	scheme_name *CStringT,
+	scheme_name *C.cef_string_t,
 	request *CRequestT,
 ) *CResourceHandlerT {
 	f := scheme_handler_factory_method[self]
 	if f == nil {
 		Logf("L70: No Scheme Factory ")
 	}
-	s := string_from_cef_string((*C.cef_string_t)(scheme_name))
+	s := string_from_cef_string(scheme_name)
 	return f.Create(self, browser, frame, s, request)
 }
 

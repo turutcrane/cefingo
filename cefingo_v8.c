@@ -82,7 +82,7 @@ void cefingo_construct_v8array_buffer_release_callback(cefingo_v8array_buffer_re
         offsetof(__typeof__(*callback), counter),
         (cef_base_ref_counted_t*) callback);
 
-    callback->body.release_buffer = v8array_buffer_release_buffer;
+    callback->body.release_buffer = cefingo_v8array_buffer_release_callback_release_buffer;
 
 }
 
@@ -99,7 +99,7 @@ void cefingo_construct_v8handler(cefingo_v8handler_wrapper_t *handler) {
         offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
 
-    handler->body.execute = (cefingo_execute_t) execute;
+    handler->body.execute = (cefingo_execute_t) cefingo_v8handler_execute;
 }
 
 int cefingo_v8context_enter(cef_v8context_t* self) {

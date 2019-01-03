@@ -92,7 +92,7 @@ func (eh *eventHandler) Execute(self *cefingo.CV8handlerT,
 	argumentsCount int,
 	arguments []*cefingo.CV8valueT,
 	retval **cefingo.CV8valueT,
-	exception *cefingo.CStringT,
+	exception *string,
 ) (sts bool) {
 	if argumentsCount == 0 {
 		err := errors.Errorf("%s: No Arguments", name)

@@ -25,7 +25,7 @@ type App interface {
 	// in undefined behavior including crashes.
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L66-L80
 	///
-	OnBeforeCommandLineProcessing(self *CAppT, process_type *CStringT, command_line *CCommandLineT)
+	OnBeforeCommandLineProcessing(self *CAppT, process_type string, command_line *CCommandLineT)
 
 	///
 	// Provides an opportunity to register custom schemes. Do not keep a reference
@@ -58,8 +58,8 @@ func AllocCAppT(a App) (cApp *CAppT) {
 // If no handler is returned resources will be loaded from pack files. This
 // function is called by the browser and render processes on multiple threads.
 ///
-//export get_resource_bundle_handler
-func get_resource_bundle_handler(self *CAppT) *CResourceBundleHanderT {
+//export cefing_app_get_resource_bundle_handler
+func cefing_app_get_resource_bundle_handler(self *CAppT) *CResourceBundleHanderT {
 	return nil
 }
 
@@ -74,8 +74,8 @@ func AssocBrowserProcessHandler(app *CAppT, handler *CBrowserProcessHandlerT) {
 // Return the handler for functionality specific to the browser process. This
 // function is called on multiple threads in the browser process.
 ///
-//export get_browser_process_handler
-func get_browser_process_handler(self *CAppT) *CBrowserProcessHandlerT {
+//export cefing_app_get_browser_process_handler
+func cefing_app_get_browser_process_handler(self *CAppT) *CBrowserProcessHandlerT {
 	Logf("L48:")
 
 	handler := browser_process_handler[self]
@@ -99,8 +99,8 @@ func (app *CAppT) AssocRenderProcessHandler(handler *CRenderProcessHandlerT) {
 // Return the handler for functionality specific to the render process. This
 // function is called on the render process main thread.
 ///
-//export get_render_process_handler
-func get_render_process_handler(self *CAppT) *CRenderProcessHandlerT {
+//export cefing_app_get_render_process_handler
+func cefing_app_get_render_process_handler(self *CAppT) *CRenderProcessHandlerT {
 	Logf("L97:")
 
 	handler := render_process_handler[self]
@@ -114,21 +114,21 @@ func get_render_process_handler(self *CAppT) *CRenderProcessHandlerT {
 }
 
 //on_process_mesage_received call OnProcessMessageRecived method
-//export on_before_command_line_processing
-func on_before_command_line_processing(self *CAppT, process_type *CStringT, command_line *CCommandLineT) {
+//export cefing_app_on_before_command_line_processing
+func cefing_app_on_before_command_line_processing(self *CAppT, process_type *C.cef_string_t, command_line *CCommandLineT) {
 	Logf("L36: app: %p", self)
 
 	f := app_method[self]
 	if f == nil {
 		Logger.Panicln("L48: on_before_command_line_processing: Noo!")
 	}
-
-	f.OnBeforeCommandLineProcessing(self, process_type, command_line)
+	pt := string_from_cef_string(process_type)
+	f.OnBeforeCommandLineProcessing(self, pt, command_line)
 }
 
 //on_pregiser_custom_schemes call OnRegisterCustomSchemes method
-//export on_register_custom_schemes
-func on_register_custom_schemes(self *CAppT, registrar *CSchemeRegistrarT) {
+//export cefing_app_on_register_custom_schemes
+func cefing_app_on_register_custom_schemes(self *CAppT, registrar *CSchemeRegistrarT) {
 	Logf("L36: app: %p", self)
 
 	f := app_method[self]
@@ -142,7 +142,7 @@ func on_register_custom_schemes(self *CAppT, registrar *CSchemeRegistrarT) {
 type DefaultApp struct {
 }
 
-func (*DefaultApp) OnBeforeCommandLineProcessing(self *CAppT, process_type *CStringT, command_line *CCommandLineT) {
+func (*DefaultApp) OnBeforeCommandLineProcessing(self *CAppT, process_type string, command_line *CCommandLineT) {
 
 }
 
