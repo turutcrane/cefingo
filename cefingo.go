@@ -16,6 +16,7 @@ import "C"
 
 type CErrorcodeT C.cef_errorcode_t
 type LogSeverityT C.cef_log_severity_t
+
 // type CStringT C.cef_string_t
 type CTransitionTypeT C.cef_transition_type_t
 

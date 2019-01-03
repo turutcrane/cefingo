@@ -31,16 +31,13 @@ void cefingo_panicf(const char *fn, const char *format, ...) {
 }
 
 void cefingo_base_add_ref(cef_base_ref_counted_t *self) {
-    if (self != NULL) {
-        self->add_ref(self);
-    }
+    self->add_ref(self);
 }
+
 int cefingo_base_release(cef_base_ref_counted_t *self) {
     int status = 0;
     
-    if (self != NULL) {
-        status = self->release(self);
-    }
+    status = self->release(self);
 
     return status;
 }
