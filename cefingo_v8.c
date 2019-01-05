@@ -19,6 +19,14 @@ int cefingo_v8value_is_valid(cef_v8value_t* self) {
     return self->is_valid(self);
 }
 
+int cefingo_v8value_is_undefined(cef_v8value_t* self) {
+    return self->is_undefined(self);
+}
+
+int cefingo_v8value_is_null(cef_v8value_t* self) {
+    return self->is_null(self);
+}
+
 int cefingo_v8value_is_function(cef_v8value_t* self) {
     return self->is_function(self);
 }

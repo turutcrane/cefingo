@@ -115,6 +115,16 @@ func (self *CV8valueT) IsValid() bool {
 	return status == 1
 }
 
+func (self *CV8valueT) IsUndefined() bool {
+	status := C.cefingo_v8value_is_undefined((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) IsNull() bool {
+	status := C.cefingo_v8value_is_null((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
 func (self *CV8valueT) IsFunction() bool {
 	status := C.cefingo_v8value_is_function((*C.cef_v8value_t)(self))
 	return status == 1
@@ -284,5 +294,6 @@ func (self *CV8contextT) EvalString(code string, retval **CV8valueT, e **CV8exce
 		(*C.cef_v8context_t)(self), s, nil, 0,
 		&r, &exc)
 	*retval = (*CV8valueT)(r)
+	BaseAddRef(*retval)
 	return status == 1
 }

@@ -58,6 +58,14 @@ func (c *Context) GetElementById(id string) (value Value, err error) {
 	return Value{v8value}, err
 }
 
+func (v Value) AddRef() {
+	cefingo.BaseAddRef(v.v8value)
+}
+
+func (v Value) Release() {
+	cefingo.BaseRelease(v.v8value)
+}
+
 func (v Value) AddEventListener(e EventType, h func(event *cefingo.CV8valueT) error) (err error) {
 
 	f := v.v8value.GetValueBykey("addEventListener")
@@ -108,6 +116,14 @@ func (eh *eventHandler) Execute(self *cefingo.CV8handlerT,
 	return sts
 }
 
+func (v Value) IsUndefined() bool {
+	return v.v8value.IsUndefined()
+}
+
+func (v Value) IsNull() bool {
+	return v.v8value.IsNull()
+}
+
 func (v Value) HasValueBykey(key string) bool {
 	return v.v8value.HasValueBykey(key)
 }
@@ -132,4 +148,21 @@ func (c *Context) EvalString(code string) (v Value, err error) {
 		err = errors.Errorf("Eval String Error :%s", code)
 	}
 	return v, err
+}
+
+func (c Context) Alertf(message string, v ...interface{}) (err error) {
+
+	f := c.Global.GetValueBykey("alert")
+	defer cefingo.BaseRelease(f)
+
+	msg := cefingo.V8valueCreateString(fmt.Sprintf(message, v...))
+	defer cefingo.BaseRelease(msg)
+
+	args := []*cefingo.CV8valueT{msg}
+	_, err = f.ExecuteFunction(c.Global, 1, args)
+
+	if err != nil {
+		cefingo.Logf("L36:x %+v", err)
+	}
+	return err
 }

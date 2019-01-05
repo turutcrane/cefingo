@@ -46,7 +46,7 @@ func RegisterSchemeHandlerFactory(
 
 	var d *C.cef_string_t
 	if len(domain_name) > 0 {
-		d := create_cef_string(domain_name)
+		d = create_cef_string(domain_name)
 		defer clear_cef_string(d)
 	}
 

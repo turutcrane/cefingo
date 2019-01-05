@@ -9,6 +9,8 @@ extern void cefingo_construct_v8handler(cefingo_v8handler_wrapper_t *handler);
 
 
 extern int cefingo_v8value_is_valid(cef_v8value_t* self);
+extern int cefingo_v8value_is_undefined(cef_v8value_t* self);
+extern int cefingo_v8value_is_null(cef_v8value_t* self);
 extern int cefingo_v8value_is_function(cef_v8value_t* self);
 extern int cefingo_v8value_is_string(cef_v8value_t* self);
 extern int cefingo_v8value_is_object(cef_v8value_t* self);
