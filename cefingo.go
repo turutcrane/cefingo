@@ -15,7 +15,8 @@ import "C"
 // type CSizeT C.size_t
 
 type CErrorcodeT C.cef_errorcode_t
-type LogSeverityT C.cef_log_severity_t
+type CLogSeverityT C.cef_log_severity_t
+type CTimeT C.cef_time_t
 
 // type CStringT C.cef_string_t
 type CTransitionTypeT C.cef_transition_type_t
@@ -108,7 +109,7 @@ const (
 )
 
 type Settings struct {
-	LogSeverity              LogSeverityT
+	LogSeverity              CLogSeverityT
 	NoSandbox                int
 	MultiThreadedMessageLoop int
 	RemoteDebuggingPort      int

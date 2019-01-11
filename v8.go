@@ -83,33 +83,6 @@ func V8valueCreateArrayBuffer(buffer []byte) *CV8valueT {
 	return (*CV8valueT)(v8array_buffer)
 }
 
-func (self *CV8valueT) SetValueBykey(key string, value *CV8valueT) bool {
-	key_string := create_cef_string(key)
-	defer clear_cef_string(key_string)
-
-	BaseAddRef(value)
-	status := C.cefingo_v8context_set_value_bykey((*C.cef_v8value_t)(self),
-		key_string, (*C.cef_v8value_t)(value), C.V8_PROPERTY_ATTRIBUTE_NONE)
-	return status == 1
-}
-
-func (self *CV8valueT) HasValueBykey(key string) bool {
-	key_string := create_cef_string(key)
-	defer clear_cef_string(key_string)
-
-	status := C.cefingo_v8value_has_value_bykey((*C.cef_v8value_t)(self), key_string)
-	return (status == 1)
-}
-
-func (self *CV8valueT) GetValueBykey(key string) (value *CV8valueT) {
-	key_string := create_cef_string(key)
-	defer clear_cef_string(key_string)
-
-	value = (*CV8valueT)(C.cefingo_v8value_get_value_bykey((*C.cef_v8value_t)(self), key_string))
-	BaseAddRef(value)
-	return value
-}
-
 func (self *CV8valueT) IsValid() bool {
 	status := C.cefingo_v8value_is_valid((*C.cef_v8value_t)(self))
 	return status == 1
@@ -125,8 +98,28 @@ func (self *CV8valueT) IsNull() bool {
 	return status == 1
 }
 
-func (self *CV8valueT) IsFunction() bool {
-	status := C.cefingo_v8value_is_function((*C.cef_v8value_t)(self))
+func (self *CV8valueT) IsBool() bool {
+	status := C.cefingo_v8value_is_bool((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) IsInt() bool {
+	status := C.cefingo_v8value_is_int((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) IsUint() bool {
+	status := C.cefingo_v8value_is_uint((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) IsDouble() bool {
+	status := C.cefingo_v8value_is_double((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) IsDate() bool {
+	status := C.cefingo_v8value_is_date((*C.cef_v8value_t)(self))
 	return status == 1
 }
 
@@ -140,11 +133,111 @@ func (self *CV8valueT) IsObject() bool {
 	return status == 1
 }
 
-func (self *CV8valueT) GetString() string {
-	usfs := C.cefingo_v8value_get_string((*C.cef_v8value_t)(self))
-	s := string_from_cef_string((*C.cef_string_t)(usfs))
+func (self *CV8valueT) IsArray() bool {
+	status := C.cefingo_v8value_is_array((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) IsArrayBuffer() bool {
+	status := C.cefingo_v8value_is_array_buffer((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) IsFunction() bool {
+	status := C.cefingo_v8value_is_function((*C.cef_v8value_t)(self))
+	return status == 1
+}
+
+func (self *CV8valueT) IsSame(that *CV8valueT) bool {
+	BaseAddRef(that)
+	status := C.cefingo_v8value_is_same((*C.cef_v8value_t)(self), (*C.cef_v8value_t)(that))
+	return status == 1
+}
+
+func (self *CV8valueT) GetBoolValue() (v bool) {
+	b := C.cefingo_v8value_get_bool_value((*C.cef_v8value_t)(self))
+	if b != 0 {
+		v = true
+	}
+	return v
+}
+
+func (self *CV8valueT) GetIntValue() (v int32) {
+	v = int32(C.cefingo_v8value_get_int_value((*C.cef_v8value_t)(self)))
+	return v
+}
+
+func (self *CV8valueT) GetUintValue() (v uint32) {
+	v = uint32(C.cefingo_v8value_get_uint_value((*C.cef_v8value_t)(self)))
+	return v
+}
+
+func (self *CV8valueT) GetDoubleValue() (v float64) {
+	v = float64(C.cefingo_v8value_get_double_value((*C.cef_v8value_t)(self)))
+	return v
+}
+
+func (self *CV8valueT) GetDateValue() (v CTimeT) {
+	v = CTimeT(C.cefingo_v8value_get_date_value((*C.cef_v8value_t)(self)))
+	return v
+}
+
+func (self *CV8valueT) GetStringValue() (s string) {
+	usfs := C.cefingo_v8value_get_string_value((*C.cef_v8value_t)(self))
+	s = string_from_cef_string((*C.cef_string_t)(usfs))
 	C.cef_string_userfree_free(usfs)
 	return s
+}
+
+func (self *CV8valueT) HasException() (ret bool) {
+	v := C.cefingo_v8value_has_exception((*C.cef_v8value_t)(self))
+	return v == 1
+}
+
+func (self *CV8valueT) GetException() (e *CV8exceptionT) {
+	e = (*CV8exceptionT)(C.cefingo_v8value_get_exception((*C.cef_v8value_t)(self)))
+	BaseAddRef(e)
+	return e
+}
+
+func (self *CV8valueT) ClearException() (ret bool) {
+	v := C.cefingo_v8value_clear_exception((*C.cef_v8value_t)(self))
+	return v == 1
+}
+
+func (self *CV8valueT) HasValueBykey(key string) bool {
+	key_string := create_cef_string(key)
+	defer clear_cef_string(key_string)
+
+	status := C.cefingo_v8value_has_value_bykey((*C.cef_v8value_t)(self), key_string)
+	return (status == 1)
+}
+
+func (self *CV8valueT) DeleteValueBykey(key string) bool {
+	key_string := create_cef_string(key)
+	defer clear_cef_string(key_string)
+
+	status := C.cefingo_v8value_delete_value_bykey((*C.cef_v8value_t)(self), key_string)
+	return (status == 1)
+}
+
+func (self *CV8valueT) GetValueBykey(key string) (value *CV8valueT) {
+	key_string := create_cef_string(key)
+	defer clear_cef_string(key_string)
+
+	value = (*CV8valueT)(C.cefingo_v8value_get_value_bykey((*C.cef_v8value_t)(self), key_string))
+	BaseAddRef(value)
+	return value
+}
+
+func (self *CV8valueT) SetValueBykey(key string, value *CV8valueT) bool {
+	key_string := create_cef_string(key)
+	defer clear_cef_string(key_string)
+
+	BaseAddRef(value)
+	status := C.cefingo_v8context_set_value_bykey((*C.cef_v8value_t)(self),
+		key_string, (*C.cef_v8value_t)(value), C.V8_PROPERTY_ATTRIBUTE_NONE)
+	return status == 1
 }
 
 func (self *CV8valueT) GetFunctionName() string {
@@ -285,7 +378,7 @@ func (self *CV8contextT) IsSame(that *CV8contextT) bool {
 	return s == 1
 }
 
-func (self *CV8contextT) EvalString(code string, retval **CV8valueT, e **CV8exceptionT) bool {
+func (self *CV8contextT) Eval(code string, retval **CV8valueT, e **CV8exceptionT) (ret bool) {
 	s := create_cef_string(code)
 	defer clear_cef_string(s)
 	var r *C.cef_v8value_t
@@ -293,7 +386,23 @@ func (self *CV8contextT) EvalString(code string, retval **CV8valueT, e **CV8exce
 	status := C.cefingo_v8context_eval(
 		(*C.cef_v8context_t)(self), s, nil, 0,
 		&r, &exc)
-	*retval = (*CV8valueT)(r)
-	BaseAddRef(*retval)
-	return status == 1
+	ret = status == 1
+	if ret {
+		*retval = (*CV8valueT)(r)
+		BaseAddRef(*retval)
+	} else {
+		// if exc != nil {
+		*e = (*CV8exceptionT)(exc)
+		BaseAddRef(*e)
+		// }
+	}
+
+	return ret
+}
+
+func (self *CV8exceptionT) GetMessage() (msg string) {
+	usfs := C.cefingo_v8exception_get_message((*C.cef_v8exception_t)(self))
+	msg = string_from_cef_string((*C.cef_string_t)(usfs))
+	C.cef_string_userfree_free(usfs)
+	return msg
 }

@@ -44,6 +44,8 @@ func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t
 		up = unsafe.Pointer(p)
 	case *CRequestT:
 		up = unsafe.Pointer(p)
+	case *CV8exceptionT:
+		up = unsafe.Pointer(p)
 	default:
 		Panicf("Not Refcounted Object: T: %T V: %v", p, p)
 	}

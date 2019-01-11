@@ -6,15 +6,6 @@ cef_v8value_t *cefingo_v8context_get_global(cef_v8context_t *self) {
     return self->get_global(self);
 }
 
-int cefingo_v8context_set_value_bykey(cef_v8value_t* self,
-    cef_string_t* key,
-    cef_v8value_t* value,
-    cef_v8_propertyattribute_t attribute
-) {
-    return self->set_value_bykey(self, key, value, attribute);
-    // return self->set_value_bykey(self, (const cef_string_t*) key, value, attribute);
-}
-
 int cefingo_v8value_is_valid(cef_v8value_t* self) {
     return self->is_valid(self);
 }
@@ -27,8 +18,24 @@ int cefingo_v8value_is_null(cef_v8value_t* self) {
     return self->is_null(self);
 }
 
-int cefingo_v8value_is_function(cef_v8value_t* self) {
-    return self->is_function(self);
+int cefingo_v8value_is_bool(cef_v8value_t* self) {
+    return self->is_bool(self);
+}
+
+int cefingo_v8value_is_int(cef_v8value_t* self) {
+    return self->is_int(self);
+}
+
+int cefingo_v8value_is_uint(cef_v8value_t* self) {
+    return self->is_uint(self);
+}
+
+int cefingo_v8value_is_double(cef_v8value_t* self) {
+    return self->is_double(self);
+}
+
+int cefingo_v8value_is_date(cef_v8value_t* self) {
+    return self->is_date(self);
 }
 
 int cefingo_v8value_is_string(cef_v8value_t* self) {
@@ -39,8 +46,56 @@ int cefingo_v8value_is_object(cef_v8value_t* self) {
     return self->is_object(self);
 };
 
-cef_string_userfree_t cefingo_v8value_get_string(cef_v8value_t* self) {
+int cefingo_v8value_is_array(cef_v8value_t* self) {
+    return self->is_array(self);
+};
+
+int cefingo_v8value_is_array_buffer(cef_v8value_t* self) {
+    return self->is_array_buffer(self);
+};
+
+int cefingo_v8value_is_function(cef_v8value_t* self) {
+    return self->is_function(self);
+}
+
+int cefingo_v8value_is_same(cef_v8value_t* self, cef_v8value_t* that) {
+    return self->is_same(self, that);
+}
+
+int cefingo_v8value_get_bool_value(cef_v8value_t* self) {
+    return self->get_bool_value(self);
+}
+
+int cefingo_v8value_get_int_value(cef_v8value_t* self) {
+    return self->get_int_value(self);
+}
+
+uint32 cefingo_v8value_get_uint_value(cef_v8value_t* self) {
+    return self->get_uint_value(self);
+}
+
+double cefingo_v8value_get_double_value(cef_v8value_t* self) {
+    return self->get_double_value(self);
+}
+
+cef_time_t cefingo_v8value_get_date_value(cef_v8value_t* self) {
+    return self->get_date_value(self);
+}
+
+cef_string_userfree_t cefingo_v8value_get_string_value(cef_v8value_t* self) {
   return self->get_string_value(self);
+}
+
+int cefingo_v8value_has_exception(cef_v8value_t* self) {
+    return self->has_exception(self);
+}
+
+cef_v8exception_t *cefingo_v8value_get_exception(cef_v8value_t *self) {
+    return self->get_exception(self);
+}
+
+int cefingo_v8value_clear_exception(cef_v8value_t *self) {
+    return self->clear_exception(self);
 }
 
 int cefingo_v8value_has_value_bykey(cef_v8value_t* self,
@@ -48,11 +103,25 @@ int cefingo_v8value_has_value_bykey(cef_v8value_t* self,
     return self->has_value_bykey(self, key);
 }
 
+int cefingo_v8value_delete_value_bykey(cef_v8value_t* self,
+    const cef_string_t* key) {
+    return self->delete_value_bykey(self, key);
+}
+
 cef_v8value_t* cefingo_v8value_get_value_bykey(
     struct _cef_v8value_t* self,
     const cef_string_t* key) {
     return self->get_value_bykey(self, key);
 
+}
+
+int cefingo_v8context_set_value_bykey(cef_v8value_t* self,
+    cef_string_t* key,
+    cef_v8value_t* value,
+    cef_v8_propertyattribute_t attribute
+) {
+    return self->set_value_bykey(self, key, value, attribute);
+    // return self->set_value_bykey(self, (const cef_string_t*) key, value, attribute);
 }
 
 cef_string_userfree_t cefingo_v8value_get_function_name(cef_v8value_t* self) {
@@ -131,3 +200,6 @@ int cefingo_v8context_eval(cef_v8context_t* self,
     self->eval(self, code, script_url, start_line, retval, exception);
 }
 
+cef_string_userfree_t cefingo_v8exception_get_message(cef_v8exception_t *self) {
+    return self->get_message(self);
+}
