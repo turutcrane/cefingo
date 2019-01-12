@@ -66,13 +66,13 @@ func (v Value) Release() {
 	cefingo.BaseRelease(v.v8value)
 }
 
-func (v Value) AddEventListener(e EventType, h func(event *cefingo.CV8valueT) error) (err error) {
+func (v Value) AddEventListener(e EventType, h cefingo.V8handler) (err error) {
 
 	f := v.v8value.GetValueBykey("addEventListener")
 	defer cefingo.BaseRelease(f)
 	cefingo.Logf("L51: addEventListener is function? :%t", f.IsFunction())
 
-	eHander := cefingo.AllocCV8handlerT(&eventHandler{h})
+	eHander := cefingo.AllocCV8handlerT(h)
 	defer cefingo.BaseRelease(eHander)
 
 	eType := cefingo.V8valueCreateString(string(e))
@@ -90,11 +90,9 @@ func (v Value) AddEventListener(e EventType, h func(event *cefingo.CV8valueT) er
 	return err
 }
 
-type eventHandler struct {
-	f func(event *cefingo.CV8valueT) error
-}
+type EventHandlerFunc  func(event *cefingo.CV8valueT) error
 
-func (eh *eventHandler) Execute(self *cefingo.CV8handlerT,
+func (f EventHandlerFunc) Execute(self *cefingo.CV8handlerT,
 	name string,
 	object *cefingo.CV8valueT,
 	argumentsCount int,
@@ -107,7 +105,7 @@ func (eh *eventHandler) Execute(self *cefingo.CV8handlerT,
 		cefingo.Logf("%+v", err)
 		return false
 	}
-	err := eh.f(arguments[0])
+	err := f(arguments[0])
 	if err == nil {
 		sts = true
 	} else {
