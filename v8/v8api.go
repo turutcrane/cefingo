@@ -90,7 +90,7 @@ func (v Value) AddEventListener(e EventType, h cefingo.V8handler) (err error) {
 	return err
 }
 
-type EventHandlerFunc  func(event *cefingo.CV8valueT) error
+type EventHandlerFunc func(event *cefingo.CV8valueT) error
 
 func (f EventHandlerFunc) Execute(self *cefingo.CV8handlerT,
 	name string,

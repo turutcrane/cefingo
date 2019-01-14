@@ -257,8 +257,8 @@ func (self *CV8valueT) ExecuteFunction(
 		cause := errors.Errorf("Object is Not Function")
 		return nil, cause
 	}
-	ca := C.calloc((C.size_t)(argumentsCount), (C.size_t)(unsafe.Sizeof(this)))
-	slice := (*[1 << 30]*CV8valueT)(ca)[:argumentsCount:argumentsCount]
+	cargs := C.calloc((C.size_t)(argumentsCount), (C.size_t)(unsafe.Sizeof(this)))
+	slice := (*[1 << 30]*CV8valueT)(cargs)[:argumentsCount:argumentsCount]
 
 	BaseAddRef(this)
 	for i, v := range arguments {
@@ -269,10 +269,17 @@ func (self *CV8valueT) ExecuteFunction(
 		(*C.cef_v8value_t)(self),
 		(*C.cef_v8value_t)(this),
 		(C.size_t)(argumentsCount),
-		(**C.cef_v8value_t)(ca)))
+		(**C.cef_v8value_t)(cargs)))
 	if v == nil {
 		name := self.GetFunctionName()
-		err = errors.Errorf("%s returns NULL", name)
+		if this != nil && this.HasException() {
+			e := this.GetException()
+			defer BaseRelease(e)
+			m := e.GetMessage()
+			err = errors.Errorf("%s returns NULL and has Exception: %s", name, m)
+		} else {
+			err = errors.Errorf("%s returns NULL", name)
+		}
 	}
 	return v, err
 }
@@ -329,7 +336,10 @@ func cefingo_v8handler_execute(self *CV8handlerT,
 		if arguments != nil {
 			slice = (*[1 << 30]*CV8valueT)(unsafe.Pointer(arguments))[:argumentsCount:argumentsCount]
 		}
+
 		runtime.LockOSThread()
+		defer runtime.UnlockOSThread()
+
 		var exc string
 		if handler.Execute(self, goname, object, (int)(argumentsCount), slice, retval, &exc) {
 			// Is required release of member of arguments ?
@@ -338,7 +348,6 @@ func cefingo_v8handler_execute(self *CV8handlerT,
 		} else {
 			ret = 0
 		}
-		runtime.UnlockOSThread()
 	}
 	return ret
 }
@@ -386,7 +395,7 @@ func (self *CV8contextT) Eval(code string, retval **CV8valueT, e **CV8exceptionT
 	status := C.cefingo_v8context_eval(
 		(*C.cef_v8context_t)(self), s, nil, 0,
 		&r, &exc)
-	ret = status == 1
+	ret = (status == 1)
 	if ret {
 		*retval = (*CV8valueT)(r)
 		BaseAddRef(*retval)
