@@ -9,12 +9,12 @@ import (
 
 type Context struct {
 	V8context *cefingo.CV8contextT
-	Global    *cefingo.CV8valueT
-	Document  *cefingo.CV8valueT
+	Global    Value
+	Document  Value
 }
 
 type Value struct {
-	v8value *cefingo.CV8valueT
+	v8v *cefingo.CV8valueT
 }
 
 type EventType string
@@ -23,21 +23,29 @@ const (
 	EventClick EventType = "click"
 )
 
+func CreateValue(v8v *cefingo.CV8valueT) Value {
+	return Value{v8v: v8v}
+}
+
 func GetContext() *Context {
 	c := cefingo.V8contextGetEnterdContext()
-	g := c.GetGlobal()
+	g := CreateValue(c.GetGlobal())
 	d := g.GetValueBykey("document")
-	return &Context{c, g, d}
+	return &Context{
+		V8context: c,
+		Global:    g,
+		Document:  d,
+	}
 }
 
 func ReleaseContext(c *Context) {
-	cefingo.BaseRelease(c.Document)
-	cefingo.BaseRelease(c.Global)
+	cefingo.BaseRelease(c.Document.v8v)
+	cefingo.BaseRelease(c.Global.v8v)
 	cefingo.BaseRelease(c.V8context)
 }
 
 func (c *Context) GetElementById(id string) (value Value, err error) {
-	f := c.Document.GetValueBykey("getElementById")
+	f := c.Document.GetValueBykey("getElementById").v8v
 	defer cefingo.BaseRelease(f)
 	cefingo.Logf("L42: getElementById is function? :%t", f.IsFunction())
 
@@ -45,30 +53,30 @@ func (c *Context) GetElementById(id string) (value Value, err error) {
 	defer cefingo.BaseRelease(ids)
 
 	args := []*cefingo.CV8valueT{ids}
-	v8value, err := f.ExecuteFunction(c.Document, 1, args)
+	v8v, err := f.ExecuteFunction(c.Document.v8v, 1, args)
 	if err != nil {
 		cefingo.Logf("L36:x %+v", err)
 		return Value{nil}, err
 	}
 
-	if !v8value.IsValid() || !v8value.IsObject() {
+	if !v8v.IsValid() || !v8v.IsObject() {
 		cefingo.Logf("L55: Id:%s can not get valid value", id)
 		err = fmt.Errorf("Id:%s can not get valid value", id)
 	}
-	return Value{v8value}, err
+	return Value{v8v}, err
 }
 
 func (v Value) AddRef() {
-	cefingo.BaseAddRef(v.v8value)
+	cefingo.BaseAddRef(v.v8v)
 }
 
 func (v Value) Release() {
-	cefingo.BaseRelease(v.v8value)
+	cefingo.BaseRelease(v.v8v)
 }
 
 func (v Value) AddEventListener(e EventType, h cefingo.V8handler) (err error) {
 
-	f := v.v8value.GetValueBykey("addEventListener")
+	f := v.v8v.GetValueBykey("addEventListener")
 	defer cefingo.BaseRelease(f)
 	cefingo.Logf("L51: addEventListener is function? :%t", f.IsFunction())
 
@@ -82,7 +90,7 @@ func (v Value) AddEventListener(e EventType, h cefingo.V8handler) (err error) {
 	defer cefingo.BaseRelease(eFunc)
 
 	args := []*cefingo.CV8valueT{eType, eFunc}
-	_, err = f.ExecuteFunction(v.v8value, 2, args)
+	_, err = f.ExecuteFunction(v.v8v, 2, args)
 
 	if err != nil {
 		cefingo.Logf("L36:x %+v", err)
@@ -115,121 +123,144 @@ func (f EventHandlerFunc) Execute(self *cefingo.CV8handlerT,
 }
 
 func (v Value) IsValid() bool {
-	return v.v8value.IsValid()
+	return v.v8v.IsValid()
 }
 
 func (v Value) IsUndefined() bool {
-	return v.v8value.IsUndefined()
+	return v.v8v.IsUndefined()
 }
 
 func (v Value) IsNull() bool {
-	return v.v8value.IsNull()
+	return v.v8v.IsNull()
 }
 
 func (v Value) IsBool() bool {
-	return v.v8value.IsBool()
+	return v.v8v.IsBool()
 }
 
 func (v Value) IsInt() bool {
-	return v.v8value.IsInt()
+	return v.v8v.IsInt()
 }
 
 func (v Value) IsUnt() bool {
-	return v.v8value.IsUint()
+	return v.v8v.IsUint()
 }
 
 func (v Value) IsDouble() bool {
-	return v.v8value.IsUint()
+	return v.v8v.IsUint()
 }
 
 func (v Value) IsDate() bool {
-	return v.v8value.IsUint()
+	return v.v8v.IsUint()
 }
 
 func (v Value) IsString() bool {
-	return v.v8value.IsString()
+	return v.v8v.IsString()
 }
 
 func (v Value) IsObject() bool {
-	return v.v8value.IsObject()
+	return v.v8v.IsObject()
 }
 
 func (v Value) IsFunction() bool {
-	return v.v8value.IsFunction()
+	return v.v8v.IsFunction()
 }
 
 func (v Value) IsArray() bool {
-	return v.v8value.IsArray()
+	return v.v8v.IsArray()
 }
 
 func (v Value) IsArrayBuffer() bool {
-	return v.v8value.IsArrayBuffer()
+	return v.v8v.IsArrayBuffer()
 }
 
 func (v Value) IsSame(v1 Value) bool {
-	return v.v8value.IsSame(v1.v8value)
+	return v.v8v.IsSame(v1.v8v)
 }
 
 func (v Value) GetBoolValue() bool {
-	return v.v8value.GetBoolValue()
+	return v.v8v.GetBoolValue()
 }
 
 func (v Value) GetIntValue() int {
-	return int(v.v8value.GetIntValue())
+	return int(v.v8v.GetIntValue())
 }
 
 func (v Value) GetUintValue() uint {
-	return uint(v.v8value.GetUintValue())
+	return uint(v.v8v.GetUintValue())
 }
 
 func (v Value) GetDoubleValue() float64 {
-	return v.v8value.GetDoubleValue()
+	return v.v8v.GetDoubleValue()
 }
 
 func (v Value) GetStringValue() string {
-	return v.v8value.GetStringValue()
+	return v.v8v.GetStringValue()
 }
 
 func (v Value) GetDateValue() cefingo.CTimeT {
-	return v.v8value.GetDateValue()
+	return v.v8v.GetDateValue()
 }
 
-func (v Value) HasExceptin() bool {
-	return v.v8value.HasException()
+func (v Value) HasException() bool {
+	return v.v8v.HasException()
 }
 
 func (v Value) GetExceptin() *cefingo.CV8exceptionT {
-	return v.v8value.GetException()
+	return v.v8v.GetException()
 }
 
 func (v Value) ClearExceptin() bool {
-	return v.v8value.ClearException()
+	return v.v8v.ClearException()
 }
 
 func (v Value) HasValueBykey(key string) bool {
-	return v.v8value.HasValueBykey(key)
+	return v.v8v.HasValueBykey(key)
 }
 
 func (v Value) DeleteValueBykey(key string, value Value) (err error) {
-	if !v.v8value.DeleteValueBykey(key) {
+	if !v.v8v.DeleteValueBykey(key) {
 		err = errors.Errorf("Delete value Error key:%s", key)
 	}
 	return err
 }
 
 func (v Value) GetValueBykey(key string) (rv Value) {
-	return Value{v.v8value.GetValueBykey(key)}
+	return Value{v.v8v.GetValueBykey(key)}
 }
 
 func (v Value) SetValueBykey(key string, value Value) (err error) {
-	if !v.v8value.SetValueBykey(key, value.v8value) {
+	if !v.v8v.SetValueBykey(key, value.v8v) {
 		err = errors.Errorf("Set value Error key:%s", key)
 	}
 	return err
 }
 
+func (v Value) Call(name string, args []Value) (r Value, e error) {
+	v8args := make([]*cefingo.CV8valueT, len(args))
+	for i, av := range args {
+		v8args[i] = av.v8v
+	}
+	f := v.GetValueBykey(name)
+	var rv *cefingo.CV8valueT
+	if f.IsFunction() {
+		rv, e = f.v8v.ExecuteFunction(v.v8v, len(args), v8args)
+	} else {
+		e = errors.Errorf("<%s> is not function", name)
+	}
+	return Value{rv}, e
+}
+
+func CreateInt(i int) Value {
+	return Value{cefingo.V8valueCreateInt(i)}
+}
+
 func CreateString(s string) Value {
 	return Value{cefingo.V8valueCreateString(s)}
+}
+
+func CreateStringFromByteArray(b []byte) Value {
+	return Value{cefingo.V8valueCreateStringFromByteArray(b)}
 }
 
 func (c *Context) Eval(code string) (v Value, err error) {
@@ -238,7 +269,6 @@ func (c *Context) Eval(code string) (v Value, err error) {
 	if c.V8context.Eval(code, &v8v, &e) {
 		v = Value{v8v}
 	} else {
-
 		err = errors.Errorf("Eval Error<%s> %s", code, e.GetMessage())
 	}
 	return v, err
@@ -246,14 +276,14 @@ func (c *Context) Eval(code string) (v Value, err error) {
 
 func (c Context) Alertf(message string, v ...interface{}) (err error) {
 
-	f := c.Global.GetValueBykey("alert")
+	f := c.Global.GetValueBykey("alert").v8v
 	defer cefingo.BaseRelease(f)
 
 	msg := cefingo.V8valueCreateString(fmt.Sprintf(message, v...))
 	defer cefingo.BaseRelease(msg)
 
 	args := []*cefingo.CV8valueT{msg}
-	_, err = f.ExecuteFunction(c.Global, 1, args)
+	_, err = f.ExecuteFunction(c.Global.v8v, 1, args)
 
 	if err != nil {
 		cefingo.Logf("L36:x %+v", err)
