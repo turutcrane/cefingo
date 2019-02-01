@@ -56,16 +56,75 @@ func (self *CV8contextT) GetGlobal() *CV8valueT {
 	return g
 }
 
-func V8valueCreateString(s string) *CV8valueT {
+func V8ValueCreateUndefined() *CV8valueT {
+	v := (*CV8valueT)(C.cef_v8value_create_undefined())
+	BaseAddRef(v)
+	return v
+}
+
+func V8ValueCreateNull() *CV8valueT {
+	v := (*CV8valueT)(C.cef_v8value_create_null())
+	BaseAddRef(v)
+	return v
+}
+
+func V8ValueCreateBool(b bool) *CV8valueT {
+	var i int
+	if b {
+		i = 1
+	}
+	v := (*CV8valueT)(C.cef_v8value_create_bool(C.int(i)))
+	BaseAddRef(v)
+	return v
+}
+
+func V8valueCreateInt(i int) *CV8valueT {
+	v := (*CV8valueT)(C.cef_v8value_create_int(C.int32(i)))
+	BaseAddRef(v)
+	return v
+}
+
+func V8valueCreateUint(u uint) *CV8valueT {
+	v := (*CV8valueT)(C.cef_v8value_create_uint(C.uint32(u)))
+	BaseAddRef(v)
+	return v
+}
+
+func V8valueCreateDouble(f float64) *CV8valueT {
+	v := (*CV8valueT)(C.cef_v8value_create_double(C.double(f)))
+	BaseAddRef(v)
+	return v
+}
+
+func V8valueCreateDate(d CTimeT) *CV8valueT {
+	v := (*CV8valueT)(C.cef_v8value_create_date((*C.cef_time_t)(&d)))
+	BaseAddRef(v)
+	return v
+}
+
+func V8valueCreateString(s string) (v *CV8valueT) {
 	cef_string := create_cef_string(s)
 	defer clear_cef_string(cef_string)
 
-	return (*CV8valueT)(C.cef_v8value_create_string(cef_string))
+	v = (*CV8valueT)(C.cef_v8value_create_string(cef_string))
+	BaseAddRef(v)
+	return v
+}
+
+func V8valueCreateStringFromByteArray(b []byte) (v *CV8valueT) {
+	cef_string := create_cef_string_from_byte_array(b)
+	defer clear_cef_string(cef_string)
+
+	v = (*CV8valueT)(C.cef_v8value_create_string(cef_string))
+	BaseAddRef(v)
+	return v
 }
 
 func V8valueCreateObject(accessor *CV8accessorT, interceptor *CV8interceptorT) *CV8valueT {
-	return (*CV8valueT)(C.cef_v8value_create_object(
+	o := (*CV8valueT)(C.cef_v8value_create_object(
 		(*C.cef_v8accessor_t)(accessor), (*C.cef_v8interceptor_t)(interceptor)))
+	BaseAddRef(o)
+	return o
 }
 
 func V8valueCreateArrayBuffer(buffer []byte) *CV8valueT {
@@ -80,7 +139,9 @@ func V8valueCreateArrayBuffer(buffer []byte) *CV8valueT {
 		buffer_len,
 		(*C.cef_v8array_buffer_release_callback_t)(release_callback),
 	)
-	return (*CV8valueT)(v8array_buffer)
+	ab := (*CV8valueT)(v8array_buffer)
+	BaseAddRef(ab)
+	return ab
 }
 
 func (self *CV8valueT) IsValid() bool {
@@ -226,7 +287,9 @@ func (self *CV8valueT) GetValueBykey(key string) (value *CV8valueT) {
 	defer clear_cef_string(key_string)
 
 	value = (*CV8valueT)(C.cefingo_v8value_get_value_bykey((*C.cef_v8value_t)(self), key_string))
-	BaseAddRef(value)
+	if value != nil {
+		BaseAddRef(value)
+	}
 	return value
 }
 
@@ -240,10 +303,14 @@ func (self *CV8valueT) SetValueBykey(key string, value *CV8valueT) bool {
 	return status == 1
 }
 
-func (self *CV8valueT) GetFunctionName() string {
-	usfs := C.cefingo_v8value_get_function_name((*C.cef_v8value_t)(self))
-	s := string_from_cef_string((*C.cef_string_t)(usfs))
-	C.cef_string_userfree_free(usfs)
+func (self *CV8valueT) GetFunctionName() (s string) {
+	if self.IsFunction() {
+		usfs := C.cefingo_v8value_get_function_name((*C.cef_v8value_t)(self))
+		if usfs != nil {
+			s = string_from_cef_string((*C.cef_string_t)(usfs))
+			C.cef_string_userfree_free(usfs)
+		}
+	}
 	return s
 }
 
@@ -280,6 +347,8 @@ func (self *CV8valueT) ExecuteFunction(
 		} else {
 			err = errors.Errorf("%s returns NULL", name)
 		}
+	} else if v.IsValid() {
+		BaseAddRef(v)
 	}
 	return v, err
 }

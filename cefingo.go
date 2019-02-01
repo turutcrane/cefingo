@@ -118,6 +118,8 @@ type Settings struct {
 // Go Equivalent Type of C.cef_xxx
 type CAppT C.cef_app_t
 type CBrowserT C.cef_browser_t
+type CBinaryValueT C.cef_binary_value_t
+type CDictionaryValueT C.cef_dictionary_value_t
 type CCallbackT C.cef_callback_t
 type CClientT C.cef_client_t
 type CFrameT C.cef_frame_t
@@ -140,6 +142,7 @@ type CV8handlerT C.cef_v8handler_t
 type CV8interceptorT C.cef_v8interceptor_t
 type CV8stackTraceT C.cef_v8stack_trace_t
 type CV8valueT C.cef_v8value_t
+type CValueT C.cef_value_t
 
 type CBrowserProcessHandlerT C.cef_browser_process_handler_t
 type CContextMenuHandlerT C.cef_context_menu_handler_t
@@ -332,9 +335,23 @@ func set_cef_string(cs *C.cef_string_t, s string) {
 	}
 }
 
+func set_cef_string_from_byte_array(cs *C.cef_string_t, b []byte) {
+
+	status := C.cef_string_from_utf8((*C.char)(unsafe.Pointer(&b[0])), (C.size_t)(len(b)), cs)
+	if status == 0 {
+		log.Panicln("Error cef_string_from_utf8")
+	}
+}
+
 func create_cef_string(s string) *C.cef_string_t {
 	cs := C.cef_string_t{}
 	set_cef_string(&cs, s)
+	return &cs
+}
+
+func create_cef_string_from_byte_array(b []byte) *C.cef_string_t {
+	cs := C.cef_string_t{}
+	set_cef_string_from_byte_array(&cs, b)
 	return &cs
 }
 

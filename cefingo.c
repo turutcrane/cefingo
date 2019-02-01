@@ -102,6 +102,10 @@ cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self) {
     return self->get_v8context(self);
 }
 
+cef_string_userfree_t cefingo_frame_get_url(cef_frame_t* self) {
+    return self->get_url(self);
+}
+
 typedef struct _cef_resource_handler_t*(CEF_CALLBACK* cefingo_resource_hander_create_t)(
       struct _cef_scheme_handler_factory_t* self,
       struct _cef_browser_t* browser,

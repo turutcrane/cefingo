@@ -31,6 +31,7 @@ extern void cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_fact
 extern void cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t *handler);
 
 extern cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self);
+extern cef_string_userfree_t cefingo_frame_get_url(cef_frame_t* self);
 
 extern int cefingo_scheme_registrar_add_custom_scheme(struct _cef_scheme_registrar_t* self,
     const cef_string_t* scheme_name, int is_standard, int is_local,
