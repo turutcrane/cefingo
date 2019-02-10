@@ -1,7 +1,6 @@
 package cefingo
 
 import (
-	"log"
 	"os"
 	"unsafe"
 
@@ -14,25 +13,27 @@ import "C"
 // type Cint C.int
 // type CSizeT C.size_t
 
-type CErrorcodeT C.cef_errorcode_t
-type CLogSeverityT C.cef_log_severity_t
+// type CStringT C.cef_string_t
 type CTimeT C.cef_time_t
 
-// type CStringT C.cef_string_t
+type CErrorcodeT C.cef_errorcode_t
+type CLogSeverityT C.cef_log_severity_t
+type CStringListT C.cef_string_list_t
 type CTransitionTypeT C.cef_transition_type_t
+type CValueTypeT C.cef_value_type_t
 
 const (
-	ErrNone            = C.ERR_NONE
-	ErrFailed          = C.ERR_FAILED
-	ErrAborted         = C.ERR_ABORTED
-	ErrInvalidArgument = C.ERR_INVALID_ARGUMENT
-	ErrInvalidHandle   = C.ERR_INVALID_HANDLE
-	ErrFileNotFound    = C.ERR_FILE_NOT_FOUND
-	ErrTimedOut        = C.ERR_TIMED_OUT
-	ErrFileTooBig      = C.ERR_FILE_TOO_BIG
-	ErrUnexpected      = C.ERR_UNEXPECTED
-	ErrAccessDenied    = C.ERR_ACCESS_DENIED
-	ErrNotImplemented  = C.ERR_NOT_IMPLEMENTED
+	ErrNone            CErrorcodeT = C.ERR_NONE
+	ErrFailed          CErrorcodeT = C.ERR_FAILED
+	ErrAborted         CErrorcodeT = C.ERR_ABORTED
+	ErrInvalidArgument CErrorcodeT = C.ERR_INVALID_ARGUMENT
+	ErrInvalidHandle   CErrorcodeT = C.ERR_INVALID_HANDLE
+	ErrFileNotFound    CErrorcodeT = C.ERR_FILE_NOT_FOUND
+	ErrTimedOut        CErrorcodeT = C.ERR_TIMED_OUT
+	ErrFileTooBig      CErrorcodeT = C.ERR_FILE_TOO_BIG
+	ErrUnexpected      CErrorcodeT = C.ERR_UNEXPECTED
+	ErrAccessDenied    CErrorcodeT = C.ERR_ACCESS_DENIED
+	ErrNotImplemented  CErrorcodeT = C.ERR_NOT_IMPLEMENTED
 
 // ERR_CONNECTION_CLOSED = -100,
 // ERR_CONNECTION_RESET = -101,
@@ -80,32 +81,60 @@ const (
 // ERR_CACHE_MISS = -400,
 // ERR_INSECURE_RESPONSE = -501,
 )
+
 const (
-	LogSeverityDefault = C.LOGSEVERITY_DEFAULT
-	LogSeverityVerbose = C.LOGSEVERITY_VERBOSE
-	LogSeverityDebug   = C.LOGSEVERITY_DEBUG
-	LogSeverityInfo    = C.LOGSEVERITY_INFO
-	LogSeverityWarning = C.LOGSEVERITY_WARNING
-	LogSeverityError   = C.LOGSEVERITY_ERROR
-	LogSeverityDisable = C.LOGSEVERITY_DISABLE
+	LogSeverityDefault CLogSeverityT = C.LOGSEVERITY_DEFAULT
+	LogSeverityVerbose CLogSeverityT = C.LOGSEVERITY_VERBOSE
+	LogSeverityDebug   CLogSeverityT = C.LOGSEVERITY_DEBUG
+	LogSeverityInfo    CLogSeverityT = C.LOGSEVERITY_INFO
+	LogSeverityWarning CLogSeverityT = C.LOGSEVERITY_WARNING
+	LogSeverityError   CLogSeverityT = C.LOGSEVERITY_ERROR
+	LogSeverityDisable CLogSeverityT = C.LOGSEVERITY_DISABLE
 )
 
 const (
-	TtLink               = C.TT_LINK
-	TtExplicit           = C.TT_EXPLICIT
-	TtAutoSubframe       = C.TT_AUTO_SUBFRAME
-	TtManualSubframe     = C.TT_MANUAL_SUBFRAME
-	TtFormSubmit         = C.TT_FORM_SUBMIT
-	TtReload             = C.TT_RELOAD
-	TtSourceMask         = C.TT_SOURCE_MASK
-	TtBlockedFlag        = C.TT_BLOCKED_FLAG
-	TtForwardBackFlag    = C.TT_FORWARD_BACK_FLAG
-	TtChainStartFlag     = C.TT_CHAIN_START_FLAG
-	TtChainEndFlag       = C.TT_CHAIN_END_FLAG
-	TtClientRedirectFlag = C.TT_CLIENT_REDIRECT_FLAG
-	TtServerRedirectFlag = C.TT_SERVER_REDIRECT_FLAG
-	TtIsRedirectMask     = C.TT_IS_REDIRECT_MASK
-	TtQualifierMask      = C.TT_QUALIFIER_MASK
+	TtLink               CTransitionTypeT = C.TT_LINK
+	TtExplicit           CTransitionTypeT = C.TT_EXPLICIT
+	TtAutoSubframe       CTransitionTypeT = C.TT_AUTO_SUBFRAME
+	TtManualSubframe     CTransitionTypeT = C.TT_MANUAL_SUBFRAME
+	TtFormSubmit         CTransitionTypeT = C.TT_FORM_SUBMIT
+	TtReload             CTransitionTypeT = C.TT_RELOAD
+	TtSourceMask         CTransitionTypeT = C.TT_SOURCE_MASK
+	TtBlockedFlag        CTransitionTypeT = C.TT_BLOCKED_FLAG
+	TtForwardBackFlag    CTransitionTypeT = C.TT_FORWARD_BACK_FLAG
+	TtChainStartFlag     CTransitionTypeT = C.TT_CHAIN_START_FLAG
+	TtChainEndFlag       CTransitionTypeT = C.TT_CHAIN_END_FLAG
+	TtClientRedirectFlag CTransitionTypeT = C.TT_CLIENT_REDIRECT_FLAG
+	TtServerRedirectFlag CTransitionTypeT = C.TT_SERVER_REDIRECT_FLAG
+	TtIsRedirectMask     CTransitionTypeT = C.TT_IS_REDIRECT_MASK
+	TtQualifierMask      CTransitionTypeT = C.TT_QUALIFIER_MASK
+)
+
+const (
+	PidBrowser  CProcessIdT = C.PID_BROWSER
+	PidRenderer CProcessIdT = C.PID_RENDERER
+)
+
+const (
+	FileDialogOpen                CFileDialogModeT = C.FILE_DIALOG_OPEN
+	FileDialogOpenMultiple        CFileDialogModeT = C.FILE_DIALOG_OPEN_MULTIPLE
+	FileDialogOpenFolder          CFileDialogModeT = C.FILE_DIALOG_OPEN_FOLDER
+	FileDialogSave                CFileDialogModeT = C.FILE_DIALOG_SAVE
+	FileDialogTypeMask            CFileDialogModeT = C.FILE_DIALOG_TYPE_MASK
+	FileDialogOverwritepromptFlag CFileDialogModeT = C.FILE_DIALOG_OVERWRITEPROMPT_FLAG
+	FileDialogHidereadonlyFlag    CFileDialogModeT = C.FILE_DIALOG_HIDEREADONLY_FLAG
+)
+
+const (
+	VtypeInvalid    CValueTypeT = C.VTYPE_INVALID
+	VtypeNull       CValueTypeT = C.VTYPE_NULL
+	VtypeBool       CValueTypeT = C.VTYPE_BOOL
+	VtypeInt        CValueTypeT = C.VTYPE_INT
+	VtypeDouble     CValueTypeT = C.VTYPE_DOUBLE
+	VtypeString     CValueTypeT = C.VTYPE_STRING
+	VtypeBinary     CValueTypeT = C.VTYPE_BINARY
+	VtypeDictionary CValueTypeT = C.VTYPE_DICTIONARY
+	VtypeList       CValueTypeT = C.VTYPE_LIST
 )
 
 type Settings struct {
@@ -118,6 +147,7 @@ type Settings struct {
 // Go Equivalent Type of C.cef_xxx
 type CAppT C.cef_app_t
 type CBrowserT C.cef_browser_t
+type CBrowserHostT C.cef_browser_host_t
 type CBinaryValueT C.cef_binary_value_t
 type CDictionaryValueT C.cef_dictionary_value_t
 type CCallbackT C.cef_callback_t
@@ -126,6 +156,7 @@ type CFrameT C.cef_frame_t
 type CCookieT C.cef_cookie_t
 type CCommandLineT C.cef_command_line_t
 type CDomnodeT C.cef_domnode_t
+type CFileDialogModeT C.cef_file_dialog_mode_t
 type CListValueT C.cef_list_value_t
 type CProcessIdT C.cef_process_id_t
 type CProcessMessageT C.cef_process_message_t
@@ -161,6 +192,8 @@ type CRequestHandlerT C.cef_request_handler_t
 type CResourceBundleHanderT C.cef_resource_bundle_handler_t
 type CRenderProcessHandlerT C.cef_render_process_handler_t
 
+type CRunFileDialogCallbackT C.cef_run_file_dialog_callback_t
+
 func init() {
 	// Check cef library version
 	cefVersionMajor := C.cef_version_info(0)
@@ -172,7 +205,7 @@ func init() {
 	if cefVersionMajor != C.CEF_VERSION_MAJOR || chromeVersionMajor != C.CHROME_VERSION_MAJOR {
 		Logf("build lib: cef_binary_%d.%d.%d (chrome:%d)", C.CEF_VERSION_MAJOR, C.CHROME_VERSION_BUILD, C.CEF_COMMIT_NUMBER, C.CHROME_VERSION_MAJOR)
 		Logf("load  lib: cef_binary_%d.%d.%d (chrome:%d)", cefVersionMajor, chromeVersionBuild, cefCommitNumber, chromeVersionMajor)
-		log.Panicln("Cef Library mismatch!")
+		Panicf("L195: Cef Library mismatch!")
 	}
 }
 
@@ -182,7 +215,7 @@ func ExecuteProcess(app *CAppT) {
 
 	instance, err := winapi.GetModuleHandle(nil)
 	if err != nil {
-		log.Panicln(err)
+		Panicf("L205: %v", err)
 	}
 
 	main_args.instance = C.HINSTANCE(unsafe.Pointer(instance))
@@ -317,21 +350,13 @@ func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) 
 
 }
 
-func calloc(num C.size_t, size C.size_t) unsafe.Pointer {
-	p := C.calloc(num, size)
-	if p == nil {
-		log.Panicln("L58: Cannot Allocated.")
-	}
-	return p
-}
-
 func set_cef_string(cs *C.cef_string_t, s string) {
 	c_string := C.CString(s)
 	defer C.free(unsafe.Pointer(c_string))
 
 	status := C.cef_string_from_utf8(c_string, C.strlen(c_string), cs)
 	if status == 0 {
-		log.Panicln("Error cef_string_from_utf8")
+		Panicf("L346: Error cef_string_from_utf8")
 	}
 }
 
@@ -339,7 +364,7 @@ func set_cef_string_from_byte_array(cs *C.cef_string_t, b []byte) {
 
 	status := C.cef_string_from_utf8((*C.char)(unsafe.Pointer(&b[0])), (C.size_t)(len(b)), cs)
 	if status == 0 {
-		log.Panicln("Error cef_string_from_utf8")
+		Panicf("L354: Error cef_string_from_utf8")
 	}
 }
 

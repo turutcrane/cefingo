@@ -50,12 +50,6 @@ func cefingo_v8array_buffer_release_callback_release_buffer(self *C.cef_v8array_
 	// C.free(buffer)
 }
 
-func (self *CV8contextT) GetGlobal() *CV8valueT {
-	g := (*CV8valueT)(C.cefingo_v8context_get_global((*C.cef_v8context_t)(self)))
-	BaseAddRef(g)
-	return g
-}
-
 func V8ValueCreateUndefined() *CV8valueT {
 	v := (*CV8valueT)(C.cef_v8value_create_undefined())
 	BaseAddRef(v)
@@ -246,7 +240,9 @@ func (self *CV8valueT) GetDateValue() (v CTimeT) {
 func (self *CV8valueT) GetStringValue() (s string) {
 	usfs := C.cefingo_v8value_get_string_value((*C.cef_v8value_t)(self))
 	s = string_from_cef_string((*C.cef_string_t)(usfs))
-	C.cef_string_userfree_free(usfs)
+	if usfs != nil {
+		C.cef_string_userfree_free(usfs)
+	}
 	return s
 }
 
@@ -433,6 +429,29 @@ func V8contextGetEnterdContext() (context *CV8contextT) {
 	context = (*CV8contextT)(c)
 	BaseAddRef(context)
 	return context
+}
+
+func (self *CV8contextT) IsValid() bool {
+	status := C.cefingo_v8context_is_valid((*C.cef_v8context_t)(self))
+	return status == 1
+}
+
+func (self *CV8contextT) GetBrowser() *CBrowserT {
+	b := (*CBrowserT)(C.cefingo_v8context_get_browser((*C.cef_v8context_t)(self)))
+	BaseAddRef(b)
+	return b
+}
+
+func (self *CV8contextT) GetGlobal() *CV8valueT {
+	g := (*CV8valueT)(C.cefingo_v8context_get_global((*C.cef_v8context_t)(self)))
+	BaseAddRef(g)
+	return g
+}
+
+func (self *CV8contextT) GetFrame() *CFrameT {
+	f := (*CFrameT)(C.cefingo_v8context_get_frame((*C.cef_v8context_t)(self)))
+	BaseAddRef(f)
+	return f
 }
 
 func (self *CV8contextT) Enter() bool {

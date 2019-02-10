@@ -20,7 +20,10 @@ type Value struct {
 type EventType string
 
 const (
-	EventClick EventType = "click"
+	EventCancel EventType = "cancel"
+	EventClick  EventType = "click"
+	EventClose  EventType = "close"
+	EventSubmit EventType = "submit"
 )
 
 func CreateValue(v8v *cefingo.CV8valueT) Value {
@@ -47,12 +50,12 @@ func ReleaseContext(c *Context) {
 func (c *Context) GetElementById(id string) (value Value, err error) {
 	f := c.Document.GetValueBykey("getElementById").v8v
 	defer cefingo.BaseRelease(f)
-	cefingo.Logf("L42: getElementById is function? :%t", f.IsFunction())
+	// cefingo.Logf("L42: getElementById is function? :%t", f.IsFunction())
 
-	ids := cefingo.V8valueCreateString(id)
-	defer cefingo.BaseRelease(ids)
+	sid := cefingo.V8valueCreateString(id)
+	defer cefingo.BaseRelease(sid)
 
-	args := []*cefingo.CV8valueT{ids}
+	args := []*cefingo.CV8valueT{sid}
 	v8v, err := f.ExecuteFunction(c.Document.v8v, 1, args)
 	if err != nil {
 		cefingo.Logf("L36:x %+v", err)
@@ -66,12 +69,33 @@ func (c *Context) GetElementById(id string) (value Value, err error) {
 	return Value{v8v}, err
 }
 
-func (v Value) AddRef() {
+func (c *Context) GetElementsByClassName(cls string) (elements Value, err error) {
+	v1 := CreateString(cls)
+	defer v1.Release()
+	args := []Value{v1}
+
+	elements, err = c.Document.Call("getElementsByClassName", args)
+	if err != nil {
+		cefingo.Logf("L77: %v", err)
+	}
+	return elements, err
+}
+
+func (v Value) AddRef() Value {
 	cefingo.BaseAddRef(v.v8v)
+	return v
+}
+
+func (v Value) IsNil() bool {
+	return v.v8v == nil
 }
 
 func (v Value) Release() {
-	cefingo.BaseRelease(v.v8v)
+	if v.IsNil() {
+		cefingo.Logf("L89: nil released")
+	} else {
+		cefingo.BaseRelease(v.v8v)
+	}
 }
 
 func (v Value) AddEventListener(e EventType, h cefingo.V8handler) (err error) {
@@ -98,7 +122,7 @@ func (v Value) AddEventListener(e EventType, h cefingo.V8handler) (err error) {
 	return err
 }
 
-type EventHandlerFunc func(event *cefingo.CV8valueT) error
+type EventHandlerFunc func(object Value, event Value) error
 
 func (f EventHandlerFunc) Execute(self *cefingo.CV8handlerT,
 	name string,
@@ -113,11 +137,11 @@ func (f EventHandlerFunc) Execute(self *cefingo.CV8handlerT,
 		cefingo.Logf("%+v", err)
 		return false
 	}
-	err := f(arguments[0])
+	err := f(Value{object}, Value{arguments[0]})
 	if err == nil {
 		sts = true
 	} else {
-		cefingo.Logf("%s Not Handled %v", name, err)
+		cefingo.Logf("L134: %s Not Handled %v", name, err)
 	}
 	return sts
 }
@@ -206,11 +230,11 @@ func (v Value) HasException() bool {
 	return v.v8v.HasException()
 }
 
-func (v Value) GetExceptin() *cefingo.CV8exceptionT {
+func (v Value) GetException() *cefingo.CV8exceptionT {
 	return v.v8v.GetException()
 }
 
-func (v Value) ClearExceptin() bool {
+func (v Value) ClearException() bool {
 	return v.v8v.ClearException()
 }
 
@@ -226,7 +250,15 @@ func (v Value) DeleteValueBykey(key string, value Value) (err error) {
 }
 
 func (v Value) GetValueBykey(key string) (rv Value) {
-	return Value{v.v8v.GetValueBykey(key)}
+	val := v.v8v.GetValueBykey(key)
+	if val == nil {
+		cefingo.Logf("L253: nil returned")
+		if v.HasException() {
+			exc := v.GetException()
+			cefingo.Logf("L256: v has Exception: %s", exc)
+		}
+	}
+	return Value{val}
 }
 
 func (v Value) SetValueBykey(key string, value Value) (err error) {
@@ -274,7 +306,7 @@ func (c *Context) Eval(code string) (v Value, err error) {
 	return v, err
 }
 
-func (c Context) Alertf(message string, v ...interface{}) (err error) {
+func (c *Context) Alertf(message string, v ...interface{}) (err error) {
 
 	f := c.Global.GetValueBykey("alert").v8v
 	defer cefingo.BaseRelease(f)
@@ -289,4 +321,12 @@ func (c Context) Alertf(message string, v ...interface{}) (err error) {
 		cefingo.Logf("L36:x %+v", err)
 	}
 	return err
+}
+
+func (v Value) ToString() (s string, err error) {
+	str, e := v.Call("toString", []Value{})
+	if e == nil {
+		s = str.GetStringValue()
+	}
+	return s, e
 }

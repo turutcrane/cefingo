@@ -20,13 +20,39 @@ func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t
 	switch p := ptr.(type) {
 	case *CAppT:
 		up = unsafe.Pointer(p)
+	case *CBinaryValueT:
+		up = unsafe.Pointer(p)
+	case *CBrowserT:
+		up = unsafe.Pointer(p)
+	case *CBrowserHostT:
+		up = unsafe.Pointer(p)
 	case *CBrowserProcessHandlerT:
 		up = unsafe.Pointer(p)
 	case *CClientT:
 		up = unsafe.Pointer(p)
+	case *CDictionaryValueT:
+		up = unsafe.Pointer(p)
+	case *CFrameT:
+		up = unsafe.Pointer(p)
 	case *CLifeSpanHandlerT:
 		up = unsafe.Pointer(p)
+	case *CListValueT:
+		up = unsafe.Pointer(p)
+	case *CLoadHandlerT:
+		up = unsafe.Pointer(p)
+	case *CProcessMessageT:
+		up = unsafe.Pointer(p)
+	case *CSchemeHandlerFactoryT:
+		up = unsafe.Pointer(p)
+	case *CRequestT:
+		up = unsafe.Pointer(p)
 	case *CRenderProcessHandlerT:
+		up = unsafe.Pointer(p)
+	case *CResourceHandlerT:
+		up = unsafe.Pointer(p)
+	case *CRunFileDialogCallbackT:
+		up = unsafe.Pointer(p)
+	case *CValueT:
 		up = unsafe.Pointer(p)
 	case *CV8valueT:
 		up = unsafe.Pointer(p)
@@ -35,14 +61,6 @@ func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t
 	case *CV8arrayBufferReleaseCallbackT:
 		up = unsafe.Pointer(p)
 	case *CV8handlerT:
-		up = unsafe.Pointer(p)
-	case *CLoadHandlerT:
-		up = unsafe.Pointer(p)
-	case *CSchemeHandlerFactoryT:
-		up = unsafe.Pointer(p)
-	case *CResourceHandlerT:
-		up = unsafe.Pointer(p)
-	case *CRequestT:
 		up = unsafe.Pointer(p)
 	case *CV8exceptionT:
 		up = unsafe.Pointer(p)
@@ -73,4 +91,46 @@ func BaseRelease(ptr interface{}) (b bool) {
 func BaseHasOneRef(ptr interface{}) bool {
 	status := C.cefingo_base_has_one_ref(cast_to_base_ref_counted_t(ptr))
 	return status == 1
+}
+
+func calloc(num C.size_t, size C.size_t) unsafe.Pointer {
+	p := C.calloc(num, size)
+	if p == nil {
+		Panicf("L58: Cannot Allocated.")
+	}
+	return p
+}
+
+type Deassocer interface {
+	Deassoc()
+}
+
+var deassocers = map[unsafe.Pointer][]Deassocer{}
+
+func registerDeassocer(cstruct unsafe.Pointer, d Deassocer) {
+	entry, ok := deassocers[cstruct]
+	if ok {
+		deassocers[cstruct] = append(entry, d)
+	} else {
+		entry = []Deassocer{d}
+		deassocers[cstruct] = entry
+	}
+}
+
+type DeassocFunc func()
+
+func (f DeassocFunc) Deassoc() {
+	f()
+}
+
+//export cefingo_base_deassoc
+func cefingo_base_deassoc(cstruct unsafe.Pointer) {
+	Logf("L106: %p", cstruct)
+	e, ok := deassocers[cstruct]
+	if ok {
+		for _, d := range e {
+			d.Deassoc()
+		}
+		delete(deassocers, cstruct)
+	}
 }

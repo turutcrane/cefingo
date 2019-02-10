@@ -6,7 +6,8 @@
 int REF_COUNT_LOG_OUTPUT = 0;
 
 #define MAXLOGBUF 1000
-void cefingo_cslogf(const char *fn, const char *format, ...) {
+void cefingo_cslogf(const char *fn, const char *format, ...)
+{
     static char buf[MAXLOGBUF + 1];
 
     va_list ap;
@@ -18,7 +19,8 @@ void cefingo_cslogf(const char *fn, const char *format, ...) {
     cefingo_cslog((char *) fn, buf);
 }
 
-void cefingo_panicf(const char *fn, const char *format, ...) {
+void cefingo_panicf(const char *fn, const char *format, ...)
+{
     static char buf[MAXLOGBUF + 1];
 
     va_list ap;
@@ -30,19 +32,22 @@ void cefingo_panicf(const char *fn, const char *format, ...) {
     cefingo_panic((char *) fn, buf);
 }
 
-void cefingo_base_add_ref(cef_base_ref_counted_t *self) {
+void cefingo_base_add_ref(cef_base_ref_counted_t *self)
+{
     self->add_ref(self);
 }
 
-int cefingo_base_release(cef_base_ref_counted_t *self) {
+int cefingo_base_release(cef_base_ref_counted_t *self)
+{
     int status = 0;
-    
+
     status = self->release(self);
 
     return status;
 }
 
-int cefingo_base_has_one_ref(cef_base_ref_counted_t *self) {
+int cefingo_base_has_one_ref(cef_base_ref_counted_t *self)
+{
     return self->has_one_ref(self);
 }
 
@@ -50,12 +55,13 @@ int cefingo_base_has_one_ref(cef_base_ref_counted_t *self) {
 // Increment the reference count.
 ///
 // void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self) {
-void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self) {
+void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self)
+{
     cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
 
     // counter->ref_count++;
     int64 count = __atomic_add_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L40: 0x%llx +count: %d", self, count);
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L58: 0x%llx +count: %d", self, count);
 }
 
 ///
@@ -63,15 +69,20 @@ void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self) {
 // count falls to 0 the object should self-delete. Returns true (1) if the
 // resulting reference count is 0.
 ///
-extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self) {
+extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self)
+{
     cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
     // counter->ref_count--;
     int64 count = __atomic_sub_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
 
     if (count >= 0) {
-        if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L75: 0x%llx -count: %d", self, count);
+        if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L72: 0x%llx -count: %d", self, count);
+        if (count == 0) {
+            cefingo_base_deassoc(self);
+            free(self);
+        }
     } else {
-        cefingo_panicf(__func__, "L77: 0x%llx -count:%d", self, count);
+        cefingo_panicf(__func__, "L74: 0x%llx -count:%d", self, count);
     }
     return (count == 0 ? 1 : 0);
 }
@@ -79,16 +90,18 @@ extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self) {
 ///
 // Returns true (1) if the current reference count is 1.
 ///
-int CEF_CALLBACK cefingo_has_one_ref(cef_base_ref_counted_t* self) {
+int CEF_CALLBACK cefingo_has_one_ref(cef_base_ref_counted_t* self)
+{
     cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
     int64 count = __atomic_load_n(&counter->ref_count, __ATOMIC_SEQ_CST);
 
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L64: 0x%llx has-one: %d", self, count);
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L86: 0x%llx has-one: %d", self, count);
     return (count == 1 ? 1 : 0);
 }
 
-void initialize_cefingo_base_ref_counted(size_t size, cef_base_ref_counted_t* base) {
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L39: size: %d base: 0x%llx", size, base);
+void initialize_cefingo_base_ref_counted(size_t size, cef_base_ref_counted_t* base)
+{
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L91: size: %d base: 0x%llx", size, base);
     base->size = size; // size_t size = base->size;
 
     if (size <= sizeof(cef_base_ref_counted_t)) {
