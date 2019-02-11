@@ -52,6 +52,10 @@ func AllocCAppT(a App) (cApp *CAppT) {
 	return cApp
 }
 
+func (a *CAppT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(a))
+}
+
 ///
 // Return the handler for resource bundle events. If
 // CefSettings.pack_loading_disabled is true (1) a handler must be returned.
@@ -65,8 +69,7 @@ func cefing_app_get_resource_bundle_handler(self *CAppT) *CResourceBundleHanderT
 
 // AssocBrowserProcessHandler associate a hander to app
 func AssocBrowserProcessHandler(app *CAppT, handler *CBrowserProcessHandlerT) {
-	p := (unsafe.Pointer)(handler)
-	C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
+	BaseAddRef(handler)
 	browser_process_handler[app] = handler
 }
 
@@ -82,8 +85,7 @@ func cefing_app_get_browser_process_handler(self *CAppT) *CBrowserProcessHandler
 	if handler == nil {
 		Logf("L77: No Browser Process Handler")
 	} else {
-		p := (unsafe.Pointer)(handler)
-		C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
+		BaseAddRef(handler)
 	}
 	return handler
 
@@ -107,8 +109,7 @@ func cefing_app_get_render_process_handler(self *CAppT) *CRenderProcessHandlerT 
 	if handler == nil {
 		Logf("L77: No Render Process Handler")
 	} else {
-		p := (unsafe.Pointer)(handler)
-		C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
+		BaseAddRef(handler)
 	}
 	return handler
 }

@@ -1,5 +1,9 @@
 package cefingo
 
+import (
+	"unsafe"
+)
+
 // #include "cefingo.h"
 import "C"
 
@@ -67,6 +71,9 @@ func AllocCSchemeHandlerFactoryT(f SchemeHandlerFactory) (factory *CSchemeHandle
 	BaseAddRef(cFactory)
 	scheme_handler_factory_method[cFactory] = f
 	return cFactory
+}
+func (f *CSchemeHandlerFactoryT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(f))
 }
 
 //export cefingo_scheme_handler_factory_create

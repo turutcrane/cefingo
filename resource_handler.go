@@ -93,6 +93,10 @@ func AllocCResourceHanderT(h ResourceHandler) (cHandler *CResourceHandlerT) {
 	return cHandler
 }
 
+func (h *CResourceHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
+}
+
 //export cefingo_resource_handler_process_request
 func cefingo_resource_handler_process_request(
 	self *CResourceHandlerT,

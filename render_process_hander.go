@@ -2,6 +2,7 @@ package cefingo
 
 import (
 	"log"
+	"unsafe"
 )
 
 // #include "cefingo.h"
@@ -126,6 +127,10 @@ func AllocCRenderProcessHandlerT(handler RenderProcessHandler) (cHandler *CRende
 	renderProcessHandlers[rph] = handler
 
 	return rph
+}
+
+func (h *CRenderProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 //export cefingo_render_process_handler_on_render_thread_created

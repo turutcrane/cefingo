@@ -2,6 +2,11 @@ package cefingo
 
 // #include "cefingo.h"
 import "C"
+import "unsafe"
+
+func (m *CProcessMessageT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(m))
+}
 
 func ProcessMessageCreate(name string) *CProcessMessageT {
 	cef_name := create_cef_string(name)

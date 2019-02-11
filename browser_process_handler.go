@@ -2,10 +2,11 @@ package cefingo
 
 import (
 	"log"
-
-	// #include "cefingo.h"
-	"C"
+	"unsafe"
 )
+
+// #include "cefingo.h"
+import "C"
 
 // BrowserProcessHandler is Go interface of C.cef_browser_process_handler_t
 type BrowserProcessHandler interface {
@@ -90,6 +91,10 @@ func AllocCBrowserProcessHandlerT(handler BrowserProcessHandler) (cHandler *CBro
 	browserProcessHandlers[cHandler] = handler
 
 	return cHandler
+}
+
+func (h *CBrowserProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 func (*DefaultBrowserProcessHandler) OnBeforeChildProcessLaunch(

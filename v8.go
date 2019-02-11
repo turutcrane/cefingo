@@ -31,6 +31,10 @@ type V8handler interface {
 
 var v8handlerMap = map[*CV8handlerT]V8handler{}
 
+func (v *CV8valueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(v))
+}
+
 // AllocCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT and construct it
 func AllocCV8arrayBufferReleaseCallbackT() (cv8ab_release_callback *CV8arrayBufferReleaseCallbackT) {
 	p := C.calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t)
@@ -42,6 +46,10 @@ func AllocCV8arrayBufferReleaseCallbackT() (cv8ab_release_callback *CV8arrayBuff
 	BaseAddRef(cv8ab_release_callback)
 
 	return cv8ab_release_callback
+}
+
+func (rh *CV8arrayBufferReleaseCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(rh))
 }
 
 //export cefingo_v8array_buffer_release_callback_release_buffer
@@ -251,6 +259,10 @@ func (self *CV8valueT) HasException() (ret bool) {
 	return v == 1
 }
 
+func (e *CV8exceptionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(e))
+}
+
 func (self *CV8valueT) GetException() (e *CV8exceptionT) {
 	e = (*CV8exceptionT)(C.cefingo_v8value_get_exception((*C.cef_v8value_t)(self)))
 	BaseAddRef(e)
@@ -380,6 +392,10 @@ func AllocCV8handlerT(handler V8handler) (v8handler *CV8handlerT) {
 	return v8handler
 }
 
+func (h *CV8handlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
+}
+
 // Excute Handler
 //export cefingo_v8handler_execute
 func cefingo_v8handler_execute(self *CV8handlerT,
@@ -422,6 +438,10 @@ func V8contextInContext() bool {
 	inContext := C.cef_v8context_in_context()
 	Logf("L150: %d", inContext)
 	return (inContext == 1)
+}
+
+func (v8c *CV8contextT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(v8c))
 }
 
 func V8contextGetEnterdContext() (context *CV8contextT) {

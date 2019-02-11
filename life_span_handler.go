@@ -3,6 +3,7 @@ package cefingo
 //
 import (
 	"log"
+	"unsafe"
 )
 
 // #include "cefingo.h"
@@ -133,6 +134,10 @@ func AllocCLifeSpanHandlerT(handler LifeSpanHandler) (cHandler *CLifeSpanHandler
 	lifeSpanHandlers[ch] = handler
 
 	return ch
+}
+
+func (h *CLifeSpanHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 //export cefingo_life_span_handler_on_before_close

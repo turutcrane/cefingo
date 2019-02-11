@@ -1,7 +1,19 @@
 package cefingo
 
+import (
+	"unsafe"
+)
+
 // #include "cefingo.h"
 import "C"
+
+func (bh *CBrowserHostT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(bh))
+}
+
+func (b *CBrowserT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(b))
+}
 
 func (self *CBrowserT) GetHost() (h *CBrowserHostT) {
 	h = (*CBrowserHostT)(C.cefingo_browser_get_host((*C.cef_browser_t)(self)))
@@ -67,6 +79,10 @@ func AllocRunFileDialogCallbackT(callback RunFileDialogCallback) (crun_file_dial
 	}))
 
 	return crun_file_dialog_callback
+}
+
+func (c *CRunFileDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(c))
 }
 
 //export cefingo_run_file_dialog_callback_on_file_dialog_dismissed

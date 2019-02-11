@@ -1,7 +1,15 @@
 package cefingo
 
+import (
+	"unsafe"
+)
+
 // #include "cefingo.h"
 import "C"
+
+func (r *CRequestT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(r))
+}
 
 func (r *CRequestT) GetUrl() string {
 

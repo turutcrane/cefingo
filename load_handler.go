@@ -2,6 +2,7 @@ package cefingo
 
 import (
 	"log"
+	"unsafe"
 )
 
 // #include "cefingo.h"
@@ -91,6 +92,10 @@ func AllocCLoadHandlerT(h LoadHandler) (loadHandler *CLoadHandlerT) {
 	loadHandlerMap[loadHandler] = h
 
 	return loadHandler
+}
+
+func (h *CLoadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 //export cefingo_load_handler_on_loading_state_change

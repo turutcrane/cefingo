@@ -39,6 +39,10 @@ func AllocCClient(c Client) (cClient *CClientT) {
 	return cClient
 }
 
+func (c *CClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(c))
+}
+
 ///
 // Return the handler for context menus. If no handler is
 // provided the default implementation will be used.
@@ -132,8 +136,7 @@ func cefingo_client_get_life_span_handler(self *CClientT) *CLifeSpanHandlerT {
 	if handler == nil {
 		Logf("L77: No Life Span Handler")
 	} else {
-		p := (unsafe.Pointer)(handler)
-		C.cefingo_add_ref((*C.cef_base_ref_counted_t)(p))
+		BaseAddRef(handler)
 	}
 	return handler
 }
