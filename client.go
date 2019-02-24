@@ -2,6 +2,7 @@ package cefingo
 
 import (
 	"log"
+	"runtime"
 	"unsafe"
 )
 
@@ -23,8 +24,21 @@ type Client interface {
 	) bool
 }
 
-var client_method = map[*CClientT]Client{}
-var life_span_handler = map[*CClientT]*CLifeSpanHandlerT{}
+var client_method = map[*C.cef_client_t]Client{}
+var life_span_handler = map[*C.cef_client_t]*CLifeSpanHandlerT{}
+
+func newCClientT(cef *C.cef_client_t) *CClientT {
+	Logf("L30: %p", cef)
+	BaseAddRef(cef)
+	client := CClientT{cef}
+	runtime.SetFinalizer(&client, func(c *CClientT) {
+		if ref_count_log.output {
+			Logf("L35: %p", c.p_client)
+		}
+		BaseRelease(c.p_client)
+	})
+	return &client
+}
 
 // AllocCClient allocates CClientT and construct it
 func AllocCClient(c Client) (cClient *CClientT) {
@@ -32,14 +46,17 @@ func AllocCClient(c Client) (cClient *CClientT) {
 	Logf("L26: p: %v", p)
 	C.cefingo_construct_client((*C.cefingo_client_wrapper_t)(p))
 
-	cClient = (*CClientT)(p)
-	BaseAddRef(cClient)
-	client_method[cClient] = c
+	cClient = newCClientT((*C.cef_client_t)(p))
+	cp := cClient.p_client
+	client_method[cp] = c
+	registerDeassocer(unsafe.Pointer(cp), DeassocFunc(func() {
+		delete(client_method, cp)
+	}))
 
 	return cClient
 }
 
-func (c *CClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (c *C.cef_client_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(c))
 }
 
@@ -48,7 +65,7 @@ func (c *CClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 // provided the default implementation will be used.
 ///
 //export cefingo_client_get_context_menu_handler
-func cefingo_client_get_context_menu_handler(self *CClientT) *CContextMenuHandlerT {
+func cefingo_client_get_context_menu_handler(self *C.cef_client_t) *CContextMenuHandlerT {
 	return nil
 }
 
@@ -57,7 +74,7 @@ func cefingo_client_get_context_menu_handler(self *CClientT) *CContextMenuHandle
 // implementation will be used.
 ///
 //export cefingo_client_get_dialog_handler
-func cefingo_client_get_dialog_handler(self *CClientT) *CDialogHandlerT {
+func cefingo_client_get_dialog_handler(self *C.cef_client_t) *CDialogHandlerT {
 	return nil
 }
 
@@ -65,7 +82,7 @@ func cefingo_client_get_dialog_handler(self *CClientT) *CDialogHandlerT {
 // Return the handler for browser display state events.
 ///
 //export cefingo_client_get_display_handler
-func cefingo_client_get_display_handler(self *CClientT) *CDisplayHandlerT {
+func cefingo_client_get_display_handler(self *C.cef_client_t) *CDisplayHandlerT {
 	return nil
 }
 
@@ -74,7 +91,7 @@ func cefingo_client_get_display_handler(self *CClientT) *CDisplayHandlerT {
 // will not be allowed.
 ///
 //export cefingo_client_get_download_handler
-func cefingo_client_get_download_handler(self *CClientT) *CDownloaddHanderT {
+func cefingo_client_get_download_handler(self *C.cef_client_t) *CDownloaddHanderT {
 	return nil
 }
 
@@ -82,7 +99,7 @@ func cefingo_client_get_download_handler(self *CClientT) *CDownloaddHanderT {
 // Return the handler for drag events.
 ///
 //export cefingo_client_get_drag_handler
-func cefingo_client_get_drag_handler(self *CClientT) *CDragHandlerT {
+func cefingo_client_get_drag_handler(self *C.cef_client_t) *CDragHandlerT {
 	return nil
 }
 
@@ -90,7 +107,7 @@ func cefingo_client_get_drag_handler(self *CClientT) *CDragHandlerT {
 // Return the handler for find result events.
 ///
 //export cefingo_client_get_find_handler
-func cefingo_client_get_find_handler(self *CClientT) *CFindHandlerT {
+func cefingo_client_get_find_handler(self *C.cef_client_t) *CFindHandlerT {
 	return nil
 }
 
@@ -98,7 +115,7 @@ func cefingo_client_get_find_handler(self *CClientT) *CFindHandlerT {
 // Return the handler for focus events.
 ///
 //export cefingo_client_get_focus_handler
-func cefingo_client_get_focus_handler(self *CClientT) *CFocusHanderT {
+func cefingo_client_get_focus_handler(self *C.cef_client_t) *CFocusHanderT {
 	return nil
 }
 
@@ -107,7 +124,7 @@ func cefingo_client_get_focus_handler(self *CClientT) *CFocusHanderT {
 // default implementation will be used.
 ///
 //export cefingo_client_get_jsdialog_handler
-func cefingo_client_get_jsdialog_handler(self *CClientT) *CJsdialogHandlerT {
+func cefingo_client_get_jsdialog_handler(self *C.cef_client_t) *CJsdialogHandlerT {
 	return nil
 }
 
@@ -115,37 +132,43 @@ func cefingo_client_get_jsdialog_handler(self *CClientT) *CJsdialogHandlerT {
 // Return the handler for keyboard events.
 ///
 //export cefingo_client_get_keyboard_handler
-func cefingo_client_get_keyboard_handler(self *CClientT) *CKeyboardHandlerT {
+func cefingo_client_get_keyboard_handler(self *C.cef_client_t) *CKeyboardHandlerT {
 	return nil
 }
 
 // AssocLifeSpanHandler associate hander to client
 func (client *CClientT) AssocLifeSpanHandler(handler *CLifeSpanHandlerT) {
-	BaseAddRef(handler)
-	life_span_handler[client] = handler
+
+	cp := client.p_client
+	life_span_handler[cp] = handler
+	registerDeassocer(unsafe.Pointer(cp), DeassocFunc(func() {
+		// Do not have reference to app itself in DeassocFunc,
+		// or app is never GCed.
+		delete(life_span_handler, cp)
+	}))
 }
 
 ///
 // Return the handler for browser life span events.
 ///
 //export cefingo_client_get_life_span_handler
-func cefingo_client_get_life_span_handler(self *CClientT) *CLifeSpanHandlerT {
+func cefingo_client_get_life_span_handler(self *C.cef_client_t) *C.cef_life_span_handler_t {
 	Logf("L70:")
 
 	handler := life_span_handler[self]
 	if handler == nil {
 		Logf("L77: No Life Span Handler")
 	} else {
-		BaseAddRef(handler)
+		BaseAddRef(handler.p_life_span_handler)
 	}
-	return handler
+	return handler.p_life_span_handler
 }
 
 ///
 // Return the handler for browser load status events.
 ///
 //export cefingo_client_client_get_load_handler
-func cefingo_client_client_get_load_handler(self *CClientT) *CLoadHandlerT {
+func cefingo_client_client_get_load_handler(self *C.cef_client_t) *C.cef_load_handler_t {
 	return nil
 }
 
@@ -153,7 +176,7 @@ func cefingo_client_client_get_load_handler(self *CClientT) *CLoadHandlerT {
 // Return the handler for off-screen rendering events.
 ///
 //export cefingo_client_get_render_handler
-func cefingo_client_get_render_handler(self *CClientT) *CRenderHandlerT {
+func cefingo_client_get_render_handler(self *C.cef_client_t) *CRenderHandlerT {
 	return nil
 }
 
@@ -161,17 +184,17 @@ func cefingo_client_get_render_handler(self *CClientT) *CRenderHandlerT {
 // Return the handler for browser request events.
 ///
 //export cefingo_client_get_request_handler
-func cefingo_client_get_request_handler(self *CClientT) *CRequestHandlerT {
+func cefingo_client_get_request_handler(self *C.cef_client_t) *CRequestHandlerT {
 	return nil
 }
 
 //on_process_mesage_received call OnProcessMessageRecived method
 //export cefingo_client_on_process_message_received
 func cefingo_client_on_process_message_received(
-	self *CClientT,
-	browser *CBrowserT,
+	self *C.cef_client_t,
+	browser *C.cef_browser_t,
 	source_process CProcessIdT,
-	message *CProcessMessageT,
+	message *C.cef_process_message_t,
 ) (ret C.int) {
 
 	Logf("L46: client: %p", self)
@@ -180,7 +203,10 @@ func cefingo_client_on_process_message_received(
 		log.Panicln("L48: on_process_message_received: Noo!")
 	}
 
-	if f.OnProcessMessageRecived(self, browser, source_process, message) {
+	client := newCClientT(self)
+	b := newCBrowserT(browser)
+	m := newCProcessMessageT(message)
+	if f.OnProcessMessageRecived(client, b, source_process, m) {
 		ret = 1
 	} else {
 		ret = 0

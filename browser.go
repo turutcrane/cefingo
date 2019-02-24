@@ -1,22 +1,36 @@
 package cefingo
 
 import (
+	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
 import "C"
 
+func newCBrowserT(cef *C.cef_browser_t) *CBrowserT {
+	Logf("L42: %p", cef)
+	BaseAddRef(cef)
+	browser := CBrowserT{cef}
+	runtime.SetFinalizer(&browser, func(b *CBrowserT) {
+		if ref_count_log.output {
+			Logf("L47: %p", b.p_browser)
+		}
+		BaseRelease(b.p_browser)
+	})
+	return &browser
+}
+
 func (bh *CBrowserHostT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(bh))
 }
 
-func (b *CBrowserT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (b *C.cef_browser_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(b))
 }
 
 func (self *CBrowserT) GetHost() (h *CBrowserHostT) {
-	h = (*CBrowserHostT)(C.cefingo_browser_get_host((*C.cef_browser_t)(self)))
+	h = (*CBrowserHostT)(C.cefingo_browser_get_host(self.p_browser))
 	BaseAddRef(h)
 	return h
 }
@@ -25,7 +39,7 @@ func (self *CBrowserT) GetHost() (h *CBrowserHostT) {
 // Returns the focused frame for the browser window.
 ///
 func (b *CBrowserT) GetFocusedFrame() (f *CFrameT) {
-	f = (*CFrameT)(C.cefingo_browser_get_focused_frame((*C.cef_browser_t)(b)))
+	f = (*CFrameT)(C.cefingo_browser_get_focused_frame(b.p_browser))
 	BaseAddRef(f)
 	return f
 }
@@ -39,9 +53,9 @@ func (self *CBrowserT) SendProcessMessage(
 	message *CProcessMessageT) bool {
 
 	status := C.cefingo_browser_send_process_message(
-		(*C.cef_browser_t)(self),
+		self.p_browser,
 		C.cef_process_id_t(target_process),
-		(*C.cef_process_message_t)(message),
+		message.p_process_message,
 	)
 	return status == 1
 }
@@ -93,7 +107,7 @@ func cefingo_run_file_dialog_callback_on_file_dialog_dismissed(
 
 	c := run_file_dialog_callback[self]
 	if c == nil {
-		Logger.Panicln("L62: on_file_dialog_dismissed: Noo!")
+		Panicf("L62: on_file_dialog_dismissed: Noo!")
 	}
 	c.OnFileDialogDismissed(self, int(selected_accept_filter), file_paths)
 }
@@ -128,6 +142,7 @@ func (h *CBrowserHostT) RunFileDialog(
 	dfp := create_cef_string(default_file_path)
 	defer clear_cef_string(dfp)
 
+	BaseAddRef(callback)
 	C.cefingo_browser_host_run_file_dialog(
 		(*C.cef_browser_host_t)(h),
 		C.cef_file_dialog_mode_t(mode),

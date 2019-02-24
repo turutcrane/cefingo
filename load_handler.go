@@ -2,6 +2,7 @@ package cefingo
 
 import (
 	"log"
+	"runtime"
 	"unsafe"
 )
 
@@ -77,7 +78,21 @@ type LoadHandler interface {
 	)
 }
 
-var loadHandlerMap = map[*CLoadHandlerT]LoadHandler{}
+var loadHandlerMap = map[*C.cef_load_handler_t]LoadHandler{}
+
+func newCLoadHandlerT(cef *C.cef_load_handler_t) *CLoadHandlerT {
+	Logf("L127: %p", cef)
+	BaseAddRef(cef)
+	handler := CLoadHandlerT{cef}
+
+	runtime.SetFinalizer(&handler, func(h *CLoadHandlerT) {
+		if ref_count_log.output {
+			Logf("L133: %p", h.p_load_handler)
+		}
+		BaseRelease(h.p_load_handler)
+	})
+	return &handler
+}
 
 // AllocCLoadHandlerT allocates CLoadHandlerT and construct it
 func AllocCLoadHandlerT(h LoadHandler) (loadHandler *CLoadHandlerT) {
@@ -86,22 +101,25 @@ func AllocCLoadHandlerT(h LoadHandler) (loadHandler *CLoadHandlerT) {
 
 	C.cefingo_construct_load_handler((*C.cefingo_load_handler_wrapper_t)(p))
 
-	loadHandler = (*CLoadHandlerT)(p)
-	BaseAddRef(loadHandler)
+	loadHandler = newCLoadHandlerT((*C.cef_load_handler_t)(p))
 
-	loadHandlerMap[loadHandler] = h
+	cefp := loadHandler.p_load_handler
+	loadHandlerMap[cefp] = h
+	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
+		delete(loadHandlerMap, cefp)
+	}))
 
 	return loadHandler
 }
 
-func (h *CLoadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (h *C.cef_load_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 //export cefingo_load_handler_on_loading_state_change
 func cefingo_load_handler_on_loading_state_change(
-	self *CLoadHandlerT,
-	browser *CBrowserT,
+	self *C.cef_load_handler_t,
+	browser *C.cef_browser_t,
 	isLoading C.int,
 	canGoBack C.int,
 	canGoForward C.int,
@@ -110,13 +128,15 @@ func cefingo_load_handler_on_loading_state_change(
 	if h == nil {
 		log.Panicln("L100: on_loading_state_change: Noo!")
 	}
-	h.OnLoadingStateChange(self, browser, (int)(isLoading), (int)(canGoBack), (int)(canGoForward))
+	handler := newCLoadHandlerT(self)
+	b := newCBrowserT(browser)
+	h.OnLoadingStateChange(handler, b, (int)(isLoading), (int)(canGoBack), (int)(canGoForward))
 }
 
 //export cefingo_load_handler_on_load_start
 func cefingo_load_handler_on_load_start(
-	self *CLoadHandlerT,
-	browser *CBrowserT,
+	self *C.cef_load_handler_t,
+	browser *C.cef_browser_t,
 	frame *CFrameT,
 	transitionType CTransitionTypeT,
 ) {
@@ -124,13 +144,15 @@ func cefingo_load_handler_on_load_start(
 	if h == nil {
 		log.Panicln("L100: on_load_start: Noo!")
 	}
-	h.OnLoadStart(self, browser, frame, transitionType)
+	handler := newCLoadHandlerT(self)
+	b := newCBrowserT(browser)
+	h.OnLoadStart(handler, b, frame, transitionType)
 }
 
 //export cefingo_load_handler_on_load_end
 func cefingo_load_handler_on_load_end(
-	self *CLoadHandlerT,
-	browser *CBrowserT,
+	self *C.cef_load_handler_t,
+	browser *C.cef_browser_t,
 	frame *CFrameT,
 	httpStatusCode C.int,
 ) {
@@ -138,13 +160,15 @@ func cefingo_load_handler_on_load_end(
 	if h == nil {
 		log.Panicln("L100: on_load_end: Noo!")
 	}
-	h.OnLoadEnd(self, browser, frame, (int)(httpStatusCode))
+	handler := newCLoadHandlerT(self)
+	b := newCBrowserT(browser)
+	h.OnLoadEnd(handler, b, frame, (int)(httpStatusCode))
 }
 
 //export cefingo_load_handler_on_load_error
 func cefingo_load_handler_on_load_error(
-	self *CLoadHandlerT,
-	browser *CBrowserT,
+	self *C.cef_load_handler_t,
+	browser *C.cef_browser_t,
 	frame *CFrameT,
 	errorCode CErrorcodeT,
 	errorText *C.cef_string_t,
@@ -156,7 +180,9 @@ func cefingo_load_handler_on_load_error(
 	}
 	t := string_from_cef_string(errorText)
 	u := string_from_cef_string(failedUrl)
-	h.OnLoadError(self, browser, frame, errorCode, t, u)
+	handler := newCLoadHandlerT(self)
+	b := newCBrowserT(browser)
+	h.OnLoadError(handler, b, frame, errorCode, t, u)
 }
 
 // Default LoadHander is dummy implementaion of CLoadHanderT

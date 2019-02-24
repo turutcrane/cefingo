@@ -6,7 +6,7 @@
 int REF_COUNT_LOG_OUTPUT = 0;
 
 #define MAXLOGBUF 1000
-void cefingo_cslogf(const char *fn, const char *format, ...)
+void cefingo_cslogf(cef_base_ref_counted_t* self, const char *fn, const char *format, ...)
 {
     static char buf[MAXLOGBUF + 1];
 
@@ -16,7 +16,7 @@ void cefingo_cslogf(const char *fn, const char *format, ...)
     va_end(ap);
     buf[MAXLOGBUF] = '\0';
 
-    cefingo_cslog((char *) fn, buf);
+    cefingo_cslog(self, (char *) fn, buf);
 }
 
 void cefingo_panicf(const char *fn, const char *format, ...)
@@ -61,7 +61,7 @@ void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self)
 
     // counter->ref_count++;
     int64 count = __atomic_add_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L58: 0x%llx +count: %d", self, count);
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "L64: 0x%llx +count: %d", self, count);
 }
 
 ///
@@ -76,13 +76,13 @@ extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self)
     int64 count = __atomic_sub_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
 
     if (count >= 0) {
-        if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L72: 0x%llx -count: %d", self, count);
+        if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "L79: 0x%llx -count: %d", self, count);
         if (count == 0) {
             cefingo_base_deassoc(self);
-            free(self);
+            // free(self);
         }
     } else {
-        cefingo_panicf(__func__, "L74: 0x%llx -count:%d", self, count);
+        cefingo_panicf(__func__, "L85: 0x%llx -count:%d", self, count);
     }
     return (count == 0 ? 1 : 0);
 }
@@ -95,17 +95,17 @@ int CEF_CALLBACK cefingo_has_one_ref(cef_base_ref_counted_t* self)
     cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
     int64 count = __atomic_load_n(&counter->ref_count, __ATOMIC_SEQ_CST);
 
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L86: 0x%llx has-one: %d", self, count);
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "L98: 0x%llx has-one: %d", self, count);
     return (count == 1 ? 1 : 0);
 }
 
 void initialize_cefingo_base_ref_counted(size_t size, cef_base_ref_counted_t* base)
 {
-    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(__func__, "L91: size: %d base: 0x%llx", size, base);
+    if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(base, __func__, "L104: size: %d base: 0x%llx", size, base);
     base->size = size; // size_t size = base->size;
 
     if (size <= sizeof(cef_base_ref_counted_t)) {
-        cefingo_cslogf(__func__, "FATAL: initialize_cef_base failed, size member not set");
+        cefingo_cslogf(NULL, __func__, "FATAL: initialize_cef_base failed, size member not set");
         _exit(1);
     }
     base->add_ref = cefingo_add_ref;

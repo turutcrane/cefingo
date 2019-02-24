@@ -8,9 +8,6 @@
 #include "cefingo_base.h"
 #include "cefingo_values.h"
 
-#define FUNCNAME_TO_GO ((char*)__func__)
-extern void cefingo_cslogf(const char *fn, const char *format, ...);
-
 CEFINGO_REF_COUNTER_WRAPPER(cef_app_t, cefingo_app_wrapper_t);
 CEFINGO_REF_COUNTER_WRAPPER(cef_client_t, cefingo_client_wrapper_t);
 CEFINGO_REF_COUNTER_WRAPPER(cef_browser_process_handler_t, cefingo_browser_process_handler_wrapper_t);

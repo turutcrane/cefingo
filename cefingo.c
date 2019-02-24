@@ -3,7 +3,6 @@
 
 void cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t *handler)
 {
-    // cefingo_cslogf(__func__, "L14: 0x%llx", handler);
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof(*handler), counter),
         (cef_base_ref_counted_t*) handler);
@@ -18,6 +17,7 @@ void cefingo_construct_browser_process_handler(cefingo_browser_process_handler_w
         offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
     handler->body.on_context_initialized = cefingo_browser_process_handler_on_context_initialized;
+    handler->body.on_render_process_thread_created = cefingo_browser_process_handler_on_render_process_thread_created;
 }
 
 void cefingo_construct_client(cefingo_client_wrapper_t* client)

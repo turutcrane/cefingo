@@ -145,13 +145,20 @@ type Settings struct {
 }
 
 // Go Equivalent Type of C.cef_xxx
-type CAppT C.cef_app_t
-type CBrowserT C.cef_browser_t
+type CAppT struct {
+	p_app *C.cef_app_t
+}
+
+type CBrowserT struct {
+	p_browser *C.cef_browser_t
+}
 type CBrowserHostT C.cef_browser_host_t
 type CBinaryValueT C.cef_binary_value_t
 type CDictionaryValueT C.cef_dictionary_value_t
 type CCallbackT C.cef_callback_t
-type CClientT C.cef_client_t
+type CClientT struct {
+	p_client *C.cef_client_t
+}
 type CFrameT C.cef_frame_t
 type CCookieT C.cef_cookie_t
 type CCommandLineT C.cef_command_line_t
@@ -159,11 +166,15 @@ type CDomnodeT C.cef_domnode_t
 type CFileDialogModeT C.cef_file_dialog_mode_t
 type CListValueT C.cef_list_value_t
 type CProcessIdT C.cef_process_id_t
-type CProcessMessageT C.cef_process_message_t
+type CProcessMessageT struct {
+	p_process_message *C.cef_process_message_t
+}
 type CRequestT C.cef_request_t
 type CResourceHandlerT C.cef_resource_handler_t
 type CResponseT C.cef_response_t
-type CSchemeHandlerFactoryT C.cef_scheme_handler_factory_t
+type CSchemeHandlerFactoryT struct {
+	p_scheme_handler_factory *C.cef_scheme_handler_factory_t
+}
 type CSchemeRegistrarT C.cef_scheme_registrar_t
 type CV8accessorT C.cef_v8accessor_t
 type CV8arrayBufferReleaseCallbackT C.cef_v8array_buffer_release_callback_t
@@ -175,7 +186,9 @@ type CV8stackTraceT C.cef_v8stack_trace_t
 type CV8valueT C.cef_v8value_t
 type CValueT C.cef_value_t
 
-type CBrowserProcessHandlerT C.cef_browser_process_handler_t
+type CBrowserProcessHandlerT struct {
+	p_browser_process_handler *C.cef_browser_process_handler_t
+}
 type CContextMenuHandlerT C.cef_context_menu_handler_t
 type CDialogHandlerT C.cef_dialog_handler_t
 type CDisplayHandlerT C.cef_display_handler_t
@@ -185,12 +198,18 @@ type CFindHandlerT C.cef_find_handler_t
 type CFocusHanderT C.cef_focus_handler_t
 type CJsdialogHandlerT C.cef_jsdialog_handler_t
 type CKeyboardHandlerT C.cef_keyboard_handler_t
-type CLifeSpanHandlerT C.cef_life_span_handler_t
-type CLoadHandlerT C.cef_load_handler_t
+type CLifeSpanHandlerT struct {
+	p_life_span_handler *C.cef_life_span_handler_t
+}
+type CLoadHandlerT struct {
+	p_load_handler *C.cef_load_handler_t
+}
 type CRenderHandlerT C.cef_render_handler_t
 type CRequestHandlerT C.cef_request_handler_t
 type CResourceBundleHanderT C.cef_resource_bundle_handler_t
-type CRenderProcessHandlerT C.cef_render_process_handler_t
+type CRenderProcessHandlerT struct {
+	p_render_process_handler *C.cef_render_process_handler_t
+}
 
 type CRunFileDialogCallbackT C.cef_run_file_dialog_callback_t
 
@@ -234,10 +253,10 @@ func ExecuteProcess(app *CAppT) {
 	// cef_sandbox_win.h for details).
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L116-L130
 	///
-	BaseAddRef(app)
-	// code := C.cef_execute_process(&main_args, (*C.cef_app_t)(unsafe.Pointer(app)), nil)
-	code := C.cef_execute_process(&main_args, (*C.cef_app_t)(app), nil)
-	Logf("L37: code: %d: %t", code, BaseHasOneRef(app))
+	BaseAddRef(app.p_app) // ??
+	Logf("L243: %t", BaseHasOneRef(app.p_app))
+	code := C.cef_execute_process(&main_args, app.p_app, nil)
+	Logf("L245: code: %d: %t", code, BaseHasOneRef(app.p_app))
 	if code >= 0 {
 		os.Exit(int(code))
 	}
@@ -276,8 +295,8 @@ func Initialize(s Settings, app *CAppT) {
 	// be NULL (see cef_sandbox_win.h for details).
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L131-L142
 	///
-	BaseAddRef(app)
-	c_status = C.cef_initialize(&main_args, &settings, (*C.cef_app_t)(unsafe.Pointer(app)), nil)
+	BaseAddRef(app.p_app) // ??
+	c_status = C.cef_initialize(&main_args, &settings, app.p_app, nil)
 	Logf("L51: cef_initialize: %d", c_status)
 
 }
@@ -308,7 +327,7 @@ func Shutdown() {
 }
 
 func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) {
-	Logf("L97:")
+	Logf("L330:")
 	// Window info
 	window_info := C.cef_window_info_t{}
 	window_info.style = C.WS_OVERLAPPEDWINDOW | C.WS_CLIPCHILDREN |
@@ -341,13 +360,13 @@ func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) 
 	// thread and will not block.
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_browser_capi.h#L842-L854
 	///
+	// BaseAddRef(client.p_client) ?? Need not? clinet.p_client is CefClientCToCpp::Wrap-ed
 	C.cef_browser_host_create_browser(
 		&window_info,
-		(*C.cef_client_t)(client),
+		client.p_client,
 		cef_url,
 		&browser_settings, nil,
 	)
-
 }
 
 func set_cef_string(cs *C.cef_string_t, s string) {

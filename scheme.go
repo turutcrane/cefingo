@@ -1,6 +1,7 @@
 package cefingo
 
 import (
+	"runtime"
 	"unsafe"
 )
 
@@ -54,32 +55,51 @@ func RegisterSchemeHandlerFactory(
 		defer clear_cef_string(d)
 	}
 
+	BaseAddRef(factory.p_scheme_handler_factory)
 	return (int)(C.cef_register_scheme_handler_factory(
 		s, d,
-		(*C.cef_scheme_handler_factory_t)(factory)))
+		factory.p_scheme_handler_factory))
 }
 
-var scheme_handler_factory_method = map[*CSchemeHandlerFactoryT]SchemeHandlerFactory{}
+var scheme_handler_factory_method = map[*C.cef_scheme_handler_factory_t]SchemeHandlerFactory{}
 
+func newCSchemeHandlerFactoryT(cFactory *C.cef_scheme_handler_factory_t) *CSchemeHandlerFactoryT {
+	Logf("L42: %p", cFactory)
+	BaseAddRef(cFactory)
+	factory := CSchemeHandlerFactoryT{cFactory}
+	runtime.SetFinalizer(&factory, func(f *CSchemeHandlerFactoryT) {
+		if ref_count_log.output {
+			Logf("L72: %p", factory.p_scheme_handler_factory)
+		}
+		BaseRelease(f.p_scheme_handler_factory)
+	})
+	return &factory
+
+}
 func AllocCSchemeHandlerFactoryT(f SchemeHandlerFactory) (factory *CSchemeHandlerFactoryT) {
 	p := C.calloc(1, C.sizeof_cefingo_scheme_handler_factory_wrapper_t)
 
 	fp := (*C.cefingo_scheme_handler_factory_wrapper_t)(p)
 	C.cefingo_construct_scheme_handler_factory(fp)
 
-	cFactory := (*CSchemeHandlerFactoryT)(p)
-	BaseAddRef(cFactory)
-	scheme_handler_factory_method[cFactory] = f
+	cFactory := newCSchemeHandlerFactoryT((*C.cef_scheme_handler_factory_t)(p))
+
+	cefp := cFactory.p_scheme_handler_factory
+	scheme_handler_factory_method[cefp] = f
+	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
+		delete(scheme_handler_factory_method, cefp)
+	}))
 	return cFactory
 }
-func (f *CSchemeHandlerFactoryT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+
+func (f *C.cef_scheme_handler_factory_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(f))
 }
 
 //export cefingo_scheme_handler_factory_create
 func cefingo_scheme_handler_factory_create(
-	self *CSchemeHandlerFactoryT,
-	browser *CBrowserT,
+	self *C.cef_scheme_handler_factory_t,
+	browser *C.cef_browser_t,
 	frame *CFrameT,
 	scheme_name *C.cef_string_t,
 	request *CRequestT,
@@ -89,7 +109,9 @@ func cefingo_scheme_handler_factory_create(
 		Logf("L70: No Scheme Factory ")
 	}
 	s := string_from_cef_string(scheme_name)
-	return f.Create(self, browser, frame, s, request)
+	b := newCBrowserT(browser)
+	factory := newCSchemeHandlerFactoryT(self)
+	return f.Create(factory, b, frame, s, request)
 }
 
 func (self *CSchemeRegistrarT) AddCustomScheme(

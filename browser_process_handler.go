@@ -1,7 +1,7 @@
 package cefingo
 
 import (
-	"log"
+	"runtime"
 	"unsafe"
 )
 
@@ -64,36 +64,63 @@ type BrowserProcessHandler interface {
 	//	int64 delay_ms);
 }
 
-var browserProcessHandlers = map[*CBrowserProcessHandlerT]BrowserProcessHandler{}
+var browserProcessHandlers = map[*C.cef_browser_process_handler_t]BrowserProcessHandler{}
+
+func newCBrowserProcessHandlerT(cef *C.cef_browser_process_handler_t) *CBrowserProcessHandlerT {
+	Tracef(unsafe.Pointer(cef), "L127:")
+	BaseAddRef(cef)
+	handler := CBrowserProcessHandlerT{cef}
+
+	runtime.SetFinalizer(&handler, func(h *CBrowserProcessHandlerT) {
+		Tracef(unsafe.Pointer(h.p_browser_process_handler), "L133:")
+		BaseRelease(h.p_browser_process_handler)
+	})
+	return &handler
+}
 
 //export cefingo_browser_process_handler_on_context_initialized
-func cefingo_browser_process_handler_on_context_initialized(self *CBrowserProcessHandlerT) {
-	// Logf("L19: self: %p", self)
+func cefingo_browser_process_handler_on_context_initialized(self *C.cef_browser_process_handler_t) {
 
 	f := browserProcessHandlers[self]
 	if f == nil {
-		log.Panicln("37: Noo!")
+		Panicf("75: Noo!")
 	}
+	h := newCBrowserProcessHandlerT(self)
+	f.OnContextInitialized(h)
+}
 
-	f.OnContextInitialized(self)
+//export cefingo_browser_process_handler_on_render_process_thread_created
+func cefingo_browser_process_handler_on_render_process_thread_created(
+	self *C.cef_browser_process_handler_t,
+	extra_info *CListValueT,
+) {
+	f := browserProcessHandlers[self]
+	if f == nil {
+		Panicf("88: Noo!")
+	}
+	h := newCBrowserProcessHandlerT(self)
+	f.OnRenderProcessThreadCreated(h, extra_info)
 }
 
 type DefaultBrowserProcessHandler struct {
 }
 
 func AllocCBrowserProcessHandlerT(handler BrowserProcessHandler) (cHandler *CBrowserProcessHandlerT) {
-	p := C.calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t)
-	Logf("L39: p: %v", p)
+	p := c_calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t, "L112:")
 	C.cefingo_construct_browser_process_handler((*C.cefingo_browser_process_handler_wrapper_t)(p))
 
-	cHandler = (*CBrowserProcessHandlerT)(p)
-	BaseAddRef(cHandler)
-	browserProcessHandlers[cHandler] = handler
+	cHandler = newCBrowserProcessHandlerT((*C.cef_browser_process_handler_t)(p))
+
+	cefp := cHandler.p_browser_process_handler
+	browserProcessHandlers[cefp] = handler
+	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
+		delete(browserProcessHandlers, cefp)
+	}))
 
 	return cHandler
 }
 
-func (h *CBrowserProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (h *C.cef_browser_process_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 

@@ -7,12 +7,13 @@ import (
 // #include "cefingo.h"
 import "C"
 
-func RefCountLogOutput(enable bool) {
-	if enable {
-		C.REF_COUNT_LOG_OUTPUT = C.TRUE
-	} else {
-		C.REF_COUNT_LOG_OUTPUT = C.FALSE
+func c_calloc(n C.size_t, s C.size_t, msg string, v ...interface{}) (p unsafe.Pointer) {
+	p = C.calloc(n, s)
+	if ref_count_log.trace {
+		ref_count_log.traceSet[p] = true
+		traceuf(1, p, msg, v...)
 	}
+	return p
 }
 
 // func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t) {
@@ -97,14 +98,6 @@ func BaseHasOneRef(rc refCounted) bool {
 	return status == 1
 }
 
-func calloc(num C.size_t, size C.size_t) unsafe.Pointer {
-	p := C.calloc(num, size)
-	if p == nil {
-		Panicf("L58: Cannot Allocated.")
-	}
-	return p
-}
-
 type Deassocer interface {
 	Deassoc()
 }
@@ -129,9 +122,9 @@ func (f DeassocFunc) Deassoc() {
 
 //export cefingo_base_deassoc
 func cefingo_base_deassoc(cstruct unsafe.Pointer) {
-	Logf("L132: %p", cstruct)
 	e, ok := deassocers[cstruct]
 	if ok {
+		Tracef(cstruct, "L160:")
 		for _, d := range e {
 			d.Deassoc()
 		}

@@ -1,23 +1,52 @@
 package cefingo
 
 import (
+	"fmt"
 	"log"
 	"runtime"
 	"strings"
+	"unsafe"
 )
+
+// #include "cefingo.h"
 import "C"
 
 var Logger *log.Logger
 
+var ref_count_log struct {
+	output   bool
+	trace    bool
+	traceSet map[unsafe.Pointer]bool
+}
+
+func init() {
+	ref_count_log.traceSet = map[unsafe.Pointer]bool{}
+}
+
+func traceuf(up int, p unsafe.Pointer, message string, v ...interface{}) {
+	if Logger != nil && ref_count_log.output {
+		_, trace := ref_count_log.traceSet[p]
+		if p == nil || trace {
+			fn := caller_name(up)
+			msg := fmt.Sprintf(message, v...)
+			Logger.Printf("(%s) %s %p\n", fn, msg, p)
+		}
+	}
+}
+
+func Tracef(p unsafe.Pointer, message string, v ...interface{}) {
+	traceuf(1, p, message, v...)
+}
+
 func Logf(message string, v ...interface{}) {
 	if Logger != nil {
-		fn := caller_name()
+		fn := caller_name(0)
 		Logger.Printf("("+fn+") "+message+"\n", v...)
 	}
 }
 
 func Panicf(message string, v ...interface{}) {
-	fn := caller_name()
+	fn := caller_name(0)
 	if Logger != nil {
 		Logger.Panicf("("+fn+") "+message+"\n", v...)
 	} else {
@@ -25,10 +54,26 @@ func Panicf(message string, v ...interface{}) {
 	}
 }
 
+func RefCountLogOutput(enable bool) {
+	ref_count_log.output = enable
+	if enable {
+		C.REF_COUNT_LOG_OUTPUT = C.TRUE
+	} else {
+		C.REF_COUNT_LOG_OUTPUT = C.FALSE
+	}
+}
+
+func RefCountLogTrace(on bool) {
+	ref_count_log.trace = on
+}
+
 //export cefingo_cslog
-func cefingo_cslog(fn *C.char, s *C.char) {
+func cefingo_cslog(p unsafe.Pointer, fn *C.char, s *C.char) {
 	if Logger != nil {
-		Logger.Println("(C."+C.GoString(fn)+")", strings.TrimRight(C.GoString(s), "\n"))
+		_, trace := ref_count_log.traceSet[p]
+		if p == nil || trace {
+			Logger.Println("(C."+C.GoString(fn)+")", strings.TrimRight(C.GoString(s), "\n"))
+		}
 	}
 }
 
@@ -39,9 +84,9 @@ func cefingo_panic(fn *C.char, s *C.char) {
 	}
 }
 
-func caller_name() (fn string) {
+func caller_name(upper int) (fn string) {
 	caller := []string{""}
-	pt, _, _, ok := runtime.Caller(2)
+	pt, _, _, ok := runtime.Caller(upper + 2)
 	if ok {
 		caller = strings.Split(runtime.FuncForPC(pt).Name(), "/")
 	}
@@ -49,5 +94,5 @@ func caller_name() (fn string) {
 	if strings.Index(fn, "_cgo") >= 0 {
 		fn = "C"
 	}
-	return
+	return fn
 }

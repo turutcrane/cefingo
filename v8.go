@@ -457,9 +457,8 @@ func (self *CV8contextT) IsValid() bool {
 }
 
 func (self *CV8contextT) GetBrowser() *CBrowserT {
-	b := (*CBrowserT)(C.cefingo_v8context_get_browser((*C.cef_v8context_t)(self)))
-	BaseAddRef(b)
-	return b
+	b := C.cefingo_v8context_get_browser((*C.cef_v8context_t)(self))
+	return newCBrowserT(b)
 }
 
 func (self *CV8contextT) GetGlobal() *CV8valueT {
