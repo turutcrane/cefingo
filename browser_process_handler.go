@@ -92,14 +92,14 @@ func cefingo_browser_process_handler_on_context_initialized(self *C.cef_browser_
 //export cefingo_browser_process_handler_on_render_process_thread_created
 func cefingo_browser_process_handler_on_render_process_thread_created(
 	self *C.cef_browser_process_handler_t,
-	extra_info *CListValueT,
+	extra_info *C.cef_list_value_t,
 ) {
 	f := browserProcessHandlers[self]
 	if f == nil {
 		Panicf("88: Noo!")
 	}
-	h := newCBrowserProcessHandlerT(self)
-	f.OnRenderProcessThreadCreated(h, extra_info)
+	f.OnRenderProcessThreadCreated(newCBrowserProcessHandlerT(self),
+		newCListValueT(extra_info))
 }
 
 type DefaultBrowserProcessHandler struct {

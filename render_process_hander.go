@@ -119,27 +119,25 @@ var renderProcessHandlers = map[*C.cef_render_process_handler_t]RenderProcessHan
 var rphLoadHandlers = map[*C.cef_render_process_handler_t]*CLoadHandlerT{}
 
 func newCRenderProcessHandlerT(cef *C.cef_render_process_handler_t) *CRenderProcessHandlerT {
-	Logf("L30: %p", cef)
+	Tracef(unsafe.Pointer(cef), "L122:")
 	BaseAddRef(cef)
 	handler := CRenderProcessHandlerT{cef}
 	runtime.SetFinalizer(&handler, func(h *CRenderProcessHandlerT) {
-		if ref_count_log.output {
-			Logf("L35: %p", h.p_render_process_handler)
-		}
+		Tracef(unsafe.Pointer( h.p_render_process_handler), "L126:")
 		BaseRelease(h.p_render_process_handler)
 	})
 	return &handler
 }
 
 func AllocCRenderProcessHandlerT(handler RenderProcessHandler) (cHandler *CRenderProcessHandlerT) {
-	p := C.calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t)
-	Logf("L120: p: %v", p)
+	p := c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "L133:")
 	C.cefingo_construct_render_process_handler((*C.cefingo_render_process_handler_wrapper_t)(p))
 
 	rph := newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(p))
 	crph := rph.p_render_process_handler
 	renderProcessHandlers[crph] = handler
 	registerDeassocer(unsafe.Pointer(crph), DeassocFunc(func() {
+		Tracef(unsafe.Pointer(crph), "L140:")
 		delete(renderProcessHandlers, crph)
 	}))
 
@@ -153,7 +151,7 @@ func (h *C.cef_render_process_handler_t) cast_to_p_base_ref_counted_t() *C.cef_b
 //export cefingo_render_process_handler_on_render_thread_created
 func cefingo_render_process_handler_on_render_thread_created(
 	self *C.cef_render_process_handler_t,
-	extra_info *CListValueT) {
+	extra_info *C.cef_list_value_t) {
 	Logf("L122: self: %p", self)
 
 	f := renderProcessHandlers[self]
@@ -163,7 +161,7 @@ func cefingo_render_process_handler_on_render_thread_created(
 
 	f.OnRenderThreadCreated(
 		newCRenderProcessHandlerT(self),
-		extra_info,
+		newCListValueT(extra_info),
 	)
 	Logf("L168: %b", BaseHasOneRef(self))
 }
@@ -223,8 +221,8 @@ func cefingo_render_process_handler_get_load_handler(
 func cefingo_render_process_handler_on_context_created(
 	self *C.cef_render_process_handler_t,
 	browser *C.cef_browser_t,
-	frame *CFrameT,
-	context *CV8contextT,
+	frame *C.cef_frame_t,
+	context *C.cef_v8context_t,
 ) {
 	Logf("L191: self: %p", self)
 
@@ -233,15 +231,15 @@ func cefingo_render_process_handler_on_context_created(
 		log.Panicln("36: Noo!")
 	}
 	f.OnContextCreated(newCRenderProcessHandlerT(self), newCBrowserT(browser),
-		frame, context)
+		newCFrameT(frame), newCV8contextT(context))
 }
 
 //export cefingo_render_process_handler_on_context_released
 func cefingo_render_process_handler_on_context_released(
 	self *C.cef_render_process_handler_t,
 	browser *C.cef_browser_t,
-	frame *CFrameT,
-	context *CV8contextT) {
+	frame *C.cef_frame_t,
+	context *C.cef_v8context_t) {
 	Logf("L207: self: %p", self)
 
 	f := renderProcessHandlers[self]
@@ -250,7 +248,7 @@ func cefingo_render_process_handler_on_context_released(
 	}
 
 	f.OnContextReleased(newCRenderProcessHandlerT(self), newCBrowserT(browser),
-		frame, context)
+		newCFrameT(frame), newCV8contextT(context))
 
 }
 
@@ -258,8 +256,8 @@ func cefingo_render_process_handler_on_context_released(
 func cefingo_render_process_handler_on_uncaught_exception(
 	self *C.cef_render_process_handler_t,
 	browser *C.cef_browser_t,
-	frame *CFrameT,
-	context *CV8contextT,
+	frame *C.cef_frame_t,
+	context *C.cef_v8context_t,
 	exception *CV8exceptionT,
 	stackTrace *CV8stackTraceT,
 ) {
@@ -271,7 +269,7 @@ func cefingo_render_process_handler_on_uncaught_exception(
 	}
 
 	f.OnUncaughtException(newCRenderProcessHandlerT(self), newCBrowserT(browser),
-		frame, context, exception, stackTrace)
+		newCFrameT(frame), newCV8contextT(context), exception, stackTrace)
 
 }
 
@@ -279,7 +277,7 @@ func cefingo_render_process_handler_on_uncaught_exception(
 func cefingo_render_process_handler_on_focused_node_changed(
 	self *C.cef_render_process_handler_t,
 	browser *C.cef_browser_t,
-	frame *CFrameT,
+	frame *C.cef_frame_t,
 	node *CDomnodeT,
 ) {
 	Logf("L245: self: %p", self)
@@ -290,7 +288,7 @@ func cefingo_render_process_handler_on_focused_node_changed(
 	}
 
 	f.OnFocusedNodeChanged(newCRenderProcessHandlerT(self), newCBrowserT(browser),
-		frame, node)
+		newCFrameT(frame), node)
 }
 
 //export cefingo_render_process_handler_on_process_message_received

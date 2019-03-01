@@ -28,13 +28,11 @@ var client_method = map[*C.cef_client_t]Client{}
 var life_span_handler = map[*C.cef_client_t]*CLifeSpanHandlerT{}
 
 func newCClientT(cef *C.cef_client_t) *CClientT {
-	Logf("L30: %p", cef)
+	Tracef(unsafe.Pointer(cef), "L31:")
 	BaseAddRef(cef)
 	client := CClientT{cef}
 	runtime.SetFinalizer(&client, func(c *CClientT) {
-		if ref_count_log.output {
-			Logf("L35: %p", c.p_client)
-		}
+		Tracef(unsafe.Pointer(c.p_client), "L35:")
 		BaseRelease(c.p_client)
 	})
 	return &client
@@ -42,14 +40,14 @@ func newCClientT(cef *C.cef_client_t) *CClientT {
 
 // AllocCClient allocates CClientT and construct it
 func AllocCClient(c Client) (cClient *CClientT) {
-	p := C.calloc(1, C.sizeof_cefingo_client_wrapper_t)
-	Logf("L26: p: %v", p)
+	p := c_calloc(1, C.sizeof_cefingo_client_wrapper_t, "L43:")
 	C.cefingo_construct_client((*C.cefingo_client_wrapper_t)(p))
 
 	cClient = newCClientT((*C.cef_client_t)(p))
 	cp := cClient.p_client
 	client_method[cp] = c
 	registerDeassocer(unsafe.Pointer(cp), DeassocFunc(func() {
+		Tracef(unsafe.Pointer(cp), "L50:")
 		delete(client_method, cp)
 	}))
 
@@ -142,8 +140,9 @@ func (client *CClientT) AssocLifeSpanHandler(handler *CLifeSpanHandlerT) {
 	cp := client.p_client
 	life_span_handler[cp] = handler
 	registerDeassocer(unsafe.Pointer(cp), DeassocFunc(func() {
-		// Do not have reference to app itself in DeassocFunc,
-		// or app is never GCed.
+		// Do not have reference to client itself in DeassocFunc,
+		// or client is never GCed.
+		Tracef(unsafe.Pointer(cp), "L145:")
 		delete(life_span_handler, cp)
 	}))
 }
@@ -196,8 +195,7 @@ func cefingo_client_on_process_message_received(
 	source_process CProcessIdT,
 	message *C.cef_process_message_t,
 ) (ret C.int) {
-
-	Logf("L46: client: %p", self)
+	Tracef(unsafe.Pointer(self), "L46:")
 	f := client_method[self]
 	if f == nil {
 		log.Panicln("L48: on_process_message_received: Noo!")

@@ -9,12 +9,12 @@ import (
 import "C"
 
 func newCBrowserT(cef *C.cef_browser_t) *CBrowserT {
-	Logf("L42: %p", cef)
+	Tracef(unsafe.Pointer(cef), "L42:")
 	BaseAddRef(cef)
 	browser := CBrowserT{cef}
 	runtime.SetFinalizer(&browser, func(b *CBrowserT) {
 		if ref_count_log.output {
-			Logf("L47: %p", b.p_browser)
+			Tracef(unsafe.Pointer(b.p_browser), "L17:")
 		}
 		BaseRelease(b.p_browser)
 	})
@@ -38,10 +38,9 @@ func (self *CBrowserT) GetHost() (h *CBrowserHostT) {
 ///
 // Returns the focused frame for the browser window.
 ///
-func (b *CBrowserT) GetFocusedFrame() (f *CFrameT) {
-	f = (*CFrameT)(C.cefingo_browser_get_focused_frame(b.p_browser))
-	BaseAddRef(f)
-	return f
+func (b *CBrowserT) GetFocusedFrame() (frame *CFrameT) {
+	f := C.cefingo_browser_get_focused_frame(b.p_browser)
+	return newCFrameT(f)
 }
 
 ///
@@ -75,41 +74,55 @@ type RunFileDialogCallback interface {
 	)
 }
 
-var run_file_dialog_callback = map[*CRunFileDialogCallbackT]RunFileDialogCallback{}
+var run_file_dialog_callback = map[*C.cef_run_file_dialog_callback_t]RunFileDialogCallback{}
 
-func AllocRunFileDialogCallbackT(callback RunFileDialogCallback) (crun_file_dialog_callback *CRunFileDialogCallbackT) {
-	p := C.calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t)
-	Logf("L43: p: %v", p)
+func newCRunFileDialogCallbackT(cef *C.cef_run_file_dialog_callback_t) *CRunFileDialogCallbackT {
+	Tracef(unsafe.Pointer(cef), "L81:")
+	BaseAddRef(cef)
+	callback := CRunFileDialogCallbackT{cef}
+	runtime.SetFinalizer(&callback, func(c *CRunFileDialogCallbackT) {
+		Tracef(unsafe.Pointer(c.p_run_file_dialog_callback), "L47:")
+		BaseRelease(c.p_run_file_dialog_callback)
+	})
+	return &callback
+}
+
+func AllocCRunFileDialogCallbackT(callback RunFileDialogCallback) (crun_file_dialog_callback *CRunFileDialogCallbackT) {
+	p := c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "L92:")
 
 	C.cefingo_construct_run_file_dialog_callback((*C.cefingo_run_file_dialog_callback_wrapper_t)(p))
 
-	crun_file_dialog_callback = (*CRunFileDialogCallbackT)(p)
-	BaseAddRef(crun_file_dialog_callback)
-	run_file_dialog_callback[crun_file_dialog_callback] = callback
+	rfdc := newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(p))
+
+	prfdc := rfdc.p_run_file_dialog_callback
+	run_file_dialog_callback[prfdc] = callback
 
 	registerDeassocer(p, DeassocFunc(func() {
-		Logf("L56: Deassoc of *CRunFileDialogCallbackT %p", p)
-		delete(run_file_dialog_callback, crun_file_dialog_callback)
+		Tracef(p, "L56: Deassoc of *CRunFileDialogCallbackT")
+		delete(run_file_dialog_callback, prfdc)
 	}))
 
-	return crun_file_dialog_callback
+	return rfdc
 }
 
-func (c *CRunFileDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (c *C.cef_run_file_dialog_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(c))
 }
 
 //export cefingo_run_file_dialog_callback_on_file_dialog_dismissed
 func cefingo_run_file_dialog_callback_on_file_dialog_dismissed(
-	self *CRunFileDialogCallbackT,
+	self *C.cef_run_file_dialog_callback_t,
 	selected_accept_filter C.int,
-	file_paths CStringListT) {
+	file_paths CStringListT,
+) {
 
 	c := run_file_dialog_callback[self]
 	if c == nil {
 		Panicf("L62: on_file_dialog_dismissed: Noo!")
 	}
-	c.OnFileDialogDismissed(self, int(selected_accept_filter), file_paths)
+
+	c.OnFileDialogDismissed(newCRunFileDialogCallbackT(self),
+		int(selected_accept_filter), file_paths)
 }
 
 ///
@@ -142,12 +155,12 @@ func (h *CBrowserHostT) RunFileDialog(
 	dfp := create_cef_string(default_file_path)
 	defer clear_cef_string(dfp)
 
-	BaseAddRef(callback)
+	BaseAddRef(callback.p_run_file_dialog_callback)
 	C.cefingo_browser_host_run_file_dialog(
 		(*C.cef_browser_host_t)(h),
 		C.cef_file_dialog_mode_t(mode),
 		t, dfp,
 		C.cef_string_list_t(accept_filters), C.int(selected_accept_filter),
-		(*C.cef_run_file_dialog_callback_t)(callback),
+		callback.p_run_file_dialog_callback,
 	)
 }

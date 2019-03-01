@@ -1,6 +1,7 @@
 package cefingo
 
 import (
+	"runtime"
 	"unsafe"
 )
 
@@ -31,12 +32,23 @@ func DictionaryValueCreate() *CDictionaryValueT {
 	return (*CDictionaryValueT)(C.cef_dictionary_value_create())
 }
 
-func (l *CListValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func newCListValueT(cef *C.cef_list_value_t) *CListValueT {
+	Tracef(unsafe.Pointer(cef), "L35:")
+	BaseAddRef(cef)
+	list := CListValueT{cef}
+	runtime.SetFinalizer(&list, func(l *CListValueT) {
+		Tracef(unsafe.Pointer(l.p_list_value), "L47:")
+		BaseRelease(l.p_list_value)
+	})
+	return &list
+}
+
+func (l *C.cef_list_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(l))
 }
 
 func ListValueCreate() *CListValueT {
-	return (*CListValueT)(C.cef_list_value_create())
+	return newCListValueT(C.cef_list_value_create())
 }
 
 ///
@@ -46,7 +58,7 @@ func ListValueCreate() *CListValueT {
 // functions if this function returns false (0).
 ///
 func (l *CListValueT) IsValid() bool {
-	status := C.cefingo_list_value_is_valid((*C.cef_list_value_t)(l))
+	status := C.cefingo_list_value_is_valid(l.p_list_value)
 	return status == 1
 }
 
@@ -54,7 +66,7 @@ func (l *CListValueT) IsValid() bool {
 // Returns true (1) if this object is currently owned by another object.
 ///
 func (l *CListValueT) IsOwned() bool {
-	status := C.cefingo_list_value_is_owned((*C.cef_list_value_t)(l))
+	status := C.cefingo_list_value_is_owned(l.p_list_value)
 	return status == 1
 }
 
@@ -63,7 +75,7 @@ func (l *CListValueT) IsOwned() bool {
 // expose read-only objects.
 ///
 func (l *CListValueT) IsReadOnly() bool {
-	status := C.cefingo_list_value_is_read_only((*C.cef_list_value_t)(l))
+	status := C.cefingo_list_value_is_read_only(l.p_list_value)
 	return status == 1
 }
 
@@ -73,8 +85,9 @@ func (l *CListValueT) IsReadOnly() bool {
 // object and vice-versa.
 ///
 func (l *CListValueT) IsSame(that *CListValueT) bool {
-	status := C.cefingo_list_value_is_same((*C.cef_list_value_t)(l),
-		(*C.cef_list_value_t)(that))
+	BaseAddRef(that.p_list_value)
+	status := C.cefingo_list_value_is_same(l.p_list_value,
+		that.p_list_value)
 	return status == 1
 }
 
@@ -83,8 +96,9 @@ func (l *CListValueT) IsSame(that *CListValueT) bool {
 // underlying value but are not necessarily the same object.
 ///
 func (l *CListValueT) IsEqual(that *CListValueT) bool {
-	status := C.cefingo_list_value_is_equal((*C.cef_list_value_t)(l),
-		(*C.cef_list_value_t)(that))
+	BaseAddRef(that.p_list_value)
+	status := C.cefingo_list_value_is_equal(l.p_list_value,
+		that.p_list_value)
 	return status == 1
 }
 
@@ -92,7 +106,7 @@ func (l *CListValueT) IsEqual(that *CListValueT) bool {
 // Returns a writable copy of this object.
 ///
 func (l *CListValueT) Copy() (d *CListValueT) {
-	return (*CListValueT)(C.cefingo_list_value_copy((*C.cef_list_value_t)(l)))
+	return newCListValueT(C.cefingo_list_value_copy(l.p_list_value))
 }
 
 ///
@@ -100,7 +114,7 @@ func (l *CListValueT) Copy() (d *CListValueT) {
 // value slots will default to type null. Returns true (1) on success.
 ///
 func (l *CListValueT) SetSize(size int) bool {
-	status := C.cefingo_list_value_set_size((*C.cef_list_value_t)(l),
+	status := C.cefingo_list_value_set_size(l.p_list_value,
 		C.size_t(size))
 	return status == 1
 }
@@ -109,7 +123,7 @@ func (l *CListValueT) SetSize(size int) bool {
 // Returns the number of values.
 ///
 func (l *CListValueT) GetSize() int {
-	return int(C.cefingo_list_value_get_size((*C.cef_list_value_t)(l)))
+	return int(C.cefingo_list_value_get_size(l.p_list_value))
 
 }
 
@@ -117,7 +131,7 @@ func (l *CListValueT) GetSize() int {
 // Removes all values. Returns true (1) on success.
 ///
 func (l *CListValueT) Clear() bool {
-	status := C.cefingo_list_value_clear((*C.cef_list_value_t)(l))
+	status := C.cefingo_list_value_clear(l.p_list_value)
 	return status == 1
 }
 
@@ -125,7 +139,7 @@ func (l *CListValueT) Clear() bool {
 // Removes the value at the specified index.
 ///
 func (l *CListValueT) Remove(index int) bool {
-	status := C.cefingo_list_value_remove((*C.cef_list_value_t)(l), C.size_t(index))
+	status := C.cefingo_list_value_remove(l.p_list_value, C.size_t(index))
 	return status == 1
 }
 
@@ -134,7 +148,7 @@ func (l *CListValueT) Remove(index int) bool {
 ///
 func (l *CListValueT) GetType(index int) CValueTypeT {
 	return CValueTypeT(C.cefingo_list_value_get_type(
-		(*C.cef_list_value_t)(l), C.size_t(index)))
+		l.p_list_value, C.size_t(index)))
 }
 
 ///
@@ -146,7 +160,7 @@ func (l *CListValueT) GetType(index int) CValueTypeT {
 ///
 func (l *CListValueT) GetValue(index int) (v *CValueT) {
 	v = (*CValueT)(C.cefingo_list_value_get_value(
-		(*C.cef_list_value_t)(l), C.size_t(index)))
+		l.p_list_value, C.size_t(index)))
 	BaseAddRef(v)
 	return v
 }
@@ -155,7 +169,7 @@ func (l *CListValueT) GetValue(index int) (v *CValueT) {
 // Returns the value at the specified index as type bool.
 ///
 func (l *CListValueT) GetBool(index int) bool {
-	b := C.cefingo_list_value_get_bool((*C.cef_list_value_t)(l), C.size_t(index))
+	b := C.cefingo_list_value_get_bool(l.p_list_value, C.size_t(index))
 	return b == 1
 }
 
@@ -164,7 +178,7 @@ func (l *CListValueT) GetBool(index int) bool {
 ///
 func (l *CListValueT) GetInt(index int) int {
 	return int(C.cefingo_list_value_get_int(
-		(*C.cef_list_value_t)(l), (C.size_t)(index)))
+		l.p_list_value, (C.size_t)(index)))
 }
 
 ///
@@ -172,7 +186,7 @@ func (l *CListValueT) GetInt(index int) int {
 ///
 func (l *CListValueT) GetDouble(index int) float64 {
 	return float64(C.cefingo_list_value_get_double(
-		(*C.cef_list_value_t)(l), C.size_t(index),
+		l.p_list_value, C.size_t(index),
 	))
 
 }
@@ -182,7 +196,7 @@ func (l *CListValueT) GetDouble(index int) float64 {
 ///
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (l *CListValueT) GetString(index int) (s string) {
-	usfs := C.cefingo_list_value_get_string((*C.cef_list_value_t)(l), C.size_t(index))
+	usfs := C.cefingo_list_value_get_string(l.p_list_value, C.size_t(index))
 	s = string_from_cef_string((*C.cef_string_t)(usfs))
 	C.cef_string_userfree_free(usfs)
 	return s
@@ -194,7 +208,7 @@ func (l *CListValueT) GetString(index int) (s string) {
 ///
 func (l *CListValueT) GetBinary(index int) *CBinaryValueT {
 	b := (*CBinaryValueT)(C.cefingo_list_value_get_binary(
-		(*C.cef_list_value_t)(l), C.size_t(index)))
+		l.p_list_value, C.size_t(index)))
 	BaseAddRef(b)
 	return b
 }
@@ -206,7 +220,7 @@ func (l *CListValueT) GetBinary(index int) *CBinaryValueT {
 ///
 func (l *CListValueT) GetDictionary(index int) *CDictionaryValueT {
 	d := (*CDictionaryValueT)(C.cefingo_list_value_get_dictionary(
-		(*C.cef_list_value_t)(l), C.size_t(index),
+		l.p_list_value, C.size_t(index),
 	))
 	BaseAddRef(d)
 	return d
@@ -218,11 +232,8 @@ func (l *CListValueT) GetDictionary(index int) *CDictionaryValueT {
 // this object.
 ///
 func (l *CListValueT) GetList(index int) *CListValueT {
-	list := (*CListValueT)(C.cefingo_list_value_get_list(
-		(*C.cef_list_value_t)(l), C.size_t(index),
-	))
-	BaseAddRef(list)
-	return list
+	list := C.cefingo_list_value_get_list(l.p_list_value, C.size_t(index))
+	return newCListValueT(list)
 }
 
 ///
@@ -236,7 +247,7 @@ func (l *CListValueT) GetList(index int) *CListValueT {
 func (l *CListValueT) SetValue(index int, value *CValueT) bool {
 	BaseAddRef(value)
 	status := C.cefingo_list_value_set_value(
-		(*C.cef_list_value_t)(l), C.size_t(index), (*C.cef_value_t)(value),
+		l.p_list_value, C.size_t(index), (*C.cef_value_t)(value),
 	)
 	return status == 1
 }
@@ -247,7 +258,7 @@ func (l *CListValueT) SetValue(index int, value *CValueT) bool {
 ///
 func (l *CListValueT) SetNull(index int) bool {
 	status := C.cefingo_list_value_set_null(
-		(*C.cef_list_value_t)(l), C.size_t(index),
+		l.p_list_value, C.size_t(index),
 	)
 	return status == 1
 }
@@ -261,7 +272,7 @@ func (l *CListValueT) SetBool(index int, b bool) bool {
 	if b {
 		i = 1
 	}
-	status := C.cefingo_list_value_set_bool((*C.cef_list_value_t)(l), C.size_t(index), C.int(i))
+	status := C.cefingo_list_value_set_bool(l.p_list_value, C.size_t(index), C.int(i))
 	return status == 1
 }
 
@@ -271,7 +282,7 @@ func (l *CListValueT) SetBool(index int, b bool) bool {
 ///
 func (l *CListValueT) SetInt(index int, value int) bool {
 	status := C.cefingo_list_value_set_int(
-		(*C.cef_list_value_t)(l), C.size_t(index), C.int(value))
+		l.p_list_value, C.size_t(index), C.int(value))
 	return status == 1
 }
 
@@ -281,7 +292,7 @@ func (l *CListValueT) SetInt(index int, value int) bool {
 ///
 func (l *CListValueT) SetDouble(index int, value float64) bool {
 	status := C.cefingo_list_value_set_double(
-		(*C.cef_list_value_t)(l), C.size_t(index), C.double(value),
+		l.p_list_value, C.size_t(index), C.double(value),
 	)
 	return status == 1
 }
@@ -295,7 +306,7 @@ func (l *CListValueT) SetString(index int, s string) bool {
 	defer clear_cef_string(value)
 
 	status := C.cefingo_list_value_set_string(
-		(*C.cef_list_value_t)(l), C.size_t(index), value,
+		l.p_list_value, C.size_t(index), value,
 	)
 	return status == 1
 }
@@ -310,7 +321,7 @@ func (l *CListValueT) SetString(index int, s string) bool {
 func (l *CListValueT) SetBinary(index int, value *CBinaryValueT) bool {
 	BaseAddRef(value)
 	status := C.cefingo_list_value_set_binary(
-		(*C.cef_list_value_t)(l), C.size_t(index), (*C.cef_binary_value_t)(value),
+		l.p_list_value, C.size_t(index), (*C.cef_binary_value_t)(value),
 	)
 	return status == 1
 }
@@ -325,7 +336,7 @@ func (l *CListValueT) SetBinary(index int, value *CBinaryValueT) bool {
 func (l *CListValueT) SetDictionary(index int, value *CDictionaryValueT) bool {
 	BaseAddRef(value)
 	status := C.cefingo_list_value_set_dictionary(
-		(*C.cef_list_value_t)(l), C.size_t(index),
+		l.p_list_value, C.size_t(index),
 		(*C.cef_dictionary_value_t)(value),
 	)
 	return status == 1
@@ -339,9 +350,9 @@ func (l *CListValueT) SetDictionary(index int, value *CDictionaryValueT) bool {
 // reference will be invalidated.
 ///
 func (l *CListValueT) SetList(index int, value *CListValueT) bool {
-	BaseAddRef(value)
+	BaseAddRef(value.p_list_value)
 	status := C.cefingo_list_value_set_list(
-		(*C.cef_list_value_t)(l), C.size_t(index),
-		(*C.cef_list_value_t)(value))
+		l.p_list_value, C.size_t(index),
+		value.p_list_value)
 	return status == 1
 }

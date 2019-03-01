@@ -34,6 +34,11 @@ func traceuf(up int, p unsafe.Pointer, message string, v ...interface{}) {
 	}
 }
 
+func traceOn(rc refCounted) {
+	p := rc.cast_to_p_base_ref_counted_t()
+	ref_count_log.traceSet[unsafe.Pointer(p)] = true
+}
+
 func Tracef(p unsafe.Pointer, message string, v ...interface{}) {
 	traceuf(1, p, message, v...)
 }

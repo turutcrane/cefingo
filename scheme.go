@@ -64,7 +64,7 @@ func RegisterSchemeHandlerFactory(
 var scheme_handler_factory_method = map[*C.cef_scheme_handler_factory_t]SchemeHandlerFactory{}
 
 func newCSchemeHandlerFactoryT(cFactory *C.cef_scheme_handler_factory_t) *CSchemeHandlerFactoryT {
-	Logf("L42: %p", cFactory)
+	Tracef(unsafe.Pointer(cFactory), "L42:")
 	BaseAddRef(cFactory)
 	factory := CSchemeHandlerFactoryT{cFactory}
 	runtime.SetFinalizer(&factory, func(f *CSchemeHandlerFactoryT) {
@@ -100,7 +100,7 @@ func (f *C.cef_scheme_handler_factory_t) cast_to_p_base_ref_counted_t() *C.cef_b
 func cefingo_scheme_handler_factory_create(
 	self *C.cef_scheme_handler_factory_t,
 	browser *C.cef_browser_t,
-	frame *CFrameT,
+	frame *C.cef_frame_t,
 	scheme_name *C.cef_string_t,
 	request *CRequestT,
 ) *CResourceHandlerT {
@@ -109,9 +109,11 @@ func cefingo_scheme_handler_factory_create(
 		Logf("L70: No Scheme Factory ")
 	}
 	s := string_from_cef_string(scheme_name)
-	b := newCBrowserT(browser)
-	factory := newCSchemeHandlerFactoryT(self)
-	return f.Create(factory, b, frame, s, request)
+	return f.Create(
+		newCSchemeHandlerFactoryT(self),
+		newCBrowserT(browser),
+		newCFrameT(frame),
+		s, request)
 }
 
 func (self *CSchemeRegistrarT) AddCustomScheme(

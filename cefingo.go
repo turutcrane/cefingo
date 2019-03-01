@@ -144,7 +144,6 @@ type Settings struct {
 	RemoteDebuggingPort      int
 }
 
-// Go Equivalent Type of C.cef_xxx
 type CAppT struct {
 	p_app *C.cef_app_t
 }
@@ -159,12 +158,16 @@ type CCallbackT C.cef_callback_t
 type CClientT struct {
 	p_client *C.cef_client_t
 }
-type CFrameT C.cef_frame_t
+type CFrameT struct {
+	p_frame *C.cef_frame_t
+}
 type CCookieT C.cef_cookie_t
 type CCommandLineT C.cef_command_line_t
 type CDomnodeT C.cef_domnode_t
 type CFileDialogModeT C.cef_file_dialog_mode_t
-type CListValueT C.cef_list_value_t
+type CListValueT struct {
+	p_list_value *C.cef_list_value_t
+}
 type CProcessIdT C.cef_process_id_t
 type CProcessMessageT struct {
 	p_process_message *C.cef_process_message_t
@@ -177,13 +180,21 @@ type CSchemeHandlerFactoryT struct {
 }
 type CSchemeRegistrarT C.cef_scheme_registrar_t
 type CV8accessorT C.cef_v8accessor_t
-type CV8arrayBufferReleaseCallbackT C.cef_v8array_buffer_release_callback_t
-type CV8contextT C.cef_v8context_t
+type CV8arrayBufferReleaseCallbackT struct {
+	p_v8array_buffer_release_callback *C.cef_v8array_buffer_release_callback_t
+}
+type CV8contextT struct {
+	p_v8context *C.cef_v8context_t
+}
 type CV8exceptionT C.cef_v8exception_t
-type CV8handlerT C.cef_v8handler_t
+type CV8handlerT struct {
+	p_v8handler *C.cef_v8handler_t
+}
 type CV8interceptorT C.cef_v8interceptor_t
 type CV8stackTraceT C.cef_v8stack_trace_t
-type CV8valueT C.cef_v8value_t
+type CV8valueT struct {
+	p_v8value *C.cef_v8value_t
+}
 type CValueT C.cef_value_t
 
 type CBrowserProcessHandlerT struct {
@@ -211,7 +222,9 @@ type CRenderProcessHandlerT struct {
 	p_render_process_handler *C.cef_render_process_handler_t
 }
 
-type CRunFileDialogCallbackT C.cef_run_file_dialog_callback_t
+type CRunFileDialogCallbackT struct {
+	p_run_file_dialog_callback *C.cef_run_file_dialog_callback_t
+}
 
 func init() {
 	// Check cef library version

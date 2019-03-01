@@ -125,21 +125,18 @@ type LifeSpanHandler interface {
 var lifeSpanHandlers = map[*C.cef_life_span_handler_t]LifeSpanHandler{}
 
 func newCLifeSpanHandlerT(cef *C.cef_life_span_handler_t) *CLifeSpanHandlerT {
-	Logf("L127: %p", cef)
+	Tracef(unsafe.Pointer(cef), "L127:")
 	BaseAddRef(cef)
 	handler := CLifeSpanHandlerT{cef}
 	runtime.SetFinalizer(&handler, func(h *CLifeSpanHandlerT) {
-		if ref_count_log.output {
-			Logf("L133: %p", h.p_life_span_handler)
-		}
+		Tracef(unsafe.Pointer(h.p_life_span_handler), "L133:")
 		BaseRelease(h.p_life_span_handler)
 	})
 	return &handler
 }
 
 func AllocCLifeSpanHandlerT(handler LifeSpanHandler) (cHandler *CLifeSpanHandlerT) {
-	p := C.calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t)
-	Logf("L23: p: %v", p)
+	p := c_calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t, "L139:")
 	C.cefingo_construct_life_span_handler((*C.cefingo_life_span_handler_wrapper_t)(p))
 
 	ch := newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(p))
@@ -147,6 +144,7 @@ func AllocCLifeSpanHandlerT(handler LifeSpanHandler) (cHandler *CLifeSpanHandler
 	cefp := ch.p_life_span_handler
 	lifeSpanHandlers[cefp] = handler
 	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
+		Tracef(unsafe.Pointer(cefp), "L147:")
 		delete(lifeSpanHandlers, cefp)
 	}))
 
