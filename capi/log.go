@@ -1,4 +1,4 @@
-package cefingo
+package capi
 
 import (
 	"fmt"

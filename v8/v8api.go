@@ -4,17 +4,17 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/turutcrane/cefingo"
+	"github.com/turutcrane/cefingo/capi"
 )
 
 type Context struct {
-	V8context *cefingo.CV8contextT
+	V8context *capi.CV8contextT
 	Global    Value
 	Document  Value
 }
 
 type Value struct {
-	v8v *cefingo.CV8valueT
+	v8v *capi.CV8valueT
 }
 
 type EventType string
@@ -30,12 +30,12 @@ func (v Value) HasOneRef() bool {
 	return v.v8v.HasOneRef()
 }
 
-func CreateValue(v8v *cefingo.CV8valueT) Value {
+func CreateValue(v8v *capi.CV8valueT) Value {
 	return Value{v8v: v8v}
 }
 
 func GetContext() (c *Context, err error) {
-	v8c := cefingo.V8contextGetEnterdContext()
+	v8c := capi.V8contextGetEnterdContext()
 	g := CreateValue(v8c.GetGlobal())
 	d, err := g.GetValueBykey("document")
 	if err == nil {
@@ -48,24 +48,28 @@ func GetContext() (c *Context, err error) {
 	return c, err
 }
 
+func (c *Context) GetBrowser() *capi.CBrowserT {
+	return c.V8context.GetBrowser()
+}
+
 func (c *Context) GetElementById(id string) (value Value, err error) {
 	f, err := c.Document.GetValueBykey("getElementById")
 	if err != nil {
 		return Value{nil}, err
 	}
-	// cefingo.Logf("L42: getElementById is function? :%t", f.IsFunction())
+	// capi.Logf("L42: getElementById is function? :%t", f.IsFunction())
 
-	sid := cefingo.V8valueCreateString(id)
+	sid := capi.V8valueCreateString(id)
 
-	args := []*cefingo.CV8valueT{sid}
+	args := []*capi.CV8valueT{sid}
 	v8v, err := f.v8v.ExecuteFunction(c.Document.v8v, 1, args)
 	if err != nil {
-		cefingo.Logf("L36:x %+v", err)
+		capi.Logf("L36:x %+v", err)
 		return Value{nil}, err
 	}
 
 	if !v8v.IsValid() || !v8v.IsObject() {
-		cefingo.Logf("L55: Id:%s can not get valid value", id)
+		capi.Logf("L55: Id:%s can not get valid value", id)
 		err = fmt.Errorf("Id:%s can not get valid value", id)
 	}
 	return Value{v8v}, err
@@ -77,7 +81,7 @@ func (c *Context) GetElementsByClassName(cls string) (elements Value, err error)
 
 	elements, err = c.Document.Call("getElementsByClassName", args)
 	if err != nil {
-		cefingo.Logf("L77: %v", err)
+		capi.Logf("L77: %v", err)
 	}
 	return elements, err
 }
@@ -86,46 +90,46 @@ func (v Value) IsNil() bool {
 	return v.v8v == nil
 }
 
-func (v Value) AddEventListener(e EventType, h cefingo.V8handler) (err error) {
+func (v Value) AddEventListener(e EventType, h capi.V8handler) (err error) {
 
 	f := v.v8v.GetValueBykey("addEventListener")
-	cefingo.Logf("L51: addEventListener is function? :%t", f.IsFunction())
+	capi.Logf("L51: addEventListener is function? :%t", f.IsFunction())
 
-	eHander := cefingo.AllocCV8handlerT(h)
+	eHander := capi.AllocCV8handlerT(h)
 
-	eType := cefingo.V8valueCreateString(string(e))
+	eType := capi.V8valueCreateString(string(e))
 
-	eFunc := cefingo.V8valueCreateFunction("eh", eHander)
+	eFunc := capi.V8valueCreateFunction("eh", eHander)
 
-	args := []*cefingo.CV8valueT{eType, eFunc}
+	args := []*capi.CV8valueT{eType, eFunc}
 	_, err = f.ExecuteFunction(v.v8v, 2, args)
 
 	if err != nil {
-		cefingo.Logf("L36:x %+v", err)
+		capi.Logf("L36:x %+v", err)
 	}
 	return err
 }
 
 type EventHandlerFunc func(object Value, event Value) error
 
-func (f EventHandlerFunc) Execute(self *cefingo.CV8handlerT,
+func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	name string,
-	object *cefingo.CV8valueT,
+	object *capi.CV8valueT,
 	argumentsCount int,
-	arguments []*cefingo.CV8valueT,
-	retval **cefingo.CV8valueT,
+	arguments []*capi.CV8valueT,
+	retval **capi.CV8valueT,
 	exception *string,
 ) (sts bool) {
 	if argumentsCount == 0 {
 		err := errors.Errorf("%s: No Arguments", name)
-		cefingo.Logf("%+v", err)
+		capi.Logf("%+v", err)
 		return false
 	}
 	err := f(Value{object}, Value{arguments[0]})
 	if err == nil {
 		sts = true
 	} else {
-		cefingo.Logf("L134: %s Not Handled %v", name, err)
+		capi.Logf("L134: %s Not Handled %v", name, err)
 	}
 	return sts
 }
@@ -206,7 +210,7 @@ func (v Value) GetStringValue() string {
 	return v.v8v.GetStringValue()
 }
 
-func (v Value) GetDateValue() cefingo.CTimeT {
+func (v Value) GetDateValue() capi.CTimeT {
 	return v.v8v.GetDateValue()
 }
 
@@ -214,7 +218,7 @@ func (v Value) HasException() bool {
 	return v.v8v.HasException()
 }
 
-func (v Value) GetException() *cefingo.CV8exceptionT {
+func (v Value) GetException() *capi.CV8exceptionT {
 	return v.v8v.GetException()
 }
 
@@ -256,7 +260,7 @@ func (v Value) SetValueBykey(key string, value Value) (err error) {
 }
 
 func (v Value) Call(name string, args []Value) (r Value, e error) {
-	v8args := make([]*cefingo.CV8valueT, len(args))
+	v8args := make([]*capi.CV8valueT, len(args))
 	for i, av := range args {
 		v8args[i] = av.v8v
 	}
@@ -264,7 +268,7 @@ func (v Value) Call(name string, args []Value) (r Value, e error) {
 	if err != nil {
 		return Value{}, err
 	}
-	var rv *cefingo.CV8valueT
+	var rv *capi.CV8valueT
 	if f.IsFunction() {
 		rv, e = f.v8v.ExecuteFunction(v.v8v, len(args), v8args)
 	} else {
@@ -274,20 +278,20 @@ func (v Value) Call(name string, args []Value) (r Value, e error) {
 }
 
 func CreateInt(i int) Value {
-	return Value{cefingo.V8valueCreateInt(i)}
+	return Value{capi.V8valueCreateInt(i)}
 }
 
 func CreateString(s string) Value {
-	return Value{cefingo.V8valueCreateString(s)}
+	return Value{capi.V8valueCreateString(s)}
 }
 
 func CreateStringFromByteArray(b []byte) Value {
-	return Value{cefingo.V8valueCreateStringFromByteArray(b)}
+	return Value{capi.V8valueCreateStringFromByteArray(b)}
 }
 
 func (c *Context) Eval(code string) (v Value, err error) {
-	var v8v *cefingo.CV8valueT
-	var e *cefingo.CV8exceptionT
+	var v8v *capi.CV8valueT
+	var e *capi.CV8exceptionT
 	if c.V8context.Eval(code, &v8v, &e) {
 		v = Value{v8v}
 	} else {
@@ -303,13 +307,13 @@ func (c *Context) Alertf(message string, v ...interface{}) (err error) {
 		return err
 	}
 
-	msg := cefingo.V8valueCreateString(fmt.Sprintf(message, v...))
+	msg := capi.V8valueCreateString(fmt.Sprintf(message, v...))
 
-	args := []*cefingo.CV8valueT{msg}
+	args := []*capi.CV8valueT{msg}
 	_, err = f.v8v.ExecuteFunction(c.Global.v8v, 1, args)
 
 	if err != nil {
-		cefingo.Logf("L36:x %+v", err)
+		capi.Logf("L36:x %+v", err)
 	}
 	return err
 }

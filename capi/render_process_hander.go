@@ -1,4 +1,4 @@
-package cefingo
+package capi
 
 import (
 	"log"
@@ -123,7 +123,7 @@ func newCRenderProcessHandlerT(cef *C.cef_render_process_handler_t) *CRenderProc
 	BaseAddRef(cef)
 	handler := CRenderProcessHandlerT{cef}
 	runtime.SetFinalizer(&handler, func(h *CRenderProcessHandlerT) {
-		Tracef(unsafe.Pointer( h.p_render_process_handler), "L126:")
+		Tracef(unsafe.Pointer(h.p_render_process_handler), "L126:")
 		BaseRelease(h.p_render_process_handler)
 	})
 	return &handler
