@@ -23,10 +23,10 @@ This is experimental go binding for CEF.
     C:\> set CGO_CFLAGS=-I\path\to\expand_dir
     ```
 
-1. go get this package.
+1. go get this packages.
 
     ```bat
-    C:\> go get github.com/turutcrane/cefingo
+    C:\> go get github.com/turutcrane/cefingo/...
     ```
 
 
