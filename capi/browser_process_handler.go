@@ -8,8 +8,8 @@ import (
 // #include "cefingo.h"
 import "C"
 
-// BrowserProcessHandler is Go interface of C.cef_browser_process_handler_t
-type BrowserProcessHandler interface {
+// browser_process_handler_i is Go interface of C.cef_browser_process_handler_t
+type IBrowserProcessHandler interface {
 	///
 	// Called on the browser process UI thread immediately after the CEF context
 	// has been initialized.
@@ -64,7 +64,7 @@ type BrowserProcessHandler interface {
 	//	int64 delay_ms);
 }
 
-var browserProcessHandlers = map[*C.cef_browser_process_handler_t]BrowserProcessHandler{}
+var browserProcessHandlers = map[*C.cef_browser_process_handler_t]IBrowserProcessHandler{}
 
 func newCBrowserProcessHandlerT(cef *C.cef_browser_process_handler_t) *CBrowserProcessHandlerT {
 	Tracef(unsafe.Pointer(cef), "L127:")
@@ -105,7 +105,7 @@ func cefingo_browser_process_handler_on_render_process_thread_created(
 type DefaultBrowserProcessHandler struct {
 }
 
-func AllocCBrowserProcessHandlerT(handler BrowserProcessHandler) (cHandler *CBrowserProcessHandlerT) {
+func AllocCBrowserProcessHandlerT(handler IBrowserProcessHandler) (cHandler *CBrowserProcessHandlerT) {
 	p := c_calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t, "L112:")
 	C.cefingo_construct_browser_process_handler((*C.cefingo_browser_process_handler_wrapper_t)(p))
 

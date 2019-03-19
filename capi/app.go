@@ -8,12 +8,12 @@ import (
 // #include "cefingo.h"
 import "C"
 
-var app_method = map[*C.cef_app_t]App{}
+var app_method = map[*C.cef_app_t]IApp{}
 var browser_process_handler = map[*C.cef_app_t]*CBrowserProcessHandlerT{}
 var render_process_handler = map[*C.cef_app_t]*CRenderProcessHandlerT{}
 
 // Client is Go interface of C.cef_app_t
-type App interface {
+type IApp interface {
 	///
 	// Provides an opportunity to view and/or modify command-line arguments before
 	// processing by CEF and Chromium. The |process_type| value will be NULL for
@@ -50,7 +50,7 @@ func newCAppT(cef *C.cef_app_t) *CAppT {
 }
 
 // AllocCAppT allocates CAppT and construct it
-func AllocCAppT(a App) (cApp *CAppT) {
+func AllocCAppT(a IApp) (cApp *CAppT) {
 	p := c_calloc(1, C.sizeof_cefingo_app_wrapper_t, "L56:")
 
 	C.cefingo_construct_app((*C.cefingo_app_wrapper_t)(p))

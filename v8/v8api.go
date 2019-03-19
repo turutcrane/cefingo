@@ -30,16 +30,16 @@ func (v Value) HasOneRef() bool {
 	return v.v8v.HasOneRef()
 }
 
-func CreateValue(v8v *capi.CV8valueT) Value {
+func NewValue(v8v *capi.CV8valueT) Value {
 	return Value{v8v: v8v}
 }
 
-func GetContext() (c *Context, err error) {
+func GetContext() (c Context, err error) {
 	v8c := capi.V8contextGetEnterdContext()
-	g := CreateValue(v8c.GetGlobal())
+	g := NewValue(v8c.GetGlobal())
 	d, err := g.GetValueBykey("document")
 	if err == nil {
-		c = &Context{
+		c = Context{
 			V8context: v8c,
 			Global:    g,
 			Document:  d,
@@ -55,7 +55,7 @@ func (c *Context) GetBrowser() *capi.CBrowserT {
 func (c *Context) GetElementById(id string) (value Value, err error) {
 	f, err := c.Document.GetValueBykey("getElementById")
 	if err != nil {
-		return Value{nil}, err
+		return value, err
 	}
 	// capi.Logf("L42: getElementById is function? :%t", f.IsFunction())
 
@@ -65,14 +65,15 @@ func (c *Context) GetElementById(id string) (value Value, err error) {
 	v8v, err := f.v8v.ExecuteFunction(c.Document.v8v, 1, args)
 	if err != nil {
 		capi.Logf("L36:x %+v", err)
-		return Value{nil}, err
+		return value, err
 	}
 
 	if !v8v.IsValid() || !v8v.IsObject() {
 		capi.Logf("L55: Id:%s can not get valid value", id)
 		err = fmt.Errorf("Id:%s can not get valid value", id)
+		v8v = nil
 	}
-	return Value{v8v}, err
+	return NewValue(v8v), err
 }
 
 func (c *Context) GetElementsByClassName(cls string) (elements Value, err error) {
