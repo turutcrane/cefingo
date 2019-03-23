@@ -441,7 +441,7 @@ func cefingo_v8handler_execute(self *C.cef_v8handler_t,
 		var slice []*CV8valueT
 		if arguments != nil {
 			s := (*[1 << 30]*C.cef_v8value_t)(unsafe.Pointer(arguments))[:argumentsCount:argumentsCount]
-			for _, v := range(s) {
+			for _, v := range s {
 				slice = append(slice, newCV8valueT(v))
 			}
 		}
