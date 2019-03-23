@@ -7,9 +7,11 @@ This is experimental go binding for CEF.
 ## How to Start
 1. Download Spotify's Autobuild Image http://opensource.spotify.com/cefbuilds/cef_binary_73.1.11%2Bge6986dc%2Bchromium-73.0.3683.75_windows64.tar.bz2
 
+    (CEF version scheme has been changed from CEF 73. So, Latest code can not use old cef library)
+
 1. Expand it.
 
-1. Copy library files and Resouce files to a Directory in PATH Envrironment Variables (eg. $GOPATH/bin).
+1. Copy library files and Resouce files to a Directory in PATH Envrironment Variable (eg. $GOPATH/bin).
 
     ```bat
     C:\> xcopy /e \path\to\expand_dir\Release \path\to\gopath\bin
