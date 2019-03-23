@@ -7,7 +7,7 @@ This is experimental go binding for CEF.
 ## How to Start
 1. Download Spotify's Autobuild Image http://opensource.spotify.com/cefbuilds/cef_binary_73.1.11%2Bge6986dc%2Bchromium-73.0.3683.75_windows64.tar.bz2
 
-    (CEF version scheme has been changed from CEF 73. So, Latest code can not use old cef library)
+    (CEF version scheme has been changed from CEF 73. So, latest code can not use with old cef library)
 
 1. Expand it.
 
