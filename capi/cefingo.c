@@ -132,15 +132,10 @@ void cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_factory_wra
 
 int cefingo_scheme_registrar_add_custom_scheme(struct _cef_scheme_registrar_t* self,
         const cef_string_t* scheme_name,
-        int is_standard,
-        int is_local,
-        int is_display_isolated,
-        int is_secure,
-        int is_cors_enabled,
-        int is_csp_bypassing)
+        cef_scheme_options_t options
+                                              )
 {
-    return self->add_custom_scheme(self, scheme_name,
-                                   is_standard, is_local, is_display_isolated, is_secure, is_cors_enabled, is_csp_bypassing );
+    return self->add_custom_scheme(self, scheme_name, options);
 }
 
 typedef   int(CEF_CALLBACK* can_xxx_cookie_t)(struct _cef_resource_handler_t* self,

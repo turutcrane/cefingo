@@ -118,42 +118,13 @@ func cefingo_scheme_handler_factory_create(
 
 func (self *CSchemeRegistrarT) AddCustomScheme(
 	scheme_name string,
-	is_standard bool,
-	is_local bool,
-	is_display_isolated bool,
-	is_secure bool,
-	is_cors_enabled bool,
-	is_csp_bypassing bool,
+	options CSchemeOptionsT,
 ) int {
 	s := create_cef_string(scheme_name)
 	defer clear_cef_string(s)
-	var standard C.int
-	if is_standard {
-		standard = 1
-	}
-	var local C.int
-	if is_local {
-		local = 1
-	}
-	var display_isolated C.int
-	if is_display_isolated {
-		display_isolated = 1
-	}
-	var secure C.int
-	if is_secure {
-		secure = 1
-	}
-	var cors_enabled C.int
-	if is_cors_enabled {
-		cors_enabled = 1
-	}
-	var csp_bypassing C.int
-	if is_csp_bypassing {
-		csp_bypassing = 1
-	}
 	return (int)(C.cefingo_scheme_registrar_add_custom_scheme(
 		(*C.cef_scheme_registrar_t)(self),
 		s,
-		standard, local, display_isolated, secure, cors_enabled, csp_bypassing))
-
+		C.cef_scheme_options_t(options),
+	))
 }

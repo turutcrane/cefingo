@@ -34,8 +34,7 @@ extern cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self);
 extern cef_string_userfree_t cefingo_frame_get_url(cef_frame_t* self);
 
 extern int cefingo_scheme_registrar_add_custom_scheme(struct _cef_scheme_registrar_t* self,
-        const cef_string_t* scheme_name, int is_standard, int is_local,
-        int is_display_isolated, int is_secure, int is_cors_enabled, int is_csp_bypassing);
+        const cef_string_t* scheme_name, cef_scheme_options_t options);
 
 extern void cefingo_callback_cont(struct _cef_callback_t* self);
 extern void cefingo_callback_cancel(struct _cef_callback_t* self);

@@ -1,6 +1,7 @@
 package capi
 
 import (
+	"log"
 	"os"
 	"unsafe"
 
@@ -21,6 +22,7 @@ type CLogSeverityT C.cef_log_severity_t
 type CStringListT C.cef_string_list_t
 type CTransitionTypeT C.cef_transition_type_t
 type CValueTypeT C.cef_value_type_t
+type CSchemeOptionsT C.cef_scheme_options_t
 
 const (
 	ErrNone            CErrorcodeT = C.ERR_NONE
@@ -137,6 +139,17 @@ const (
 	VtypeList       CValueTypeT = C.VTYPE_LIST
 )
 
+const (
+	CSchemeOptionNone            CSchemeOptionsT = C.CEF_SCHEME_OPTION_NONE
+	CSchemeOptionStandard        CSchemeOptionsT = C.CEF_SCHEME_OPTION_STANDARD
+	CSchemeOptionLocal           CSchemeOptionsT = C.CEF_SCHEME_OPTION_LOCAL
+	CSchemeOptionDisplayIsolated CSchemeOptionsT = C.CEF_SCHEME_OPTION_DISPLAY_ISOLATED
+	CSchemeOptionSecure          CSchemeOptionsT = C.CEF_SCHEME_OPTION_SECURE
+	CSchemeOptionCorsEnabled     CSchemeOptionsT = C.CEF_SCHEME_OPTION_CORS_ENABLED
+	CSchemeOptionCspBypassing    CSchemeOptionsT = C.CEF_SCHEME_OPTION_CSP_BYPASSING
+	CSchemeOptionFetchEnabled    CSchemeOptionsT = C.CEF_SCHEME_OPTION_FETCH_ENABLED
+)
+
 type Settings struct {
 	LogSeverity              CLogSeverityT
 	NoSandbox                int
@@ -229,14 +242,21 @@ type CRunFileDialogCallbackT struct {
 func init() {
 	// Check cef library version
 	cefVersionMajor := C.cef_version_info(0)
-	cefCommitNumber := C.cef_version_info(1)
-	chromeVersionMajor := C.cef_version_info(2)
-	// chromeVersionMinor := C.cef_version_info(3)
-	chromeVersionBuild := C.cef_version_info(4)
-	// chromeVersionPatch := C.cef_version_info(5)
+	cefVersionMinor := C.cef_version_info(1)
+	cefVersionPatch := C.cef_version_info(2)
+	cefCommitNumber := C.cef_version_info(3)
+	chromeVersionMajor := C.cef_version_info(4)
+	chromeVersionMinor := C.cef_version_info(5)
+	chromeVersionBuild := C.cef_version_info(6)
+	chromeVersionPatch := C.cef_version_info(7)
 	if cefVersionMajor != C.CEF_VERSION_MAJOR || chromeVersionMajor != C.CHROME_VERSION_MAJOR {
-		Logf("build lib: cef_binary_%d.%d.%d (chrome:%d)", C.CEF_VERSION_MAJOR, C.CHROME_VERSION_BUILD, C.CEF_COMMIT_NUMBER, C.CHROME_VERSION_MAJOR)
-		Logf("load  lib: cef_binary_%d.%d.%d (chrome:%d)", cefVersionMajor, chromeVersionBuild, cefCommitNumber, chromeVersionMajor)
+		Logger = log.New(os.Stdout, "init", log.LstdFlags)
+		Logf("build lib: cef_%d.%d.%d.%d (chrome:%d.%d.%d.%d)",
+			C.CEF_VERSION_MAJOR, C.CEF_VERSION_MINOR, C.CEF_VERSION_PATCH, C.CEF_COMMIT_NUMBER,
+			C.CHROME_VERSION_MAJOR, C.CHROME_VERSION_MINOR, C.CHROME_VERSION_BUILD, C.CHROME_VERSION_PATCH)
+		Logf("load  lib: cef_%d.%d.%d.%d (chrome:%d.%d.%d.%d)",
+			cefVersionMajor, cefVersionMinor, cefVersionPatch, cefCommitNumber,
+			chromeVersionMajor, chromeVersionMinor, chromeVersionBuild, chromeVersionPatch)
 		Panicf("L195: Cef Library mismatch!")
 	}
 }
