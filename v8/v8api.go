@@ -96,7 +96,7 @@ func (v Value) AddEventListener(e EventType, h capi.V8handler) (err error) {
 	f := v.v8v.GetValueBykey("addEventListener")
 	capi.Logf("L51: addEventListener is function? :%t", f.IsFunction())
 
-	eHander := capi.AllocCV8handlerT(h)
+	eHander := capi.AllocCV8handlerT().Bind(h)
 
 	eType := capi.V8valueCreateString(string(e))
 

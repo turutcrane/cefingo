@@ -29,7 +29,7 @@ type V8handler interface {
 		exception *string) bool
 }
 
-var v8handlerMap = map[*C.cef_v8handler_t]V8handler{}
+var v8handlers = map[*C.cef_v8handler_t]V8handler{}
 
 func (v *C.cef_v8value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(v))
@@ -59,14 +59,15 @@ func newCV8arrayBufferReleaseCallbackT(cef *C.cef_v8array_buffer_release_callbac
 }
 
 // AllocCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT and construct it
-func AllocCV8arrayBufferReleaseCallbackT() (cv8ab_release_callback *CV8arrayBufferReleaseCallbackT) {
-	p := c_calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t, "L63:")
+func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
+	// TODO Bind 関数 を書く
+	p := (*C.cefingo_v8array_buffer_release_callback_wrapper_t)(
+		c_calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t, "L65:"))
 
-	C.cefingo_construct_v8array_buffer_release_callback((*C.cefingo_v8array_buffer_release_callback_wrapper_t)(p))
+	C.cefingo_construct_v8array_buffer_release_callback(p)
 
-	cv8ab_release_callback = newCV8arrayBufferReleaseCallbackT((*C.cef_v8array_buffer_release_callback_t)(p))
-
-	return cv8ab_release_callback
+	return newCV8arrayBufferReleaseCallbackT(
+		(*C.cef_v8array_buffer_release_callback_t)(unsafe.Pointer(p)))
 }
 
 func (rh *C.cef_v8array_buffer_release_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
@@ -398,20 +399,22 @@ func newCV8handlerT(cef *C.cef_v8handler_t) *CV8handlerT {
 }
 
 // AllocCV8handlerT allocates CV8handlerT and construct it
-func AllocCV8handlerT(handler V8handler) (v8handler *CV8handlerT) {
-	p := c_calloc(1, C.sizeof_cefingo_v8handler_wrapper_t, "L393:")
+func AllocCV8handlerT() *CV8handlerT {
+	p := (*C.cefingo_v8handler_wrapper_t)(
+		c_calloc(1, C.sizeof_cefingo_v8handler_wrapper_t, "L393:"))
+	C.cefingo_construct_v8handler(p)
 
-	hp := (*C.cefingo_v8handler_wrapper_t)(p)
-	C.cefingo_construct_v8handler(hp)
+	return newCV8handlerT((*C.cef_v8handler_t)(unsafe.Pointer(p)))
+}
 
-	v8handler = newCV8handlerT((*C.cef_v8handler_t)(p))
+func (v8handler *CV8handlerT) Bind(handler V8handler) *CV8handlerT {
 	v8hp := v8handler.p_v8handler
-	v8handlerMap[v8hp] = handler
+	v8handlers[v8hp] = handler
 	registerDeassocer(unsafe.Pointer(v8hp), DeassocFunc(func() {
 		// Do not have reference to cApp itself in DeassocFunc,
 		// or app is never GCed.
 		Tracef(unsafe.Pointer(v8hp), "L67:")
-		delete(v8handlerMap, v8hp)
+		delete(v8handlers, v8hp)
 	}))
 
 	return v8handler
@@ -432,7 +435,7 @@ func cefingo_v8handler_execute(self *C.cef_v8handler_t,
 	exception *C.cef_string_t,
 ) (ret C.int) {
 	goname := string_from_cef_string(name)
-	handler := v8handlerMap[self]
+	handler := v8handlers[self]
 
 	if handler == nil {
 		Logf("L121: No V8 Execute Handler")

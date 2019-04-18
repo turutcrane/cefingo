@@ -13,9 +13,7 @@ func newCBrowserT(cef *C.cef_browser_t) *CBrowserT {
 	BaseAddRef(cef)
 	browser := CBrowserT{cef}
 	runtime.SetFinalizer(&browser, func(b *CBrowserT) {
-		if ref_count_log.output {
-			Tracef(unsafe.Pointer(b.p_browser), "L17:")
-		}
+		Tracef(unsafe.Pointer(b.p_browser), "L17:")
 		BaseRelease(b.p_browser)
 	})
 	return &browser
@@ -87,19 +85,23 @@ func newCRunFileDialogCallbackT(cef *C.cef_run_file_dialog_callback_t) *CRunFile
 	return &callback
 }
 
-func AllocCRunFileDialogCallbackT(callback RunFileDialogCallback) (crun_file_dialog_callback *CRunFileDialogCallbackT) {
-	p := c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "L92:")
+func AllocCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
+	p := (*C.cefingo_run_file_dialog_callback_wrapper_t)(
+		c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "L92:"))
 
-	C.cefingo_construct_run_file_dialog_callback((*C.cefingo_run_file_dialog_callback_wrapper_t)(p))
+	C.cefingo_construct_run_file_dialog_callback(p)
 
-	rfdc := newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(p))
+	return newCRunFileDialogCallbackT(
+		(*C.cef_run_file_dialog_callback_t)(unsafe.Pointer(p)))
+}
 
-	prfdc := rfdc.p_run_file_dialog_callback
-	run_file_dialog_callback[prfdc] = callback
+func (rfdc *CRunFileDialogCallbackT) Bind(callback RunFileDialogCallback) *CRunFileDialogCallbackT {
+	p := rfdc.p_run_file_dialog_callback
+	run_file_dialog_callback[p] = callback
 
-	registerDeassocer(p, DeassocFunc(func() {
-		Tracef(p, "L56: Deassoc of *CRunFileDialogCallbackT")
-		delete(run_file_dialog_callback, prfdc)
+	registerDeassocer(unsafe.Pointer(p), DeassocFunc(func() {
+		Tracef(unsafe.Pointer(p), "L56: Deassoc of *CRunFileDialogCallbackT")
+		delete(run_file_dialog_callback, p)
 	}))
 
 	return rfdc

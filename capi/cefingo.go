@@ -186,7 +186,9 @@ type CProcessMessageT struct {
 	p_process_message *C.cef_process_message_t
 }
 type CRequestT C.cef_request_t
-type CResourceHandlerT C.cef_resource_handler_t
+type CResourceHandlerT struct {
+	p_resource_handler *C.cef_resource_handler_t
+}
 type CResponseT C.cef_response_t
 type CSchemeHandlerFactoryT struct {
 	p_scheme_handler_factory *C.cef_scheme_handler_factory_t

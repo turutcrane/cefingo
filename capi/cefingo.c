@@ -43,7 +43,7 @@ void cefingo_construct_client(cefingo_client_wrapper_t* client)
     client->body.on_process_message_received = cefingo_client_on_process_message_received;
 }
 
-typedef void(CEF_CALLBACK* cefingo_on_before_command_line_processing_t)(
+typedef void(CEF_CALLBACK* cefingo_app_on_before_command_line_processing_t)(
     struct _cef_app_t* self,
     const cef_string_t* process_type,
     struct _cef_command_line_t* command_line);
@@ -56,7 +56,7 @@ void cefingo_construct_app(cefingo_app_wrapper_t* app)
 
     // callbacks
     app->body.on_before_command_line_processing =
-        (cefingo_on_before_command_line_processing_t) cefing_app_on_before_command_line_processing;
+        (cefingo_app_on_before_command_line_processing_t) cefing_app_on_before_command_line_processing;
     app->body.on_register_custom_schemes = cefing_app_on_register_custom_schemes;
 
     app->body.get_resource_bundle_handler = cefing_app_get_resource_bundle_handler;

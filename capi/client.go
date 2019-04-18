@@ -9,14 +9,20 @@ import (
 // #include "cefingo.h"
 import "C"
 
-// Client is Go interface of C.cef_client_t
-type Client interface {
-	///
-	// Called when a new message is received from a different process. Return true
-	// (1) if the message was handled or false (0) otherwise. Do not keep a
-	// reference to or attempt to access the message outside of this callback.
-	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_client_capi.h#L154-L164
-	///
+type RefToCClientT struct {
+	client *CClientT
+}
+type CClientTReferer interface {
+	GetCClientT() *CClientT
+}
+
+///
+// Called when a new message is received from a different process. Return true
+// (1) if the message was handled or false (0) otherwise. Do not keep a
+// reference to or attempt to access the message outside of this callback.
+// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_client_capi.h#L154-L164
+///
+type OnProcessMessageRecivedHandler interface {
 	OnProcessMessageRecived(self *CClientT,
 		browser *CBrowserT,
 		source_process CProcessIdT,
@@ -24,7 +30,7 @@ type Client interface {
 	) bool
 }
 
-var client_method = map[*C.cef_client_t]Client{}
+var on_process_message_recived_handler = map[*C.cef_client_t]OnProcessMessageRecivedHandler{}
 var life_span_handler = map[*C.cef_client_t]*CLifeSpanHandlerT{}
 
 func newCClientT(cef *C.cef_client_t) *CClientT {
@@ -39,19 +45,27 @@ func newCClientT(cef *C.cef_client_t) *CClientT {
 }
 
 // AllocCClient allocates CClientT and construct it
-func AllocCClient(c Client) (cClient *CClientT) {
-	p := c_calloc(1, C.sizeof_cefingo_client_wrapper_t, "L43:")
-	C.cefingo_construct_client((*C.cefingo_client_wrapper_t)(p))
+func AllocCClient() *CClientT {
+	p := (*C.cefingo_client_wrapper_t)(
+		c_calloc(1, C.sizeof_cefingo_client_wrapper_t, "L43:"))
+	C.cefingo_construct_client(p)
 
-	cClient = newCClientT((*C.cef_client_t)(p))
-	cp := cClient.p_client
-	client_method[cp] = c
+	return newCClientT((*C.cef_client_t)(unsafe.Pointer(p)))
+}
+
+func (client *CClientT) Bind(c interface{}) *CClientT {
+	cp := client.p_client
+
+	if h, ok := c.(OnProcessMessageRecivedHandler); ok {
+		on_process_message_recived_handler[cp] = h
+	}
+
 	registerDeassocer(unsafe.Pointer(cp), DeassocFunc(func() {
 		Tracef(unsafe.Pointer(cp), "L50:")
-		delete(client_method, cp)
+		delete(on_process_message_recived_handler, cp)
 	}))
 
-	return cClient
+	return client
 }
 
 func (c *C.cef_client_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
@@ -196,30 +210,17 @@ func cefingo_client_on_process_message_received(
 	message *C.cef_process_message_t,
 ) (ret C.int) {
 	Tracef(unsafe.Pointer(self), "L46:")
-	f := client_method[self]
-	if f == nil {
+	f := on_process_message_recived_handler[self]
+	if f != nil {
+		client := newCClientT(self)
+		b := newCBrowserT(browser)
+		m := newCProcessMessageT(message)
+		if f.OnProcessMessageRecived(client, b, source_process, m) {
+			ret = 1
+		}
+	} else {
 		log.Panicln("L48: on_process_message_received: Noo!")
 	}
 
-	client := newCClientT(self)
-	b := newCBrowserT(browser)
-	m := newCProcessMessageT(message)
-	if f.OnProcessMessageRecived(client, b, source_process, m) {
-		ret = 1
-	} else {
-		ret = 0
-	}
 	return ret
-}
-
-// DefaultClient is dummy implementation of CClientT
-type DefaultClient struct {
-}
-
-func (*DefaultClient) OnProcessMessageRecived(self *CClientT,
-	browser *CBrowserT,
-	source_process CProcessIdT,
-	message *CProcessMessageT,
-) bool {
-	return false
 }
