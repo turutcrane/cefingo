@@ -8,6 +8,8 @@ import (
 	"github.com/alexbrainman/gowingui/winapi"
 )
 
+//go:generate go run ../tools/gen_cef_types.go
+
 //	#include "cefingo.h"
 import "C"
 
@@ -157,20 +159,10 @@ type Settings struct {
 	RemoteDebuggingPort      int
 }
 
-type CAppT struct {
-	p_app *C.cef_app_t
-}
-
-type CBrowserT struct {
-	p_browser *C.cef_browser_t
-}
 type CBrowserHostT C.cef_browser_host_t
 type CBinaryValueT C.cef_binary_value_t
 type CDictionaryValueT C.cef_dictionary_value_t
 type CCallbackT C.cef_callback_t
-type CClientT struct {
-	p_client *C.cef_client_t
-}
 type CFrameT struct {
 	p_frame *C.cef_frame_t
 }
@@ -185,14 +177,8 @@ type CProcessIdT C.cef_process_id_t
 type CProcessMessageT struct {
 	p_process_message *C.cef_process_message_t
 }
-type CRequestT C.cef_request_t
-type CResourceHandlerT struct {
-	p_resource_handler *C.cef_resource_handler_t
-}
+type CRequestT C.cef_request_t // TODO プログラム側の構造体に ポインタを直接置きたくないので、構造体化(newC) する。
 type CResponseT C.cef_response_t
-type CSchemeHandlerFactoryT struct {
-	p_scheme_handler_factory *C.cef_scheme_handler_factory_t
-}
 type CSchemeRegistrarT C.cef_scheme_registrar_t
 type CV8accessorT C.cef_v8accessor_t
 type CV8arrayBufferReleaseCallbackT struct {
@@ -202,9 +188,6 @@ type CV8contextT struct {
 	p_v8context *C.cef_v8context_t
 }
 type CV8exceptionT C.cef_v8exception_t
-type CV8handlerT struct {
-	p_v8handler *C.cef_v8handler_t
-}
 type CV8interceptorT C.cef_v8interceptor_t
 type CV8stackTraceT C.cef_v8stack_trace_t
 type CV8valueT struct {
@@ -212,9 +195,6 @@ type CV8valueT struct {
 }
 type CValueT C.cef_value_t
 
-type CBrowserProcessHandlerT struct {
-	p_browser_process_handler *C.cef_browser_process_handler_t
-}
 type CContextMenuHandlerT C.cef_context_menu_handler_t
 type CDialogHandlerT C.cef_dialog_handler_t
 type CDisplayHandlerT C.cef_display_handler_t
@@ -224,22 +204,9 @@ type CFindHandlerT C.cef_find_handler_t
 type CFocusHanderT C.cef_focus_handler_t
 type CJsdialogHandlerT C.cef_jsdialog_handler_t
 type CKeyboardHandlerT C.cef_keyboard_handler_t
-type CLifeSpanHandlerT struct {
-	p_life_span_handler *C.cef_life_span_handler_t
-}
-type CLoadHandlerT struct {
-	p_load_handler *C.cef_load_handler_t
-}
 type CRenderHandlerT C.cef_render_handler_t
 type CRequestHandlerT C.cef_request_handler_t
 type CResourceBundleHanderT C.cef_resource_bundle_handler_t
-type CRenderProcessHandlerT struct {
-	p_render_process_handler *C.cef_render_process_handler_t
-}
-
-type CRunFileDialogCallbackT struct {
-	p_run_file_dialog_callback *C.cef_run_file_dialog_callback_t
-}
 
 func init() {
 	// Check cef library version

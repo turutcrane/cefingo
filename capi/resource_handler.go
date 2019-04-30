@@ -8,6 +8,27 @@ import (
 // #include "cefingo.h"
 import "C"
 
+type CResourceHandlerT struct {
+	p_resource_handler *C.cef_resource_handler_t
+}
+
+type RefToCResourceHandlerT struct {
+	rh *CResourceHandlerT
+}
+
+type CResourceHandlerTAccessor interface {
+	GetCResourceHandlerT() *CResourceHandlerT
+	SetCResourceHandlerT(*CResourceHandlerT)
+}
+
+func (r RefToCResourceHandlerT) GetCResourceHandlerT() *CResourceHandlerT {
+	return r.rh
+}
+
+func (r *RefToCResourceHandlerT) SetCResourceHandlerT(c *CResourceHandlerT) {
+	r.rh = c
+}
+
 ///
 // Begin processing the request. To handle the request return true (1) and
 // call cef_callback_t::cont() once the response header information is
@@ -153,6 +174,11 @@ func (rh *CResourceHandlerT) Bind(handler interface{}) *CResourceHandlerT {
 		delete(can_set_cookie_handler, cefp)
 		delete(cancel_handler, cefp)
 	}))
+
+	if accessor, ok := handler.(CResourceHandlerTAccessor); ok {
+		accessor.SetCResourceHandlerT(rh)
+		Logf("L180:")
+	}
 
 	return rh
 }

@@ -13,6 +13,26 @@ import "C"
 // will be called on the render process main thread (TID_RENDERER) unless
 // otherwise indicated.
 ///
+type CRenderProcessHandlerT struct {
+	p_render_process_handler *C.cef_render_process_handler_t
+}
+
+type RefToCRenderProcessHandlerT struct {
+	rph *CRenderProcessHandlerT
+}
+
+type CRenderProcessHandlerTAccessor interface {
+	GetCRenderProcessHandlerT() *CRenderProcessHandlerT
+	SetCRenderProcessHandlerT(*CRenderProcessHandlerT)
+}
+
+func (r RefToCRenderProcessHandlerT) GetCRenderProcessHandlerT() *CRenderProcessHandlerT {
+	return r.rph
+}
+
+func (r *RefToCRenderProcessHandlerT) SetCRenderProcessHandlerT(c *CRenderProcessHandlerT) {
+	r.rph = c
+}
 
 ///
 // Called after the render process main thread has been created. |extra_info|
@@ -161,10 +181,12 @@ func newCRenderProcessHandlerT(cef *C.cef_render_process_handler_t) *CRenderProc
 }
 
 func AllocCRenderProcessHandlerT() *CRenderProcessHandlerT {
-	p := c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "L133:")
-	C.cefingo_construct_render_process_handler((*C.cefingo_render_process_handler_wrapper_t)(p))
+	p := (*C.cefingo_render_process_handler_wrapper_t)(
+		c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "L133:"))
+	C.cefingo_construct_render_process_handler(p)
 
-	return newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(p))
+	return newCRenderProcessHandlerT(
+		(*C.cef_render_process_handler_t)(unsafe.Pointer(p)))
 }
 
 func (rph *CRenderProcessHandlerT) Bind(handler interface{}) *CRenderProcessHandlerT {
@@ -210,6 +232,11 @@ func (rph *CRenderProcessHandlerT) Bind(handler interface{}) *CRenderProcessHand
 		delete(on_focused_node_changed_handler, crph)
 		delete(on_process_message_received_handler, crph)
 	}))
+
+	if accessor, ok := handler.(CRenderProcessHandlerTAccessor); ok {
+		accessor.SetCRenderProcessHandlerT(rph)
+		Logf("L236:")
+	}
 
 	return rph
 }

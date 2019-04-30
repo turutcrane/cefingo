@@ -1,7 +1,6 @@
 package capi
 
 import (
-	"runtime"
 	"unsafe"
 )
 
@@ -42,16 +41,16 @@ type OnRegisterCustomSchemesHandler interface {
 	OnRegisterCustomSchemes(self *CAppT, registrar *CSchemeRegistrarT)
 }
 
-func newCAppT(cef *C.cef_app_t) *CAppT {
-	Tracef(unsafe.Pointer(cef), "L42:")
-	BaseAddRef(cef)
-	app := CAppT{cef}
-	runtime.SetFinalizer(&app, func(a *CAppT) {
-		Tracef(unsafe.Pointer(a.p_app), "L47:")
-		BaseRelease(a.p_app)
-	})
-	return &app
-}
+// func newCAppT(cef *C.cef_app_t) *CAppT {
+// 	Tracef(unsafe.Pointer(cef), "L42:")
+// 	BaseAddRef(cef)
+// 	app := CAppT{cef}
+// 	runtime.SetFinalizer(&app, func(a *CAppT) {
+// 		Tracef(unsafe.Pointer(a.p_app), "L47:")
+// 		BaseRelease(a.p_app)
+// 	})
+// 	return &app
+// }
 
 // AllocCAppT allocates CAppT and construct it
 func AllocCAppT() *CAppT {
@@ -83,12 +82,17 @@ func (capp *CAppT) Bind(a interface{}) *CAppT {
 		delete(render_process_handler, cp)
 	}))
 
+	if accessor, ok := a.(CAppTAccessor); ok {
+		accessor.SetCAppT(capp)
+		Logf("L109:")
+	}
+
 	return capp
 }
 
-func (a *C.cef_app_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(a))
-}
+// func (a *C.cef_app_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+// 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(a))
+// }
 
 ///
 // Return the handler for resource bundle events. If

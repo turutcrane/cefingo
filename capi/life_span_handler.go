@@ -11,6 +11,27 @@ import "C"
 
 // LifeSpanHandler is Go interface of C.cef_life_span_handler_t
 
+type CLifeSpanHandlerT struct {
+	p_life_span_handler *C.cef_life_span_handler_t
+}
+
+type RefToCLifeSpanHandlerT struct {
+	lsh *CLifeSpanHandlerT
+}
+
+type CLifeSpanHandlerTAccessor interface {
+	GetCLifeSpanHandlerT() *CLifeSpanHandlerT
+	SetCLifeSpanHandlerT(*CLifeSpanHandlerT)
+}
+
+func (r RefToCLifeSpanHandlerT) GetCLifeSpanHandlerT() *CLifeSpanHandlerT {
+	return r.lsh
+}
+
+func (r *RefToCLifeSpanHandlerT) SetCLifeSpanHandlerT(c *CLifeSpanHandlerT) {
+	r.lsh = c
+}
+
 ///
 // Called after a new browser is created. This callback will be the first
 // notification that references |browser|.
@@ -170,6 +191,10 @@ func (lsh *CLifeSpanHandlerT) Bind(handler interface{}) *CLifeSpanHandlerT {
 		delete(do_close_handler, cefp)
 	}))
 
+	if accessor, ok := handler.(CLifeSpanHandlerTAccessor); ok {
+		accessor.SetCLifeSpanHandlerT(lsh)
+		Logf("L76:")
+	}
 	return lsh
 }
 

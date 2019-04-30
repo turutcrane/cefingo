@@ -8,6 +8,27 @@ import (
 // #include "cefingo.h"
 import "C"
 
+type CLoadHandlerT struct {
+	p_load_handler *C.cef_load_handler_t
+}
+
+type RefToCLoadHandlerT struct {
+	app *CLoadHandlerT
+}
+
+type CLoadHandlerTAccessor interface {
+	GetCLoadHandlerT() *CLoadHandlerT
+	SetCLoadHandlerT(*CLoadHandlerT)
+}
+
+func (r RefToCLoadHandlerT) GetCLoadHandlerT() *CLoadHandlerT {
+	return r.app
+}
+
+func (r *RefToCLoadHandlerT) SetCLoadHandlerT(c *CLoadHandlerT) {
+	r.app = c
+}
+
 ///
 // Called when the loading state has changed. This callback will be executed
 // twice -- once when loading is initiated either programmatically or by user
@@ -133,6 +154,11 @@ func (loadHandler *CLoadHandlerT) Bind(handler interface{}) *CLoadHandlerT {
 		delete(on_load_end_handler, cefp)
 		delete(on_load_error_handler, cefp)
 	}))
+
+	if accessor, ok := handler.(CLoadHandlerTAccessor); ok {
+		accessor.SetCLoadHandlerT(loadHandler)
+		Logf("L109:")
+	}
 
 	return loadHandler
 }

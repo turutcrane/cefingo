@@ -8,6 +8,27 @@ import (
 // #include "cefingo.h"
 import "C"
 
+type CSchemeHandlerFactoryT struct {
+	p_scheme_handler_factory *C.cef_scheme_handler_factory_t
+}
+
+type RefToCSchemeHandlerFactoryT struct {
+	shf *CSchemeHandlerFactoryT
+}
+
+type CSchemeHandlerFactoryTAccessor interface {
+	GetCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT
+	SetCSchemeHandlerFactoryT(*CSchemeHandlerFactoryT)
+}
+
+func (r RefToCSchemeHandlerFactoryT) GetCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
+	return r.shf
+}
+
+func (r *RefToCSchemeHandlerFactoryT) SetCSchemeHandlerFactoryT(c *CSchemeHandlerFactoryT) {
+	r.shf = c
+}
+
 type SchemeHandlerFactory interface {
 	///
 	// Return a new resource handler instance to handle the request or an NULL
@@ -87,10 +108,17 @@ func AllocCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
 
 func (factory *CSchemeHandlerFactoryT) Bind(f SchemeHandlerFactory) *CSchemeHandlerFactoryT {
 	cefp := factory.p_scheme_handler_factory
+
 	scheme_handler_factory_method[cefp] = f
 	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
 		delete(scheme_handler_factory_method, cefp)
 	}))
+
+	if accessor, ok := f.(CSchemeHandlerFactoryTAccessor); ok {
+		accessor.SetCSchemeHandlerFactoryT(factory)
+		Logf("L109:")
+	}
+
 	return factory
 }
 

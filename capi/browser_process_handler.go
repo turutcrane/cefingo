@@ -1,14 +1,11 @@
 package capi
 
 import (
-	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
 import "C"
-
-// browser_process_handler_i is Go interface of C.cef_browser_process_handler_t
 
 ///
 // Called on the browser process UI thread immediately after the CEF context
@@ -72,18 +69,6 @@ type OnRenderProcessThreadCreatedHandler interface {
 var on_context_initialized_handler = map[*C.cef_browser_process_handler_t]OnContextInitializedHandler{}
 var on_render_process_thread_created_handler = map[*C.cef_browser_process_handler_t]OnRenderProcessThreadCreatedHandler{}
 
-func newCBrowserProcessHandlerT(cef *C.cef_browser_process_handler_t) *CBrowserProcessHandlerT {
-	Tracef(unsafe.Pointer(cef), "L127:")
-	BaseAddRef(cef)
-	handler := CBrowserProcessHandlerT{cef}
-
-	runtime.SetFinalizer(&handler, func(h *CBrowserProcessHandlerT) {
-		Tracef(unsafe.Pointer(h.p_browser_process_handler), "L133:")
-		BaseRelease(h.p_browser_process_handler)
-	})
-	return &handler
-}
-
 //export cefingo_browser_process_handler_on_context_initialized
 func cefingo_browser_process_handler_on_context_initialized(self *C.cef_browser_process_handler_t) {
 
@@ -137,9 +122,10 @@ func (bph *CBrowserProcessHandlerT) Bind(handler interface{}) *CBrowserProcessHa
 		delete(on_render_process_thread_created_handler, cefp)
 	}))
 
-	return bph
-}
+	if accessor, ok := handler.(CBrowserProcessHandlerTAccessor); ok {
+		accessor.SetCBrowserProcessHandlerT(bph)
+		Logf("L161:")
+	}
 
-func (h *C.cef_browser_process_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
+	return bph
 }

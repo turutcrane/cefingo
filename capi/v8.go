@@ -60,7 +60,7 @@ func newCV8arrayBufferReleaseCallbackT(cef *C.cef_v8array_buffer_release_callbac
 
 // AllocCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT and construct it
 func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
-	// TODO Bind 関数 を書く
+	// TODO Bind 関数 を書く??
 	p := (*C.cefingo_v8array_buffer_release_callback_wrapper_t)(
 		c_calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t, "L65:"))
 
@@ -387,6 +387,27 @@ func V8valueCreateFunction(name string, handler *CV8handlerT) (function *CV8valu
 	return newCV8valueT(C.cef_v8value_create_function(cef_name, handler.p_v8handler))
 }
 
+type CV8handlerT struct {
+	p_v8handler *C.cef_v8handler_t
+}
+
+type RefToCV8handlerT struct {
+	app *CV8handlerT
+}
+
+type CV8handlerTAccessor interface {
+	GetCV8handlerT() *CV8handlerT
+	SetCV8handlerT(*CV8handlerT)
+}
+
+func (r RefToCV8handlerT) GetCV8handlerT() *CV8handlerT {
+	return r.app
+}
+
+func (r *RefToCV8handlerT) SetCV8handlerT(c *CV8handlerT) {
+	r.app = c
+}
+
 func newCV8handlerT(cef *C.cef_v8handler_t) *CV8handlerT {
 	Tracef(unsafe.Pointer(cef), "L381:")
 	BaseAddRef(cef)
@@ -416,6 +437,11 @@ func (v8handler *CV8handlerT) Bind(handler V8handler) *CV8handlerT {
 		Tracef(unsafe.Pointer(v8hp), "L67:")
 		delete(v8handlers, v8hp)
 	}))
+
+	if accessor, ok := handler.(CV8handlerTAccessor); ok {
+		accessor.SetCV8handlerT(v8handler)
+		Logf("L109:")
+	}
 
 	return v8handler
 }

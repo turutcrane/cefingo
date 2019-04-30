@@ -1,30 +1,14 @@
 package capi
 
 import (
-	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
 import "C"
 
-func newCBrowserT(cef *C.cef_browser_t) *CBrowserT {
-	Tracef(unsafe.Pointer(cef), "L42:")
-	BaseAddRef(cef)
-	browser := CBrowserT{cef}
-	runtime.SetFinalizer(&browser, func(b *CBrowserT) {
-		Tracef(unsafe.Pointer(b.p_browser), "L17:")
-		BaseRelease(b.p_browser)
-	})
-	return &browser
-}
-
 func (bh *CBrowserHostT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(bh))
-}
-
-func (b *C.cef_browser_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(b))
 }
 
 func (self *CBrowserT) GetHost() (h *CBrowserHostT) {
@@ -74,17 +58,6 @@ type RunFileDialogCallback interface {
 
 var run_file_dialog_callback = map[*C.cef_run_file_dialog_callback_t]RunFileDialogCallback{}
 
-func newCRunFileDialogCallbackT(cef *C.cef_run_file_dialog_callback_t) *CRunFileDialogCallbackT {
-	Tracef(unsafe.Pointer(cef), "L81:")
-	BaseAddRef(cef)
-	callback := CRunFileDialogCallbackT{cef}
-	runtime.SetFinalizer(&callback, func(c *CRunFileDialogCallbackT) {
-		Tracef(unsafe.Pointer(c.p_run_file_dialog_callback), "L47:")
-		BaseRelease(c.p_run_file_dialog_callback)
-	})
-	return &callback
-}
-
 func AllocCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
 	p := (*C.cefingo_run_file_dialog_callback_wrapper_t)(
 		c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "L92:"))
@@ -104,11 +77,12 @@ func (rfdc *CRunFileDialogCallbackT) Bind(callback RunFileDialogCallback) *CRunF
 		delete(run_file_dialog_callback, p)
 	}))
 
-	return rfdc
-}
+	if accessor, ok := callback.(CRunFileDialogCallbackTAccessor); ok {
+		accessor.SetCRunFileDialogCallbackT(rfdc)
+		Logf("L76:")
+	}
 
-func (c *C.cef_run_file_dialog_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(c))
+	return rfdc
 }
 
 //export cefingo_run_file_dialog_callback_on_file_dialog_dismissed

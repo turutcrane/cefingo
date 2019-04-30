@@ -9,11 +9,25 @@ import (
 // #include "cefingo.h"
 import "C"
 
+type CClientT struct {
+	p_client *C.cef_client_t
+}
+
 type RefToCClientT struct {
 	client *CClientT
 }
-type CClientTReferer interface {
+
+type CClientTAccessor interface {
 	GetCClientT() *CClientT
+	SetCClientT(*CClientT)
+}
+
+func (r RefToCClientT) GetCClientT() *CClientT {
+	return r.client
+}
+
+func (r *RefToCClientT) SetCClientT(c *CClientT) {
+	r.client = c
 }
 
 ///
@@ -64,6 +78,11 @@ func (client *CClientT) Bind(c interface{}) *CClientT {
 		Tracef(unsafe.Pointer(cp), "L50:")
 		delete(on_process_message_recived_handler, cp)
 	}))
+
+	if accessor, ok := c.(CClientTAccessor); ok {
+		accessor.SetCClientT(client)
+		Logf("L76:")
+	}
 
 	return client
 }
