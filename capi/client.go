@@ -2,33 +2,11 @@ package capi
 
 import (
 	"log"
-	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
 import "C"
-
-type CClientT struct {
-	p_client *C.cef_client_t
-}
-
-type RefToCClientT struct {
-	client *CClientT
-}
-
-type CClientTAccessor interface {
-	GetCClientT() *CClientT
-	SetCClientT(*CClientT)
-}
-
-func (r RefToCClientT) GetCClientT() *CClientT {
-	return r.client
-}
-
-func (r *RefToCClientT) SetCClientT(c *CClientT) {
-	r.client = c
-}
 
 ///
 // Called when a new message is received from a different process. Return true
@@ -46,17 +24,6 @@ type OnProcessMessageRecivedHandler interface {
 
 var on_process_message_recived_handler = map[*C.cef_client_t]OnProcessMessageRecivedHandler{}
 var life_span_handler = map[*C.cef_client_t]*CLifeSpanHandlerT{}
-
-func newCClientT(cef *C.cef_client_t) *CClientT {
-	Tracef(unsafe.Pointer(cef), "L31:")
-	BaseAddRef(cef)
-	client := CClientT{cef}
-	runtime.SetFinalizer(&client, func(c *CClientT) {
-		Tracef(unsafe.Pointer(c.p_client), "L35:")
-		BaseRelease(c.p_client)
-	})
-	return &client
-}
 
 // AllocCClient allocates CClientT and construct it
 func AllocCClient() *CClientT {
@@ -85,10 +52,6 @@ func (client *CClientT) Bind(c interface{}) *CClientT {
 	}
 
 	return client
-}
-
-func (c *C.cef_client_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(c))
 }
 
 ///

@@ -1,33 +1,11 @@
 package capi
 
 import (
-	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
 import "C"
-
-type CSchemeHandlerFactoryT struct {
-	p_scheme_handler_factory *C.cef_scheme_handler_factory_t
-}
-
-type RefToCSchemeHandlerFactoryT struct {
-	shf *CSchemeHandlerFactoryT
-}
-
-type CSchemeHandlerFactoryTAccessor interface {
-	GetCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT
-	SetCSchemeHandlerFactoryT(*CSchemeHandlerFactoryT)
-}
-
-func (r RefToCSchemeHandlerFactoryT) GetCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
-	return r.shf
-}
-
-func (r *RefToCSchemeHandlerFactoryT) SetCSchemeHandlerFactoryT(c *CSchemeHandlerFactoryT) {
-	r.shf = c
-}
 
 type SchemeHandlerFactory interface {
 	///
@@ -84,19 +62,6 @@ func RegisterSchemeHandlerFactory(
 
 var scheme_handler_factory_method = map[*C.cef_scheme_handler_factory_t]SchemeHandlerFactory{}
 
-func newCSchemeHandlerFactoryT(cFactory *C.cef_scheme_handler_factory_t) *CSchemeHandlerFactoryT {
-	Tracef(unsafe.Pointer(cFactory), "L42:")
-	BaseAddRef(cFactory)
-	factory := CSchemeHandlerFactoryT{cFactory}
-	runtime.SetFinalizer(&factory, func(f *CSchemeHandlerFactoryT) {
-		if ref_count_log.output {
-			Logf("L72: %p", factory.p_scheme_handler_factory)
-		}
-		BaseRelease(f.p_scheme_handler_factory)
-	})
-	return &factory
-
-}
 func AllocCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
 	p := (*C.cefingo_scheme_handler_factory_wrapper_t)(
 		c_calloc(1, C.sizeof_cefingo_scheme_handler_factory_wrapper_t, "L81:"))
@@ -122,17 +87,13 @@ func (factory *CSchemeHandlerFactoryT) Bind(f SchemeHandlerFactory) *CSchemeHand
 	return factory
 }
 
-func (f *C.cef_scheme_handler_factory_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(f))
-}
-
 //export cefingo_scheme_handler_factory_create
 func cefingo_scheme_handler_factory_create(
 	self *C.cef_scheme_handler_factory_t,
 	browser *C.cef_browser_t,
 	frame *C.cef_frame_t,
 	scheme_name *C.cef_string_t,
-	request *CRequestT,
+	request *C.cef_request_t,
 ) *C.cef_resource_handler_t {
 	f := scheme_handler_factory_method[self]
 	if f == nil {
@@ -144,7 +105,7 @@ func cefingo_scheme_handler_factory_create(
 		newCBrowserT(browser),
 		newCFrameT(frame),
 		s,
-		request)
+		newCRequestT(request))
 	BaseAddRef(h.p_resource_handler)
 	return h.p_resource_handler
 }

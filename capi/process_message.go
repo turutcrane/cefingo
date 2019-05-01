@@ -2,27 +2,6 @@ package capi
 
 // #include "cefingo.h"
 import "C"
-import (
-	"runtime"
-	"unsafe"
-)
-
-func (m *C.cef_process_message_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(m))
-}
-
-func newCProcessMessageT(cef *C.cef_process_message_t) *CProcessMessageT {
-	Tracef(unsafe.Pointer(cef), "L42:")
-	BaseAddRef(cef)
-	message := CProcessMessageT{cef}
-	runtime.SetFinalizer(&message, func(m *CProcessMessageT) {
-		if ref_count_log.output {
-			Tracef(unsafe.Pointer(m.p_process_message), "L47:")
-		}
-		BaseRelease(m.p_process_message)
-	})
-	return &message
-}
 
 func ProcessMessageCreate(name string) *CProcessMessageT {
 	cef_name := create_cef_string(name)

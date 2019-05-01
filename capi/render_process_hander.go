@@ -1,7 +1,6 @@
 package capi
 
 import (
-	"runtime"
 	"unsafe"
 )
 
@@ -13,26 +12,6 @@ import "C"
 // will be called on the render process main thread (TID_RENDERER) unless
 // otherwise indicated.
 ///
-type CRenderProcessHandlerT struct {
-	p_render_process_handler *C.cef_render_process_handler_t
-}
-
-type RefToCRenderProcessHandlerT struct {
-	rph *CRenderProcessHandlerT
-}
-
-type CRenderProcessHandlerTAccessor interface {
-	GetCRenderProcessHandlerT() *CRenderProcessHandlerT
-	SetCRenderProcessHandlerT(*CRenderProcessHandlerT)
-}
-
-func (r RefToCRenderProcessHandlerT) GetCRenderProcessHandlerT() *CRenderProcessHandlerT {
-	return r.rph
-}
-
-func (r *RefToCRenderProcessHandlerT) SetCRenderProcessHandlerT(c *CRenderProcessHandlerT) {
-	r.rph = c
-}
 
 ///
 // Called after the render process main thread has been created. |extra_info|
@@ -169,17 +148,6 @@ var on_process_message_received_handler = map[*C.cef_render_process_handler_t]On
 
 var rphLoadHandlers = map[*C.cef_render_process_handler_t]*CLoadHandlerT{}
 
-func newCRenderProcessHandlerT(cef *C.cef_render_process_handler_t) *CRenderProcessHandlerT {
-	Tracef(unsafe.Pointer(cef), "L122:")
-	BaseAddRef(cef)
-	handler := CRenderProcessHandlerT{cef}
-	runtime.SetFinalizer(&handler, func(h *CRenderProcessHandlerT) {
-		Tracef(unsafe.Pointer(h.p_render_process_handler), "L126:")
-		BaseRelease(h.p_render_process_handler)
-	})
-	return &handler
-}
-
 func AllocCRenderProcessHandlerT() *CRenderProcessHandlerT {
 	p := (*C.cefingo_render_process_handler_wrapper_t)(
 		c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "L133:"))
@@ -239,10 +207,6 @@ func (rph *CRenderProcessHandlerT) Bind(handler interface{}) *CRenderProcessHand
 	}
 
 	return rph
-}
-
-func (h *C.cef_render_process_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 //export cefingo_render_process_handler_on_render_thread_created
@@ -356,15 +320,21 @@ func cefingo_render_process_handler_on_uncaught_exception(
 	browser *C.cef_browser_t,
 	frame *C.cef_frame_t,
 	context *C.cef_v8context_t,
-	exception *CV8exceptionT,
-	stackTrace *CV8stackTraceT,
+	exception *C.cef_v8exception_t,
+	stackTrace *C.cef_v8stack_trace_t,
 ) {
 	Logf("L227: self: %p", self)
 
 	f := on_uncaught_exception_handler[self]
 	if f != nil {
-		f.OnUncaughtException(newCRenderProcessHandlerT(self), newCBrowserT(browser),
-			newCFrameT(frame), newCV8contextT(context), exception, stackTrace)
+		f.OnUncaughtException(
+			newCRenderProcessHandlerT(self),
+			newCBrowserT(browser),
+			newCFrameT(frame),
+			newCV8contextT(context),
+			newCV8exceptionT(exception),
+			newCV8stackTraceT(stackTrace),
+		)
 	} else {
 		Logf("L333: Noo!")
 	}

@@ -1,33 +1,11 @@
 package capi
 
 import (
-	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
 import "C"
-
-type CLoadHandlerT struct {
-	p_load_handler *C.cef_load_handler_t
-}
-
-type RefToCLoadHandlerT struct {
-	app *CLoadHandlerT
-}
-
-type CLoadHandlerTAccessor interface {
-	GetCLoadHandlerT() *CLoadHandlerT
-	SetCLoadHandlerT(*CLoadHandlerT)
-}
-
-func (r RefToCLoadHandlerT) GetCLoadHandlerT() *CLoadHandlerT {
-	return r.app
-}
-
-func (r *RefToCLoadHandlerT) SetCLoadHandlerT(c *CLoadHandlerT) {
-	r.app = c
-}
 
 ///
 // Called when the loading state has changed. This callback will be executed
@@ -109,18 +87,6 @@ var on_load_start_handler = map[*C.cef_load_handler_t]OnLoadStartHandler{}
 var on_load_end_handler = map[*C.cef_load_handler_t]OnLoadEndHandler{}
 var on_load_error_handler = map[*C.cef_load_handler_t]OnLoadErrorHandler{}
 
-func newCLoadHandlerT(cef *C.cef_load_handler_t) *CLoadHandlerT {
-	Tracef(unsafe.Pointer(cef), "L92:")
-	BaseAddRef(cef)
-	handler := CLoadHandlerT{cef}
-
-	runtime.SetFinalizer(&handler, func(h *CLoadHandlerT) {
-		Tracef(unsafe.Pointer(h.p_load_handler), "L133:")
-		BaseRelease(h.p_load_handler)
-	})
-	return &handler
-}
-
 // AllocCLoadHandlerT allocates CLoadHandlerT and construct it
 func AllocCLoadHandlerT() *CLoadHandlerT {
 	p := (*C.cefingo_load_handler_wrapper_t)(
@@ -161,10 +127,6 @@ func (loadHandler *CLoadHandlerT) Bind(handler interface{}) *CLoadHandlerT {
 	}
 
 	return loadHandler
-}
-
-func (h *C.cef_load_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 //export cefingo_load_handler_on_loading_state_change

@@ -90,10 +90,6 @@ func (capp *CAppT) Bind(a interface{}) *CAppT {
 	return capp
 }
 
-// func (a *C.cef_app_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-// 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(a))
-// }
-
 ///
 // Return the handler for resource bundle events. If
 // CefSettings.pack_loading_disabled is true (1) a handler must be returned.

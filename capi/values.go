@@ -1,50 +1,22 @@
 package capi
 
 import (
-	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
 import "C"
 
-func (v *CValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(v))
-}
-
 func ValueCreate() *CValueT {
-	return (*CValueT)(C.cef_value_create())
-}
-
-func (v *CBinaryValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(v))
+	return newCValueT(C.cef_value_create())
 }
 
 func BinaryValueCreate(data []byte) *CBinaryValueT {
-	return (*CBinaryValueT)(C.cef_binary_value_create(unsafe.Pointer(&data[0]), C.size_t(len(data))))
-}
-
-func (v *CDictionaryValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(v))
+	return newCBinaryValueT(C.cef_binary_value_create(unsafe.Pointer(&data[0]), C.size_t(len(data))))
 }
 
 func DictionaryValueCreate() *CDictionaryValueT {
-	return (*CDictionaryValueT)(C.cef_dictionary_value_create())
-}
-
-func newCListValueT(cef *C.cef_list_value_t) *CListValueT {
-	Tracef(unsafe.Pointer(cef), "L35:")
-	BaseAddRef(cef)
-	list := CListValueT{cef}
-	runtime.SetFinalizer(&list, func(l *CListValueT) {
-		Tracef(unsafe.Pointer(l.p_list_value), "L47:")
-		BaseRelease(l.p_list_value)
-	})
-	return &list
-}
-
-func (l *C.cef_list_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(l))
+	return newCDictionaryValueT(C.cef_dictionary_value_create())
 }
 
 func ListValueCreate() *CListValueT {
@@ -158,11 +130,9 @@ func (l *CListValueT) GetType(index int) CValueTypeT {
 // returned value will reference existing data and modifications to the value
 // will modify this object.
 ///
-func (l *CListValueT) GetValue(index int) (v *CValueT) {
-	v = (*CValueT)(C.cefingo_list_value_get_value(
-		l.p_list_value, C.size_t(index)))
-	BaseAddRef(v)
-	return v
+func (l *CListValueT) GetValue(index int) *CValueT {
+	v := C.cefingo_list_value_get_value(l.p_list_value, C.size_t(index))
+	return newCValueT(v)
 }
 
 ///
@@ -207,10 +177,9 @@ func (l *CListValueT) GetString(index int) (s string) {
 // will reference existing data.
 ///
 func (l *CListValueT) GetBinary(index int) *CBinaryValueT {
-	b := (*CBinaryValueT)(C.cefingo_list_value_get_binary(
-		l.p_list_value, C.size_t(index)))
-	BaseAddRef(b)
-	return b
+	b := C.cefingo_list_value_get_binary(
+		l.p_list_value, C.size_t(index))
+	return newCBinaryValueT(b)
 }
 
 ///
@@ -219,11 +188,10 @@ func (l *CListValueT) GetBinary(index int) *CBinaryValueT {
 // modify this object.
 ///
 func (l *CListValueT) GetDictionary(index int) *CDictionaryValueT {
-	d := (*CDictionaryValueT)(C.cefingo_list_value_get_dictionary(
+	d := C.cefingo_list_value_get_dictionary(
 		l.p_list_value, C.size_t(index),
-	))
-	BaseAddRef(d)
-	return d
+	)
+	return newCDictionaryValueT(d)
 }
 
 ///
@@ -245,9 +213,9 @@ func (l *CListValueT) GetList(index int) *CListValueT {
 // will modify this object.
 ///
 func (l *CListValueT) SetValue(index int, value *CValueT) bool {
-	BaseAddRef(value)
+	BaseAddRef(value.p_value)
 	status := C.cefingo_list_value_set_value(
-		l.p_list_value, C.size_t(index), (*C.cef_value_t)(value),
+		l.p_list_value, C.size_t(index), value.p_value,
 	)
 	return status == 1
 }
@@ -319,9 +287,9 @@ func (l *CListValueT) SetString(index int, s string) bool {
 // |value| reference will be invalidated.
 ///
 func (l *CListValueT) SetBinary(index int, value *CBinaryValueT) bool {
-	BaseAddRef(value)
+	BaseAddRef(value.p_binary_value)
 	status := C.cefingo_list_value_set_binary(
-		l.p_list_value, C.size_t(index), (*C.cef_binary_value_t)(value),
+		l.p_list_value, C.size_t(index), value.p_binary_value,
 	)
 	return status == 1
 }
@@ -334,10 +302,10 @@ func (l *CListValueT) SetBinary(index int, value *CBinaryValueT) bool {
 // reference will be invalidated.
 ///
 func (l *CListValueT) SetDictionary(index int, value *CDictionaryValueT) bool {
-	BaseAddRef(value)
+	BaseAddRef(value.p_dictionary_value)
 	status := C.cefingo_list_value_set_dictionary(
 		l.p_list_value, C.size_t(index),
-		(*C.cef_dictionary_value_t)(value),
+		value.p_dictionary_value,
 	)
 	return status == 1
 }

@@ -2,35 +2,11 @@ package capi
 
 //
 import (
-	"runtime"
 	"unsafe"
 )
 
 // #include "cefingo.h"
 import "C"
-
-// LifeSpanHandler is Go interface of C.cef_life_span_handler_t
-
-type CLifeSpanHandlerT struct {
-	p_life_span_handler *C.cef_life_span_handler_t
-}
-
-type RefToCLifeSpanHandlerT struct {
-	lsh *CLifeSpanHandlerT
-}
-
-type CLifeSpanHandlerTAccessor interface {
-	GetCLifeSpanHandlerT() *CLifeSpanHandlerT
-	SetCLifeSpanHandlerT(*CLifeSpanHandlerT)
-}
-
-func (r RefToCLifeSpanHandlerT) GetCLifeSpanHandlerT() *CLifeSpanHandlerT {
-	return r.lsh
-}
-
-func (r *RefToCLifeSpanHandlerT) SetCLifeSpanHandlerT(c *CLifeSpanHandlerT) {
-	r.lsh = c
-}
 
 ///
 // Called after a new browser is created. This callback will be the first
@@ -151,17 +127,6 @@ var on_after_created_handler = map[*C.cef_life_span_handler_t]OnAfterCreatedHand
 var on_before_close_handler = map[*C.cef_life_span_handler_t]OnBeforeCloseHandler{}
 var do_close_handler = map[*C.cef_life_span_handler_t]DoCloseHandler{}
 
-func newCLifeSpanHandlerT(cef *C.cef_life_span_handler_t) *CLifeSpanHandlerT {
-	Tracef(unsafe.Pointer(cef), "L127:")
-	BaseAddRef(cef)
-	handler := CLifeSpanHandlerT{cef}
-	runtime.SetFinalizer(&handler, func(h *CLifeSpanHandlerT) {
-		Tracef(unsafe.Pointer(h.p_life_span_handler), "L133:")
-		BaseRelease(h.p_life_span_handler)
-	})
-	return &handler
-}
-
 func AllocCLifeSpanHandlerT() *CLifeSpanHandlerT {
 	p := c_calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t, "L139:")
 	C.cefingo_construct_life_span_handler((*C.cefingo_life_span_handler_wrapper_t)(p))
@@ -196,10 +161,6 @@ func (lsh *CLifeSpanHandlerT) Bind(handler interface{}) *CLifeSpanHandlerT {
 		Logf("L76:")
 	}
 	return lsh
-}
-
-func (h *C.cef_life_span_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 //export cefingo_life_span_handler_on_before_close

@@ -31,33 +31,6 @@ type V8handler interface {
 
 var v8handlers = map[*C.cef_v8handler_t]V8handler{}
 
-func (v *C.cef_v8value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(v))
-}
-
-func newCV8valueT(cef *C.cef_v8value_t) *CV8valueT {
-	Tracef(unsafe.Pointer(cef), "L39:")
-	BaseAddRef(cef)
-	value := CV8valueT{cef}
-	runtime.SetFinalizer(&value, func(v *CV8valueT) {
-		Tracef(unsafe.Pointer(v.p_v8value), "L43:")
-		BaseRelease(v.p_v8value)
-	})
-	return &value
-
-}
-
-func newCV8arrayBufferReleaseCallbackT(cef *C.cef_v8array_buffer_release_callback_t) *CV8arrayBufferReleaseCallbackT {
-	Tracef(unsafe.Pointer(cef), "L42:")
-	BaseAddRef(cef)
-	callback := CV8arrayBufferReleaseCallbackT{cef}
-	runtime.SetFinalizer(&callback, func(c *CV8arrayBufferReleaseCallbackT) {
-		Tracef(unsafe.Pointer(c.p_v8array_buffer_release_callback), "L47:")
-		BaseRelease(c.p_v8array_buffer_release_callback)
-	})
-	return &callback
-}
-
 // AllocCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT and construct it
 func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
 	// TODO Bind 関数 を書く??
@@ -68,10 +41,6 @@ func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
 
 	return newCV8arrayBufferReleaseCallbackT(
 		(*C.cef_v8array_buffer_release_callback_t)(unsafe.Pointer(p)))
-}
-
-func (rh *C.cef_v8array_buffer_release_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(rh))
 }
 
 //export cefingo_v8array_buffer_release_callback_release_buffer
@@ -269,14 +238,9 @@ func (self *CV8valueT) HasException() (ret bool) {
 	return v == 1
 }
 
-func (e *CV8exceptionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(e))
-}
-
-func (self *CV8valueT) GetException() (e *CV8exceptionT) {
-	e = (*CV8exceptionT)(C.cefingo_v8value_get_exception(self.p_v8value))
-	BaseAddRef(e)
-	return e
+func (self *CV8valueT) GetException() *CV8exceptionT {
+	e := C.cefingo_v8value_get_exception(self.p_v8value)
+	return newCV8exceptionT(e)
 }
 
 func (self *CV8valueT) ClearException() (ret bool) {
@@ -359,7 +323,6 @@ func (self *CV8valueT) ExecuteFunction(
 		name := self.GetFunctionName()
 		if this != nil && this.HasException() {
 			e := this.GetException()
-			defer BaseRelease(e)
 			m := e.GetMessage()
 			err = errors.Errorf("%s returns NULL and has Exception: %s", name, m)
 		} else {
@@ -387,38 +350,6 @@ func V8valueCreateFunction(name string, handler *CV8handlerT) (function *CV8valu
 	return newCV8valueT(C.cef_v8value_create_function(cef_name, handler.p_v8handler))
 }
 
-type CV8handlerT struct {
-	p_v8handler *C.cef_v8handler_t
-}
-
-type RefToCV8handlerT struct {
-	app *CV8handlerT
-}
-
-type CV8handlerTAccessor interface {
-	GetCV8handlerT() *CV8handlerT
-	SetCV8handlerT(*CV8handlerT)
-}
-
-func (r RefToCV8handlerT) GetCV8handlerT() *CV8handlerT {
-	return r.app
-}
-
-func (r *RefToCV8handlerT) SetCV8handlerT(c *CV8handlerT) {
-	r.app = c
-}
-
-func newCV8handlerT(cef *C.cef_v8handler_t) *CV8handlerT {
-	Tracef(unsafe.Pointer(cef), "L381:")
-	BaseAddRef(cef)
-	handler := CV8handlerT{cef}
-	runtime.SetFinalizer(&handler, func(h *CV8handlerT) {
-		Tracef(unsafe.Pointer(h.p_v8handler), "L47:")
-		BaseRelease(h.p_v8handler)
-	})
-	return &handler
-}
-
 // AllocCV8handlerT allocates CV8handlerT and construct it
 func AllocCV8handlerT() *CV8handlerT {
 	p := (*C.cefingo_v8handler_wrapper_t)(
@@ -444,10 +375,6 @@ func (v8handler *CV8handlerT) Bind(handler V8handler) *CV8handlerT {
 	}
 
 	return v8handler
-}
-
-func (h *C.cef_v8handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(h))
 }
 
 // Excute Handler
@@ -502,21 +429,6 @@ func V8contextInContext() bool {
 	inContext := C.cef_v8context_in_context()
 	Logf("L150: %d", inContext)
 	return (inContext == 1)
-}
-
-func (v8c *C.cef_v8context_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(v8c))
-}
-
-func newCV8contextT(cef *C.cef_v8context_t) *CV8contextT {
-	Tracef(unsafe.Pointer(cef), "L42:")
-	BaseAddRef(cef)
-	context := CV8contextT{cef}
-	runtime.SetFinalizer(&context, func(c *CV8contextT) {
-		Tracef(unsafe.Pointer(c.p_v8context), "L47:")
-		BaseRelease(c.p_v8context)
-	})
-	return &context
 }
 
 func V8contextGetEnterdContext() (context *CV8contextT) {
@@ -579,8 +491,8 @@ func (self *CV8contextT) Eval(code string, retval **CV8valueT, e **CV8exceptionT
 		*retval = newCV8valueT(r)
 	} else {
 		// if exc != nil {
-		*e = (*CV8exceptionT)(exc)
-		BaseAddRef(*e)
+		*e = newCV8exceptionT(exc)
+		// BaseAddRef(*e)
 		// }
 	}
 
@@ -588,7 +500,7 @@ func (self *CV8contextT) Eval(code string, retval **CV8valueT, e **CV8exceptionT
 }
 
 func (self *CV8exceptionT) GetMessage() (msg string) {
-	usfs := C.cefingo_v8exception_get_message((*C.cef_v8exception_t)(self))
+	usfs := C.cefingo_v8exception_get_message(self.p_v8exception)
 	msg = string_from_cef_string((*C.cef_string_t)(usfs))
 	C.cef_string_userfree_free(usfs)
 	return msg

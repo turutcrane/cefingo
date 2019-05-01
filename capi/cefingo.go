@@ -159,41 +159,14 @@ type Settings struct {
 	RemoteDebuggingPort      int
 }
 
-type CBrowserHostT C.cef_browser_host_t
-type CBinaryValueT C.cef_binary_value_t
-type CDictionaryValueT C.cef_dictionary_value_t
-type CCallbackT C.cef_callback_t
-type CFrameT struct {
-	p_frame *C.cef_frame_t
-}
 type CCookieT C.cef_cookie_t
 type CCommandLineT C.cef_command_line_t
 type CDomnodeT C.cef_domnode_t
 type CFileDialogModeT C.cef_file_dialog_mode_t
-type CListValueT struct {
-	p_list_value *C.cef_list_value_t
-}
 type CProcessIdT C.cef_process_id_t
-type CProcessMessageT struct {
-	p_process_message *C.cef_process_message_t
-}
-type CRequestT C.cef_request_t // TODO プログラム側の構造体に ポインタを直接置きたくないので、構造体化(newC) する。
-type CResponseT C.cef_response_t
-type CSchemeRegistrarT C.cef_scheme_registrar_t
+type CSchemeRegistrarT C.cef_scheme_registrar_t // this dose not has 'cef_base_ref_counted_t base', but also 'cef_base_scoped_t base' 
 type CV8accessorT C.cef_v8accessor_t
-type CV8arrayBufferReleaseCallbackT struct {
-	p_v8array_buffer_release_callback *C.cef_v8array_buffer_release_callback_t
-}
-type CV8contextT struct {
-	p_v8context *C.cef_v8context_t
-}
-type CV8exceptionT C.cef_v8exception_t
 type CV8interceptorT C.cef_v8interceptor_t
-type CV8stackTraceT C.cef_v8stack_trace_t
-type CV8valueT struct {
-	p_v8value *C.cef_v8value_t
-}
-type CValueT C.cef_value_t
 
 type CContextMenuHandlerT C.cef_context_menu_handler_t
 type CDialogHandlerT C.cef_dialog_handler_t

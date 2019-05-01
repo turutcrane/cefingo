@@ -15,7 +15,7 @@ type StringMap struct {
 func (self *CResponseT) SetError(
 	errorCode CErrorcodeT,
 ) {
-	C.cefingo_response_set_error((*C.cef_response_t)(self), C.cef_errorcode_t(errorCode))
+	C.cefingo_response_set_error(self.p_response, C.cef_errorcode_t(errorCode))
 }
 
 ///
@@ -24,7 +24,7 @@ func (self *CResponseT) SetError(
 func (self *CResponseT) SetStatus(
 	status int,
 ) {
-	C.cefingo_response_set_status((*C.cef_response_t)(self), C.int(status))
+	C.cefingo_response_set_status(self.p_response, C.int(status))
 }
 
 ///
@@ -35,7 +35,7 @@ func (self *CResponseT) SetStatusText(
 ) {
 	s := create_cef_string(statusText)
 	defer clear_cef_string(s)
-	C.cefingo_response_set_status_text((*C.cef_response_t)(self), s)
+	C.cefingo_response_set_status_text(self.p_response, s)
 }
 
 ///
@@ -44,7 +44,7 @@ func (self *CResponseT) SetStatusText(
 func (self *CResponseT) SetMimeType(mimeType string) {
 	s := create_cef_string(mimeType)
 	defer clear_cef_string(s)
-	C.cefingo_response_set_mime_type((*C.cef_response_t)(self), s)
+	C.cefingo_response_set_mime_type(self.p_response, s)
 }
 
 func (self *CResponseT) SetHeaderMap(headers []StringMap) {
@@ -61,14 +61,14 @@ func (self *CResponseT) SetHeaderMap(headers []StringMap) {
 	defer clear_cef_string(key)
 	defer clear_cef_string(value)
 
-	C.cefingo_response_set_header_map((*C.cef_response_t)(self), m)
+	C.cefingo_response_set_header_map(self.p_response, m)
 }
 
 func (self *CResponseT) DumpHeaders() {
 	m := C.cef_string_multimap_alloc()
 	defer C.cef_string_multimap_free(m)
 
-	C.cefingo_response_get_header_map((*C.cef_response_t)(self), m)
+	C.cefingo_response_get_header_map(self.p_response, m)
 	size := C.cef_string_multimap_size(m)
 	Logf("L49: size:%d", size)
 	for i := C.size_t(0); i < size; i++ {

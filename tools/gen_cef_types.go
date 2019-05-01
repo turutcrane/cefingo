@@ -1,3 +1,6 @@
+//
+// cefingo go type generator for cef type with cef_base_ref_counted_t base member
+//
 package main
 
 import (
@@ -21,9 +24,31 @@ var (
 
 var cef_types = []string{
 	"cef_app_t",
+	"cef_binary_value_t",
 	"cef_browser_t",
+	"cef_browser_host_t",
 	"cef_browser_process_handler_t",
+	"cef_callback_t",
+	"cef_client_t",
+	"cef_dictionary_value_t",
+	"cef_frame_t",
+	"cef_life_span_handler_t",
+	"cef_list_value_t",
+	"cef_load_handler_t",
+	"cef_process_message_t",
+	"cef_render_process_handler_t",
+	"cef_request_t",
+	"cef_resource_handler_t",
+	"cef_response_t",
+	"cef_scheme_handler_factory_t",
 	"cef_run_file_dialog_callback_t",
+	"cef_v8array_buffer_release_callback_t",
+	"cef_v8context_t",
+	"cef_v8exception_t",
+	"cef_v8handler_t",
+	"cef_v8value_t",
+	"cef_v8stack_trace_t",
+	"cef_value_t",
 }
 
 func main() {
@@ -96,7 +121,7 @@ func genGotype(g *Generator, t string) {
 	camel := strcase.UpperCamelCase(typeName)
 	tailT := regexp.MustCompile("_t$")
 	typeName = tailT.ReplaceAllString(typeName, "")
-	log.Printf("L82: %s:%s", typeName, camel)
+	log.Printf("A124: %s: %s", typeName, camel)
 
 	// container of *C.cef_type
 	g.Printf(`

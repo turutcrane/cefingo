@@ -7,14 +7,9 @@ import (
 // #include "cefingo.h"
 import "C"
 
-func (bh *CBrowserHostT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(bh))
-}
-
-func (self *CBrowserT) GetHost() (h *CBrowserHostT) {
-	h = (*CBrowserHostT)(C.cefingo_browser_get_host(self.p_browser))
-	BaseAddRef(h)
-	return h
+func (self *CBrowserT) GetHost() *CBrowserHostT {
+	h := C.cefingo_browser_get_host(self.p_browser)
+	return newCBrowserHostT(h)
 }
 
 ///
@@ -133,7 +128,7 @@ func (h *CBrowserHostT) RunFileDialog(
 
 	BaseAddRef(callback.p_run_file_dialog_callback)
 	C.cefingo_browser_host_run_file_dialog(
-		(*C.cef_browser_host_t)(h),
+		h.p_browser_host, // self parameter
 		C.cef_file_dialog_mode_t(mode),
 		t, dfp,
 		C.cef_string_list_t(accept_filters), C.int(selected_accept_filter),

@@ -4,9 +4,9 @@ package capi
 import "C"
 
 func (self *CCallbackT) Cont() {
-	C.cefingo_callback_cont((*C.cef_callback_t)(self))
+	C.cefingo_callback_cont(self.p_callback)
 }
 
 func (self *CCallbackT) Cancel() {
-	C.cefingo_callback_cancel((*C.cef_callback_t)(self))
+	C.cefingo_callback_cancel(self.p_callback)
 }
