@@ -121,7 +121,7 @@ func genGotype(g *Generator, t string) {
 	camel := strcase.UpperCamelCase(typeName)
 	tailT := regexp.MustCompile("_t$")
 	typeName = tailT.ReplaceAllString(typeName, "")
-	log.Printf("A124: %s: %s", typeName, camel)
+	log.Printf("L124: %s: %s", typeName, camel)
 
 	// container of *C.cef_type
 	g.Printf(`

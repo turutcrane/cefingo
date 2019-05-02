@@ -179,7 +179,7 @@ func cefingo_life_span_handler_on_before_close(self *C.cef_life_span_handler_t, 
 
 //export cefingo_life_span_handler_do_close
 func cefingo_life_span_handler_do_close(self *C.cef_life_span_handler_t, browser *C.cef_browser_t) (ret C.int) {
-	Logf("L50:")
+	Tracef(unsafe.Pointer(self), "L183:")
 	f := do_close_handler[self]
 	if f != nil {
 		handler := newCLifeSpanHandlerT(self)
@@ -188,7 +188,7 @@ func cefingo_life_span_handler_do_close(self *C.cef_life_span_handler_t, browser
 			ret = 1
 		}
 	} else {
-		Logf("L58: life_span_do_close: Noo!")
+		Logf("L191: life_span_do_close: Noo!")
 	}
 	return ret
 }

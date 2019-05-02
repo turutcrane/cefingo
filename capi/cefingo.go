@@ -4,8 +4,6 @@ import (
 	"log"
 	"os"
 	"unsafe"
-
-	"github.com/alexbrainman/gowingui/winapi"
 )
 
 //go:generate go run ../tools/gen_cef_types.go
@@ -164,7 +162,7 @@ type CCommandLineT C.cef_command_line_t
 type CDomnodeT C.cef_domnode_t
 type CFileDialogModeT C.cef_file_dialog_mode_t
 type CProcessIdT C.cef_process_id_t
-type CSchemeRegistrarT C.cef_scheme_registrar_t // this dose not has 'cef_base_ref_counted_t base', but also 'cef_base_scoped_t base' 
+type CSchemeRegistrarT C.cef_scheme_registrar_t // this dose not has 'cef_base_ref_counted_t base', but also 'cef_base_scoped_t base'
 type CV8accessorT C.cef_v8accessor_t
 type CV8interceptorT C.cef_v8interceptor_t
 
@@ -207,13 +205,14 @@ var main_args = C.cef_main_args_t{}
 
 func ExecuteProcess(app *CAppT) {
 
-	instance, err := winapi.GetModuleHandle(nil)
-	if err != nil {
-		Panicf("L205: %v", err)
-	}
+	// instance, err := winapi.GetModuleHandle(nil)
+	// if err != nil {
+	// 	Panicf("L205: %v", err)
+	// }
 
-	main_args.instance = C.HINSTANCE(unsafe.Pointer(instance))
-	Logf("L33: %T: %#v :: %T: %#v", instance, instance, main_args.instance, main_args.instance)
+	// main_args.instance = C.HINSTANCE(unsafe.Pointer(instance))
+	// Logf("L33: %T: %#v :: %T: %#v", instance, instance, main_args.instance, main_args.instance)
+	setup_main_args(&main_args)
 
 	///
 	// This function should be called from the application entry point function to
