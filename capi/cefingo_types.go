@@ -34,11 +34,11 @@ func (r *RefToCAppT) SetCAppT(p *CAppT) {
 
 // Go type CAppT wraps cef type *C.cef_app_t
 func newCAppT(p *C.cef_app_t) *CAppT {
-	Tracef(unsafe.Pointer(p), "L37:")
+	Tracef(unsafe.Pointer(p), "T37:")
 	BaseAddRef(p)
 	go_app := CAppT{p}
 	runtime.SetFinalizer(&go_app, func(g *CAppT) {
-		Tracef(unsafe.Pointer(g.p_app), "L41:")
+		Tracef(unsafe.Pointer(g.p_app), "T41:")
 		BaseRelease(g.p_app)
 	})
 	return &go_app
@@ -73,11 +73,11 @@ func (r *RefToCBinaryValueT) SetCBinaryValueT(p *CBinaryValueT) {
 
 // Go type CBinaryValueT wraps cef type *C.cef_binary_value_t
 func newCBinaryValueT(p *C.cef_binary_value_t) *CBinaryValueT {
-	Tracef(unsafe.Pointer(p), "L76:")
+	Tracef(unsafe.Pointer(p), "T76:")
 	BaseAddRef(p)
 	go_binary_value := CBinaryValueT{p}
 	runtime.SetFinalizer(&go_binary_value, func(g *CBinaryValueT) {
-		Tracef(unsafe.Pointer(g.p_binary_value), "L80:")
+		Tracef(unsafe.Pointer(g.p_binary_value), "T80:")
 		BaseRelease(g.p_binary_value)
 	})
 	return &go_binary_value
@@ -112,11 +112,11 @@ func (r *RefToCBrowserT) SetCBrowserT(p *CBrowserT) {
 
 // Go type CBrowserT wraps cef type *C.cef_browser_t
 func newCBrowserT(p *C.cef_browser_t) *CBrowserT {
-	Tracef(unsafe.Pointer(p), "L115:")
+	Tracef(unsafe.Pointer(p), "T115:")
 	BaseAddRef(p)
 	go_browser := CBrowserT{p}
 	runtime.SetFinalizer(&go_browser, func(g *CBrowserT) {
-		Tracef(unsafe.Pointer(g.p_browser), "L119:")
+		Tracef(unsafe.Pointer(g.p_browser), "T119:")
 		BaseRelease(g.p_browser)
 	})
 	return &go_browser
@@ -151,11 +151,11 @@ func (r *RefToCBrowserHostT) SetCBrowserHostT(p *CBrowserHostT) {
 
 // Go type CBrowserHostT wraps cef type *C.cef_browser_host_t
 func newCBrowserHostT(p *C.cef_browser_host_t) *CBrowserHostT {
-	Tracef(unsafe.Pointer(p), "L154:")
+	Tracef(unsafe.Pointer(p), "T154:")
 	BaseAddRef(p)
 	go_browser_host := CBrowserHostT{p}
 	runtime.SetFinalizer(&go_browser_host, func(g *CBrowserHostT) {
-		Tracef(unsafe.Pointer(g.p_browser_host), "L158:")
+		Tracef(unsafe.Pointer(g.p_browser_host), "T158:")
 		BaseRelease(g.p_browser_host)
 	})
 	return &go_browser_host
@@ -190,11 +190,11 @@ func (r *RefToCBrowserProcessHandlerT) SetCBrowserProcessHandlerT(p *CBrowserPro
 
 // Go type CBrowserProcessHandlerT wraps cef type *C.cef_browser_process_handler_t
 func newCBrowserProcessHandlerT(p *C.cef_browser_process_handler_t) *CBrowserProcessHandlerT {
-	Tracef(unsafe.Pointer(p), "L193:")
+	Tracef(unsafe.Pointer(p), "T193:")
 	BaseAddRef(p)
 	go_browser_process_handler := CBrowserProcessHandlerT{p}
 	runtime.SetFinalizer(&go_browser_process_handler, func(g *CBrowserProcessHandlerT) {
-		Tracef(unsafe.Pointer(g.p_browser_process_handler), "L197:")
+		Tracef(unsafe.Pointer(g.p_browser_process_handler), "T197:")
 		BaseRelease(g.p_browser_process_handler)
 	})
 	return &go_browser_process_handler
@@ -229,11 +229,11 @@ func (r *RefToCCallbackT) SetCCallbackT(p *CCallbackT) {
 
 // Go type CCallbackT wraps cef type *C.cef_callback_t
 func newCCallbackT(p *C.cef_callback_t) *CCallbackT {
-	Tracef(unsafe.Pointer(p), "L232:")
+	Tracef(unsafe.Pointer(p), "T232:")
 	BaseAddRef(p)
 	go_callback := CCallbackT{p}
 	runtime.SetFinalizer(&go_callback, func(g *CCallbackT) {
-		Tracef(unsafe.Pointer(g.p_callback), "L236:")
+		Tracef(unsafe.Pointer(g.p_callback), "T236:")
 		BaseRelease(g.p_callback)
 	})
 	return &go_callback
@@ -268,11 +268,11 @@ func (r *RefToCClientT) SetCClientT(p *CClientT) {
 
 // Go type CClientT wraps cef type *C.cef_client_t
 func newCClientT(p *C.cef_client_t) *CClientT {
-	Tracef(unsafe.Pointer(p), "L271:")
+	Tracef(unsafe.Pointer(p), "T271:")
 	BaseAddRef(p)
 	go_client := CClientT{p}
 	runtime.SetFinalizer(&go_client, func(g *CClientT) {
-		Tracef(unsafe.Pointer(g.p_client), "L275:")
+		Tracef(unsafe.Pointer(g.p_client), "T275:")
 		BaseRelease(g.p_client)
 	})
 	return &go_client
@@ -307,11 +307,11 @@ func (r *RefToCDictionaryValueT) SetCDictionaryValueT(p *CDictionaryValueT) {
 
 // Go type CDictionaryValueT wraps cef type *C.cef_dictionary_value_t
 func newCDictionaryValueT(p *C.cef_dictionary_value_t) *CDictionaryValueT {
-	Tracef(unsafe.Pointer(p), "L310:")
+	Tracef(unsafe.Pointer(p), "T310:")
 	BaseAddRef(p)
 	go_dictionary_value := CDictionaryValueT{p}
 	runtime.SetFinalizer(&go_dictionary_value, func(g *CDictionaryValueT) {
-		Tracef(unsafe.Pointer(g.p_dictionary_value), "L314:")
+		Tracef(unsafe.Pointer(g.p_dictionary_value), "T314:")
 		BaseRelease(g.p_dictionary_value)
 	})
 	return &go_dictionary_value
@@ -346,11 +346,11 @@ func (r *RefToCFrameT) SetCFrameT(p *CFrameT) {
 
 // Go type CFrameT wraps cef type *C.cef_frame_t
 func newCFrameT(p *C.cef_frame_t) *CFrameT {
-	Tracef(unsafe.Pointer(p), "L349:")
+	Tracef(unsafe.Pointer(p), "T349:")
 	BaseAddRef(p)
 	go_frame := CFrameT{p}
 	runtime.SetFinalizer(&go_frame, func(g *CFrameT) {
-		Tracef(unsafe.Pointer(g.p_frame), "L353:")
+		Tracef(unsafe.Pointer(g.p_frame), "T353:")
 		BaseRelease(g.p_frame)
 	})
 	return &go_frame
@@ -385,11 +385,11 @@ func (r *RefToCLifeSpanHandlerT) SetCLifeSpanHandlerT(p *CLifeSpanHandlerT) {
 
 // Go type CLifeSpanHandlerT wraps cef type *C.cef_life_span_handler_t
 func newCLifeSpanHandlerT(p *C.cef_life_span_handler_t) *CLifeSpanHandlerT {
-	Tracef(unsafe.Pointer(p), "L388:")
+	Tracef(unsafe.Pointer(p), "T388:")
 	BaseAddRef(p)
 	go_life_span_handler := CLifeSpanHandlerT{p}
 	runtime.SetFinalizer(&go_life_span_handler, func(g *CLifeSpanHandlerT) {
-		Tracef(unsafe.Pointer(g.p_life_span_handler), "L392:")
+		Tracef(unsafe.Pointer(g.p_life_span_handler), "T392:")
 		BaseRelease(g.p_life_span_handler)
 	})
 	return &go_life_span_handler
@@ -424,11 +424,11 @@ func (r *RefToCListValueT) SetCListValueT(p *CListValueT) {
 
 // Go type CListValueT wraps cef type *C.cef_list_value_t
 func newCListValueT(p *C.cef_list_value_t) *CListValueT {
-	Tracef(unsafe.Pointer(p), "L427:")
+	Tracef(unsafe.Pointer(p), "T427:")
 	BaseAddRef(p)
 	go_list_value := CListValueT{p}
 	runtime.SetFinalizer(&go_list_value, func(g *CListValueT) {
-		Tracef(unsafe.Pointer(g.p_list_value), "L431:")
+		Tracef(unsafe.Pointer(g.p_list_value), "T431:")
 		BaseRelease(g.p_list_value)
 	})
 	return &go_list_value
@@ -463,11 +463,11 @@ func (r *RefToCLoadHandlerT) SetCLoadHandlerT(p *CLoadHandlerT) {
 
 // Go type CLoadHandlerT wraps cef type *C.cef_load_handler_t
 func newCLoadHandlerT(p *C.cef_load_handler_t) *CLoadHandlerT {
-	Tracef(unsafe.Pointer(p), "L466:")
+	Tracef(unsafe.Pointer(p), "T466:")
 	BaseAddRef(p)
 	go_load_handler := CLoadHandlerT{p}
 	runtime.SetFinalizer(&go_load_handler, func(g *CLoadHandlerT) {
-		Tracef(unsafe.Pointer(g.p_load_handler), "L470:")
+		Tracef(unsafe.Pointer(g.p_load_handler), "T470:")
 		BaseRelease(g.p_load_handler)
 	})
 	return &go_load_handler
@@ -502,11 +502,11 @@ func (r *RefToCProcessMessageT) SetCProcessMessageT(p *CProcessMessageT) {
 
 // Go type CProcessMessageT wraps cef type *C.cef_process_message_t
 func newCProcessMessageT(p *C.cef_process_message_t) *CProcessMessageT {
-	Tracef(unsafe.Pointer(p), "L505:")
+	Tracef(unsafe.Pointer(p), "T505:")
 	BaseAddRef(p)
 	go_process_message := CProcessMessageT{p}
 	runtime.SetFinalizer(&go_process_message, func(g *CProcessMessageT) {
-		Tracef(unsafe.Pointer(g.p_process_message), "L509:")
+		Tracef(unsafe.Pointer(g.p_process_message), "T509:")
 		BaseRelease(g.p_process_message)
 	})
 	return &go_process_message
@@ -541,11 +541,11 @@ func (r *RefToCRenderProcessHandlerT) SetCRenderProcessHandlerT(p *CRenderProces
 
 // Go type CRenderProcessHandlerT wraps cef type *C.cef_render_process_handler_t
 func newCRenderProcessHandlerT(p *C.cef_render_process_handler_t) *CRenderProcessHandlerT {
-	Tracef(unsafe.Pointer(p), "L544:")
+	Tracef(unsafe.Pointer(p), "T544:")
 	BaseAddRef(p)
 	go_render_process_handler := CRenderProcessHandlerT{p}
 	runtime.SetFinalizer(&go_render_process_handler, func(g *CRenderProcessHandlerT) {
-		Tracef(unsafe.Pointer(g.p_render_process_handler), "L548:")
+		Tracef(unsafe.Pointer(g.p_render_process_handler), "T548:")
 		BaseRelease(g.p_render_process_handler)
 	})
 	return &go_render_process_handler
@@ -580,11 +580,11 @@ func (r *RefToCRequestT) SetCRequestT(p *CRequestT) {
 
 // Go type CRequestT wraps cef type *C.cef_request_t
 func newCRequestT(p *C.cef_request_t) *CRequestT {
-	Tracef(unsafe.Pointer(p), "L583:")
+	Tracef(unsafe.Pointer(p), "T583:")
 	BaseAddRef(p)
 	go_request := CRequestT{p}
 	runtime.SetFinalizer(&go_request, func(g *CRequestT) {
-		Tracef(unsafe.Pointer(g.p_request), "L587:")
+		Tracef(unsafe.Pointer(g.p_request), "T587:")
 		BaseRelease(g.p_request)
 	})
 	return &go_request
@@ -619,11 +619,11 @@ func (r *RefToCResourceHandlerT) SetCResourceHandlerT(p *CResourceHandlerT) {
 
 // Go type CResourceHandlerT wraps cef type *C.cef_resource_handler_t
 func newCResourceHandlerT(p *C.cef_resource_handler_t) *CResourceHandlerT {
-	Tracef(unsafe.Pointer(p), "L622:")
+	Tracef(unsafe.Pointer(p), "T622:")
 	BaseAddRef(p)
 	go_resource_handler := CResourceHandlerT{p}
 	runtime.SetFinalizer(&go_resource_handler, func(g *CResourceHandlerT) {
-		Tracef(unsafe.Pointer(g.p_resource_handler), "L626:")
+		Tracef(unsafe.Pointer(g.p_resource_handler), "T626:")
 		BaseRelease(g.p_resource_handler)
 	})
 	return &go_resource_handler
@@ -658,11 +658,11 @@ func (r *RefToCResponseT) SetCResponseT(p *CResponseT) {
 
 // Go type CResponseT wraps cef type *C.cef_response_t
 func newCResponseT(p *C.cef_response_t) *CResponseT {
-	Tracef(unsafe.Pointer(p), "L661:")
+	Tracef(unsafe.Pointer(p), "T661:")
 	BaseAddRef(p)
 	go_response := CResponseT{p}
 	runtime.SetFinalizer(&go_response, func(g *CResponseT) {
-		Tracef(unsafe.Pointer(g.p_response), "L665:")
+		Tracef(unsafe.Pointer(g.p_response), "T665:")
 		BaseRelease(g.p_response)
 	})
 	return &go_response
@@ -697,11 +697,11 @@ func (r *RefToCSchemeHandlerFactoryT) SetCSchemeHandlerFactoryT(p *CSchemeHandle
 
 // Go type CSchemeHandlerFactoryT wraps cef type *C.cef_scheme_handler_factory_t
 func newCSchemeHandlerFactoryT(p *C.cef_scheme_handler_factory_t) *CSchemeHandlerFactoryT {
-	Tracef(unsafe.Pointer(p), "L700:")
+	Tracef(unsafe.Pointer(p), "T700:")
 	BaseAddRef(p)
 	go_scheme_handler_factory := CSchemeHandlerFactoryT{p}
 	runtime.SetFinalizer(&go_scheme_handler_factory, func(g *CSchemeHandlerFactoryT) {
-		Tracef(unsafe.Pointer(g.p_scheme_handler_factory), "L704:")
+		Tracef(unsafe.Pointer(g.p_scheme_handler_factory), "T704:")
 		BaseRelease(g.p_scheme_handler_factory)
 	})
 	return &go_scheme_handler_factory
@@ -736,11 +736,11 @@ func (r *RefToCRunFileDialogCallbackT) SetCRunFileDialogCallbackT(p *CRunFileDia
 
 // Go type CRunFileDialogCallbackT wraps cef type *C.cef_run_file_dialog_callback_t
 func newCRunFileDialogCallbackT(p *C.cef_run_file_dialog_callback_t) *CRunFileDialogCallbackT {
-	Tracef(unsafe.Pointer(p), "L739:")
+	Tracef(unsafe.Pointer(p), "T739:")
 	BaseAddRef(p)
 	go_run_file_dialog_callback := CRunFileDialogCallbackT{p}
 	runtime.SetFinalizer(&go_run_file_dialog_callback, func(g *CRunFileDialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_run_file_dialog_callback), "L743:")
+		Tracef(unsafe.Pointer(g.p_run_file_dialog_callback), "T743:")
 		BaseRelease(g.p_run_file_dialog_callback)
 	})
 	return &go_run_file_dialog_callback
@@ -775,11 +775,11 @@ func (r *RefToCV8arrayBufferReleaseCallbackT) SetCV8arrayBufferReleaseCallbackT(
 
 // Go type CV8arrayBufferReleaseCallbackT wraps cef type *C.cef_v8array_buffer_release_callback_t
 func newCV8arrayBufferReleaseCallbackT(p *C.cef_v8array_buffer_release_callback_t) *CV8arrayBufferReleaseCallbackT {
-	Tracef(unsafe.Pointer(p), "L778:")
+	Tracef(unsafe.Pointer(p), "T778:")
 	BaseAddRef(p)
 	go_v8array_buffer_release_callback := CV8arrayBufferReleaseCallbackT{p}
 	runtime.SetFinalizer(&go_v8array_buffer_release_callback, func(g *CV8arrayBufferReleaseCallbackT) {
-		Tracef(unsafe.Pointer(g.p_v8array_buffer_release_callback), "L782:")
+		Tracef(unsafe.Pointer(g.p_v8array_buffer_release_callback), "T782:")
 		BaseRelease(g.p_v8array_buffer_release_callback)
 	})
 	return &go_v8array_buffer_release_callback
@@ -814,11 +814,11 @@ func (r *RefToCV8contextT) SetCV8contextT(p *CV8contextT) {
 
 // Go type CV8contextT wraps cef type *C.cef_v8context_t
 func newCV8contextT(p *C.cef_v8context_t) *CV8contextT {
-	Tracef(unsafe.Pointer(p), "L817:")
+	Tracef(unsafe.Pointer(p), "T817:")
 	BaseAddRef(p)
 	go_v8context := CV8contextT{p}
 	runtime.SetFinalizer(&go_v8context, func(g *CV8contextT) {
-		Tracef(unsafe.Pointer(g.p_v8context), "L821:")
+		Tracef(unsafe.Pointer(g.p_v8context), "T821:")
 		BaseRelease(g.p_v8context)
 	})
 	return &go_v8context
@@ -853,11 +853,11 @@ func (r *RefToCV8exceptionT) SetCV8exceptionT(p *CV8exceptionT) {
 
 // Go type CV8exceptionT wraps cef type *C.cef_v8exception_t
 func newCV8exceptionT(p *C.cef_v8exception_t) *CV8exceptionT {
-	Tracef(unsafe.Pointer(p), "L856:")
+	Tracef(unsafe.Pointer(p), "T856:")
 	BaseAddRef(p)
 	go_v8exception := CV8exceptionT{p}
 	runtime.SetFinalizer(&go_v8exception, func(g *CV8exceptionT) {
-		Tracef(unsafe.Pointer(g.p_v8exception), "L860:")
+		Tracef(unsafe.Pointer(g.p_v8exception), "T860:")
 		BaseRelease(g.p_v8exception)
 	})
 	return &go_v8exception
@@ -892,11 +892,11 @@ func (r *RefToCV8handlerT) SetCV8handlerT(p *CV8handlerT) {
 
 // Go type CV8handlerT wraps cef type *C.cef_v8handler_t
 func newCV8handlerT(p *C.cef_v8handler_t) *CV8handlerT {
-	Tracef(unsafe.Pointer(p), "L895:")
+	Tracef(unsafe.Pointer(p), "T895:")
 	BaseAddRef(p)
 	go_v8handler := CV8handlerT{p}
 	runtime.SetFinalizer(&go_v8handler, func(g *CV8handlerT) {
-		Tracef(unsafe.Pointer(g.p_v8handler), "L899:")
+		Tracef(unsafe.Pointer(g.p_v8handler), "T899:")
 		BaseRelease(g.p_v8handler)
 	})
 	return &go_v8handler
@@ -931,11 +931,11 @@ func (r *RefToCV8valueT) SetCV8valueT(p *CV8valueT) {
 
 // Go type CV8valueT wraps cef type *C.cef_v8value_t
 func newCV8valueT(p *C.cef_v8value_t) *CV8valueT {
-	Tracef(unsafe.Pointer(p), "L934:")
+	Tracef(unsafe.Pointer(p), "T934:")
 	BaseAddRef(p)
 	go_v8value := CV8valueT{p}
 	runtime.SetFinalizer(&go_v8value, func(g *CV8valueT) {
-		Tracef(unsafe.Pointer(g.p_v8value), "L938:")
+		Tracef(unsafe.Pointer(g.p_v8value), "T938:")
 		BaseRelease(g.p_v8value)
 	})
 	return &go_v8value
@@ -970,11 +970,11 @@ func (r *RefToCV8stackTraceT) SetCV8stackTraceT(p *CV8stackTraceT) {
 
 // Go type CV8stackTraceT wraps cef type *C.cef_v8stack_trace_t
 func newCV8stackTraceT(p *C.cef_v8stack_trace_t) *CV8stackTraceT {
-	Tracef(unsafe.Pointer(p), "L973:")
+	Tracef(unsafe.Pointer(p), "T973:")
 	BaseAddRef(p)
 	go_v8stack_trace := CV8stackTraceT{p}
 	runtime.SetFinalizer(&go_v8stack_trace, func(g *CV8stackTraceT) {
-		Tracef(unsafe.Pointer(g.p_v8stack_trace), "L977:")
+		Tracef(unsafe.Pointer(g.p_v8stack_trace), "T977:")
 		BaseRelease(g.p_v8stack_trace)
 	})
 	return &go_v8stack_trace
@@ -1009,11 +1009,11 @@ func (r *RefToCValueT) SetCValueT(p *CValueT) {
 
 // Go type CValueT wraps cef type *C.cef_value_t
 func newCValueT(p *C.cef_value_t) *CValueT {
-	Tracef(unsafe.Pointer(p), "L1012:")
+	Tracef(unsafe.Pointer(p), "T1012:")
 	BaseAddRef(p)
 	go_value := CValueT{p}
 	runtime.SetFinalizer(&go_value, func(g *CValueT) {
-		Tracef(unsafe.Pointer(g.p_value), "L1016:")
+		Tracef(unsafe.Pointer(g.p_value), "T1016:")
 		BaseRelease(g.p_value)
 	})
 	return &go_value

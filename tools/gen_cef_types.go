@@ -121,7 +121,7 @@ func genGotype(g *Generator, t string) {
 	camel := strcase.UpperCamelCase(typeName)
 	tailT := regexp.MustCompile("_t$")
 	typeName = tailT.ReplaceAllString(typeName, "")
-	log.Printf("L124: %s: %s", typeName, camel)
+	log.Printf("T124: %s: %s", typeName, camel)
 
 	// container of *C.cef_type
 	g.Printf(`
@@ -166,11 +166,11 @@ func (r *RefToC%s) SetC%s(p *C%s) {
 	g.Printf(`
 // Go type C%s wraps cef type *C.%s
 func newC%s(p *C.%s) *C%s {
-	Tracef(unsafe.Pointer(p), "L%d:")
+	Tracef(unsafe.Pointer(p), "T%d:")
 	BaseAddRef(p)
 	go_%s := C%s{p}
 	runtime.SetFinalizer(&go_%s, func(g *C%s) {
-		Tracef(unsafe.Pointer(g.p_%s), "L%d:")
+		Tracef(unsafe.Pointer(g.p_%s), "T%d:")
 		BaseRelease(g.p_%s)
 	})
 	return &go_%s

@@ -1,7 +1,7 @@
 package capi
 
 import (
-	"unsafe"
+	"sync"
 )
 
 // #include "cefingo.h"
@@ -66,19 +66,53 @@ type OnRenderProcessThreadCreatedHandler interface {
 //	struct _cef_browser_process_handler_t* self,
 //	int64 delay_ms);
 
-var on_context_initialized_handler = map[*C.cef_browser_process_handler_t]OnContextInitializedHandler{}
-var on_render_process_thread_created_handler = map[*C.cef_browser_process_handler_t]OnRenderProcessThreadCreatedHandler{}
+var browserProcessHandlers = struct {
+	m                                        sync.Mutex
+	on_context_initialized_handler           map[*C.cef_browser_process_handler_t]OnContextInitializedHandler
+	on_render_process_thread_created_handler map[*C.cef_browser_process_handler_t]OnRenderProcessThreadCreatedHandler
+}{
+	sync.Mutex{},
+	map[*C.cef_browser_process_handler_t]OnContextInitializedHandler{},
+	map[*C.cef_browser_process_handler_t]OnRenderProcessThreadCreatedHandler{},
+}
 
-//export cefingo_browser_process_handler_on_context_initialized
-func cefingo_browser_process_handler_on_context_initialized(self *C.cef_browser_process_handler_t) {
+func AllocCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
+	up := c_calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t, "T80:")
+	cefp := C.cefingo_construct_browser_process_handler(
+		(*C.cefingo_browser_process_handler_wrapper_t)(up))
 
-	f := on_context_initialized_handler[self]
-	if f != nil {
-		h := newCBrowserProcessHandlerT(self)
-		f.OnContextInitialized(h)
-	} else {
-		Logf("75: Noo!")
+	registerDeassocer(up, DeassocFunc(func() {
+		Tracef(up, "T86:")
+		browserProcessHandlers.m.Lock()
+		defer browserProcessHandlers.m.Unlock()
+
+		delete(browserProcessHandlers.on_context_initialized_handler, cefp)
+		delete(browserProcessHandlers.on_render_process_thread_created_handler, cefp)
+	}))
+
+	return newCBrowserProcessHandlerT(cefp)
+}
+
+func (bph *CBrowserProcessHandlerT) Bind(handler interface{}) *CBrowserProcessHandlerT {
+
+	cefp := bph.p_browser_process_handler
+	browserProcessHandlers.m.Lock()
+	defer browserProcessHandlers.m.Unlock()
+
+	if h, ok := handler.(OnContextInitializedHandler); ok {
+		browserProcessHandlers.on_context_initialized_handler[cefp] = h
 	}
+
+	if h, ok := handler.(OnRenderProcessThreadCreatedHandler); ok {
+		browserProcessHandlers.on_render_process_thread_created_handler[cefp] = h
+	}
+
+	if accessor, ok := handler.(CBrowserProcessHandlerTAccessor); ok {
+		accessor.SetCBrowserProcessHandlerT(bph)
+		Logf("T113:")
+	}
+
+	return bph
 }
 
 //export cefingo_browser_process_handler_on_render_process_thread_created
@@ -86,46 +120,28 @@ func cefingo_browser_process_handler_on_render_process_thread_created(
 	self *C.cef_browser_process_handler_t,
 	extra_info *C.cef_list_value_t,
 ) {
-	f := on_render_process_thread_created_handler[self]
+	browserProcessHandlers.m.Lock()
+	f := browserProcessHandlers.on_render_process_thread_created_handler[self]
+	browserProcessHandlers.m.Unlock()
+
 	if f != nil {
 		f.OnRenderProcessThreadCreated(newCBrowserProcessHandlerT(self),
 			newCListValueT(extra_info))
 	} else {
-		Logf("L109: Noo!")
+		Logf("T129: Noo!")
 	}
 }
 
-func AllocCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
-	p := (*C.cefingo_browser_process_handler_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t, "L112:"))
-	C.cefingo_construct_browser_process_handler(p)
+//export cefingo_browser_process_handler_on_context_initialized
+func cefingo_browser_process_handler_on_context_initialized(self *C.cef_browser_process_handler_t) {
+	browserProcessHandlers.m.Lock()
+	f := browserProcessHandlers.on_context_initialized_handler[self]
+	browserProcessHandlers.m.Unlock()
 
-	return newCBrowserProcessHandlerT(
-		(*C.cef_browser_process_handler_t)(unsafe.Pointer(p)))
-}
-
-func (bph *CBrowserProcessHandlerT) Bind(handler interface{}) *CBrowserProcessHandlerT {
-
-	cefp := bph.p_browser_process_handler
-
-	if h, ok := handler.(OnContextInitializedHandler); ok {
-		on_context_initialized_handler[cefp] = h
+	if f != nil {
+		h := newCBrowserProcessHandlerT(self)
+		f.OnContextInitialized(h)
+	} else {
+		Logf("T141: Noo!")
 	}
-
-	if h, ok := handler.(OnRenderProcessThreadCreatedHandler); ok {
-		on_render_process_thread_created_handler[cefp] = h
-	}
-
-	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
-		Tracef(unsafe.Pointer(cefp), "L126:")
-		delete(on_context_initialized_handler, cefp)
-		delete(on_render_process_thread_created_handler, cefp)
-	}))
-
-	if accessor, ok := handler.(CBrowserProcessHandlerTAccessor); ok {
-		accessor.SetCBrowserProcessHandlerT(bph)
-		Logf("L161:")
-	}
-
-	return bph
 }

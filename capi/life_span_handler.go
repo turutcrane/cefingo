@@ -2,6 +2,7 @@ package capi
 
 //
 import (
+	"sync"
 	"unsafe"
 )
 
@@ -123,64 +124,85 @@ type DoCloseHandler interface {
 	DoClose(self *CLifeSpanHandlerT, brwoser *CBrowserT) bool
 }
 
-var on_after_created_handler = map[*C.cef_life_span_handler_t]OnAfterCreatedHandler{}
-var on_before_close_handler = map[*C.cef_life_span_handler_t]OnBeforeCloseHandler{}
-var do_close_handler = map[*C.cef_life_span_handler_t]DoCloseHandler{}
+var lifeSpanHandlers = struct {
+	m                        sync.Mutex
+	on_after_created_handler map[*C.cef_life_span_handler_t]OnAfterCreatedHandler
+	on_before_close_handler  map[*C.cef_life_span_handler_t]OnBeforeCloseHandler
+	do_close_handler         map[*C.cef_life_span_handler_t]DoCloseHandler
+}{
+	sync.Mutex{},
+	map[*C.cef_life_span_handler_t]OnAfterCreatedHandler{},
+	map[*C.cef_life_span_handler_t]OnBeforeCloseHandler{},
+	map[*C.cef_life_span_handler_t]DoCloseHandler{},
+}
 
 func AllocCLifeSpanHandlerT() *CLifeSpanHandlerT {
-	p := c_calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t, "L139:")
-	C.cefingo_construct_life_span_handler((*C.cefingo_life_span_handler_wrapper_t)(p))
+	p := (*C.cefingo_life_span_handler_wrapper_t)(
+		c_calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t, "T139:"))
+	cp := C.cefingo_construct_life_span_handler(p)
 
-	return newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(p))
+	registerDeassocer(unsafe.Pointer(cp), DeassocFunc(func() {
+		Tracef(unsafe.Pointer(cp), "T147:")
+		lifeSpanHandlers.m.Lock()
+		defer lifeSpanHandlers.m.Unlock()
+
+		delete(lifeSpanHandlers.on_after_created_handler, cp)
+		delete(lifeSpanHandlers.on_before_close_handler, cp)
+		delete(lifeSpanHandlers.do_close_handler, cp)
+	}))
+
+	return newCLifeSpanHandlerT(cp)
 }
 
 func (lsh *CLifeSpanHandlerT) Bind(handler interface{}) *CLifeSpanHandlerT {
 	cefp := lsh.p_life_span_handler
 
+	lifeSpanHandlers.m.Lock()
+	defer lifeSpanHandlers.m.Unlock()
 	if h, ok := handler.(OnAfterCreatedHandler); ok {
-		on_after_created_handler[cefp] = h
+		lifeSpanHandlers.on_after_created_handler[cefp] = h
 	}
 
 	if h, ok := handler.(OnBeforeCloseHandler); ok {
-		on_before_close_handler[cefp] = h
+		lifeSpanHandlers.on_before_close_handler[cefp] = h
 	}
 
 	if h, ok := handler.(DoCloseHandler); ok {
-		do_close_handler[cefp] = h
+		lifeSpanHandlers.do_close_handler[cefp] = h
 	}
-
-	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
-		Tracef(unsafe.Pointer(cefp), "L147:")
-		delete(on_after_created_handler, cefp)
-		delete(on_before_close_handler, cefp)
-		delete(do_close_handler, cefp)
-	}))
 
 	if accessor, ok := handler.(CLifeSpanHandlerTAccessor); ok {
 		accessor.SetCLifeSpanHandlerT(lsh)
-		Logf("L76:")
+		Logf("T76:")
 	}
+
 	return lsh
 }
 
 //export cefingo_life_span_handler_on_before_close
 func cefingo_life_span_handler_on_before_close(self *C.cef_life_span_handler_t, browser *C.cef_browser_t) {
-	Logf("L39:")
+	Logf("T39:")
 
-	f := on_before_close_handler[self]
+	lifeSpanHandlers.m.Lock()
+	f := lifeSpanHandlers.on_before_close_handler[self]
+	lifeSpanHandlers.m.Unlock()
+
 	if f != nil {
 		lsh := newCLifeSpanHandlerT(self)
 		b := newCBrowserT(browser)
 		f.OnBeforeClose(lsh, b)
 	} else {
-		Logf("L44: life_span_on_before_close: Noo!")
+		Logf("T44: life_span_on_before_close: Noo!")
 	}
 }
 
 //export cefingo_life_span_handler_do_close
 func cefingo_life_span_handler_do_close(self *C.cef_life_span_handler_t, browser *C.cef_browser_t) (ret C.int) {
-	Tracef(unsafe.Pointer(self), "L183:")
-	f := do_close_handler[self]
+	Tracef(unsafe.Pointer(self), "T183:")
+	lifeSpanHandlers.m.Lock()
+	f := lifeSpanHandlers.do_close_handler[self]
+	lifeSpanHandlers.m.Unlock()
+
 	if f != nil {
 		handler := newCLifeSpanHandlerT(self)
 		b := newCBrowserT(browser)
@@ -188,20 +210,23 @@ func cefingo_life_span_handler_do_close(self *C.cef_life_span_handler_t, browser
 			ret = 1
 		}
 	} else {
-		Logf("L191: life_span_do_close: Noo!")
+		Logf("T191: life_span_do_close: Noo!")
 	}
 	return ret
 }
 
 //export cefingo_life_span_handler_on_after_created
 func cefingo_life_span_handler_on_after_created(self *C.cef_life_span_handler_t, browser *C.cef_browser_t) {
-	Logf("L60:")
-	f := on_after_created_handler[self]
+	Logf("T60:")
+	lifeSpanHandlers.m.Lock()
+	f := lifeSpanHandlers.on_after_created_handler[self]
+	lifeSpanHandlers.m.Unlock()
+
 	if f != nil {
 		handler := newCLifeSpanHandlerT(self)
 		b := newCBrowserT(browser)
 		f.OnAfterCreated(handler, b)
 	} else {
-		Logf("L219: No on_after_created")
+		Logf("T219: No on_after_created")
 	}
 }

@@ -2,6 +2,7 @@ package capi
 
 import (
 	"log"
+	"sync"
 	"unsafe"
 )
 
@@ -22,29 +23,41 @@ type OnProcessMessageRecivedHandler interface {
 	) bool
 }
 
-var on_process_message_recived_handler = map[*C.cef_client_t]OnProcessMessageRecivedHandler{}
-var life_span_handler = map[*C.cef_client_t]*CLifeSpanHandlerT{}
+var clientHandlers = struct {
+	m                                  sync.Mutex
+	on_process_message_recived_handler map[*C.cef_client_t]OnProcessMessageRecivedHandler
+	life_span_handler                  map[*C.cef_client_t]*CLifeSpanHandlerT
+}{
+	sync.Mutex{},
+	map[*C.cef_client_t]OnProcessMessageRecivedHandler{},
+	map[*C.cef_client_t]*CLifeSpanHandlerT{},
+}
 
 // AllocCClient allocates CClientT and construct it
 func AllocCClient() *CClientT {
-	p := (*C.cefingo_client_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_client_wrapper_t, "L43:"))
-	C.cefingo_construct_client(p)
+	up := c_calloc(1, C.sizeof_cefingo_client_wrapper_t, "L43:")
+	cefp := C.cefingo_construct_client((*C.cefingo_client_wrapper_t)(up))
 
-	return newCClientT((*C.cef_client_t)(unsafe.Pointer(p)))
+	registerDeassocer(up, DeassocFunc(func() {
+		Tracef(up, "L50:")
+		clientHandlers.m.Lock()
+		defer clientHandlers.m.Unlock()
+
+		delete(clientHandlers.on_process_message_recived_handler, cefp)
+		delete(clientHandlers.life_span_handler, cefp)
+	}))
+
+	return newCClientT(cefp)
 }
 
 func (client *CClientT) Bind(c interface{}) *CClientT {
 	cp := client.p_client
+	clientHandlers.m.Lock()
+	defer clientHandlers.m.Unlock()
 
 	if h, ok := c.(OnProcessMessageRecivedHandler); ok {
-		on_process_message_recived_handler[cp] = h
+		clientHandlers.on_process_message_recived_handler[cp] = h
 	}
-
-	registerDeassocer(unsafe.Pointer(cp), DeassocFunc(func() {
-		Tracef(unsafe.Pointer(cp), "L50:")
-		delete(on_process_message_recived_handler, cp)
-	}))
 
 	if accessor, ok := c.(CClientTAccessor); ok {
 		accessor.SetCClientT(client)
@@ -132,31 +145,31 @@ func cefingo_client_get_keyboard_handler(self *C.cef_client_t) *CKeyboardHandler
 
 // AssocLifeSpanHandler associate hander to client
 func (client *CClientT) AssocLifeSpanHandler(handler *CLifeSpanHandlerT) {
-
 	cp := client.p_client
-	life_span_handler[cp] = handler
-	registerDeassocer(unsafe.Pointer(cp), DeassocFunc(func() {
-		// Do not have reference to client itself in DeassocFunc,
-		// or client is never GCed.
-		Tracef(unsafe.Pointer(cp), "L145:")
-		delete(life_span_handler, cp)
-	}))
+
+	clientHandlers.m.Lock()
+	clientHandlers.life_span_handler[cp] = handler
+	clientHandlers.m.Unlock()
 }
 
 ///
 // Return the handler for browser life span events.
 ///
 //export cefingo_client_get_life_span_handler
-func cefingo_client_get_life_span_handler(self *C.cef_client_t) *C.cef_life_span_handler_t {
+func cefingo_client_get_life_span_handler(self *C.cef_client_t) (lsp *C.cef_life_span_handler_t) {
 	Logf("L70:")
 
-	handler := life_span_handler[self]
+	clientHandlers.m.Lock()
+	handler := clientHandlers.life_span_handler[self]
+	clientHandlers.m.Unlock()
+
 	if handler == nil {
 		Logf("L77: No Life Span Handler")
 	} else {
 		BaseAddRef(handler.p_life_span_handler)
+		lsp = handler.p_life_span_handler
 	}
-	return handler.p_life_span_handler
+	return lsp
 }
 
 ///
@@ -192,7 +205,9 @@ func cefingo_client_on_process_message_received(
 	message *C.cef_process_message_t,
 ) (ret C.int) {
 	Tracef(unsafe.Pointer(self), "L46:")
-	f := on_process_message_recived_handler[self]
+	clientHandlers.m.Lock()
+	f := clientHandlers.on_process_message_recived_handler[self]
+	clientHandlers.m.Unlock()
 	if f != nil {
 		client := newCClientT(self)
 		b := newCBrowserT(browser)

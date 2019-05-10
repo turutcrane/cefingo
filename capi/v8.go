@@ -2,6 +2,7 @@ package capi
 
 import (
 	"runtime"
+	"sync"
 	"unsafe"
 
 	"github.com/pkg/errors"
@@ -29,18 +30,23 @@ type V8handler interface {
 		exception *string) bool
 }
 
-var v8handlers = map[*C.cef_v8handler_t]V8handler{}
+var v8handlers = struct {
+	m         sync.Mutex
+	v8handler map[*C.cef_v8handler_t]V8handler
+}{
+	sync.Mutex{},
+	map[*C.cef_v8handler_t]V8handler{},
+}
 
 // AllocCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT and construct it
 func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
 	// TODO Bind 関数 を書く??
-	p := (*C.cefingo_v8array_buffer_release_callback_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t, "L65:"))
+	up := c_calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t, "L65:")
 
-	C.cefingo_construct_v8array_buffer_release_callback(p)
+	cefp := C.cefingo_construct_v8array_buffer_release_callback(
+		(*C.cefingo_v8array_buffer_release_callback_wrapper_t)(up))
 
-	return newCV8arrayBufferReleaseCallbackT(
-		(*C.cef_v8array_buffer_release_callback_t)(unsafe.Pointer(p)))
+	return newCV8arrayBufferReleaseCallbackT(cefp)
 }
 
 //export cefingo_v8array_buffer_release_callback_release_buffer
@@ -49,17 +55,17 @@ func cefingo_v8array_buffer_release_callback_release_buffer(self *C.cef_v8array_
 	// C.free(buffer) // ??
 }
 
-func V8ValueCreateUndefined() *CV8valueT {
+func V8valueCreateUndefined() *CV8valueT {
 	v := C.cef_v8value_create_undefined()
 	return newCV8valueT(v)
 }
 
-func V8ValueCreateNull() *CV8valueT {
+func V8valueCreateNull() *CV8valueT {
 	v := C.cef_v8value_create_null()
 	return newCV8valueT(v)
 }
 
-func V8ValueCreateBool(b bool) *CV8valueT {
+func V8valueCreateBool(b bool) *CV8valueT {
 	var i int
 	if b {
 		i = 1
@@ -352,22 +358,27 @@ func V8valueCreateFunction(name string, handler *CV8handlerT) (function *CV8valu
 
 // AllocCV8handlerT allocates CV8handlerT and construct it
 func AllocCV8handlerT() *CV8handlerT {
-	p := (*C.cefingo_v8handler_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_v8handler_wrapper_t, "L393:"))
-	C.cefingo_construct_v8handler(p)
+	up := c_calloc(1, C.sizeof_cefingo_v8handler_wrapper_t, "L393:")
+	cefp := C.cefingo_construct_v8handler((*C.cefingo_v8handler_wrapper_t)(up))
 
-	return newCV8handlerT((*C.cef_v8handler_t)(unsafe.Pointer(p)))
+	registerDeassocer(up, DeassocFunc(func() {
+		// Do not have reference to cApp itself in DeassocFunc,
+		// or app is never GCed.
+		Tracef(up, "L67:")
+		v8handlers.m.Lock()
+		defer v8handlers.m.Unlock()
+
+		delete(v8handlers.v8handler, cefp)
+	}))
+
+	return newCV8handlerT(cefp)
 }
 
 func (v8handler *CV8handlerT) Bind(handler V8handler) *CV8handlerT {
 	v8hp := v8handler.p_v8handler
-	v8handlers[v8hp] = handler
-	registerDeassocer(unsafe.Pointer(v8hp), DeassocFunc(func() {
-		// Do not have reference to cApp itself in DeassocFunc,
-		// or app is never GCed.
-		Tracef(unsafe.Pointer(v8hp), "L67:")
-		delete(v8handlers, v8hp)
-	}))
+	v8handlers.m.Lock()
+	v8handlers.v8handler[v8hp] = handler
+	v8handlers.m.Unlock()
 
 	if accessor, ok := handler.(CV8handlerTAccessor); ok {
 		accessor.SetCV8handlerT(v8handler)
@@ -388,8 +399,9 @@ func cefingo_v8handler_execute(self *C.cef_v8handler_t,
 	exception *C.cef_string_t,
 ) (ret C.int) {
 	goname := string_from_cef_string(name)
-	handler := v8handlers[self]
-
+	v8handlers.m.Lock()
+	handler := v8handlers.v8handler[self]
+	v8handlers.m.Unlock()
 	if handler == nil {
 		Logf("L121: No V8 Execute Handler")
 		ret = 0

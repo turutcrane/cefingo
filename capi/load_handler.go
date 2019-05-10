@@ -1,7 +1,7 @@
 package capi
 
 import (
-	"unsafe"
+	"sync"
 )
 
 // #include "cefingo.h"
@@ -82,51 +82,63 @@ type OnLoadErrorHandler interface {
 	)
 }
 
-var on_loading_state_change_handler = map[*C.cef_load_handler_t]OnLoadingStateChangeHandler{}
-var on_load_start_handler = map[*C.cef_load_handler_t]OnLoadStartHandler{}
-var on_load_end_handler = map[*C.cef_load_handler_t]OnLoadEndHandler{}
-var on_load_error_handler = map[*C.cef_load_handler_t]OnLoadErrorHandler{}
+var loadHandlers = struct {
+	m                               sync.Mutex
+	on_loading_state_change_handler map[*C.cef_load_handler_t]OnLoadingStateChangeHandler
+	on_load_start_handler           map[*C.cef_load_handler_t]OnLoadStartHandler
+	on_load_end_handler             map[*C.cef_load_handler_t]OnLoadEndHandler
+	on_load_error_handler           map[*C.cef_load_handler_t]OnLoadErrorHandler
+}{
+	sync.Mutex{},
+	map[*C.cef_load_handler_t]OnLoadingStateChangeHandler{},
+	map[*C.cef_load_handler_t]OnLoadStartHandler{},
+	map[*C.cef_load_handler_t]OnLoadEndHandler{},
+	map[*C.cef_load_handler_t]OnLoadErrorHandler{},
+}
 
 // AllocCLoadHandlerT allocates CLoadHandlerT and construct it
 func AllocCLoadHandlerT() *CLoadHandlerT {
-	p := (*C.cefingo_load_handler_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_load_handler_wrapper_t, "L106:"))
+	up := c_calloc(1, C.sizeof_cefingo_load_handler_wrapper_t, "T106:")
+	cefp := C.cefingo_construct_load_handler((*C.cefingo_load_handler_wrapper_t)(up))
 
-	C.cefingo_construct_load_handler(p)
+	registerDeassocer(up, DeassocFunc(func() {
+		Tracef(up, "T108:")
+		loadHandlers.m.Lock()
+		defer loadHandlers.m.Unlock()
 
-	return newCLoadHandlerT((*C.cef_load_handler_t)(unsafe.Pointer(p)))
-}
-
-func (loadHandler *CLoadHandlerT) Bind(handler interface{}) *CLoadHandlerT {
-	cefp := loadHandler.p_load_handler
-
-	if h, ok := handler.(OnLoadingStateChangeHandler); ok {
-		on_loading_state_change_handler[cefp] = h
-	}
-	if h, ok := handler.(OnLoadStartHandler); ok {
-		on_load_start_handler[cefp] = h
-	}
-	if h, ok := handler.(OnLoadEndHandler); ok {
-		on_load_end_handler[cefp] = h
-	}
-	if h, ok := handler.(OnLoadErrorHandler); ok {
-		on_load_error_handler[cefp] = h
-	}
-
-	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
-		Tracef(unsafe.Pointer(cefp), "L108:")
-		delete(on_loading_state_change_handler, cefp)
-		delete(on_load_start_handler, cefp)
-		delete(on_load_end_handler, cefp)
-		delete(on_load_error_handler, cefp)
+		delete(loadHandlers.on_loading_state_change_handler, cefp)
+		delete(loadHandlers.on_load_start_handler, cefp)
+		delete(loadHandlers.on_load_end_handler, cefp)
+		delete(loadHandlers.on_load_error_handler, cefp)
 	}))
 
-	if accessor, ok := handler.(CLoadHandlerTAccessor); ok {
-		accessor.SetCLoadHandlerT(loadHandler)
-		Logf("L109:")
+	return newCLoadHandlerT(cefp)
+}
+
+func (lh *CLoadHandlerT) Bind(handler interface{}) *CLoadHandlerT {
+	cefp := lh.p_load_handler
+	loadHandlers.m.Lock()
+	defer loadHandlers.m.Unlock()
+
+	if h, ok := handler.(OnLoadingStateChangeHandler); ok {
+		loadHandlers.on_loading_state_change_handler[cefp] = h
+	}
+	if h, ok := handler.(OnLoadStartHandler); ok {
+		loadHandlers.on_load_start_handler[cefp] = h
+	}
+	if h, ok := handler.(OnLoadEndHandler); ok {
+		loadHandlers.on_load_end_handler[cefp] = h
+	}
+	if h, ok := handler.(OnLoadErrorHandler); ok {
+		loadHandlers.on_load_error_handler[cefp] = h
 	}
 
-	return loadHandler
+	if accessor, ok := handler.(CLoadHandlerTAccessor); ok {
+		accessor.SetCLoadHandlerT(lh)
+		Logf("T109:")
+	}
+
+	return lh
 }
 
 //export cefingo_load_handler_on_loading_state_change
@@ -137,13 +149,16 @@ func cefingo_load_handler_on_loading_state_change(
 	canGoBack C.int,
 	canGoForward C.int,
 ) {
-	h := on_loading_state_change_handler[self]
+	loadHandlers.m.Lock()
+	h := loadHandlers.on_loading_state_change_handler[self]
+	loadHandlers.m.Unlock()
+
 	if h != nil {
 		handler := newCLoadHandlerT(self)
 		b := newCBrowserT(browser)
 		h.OnLoadingStateChange(handler, b, (int)(isLoading), (int)(canGoBack), (int)(canGoForward))
 	} else {
-		Logf("L139: on_loading_state_change: Noo!")
+		Logf("T139: on_loading_state_change: Noo!")
 	}
 }
 
@@ -154,12 +169,15 @@ func cefingo_load_handler_on_load_start(
 	frame *C.cef_frame_t,
 	transitionType CTransitionTypeT,
 ) {
-	h := on_load_start_handler[self]
+	loadHandlers.m.Lock()
+	h := loadHandlers.on_load_start_handler[self]
+	loadHandlers.m.Unlock()
+
 	if h != nil {
 		h.OnLoadStart(newCLoadHandlerT(self),
 			newCBrowserT(browser), newCFrameT(frame), transitionType)
 	} else {
-		Logf("L159: on_load_start: Noo!")
+		Logf("T159: on_load_start: Noo!")
 	}
 }
 
@@ -170,14 +188,17 @@ func cefingo_load_handler_on_load_end(
 	frame *C.cef_frame_t,
 	httpStatusCode C.int,
 ) {
-	h := on_load_end_handler[self]
+	loadHandlers.m.Lock()
+	h := loadHandlers.on_load_end_handler[self]
+	loadHandlers.m.Unlock()
+
 	if h != nil {
 		h.OnLoadEnd(newCLoadHandlerT(self),
 			newCBrowserT(browser),
 			newCFrameT(frame),
 			(int)(httpStatusCode))
 	} else {
-		Logf("L177: on_load_end: Noo!")
+		Logf("T177: on_load_end: Noo!")
 	}
 }
 
@@ -190,7 +211,10 @@ func cefingo_load_handler_on_load_error(
 	errorText *C.cef_string_t,
 	failedUrl *C.cef_string_t,
 ) {
-	h := on_load_error_handler[self]
+	loadHandlers.m.Lock()
+	h := loadHandlers.on_load_error_handler[self]
+	loadHandlers.m.Unlock()
+
 	if h != nil {
 		t := string_from_cef_string(errorText)
 		u := string_from_cef_string(failedUrl)
@@ -199,6 +223,6 @@ func cefingo_load_handler_on_load_error(
 			newCFrameT(frame),
 			errorCode, t, u)
 	} else {
-		Logf("L192: on_load_error: Noo!")
+		Logf("T192: on_load_error: Noo!")
 	}
 }

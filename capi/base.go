@@ -101,6 +101,11 @@ func BaseHasOneRef(rc refCounted) bool {
 	return status == 1
 }
 
+func BaseHasAtLeastOneRef(rc refCounted) bool {
+	status := C.cefingo_base_has_at_least_one_ref(rc.cast_to_p_base_ref_counted_t())
+	return status == 1
+}
+
 type Deassocer interface {
 	Deassoc()
 }

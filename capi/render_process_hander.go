@@ -1,7 +1,7 @@
 package capi
 
 import (
-	"unsafe"
+	"sync"
 )
 
 // #include "cefingo.h"
@@ -136,74 +136,93 @@ type OnProcessMessageReceivedHandler interface {
 		message *CProcessMessageT) bool
 }
 
-var on_render_thread_created_handler = map[*C.cef_render_process_handler_t]OnRenderThreadCreatedHandler{}
-var on_web_kit_initialized_handler = map[*C.cef_render_process_handler_t]OnWebKitInitializedHandler{}
-var on_browser_created_handler = map[*C.cef_render_process_handler_t]OnBrowserCreatedHandler{}
-var on_browser_destroyed_handler = map[*C.cef_render_process_handler_t]OnBrowserDestroyedHandler{}
-var on_context_created_handler = map[*C.cef_render_process_handler_t]OnContextCreatedHandler{}
-var on_context_released_handler = map[*C.cef_render_process_handler_t]OnContextReleasedHandler{}
-var on_uncaught_exception_handler = map[*C.cef_render_process_handler_t]OnUncaughtExceptionHandler{}
-var on_focused_node_changed_handler = map[*C.cef_render_process_handler_t]OnFocusedNodeChangedHandler{}
-var on_process_message_received_handler = map[*C.cef_render_process_handler_t]OnProcessMessageReceivedHandler{}
-
-var rphLoadHandlers = map[*C.cef_render_process_handler_t]*CLoadHandlerT{}
+var renderProcessHandlers = struct {
+	m                                   sync.Mutex
+	on_render_thread_created_handler    map[*C.cef_render_process_handler_t]OnRenderThreadCreatedHandler
+	on_web_kit_initialized_handler      map[*C.cef_render_process_handler_t]OnWebKitInitializedHandler
+	on_browser_created_handler          map[*C.cef_render_process_handler_t]OnBrowserCreatedHandler
+	on_browser_destroyed_handler        map[*C.cef_render_process_handler_t]OnBrowserDestroyedHandler
+	on_context_created_handler          map[*C.cef_render_process_handler_t]OnContextCreatedHandler
+	on_context_released_handler         map[*C.cef_render_process_handler_t]OnContextReleasedHandler
+	on_uncaught_exception_handler       map[*C.cef_render_process_handler_t]OnUncaughtExceptionHandler
+	on_focused_node_changed_handler     map[*C.cef_render_process_handler_t]OnFocusedNodeChangedHandler
+	on_process_message_received_handler map[*C.cef_render_process_handler_t]OnProcessMessageReceivedHandler
+	load_handler                        map[*C.cef_render_process_handler_t]*CLoadHandlerT
+}{
+	sync.Mutex{},
+	map[*C.cef_render_process_handler_t]OnRenderThreadCreatedHandler{},
+	map[*C.cef_render_process_handler_t]OnWebKitInitializedHandler{},
+	map[*C.cef_render_process_handler_t]OnBrowserCreatedHandler{},
+	map[*C.cef_render_process_handler_t]OnBrowserDestroyedHandler{},
+	map[*C.cef_render_process_handler_t]OnContextCreatedHandler{},
+	map[*C.cef_render_process_handler_t]OnContextReleasedHandler{},
+	map[*C.cef_render_process_handler_t]OnUncaughtExceptionHandler{},
+	map[*C.cef_render_process_handler_t]OnFocusedNodeChangedHandler{},
+	map[*C.cef_render_process_handler_t]OnProcessMessageReceivedHandler{},
+	map[*C.cef_render_process_handler_t]*CLoadHandlerT{},
+}
 
 func AllocCRenderProcessHandlerT() *CRenderProcessHandlerT {
-	p := (*C.cefingo_render_process_handler_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "L133:"))
-	C.cefingo_construct_render_process_handler(p)
+	up := c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "T133:")
+	cefp := C.cefingo_construct_render_process_handler(
+		(*C.cefingo_render_process_handler_wrapper_t)(up))
 
-	return newCRenderProcessHandlerT(
-		(*C.cef_render_process_handler_t)(unsafe.Pointer(p)))
+	registerDeassocer(up, DeassocFunc(func() {
+		Tracef(up, "T201:")
+		renderProcessHandlers.m.Lock()
+		defer renderProcessHandlers.m.Unlock()
+
+		delete(renderProcessHandlers.on_render_thread_created_handler, cefp)
+		delete(renderProcessHandlers.on_web_kit_initialized_handler, cefp)
+		delete(renderProcessHandlers.on_browser_created_handler, cefp)
+		delete(renderProcessHandlers.on_browser_destroyed_handler, cefp)
+		delete(renderProcessHandlers.on_context_created_handler, cefp)
+		delete(renderProcessHandlers.on_context_released_handler, cefp)
+		delete(renderProcessHandlers.on_uncaught_exception_handler, cefp)
+		delete(renderProcessHandlers.on_focused_node_changed_handler, cefp)
+		delete(renderProcessHandlers.on_process_message_received_handler, cefp)
+		delete(renderProcessHandlers.load_handler, cefp)
+	}))
+
+	return newCRenderProcessHandlerT(cefp)
 }
 
 func (rph *CRenderProcessHandlerT) Bind(handler interface{}) *CRenderProcessHandlerT {
 	crph := rph.p_render_process_handler
+	renderProcessHandlers.m.Lock()
+	defer renderProcessHandlers.m.Unlock()
 
 	if h, ok := handler.(OnRenderThreadCreatedHandler); ok {
-		on_render_thread_created_handler[crph] = h
+		renderProcessHandlers.on_render_thread_created_handler[crph] = h
 	}
 	if h, ok := handler.(OnWebKitInitializedHandler); ok {
-		on_web_kit_initialized_handler[crph] = h
+		renderProcessHandlers.on_web_kit_initialized_handler[crph] = h
 	}
 	if h, ok := handler.(OnBrowserCreatedHandler); ok {
-		on_browser_created_handler[crph] = h
+		renderProcessHandlers.on_browser_created_handler[crph] = h
 	}
 	if h, ok := handler.(OnBrowserDestroyedHandler); ok {
-		on_browser_destroyed_handler[crph] = h
+		renderProcessHandlers.on_browser_destroyed_handler[crph] = h
 	}
 	if h, ok := handler.(OnContextCreatedHandler); ok {
-		on_context_created_handler[crph] = h
+		renderProcessHandlers.on_context_created_handler[crph] = h
 	}
 	if h, ok := handler.(OnContextReleasedHandler); ok {
-		on_context_released_handler[crph] = h
+		renderProcessHandlers.on_context_released_handler[crph] = h
 	}
 	if h, ok := handler.(OnUncaughtExceptionHandler); ok {
-		on_uncaught_exception_handler[crph] = h
+		renderProcessHandlers.on_uncaught_exception_handler[crph] = h
 	}
 	if h, ok := handler.(OnFocusedNodeChangedHandler); ok {
-		on_focused_node_changed_handler[crph] = h
+		renderProcessHandlers.on_focused_node_changed_handler[crph] = h
 	}
 	if h, ok := handler.(OnProcessMessageReceivedHandler); ok {
-		on_process_message_received_handler[crph] = h
+		renderProcessHandlers.on_process_message_received_handler[crph] = h
 	}
-
-	registerDeassocer(unsafe.Pointer(crph), DeassocFunc(func() {
-		Tracef(unsafe.Pointer(crph), "L201:")
-		delete(on_render_thread_created_handler, crph)
-		delete(on_web_kit_initialized_handler, crph)
-		delete(on_browser_created_handler, crph)
-		delete(on_browser_destroyed_handler, crph)
-		delete(on_context_created_handler, crph)
-		delete(on_context_released_handler, crph)
-		delete(on_uncaught_exception_handler, crph)
-		delete(on_focused_node_changed_handler, crph)
-		delete(on_process_message_received_handler, crph)
-	}))
 
 	if accessor, ok := handler.(CRenderProcessHandlerTAccessor); ok {
 		accessor.SetCRenderProcessHandlerT(rph)
-		Logf("L236:")
+		Logf("T236:")
 	}
 
 	return rph
@@ -213,65 +232,72 @@ func (rph *CRenderProcessHandlerT) Bind(handler interface{}) *CRenderProcessHand
 func cefingo_render_process_handler_on_render_thread_created(
 	self *C.cef_render_process_handler_t,
 	extra_info *C.cef_list_value_t) {
-	Logf("L122: self: %p", self)
+	Logf("T122: self: %p", self)
 
-	f := on_render_thread_created_handler[self]
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_render_thread_created_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		f.OnRenderThreadCreated(
 			newCRenderProcessHandlerT(self),
 			newCListValueT(extra_info),
 		)
-		Logf("L168: %b", BaseHasOneRef(self))
+		Logf("T168: %b", BaseHasOneRef(self))
 	} else {
-		Logf("L209: Noo!")
+		Logf("T209: Noo!")
 	}
 
 }
 
 //export cefingo_render_process_handler_on_web_kit_initialized
 func cefingo_render_process_handler_on_web_kit_initialized(self *C.cef_render_process_handler_t) {
-	Logf("L134: self: %p", self)
+	Logf("T134: self: %p", self)
 
-	f := on_web_kit_initialized_handler[self]
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_web_kit_initialized_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		f.OnWebKitInitialized(newCRenderProcessHandlerT(self))
 	} else {
-		Logf("L219: Noo!")
+		Logf("T219: Noo!")
 	}
 }
 
 //export cefingo_render_process_handler_on_browser_created
 func cefingo_render_process_handler_on_browser_created(self *C.cef_render_process_handler_t, browser *C.cef_browser_t) {
-	Logf("L147: self: %p", self)
-
-	f := on_browser_created_handler[self]
+	Logf("T147: self: %p", self)
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_browser_created_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		f.OnBrowserCreated(newCRenderProcessHandlerT(self), newCBrowserT(browser))
 	} else {
-		Logf("L251: Noo!")
+		Logf("T251: Noo!")
 	}
 }
 
 //export cefingo_render_process_handler_on_browser_destroyed
 func cefingo_render_process_handler_on_browser_destroyed(self *C.cef_render_process_handler_t, browser *C.cef_browser_t) {
-	Logf("L160: self: %p", self)
-
-	f := on_browser_destroyed_handler[self]
+	Logf("T160: self: %p", self)
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_browser_destroyed_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		f.OnBrowserDestroyed(newCRenderProcessHandlerT(self), newCBrowserT(browser))
 	} else {
-		Logf("L263: Noo!")
+		Logf("T263: Noo!")
 	}
-
 }
 
 //export cefingo_render_process_handler_get_load_handler
 func cefingo_render_process_handler_get_load_handler(
 	self *C.cef_render_process_handler_t,
 ) (ch *C.cef_load_handler_t) {
-	h := rphLoadHandlers[self]
+	renderProcessHandlers.m.Lock()
+	h := renderProcessHandlers.load_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if h == nil {
-		Logf("L274: No Handler %v", self)
+		Logf("T274: No Handler %v", self)
 	} else {
 		ch = h.p_load_handler
 		BaseAddRef(ch)
@@ -286,14 +312,15 @@ func cefingo_render_process_handler_on_context_created(
 	frame *C.cef_frame_t,
 	context *C.cef_v8context_t,
 ) {
-	Logf("L191: self: %p", self)
-
-	f := on_context_created_handler[self]
+	Logf("T191: self: %p", self)
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_context_created_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		f.OnContextCreated(newCRenderProcessHandlerT(self), newCBrowserT(browser),
 			newCFrameT(frame), newCV8contextT(context))
 	} else {
-		Logf("L296: Noo!")
+		Logf("T296: Noo!")
 	}
 }
 
@@ -303,14 +330,15 @@ func cefingo_render_process_handler_on_context_released(
 	browser *C.cef_browser_t,
 	frame *C.cef_frame_t,
 	context *C.cef_v8context_t) {
-	Logf("L207: self: %p", self)
-
-	f := on_context_released_handler[self]
+	Logf("T207: self: %p", self)
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_context_released_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		f.OnContextReleased(newCRenderProcessHandlerT(self), newCBrowserT(browser),
 			newCFrameT(frame), newCV8contextT(context))
 	} else {
-		Logf("L313: Noo!")
+		Logf("T313: Noo!")
 	}
 }
 
@@ -323,9 +351,10 @@ func cefingo_render_process_handler_on_uncaught_exception(
 	exception *C.cef_v8exception_t,
 	stackTrace *C.cef_v8stack_trace_t,
 ) {
-	Logf("L227: self: %p", self)
-
-	f := on_uncaught_exception_handler[self]
+	Logf("T227: self: %p", self)
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_uncaught_exception_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		f.OnUncaughtException(
 			newCRenderProcessHandlerT(self),
@@ -336,7 +365,7 @@ func cefingo_render_process_handler_on_uncaught_exception(
 			newCV8stackTraceT(stackTrace),
 		)
 	} else {
-		Logf("L333: Noo!")
+		Logf("T333: Noo!")
 	}
 }
 
@@ -347,14 +376,15 @@ func cefingo_render_process_handler_on_focused_node_changed(
 	frame *C.cef_frame_t,
 	node *CDomnodeT,
 ) {
-	Logf("L245: self: %p", self)
-
-	f := on_focused_node_changed_handler[self]
+	Logf("T245: self: %p", self)
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_focused_node_changed_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		f.OnFocusedNodeChanged(newCRenderProcessHandlerT(self), newCBrowserT(browser),
 			newCFrameT(frame), node)
 	} else {
-		Logf("L358: Noo!")
+		Logf("T358: Noo!")
 	}
 }
 
@@ -365,9 +395,10 @@ func cefingo_render_process_handler_on_process_message_received(
 	source_process CProcessIdT,
 	message *C.cef_process_message_t,
 ) (ret C.int) {
-	Logf("L261: self: %p", self)
-
-	f := on_process_message_received_handler[self]
+	Logf("T261: self: %p", self)
+	renderProcessHandlers.m.Lock()
+	f := renderProcessHandlers.on_process_message_received_handler[self]
+	renderProcessHandlers.m.Unlock()
 	if f != nil {
 		if f.OnProcessMessageReceived(newCRenderProcessHandlerT(self),
 			newCBrowserT(browser), source_process, newCProcessMessageT(message)) {
@@ -384,11 +415,8 @@ func cefingo_render_process_handler_on_process_message_received(
 func (rph *CRenderProcessHandlerT) AssocLoadHandler(h *CLoadHandlerT) {
 
 	crph := rph.p_render_process_handler
-	rphLoadHandlers[crph] = h
-	registerDeassocer(unsafe.Pointer(crph), DeassocFunc(func() {
-		// Do not have reference to rph itself in DeassocFunc,
-		// or rph is never GCed.
-		Logf("L397: %p", crph)
-		delete(rphLoadHandlers, crph)
-	}))
+	renderProcessHandlers.m.Lock()
+	renderProcessHandlers.load_handler[crph] = h
+	renderProcessHandlers.m.Unlock()
+
 }

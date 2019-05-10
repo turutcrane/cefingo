@@ -1,7 +1,7 @@
 #include "cefingo.h"
 #include "_cgo_export.h"
 
-void cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t *handler)
+cef_life_span_handler_t *cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t *handler)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof(*handler), counter),
@@ -9,18 +9,22 @@ void cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t *ha
     handler->body.on_before_close = cefingo_life_span_handler_on_before_close;
     handler->body.do_close = cefingo_life_span_handler_do_close;
     handler->body.on_after_created = cefingo_life_span_handler_on_after_created;
+
+    return (cef_life_span_handler_t *)handler;
 }
 
-void cefingo_construct_browser_process_handler(cefingo_browser_process_handler_wrapper_t *handler)
+cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo_browser_process_handler_wrapper_t *handler)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
     handler->body.on_context_initialized = cefingo_browser_process_handler_on_context_initialized;
     handler->body.on_render_process_thread_created = cefingo_browser_process_handler_on_render_process_thread_created;
+
+    return (cef_browser_process_handler_t *)handler;
 }
 
-void cefingo_construct_client(cefingo_client_wrapper_t* client)
+cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*client), counter),
@@ -41,6 +45,8 @@ void cefingo_construct_client(cefingo_client_wrapper_t* client)
     client->body.get_render_handler = cefingo_client_get_render_handler;
     client->body.get_request_handler = cefingo_client_get_request_handler;
     client->body.on_process_message_received = cefingo_client_on_process_message_received;
+
+    return (cef_client_t *) client;
 }
 
 typedef void(CEF_CALLBACK* cefingo_app_on_before_command_line_processing_t)(
@@ -48,7 +54,7 @@ typedef void(CEF_CALLBACK* cefingo_app_on_before_command_line_processing_t)(
     const cef_string_t* process_type,
     struct _cef_command_line_t* command_line);
 
-void cefingo_construct_app(cefingo_app_wrapper_t* app)
+cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*app), counter),
@@ -62,9 +68,11 @@ void cefingo_construct_app(cefingo_app_wrapper_t* app)
     app->body.get_resource_bundle_handler = cefing_app_get_resource_bundle_handler;
     app->body.get_browser_process_handler = cefing_app_get_browser_process_handler;
     app->body.get_render_process_handler = cefing_app_get_render_process_handler;
+
+    return (cef_app_t*)app;
 }
 
-void cefingo_construct_render_process_handler(cefingo_render_process_handler_wrapper_t* handler)
+cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_render_process_handler_wrapper_t* handler)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*handler), counter),
@@ -82,6 +90,7 @@ void cefingo_construct_render_process_handler(cefingo_render_process_handler_wra
     handler->body.on_focused_node_changed = cefingo_render_process_handler_on_focused_node_changed;
     handler->body.on_process_message_received = cefingo_render_process_handler_on_process_message_received;
 
+    return (cef_render_process_handler_t *)handler;
 }
 
 
@@ -92,7 +101,7 @@ typedef void(CEF_CALLBACK* on_load_error_t)(struct _cef_load_handler_t* self,
         const cef_string_t* errorText,
         const cef_string_t* failedUrl);
 
-void cefingo_construct_load_handler(cefingo_load_handler_wrapper_t *handler)
+cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_t *handler)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*handler), counter),
@@ -102,6 +111,8 @@ void cefingo_construct_load_handler(cefingo_load_handler_wrapper_t *handler)
     handler->body.on_load_start = cefingo_load_handler_on_load_start;
     handler->body.on_load_end = cefingo_load_handler_on_load_end;
     handler->body.on_load_error = (on_load_error_t)cefingo_load_handler_on_load_error;
+
+    return (cef_load_handler_t *)handler;
 }
 
 cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self)
@@ -121,13 +132,15 @@ typedef struct _cef_resource_handler_t*(CEF_CALLBACK* cefingo_resource_hander_cr
     const cef_string_t* scheme_name,
     struct _cef_request_t* request);
 
-void cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_factory_wrapper_t *factory)
+cef_scheme_handler_factory_t *cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_factory_wrapper_t *factory)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*factory), counter),
         (cef_base_ref_counted_t*) factory);
 
     factory->body.create = (cefingo_resource_hander_create_t) cefingo_scheme_handler_factory_create;
+
+    return (cef_scheme_handler_factory_t *)factory;
 }
 
 int cefingo_scheme_registrar_add_custom_scheme(struct _cef_scheme_registrar_t* self,
@@ -141,7 +154,7 @@ int cefingo_scheme_registrar_add_custom_scheme(struct _cef_scheme_registrar_t* s
 typedef   int(CEF_CALLBACK* can_xxx_cookie_t)(struct _cef_resource_handler_t* self,
         const struct _cef_cookie_t* cookie);
 
-void cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t *handler)
+cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t *handler)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*handler), counter),
@@ -153,6 +166,8 @@ void cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t *hand
     handler->body.can_get_cookie = (can_xxx_cookie_t) cefingo_resource_handler_can_get_cookie;
     handler->body.can_set_cookie = (can_xxx_cookie_t) cefingo_resource_handler_can_set_cookie;
     handler->body.cancel = cefingo_resource_handler_cancel;
+
+    return (cef_resource_handler_t*)handler;
 }
 
 void cefingo_callback_cont(struct _cef_callback_t* self)
@@ -251,13 +266,15 @@ struct _cef_frame_t* cefingo_browser_get_focused_frame(
     self->get_focused_frame(self);
 }
 
-void cefingo_construct_run_file_dialog_callback(cefingo_run_file_dialog_callback_wrapper_t* callback)
+cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callback(cefingo_run_file_dialog_callback_wrapper_t* callback)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*callback), counter),
         (cef_base_ref_counted_t*) callback);
 
     callback->body.on_file_dialog_dismissed = cefingo_run_file_dialog_callback_on_file_dialog_dismissed;
+
+    return (cef_run_file_dialog_callback_t *) callback;
 }
 
 void cefingo_browser_host_run_file_dialog(

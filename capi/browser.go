@@ -1,7 +1,7 @@
 package capi
 
 import (
-	"unsafe"
+	"sync"
 )
 
 // #include "cefingo.h"
@@ -51,26 +51,36 @@ type RunFileDialogCallback interface {
 	)
 }
 
-var run_file_dialog_callback = map[*C.cef_run_file_dialog_callback_t]RunFileDialogCallback{}
+var run_file_dialog_callback = struct {
+	m        sync.Mutex
+	callback map[*C.cef_run_file_dialog_callback_t]RunFileDialogCallback
+}{
+	sync.Mutex{},
+	map[*C.cef_run_file_dialog_callback_t]RunFileDialogCallback{},
+}
 
 func AllocCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
-	p := (*C.cefingo_run_file_dialog_callback_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "L92:"))
+	up := c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "L92:")
+	cefp := C.cefingo_construct_run_file_dialog_callback(
+		(*C.cefingo_run_file_dialog_callback_wrapper_t)(up))
 
-	C.cefingo_construct_run_file_dialog_callback(p)
+	registerDeassocer(up, DeassocFunc(func() {
+		Tracef(up, "L56: Deassoc of *CRunFileDialogCallbackT")
+		run_file_dialog_callback.m.Lock()
+		defer run_file_dialog_callback.m.Unlock()
 
-	return newCRunFileDialogCallbackT(
-		(*C.cef_run_file_dialog_callback_t)(unsafe.Pointer(p)))
+		delete(run_file_dialog_callback.callback, cefp)
+	}))
+
+	return newCRunFileDialogCallbackT(cefp)
 }
 
 func (rfdc *CRunFileDialogCallbackT) Bind(callback RunFileDialogCallback) *CRunFileDialogCallbackT {
 	p := rfdc.p_run_file_dialog_callback
-	run_file_dialog_callback[p] = callback
 
-	registerDeassocer(unsafe.Pointer(p), DeassocFunc(func() {
-		Tracef(unsafe.Pointer(p), "L56: Deassoc of *CRunFileDialogCallbackT")
-		delete(run_file_dialog_callback, p)
-	}))
+	run_file_dialog_callback.m.Lock()
+	defer run_file_dialog_callback.m.Unlock()
+	run_file_dialog_callback.callback[p] = callback
 
 	if accessor, ok := callback.(CRunFileDialogCallbackTAccessor); ok {
 		accessor.SetCRunFileDialogCallbackT(rfdc)
@@ -86,8 +96,10 @@ func cefingo_run_file_dialog_callback_on_file_dialog_dismissed(
 	selected_accept_filter C.int,
 	file_paths CStringListT,
 ) {
+	run_file_dialog_callback.m.Lock()
+	c := run_file_dialog_callback.callback[self]
+	run_file_dialog_callback.m.Unlock()
 
-	c := run_file_dialog_callback[self]
 	if c == nil {
 		Panicf("L62: on_file_dialog_dismissed: Noo!")
 	}

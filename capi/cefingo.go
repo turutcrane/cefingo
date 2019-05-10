@@ -1,14 +1,15 @@
 package capi
 
+//go:generate go run ../tools/gen_cef_types.go
+
 import (
 	"log"
 	"os"
 	"unsafe"
 )
 
-//go:generate go run ../tools/gen_cef_types.go
-
-//	#include "cefingo.h"
+// #cgo pkg-config: cefingo
+// #include "cefingo.h"
 import "C"
 
 // type Cint C.int

@@ -197,7 +197,7 @@ cef_v8value_t* cefingo_v8value_execute_function(
 //       size_t argumentsCount,
 //       struct _cef_v8value_t* const* arguments);
 
-void cefingo_construct_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t *callback)
+cef_v8array_buffer_release_callback_t *cefingo_construct_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t *callback)
 {
 
     initialize_cefingo_base_ref_counted(
@@ -206,6 +206,7 @@ void cefingo_construct_v8array_buffer_release_callback(cefingo_v8array_buffer_re
 
     callback->body.release_buffer = cefingo_v8array_buffer_release_callback_release_buffer;
 
+    return (cef_v8array_buffer_release_callback_t*) callback;
 }
 
 typedef int(CEF_CALLBACK* cefingo_execute_t)(struct _cef_v8handler_t* self,
@@ -216,13 +217,15 @@ typedef int(CEF_CALLBACK* cefingo_execute_t)(struct _cef_v8handler_t* self,
         struct _cef_v8value_t** retval,
         cef_string_t* exception);
 
-void cefingo_construct_v8handler(cefingo_v8handler_wrapper_t *handler)
+cef_v8handler_t *cefingo_construct_v8handler(cefingo_v8handler_wrapper_t *handler)
 {
     initialize_cefingo_base_ref_counted(
         offsetof(__typeof__(*handler), counter),
         (cef_base_ref_counted_t*) handler);
 
     handler->body.execute = (cefingo_execute_t) cefingo_v8handler_execute;
+
+    return (cef_v8handler_t *)handler;
 }
 
 int cefingo_v8context_enter(cef_v8context_t* self)

@@ -3,7 +3,6 @@
 #define CEFINGO_H_
 #include "include/capi/cef_app_capi.h"
 #include "include/capi/cef_client_capi.h"
-#include "include/capi/cef_v8_capi.h"
 #include "include/cef_version.h"
 #include "cefingo_base.h"
 #include "cefingo_values.h"
@@ -20,15 +19,15 @@ CEFINGO_REF_COUNTER_WRAPPER(cef_scheme_handler_factory_t, cefingo_scheme_handler
 CEFINGO_REF_COUNTER_WRAPPER(cef_resource_handler_t, cefingo_resource_handler_wrapper_t);
 CEFINGO_REF_COUNTER_WRAPPER(cef_run_file_dialog_callback_t, cefingo_run_file_dialog_callback_wrapper_t);
 
-extern void cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t *handler);
-extern void cefingo_construct_browser_process_handler(cefingo_browser_process_handler_wrapper_t *handler);
-extern void cefingo_construct_client(cefingo_client_wrapper_t* client);
-extern void cefingo_construct_app(cefingo_app_wrapper_t* app);
-extern void cefingo_construct_render_process_handler(cefingo_render_process_handler_wrapper_t* handler);
-extern void cefingo_construct_load_handler(cefingo_load_handler_wrapper_t* handler);
-extern void cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_factory_wrapper_t *factory);
-extern void cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t *handler);
-extern void cefingo_construct_run_file_dialog_callback(cefingo_run_file_dialog_callback_wrapper_t *callback);
+extern cef_life_span_handler_t *cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t *handler);
+extern cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo_browser_process_handler_wrapper_t *handler);
+extern cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client);
+extern cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app);
+extern cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_render_process_handler_wrapper_t* handler);
+extern cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_t* handler);
+extern cef_scheme_handler_factory_t *cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_factory_wrapper_t *factory);
+extern cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t *handler);
+extern cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callback(cefingo_run_file_dialog_callback_wrapper_t *callback);
 
 extern cef_v8context_t *cefingo_frame_get_v8context(cef_frame_t *self);
 extern cef_string_userfree_t cefingo_frame_get_url(cef_frame_t* self);

@@ -6,8 +6,8 @@ extern cef_browser_t *cefingo_v8context_get_browser(cef_v8context_t* self);
 extern cef_frame_t *cefingo_v8context_get_frame(cef_v8context_t *self);
 extern cef_v8value_t *cefingo_v8context_get_global(cef_v8context_t *self);
 
-extern void cefingo_construct_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t *callback);
-extern void cefingo_construct_v8handler(cefingo_v8handler_wrapper_t *handler);
+extern cef_v8array_buffer_release_callback_t *cefingo_construct_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t *callback);
+extern cef_v8handler_t *cefingo_construct_v8handler(cefingo_v8handler_wrapper_t *handler);
 
 
 extern int cefingo_v8value_is_valid(cef_v8value_t* self);

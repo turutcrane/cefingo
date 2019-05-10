@@ -1,11 +1,8 @@
 package capi
 
-import (
-	"unsafe"
-)
-
 // #include "cefingo.h"
 import "C"
+import "sync"
 
 type SchemeHandlerFactory interface {
 	///
@@ -60,24 +57,34 @@ func RegisterSchemeHandlerFactory(
 		factory.p_scheme_handler_factory))
 }
 
-var scheme_handler_factory_method = map[*C.cef_scheme_handler_factory_t]SchemeHandlerFactory{}
+var scheme_handler_factory_methods = struct {
+	m                      sync.Mutex
+	scheme_handler_factory map[*C.cef_scheme_handler_factory_t]SchemeHandlerFactory
+}{
+	sync.Mutex{},
+	map[*C.cef_scheme_handler_factory_t]SchemeHandlerFactory{},
+}
 
 func AllocCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
-	p := (*C.cefingo_scheme_handler_factory_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_scheme_handler_factory_wrapper_t, "L81:"))
-	C.cefingo_construct_scheme_handler_factory(p)
+	up := c_calloc(1, C.sizeof_cefingo_scheme_handler_factory_wrapper_t, "L81:")
+	cefp := C.cefingo_construct_scheme_handler_factory(
+		(*C.cefingo_scheme_handler_factory_wrapper_t)(up))
 
-	return newCSchemeHandlerFactoryT(
-		(*C.cef_scheme_handler_factory_t)(unsafe.Pointer(p)))
+	registerDeassocer(up, DeassocFunc(func() {
+		scheme_handler_factory_methods.m.Lock()
+		defer scheme_handler_factory_methods.m.Unlock()
+
+		delete(scheme_handler_factory_methods.scheme_handler_factory, cefp)
+	}))
+
+	return newCSchemeHandlerFactoryT(cefp)
 }
 
 func (factory *CSchemeHandlerFactoryT) Bind(f SchemeHandlerFactory) *CSchemeHandlerFactoryT {
 	cefp := factory.p_scheme_handler_factory
-
-	scheme_handler_factory_method[cefp] = f
-	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
-		delete(scheme_handler_factory_method, cefp)
-	}))
+	scheme_handler_factory_methods.m.Lock()
+	scheme_handler_factory_methods.scheme_handler_factory[cefp] = f
+	scheme_handler_factory_methods.m.Unlock()
 
 	if accessor, ok := f.(CSchemeHandlerFactoryTAccessor); ok {
 		accessor.SetCSchemeHandlerFactoryT(factory)
@@ -95,7 +102,10 @@ func cefingo_scheme_handler_factory_create(
 	scheme_name *C.cef_string_t,
 	request *C.cef_request_t,
 ) *C.cef_resource_handler_t {
-	f := scheme_handler_factory_method[self]
+	scheme_handler_factory_methods.m.Lock()
+	f := scheme_handler_factory_methods.scheme_handler_factory[self]
+	scheme_handler_factory_methods.m.Unlock()
+
 	if f == nil {
 		Logf("L70: No Scheme Factory ")
 	}

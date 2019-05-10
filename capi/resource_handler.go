@@ -1,6 +1,7 @@
 package capi
 
 import (
+	"sync"
 	"unsafe"
 )
 
@@ -88,62 +89,76 @@ type CancelHandler interface {
 	Cancel(self *CResourceHandlerT)
 }
 
-var process_request_handler = map[*C.cef_resource_handler_t]ProcessRequestHandler{}
-var get_response_headers_handler = map[*C.cef_resource_handler_t]GetResponseHeadersHandler{}
-var read_response_handler = map[*C.cef_resource_handler_t]ReadResponseHandler{}
-var can_get_cookie_handler = map[*C.cef_resource_handler_t]CanGetCookieHandler{}
-var can_set_cookie_handler = map[*C.cef_resource_handler_t]CanSetCookieHandler{}
-var cancel_handler = map[*C.cef_resource_handler_t]CancelHandler{}
+var resourceHandlers = struct {
+	m                            sync.Mutex
+	process_request_handler      map[*C.cef_resource_handler_t]ProcessRequestHandler
+	get_response_headers_handler map[*C.cef_resource_handler_t]GetResponseHeadersHandler
+	read_response_handler        map[*C.cef_resource_handler_t]ReadResponseHandler
+	can_get_cookie_handler       map[*C.cef_resource_handler_t]CanGetCookieHandler
+	can_set_cookie_handler       map[*C.cef_resource_handler_t]CanSetCookieHandler
+	cancel_handler               map[*C.cef_resource_handler_t]CancelHandler
+}{
+	sync.Mutex{},
+	map[*C.cef_resource_handler_t]ProcessRequestHandler{},
+	map[*C.cef_resource_handler_t]GetResponseHeadersHandler{},
+	map[*C.cef_resource_handler_t]ReadResponseHandler{},
+	map[*C.cef_resource_handler_t]CanGetCookieHandler{},
+	map[*C.cef_resource_handler_t]CanSetCookieHandler{},
+	map[*C.cef_resource_handler_t]CancelHandler{},
+}
 
 func AllocCResourceHanderT() *CResourceHandlerT {
-	p := (*C.cefingo_resource_handler_wrapper_t)(
-		c_calloc(1, C.sizeof_cefingo_resource_handler_wrapper_t, "L102:"))
-	C.cefingo_construct_resource_handler(p)
+	up := c_calloc(1, C.sizeof_cefingo_resource_handler_wrapper_t, "T102:")
+	cefp := C.cefingo_construct_resource_handler((*C.cefingo_resource_handler_wrapper_t)(up))
 
-	return newCResourceHandlerT(
-		(*C.cef_resource_handler_t)(unsafe.Pointer(p)))
+	registerDeassocer(up, DeassocFunc(func() {
+		Tracef(up, "T108:")
+		resourceHandlers.m.Lock()
+		defer resourceHandlers.m.Unlock()
+
+		delete(resourceHandlers.process_request_handler, cefp)
+		delete(resourceHandlers.get_response_headers_handler, cefp)
+		delete(resourceHandlers.read_response_handler, cefp)
+		delete(resourceHandlers.can_get_cookie_handler, cefp)
+		delete(resourceHandlers.can_set_cookie_handler, cefp)
+		delete(resourceHandlers.cancel_handler, cefp)
+	}))
+
+	return newCResourceHandlerT(cefp)
 }
 
 func (rh *CResourceHandlerT) Bind(handler interface{}) *CResourceHandlerT {
 	cefp := rh.p_resource_handler
+	resourceHandlers.m.Lock()
+	defer resourceHandlers.m.Unlock()
 
 	if h, ok := handler.(ProcessRequestHandler); ok {
-		process_request_handler[cefp] = h
+		resourceHandlers.process_request_handler[cefp] = h
 	}
 
 	if h, ok := handler.(GetResponseHeadersHandler); ok {
-		get_response_headers_handler[cefp] = h
+		resourceHandlers.get_response_headers_handler[cefp] = h
 	}
 
 	if h, ok := handler.(ReadResponseHandler); ok {
-		read_response_handler[cefp] = h
+		resourceHandlers.read_response_handler[cefp] = h
 	}
 
 	if h, ok := handler.(CanGetCookieHandler); ok {
-		can_get_cookie_handler[cefp] = h
+		resourceHandlers.can_get_cookie_handler[cefp] = h
 	}
 
 	if h, ok := handler.(CanSetCookieHandler); ok {
-		can_set_cookie_handler[cefp] = h
+		resourceHandlers.can_set_cookie_handler[cefp] = h
 	}
 
 	if h, ok := handler.(CancelHandler); ok {
-		cancel_handler[cefp] = h
+		resourceHandlers.cancel_handler[cefp] = h
 	}
-
-	registerDeassocer(unsafe.Pointer(cefp), DeassocFunc(func() {
-		Tracef(unsafe.Pointer(cefp), "L108:")
-		delete(process_request_handler, cefp)
-		delete(get_response_headers_handler, cefp)
-		delete(read_response_handler, cefp)
-		delete(can_get_cookie_handler, cefp)
-		delete(can_set_cookie_handler, cefp)
-		delete(cancel_handler, cefp)
-	}))
 
 	if accessor, ok := handler.(CResourceHandlerTAccessor); ok {
 		accessor.SetCResourceHandlerT(rh)
-		Logf("L180:")
+		Logf("T180:")
 	}
 
 	return rh
@@ -155,7 +170,10 @@ func cefingo_resource_handler_process_request(
 	request *C.cef_request_t,
 	callback *C.cef_callback_t,
 ) (ret C.int) {
-	h := process_request_handler[self]
+	resourceHandlers.m.Lock()
+	h := resourceHandlers.process_request_handler[self]
+	resourceHandlers.m.Unlock()
+
 	if h != nil {
 		if h.ProcessRequest(
 			newCResourceHandlerT(self),
@@ -165,7 +183,7 @@ func cefingo_resource_handler_process_request(
 			ret = 1
 		}
 	} else {
-		Logf("L139: No Handler")
+		Logf("T139: No Handler")
 	}
 	return ret
 }
@@ -177,7 +195,10 @@ func cefingo_resource_handler_get_response_headers(
 	response_length *int64,
 	redirectUrl *C.cef_string_t,
 ) {
-	h := get_response_headers_handler[self]
+	resourceHandlers.m.Lock()
+	h := resourceHandlers.get_response_headers_handler[self]
+	resourceHandlers.m.Unlock()
+
 	if h != nil {
 		var r string
 		h.GetResponseHeaders(
@@ -186,7 +207,7 @@ func cefingo_resource_handler_get_response_headers(
 		)
 		set_cef_string(redirectUrl, r)
 	} else {
-		Logf("L156: No Handler")
+		Logf("T156: No Handler")
 	}
 }
 
@@ -198,7 +219,10 @@ func cefingo_resource_handler_read_response(
 	bytes_read *C.int,
 	callback *C.cef_callback_t,
 ) (ret C.int) {
-	h := read_response_handler[self]
+	resourceHandlers.m.Lock()
+	h := resourceHandlers.read_response_handler[self]
+	resourceHandlers.m.Unlock()
+
 	if h != nil {
 		buff := (*[1 << 30]byte)(data_out)[:bytes_to_read:bytes_to_read]
 		var i int
@@ -213,7 +237,7 @@ func cefingo_resource_handler_read_response(
 		}
 		*bytes_read = C.int(i)
 	} else {
-		Logf("L128: No Handler")
+		Logf("T128: No Handler")
 	}
 	return ret
 }
@@ -223,13 +247,15 @@ func cefingo_resource_handler_can_get_cookie(
 	self *C.cef_resource_handler_t,
 	cookie *CCookieT,
 ) (ret C.int) {
-	h := can_get_cookie_handler[self]
+	resourceHandlers.m.Lock()
+	h := resourceHandlers.can_get_cookie_handler[self]
+	resourceHandlers.m.Unlock()
 	if h != nil {
 		if h.CanGetCookie(newCResourceHandlerT(self), cookie) {
 			ret = 1
 		}
 	} else {
-		Logf("L142: No Handler")
+		Logf("T142: No Handler")
 	}
 	return ret
 }
@@ -239,13 +265,16 @@ func cefingo_resource_handler_can_set_cookie(
 	self *C.cef_resource_handler_t,
 	cookie *CCookieT,
 ) (ret C.int) {
-	h := can_set_cookie_handler[self]
+	resourceHandlers.m.Lock()
+	h := resourceHandlers.can_set_cookie_handler[self]
+	resourceHandlers.m.Unlock()
+
 	if h != nil {
 		if h.CanSetCookie(newCResourceHandlerT(self), cookie) {
 			ret = 1
 		}
 	} else {
-		Logf("L154: No Handler")
+		Logf("T154: No Handler")
 	}
 	return ret
 }
@@ -254,11 +283,14 @@ func cefingo_resource_handler_can_set_cookie(
 func cefingo_resource_handler_cancel(
 	self *C.cef_resource_handler_t,
 ) {
-	h := cancel_handler[self]
+	resourceHandlers.m.Lock()
+	h := resourceHandlers.cancel_handler[self]
+	resourceHandlers.m.Unlock()
+
 	if h != nil {
 		h.Cancel(newCResourceHandlerT(self))
 	} else {
-		Logf("L154: No Handler")
+		Logf("T154: No Handler")
 	}
 }
 
