@@ -18,11 +18,18 @@ This is experimental go binding for CEF.
     C:\> xcopy /e \path\to\expand_dir\Resources \path\to\gopath\bin
     ```
 
-1. Setup CGO Environment values.
+1. create cefingo.pc file on PKG_CONFIG_PATH
 
-    ```bat
-    C:\> set CGO_LDFLAGS=-L\path\to\gopath\bin -lcef
-    C:\> set CGO_CFLAGS=-I\path\to\expand_dir
+    ```.pc
+    target=C:\\path\\to\\gopath\\bin
+    libdir=${target}
+    includedir=C:\\path\\to\\expand_dir
+
+    Name: cefingo
+    Version: 0.1
+    Description: cefingo
+    Cflags: -I${includedir}
+    Libs: -L${libdir} -lcef
     ```
 
 1. go get this packages.
