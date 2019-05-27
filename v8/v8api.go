@@ -34,6 +34,15 @@ func NewValue(v8v *capi.CV8valueT) Value {
 	return Value{v8v: v8v}
 }
 
+func NewObject() Value {
+	o := capi.V8valueCreateObject(nil, nil)
+	return NewValue(o)
+}
+
+func NewString(s string) Value {
+	return NewValue(capi.V8valueCreateString(s))
+}
+
 func GetContext() (c Context, err error) {
 	v8c := capi.V8contextGetEnterdContext()
 	g := NewValue(v8c.GetGlobal())
@@ -131,6 +140,37 @@ func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 		sts = true
 	} else {
 		capi.Logf("L134: %s Not Handled %v", name, err)
+	}
+	return sts
+}
+
+func NewFunction(name string, f capi.V8handler) Value {
+	h := capi.AllocCV8handlerT().Bind(f)
+	v8f := capi.V8valueCreateFunction(name, h)
+	return NewValue(v8f)
+}
+
+type HandlerFunction func(this Value, args []Value) (v Value, err error)
+
+func (f HandlerFunction) Execute(self *capi.CV8handlerT,
+	name string,
+	thisObject *capi.CV8valueT,
+	argumentsCount int,
+	arguments []*capi.CV8valueT,
+	retval **capi.CV8valueT,
+	exception *string,
+) (sts bool) {
+	args := []Value{}
+	for _, a := range arguments {
+		args = append(args, NewValue(a))
+	}
+	v, err := f(Value{thisObject}, args)
+	if err == nil {
+		*retval = v.v8v
+		sts = true
+	} else {
+		capi.Logf("L134: %s Not Handled %v", name, err)
+		*exception = err.Error()
 	}
 	return sts
 }
@@ -238,8 +278,30 @@ func (v Value) DeleteValueBykey(key string, value Value) (err error) {
 	return err
 }
 
+func (v Value) DeleteValueByindex(index int, value Value) (err error) {
+	if !v.v8v.DeleteValueByindex(index) {
+		err = errors.Errorf("Delete value Error index:%d", index)
+	}
+	return err
+}
+
 func (v Value) GetValueBykey(key string) (rv Value, err error) {
 	val := v.v8v.GetValueBykey(key)
+	if val != nil {
+		rv = Value{val}
+	} else {
+		if v.HasException() {
+			exc := v.GetException()
+			err = errors.New(exc.GetMessage())
+		} else {
+			err = errors.New("E262: nil returned")
+		}
+	}
+	return rv, err
+}
+
+func (v Value) GetValueByindex(index int) (rv Value, err error) {
+	val := v.v8v.GetValueByindex(index)
 	if val != nil {
 		rv = Value{val}
 	} else {
@@ -260,20 +322,37 @@ func (v Value) SetValueBykey(key string, value Value) (err error) {
 	return err
 }
 
-func (v Value) Call(name string, args []Value) (r Value, e error) {
-	v8args := make([]*capi.CV8valueT, len(args))
-	for i, av := range args {
-		v8args[i] = av.v8v
+func (v Value) SetValueByindex(index int, value Value) (err error) {
+	if !v.v8v.SetValueByindex(index, value.v8v) {
+		err = errors.Errorf("Set value Error key:%d", index)
 	}
+	return err
+}
+
+func (v Value) Call(name string, args []Value) (r Value, e error) {
 	f, err := v.GetValueBykey(name)
 	if err != nil {
 		return Value{}, err
 	}
+	return f.ExecuteFunction(v, args)
+}
+
+func (f Value) ExecuteFunction(this Value, args []Value) (r Value, e error) {
+	capi.Logf("T340:")
 	var rv *capi.CV8valueT
+
 	if f.IsFunction() {
-		rv, e = f.v8v.ExecuteFunction(v.v8v, len(args), v8args)
+		v8args := make([]*capi.CV8valueT, len(args))
+		for i, av := range args {
+			v8args[i] = av.v8v
+		}
+		rv, e = f.v8v.ExecuteFunction(this.v8v, len(args), v8args)
+		if e != nil {
+			capi.Logf("T347:x %v", e)
+		}
 	} else {
-		e = errors.Errorf("<%s> is not function", name)
+		e = errors.Errorf("E318: <%v> is not function", f)
+		capi.Logf("T350: %v", e)
 	}
 	return Value{rv}, e
 }
@@ -325,4 +404,20 @@ func (v Value) ToString() (s string, err error) {
 		s = str.GetStringValue()
 	}
 	return s, e
+}
+
+func (c *Context) NewArray(elems ...Value) Value {
+	arrayClass, err := c.Global.GetValueBykey("Array")
+	if err != nil {
+		capi.Panicf("E412: No Array")
+	}
+	if !arrayClass.IsFunction() {
+		capi.Panicf("E415: Array is not function")
+	}
+	a := NewObject()
+	a1, err := arrayClass.ExecuteFunction(a, elems)
+	if err != nil {
+		capi.Panicf("E420: %v", err)
+	}
+	return a1
 }

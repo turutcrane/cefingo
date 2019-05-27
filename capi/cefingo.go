@@ -335,7 +335,7 @@ func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) 
 	// thread and will not block.
 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_browser_capi.h#L842-L854
 	///
-	// BaseAddRef(client.p_client) ?? Need not? clinet.p_client is CefClientCToCpp::Wrap-ed
+	BaseAddRef(client.p_client) // ?? Need not? clinet.p_client is CefClientCToCpp::Wrap-ed
 	C.cef_browser_host_create_browser(
 		&window_info,
 		client.p_client,

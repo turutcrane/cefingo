@@ -157,14 +157,14 @@ func (client *CClientT) AssocLifeSpanHandler(handler *CLifeSpanHandlerT) {
 ///
 //export cefingo_client_get_life_span_handler
 func cefingo_client_get_life_span_handler(self *C.cef_client_t) (lsp *C.cef_life_span_handler_t) {
-	Logf("L70:")
+	// Logf("T160: %p", self)
 
 	clientHandlers.m.Lock()
 	handler := clientHandlers.life_span_handler[self]
 	clientHandlers.m.Unlock()
 
 	if handler == nil {
-		Logf("L77: No Life Span Handler")
+		Logf("T167: No Life Span Handler")
 	} else {
 		BaseAddRef(handler.p_life_span_handler)
 		lsp = handler.p_life_span_handler

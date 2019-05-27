@@ -36,10 +36,14 @@ extern cef_v8exception_t *cefingo_v8value_get_exception(cef_v8value_t *self);
 extern int cefingo_v8value_clear_exception(cef_v8value_t *self);
 
 extern int cefingo_v8value_has_value_bykey(cef_v8value_t* self, const cef_string_t* key);
+extern int cefingo_v8value_has_value_byindex(cef_v8value_t* self, int index);
 extern int cefingo_v8value_delete_value_bykey(cef_v8value_t* self, const cef_string_t* key);
+extern int cefingo_v8value_delete_value_byindex(cef_v8value_t* self, int index);
 extern cef_v8value_t* cefingo_v8value_get_value_bykey(cef_v8value_t* self, const cef_string_t* key);
-extern int cefingo_v8context_set_value_bykey(cef_v8value_t* self, cef_string_t* key,
+extern cef_v8value_t* cefingo_v8value_get_value_byindex(cef_v8value_t* self, int index);
+extern int cefingo_v8value_set_value_bykey(cef_v8value_t* self, cef_string_t* key,
         cef_v8value_t* value, cef_v8_propertyattribute_t attribute);
+extern int cefingo_v8value_set_value_byindex(cef_v8value_t* self, int index, cef_v8value_t* value);
 
 extern cef_string_userfree_t cefingo_v8value_get_function_name(cef_v8value_t* self);
 extern cef_v8value_t* cefingo_v8value_execute_function(cef_v8value_t* self,

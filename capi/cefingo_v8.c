@@ -142,28 +142,50 @@ int cefingo_v8value_has_value_bykey(cef_v8value_t* self,
     return self->has_value_bykey(self, key);
 }
 
+int cefingo_v8value_has_value_byindex(cef_v8value_t* self, int index)
+{
+    return self->has_value_byindex(self, index);
+}
+
 int cefingo_v8value_delete_value_bykey(cef_v8value_t* self,
                                        const cef_string_t* key)
 {
     return self->delete_value_bykey(self, key);
 }
 
+int cefingo_v8value_delete_value_byindex(cef_v8value_t* self, int index)
+{
+    return self->delete_value_byindex(self, index);
+}
+
 cef_v8value_t* cefingo_v8value_get_value_bykey(
-    struct _cef_v8value_t* self,
+    cef_v8value_t* self,
     const cef_string_t* key)
 {
     return self->get_value_bykey(self, key);
 
 }
 
-int cefingo_v8context_set_value_bykey(cef_v8value_t* self,
-                                      cef_string_t* key,
-                                      cef_v8value_t* value,
-                                      cef_v8_propertyattribute_t attribute
-                                     )
+cef_v8value_t* cefingo_v8value_get_value_byindex(cef_v8value_t* self, int index)
+{
+    return self->get_value_byindex(self, index);
+}
+
+int cefingo_v8value_set_value_bykey(cef_v8value_t* self,
+                                    cef_string_t* key,
+                                    cef_v8value_t* value,
+                                    cef_v8_propertyattribute_t attribute
+                                   )
 {
     return self->set_value_bykey(self, key, value, attribute);
-    // return self->set_value_bykey(self, (const cef_string_t*) key, value, attribute);
+}
+
+int cefingo_v8value_set_value_byindex(cef_v8value_t* self,
+                                      int index,
+                                      cef_v8value_t* value
+                                     )
+{
+    return self->set_value_byindex(self, index, value);
 }
 
 cef_string_userfree_t cefingo_v8value_get_function_name(cef_v8value_t* self)

@@ -262,11 +262,23 @@ func (self *CV8valueT) HasValueBykey(key string) bool {
 	return (status == 1)
 }
 
+func (self *CV8valueT) HasValueByindex(index int) bool {
+
+	status := C.cefingo_v8value_has_value_byindex(self.p_v8value, C.int(index))
+	return (status == 1)
+}
+
 func (self *CV8valueT) DeleteValueBykey(key string) bool {
 	key_string := create_cef_string(key)
 	defer clear_cef_string(key_string)
 
 	status := C.cefingo_v8value_delete_value_bykey(self.p_v8value, key_string)
+	return (status == 1)
+}
+
+func (self *CV8valueT) DeleteValueByindex(index int) bool {
+
+	status := C.cefingo_v8value_delete_value_byindex(self.p_v8value, C.int(index))
 	return (status == 1)
 }
 
@@ -281,13 +293,31 @@ func (self *CV8valueT) GetValueBykey(key string) (value *CV8valueT) {
 	return value
 }
 
+func (self *CV8valueT) GetValueByindex(index int) (value *CV8valueT) {
+
+	v := C.cefingo_v8value_get_value_byindex(self.p_v8value, C.int(index))
+	if v != nil {
+		value = newCV8valueT(v)
+	}
+	return value
+}
+
 func (self *CV8valueT) SetValueBykey(key string, value *CV8valueT) bool {
 	key_string := create_cef_string(key)
 	defer clear_cef_string(key_string)
 
 	BaseAddRef(value.p_v8value)
-	status := C.cefingo_v8context_set_value_bykey(self.p_v8value,
+	status := C.cefingo_v8value_set_value_bykey(self.p_v8value,
 		key_string, value.p_v8value, C.V8_PROPERTY_ATTRIBUTE_NONE)
+	return status == 1
+}
+
+func (self *CV8valueT) SetValueByindex(index int, value *CV8valueT) bool {
+
+	BaseAddRef(value.p_v8value)
+	status := C.cefingo_v8value_set_value_byindex(
+		self.p_v8value,
+		C.int(index), value.p_v8value)
 	return status == 1
 }
 
@@ -315,24 +345,33 @@ func (self *CV8valueT) ExecuteFunction(
 	cargs := C.calloc((C.size_t)(argumentsCount), (C.size_t)(unsafe.Sizeof(this)))
 	slice := (*[1 << 30]*C.cef_v8value_t)(cargs)[:argumentsCount:argumentsCount]
 
-	BaseAddRef(this.p_v8value)
+	var pThis *C.cef_v8value_t
+
+	if this != nil {
+		BaseAddRef(this.p_v8value)
+		pThis = this.p_v8value
+	}
 	for i, v := range arguments {
 		BaseAddRef(v.p_v8value)
 		slice[i] = v.p_v8value
 	}
 	v := C.cefingo_v8value_execute_function(
 		self.p_v8value,
-		this.p_v8value,
+		pThis,
 		(C.size_t)(argumentsCount),
 		(**C.cef_v8value_t)(cargs))
 	if v == nil {
 		name := self.GetFunctionName()
-		if this != nil && this.HasException() {
+		if self.HasException() {
+			e := self.GetException()
+			m := e.GetMessage()
+			err = errors.Errorf("E363: %s returns NULL and %s has Exception: %s", name, name, m)
+		} else if this != nil && this.HasException() {
 			e := this.GetException()
 			m := e.GetMessage()
-			err = errors.Errorf("%s returns NULL and has Exception: %s", name, m)
+			err = errors.Errorf("E367: %s returns NULL and (this) has Exception: %s", name, m)
 		} else {
-			err = errors.Errorf("%s returns NULL", name)
+			err = errors.Errorf("E369: %s returns NULL", name)
 		}
 	} else if status := C.cefingo_v8value_is_valid(v); status == 1 {
 		val = newCV8valueT(v)
