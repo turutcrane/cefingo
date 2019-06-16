@@ -18,9 +18,18 @@ import (
 	strcase "github.com/stoewer/go-strcase"
 )
 
-var (
-	output = flag.String("output", "", "output file name; default srcdir/cefingo_types.go")
-)
+var output *string
+
+func init () {
+	var outputName string
+	if dir, err := os.Getwd(); err == nil {
+		baseName := fmt.Sprintf("cefingo_types.go")
+		outputName = filepath.Join(dir, strings.ToLower(baseName))
+	} else {
+		log.Fatal(err)
+	}
+	output = flag.String("output", outputName, "output file name; default srcdir/cefingo_types.go")
+}
 
 var cef_types = []string{
 	"cef_app_t",
@@ -79,14 +88,6 @@ import "C"
 
 	// Write to file.
 	outputName := *output
-	if outputName == "" {
-		if dir, err := os.Getwd(); err == nil {
-			baseName := fmt.Sprintf("cefingo_types.go")
-			outputName = filepath.Join(dir, strings.ToLower(baseName))
-		} else {
-			log.Fatal(err)
-		}
-	}
 	err := ioutil.WriteFile(outputName, src, 0644)
 	if err != nil {
 		log.Fatalf("writing output: %s", err)
@@ -125,72 +126,67 @@ func genGotype(g *Generator, t string) {
 
 	// container of *C.cef_type
 	g.Printf(`
-// Go type for %s	
-type C%s struct {
-	p_%s *C.%s
+// Go type for %[1]s	
+type C%[2]s struct {
+	p_%[3]s *C.%[1]s
 }
-`, t, camel, typeName, t)
+`,
+		t, camel, typeName,
+	)
 
 	// Reference to CType
 	g.Printf(`
-type RefToC%s struct {
-	p_%s *C%s
+type RefToC%[1]s struct {
+	p_%[2]s *C%[1]s
 }
 `,
-		camel, typeName, camel,
+		camel, typeName,
 	)
 
 	// interface of accessor to *CType
 	g.Printf(`
-type C%sAccessor interface {
-	GetC%s() *C%s
-	SetC%s(*C%s)
+type C%[1]sAccessor interface {
+	GetC%[1]s() *C%[1]s
+	SetC%[1]s(*C%[1]s)
 }
 
-func (r RefToC%s) GetC%s() *C%s {
-	return r.p_%s
+func (r RefToC%[1]s) GetC%[1]s() *C%[1]s {
+	return r.p_%[2]s
 }
 
-func (r *RefToC%s) SetC%s(p *C%s) {
-	r.p_%s = p
+func (r *RefToC%[1]s) SetC%[1]s(p *C%[1]s) {
+	r.p_%[2]s = p
 }
 `,
-		camel, camel, camel, camel, camel,
-		camel, camel, camel, typeName,
-		camel, camel, camel, typeName,
+		camel, typeName,
 	)
 
 	b := g.buf.Bytes()
 	line := bytes.Count(b, []byte("\n"))
 
 	g.Printf(`
-// Go type C%s wraps cef type *C.%s
-func newC%s(p *C.%s) *C%s {
-	Tracef(unsafe.Pointer(p), "T%d:")
+// Go type C%[1]s wraps cef type *C.%[2]s
+func newC%[1]s(p *C.%[2]s) *C%[1]s {
+	Tracef(unsafe.Pointer(p), "T%[4]d:")
 	BaseAddRef(p)
-	go_%s := C%s{p}
-	runtime.SetFinalizer(&go_%s, func(g *C%s) {
-		Tracef(unsafe.Pointer(g.p_%s), "T%d:")
-		BaseRelease(g.p_%s)
+	go_%[3]s := C%[1]s{p}
+	runtime.SetFinalizer(&go_%[3]s, func(g *C%[1]s) {
+		Tracef(unsafe.Pointer(g.p_%[3]s), "T%[5]d:")
+		BaseRelease(g.p_%[3]s)
 	})
-	return &go_%s
+	return &go_%[3]s
 }
 `,
-		camel, t,
-		camel, t, camel,
-		line+4,
-		typeName, camel,
-		typeName, camel,
-		typeName, line+8,
-		typeName,
-		typeName,
+		camel, t, typeName,
+		line+4, line+8,
 	)
 
 	g.Printf(`
-// *C.%s has refCounted interface
-func (p *C.%s) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+// *C.%[1]s has refCounted interface
+func (p *C.%[1]s) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 `,
-		t, t)
+		t,
+	)
 }
