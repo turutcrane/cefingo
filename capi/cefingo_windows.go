@@ -9,6 +9,8 @@ import (
 //	#include "cefingo.h"
 import "C"
 
+type CWindowInfoT C.cef_window_info_t
+
 func setup_main_args(ma *C.cef_main_args_t) {
 	kernel32 := syscall.MustLoadDLL("kernel32.dll")
 	// psapi := syscall.MustLoadDLL("psapi.dll")

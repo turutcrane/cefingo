@@ -2,6 +2,7 @@ package v8
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/pkg/errors"
 	"github.com/turutcrane/cefingo/capi"
@@ -16,6 +17,7 @@ type Context struct {
 type Value struct {
 	v8v *capi.CV8valueT
 }
+type Function Value
 
 type EventType string
 
@@ -43,12 +45,12 @@ func NewString(s string) Value {
 	return NewValue(capi.V8valueCreateString(s))
 }
 
-func GetContext() (c Context, err error) {
-	v8c := capi.V8contextGetEnterdContext()
+func GetContext() (c *Context, err error) {
+	v8c := capi.V8contextGetCurrentContext()
 	g := NewValue(v8c.GetGlobal())
 	d, err := g.GetValueBykey("document")
 	if err == nil {
-		c = Context{
+		c = &Context{
 			V8context: v8c,
 			Global:    g,
 			Document:  d,
@@ -62,7 +64,7 @@ func (c *Context) GetBrowser() *capi.CBrowserT {
 }
 
 func (c *Context) GetElementById(id string) (value Value, err error) {
-	f, err := c.Document.GetValueBykey("getElementById")
+	val, err := c.Document.GetValueBykey("getElementById")
 	if err != nil {
 		return value, err
 	}
@@ -70,19 +72,20 @@ func (c *Context) GetElementById(id string) (value Value, err error) {
 
 	sid := capi.V8valueCreateString(id)
 
-	args := []*capi.CV8valueT{sid}
-	v8v, err := f.v8v.ExecuteFunction(c.Document.v8v, 1, args)
+	f := Function(val)
+	args := []Value{NewValue(sid)}
+	v8v, err := f.ExecuteFunction(c.Document, args)
 	if err != nil {
-		capi.Logf("L36:x %+v", err)
+		capi.Logf("L78:x %+v", err)
 		return value, err
 	}
 
 	if !v8v.IsValid() || !v8v.IsObject() {
 		capi.Logf("L55: Id:%s can not get valid value", id)
 		err = fmt.Errorf("Id:%s can not get valid value", id)
-		v8v = nil
+		v8v = Value{}
 	}
-	return NewValue(v8v), err
+	return v8v, err
 }
 
 func (c *Context) GetElementsByClassName(cls string) (elements Value, err error) {
@@ -96,14 +99,40 @@ func (c *Context) GetElementsByClassName(cls string) (elements Value, err error)
 	return elements, err
 }
 
+func EnterContext(c *capi.CV8contextT) (ctx *Context, err error) {
+	runtime.LockOSThread()
+	if c.Enter() {
+		return GetContext()
+	}
+	runtime.UnlockOSThread()
+	return nil, fmt.Errorf("E105: Enter Error")
+}
+
+func ExitContext(c *capi.CV8contextT) error {
+	current := capi.V8contextGetCurrentContext()
+	if c.IsSame(current) {
+		runtime.UnlockOSThread()
+		if c.Exit() {
+			return nil
+		}
+		return fmt.Errorf("E117: Context Exit Error")
+	}
+	return fmt.Errorf("E119: %v: Context is current %v", c, current)
+}
+
 func (v Value) IsNil() bool {
 	return v.v8v == nil
 }
 
-func (v Value) AddEventListener(e EventType, h capi.V8handler) (err error) {
+func (v Value) AddEventListener(e EventType, h capi.ExecuteHandler) (err error) {
 
-	f := v.v8v.GetValueBykey("addEventListener")
-	capi.Logf("L51: addEventListener is function? :%t", f.IsFunction())
+	f, err := v.GetValueBykey("addEventListener")
+	if err != nil {
+		return fmt.Errorf("E109: %w", err)
+	}
+	if !f.IsFunction() {
+		return fmt.Errorf("L112: addEventListener is not function?")
+	}
 
 	eHander := capi.AllocCV8handlerT().Bind(h)
 
@@ -111,11 +140,11 @@ func (v Value) AddEventListener(e EventType, h capi.V8handler) (err error) {
 
 	eFunc := capi.V8valueCreateFunction("eh", eHander)
 
-	args := []*capi.CV8valueT{eType, eFunc}
-	_, err = f.ExecuteFunction(v.v8v, 2, args)
+	args := []Value{NewValue(eType), NewValue(eFunc)}
+	_, err = Function(f).ExecuteFunction(v, args)
 
 	if err != nil {
-		capi.Logf("L36:x %+v", err)
+		capi.Logf("T125:x %+v", err)
 	}
 	return err
 }
@@ -125,12 +154,11 @@ type EventHandlerFunc func(object Value, event Value) error
 func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	name string,
 	object *capi.CV8valueT,
-	argumentsCount int,
 	arguments []*capi.CV8valueT,
 	retval **capi.CV8valueT,
 	exception *string,
 ) (sts bool) {
-	if argumentsCount == 0 {
+	if len(arguments) == 0 {
 		err := errors.Errorf("%s: No Arguments", name)
 		capi.Logf("%+v", err)
 		return false
@@ -144,10 +172,45 @@ func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	return sts
 }
 
-func NewFunction(name string, f capi.V8handler) Value {
+func NewFunction(name string, f capi.CV8handlerT) Function {
 	h := capi.AllocCV8handlerT().Bind(f)
 	v8f := capi.V8valueCreateFunction(name, h)
-	return NewValue(v8f)
+	return Function(NewValue(v8f))
+}
+
+func (f Function) ExecuteFunction(object Value, args []Value) (val Value, err error) {
+
+	if !f.v8v.IsFunction() {
+		cause := errors.Errorf("Object is Not Function")
+		return Value{}, cause
+	}
+
+	capiArgs := make([]*capi.CV8valueT, len(args))
+	for i, _ := range capiArgs {
+		capiArgs[i] = args[i].v8v
+	}
+
+	v8vf := f.v8v
+	ret := v8vf.ExecuteFunction(object.v8v, capiArgs)
+	name := v8vf.GetFunctionName()
+	if ret == nil {
+		if v8vf.HasException() {
+			e := v8vf.GetException()
+			m := e.GetMessage()
+			err = errors.Errorf("E172: %s returns NULL and %s has Exception: %s", name, name, m)
+		} else if object.v8v != nil && object.HasException() {
+			e := object.GetException()
+			m := e.GetMessage()
+			err = errors.Errorf("E176: %s returns NULL and (this) has Exception: %s", name, m)
+		} else {
+			err = errors.Errorf("E178: %s returns NULL", name)
+		}
+	} else if ret.IsValid() {
+		val = NewValue(ret)
+	} else {
+		err = errors.Errorf("E189: %s return value is not valid", name)
+	}
+	return val, err
 }
 
 type HandlerFunction func(this Value, args []Value) (v Value, err error)
@@ -316,7 +379,7 @@ func (v Value) GetValueByindex(index int) (rv Value, err error) {
 }
 
 func (v Value) SetValueBykey(key string, value Value) (err error) {
-	if !v.v8v.SetValueBykey(key, value.v8v) {
+	if !v.v8v.SetValueBykey(key, value.v8v, capi.V8PropertyAttributeNone) {
 		err = errors.Errorf("Set value Error key:%s", key)
 	}
 	return err
@@ -339,14 +402,10 @@ func (v Value) Call(name string, args []Value) (r Value, e error) {
 
 func (f Value) ExecuteFunction(this Value, args []Value) (r Value, e error) {
 	capi.Logf("T340:")
-	var rv *capi.CV8valueT
+	var rv Value
 
 	if f.IsFunction() {
-		v8args := make([]*capi.CV8valueT, len(args))
-		for i, av := range args {
-			v8args[i] = av.v8v
-		}
-		rv, e = f.v8v.ExecuteFunction(this.v8v, len(args), v8args)
+		rv, e = Function(f).ExecuteFunction(this, args)
 		if e != nil {
 			capi.Logf("T347:x %v", e)
 		}
@@ -354,11 +413,11 @@ func (f Value) ExecuteFunction(this Value, args []Value) (r Value, e error) {
 		e = errors.Errorf("E318: <%v> is not function", f)
 		capi.Logf("T350: %v", e)
 	}
-	return Value{rv}, e
+	return rv, e
 }
 
 func CreateInt(i int) Value {
-	return Value{capi.V8valueCreateInt(i)}
+	return Value{capi.V8valueCreateInt(int32(i))}
 }
 
 func CreateString(s string) Value {
@@ -372,7 +431,7 @@ func CreateStringFromByteArray(b []byte) Value {
 func (c *Context) Eval(code string) (v Value, err error) {
 	var v8v *capi.CV8valueT
 	var e *capi.CV8exceptionT
-	if c.V8context.Eval(code, &v8v, &e) {
+	if c.V8context.Eval(code, "", 0, &v8v, &e) {
 		v = Value{v8v}
 	} else {
 		err = errors.Errorf("Eval Error<%s> %s", code, e.GetMessage())
@@ -389,11 +448,11 @@ func (c *Context) Alertf(message string, v ...interface{}) (err error) {
 
 	msg := capi.V8valueCreateString(fmt.Sprintf(message, v...))
 
-	args := []*capi.CV8valueT{msg}
-	_, err = f.v8v.ExecuteFunction(c.Global.v8v, 1, args)
+	args := []Value{NewValue(msg)}
+	_, err = Function(f).ExecuteFunction(c.Global, args)
 
 	if err != nil {
-		capi.Logf("L36:x %+v", err)
+		capi.Logf("T427:x %+v", err)
 	}
 	return err
 }

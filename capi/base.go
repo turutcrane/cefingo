@@ -83,7 +83,9 @@ type refCounted interface {
 }
 
 func BaseAddRef(rc refCounted) {
-	C.cefingo_base_add_ref(rc.cast_to_p_base_ref_counted_t())
+	if rc != nil {
+		C.cefingo_base_add_ref(rc.cast_to_p_base_ref_counted_t())
+	}
 }
 
 ///
@@ -132,7 +134,7 @@ func (f DeassocFunc) Deassoc() {
 func cefingo_base_deassoc(cstruct unsafe.Pointer) {
 	e, ok := deassocers[cstruct]
 	if ok {
-		Tracef(cstruct, "L160:")
+		Tracef(cstruct, "T135:")
 		for _, d := range e {
 			d.Deassoc()
 		}

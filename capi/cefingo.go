@@ -5,151 +5,13 @@ package capi
 import (
 	"log"
 	"os"
+	"reflect"
 	"unsafe"
 )
 
 // #cgo pkg-config: cefingo
 // #include "cefingo.h"
 import "C"
-
-// type Cint C.int
-// type CSizeT C.size_t
-
-// type CStringT C.cef_string_t
-type CTimeT C.cef_time_t
-
-type CErrorcodeT C.cef_errorcode_t
-type CLogSeverityT C.cef_log_severity_t
-type CStringListT C.cef_string_list_t
-type CTransitionTypeT C.cef_transition_type_t
-type CValueTypeT C.cef_value_type_t
-type CSchemeOptionsT C.cef_scheme_options_t
-
-const (
-	ErrNone            CErrorcodeT = C.ERR_NONE
-	ErrFailed          CErrorcodeT = C.ERR_FAILED
-	ErrAborted         CErrorcodeT = C.ERR_ABORTED
-	ErrInvalidArgument CErrorcodeT = C.ERR_INVALID_ARGUMENT
-	ErrInvalidHandle   CErrorcodeT = C.ERR_INVALID_HANDLE
-	ErrFileNotFound    CErrorcodeT = C.ERR_FILE_NOT_FOUND
-	ErrTimedOut        CErrorcodeT = C.ERR_TIMED_OUT
-	ErrFileTooBig      CErrorcodeT = C.ERR_FILE_TOO_BIG
-	ErrUnexpected      CErrorcodeT = C.ERR_UNEXPECTED
-	ErrAccessDenied    CErrorcodeT = C.ERR_ACCESS_DENIED
-	ErrNotImplemented  CErrorcodeT = C.ERR_NOT_IMPLEMENTED
-
-// ERR_CONNECTION_CLOSED = -100,
-// ERR_CONNECTION_RESET = -101,
-// ERR_CONNECTION_REFUSED = -102,
-// ERR_CONNECTION_ABORTED = -103,
-// ERR_CONNECTION_FAILED = -104,
-// ERR_NAME_NOT_RESOLVED = -105,
-// ERR_INTERNET_DISCONNECTED = -106,
-// ERR_SSL_PROTOCOL_ERROR = -107,
-// ERR_ADDRESS_INVALID = -108,
-// ERR_ADDRESS_UNREACHABLE = -109,
-// ERR_SSL_CLIENT_AUTH_CERT_NEEDED = -110,
-// ERR_TUNNEL_CONNECTION_FAILED = -111,
-// ERR_NO_SSL_VERSIONS_ENABLED = -112,
-// ERR_SSL_VERSION_OR_CIPHER_MISMATCH = -113,
-// ERR_SSL_RENEGOTIATION_REQUESTED = -114,
-// ERR_CERT_COMMON_NAME_INVALID = -200,
-// ERR_CERT_BEGIN = ERR_CERT_COMMON_NAME_INVALID,
-// ERR_CERT_DATE_INVALID = -201,
-// ERR_CERT_AUTHORITY_INVALID = -202,
-// ERR_CERT_CONTAINS_ERRORS = -203,
-// ERR_CERT_NO_REVOCATION_MECHANISM = -204,
-// ERR_CERT_UNABLE_TO_CHECK_REVOCATION = -205,
-// ERR_CERT_REVOKED = -206,
-// ERR_CERT_INVALID = -207,
-// ERR_CERT_WEAK_SIGNATURE_ALGORITHM = -208,
-// // -209 is available: was ERR_CERT_NOT_IN_DNS.
-// ERR_CERT_NON_UNIQUE_NAME = -210,
-// ERR_CERT_WEAK_KEY = -211,
-// ERR_CERT_NAME_CONSTRAINT_VIOLATION = -212,
-// ERR_CERT_VALIDITY_TOO_LONG = -213,
-// ERR_CERT_END = ERR_CERT_VALIDITY_TOO_LONG,
-// ERR_INVALID_URL = -300,
-// ERR_DISALLOWED_URL_SCHEME = -301,
-// ERR_UNKNOWN_URL_SCHEME = -302,
-// ERR_TOO_MANY_REDIRECTS = -310,
-// ERR_UNSAFE_REDIRECT = -311,
-// ERR_UNSAFE_PORT = -312,
-// ERR_INVALID_RESPONSE = -320,
-// ERR_INVALID_CHUNKED_ENCODING = -321,
-// ERR_METHOD_NOT_SUPPORTED = -322,
-// ERR_UNEXPECTED_PROXY_AUTH = -323,
-// ERR_EMPTY_RESPONSE = -324,
-// ERR_RESPONSE_HEADERS_TOO_BIG = -325,
-// ERR_CACHE_MISS = -400,
-// ERR_INSECURE_RESPONSE = -501,
-)
-
-const (
-	LogSeverityDefault CLogSeverityT = C.LOGSEVERITY_DEFAULT
-	LogSeverityVerbose CLogSeverityT = C.LOGSEVERITY_VERBOSE
-	LogSeverityDebug   CLogSeverityT = C.LOGSEVERITY_DEBUG
-	LogSeverityInfo    CLogSeverityT = C.LOGSEVERITY_INFO
-	LogSeverityWarning CLogSeverityT = C.LOGSEVERITY_WARNING
-	LogSeverityError   CLogSeverityT = C.LOGSEVERITY_ERROR
-	LogSeverityDisable CLogSeverityT = C.LOGSEVERITY_DISABLE
-)
-
-const (
-	TtLink               CTransitionTypeT = C.TT_LINK
-	TtExplicit           CTransitionTypeT = C.TT_EXPLICIT
-	TtAutoSubframe       CTransitionTypeT = C.TT_AUTO_SUBFRAME
-	TtManualSubframe     CTransitionTypeT = C.TT_MANUAL_SUBFRAME
-	TtFormSubmit         CTransitionTypeT = C.TT_FORM_SUBMIT
-	TtReload             CTransitionTypeT = C.TT_RELOAD
-	TtSourceMask         CTransitionTypeT = C.TT_SOURCE_MASK
-	TtBlockedFlag        CTransitionTypeT = C.TT_BLOCKED_FLAG
-	TtForwardBackFlag    CTransitionTypeT = C.TT_FORWARD_BACK_FLAG
-	TtChainStartFlag     CTransitionTypeT = C.TT_CHAIN_START_FLAG
-	TtChainEndFlag       CTransitionTypeT = C.TT_CHAIN_END_FLAG
-	TtClientRedirectFlag CTransitionTypeT = C.TT_CLIENT_REDIRECT_FLAG
-	TtServerRedirectFlag CTransitionTypeT = C.TT_SERVER_REDIRECT_FLAG
-	TtIsRedirectMask     CTransitionTypeT = C.TT_IS_REDIRECT_MASK
-	TtQualifierMask      CTransitionTypeT = C.TT_QUALIFIER_MASK
-)
-
-const (
-	PidBrowser  CProcessIdT = C.PID_BROWSER
-	PidRenderer CProcessIdT = C.PID_RENDERER
-)
-
-const (
-	FileDialogOpen                CFileDialogModeT = C.FILE_DIALOG_OPEN
-	FileDialogOpenMultiple        CFileDialogModeT = C.FILE_DIALOG_OPEN_MULTIPLE
-	FileDialogOpenFolder          CFileDialogModeT = C.FILE_DIALOG_OPEN_FOLDER
-	FileDialogSave                CFileDialogModeT = C.FILE_DIALOG_SAVE
-	FileDialogTypeMask            CFileDialogModeT = C.FILE_DIALOG_TYPE_MASK
-	FileDialogOverwritepromptFlag CFileDialogModeT = C.FILE_DIALOG_OVERWRITEPROMPT_FLAG
-	FileDialogHidereadonlyFlag    CFileDialogModeT = C.FILE_DIALOG_HIDEREADONLY_FLAG
-)
-
-const (
-	VtypeInvalid    CValueTypeT = C.VTYPE_INVALID
-	VtypeNull       CValueTypeT = C.VTYPE_NULL
-	VtypeBool       CValueTypeT = C.VTYPE_BOOL
-	VtypeInt        CValueTypeT = C.VTYPE_INT
-	VtypeDouble     CValueTypeT = C.VTYPE_DOUBLE
-	VtypeString     CValueTypeT = C.VTYPE_STRING
-	VtypeBinary     CValueTypeT = C.VTYPE_BINARY
-	VtypeDictionary CValueTypeT = C.VTYPE_DICTIONARY
-	VtypeList       CValueTypeT = C.VTYPE_LIST
-)
-
-const (
-	CSchemeOptionNone            CSchemeOptionsT = C.CEF_SCHEME_OPTION_NONE
-	CSchemeOptionStandard        CSchemeOptionsT = C.CEF_SCHEME_OPTION_STANDARD
-	CSchemeOptionLocal           CSchemeOptionsT = C.CEF_SCHEME_OPTION_LOCAL
-	CSchemeOptionDisplayIsolated CSchemeOptionsT = C.CEF_SCHEME_OPTION_DISPLAY_ISOLATED
-	CSchemeOptionSecure          CSchemeOptionsT = C.CEF_SCHEME_OPTION_SECURE
-	CSchemeOptionCorsEnabled     CSchemeOptionsT = C.CEF_SCHEME_OPTION_CORS_ENABLED
-	CSchemeOptionCspBypassing    CSchemeOptionsT = C.CEF_SCHEME_OPTION_CSP_BYPASSING
-	CSchemeOptionFetchEnabled    CSchemeOptionsT = C.CEF_SCHEME_OPTION_FETCH_ENABLED
-)
 
 type Settings struct {
 	LogSeverity              CLogSeverityT
@@ -158,27 +20,10 @@ type Settings struct {
 	RemoteDebuggingPort      int
 }
 
-type CCookieT C.cef_cookie_t
-type CCommandLineT C.cef_command_line_t
-type CDomnodeT C.cef_domnode_t
-type CFileDialogModeT C.cef_file_dialog_mode_t
-type CProcessIdT C.cef_process_id_t
-type CSchemeRegistrarT C.cef_scheme_registrar_t // this dose not has 'cef_base_ref_counted_t base', but also 'cef_base_scoped_t base'
-type CV8accessorT C.cef_v8accessor_t
-type CV8interceptorT C.cef_v8interceptor_t
-
-type CContextMenuHandlerT C.cef_context_menu_handler_t
-type CDialogHandlerT C.cef_dialog_handler_t
-type CDisplayHandlerT C.cef_display_handler_t
-type CDownloaddHanderT C.cef_download_handler_t
-type CDragHandlerT C.cef_drag_handler_t
-type CFindHandlerT C.cef_find_handler_t
-type CFocusHanderT C.cef_focus_handler_t
-type CJsdialogHandlerT C.cef_jsdialog_handler_t
-type CKeyboardHandlerT C.cef_keyboard_handler_t
-type CRenderHandlerT C.cef_render_handler_t
-type CRequestHandlerT C.cef_request_handler_t
-type CResourceBundleHanderT C.cef_resource_bundle_handler_t
+type CLangSizeT C.size_t
+type CWindowHandleT C.cef_window_handle_t
+type CEventHandleT C.cef_event_handle_t
+type CCursorHandleT C.cef_cursor_handle_t
 
 func init() {
 	// Check cef library version
@@ -200,19 +45,24 @@ func init() {
 			chromeVersionMajor, chromeVersionMinor, chromeVersionBuild, chromeVersionPatch)
 		Panicf("L195: Cef Library mismatch!")
 	}
+	C.cefingo_init()
+
+	var i int
+	const maxUint = ^uint(0)
+	const minUint = 0
+	const maxInt = int(maxUint >> 1)
+	const minInt = -maxInt - 1
+	Logger = log.New(os.Stdout, "init", log.LstdFlags)
+	Logf("Size of var (reflect.TypeOf.Size): %d\n", reflect.TypeOf(i).Size())
+	Logf("Size of var (unsafe.Sizeof): %d\n", unsafe.Sizeof(i))
+	Logf("maxUint: %d\n", maxUint)
+	Logf("maxInt: %d\n", maxInt)
 }
 
 var main_args = C.cef_main_args_t{}
 
 func ExecuteProcess(app *CAppT) {
 
-	// instance, err := winapi.GetModuleHandle(nil)
-	// if err != nil {
-	// 	Panicf("L205: %v", err)
-	// }
-
-	// main_args.instance = C.HINSTANCE(unsafe.Pointer(instance))
-	// Logf("L33: %T: %#v :: %T: %#v", instance, instance, main_args.instance, main_args.instance)
 	setup_main_args(&main_args)
 
 	///
@@ -276,30 +126,30 @@ func Initialize(s Settings, app *CAppT) {
 
 }
 
-func RunMessageLoop() {
-	///
-	// Run the CEF message loop. Use this function instead of an application-
-	// provided message loop to get the best balance between performance and CPU
-	// usage. This function should only be called on the main application thread and
-	// only if cef_initialize() is called with a
-	// CefSettings.multi_threaded_message_loop value of false (0). This function
-	// will block until a quit message is received by the system.
-	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L167-L175
-	///
-	C.cef_run_message_loop()
-}
+// func RunMessageLoop() {
+// 	///
+// 	// Run the CEF message loop. Use this function instead of an application-
+// 	// provided message loop to get the best balance between performance and CPU
+// 	// usage. This function should only be called on the main application thread and
+// 	// only if cef_initialize() is called with a
+// 	// CefSettings.multi_threaded_message_loop value of false (0). This function
+// 	// will block until a quit message is received by the system.
+// 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L167-L175
+// 	///
+// 	C.cef_run_message_loop()
+// }
 
-// QuitMessageLoop
-func QuitMessageLoop() {
-	Logf("L166:")
-	C.cef_quit_message_loop()
-}
+// // QuitMessageLoop
+// func QuitMessageLoop() {
+// 	Logf("L166:")
+// 	C.cef_quit_message_loop()
+// }
 
-// Shutdown CEF
-func Shutdown() {
-	Logf("L118:")
-	C.cef_shutdown()
-}
+// // Shutdown CEF
+// func Shutdown() {
+// 	Logf("L118:")
+// 	C.cef_shutdown()
+// }
 
 func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) {
 	Logf("L330:")

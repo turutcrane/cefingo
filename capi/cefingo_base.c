@@ -80,13 +80,14 @@ extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self)
     int64 count = __atomic_sub_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
 
     if (count >= 0) {
-        if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "T79: 0x%llx -count: %d", self, count);
+        if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "T83: 0x%llx -count: %d", self, count);
         if (count == 0) {
             cefingo_base_deassoc(self);
             // free(self);
         }
     } else {
-        cefingo_panicf(__func__, "T85: 0x%llx -count:%d", self, count);
+        // cefingo_panicf(__func__, "T89: 0x%llx -count:%d", self, count);
+        cefingo_cslogf(self, __func__, "T90: 0x%llx -count: %d", self, count);
     }
     return (count == 0 ? 1 : 0);
 }
