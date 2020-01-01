@@ -172,7 +172,7 @@ func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	return sts
 }
 
-func NewFunction(name string, f capi.CV8handlerT) Function {
+func NewFunction(name string, f capi.ExecuteHandler) Function {
 	h := capi.AllocCV8handlerT().Bind(f)
 	v8f := capi.V8valueCreateFunction(name, h)
 	return Function(NewValue(v8f))
@@ -218,7 +218,7 @@ type HandlerFunction func(this Value, args []Value) (v Value, err error)
 func (f HandlerFunction) Execute(self *capi.CV8handlerT,
 	name string,
 	thisObject *capi.CV8valueT,
-	argumentsCount int,
+	// argumentsCount int,
 	arguments []*capi.CV8valueT,
 	retval **capi.CV8valueT,
 	exception *string,
