@@ -172,10 +172,10 @@ func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	return sts
 }
 
-func NewFunction(name string, f capi.ExecuteHandler) Function {
+func NewFunction(name string, f capi.ExecuteHandler) Value {
 	h := capi.AllocCV8handlerT().Bind(f)
 	v8f := capi.V8valueCreateFunction(name, h)
-	return Function(NewValue(v8f))
+	return NewValue(v8f)
 }
 
 func (f Function) ExecuteFunction(object Value, args []Value) (val Value, err error) {
@@ -357,7 +357,7 @@ func (v Value) GetValueBykey(key string) (rv Value, err error) {
 			exc := v.GetException()
 			err = errors.New(exc.GetMessage())
 		} else {
-			err = errors.New("E262: nil returned")
+			err = fmt.Errorf("E360: nil returned: %s", key)
 		}
 	}
 	return rv, err
@@ -372,7 +372,7 @@ func (v Value) GetValueByindex(index int) (rv Value, err error) {
 			exc := v.GetException()
 			err = errors.New(exc.GetMessage())
 		} else {
-			err = errors.New("E262: nil returned")
+			err = errors.New("E375: nil returned")
 		}
 	}
 	return rv, err
