@@ -5,9 +5,10 @@ This is experimental go binding for CEF.
 * Windows 10 64bit (msys2 environment is recomended)
 
 ## How to Start
-1. Download Spotify's Autobuild Image http://opensource.spotify.com/cefbuilds/cef_binary_73.1.11%2Bge6986dc%2Bchromium-73.0.3683.75_windows64.tar.bz2
+1. Download Spotify's Autobuild Image http://opensource.spotify.com/cefbuilds/cef_binary_75.1.14%2Bgc81164e%2Bchromium-75.0.3770.100_windows64.tar.bz2
 
-    (CEF version scheme has been changed from CEF 73. So, latest code can not use with old cef library)
+    (CEF 75: Some api parameter changed)
+    (CEF 73: CEF version scheme has been changed)
 
 1. Expand it.
 
