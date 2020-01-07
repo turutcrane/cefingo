@@ -241,18 +241,6 @@ void cefingo_browser_get_frame_names(
 	);
 }
 
-int cefingo_browser_send_process_message(
-	struct _cef_browser_t* self,
-	cef_process_id_t target_process,
-	struct _cef_process_message_t* message
-){
-	return self->send_process_message(
-		self, 
-		target_process, 
-		message
-	);
-}
-
 
 cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callback(cefingo_run_file_dialog_callback_wrapper_t* run_file_dialog_callback)
 {
@@ -1400,11 +1388,13 @@ int cefingo_context_menu_params_is_pepper_menu(
 void cefingo_cookie_manager_set_supported_schemes(
 	struct _cef_cookie_manager_t* self,
 	cef_string_list_t schemes,
+	int include_defaults,
 	struct _cef_completion_callback_t* callback
 ){
 	self->set_supported_schemes(
 		self, 
 		schemes, 
+		include_defaults, 
 		callback
 	);
 }
@@ -1457,20 +1447,6 @@ int cefingo_cookie_manager_delete_cookies(
 		self, 
 		url, 
 		cookie_name, 
-		callback
-	);
-}
-
-int cefingo_cookie_manager_set_storage_path(
-	struct _cef_cookie_manager_t* self,
-	const cef_string_t* path,
-	int persist_session_cookies,
-	struct _cef_completion_callback_t* callback
-){
-	return self->set_storage_path(
-		self, 
-		path, 
-		persist_session_cookies, 
 		callback
 	);
 }
@@ -2390,6 +2366,7 @@ int cefingo_drag_data_has_image(
 typedef void (*T_CEF_DRAG_HANDLER_T_ON_DRAGGABLE_REGIONS_CHANGED)(
 	struct _cef_drag_handler_t*, 
 	struct _cef_browser_t*, 
+	struct _cef_frame_t*, 
 	size_t, 
 	const cef_draggable_region_t*
 );
@@ -2800,6 +2777,30 @@ void cefingo_frame_visit_dom(
 	);
 }
 
+struct _cef_urlrequest_t* cefingo_frame_create_urlrequest(
+	struct _cef_frame_t* self,
+	struct _cef_request_t* request,
+	struct _cef_urlrequest_client_t* client
+){
+	return self->create_urlrequest(
+		self, 
+		request, 
+		client
+	);
+}
+
+void cefingo_frame_send_process_message(
+	struct _cef_frame_t* self,
+	cef_process_id_t target_process,
+	struct _cef_process_message_t* message
+){
+	self->send_process_message(
+		self, 
+		target_process, 
+		message
+	);
+}
+
 int cefingo_image_is_empty(
 	struct _cef_image_t* self
 ){
@@ -3060,6 +3061,7 @@ typedef int (*T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)(
 	struct _cef_window_info_t*, 
 	struct _cef_client_t**, 
 	struct _cef_browser_settings_t*, 
+	struct _cef_dictionary_value_t**, 
 	int*
 );
 
@@ -4336,6 +4338,24 @@ cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_r
 	return (cef_render_process_handler_t*)render_process_handler;
 }
 
+void cefingo_request_callback_cont(
+	struct _cef_request_callback_t* self,
+	int allow
+){
+	self->cont(
+		self, 
+		allow
+	);
+}
+
+void cefingo_request_callback_cancel(
+	struct _cef_request_callback_t* self
+){
+	self->cancel(
+		self
+	);
+}
+
 int cefingo_request_is_read_only(
 	struct _cef_request_t* self
 ){
@@ -4443,6 +4463,30 @@ void cefingo_request_set_header_map(
 	self->set_header_map(
 		self, 
 		headerMap
+	);
+}
+
+cef_string_userfree_t cefingo_request_get_header_by_name(
+	struct _cef_request_t* self,
+	const cef_string_t* name
+){
+	return self->get_header_by_name(
+		self, 
+		name
+	);
+}
+
+void cefingo_request_set_header_by_name(
+	struct _cef_request_t* self,
+	const cef_string_t* name,
+	const cef_string_t* value,
+	int overwrite
+){
+	self->set_header_by_name(
+		self, 
+		name, 
+		value, 
+		overwrite
 	);
 }
 
@@ -4704,11 +4748,11 @@ cef_string_userfree_t cefingo_request_context_get_cache_path(
 	);
 }
 
-struct _cef_cookie_manager_t* cefingo_request_context_get_default_cookie_manager(
+struct _cef_cookie_manager_t* cefingo_request_context_get_cookie_manager(
 	struct _cef_request_context_t* self,
 	struct _cef_completion_callback_t* callback
 ){
-	return self->get_default_cookie_manager(
+	return self->get_cookie_manager(
 		self, 
 		callback
 	);
@@ -4810,6 +4854,16 @@ void cefingo_request_context_clear_certificate_exceptions(
 	);
 }
 
+void cefingo_request_context_clear_http_auth_credentials(
+	struct _cef_request_context_t* self,
+	struct _cef_completion_callback_t* callback
+){
+	self->clear_http_auth_credentials(
+		self, 
+		callback
+	);
+}
+
 void cefingo_request_context_close_all_connections(
 	struct _cef_request_context_t* self,
 	struct _cef_completion_callback_t* callback
@@ -4895,6 +4949,16 @@ typedef int (*T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)(
 	struct _cef_web_plugin_info_t*, 
 	cef_plugin_policy_t*
 );
+typedef struct _cef_resource_request_handler_t* (*T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)(
+	struct _cef_request_context_handler_t*, 
+	struct _cef_browser_t*, 
+	struct _cef_frame_t*, 
+	struct _cef_request_t*, 
+	int, 
+	int, 
+	const cef_string_t*, 
+	int*
+);
 
 cef_request_context_handler_t *cefingo_construct_request_context_handler(cefingo_request_context_handler_wrapper_t* request_context_handler)
 {
@@ -4905,30 +4969,12 @@ cef_request_context_handler_t *cefingo_construct_request_context_handler(cefingo
 	// callbacks
 	request_context_handler->body.on_request_context_initialized = 
 		cefingo_request_context_handler_on_request_context_initialized;
-	request_context_handler->body.get_cookie_manager = 
-		cefingo_request_context_handler_get_cookie_manager;
 	request_context_handler->body.on_before_plugin_load = (T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)
 		cefingo_request_context_handler_on_before_plugin_load;
+	request_context_handler->body.get_resource_request_handler = (T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)
+		cefingo_request_context_handler_get_resource_request_handler;
 
 	return (cef_request_context_handler_t*)request_context_handler;
-}
-
-void cefingo_request_callback_cont(
-	struct _cef_request_callback_t* self,
-	int allow
-){
-	self->cont(
-		self, 
-		allow
-	);
-}
-
-void cefingo_request_callback_cancel(
-	struct _cef_request_callback_t* self
-){
-	self->cancel(
-		self
-	);
 }
 
 void cefingo_select_client_certificate_callback_select(
@@ -4949,10 +4995,20 @@ typedef int (*T_CEF_REQUEST_HANDLER_T_ON_OPEN_URLFROM_TAB)(
 	cef_window_open_disposition_t, 
 	int
 );
-typedef int (*T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)(
+typedef struct _cef_resource_request_handler_t* (*T_CEF_REQUEST_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)(
 	struct _cef_request_handler_t*, 
 	struct _cef_browser_t*, 
 	struct _cef_frame_t*, 
+	struct _cef_request_t*, 
+	int, 
+	int, 
+	const cef_string_t*, 
+	int*
+);
+typedef int (*T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)(
+	struct _cef_request_handler_t*, 
+	struct _cef_browser_t*, 
+	const cef_string_t*, 
 	int, 
 	const cef_string_t*, 
 	int, 
@@ -4960,25 +5016,12 @@ typedef int (*T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)(
 	const cef_string_t*, 
 	struct _cef_auth_callback_t*
 );
-typedef int (*T_CEF_REQUEST_HANDLER_T_CAN_SET_COOKIE)(
-	struct _cef_request_handler_t*, 
-	struct _cef_browser_t*, 
-	struct _cef_frame_t*, 
-	struct _cef_request_t*, 
-	const struct _cef_cookie_t*
-);
 typedef int (*T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST)(
 	struct _cef_request_handler_t*, 
 	struct _cef_browser_t*, 
 	const cef_string_t*, 
 	int64, 
 	struct _cef_request_callback_t*
-);
-typedef void (*T_CEF_REQUEST_HANDLER_T_ON_PROTOCOL_EXECUTION)(
-	struct _cef_request_handler_t*, 
-	struct _cef_browser_t*, 
-	const cef_string_t*, 
-	int*
 );
 typedef int (*T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)(
 	struct _cef_request_handler_t*, 
@@ -5015,28 +5058,12 @@ cef_request_handler_t *cefingo_construct_request_handler(cefingo_request_handler
 		cefingo_request_handler_on_before_browse;
 	request_handler->body.on_open_urlfrom_tab = (T_CEF_REQUEST_HANDLER_T_ON_OPEN_URLFROM_TAB)
 		cefingo_request_handler_on_open_urlfrom_tab;
-	request_handler->body.on_before_resource_load = 
-		cefingo_request_handler_on_before_resource_load;
-	request_handler->body.get_resource_handler = 
-		cefingo_request_handler_get_resource_handler;
-	request_handler->body.on_resource_redirect = 
-		cefingo_request_handler_on_resource_redirect;
-	request_handler->body.on_resource_response = 
-		cefingo_request_handler_on_resource_response;
-	request_handler->body.get_resource_response_filter = 
-		cefingo_request_handler_get_resource_response_filter;
-	request_handler->body.on_resource_load_complete = 
-		cefingo_request_handler_on_resource_load_complete;
+	request_handler->body.get_resource_request_handler = (T_CEF_REQUEST_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)
+		cefingo_request_handler_get_resource_request_handler;
 	request_handler->body.get_auth_credentials = (T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)
 		cefingo_request_handler_get_auth_credentials;
-	request_handler->body.can_get_cookies = 
-		cefingo_request_handler_can_get_cookies;
-	request_handler->body.can_set_cookie = (T_CEF_REQUEST_HANDLER_T_CAN_SET_COOKIE)
-		cefingo_request_handler_can_set_cookie;
 	request_handler->body.on_quota_request = (T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST)
 		cefingo_request_handler_on_quota_request;
-	request_handler->body.on_protocol_execution = (T_CEF_REQUEST_HANDLER_T_ON_PROTOCOL_EXECUTION)
-		cefingo_request_handler_on_protocol_execution;
 	request_handler->body.on_certificate_error = (T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)
 		cefingo_request_handler_on_certificate_error;
 	request_handler->body.on_select_client_certificate = (T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE)
@@ -5065,14 +5092,26 @@ cef_resource_bundle_handler_t *cefingo_construct_resource_bundle_handler(cefingo
 	return (cef_resource_bundle_handler_t*)resource_bundle_handler;
 }
 
-typedef int (*T_CEF_RESOURCE_HANDLER_T_CAN_GET_COOKIE)(
-	struct _cef_resource_handler_t*, 
-	const struct _cef_cookie_t*
-);
-typedef int (*T_CEF_RESOURCE_HANDLER_T_CAN_SET_COOKIE)(
-	struct _cef_resource_handler_t*, 
-	const struct _cef_cookie_t*
-);
+void cefingo_resource_skip_callback_cont(
+	struct _cef_resource_skip_callback_t* self,
+	int64 bytes_skipped
+){
+	self->cont(
+		self, 
+		bytes_skipped
+	);
+}
+
+void cefingo_resource_read_callback_cont(
+	struct _cef_resource_read_callback_t* self,
+	int bytes_read
+){
+	self->cont(
+		self, 
+		bytes_read
+	);
+}
+
 
 cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t* resource_handler)
 {
@@ -5081,20 +5120,186 @@ cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_hand
 		(cef_base_ref_counted_t*) resource_handler);
 	
 	// callbacks
+	resource_handler->body.open = 
+		cefingo_resource_handler_open;
 	resource_handler->body.process_request = 
 		cefingo_resource_handler_process_request;
 	resource_handler->body.get_response_headers = 
 		cefingo_resource_handler_get_response_headers;
+	resource_handler->body.skip = 
+		cefingo_resource_handler_skip;
+	resource_handler->body.read = 
+		cefingo_resource_handler_read;
 	resource_handler->body.read_response = 
 		cefingo_resource_handler_read_response;
-	resource_handler->body.can_get_cookie = (T_CEF_RESOURCE_HANDLER_T_CAN_GET_COOKIE)
-		cefingo_resource_handler_can_get_cookie;
-	resource_handler->body.can_set_cookie = (T_CEF_RESOURCE_HANDLER_T_CAN_SET_COOKIE)
-		cefingo_resource_handler_can_set_cookie;
 	resource_handler->body.cancel = 
 		cefingo_resource_handler_cancel;
 
 	return (cef_resource_handler_t*)resource_handler;
+}
+
+struct _cef_cookie_access_filter_t* cefingo_resource_request_handler_get_cookie_access_filter(
+	struct _cef_resource_request_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request
+){
+	return self->get_cookie_access_filter(
+		self, 
+		browser, 
+		frame, 
+		request
+	);
+}
+
+cef_return_value_t cefingo_resource_request_handler_on_before_resource_load(
+	struct _cef_resource_request_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request,
+	struct _cef_request_callback_t* callback
+){
+	return self->on_before_resource_load(
+		self, 
+		browser, 
+		frame, 
+		request, 
+		callback
+	);
+}
+
+struct _cef_resource_handler_t* cefingo_resource_request_handler_get_resource_handler(
+	struct _cef_resource_request_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request
+){
+	return self->get_resource_handler(
+		self, 
+		browser, 
+		frame, 
+		request
+	);
+}
+
+void cefingo_resource_request_handler_on_resource_redirect(
+	struct _cef_resource_request_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request,
+	struct _cef_response_t* response,
+	cef_string_t* new_url
+){
+	self->on_resource_redirect(
+		self, 
+		browser, 
+		frame, 
+		request, 
+		response, 
+		new_url
+	);
+}
+
+int cefingo_resource_request_handler_on_resource_response(
+	struct _cef_resource_request_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request,
+	struct _cef_response_t* response
+){
+	return self->on_resource_response(
+		self, 
+		browser, 
+		frame, 
+		request, 
+		response
+	);
+}
+
+struct _cef_response_filter_t* cefingo_resource_request_handler_get_resource_response_filter(
+	struct _cef_resource_request_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request,
+	struct _cef_response_t* response
+){
+	return self->get_resource_response_filter(
+		self, 
+		browser, 
+		frame, 
+		request, 
+		response
+	);
+}
+
+void cefingo_resource_request_handler_on_resource_load_complete(
+	struct _cef_resource_request_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request,
+	struct _cef_response_t* response,
+	cef_urlrequest_status_t status,
+	int64 received_content_length
+){
+	self->on_resource_load_complete(
+		self, 
+		browser, 
+		frame, 
+		request, 
+		response, 
+		status, 
+		received_content_length
+	);
+}
+
+void cefingo_resource_request_handler_on_protocol_execution(
+	struct _cef_resource_request_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request,
+	int* allow_os_execution
+){
+	self->on_protocol_execution(
+		self, 
+		browser, 
+		frame, 
+		request, 
+		allow_os_execution
+	);
+}
+
+int cefingo_cookie_access_filter_can_send_cookie(
+	struct _cef_cookie_access_filter_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request,
+	const struct _cef_cookie_t* cookie
+){
+	return self->can_send_cookie(
+		self, 
+		browser, 
+		frame, 
+		request, 
+		cookie
+	);
+}
+
+int cefingo_cookie_access_filter_can_save_cookie(
+	struct _cef_cookie_access_filter_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	struct _cef_request_t* request,
+	struct _cef_response_t* response,
+	const struct _cef_cookie_t* cookie
+){
+	return self->can_save_cookie(
+		self, 
+		browser, 
+		frame, 
+		request, 
+		response, 
+		cookie
+	);
 }
 
 int cefingo_response_is_read_only(
@@ -5174,6 +5379,24 @@ void cefingo_response_set_mime_type(
 	self->set_mime_type(
 		self, 
 		mimeType
+	);
+}
+
+cef_string_userfree_t cefingo_response_get_charset(
+	struct _cef_response_t* self
+){
+	return self->get_charset(
+		self
+	);
+}
+
+void cefingo_response_set_charset(
+	struct _cef_response_t* self,
+	const cef_string_t* charset
+){
+	self->set_charset(
+		self, 
+		charset
 	);
 }
 
@@ -5607,6 +5830,134 @@ int cefingo_task_runner_post_delayed_task(
 		self, 
 		task, 
 		delay_ms
+	);
+}
+
+struct _cef_request_t* cefingo_urlrequest_get_request(
+	struct _cef_urlrequest_t* self
+){
+	return self->get_request(
+		self
+	);
+}
+
+struct _cef_urlrequest_client_t* cefingo_urlrequest_get_client(
+	struct _cef_urlrequest_t* self
+){
+	return self->get_client(
+		self
+	);
+}
+
+cef_urlrequest_status_t cefingo_urlrequest_get_request_status(
+	struct _cef_urlrequest_t* self
+){
+	return self->get_request_status(
+		self
+	);
+}
+
+cef_errorcode_t cefingo_urlrequest_get_request_error(
+	struct _cef_urlrequest_t* self
+){
+	return self->get_request_error(
+		self
+	);
+}
+
+struct _cef_response_t* cefingo_urlrequest_get_response(
+	struct _cef_urlrequest_t* self
+){
+	return self->get_response(
+		self
+	);
+}
+
+int cefingo_urlrequest_response_was_cached(
+	struct _cef_urlrequest_t* self
+){
+	return self->response_was_cached(
+		self
+	);
+}
+
+void cefingo_urlrequest_cancel(
+	struct _cef_urlrequest_t* self
+){
+	self->cancel(
+		self
+	);
+}
+
+void cefingo_urlrequest_client_on_request_complete(
+	struct _cef_urlrequest_client_t* self,
+	struct _cef_urlrequest_t* request
+){
+	self->on_request_complete(
+		self, 
+		request
+	);
+}
+
+void cefingo_urlrequest_client_on_upload_progress(
+	struct _cef_urlrequest_client_t* self,
+	struct _cef_urlrequest_t* request,
+	int64 current,
+	int64 total
+){
+	self->on_upload_progress(
+		self, 
+		request, 
+		current, 
+		total
+	);
+}
+
+void cefingo_urlrequest_client_on_download_progress(
+	struct _cef_urlrequest_client_t* self,
+	struct _cef_urlrequest_t* request,
+	int64 current,
+	int64 total
+){
+	self->on_download_progress(
+		self, 
+		request, 
+		current, 
+		total
+	);
+}
+
+void cefingo_urlrequest_client_on_download_data(
+	struct _cef_urlrequest_client_t* self,
+	struct _cef_urlrequest_t* request,
+	const void* data,
+	size_t data_length
+){
+	self->on_download_data(
+		self, 
+		request, 
+		data, 
+		data_length
+	);
+}
+
+int cefingo_urlrequest_client_get_auth_credentials(
+	struct _cef_urlrequest_client_t* self,
+	int isProxy,
+	const cef_string_t* host,
+	int port,
+	const cef_string_t* realm,
+	const cef_string_t* scheme,
+	struct _cef_auth_callback_t* callback
+){
+	return self->get_auth_credentials(
+		self, 
+		isProxy, 
+		host, 
+		port, 
+		realm, 
+		scheme, 
+		callback
 	);
 }
 

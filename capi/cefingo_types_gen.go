@@ -550,25 +550,78 @@ const (
 )
 
 ///
-// Supported error code values. See net\base\net_error_list.h for complete
-// descriptions of the error codes.
+// Supported error code values.
 ///
 type CErrorcodeT C.cef_errorcode_t
 const (
+
+// No error.
 	ErrNone CErrorcodeT = C.ERR_NONE
+	ErrIoPending CErrorcodeT = C.ERR_IO_PENDING
 	ErrFailed CErrorcodeT = C.ERR_FAILED
 	ErrAborted CErrorcodeT = C.ERR_ABORTED
 	ErrInvalidArgument CErrorcodeT = C.ERR_INVALID_ARGUMENT
+
+// Bring in platform-specific definitions.
 	ErrInvalidHandle CErrorcodeT = C.ERR_INVALID_HANDLE
 	ErrFileNotFound CErrorcodeT = C.ERR_FILE_NOT_FOUND
 	ErrTimedOut CErrorcodeT = C.ERR_TIMED_OUT
 	ErrFileTooBig CErrorcodeT = C.ERR_FILE_TOO_BIG
+
+// Return the alpha byte from a cef_color_t value.
 	ErrUnexpected CErrorcodeT = C.ERR_UNEXPECTED
 	ErrAccessDenied CErrorcodeT = C.ERR_ACCESS_DENIED
+
+// Return the blue byte from a cef_color_t value.
 	ErrNotImplemented CErrorcodeT = C.ERR_NOT_IMPLEMENTED
+
+// Return an cef_color_t value with the specified byte component values.
+	ErrInsufficientResources CErrorcodeT = C.ERR_INSUFFICIENT_RESOURCES
+	ErrOutOfMemory CErrorcodeT = C.ERR_OUT_OF_MEMORY
+	ErrUploadFileChanged CErrorcodeT = C.ERR_UPLOAD_FILE_CHANGED
+	ErrSocketNotConnected CErrorcodeT = C.ERR_SOCKET_NOT_CONNECTED
+	ErrFileExists CErrorcodeT = C.ERR_FILE_EXISTS
+	ErrFilePathTooLong CErrorcodeT = C.ERR_FILE_PATH_TOO_LONG
+	ErrFileNoSpace CErrorcodeT = C.ERR_FILE_NO_SPACE
+	ErrFileVirusInfected CErrorcodeT = C.ERR_FILE_VIRUS_INFECTED
+	ErrBlockedByClient CErrorcodeT = C.ERR_BLOCKED_BY_CLIENT
+
+///
+// Default logging (currently INFO logging).
+///
+	ErrNetworkChanged CErrorcodeT = C.ERR_NETWORK_CHANGED
+	ErrBlockedByAdministrator CErrorcodeT = C.ERR_BLOCKED_BY_ADMINISTRATOR
+	ErrSocketIsConnected CErrorcodeT = C.ERR_SOCKET_IS_CONNECTED
+	ErrBlockedEnrollmentCheckPending CErrorcodeT = C.ERR_BLOCKED_ENROLLMENT_CHECK_PENDING
+	ErrUploadStreamRewindNotSupported CErrorcodeT = C.ERR_UPLOAD_STREAM_REWIND_NOT_SUPPORTED
+
+///
+// WARNING logging.
+///
+	ErrContextShutDown CErrorcodeT = C.ERR_CONTEXT_SHUT_DOWN
+
+///
+// ERROR logging.
+///
+	ErrBlockedByResponse CErrorcodeT = C.ERR_BLOCKED_BY_RESPONSE
+	ErrBlockedByXssAuditor CErrorcodeT = C.ERR_BLOCKED_BY_XSS_AUDITOR
+	ErrCleartextNotPermitted CErrorcodeT = C.ERR_CLEARTEXT_NOT_PERMITTED
+
+///
+// Disable logging to file for all messages, and to stderr for messages with
+// severity less than FATAL.
+///
 	ErrConnectionClosed CErrorcodeT = C.ERR_CONNECTION_CLOSED
 	ErrConnectionReset CErrorcodeT = C.ERR_CONNECTION_RESET
+
+///
+// Represents the state of a setting.
+///
 	ErrConnectionRefused CErrorcodeT = C.ERR_CONNECTION_REFUSED
+
+///
+// Use the default state for the setting.
+///
 	ErrConnectionAborted CErrorcodeT = C.ERR_CONNECTION_ABORTED
 	ErrConnectionFailed CErrorcodeT = C.ERR_CONNECTION_FAILED
 	ErrNameNotResolved CErrorcodeT = C.ERR_NAME_NOT_RESOLVED
@@ -578,11 +631,164 @@ const (
 	ErrAddressUnreachable CErrorcodeT = C.ERR_ADDRESS_UNREACHABLE
 	ErrSslClientAuthCertNeeded CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NEEDED
 	ErrTunnelConnectionFailed CErrorcodeT = C.ERR_TUNNEL_CONNECTION_FAILED
+
+///
+// Set to true (1) to disable the sandbox for sub-processes. See
+// cef_sandbox_win.h for requirements to enable the sandbox on Windows. Also
+// configurable using the "no-sandbox" command-line switch.
+///
 	ErrNoSslVersionsEnabled CErrorcodeT = C.ERR_NO_SSL_VERSIONS_ENABLED
 	ErrSslVersionOrCipherMismatch CErrorcodeT = C.ERR_SSL_VERSION_OR_CIPHER_MISMATCH
 	ErrSslRenegotiationRequested CErrorcodeT = C.ERR_SSL_RENEGOTIATION_REQUESTED
+
+///
+// The path to a separate executable that will be launched for sub-processes.
+// If this value is empty on Windows or Linux then the main process executable
+// will be used. If this value is empty on macOS then a helper executable must
+// exist at "Contents/Frameworks/<app> Helper.app/Contents/MacOS/<app> Helper"
+// in the top-level app bundle. See the comments on CefExecuteProcess() for
+// details. Also configurable using the "browser-subprocess-path" command-line
+// switch.
+///
+	ErrProxyAuthUnsupported CErrorcodeT = C.ERR_PROXY_AUTH_UNSUPPORTED
+	ErrCertErrorInSslRenegotiation CErrorcodeT = C.ERR_CERT_ERROR_IN_SSL_RENEGOTIATION
+	ErrBadSslClientAuthCert CErrorcodeT = C.ERR_BAD_SSL_CLIENT_AUTH_CERT
+	ErrConnectionTimedOut CErrorcodeT = C.ERR_CONNECTION_TIMED_OUT
+	ErrHostResolverQueueTooLarge CErrorcodeT = C.ERR_HOST_RESOLVER_QUEUE_TOO_LARGE
+	ErrSocksConnectionFailed CErrorcodeT = C.ERR_SOCKS_CONNECTION_FAILED
+	ErrSocksConnectionHostUnreachable CErrorcodeT = C.ERR_SOCKS_CONNECTION_HOST_UNREACHABLE
+	ErrAlpnNegotiationFailed CErrorcodeT = C.ERR_ALPN_NEGOTIATION_FAILED
+	ErrSslNoRenegotiation CErrorcodeT = C.ERR_SSL_NO_RENEGOTIATION
+	ErrWinsockUnexpectedWrittenBytes CErrorcodeT = C.ERR_WINSOCK_UNEXPECTED_WRITTEN_BYTES
+	ErrSslDecompressionFailureAlert CErrorcodeT = C.ERR_SSL_DECOMPRESSION_FAILURE_ALERT
+
+///
+// Set to true (1) to disable configuration of browser process features using
+// standard CEF and Chromium command-line arguments. Configuration can still
+// be specified using CEF data structures or via the
+// CefApp::OnBeforeCommandLineProcessing() method.
+///
+	ErrSslBadRecordMacAlert CErrorcodeT = C.ERR_SSL_BAD_RECORD_MAC_ALERT
+	ErrProxyAuthRequested CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED
+	ErrSslWeakServerEphemeralDhKey CErrorcodeT = C.ERR_SSL_WEAK_SERVER_EPHEMERAL_DH_KEY
+
+///
+// The location where data for the global browser cache will be stored on
+// disk. If non-empty this must be either equal to or a child directory of
+// CefSettings.root_cache_path. If empty then browsers will be created in
+// "incognito mode" where in-memory caches are used for storage and no data is
+// persisted to disk. HTML5 databases such as localStorage will only persist
+// across sessions if a cache path is specified. Can be overridden for
+// individual CefRequestContext instances via the
+// CefRequestContextSettings.cache_path value.
+///
+	ErrProxyConnectionFailed CErrorcodeT = C.ERR_PROXY_CONNECTION_FAILED
+	ErrMandatoryProxyConfigurationFailed CErrorcodeT = C.ERR_MANDATORY_PROXY_CONFIGURATION_FAILED
+
+///
+// The root directory that all CefSettings.cache_path and
+// CefRequestContextSettings.cache_path values must have in common. If this
+// value is empty and CefSettings.cache_path is non-empty then this value will
+// default to the CefSettings.cache_path value. Failure to set this value
+// correctly may result in the sandbox blocking read/write access to the
+// cache_path directory.
+///
+	ErrPreconnectMaxSocketLimit CErrorcodeT = C.ERR_PRECONNECT_MAX_SOCKET_LIMIT
+	ErrSslClientAuthPrivateKeyAccessDenied CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_PRIVATE_KEY_ACCESS_DENIED
+	ErrSslClientAuthCertNoPrivateKey CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NO_PRIVATE_KEY
+	ErrProxyCertificateInvalid CErrorcodeT = C.ERR_PROXY_CERTIFICATE_INVALID
+	ErrNameResolutionFailed CErrorcodeT = C.ERR_NAME_RESOLUTION_FAILED
+	ErrNetworkAccessDenied CErrorcodeT = C.ERR_NETWORK_ACCESS_DENIED
+	ErrTemporarilyThrottled CErrorcodeT = C.ERR_TEMPORARILY_THROTTLED
+	ErrHttpsProxyTunnelResponseRedirect CErrorcodeT = C.ERR_HTTPS_PROXY_TUNNEL_RESPONSE_REDIRECT
+	ErrSslClientAuthSignatureFailed CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_SIGNATURE_FAILED
+	ErrMsgTooBig CErrorcodeT = C.ERR_MSG_TOO_BIG
+	ErrSpdySessionAlreadyExists CErrorcodeT = C.ERR_SPDY_SESSION_ALREADY_EXISTS
+	ErrWsProtocolError CErrorcodeT = C.ERR_WS_PROTOCOL_ERROR
+	ErrAddressInUse CErrorcodeT = C.ERR_ADDRESS_IN_USE
+	ErrSslHandshakeNotCompleted CErrorcodeT = C.ERR_SSL_HANDSHAKE_NOT_COMPLETED
+	ErrSslBadPeerPublicKey CErrorcodeT = C.ERR_SSL_BAD_PEER_PUBLIC_KEY
+
+///
+// The directory and file name to use for the debug log. If empty a default
+// log file name and location will be used. On Windows and Linux a "debug.log"
+// file will be written in the main executable directory. On Mac OS X a
+// "~/Library/Logs/<app name>_debug.log" file will be written where <app name>
+// is the name of the main app executable. Also configurable using the
+// "log-file" command-line switch.
+///
+	ErrSslPinnedKeyNotInCertChain CErrorcodeT = C.ERR_SSL_PINNED_KEY_NOT_IN_CERT_CHAIN
+	ErrClientAuthCertTypeUnsupported CErrorcodeT = C.ERR_CLIENT_AUTH_CERT_TYPE_UNSUPPORTED
+	ErrOriginBoundCertGenerationTypeMismatch CErrorcodeT = C.ERR_ORIGIN_BOUND_CERT_GENERATION_TYPE_MISMATCH
+	ErrSslDecryptErrorAlert CErrorcodeT = C.ERR_SSL_DECRYPT_ERROR_ALERT
+
+///
+// Custom flags that will be used when initializing the V8 JavaScript engine.
+// The consequences of using custom flags may not be well tested. Also
+// configurable using the "js-flags" command-line switch.
+///
+	ErrWsThrottleQueueTooLarge CErrorcodeT = C.ERR_WS_THROTTLE_QUEUE_TOO_LARGE
+	ErrSslServerCertChanged CErrorcodeT = C.ERR_SSL_SERVER_CERT_CHANGED
+	ErrSslUnrecognizedNameAlert CErrorcodeT = C.ERR_SSL_UNRECOGNIZED_NAME_ALERT
+	ErrSocketSetReceiveBufferSizeError CErrorcodeT = C.ERR_SOCKET_SET_RECEIVE_BUFFER_SIZE_ERROR
+
+///
+// The fully qualified path for the locales directory. If this value is empty
+// the locales directory must be located in the module directory. This value
+// is ignored on Mac OS X where pack files are always loaded from the app
+// bundle Resources directory. Also configurable using the "locales-dir-path"
+// command-line switch.
+///
+	ErrSocketSetSendBufferSizeError CErrorcodeT = C.ERR_SOCKET_SET_SEND_BUFFER_SIZE_ERROR
+	ErrSocketReceiveBufferSizeUnchangeable CErrorcodeT = C.ERR_SOCKET_RECEIVE_BUFFER_SIZE_UNCHANGEABLE
+	ErrSocketSendBufferSizeUnchangeable CErrorcodeT = C.ERR_SOCKET_SEND_BUFFER_SIZE_UNCHANGEABLE
+	ErrSslClientAuthCertBadFormat CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_BAD_FORMAT
+	ErrIcannNameCollision CErrorcodeT = C.ERR_ICANN_NAME_COLLISION
+	ErrSslServerCertBadFormat CErrorcodeT = C.ERR_SSL_SERVER_CERT_BAD_FORMAT
+	ErrCtSthParsingFailed CErrorcodeT = C.ERR_CT_STH_PARSING_FAILED
+	ErrCtSthIncomplete CErrorcodeT = C.ERR_CT_STH_INCOMPLETE
+
+///
+// Set to true (1) to ignore errors related to invalid SSL certificates.
+// Enabling this setting can lead to potential security vulnerabilities like
+// "man in the middle" attacks. Applications that load content from the
+// internet should not enable this setting. Also configurable using the
+// "ignore-certificate-errors" command-line switch. Can be overridden for
+// individual CefRequestContext instances via the
+// CefRequestContextSettings.ignore_certificate_errors value.
+///
+	ErrUnableToReuseConnectionForProxyAuth CErrorcodeT = C.ERR_UNABLE_TO_REUSE_CONNECTION_FOR_PROXY_AUTH
+	ErrCtConsistencyProofParsingFailed CErrorcodeT = C.ERR_CT_CONSISTENCY_PROOF_PARSING_FAILED
+	ErrSslObsoleteCipher CErrorcodeT = C.ERR_SSL_OBSOLETE_CIPHER
+
+///
+// Set to true (1) to enable date-based expiration of built in network
+// security information (i.e. certificate transparency logs, HSTS preloading
+// and pinning information). Enabling this option improves network security
+// but may cause HTTPS load failures when using CEF binaries built more than
+// 10 weeks in the past. See https://www.certificate-transparency.org/ and
+// https://www.chromium.org/hsts for details. Also configurable using the
+// "enable-net-security-expiration" command-line switch. Can be overridden for
+// individual CefRequestContext instances via the
+// CefRequestContextSettings.enable_net_security_expiration value.
+///
+	ErrWsUpgrade CErrorcodeT = C.ERR_WS_UPGRADE
+	ErrReadIfReadyNotImplemented CErrorcodeT = C.ERR_READ_IF_READY_NOT_IMPLEMENTED
+	ErrSslVersionInterference CErrorcodeT = C.ERR_SSL_VERSION_INTERFERENCE
+	ErrNoBufferSpace CErrorcodeT = C.ERR_NO_BUFFER_SPACE
+	ErrSslClientAuthNoCommonAlgorithms CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_NO_COMMON_ALGORITHMS
+
+///
+// GUID string used for identifying the application. This is passed to the
+// system AV function for scanning downloaded files. By default, the GUID
+// will be an empty string and the file will be treated as an untrusted
+// file when the GUID is empty.
+///
+	ErrEarlyDataRejected CErrorcodeT = C.ERR_EARLY_DATA_REJECTED
+	ErrWrongVersionOnEarlyData CErrorcodeT = C.ERR_WRONG_VERSION_ON_EARLY_DATA
+	ErrTls13DowngradeDetected CErrorcodeT = C.ERR_TLS13_DOWNGRADE_DETECTED
+	ErrSslKeyUsageIncompatible CErrorcodeT = C.ERR_SSL_KEY_USAGE_INCOMPATIBLE
 	ErrCertCommonNameInvalid CErrorcodeT = C.ERR_CERT_COMMON_NAME_INVALID
-	ErrCertBegin CErrorcodeT = C.ERR_CERT_BEGIN
 	ErrCertDateInvalid CErrorcodeT = C.ERR_CERT_DATE_INVALID
 	ErrCertAuthorityInvalid CErrorcodeT = C.ERR_CERT_AUTHORITY_INVALID
 	ErrCertContainsErrors CErrorcodeT = C.ERR_CERT_CONTAINS_ERRORS
@@ -591,27 +797,208 @@ const (
 	ErrCertRevoked CErrorcodeT = C.ERR_CERT_REVOKED
 	ErrCertInvalid CErrorcodeT = C.ERR_CERT_INVALID
 	ErrCertWeakSignatureAlgorithm CErrorcodeT = C.ERR_CERT_WEAK_SIGNATURE_ALGORITHM
-
-// -209 is available: was ERR_CERT_NOT_IN_DNS.
 	ErrCertNonUniqueName CErrorcodeT = C.ERR_CERT_NON_UNIQUE_NAME
 	ErrCertWeakKey CErrorcodeT = C.ERR_CERT_WEAK_KEY
 	ErrCertNameConstraintViolation CErrorcodeT = C.ERR_CERT_NAME_CONSTRAINT_VIOLATION
 	ErrCertValidityTooLong CErrorcodeT = C.ERR_CERT_VALIDITY_TOO_LONG
+	ErrCertificateTransparencyRequired CErrorcodeT = C.ERR_CERTIFICATE_TRANSPARENCY_REQUIRED
+	ErrCertSymantecLegacy CErrorcodeT = C.ERR_CERT_SYMANTEC_LEGACY
 	ErrCertEnd CErrorcodeT = C.ERR_CERT_END
 	ErrInvalidUrl CErrorcodeT = C.ERR_INVALID_URL
 	ErrDisallowedUrlScheme CErrorcodeT = C.ERR_DISALLOWED_URL_SCHEME
 	ErrUnknownUrlScheme CErrorcodeT = C.ERR_UNKNOWN_URL_SCHEME
+
+///
+// Controls whether DOM pasting is supported in the editor via
+// execCommand("paste"). The |javascript_access_clipboard| setting must also
+// be enabled. Also configurable using the "disable-javascript-dom-paste"
+// command-line switch.
+///
+	ErrInvalidRedirect CErrorcodeT = C.ERR_INVALID_REDIRECT
 	ErrTooManyRedirects CErrorcodeT = C.ERR_TOO_MANY_REDIRECTS
 	ErrUnsafeRedirect CErrorcodeT = C.ERR_UNSAFE_REDIRECT
 	ErrUnsafePort CErrorcodeT = C.ERR_UNSAFE_PORT
 	ErrInvalidResponse CErrorcodeT = C.ERR_INVALID_RESPONSE
 	ErrInvalidChunkedEncoding CErrorcodeT = C.ERR_INVALID_CHUNKED_ENCODING
 	ErrMethodNotSupported CErrorcodeT = C.ERR_METHOD_NOT_SUPPORTED
+
+///
+// Controls whether web security restrictions (same-origin policy) will be
+// enforced. Disabling this setting is not recommend as it will allow risky
+// security behavior such as cross-site scripting (XSS). Also configurable
+// using the "disable-web-security" command-line switch.
+///
 	ErrUnexpectedProxyAuth CErrorcodeT = C.ERR_UNEXPECTED_PROXY_AUTH
 	ErrEmptyResponse CErrorcodeT = C.ERR_EMPTY_RESPONSE
 	ErrResponseHeadersTooBig CErrorcodeT = C.ERR_RESPONSE_HEADERS_TOO_BIG
+	ErrPacStatusNotOk CErrorcodeT = C.ERR_PAC_STATUS_NOT_OK
+	ErrPacScriptFailed CErrorcodeT = C.ERR_PAC_SCRIPT_FAILED
+	ErrRequestRangeNotSatisfiable CErrorcodeT = C.ERR_REQUEST_RANGE_NOT_SATISFIABLE
+	ErrMalformedIdentity CErrorcodeT = C.ERR_MALFORMED_IDENTITY
+	ErrContentDecodingFailed CErrorcodeT = C.ERR_CONTENT_DECODING_FAILED
+
+///
+// Controls whether the tab key can advance focus to links. Also configurable
+// using the "disable-tab-to-links" command-line switch.
+///
+	ErrNetworkIoSuspended CErrorcodeT = C.ERR_NETWORK_IO_SUSPENDED
+	ErrSynReplyNotReceived CErrorcodeT = C.ERR_SYN_REPLY_NOT_RECEIVED
+
+///
+// Controls whether local storage can be used. Also configurable using the
+// "disable-local-storage" command-line switch.
+///
+	ErrEncodingConversionFailed CErrorcodeT = C.ERR_ENCODING_CONVERSION_FAILED
+	ErrUnrecognizedFtpDirectoryListingFormat CErrorcodeT = C.ERR_UNRECOGNIZED_FTP_DIRECTORY_LISTING_FORMAT
+	ErrNoSupportedProxies CErrorcodeT = C.ERR_NO_SUPPORTED_PROXIES
+
+///
+// Controls whether the application cache can be used. Also configurable using
+// the "disable-application-cache" command-line switch.
+///
+	ErrSpdyProtocolError CErrorcodeT = C.ERR_SPDY_PROTOCOL_ERROR
+	ErrInvalidAuthCredentials CErrorcodeT = C.ERR_INVALID_AUTH_CREDENTIALS
+
+///
+// Controls whether WebGL can be used. Note that WebGL requires hardware
+// support and may not work on all systems even when enabled. Also
+// configurable using the "disable-webgl" command-line switch.
+///
+	ErrUnsupportedAuthScheme CErrorcodeT = C.ERR_UNSUPPORTED_AUTH_SCHEME
+	ErrEncodingDetectionFailed CErrorcodeT = C.ERR_ENCODING_DETECTION_FAILED
+	ErrMissingAuthCredentials CErrorcodeT = C.ERR_MISSING_AUTH_CREDENTIALS
+	ErrUnexpectedSecurityLibraryStatus CErrorcodeT = C.ERR_UNEXPECTED_SECURITY_LIBRARY_STATUS
+	ErrMisconfiguredAuthEnvironment CErrorcodeT = C.ERR_MISCONFIGURED_AUTH_ENVIRONMENT
+	ErrUndocumentedSecurityLibraryStatus CErrorcodeT = C.ERR_UNDOCUMENTED_SECURITY_LIBRARY_STATUS
+	ErrResponseBodyTooBigToDrain CErrorcodeT = C.ERR_RESPONSE_BODY_TOO_BIG_TO_DRAIN
+	ErrResponseHeadersMultipleContentLength CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_LENGTH
+
+///
+// Return value types.
+///
+	ErrIncompleteSpdyHeaders CErrorcodeT = C.ERR_INCOMPLETE_SPDY_HEADERS
+	ErrPacNotInDhcp CErrorcodeT = C.ERR_PAC_NOT_IN_DHCP
+	ErrResponseHeadersMultipleContentDisposition CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_DISPOSITION
+	ErrResponseHeadersMultipleLocation CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_LOCATION
+	ErrSpdyServerRefusedStream CErrorcodeT = C.ERR_SPDY_SERVER_REFUSED_STREAM
+	ErrSpdyPingFailed CErrorcodeT = C.ERR_SPDY_PING_FAILED
+
+///
+// Scheme component not including the colon (e.g., "http").
+///
+	ErrContentLengthMismatch CErrorcodeT = C.ERR_CONTENT_LENGTH_MISMATCH
+	ErrIncompleteChunkedEncoding CErrorcodeT = C.ERR_INCOMPLETE_CHUNKED_ENCODING
+	ErrQuicProtocolError CErrorcodeT = C.ERR_QUIC_PROTOCOL_ERROR
+
+///
+// Password component.
+///
+	ErrResponseHeadersTruncated CErrorcodeT = C.ERR_RESPONSE_HEADERS_TRUNCATED
+	ErrQuicHandshakeFailed CErrorcodeT = C.ERR_QUIC_HANDSHAKE_FAILED
+
+///
+// Port number component.
+///
+	ErrSpdyInadequateTransportSecurity CErrorcodeT = C.ERR_SPDY_INADEQUATE_TRANSPORT_SECURITY
+	ErrSpdyFlowControlError CErrorcodeT = C.ERR_SPDY_FLOW_CONTROL_ERROR
+	ErrSpdyFrameSizeError CErrorcodeT = C.ERR_SPDY_FRAME_SIZE_ERROR
+	ErrSpdyCompressionError CErrorcodeT = C.ERR_SPDY_COMPRESSION_ERROR
+	ErrProxyAuthRequestedWithNoConnection CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED_WITH_NO_CONNECTION
+	ErrHttp11Required CErrorcodeT = C.ERR_HTTP_1_1_REQUIRED
+
+///
+// Query string component (i.e., everything following the '?').
+///
+	ErrProxyHttp11Required CErrorcodeT = C.ERR_PROXY_HTTP_1_1_REQUIRED
+	ErrPacScriptTerminated CErrorcodeT = C.ERR_PAC_SCRIPT_TERMINATED
+	ErrInvalidHttpResponse CErrorcodeT = C.ERR_INVALID_HTTP_RESPONSE
+
+///
+// The cookie value.
+///
+	ErrContentDecodingInitFailed CErrorcodeT = C.ERR_CONTENT_DECODING_INIT_FAILED
+	ErrSpdyRstStreamNoErrorReceived CErrorcodeT = C.ERR_SPDY_RST_STREAM_NO_ERROR_RECEIVED
+	ErrSpdyPushedStreamNotAvailable CErrorcodeT = C.ERR_SPDY_PUSHED_STREAM_NOT_AVAILABLE
+	ErrSpdyClaimedPushedStreamResetByServer CErrorcodeT = C.ERR_SPDY_CLAIMED_PUSHED_STREAM_RESET_BY_SERVER
+
+///
+// If |secure| is true the cookie will only be sent for HTTPS requests.
+///
+	ErrTooManyRetries CErrorcodeT = C.ERR_TOO_MANY_RETRIES
+	ErrSpdyStreamClosed CErrorcodeT = C.ERR_SPDY_STREAM_CLOSED
+	ErrSpdyClientRefusedStream CErrorcodeT = C.ERR_SPDY_CLIENT_REFUSED_STREAM
+	ErrSpdyPushedResponseDoesNotMatch CErrorcodeT = C.ERR_SPDY_PUSHED_RESPONSE_DOES_NOT_MATCH
 	ErrCacheMiss CErrorcodeT = C.ERR_CACHE_MISS
+	ErrCacheReadFailure CErrorcodeT = C.ERR_CACHE_READ_FAILURE
+	ErrCacheWriteFailure CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
+
+///
+// The cookie expiration date is only valid if |has_expires| is true.
+///
+	ErrCacheOperationNotSupported CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
+	ErrCacheOpenFailure CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
+	ErrCacheCreateFailure CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
+	ErrCacheRace CErrorcodeT = C.ERR_CACHE_RACE
+	ErrCacheChecksumReadFailure CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
+	ErrCacheChecksumMismatch CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
+
+///
+// Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
+///
+	ErrCacheLockTimeout CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
+	ErrCacheAuthFailureAfterRead CErrorcodeT = C.ERR_CACHE_AUTH_FAILURE_AFTER_READ
+	ErrCacheEntryNotSuitable CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
+	ErrCacheDoomFailure CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
+
+///
+// Directory containing PK_FILE_EXE.
+///
+	ErrCacheOpenOrCreateFailure CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
 	ErrInsecureResponse CErrorcodeT = C.ERR_INSECURE_RESPONSE
+	ErrNoPrivateKeyForCert CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
+
+///
+// Temporary directory.
+///
+	ErrAddUserCertFailed CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
+	ErrInvalidSignedExchange CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
+	ErrFtpFailed CErrorcodeT = C.ERR_FTP_FAILED
+	ErrFtpServiceUnavailable CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
+	ErrFtpTransferAborted CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
+
+///
+// "Application Data" directory under the user profile directory on Windows
+// and "~/Library/Application Support" directory on Mac OS X.
+///
+	ErrFtpFileBusy CErrorcodeT = C.ERR_FTP_FILE_BUSY
+	ErrFtpSyntaxError CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
+	ErrFtpCommandNotSupported CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
+	ErrFtpBadCommandSequence CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
+	ErrPkcs12ImportBadPassword CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
+	ErrPkcs12ImportFailed CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
+
+// No error.
+	ErrImportCaCertNotCa CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
+	ErrImportCertAlreadyExists CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
+	ErrImportCaCertFailed CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
+	ErrImportServerCertFailed CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
+	ErrPkcs12ImportInvalidMac CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
+	ErrPkcs12ImportInvalidFile CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
+	ErrPkcs12ImportUnsupported CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
+	ErrKeyGenerationFailed CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
+
+// 1 << 12 was used for CERT_STATUS_WEAK_DH_KEY
+	ErrPrivateKeyExportFailed CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
+	ErrSelfSignedCertGenerationFailed CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
+	ErrCertDatabaseChanged CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
+	ErrDnsMalformedResponse CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
+	ErrDnsServerRequiresTcp CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
+	ErrDnsServerFailed CErrorcodeT = C.ERR_DNS_SERVER_FAILED
+	ErrDnsTimedOut CErrorcodeT = C.ERR_DNS_TIMED_OUT
+	ErrDnsCacheMiss CErrorcodeT = C.ERR_DNS_CACHE_MISS
+	ErrDnsSearchEmpty CErrorcodeT = C.ERR_DNS_SEARCH_EMPTY
+	ErrDnsSortError CErrorcodeT = C.ERR_DNS_SORT_ERROR
+	ErrDnsHttpFailed CErrorcodeT = C.ERR_DNS_HTTP_FAILED
 )
 
 ///
@@ -2290,8 +2677,7 @@ const (
 	SslConnectionVersionTls1 CSslVersionT = C.SSL_CONNECTION_VERSION_TLS1
 	SslConnectionVersionTls11 CSslVersionT = C.SSL_CONNECTION_VERSION_TLS1_1
 	SslConnectionVersionTls12 CSslVersionT = C.SSL_CONNECTION_VERSION_TLS1_2
-
-// Reserve 6 for TLS 1.3.
+	SslConnectionVersionTls13 CSslVersionT = C.SSL_CONNECTION_VERSION_TLS1_3
 	SslConnectionVersionQuic CSslVersionT = C.SSL_CONNECTION_VERSION_QUIC
 )
 

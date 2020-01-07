@@ -3,7 +3,7 @@
 {% import (
 	"log"
 	"strings"
-	"github.com/tututcrane/cefingo/gen-cefingo/parser"
+	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
 )%}
 {% endstripspace %}
 

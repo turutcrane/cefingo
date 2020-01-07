@@ -190,7 +190,7 @@ func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) 
 		&window_info,
 		client.p_client,
 		cef_url,
-		&browser_settings, nil,
+		&browser_settings, nil, nil,
 	)
 }
 

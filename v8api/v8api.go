@@ -63,6 +63,10 @@ func (c *Context) GetBrowser() *capi.CBrowserT {
 	return c.V8context.GetBrowser()
 }
 
+func (c *Context) GetFrame() *capi.CFrameT {
+	return c.V8context.GetFrame()
+}
+
 func (c *Context) GetElementById(id string) (value Value, err error) {
 	val, err := c.Document.GetValueBykey("getElementById")
 	if err != nil {

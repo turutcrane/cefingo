@@ -3,9 +3,10 @@
 #define CEFINGO_H_
 #include "include/capi/cef_app_capi.h"
 #include "include/capi/cef_client_capi.h"
+#include "include/capi/cef_request_context_handler_capi.h"
+#include "include/capi/cef_urlrequest_capi.h"
 #include "include/cef_version.h"
 #include "cefingo_base.h"
-// #include "cefingo_values.h"
 #include "cefingo_gen.h"
 
 typedef void *VOIDP;
