@@ -45,22 +45,6 @@ cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app)
 	return (cef_app_t*)app;
 }
 
-
-cef_audio_handler_t *cefingo_construct_audio_handler(cefingo_audio_handler_wrapper_t* audio_handler)
-{
-	initialize_cefingo_base_ref_counted(
-		offsetof(__typeof__(*audio_handler), counter),
-		(cef_base_ref_counted_t*) audio_handler);
-	
-	// callbacks
-	audio_handler->body.on_audio_stream_started = 
-		cefingo_audio_handler_on_audio_stream_started;
-	audio_handler->body.on_audio_stream_stopped = 
-		cefingo_audio_handler_on_audio_stream_stopped;
-
-	return (cef_audio_handler_t*)audio_handler;
-}
-
 void cefingo_auth_callback_cont(
 	struct _cef_auth_callback_t* self,
 	const cef_string_t* username,
@@ -965,8 +949,6 @@ cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 		(cef_base_ref_counted_t*) client);
 	
 	// callbacks
-	client->body.get_audio_handler = 
-		cefingo_client_get_audio_handler;
 	client->body.get_context_menu_handler = 
 		cefingo_client_get_context_menu_handler;
 	client->body.get_dialog_handler = 
@@ -2677,18 +2659,6 @@ void cefingo_frame_load_url(
 	);
 }
 
-void cefingo_frame_load_string(
-	struct _cef_frame_t* self,
-	const cef_string_t* string_val,
-	const cef_string_t* url
-){
-	self->load_string(
-		self, 
-		string_val, 
-		url
-	);
-}
-
 void cefingo_frame_execute_java_script(
 	struct _cef_frame_t* self,
 	const cef_string_t* code,
@@ -3989,14 +3959,6 @@ int cefingo_print_settings_is_read_only(
 	struct _cef_print_settings_t* self
 ){
 	return self->is_read_only(
-		self
-	);
-}
-
-struct _cef_print_settings_t* cefingo_print_settings_copy(
-	struct _cef_print_settings_t* self
-){
-	return self->copy(
 		self
 	);
 }
@@ -5400,13 +5362,27 @@ void cefingo_response_set_charset(
 	);
 }
 
-cef_string_userfree_t cefingo_response_get_header(
+cef_string_userfree_t cefingo_response_get_header_by_name(
 	struct _cef_response_t* self,
 	const cef_string_t* name
 ){
-	return self->get_header(
+	return self->get_header_by_name(
 		self, 
 		name
+	);
+}
+
+void cefingo_response_set_header_by_name(
+	struct _cef_response_t* self,
+	const cef_string_t* name,
+	const cef_string_t* value,
+	int overwrite
+){
+	self->set_header_by_name(
+		self, 
+		name, 
+		value, 
+		overwrite
 	);
 }
 

@@ -8,9 +8,6 @@ extern cef_accessibility_handler_t *cefingo_construct_accessibility_handler(cefi
 CEFINGO_REF_COUNTER_WRAPPER(cef_app_t, cefingo_app_wrapper_t);
 extern cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app);
 
-CEFINGO_REF_COUNTER_WRAPPER(cef_audio_handler_t, cefingo_audio_handler_wrapper_t);
-extern cef_audio_handler_t *cefingo_construct_audio_handler(cefingo_audio_handler_wrapper_t* audio_handler);
-
 extern void cefingo_auth_callback_cont(
 	struct _cef_auth_callback_t* self,
 	const cef_string_t* username,
@@ -1191,12 +1188,6 @@ extern void cefingo_frame_load_url(
 	const cef_string_t* url
 );
 
-extern void cefingo_frame_load_string(
-	struct _cef_frame_t* self,
-	const cef_string_t* string_val,
-	const cef_string_t* url
-);
-
 extern void cefingo_frame_execute_java_script(
 	struct _cef_frame_t* self,
 	const cef_string_t* code,
@@ -1784,10 +1775,6 @@ extern int cefingo_print_settings_is_read_only(
 	struct _cef_print_settings_t* self
 );
 
-extern struct _cef_print_settings_t* cefingo_print_settings_copy(
-	struct _cef_print_settings_t* self
-);
-
 extern void cefingo_print_settings_set_orientation(
 	struct _cef_print_settings_t* self,
 	int landscape
@@ -2362,9 +2349,16 @@ extern void cefingo_response_set_charset(
 	const cef_string_t* charset
 );
 
-extern cef_string_userfree_t cefingo_response_get_header(
+extern cef_string_userfree_t cefingo_response_get_header_by_name(
 	struct _cef_response_t* self,
 	const cef_string_t* name
+);
+
+extern void cefingo_response_set_header_by_name(
+	struct _cef_response_t* self,
+	const cef_string_t* name,
+	const cef_string_t* value,
+	int overwrite
 );
 
 extern void cefingo_response_get_header_map(

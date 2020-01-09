@@ -4,6 +4,7 @@ package main
 
 import (
 	"bufio"
+	// "cefingo-org/gen-cefingo/parser"
 	"io/ioutil"
 	"log"
 	"os"
@@ -14,7 +15,7 @@ import (
 	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
 )
 
-var goFormat bool = false
+var goFormat bool = true
 
 var fileComments map[int][]string
 
