@@ -22,7 +22,6 @@ var TargetFileList = map[string]void{
 	"cef_types.h":                         setElement,
 	"cef_accessibility_handler_capi.h":    setElement,
 	"cef_app_capi.h":                      setElement,
-	// "cef_audio_handler_capi.h":            setElement,
 	"cef_auth_callback_capi.h":            setElement,
 	"cef_browser_capi.h":                  setElement,
 	"cef_browser_process_handler_capi.h":  setElement,

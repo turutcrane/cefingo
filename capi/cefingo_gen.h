@@ -9,694 +9,694 @@ CEFINGO_REF_COUNTER_WRAPPER(cef_app_t, cefingo_app_wrapper_t);
 extern cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app);
 
 extern void cefingo_auth_callback_cont(
-	struct _cef_auth_callback_t* self,
-	const cef_string_t* username,
-	const cef_string_t* password
+    struct _cef_auth_callback_t* self,
+    const cef_string_t* username,
+    const cef_string_t* password
 );
 
 extern void cefingo_auth_callback_cancel(
-	struct _cef_auth_callback_t* self
+    struct _cef_auth_callback_t* self
 );
 
 extern struct _cef_browser_host_t* cefingo_browser_get_host(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern int cefingo_browser_can_go_back(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern void cefingo_browser_go_back(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern int cefingo_browser_can_go_forward(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern void cefingo_browser_go_forward(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern int cefingo_browser_is_loading(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern void cefingo_browser_reload(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern void cefingo_browser_reload_ignore_cache(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern void cefingo_browser_stop_load(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern int cefingo_browser_get_identifier(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern int cefingo_browser_is_same(
-	struct _cef_browser_t* self,
-	struct _cef_browser_t* that
+    struct _cef_browser_t* self,
+    struct _cef_browser_t* that
 );
 
 extern int cefingo_browser_is_popup(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern int cefingo_browser_has_document(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern struct _cef_frame_t* cefingo_browser_get_main_frame(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern struct _cef_frame_t* cefingo_browser_get_focused_frame(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern struct _cef_frame_t* cefingo_browser_get_frame_byident(
-	struct _cef_browser_t* self,
-	int64 identifier
+    struct _cef_browser_t* self,
+    int64 identifier
 );
 
 extern struct _cef_frame_t* cefingo_browser_get_frame(
-	struct _cef_browser_t* self,
-	const cef_string_t* name
+    struct _cef_browser_t* self,
+    const cef_string_t* name
 );
 
 extern size_t cefingo_browser_get_frame_count(
-	struct _cef_browser_t* self
+    struct _cef_browser_t* self
 );
 
 extern void cefingo_browser_get_frame_names(
-	struct _cef_browser_t* self,
-	cef_string_list_t names
+    struct _cef_browser_t* self,
+    cef_string_list_t names
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_run_file_dialog_callback_t, cefingo_run_file_dialog_callback_wrapper_t);
 extern cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callback(cefingo_run_file_dialog_callback_wrapper_t* run_file_dialog_callback);
 
 extern int cefingo_navigation_entry_visitor_visit(
-	struct _cef_navigation_entry_visitor_t* self,
-	struct _cef_navigation_entry_t* entry,
-	int current,
-	int index,
-	int total
+    struct _cef_navigation_entry_visitor_t* self,
+    struct _cef_navigation_entry_t* entry,
+    int current,
+    int index,
+    int total
 );
 
 extern void cefingo_pdf_print_callback_on_pdf_print_finished(
-	struct _cef_pdf_print_callback_t* self,
-	const cef_string_t* path,
-	int ok
+    struct _cef_pdf_print_callback_t* self,
+    const cef_string_t* path,
+    int ok
 );
 
 extern void cefingo_download_image_callback_on_download_image_finished(
-	struct _cef_download_image_callback_t* self,
-	const cef_string_t* image_url,
-	int http_status_code,
-	struct _cef_image_t* image
+    struct _cef_download_image_callback_t* self,
+    const cef_string_t* image_url,
+    int http_status_code,
+    struct _cef_image_t* image
 );
 
 extern struct _cef_browser_t* cefingo_browser_host_get_browser(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_close_browser(
-	struct _cef_browser_host_t* self,
-	int force_close
+    struct _cef_browser_host_t* self,
+    int force_close
 );
 
 extern int cefingo_browser_host_try_close_browser(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_set_focus(
-	struct _cef_browser_host_t* self,
-	int focus
+    struct _cef_browser_host_t* self,
+    int focus
 );
 
 extern cef_window_handle_t cefingo_browser_host_get_window_handle(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern cef_window_handle_t cefingo_browser_host_get_opener_window_handle(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern int cefingo_browser_host_has_view(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern struct _cef_client_t* cefingo_browser_host_get_client(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern struct _cef_request_context_t* cefingo_browser_host_get_request_context(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern double cefingo_browser_host_get_zoom_level(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_set_zoom_level(
-	struct _cef_browser_host_t* self,
-	double zoomLevel
+    struct _cef_browser_host_t* self,
+    double zoomLevel
 );
 
 extern void cefingo_browser_host_run_file_dialog(
-	struct _cef_browser_host_t* self,
-	cef_file_dialog_mode_t mode,
-	const cef_string_t* title,
-	const cef_string_t* default_file_path,
-	cef_string_list_t accept_filters,
-	int selected_accept_filter,
-	struct _cef_run_file_dialog_callback_t* callback
+    struct _cef_browser_host_t* self,
+    cef_file_dialog_mode_t mode,
+    const cef_string_t* title,
+    const cef_string_t* default_file_path,
+    cef_string_list_t accept_filters,
+    int selected_accept_filter,
+    struct _cef_run_file_dialog_callback_t* callback
 );
 
 extern void cefingo_browser_host_start_download(
-	struct _cef_browser_host_t* self,
-	const cef_string_t* url
+    struct _cef_browser_host_t* self,
+    const cef_string_t* url
 );
 
 extern void cefingo_browser_host_download_image(
-	struct _cef_browser_host_t* self,
-	const cef_string_t* image_url,
-	int is_favicon,
-	uint32 max_image_size,
-	int bypass_cache,
-	struct _cef_download_image_callback_t* callback
+    struct _cef_browser_host_t* self,
+    const cef_string_t* image_url,
+    int is_favicon,
+    uint32 max_image_size,
+    int bypass_cache,
+    struct _cef_download_image_callback_t* callback
 );
 
 extern void cefingo_browser_host_print(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_print_to_pdf(
-	struct _cef_browser_host_t* self,
-	const cef_string_t* path,
-	const struct _cef_pdf_print_settings_t* settings,
-	struct _cef_pdf_print_callback_t* callback
+    struct _cef_browser_host_t* self,
+    const cef_string_t* path,
+    const struct _cef_pdf_print_settings_t* settings,
+    struct _cef_pdf_print_callback_t* callback
 );
 
 extern void cefingo_browser_host_find(
-	struct _cef_browser_host_t* self,
-	int identifier,
-	const cef_string_t* searchText,
-	int forward,
-	int matchCase,
-	int findNext
+    struct _cef_browser_host_t* self,
+    int identifier,
+    const cef_string_t* searchText,
+    int forward,
+    int matchCase,
+    int findNext
 );
 
 extern void cefingo_browser_host_stop_finding(
-	struct _cef_browser_host_t* self,
-	int clearSelection
+    struct _cef_browser_host_t* self,
+    int clearSelection
 );
 
 extern void cefingo_browser_host_show_dev_tools(
-	struct _cef_browser_host_t* self,
-	const struct _cef_window_info_t* windowInfo,
-	struct _cef_client_t* client,
-	const struct _cef_browser_settings_t* settings,
-	const cef_point_t* inspect_element_at
+    struct _cef_browser_host_t* self,
+    const struct _cef_window_info_t* windowInfo,
+    struct _cef_client_t* client,
+    const struct _cef_browser_settings_t* settings,
+    const cef_point_t* inspect_element_at
 );
 
 extern void cefingo_browser_host_close_dev_tools(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern int cefingo_browser_host_has_dev_tools(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_get_navigation_entries(
-	struct _cef_browser_host_t* self,
-	struct _cef_navigation_entry_visitor_t* visitor,
-	int current_only
+    struct _cef_browser_host_t* self,
+    struct _cef_navigation_entry_visitor_t* visitor,
+    int current_only
 );
 
 extern void cefingo_browser_host_set_mouse_cursor_change_disabled(
-	struct _cef_browser_host_t* self,
-	int disabled
+    struct _cef_browser_host_t* self,
+    int disabled
 );
 
 extern int cefingo_browser_host_is_mouse_cursor_change_disabled(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_replace_misspelling(
-	struct _cef_browser_host_t* self,
-	const cef_string_t* word
+    struct _cef_browser_host_t* self,
+    const cef_string_t* word
 );
 
 extern void cefingo_browser_host_add_word_to_dictionary(
-	struct _cef_browser_host_t* self,
-	const cef_string_t* word
+    struct _cef_browser_host_t* self,
+    const cef_string_t* word
 );
 
 extern int cefingo_browser_host_is_window_rendering_disabled(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_was_resized(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_was_hidden(
-	struct _cef_browser_host_t* self,
-	int hidden
+    struct _cef_browser_host_t* self,
+    int hidden
 );
 
 extern void cefingo_browser_host_notify_screen_info_changed(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_invalidate(
-	struct _cef_browser_host_t* self,
-	cef_paint_element_type_t type
+    struct _cef_browser_host_t* self,
+    cef_paint_element_type_t type
 );
 
 extern void cefingo_browser_host_send_external_begin_frame(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_send_key_event(
-	struct _cef_browser_host_t* self,
-	const struct _cef_key_event_t* event
+    struct _cef_browser_host_t* self,
+    const struct _cef_key_event_t* event
 );
 
 extern void cefingo_browser_host_send_mouse_click_event(
-	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
-	cef_mouse_button_type_t type,
-	int mouseUp,
-	int clickCount
+    struct _cef_browser_host_t* self,
+    const struct _cef_mouse_event_t* event,
+    cef_mouse_button_type_t type,
+    int mouseUp,
+    int clickCount
 );
 
 extern void cefingo_browser_host_send_mouse_move_event(
-	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
-	int mouseLeave
+    struct _cef_browser_host_t* self,
+    const struct _cef_mouse_event_t* event,
+    int mouseLeave
 );
 
 extern void cefingo_browser_host_send_mouse_wheel_event(
-	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
-	int deltaX,
-	int deltaY
+    struct _cef_browser_host_t* self,
+    const struct _cef_mouse_event_t* event,
+    int deltaX,
+    int deltaY
 );
 
 extern void cefingo_browser_host_send_touch_event(
-	struct _cef_browser_host_t* self,
-	const struct _cef_touch_event_t* event
+    struct _cef_browser_host_t* self,
+    const struct _cef_touch_event_t* event
 );
 
 extern void cefingo_browser_host_send_focus_event(
-	struct _cef_browser_host_t* self,
-	int setFocus
+    struct _cef_browser_host_t* self,
+    int setFocus
 );
 
 extern void cefingo_browser_host_send_capture_lost_event(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_notify_move_or_resize_started(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern int cefingo_browser_host_get_windowless_frame_rate(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_set_windowless_frame_rate(
-	struct _cef_browser_host_t* self,
-	int frame_rate
+    struct _cef_browser_host_t* self,
+    int frame_rate
 );
 
 extern void cefingo_browser_host_ime_set_composition(
-	struct _cef_browser_host_t* self,
-	const cef_string_t* text,
-	size_t underlinesCount,
-	const cef_composition_underline_t* underlines,
-	const cef_range_t* replacement_range,
-	const cef_range_t* selection_range
+    struct _cef_browser_host_t* self,
+    const cef_string_t* text,
+    size_t underlinesCount,
+    const cef_composition_underline_t* underlines,
+    const cef_range_t* replacement_range,
+    const cef_range_t* selection_range
 );
 
 extern void cefingo_browser_host_ime_commit_text(
-	struct _cef_browser_host_t* self,
-	const cef_string_t* text,
-	const cef_range_t* replacement_range,
-	int relative_cursor_pos
+    struct _cef_browser_host_t* self,
+    const cef_string_t* text,
+    const cef_range_t* replacement_range,
+    int relative_cursor_pos
 );
 
 extern void cefingo_browser_host_ime_finish_composing_text(
-	struct _cef_browser_host_t* self,
-	int keep_selection
+    struct _cef_browser_host_t* self,
+    int keep_selection
 );
 
 extern void cefingo_browser_host_ime_cancel_composition(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_drag_target_drag_enter(
-	struct _cef_browser_host_t* self,
-	struct _cef_drag_data_t* drag_data,
-	const struct _cef_mouse_event_t* event,
-	cef_drag_operations_mask_t allowed_ops
+    struct _cef_browser_host_t* self,
+    struct _cef_drag_data_t* drag_data,
+    const struct _cef_mouse_event_t* event,
+    cef_drag_operations_mask_t allowed_ops
 );
 
 extern void cefingo_browser_host_drag_target_drag_over(
-	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
-	cef_drag_operations_mask_t allowed_ops
+    struct _cef_browser_host_t* self,
+    const struct _cef_mouse_event_t* event,
+    cef_drag_operations_mask_t allowed_ops
 );
 
 extern void cefingo_browser_host_drag_target_drag_leave(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_drag_target_drop(
-	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event
+    struct _cef_browser_host_t* self,
+    const struct _cef_mouse_event_t* event
 );
 
 extern void cefingo_browser_host_drag_source_ended_at(
-	struct _cef_browser_host_t* self,
-	int x,
-	int y,
-	cef_drag_operations_mask_t op
+    struct _cef_browser_host_t* self,
+    int x,
+    int y,
+    cef_drag_operations_mask_t op
 );
 
 extern void cefingo_browser_host_drag_source_system_drag_ended(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern struct _cef_navigation_entry_t* cefingo_browser_host_get_visible_navigation_entry(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_set_accessibility_state(
-	struct _cef_browser_host_t* self,
-	cef_state_t accessibility_state
+    struct _cef_browser_host_t* self,
+    cef_state_t accessibility_state
 );
 
 extern void cefingo_browser_host_set_auto_resize_enabled(
-	struct _cef_browser_host_t* self,
-	int enabled,
-	const cef_size_t* min_size,
-	const cef_size_t* max_size
+    struct _cef_browser_host_t* self,
+    int enabled,
+    const cef_size_t* min_size,
+    const cef_size_t* max_size
 );
 
 extern struct _cef_extension_t* cefingo_browser_host_get_extension(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern int cefingo_browser_host_is_background_host(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 extern void cefingo_browser_host_set_audio_muted(
-	struct _cef_browser_host_t* self,
-	int mute
+    struct _cef_browser_host_t* self,
+    int mute
 );
 
 extern int cefingo_browser_host_is_audio_muted(
-	struct _cef_browser_host_t* self
+    struct _cef_browser_host_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_browser_process_handler_t, cefingo_browser_process_handler_wrapper_t);
 extern cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo_browser_process_handler_wrapper_t* browser_process_handler);
 
 extern void cefingo_callback_cont(
-	struct _cef_callback_t* self
+    struct _cef_callback_t* self
 );
 
 extern void cefingo_callback_cancel(
-	struct _cef_callback_t* self
+    struct _cef_callback_t* self
 );
 
 extern void cefingo_completion_callback_on_complete(
-	struct _cef_completion_callback_t* self
+    struct _cef_completion_callback_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_client_t, cefingo_client_wrapper_t);
 extern cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client);
 
 extern int cefingo_command_line_is_valid(
-	struct _cef_command_line_t* self
+    struct _cef_command_line_t* self
 );
 
 extern int cefingo_command_line_is_read_only(
-	struct _cef_command_line_t* self
+    struct _cef_command_line_t* self
 );
 
 extern struct _cef_command_line_t* cefingo_command_line_copy(
-	struct _cef_command_line_t* self
+    struct _cef_command_line_t* self
 );
 
 extern void cefingo_command_line_init_from_string(
-	struct _cef_command_line_t* self,
-	const cef_string_t* command_line
+    struct _cef_command_line_t* self,
+    const cef_string_t* command_line
 );
 
 extern void cefingo_command_line_reset(
-	struct _cef_command_line_t* self
+    struct _cef_command_line_t* self
 );
 
 extern void cefingo_command_line_get_argv(
-	struct _cef_command_line_t* self,
-	cef_string_list_t argv
+    struct _cef_command_line_t* self,
+    cef_string_list_t argv
 );
 
 extern cef_string_userfree_t cefingo_command_line_get_command_line_string(
-	struct _cef_command_line_t* self
+    struct _cef_command_line_t* self
 );
 
 extern cef_string_userfree_t cefingo_command_line_get_program(
-	struct _cef_command_line_t* self
+    struct _cef_command_line_t* self
 );
 
 extern void cefingo_command_line_set_program(
-	struct _cef_command_line_t* self,
-	const cef_string_t* program
+    struct _cef_command_line_t* self,
+    const cef_string_t* program
 );
 
 extern int cefingo_command_line_has_switches(
-	struct _cef_command_line_t* self
+    struct _cef_command_line_t* self
 );
 
 extern int cefingo_command_line_has_switch(
-	struct _cef_command_line_t* self,
-	const cef_string_t* name
+    struct _cef_command_line_t* self,
+    const cef_string_t* name
 );
 
 extern cef_string_userfree_t cefingo_command_line_get_switch_value(
-	struct _cef_command_line_t* self,
-	const cef_string_t* name
+    struct _cef_command_line_t* self,
+    const cef_string_t* name
 );
 
 extern void cefingo_command_line_get_switches(
-	struct _cef_command_line_t* self,
-	cef_string_map_t switches
+    struct _cef_command_line_t* self,
+    cef_string_map_t switches
 );
 
 extern void cefingo_command_line_append_switch(
-	struct _cef_command_line_t* self,
-	const cef_string_t* name
+    struct _cef_command_line_t* self,
+    const cef_string_t* name
 );
 
 extern void cefingo_command_line_append_switch_with_value(
-	struct _cef_command_line_t* self,
-	const cef_string_t* name,
-	const cef_string_t* value
+    struct _cef_command_line_t* self,
+    const cef_string_t* name,
+    const cef_string_t* value
 );
 
 extern int cefingo_command_line_has_arguments(
-	struct _cef_command_line_t* self
+    struct _cef_command_line_t* self
 );
 
 extern void cefingo_command_line_get_arguments(
-	struct _cef_command_line_t* self,
-	cef_string_list_t arguments
+    struct _cef_command_line_t* self,
+    cef_string_list_t arguments
 );
 
 extern void cefingo_command_line_append_argument(
-	struct _cef_command_line_t* self,
-	const cef_string_t* argument
+    struct _cef_command_line_t* self,
+    const cef_string_t* argument
 );
 
 extern void cefingo_command_line_prepend_wrapper(
-	struct _cef_command_line_t* self,
-	const cef_string_t* wrapper
+    struct _cef_command_line_t* self,
+    const cef_string_t* wrapper
 );
 
 extern void cefingo_run_context_menu_callback_cont(
-	struct _cef_run_context_menu_callback_t* self,
-	int command_id,
-	cef_event_flags_t event_flags
+    struct _cef_run_context_menu_callback_t* self,
+    int command_id,
+    cef_event_flags_t event_flags
 );
 
 extern void cefingo_run_context_menu_callback_cancel(
-	struct _cef_run_context_menu_callback_t* self
+    struct _cef_run_context_menu_callback_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_context_menu_handler_t, cefingo_context_menu_handler_wrapper_t);
 extern cef_context_menu_handler_t *cefingo_construct_context_menu_handler(cefingo_context_menu_handler_wrapper_t* context_menu_handler);
 
 extern int cefingo_context_menu_params_get_xcoord(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern int cefingo_context_menu_params_get_ycoord(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_context_menu_type_flags_t cefingo_context_menu_params_get_type_flags(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_link_url(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_unfiltered_link_url(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_source_url(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern int cefingo_context_menu_params_has_image_contents(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_title_text(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_page_url(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_frame_url(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_frame_charset(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_context_menu_media_type_t cefingo_context_menu_params_get_media_type(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_context_menu_media_state_flags_t cefingo_context_menu_params_get_media_state_flags(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_selection_text(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_string_userfree_t cefingo_context_menu_params_get_misspelled_word(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern int cefingo_context_menu_params_get_dictionary_suggestions(
-	struct _cef_context_menu_params_t* self,
-	cef_string_list_t suggestions
+    struct _cef_context_menu_params_t* self,
+    cef_string_list_t suggestions
 );
 
 extern int cefingo_context_menu_params_is_editable(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern int cefingo_context_menu_params_is_spell_check_enabled(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern cef_context_menu_edit_state_flags_t cefingo_context_menu_params_get_edit_state_flags(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern int cefingo_context_menu_params_is_custom_menu(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern int cefingo_context_menu_params_is_pepper_menu(
-	struct _cef_context_menu_params_t* self
+    struct _cef_context_menu_params_t* self
 );
 
 extern void cefingo_cookie_manager_set_supported_schemes(
-	struct _cef_cookie_manager_t* self,
-	cef_string_list_t schemes,
-	int include_defaults,
-	struct _cef_completion_callback_t* callback
+    struct _cef_cookie_manager_t* self,
+    cef_string_list_t schemes,
+    int include_defaults,
+    struct _cef_completion_callback_t* callback
 );
 
 extern int cefingo_cookie_manager_visit_all_cookies(
-	struct _cef_cookie_manager_t* self,
-	struct _cef_cookie_visitor_t* visitor
+    struct _cef_cookie_manager_t* self,
+    struct _cef_cookie_visitor_t* visitor
 );
 
 extern int cefingo_cookie_manager_visit_url_cookies(
-	struct _cef_cookie_manager_t* self,
-	const cef_string_t* url,
-	int includeHttpOnly,
-	struct _cef_cookie_visitor_t* visitor
+    struct _cef_cookie_manager_t* self,
+    const cef_string_t* url,
+    int includeHttpOnly,
+    struct _cef_cookie_visitor_t* visitor
 );
 
 extern int cefingo_cookie_manager_set_cookie(
-	struct _cef_cookie_manager_t* self,
-	const cef_string_t* url,
-	const struct _cef_cookie_t* cookie,
-	struct _cef_set_cookie_callback_t* callback
+    struct _cef_cookie_manager_t* self,
+    const cef_string_t* url,
+    const struct _cef_cookie_t* cookie,
+    struct _cef_set_cookie_callback_t* callback
 );
 
 extern int cefingo_cookie_manager_delete_cookies(
-	struct _cef_cookie_manager_t* self,
-	const cef_string_t* url,
-	const cef_string_t* cookie_name,
-	struct _cef_delete_cookies_callback_t* callback
+    struct _cef_cookie_manager_t* self,
+    const cef_string_t* url,
+    const cef_string_t* cookie_name,
+    struct _cef_delete_cookies_callback_t* callback
 );
 
 extern int cefingo_cookie_manager_flush_store(
-	struct _cef_cookie_manager_t* self,
-	struct _cef_completion_callback_t* callback
+    struct _cef_cookie_manager_t* self,
+    struct _cef_completion_callback_t* callback
 );
 
 extern int cefingo_cookie_visitor_visit(
-	struct _cef_cookie_visitor_t* self,
-	const struct _cef_cookie_t* cookie,
-	int count,
-	int total,
-	int* deleteCookie
+    struct _cef_cookie_visitor_t* self,
+    const struct _cef_cookie_t* cookie,
+    int count,
+    int total,
+    int* deleteCookie
 );
 
 extern void cefingo_set_cookie_callback_on_complete(
-	struct _cef_set_cookie_callback_t* self,
-	int success
+    struct _cef_set_cookie_callback_t* self,
+    int success
 );
 
 extern void cefingo_delete_cookies_callback_on_complete(
-	struct _cef_delete_cookies_callback_t* self,
-	int num_deleted
+    struct _cef_delete_cookies_callback_t* self,
+    int num_deleted
 );
 
 extern void cefingo_file_dialog_callback_cont(
-	struct _cef_file_dialog_callback_t* self,
-	int selected_accept_filter,
-	cef_string_list_t file_paths
+    struct _cef_file_dialog_callback_t* self,
+    int selected_accept_filter,
+    cef_string_list_t file_paths
 );
 
 extern void cefingo_file_dialog_callback_cancel(
-	struct _cef_file_dialog_callback_t* self
+    struct _cef_file_dialog_callback_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_dialog_handler_t, cefingo_dialog_handler_wrapper_t);
@@ -706,421 +706,421 @@ CEFINGO_REF_COUNTER_WRAPPER(cef_display_handler_t, cefingo_display_handler_wrapp
 extern cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler_wrapper_t* display_handler);
 
 extern void cefingo_domvisitor_visit(
-	struct _cef_domvisitor_t* self,
-	struct _cef_domdocument_t* document
+    struct _cef_domvisitor_t* self,
+    struct _cef_domdocument_t* document
 );
 
 extern cef_dom_document_type_t cefingo_domdocument_get_type(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domdocument_get_document(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domdocument_get_body(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domdocument_get_head(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern cef_string_userfree_t cefingo_domdocument_get_title(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domdocument_get_element_by_id(
-	struct _cef_domdocument_t* self,
-	const cef_string_t* id
+    struct _cef_domdocument_t* self,
+    const cef_string_t* id
 );
 
 extern struct _cef_domnode_t* cefingo_domdocument_get_focused_node(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern int cefingo_domdocument_has_selection(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern int cefingo_domdocument_get_selection_start_offset(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern int cefingo_domdocument_get_selection_end_offset(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern cef_string_userfree_t cefingo_domdocument_get_selection_as_markup(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern cef_string_userfree_t cefingo_domdocument_get_selection_as_text(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern cef_string_userfree_t cefingo_domdocument_get_base_url(
-	struct _cef_domdocument_t* self
+    struct _cef_domdocument_t* self
 );
 
 extern cef_string_userfree_t cefingo_domdocument_get_complete_url(
-	struct _cef_domdocument_t* self,
-	const cef_string_t* partialURL
+    struct _cef_domdocument_t* self,
+    const cef_string_t* partialURL
 );
 
 extern cef_dom_node_type_t cefingo_domnode_get_type(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_is_text(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_is_element(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_is_editable(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_is_form_control_element(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern cef_string_userfree_t cefingo_domnode_get_form_control_element_type(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_is_same(
-	struct _cef_domnode_t* self,
-	struct _cef_domnode_t* that
+    struct _cef_domnode_t* self,
+    struct _cef_domnode_t* that
 );
 
 extern cef_string_userfree_t cefingo_domnode_get_name(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern cef_string_userfree_t cefingo_domnode_get_value(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_set_value(
-	struct _cef_domnode_t* self,
-	const cef_string_t* value
+    struct _cef_domnode_t* self,
+    const cef_string_t* value
 );
 
 extern cef_string_userfree_t cefingo_domnode_get_as_markup(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern struct _cef_domdocument_t* cefingo_domnode_get_document(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domnode_get_parent(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domnode_get_previous_sibling(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domnode_get_next_sibling(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_has_children(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domnode_get_first_child(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern struct _cef_domnode_t* cefingo_domnode_get_last_child(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern cef_string_userfree_t cefingo_domnode_get_element_tag_name(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_has_element_attributes(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern int cefingo_domnode_has_element_attribute(
-	struct _cef_domnode_t* self,
-	const cef_string_t* attrName
+    struct _cef_domnode_t* self,
+    const cef_string_t* attrName
 );
 
 extern cef_string_userfree_t cefingo_domnode_get_element_attribute(
-	struct _cef_domnode_t* self,
-	const cef_string_t* attrName
+    struct _cef_domnode_t* self,
+    const cef_string_t* attrName
 );
 
 extern void cefingo_domnode_get_element_attributes(
-	struct _cef_domnode_t* self,
-	cef_string_map_t attrMap
+    struct _cef_domnode_t* self,
+    cef_string_map_t attrMap
 );
 
 extern int cefingo_domnode_set_element_attribute(
-	struct _cef_domnode_t* self,
-	const cef_string_t* attrName,
-	const cef_string_t* value
+    struct _cef_domnode_t* self,
+    const cef_string_t* attrName,
+    const cef_string_t* value
 );
 
 extern cef_string_userfree_t cefingo_domnode_get_element_inner_text(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern cef_rect_t cefingo_domnode_get_element_bounds(
-	struct _cef_domnode_t* self
+    struct _cef_domnode_t* self
 );
 
 extern void cefingo_before_download_callback_cont(
-	struct _cef_before_download_callback_t* self,
-	const cef_string_t* download_path,
-	int show_dialog
+    struct _cef_before_download_callback_t* self,
+    const cef_string_t* download_path,
+    int show_dialog
 );
 
 extern void cefingo_download_item_callback_cancel(
-	struct _cef_download_item_callback_t* self
+    struct _cef_download_item_callback_t* self
 );
 
 extern void cefingo_download_item_callback_pause(
-	struct _cef_download_item_callback_t* self
+    struct _cef_download_item_callback_t* self
 );
 
 extern void cefingo_download_item_callback_resume(
-	struct _cef_download_item_callback_t* self
+    struct _cef_download_item_callback_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_download_handler_t, cefingo_download_handler_wrapper_t);
 extern cef_download_handler_t *cefingo_construct_download_handler(cefingo_download_handler_wrapper_t* download_handler);
 
 extern int cefingo_download_item_is_valid(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern int cefingo_download_item_is_in_progress(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern int cefingo_download_item_is_complete(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern int cefingo_download_item_is_canceled(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern int64 cefingo_download_item_get_current_speed(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern int cefingo_download_item_get_percent_complete(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern int64 cefingo_download_item_get_total_bytes(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern int64 cefingo_download_item_get_received_bytes(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern cef_time_t cefingo_download_item_get_start_time(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern cef_time_t cefingo_download_item_get_end_time(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern cef_string_userfree_t cefingo_download_item_get_full_path(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern uint32 cefingo_download_item_get_id(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern cef_string_userfree_t cefingo_download_item_get_url(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern cef_string_userfree_t cefingo_download_item_get_original_url(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern cef_string_userfree_t cefingo_download_item_get_suggested_file_name(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern cef_string_userfree_t cefingo_download_item_get_content_disposition(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern cef_string_userfree_t cefingo_download_item_get_mime_type(
-	struct _cef_download_item_t* self
+    struct _cef_download_item_t* self
 );
 
 extern struct _cef_drag_data_t* cefingo_drag_data_clone(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern int cefingo_drag_data_is_read_only(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern int cefingo_drag_data_is_link(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern int cefingo_drag_data_is_fragment(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern int cefingo_drag_data_is_file(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern cef_string_userfree_t cefingo_drag_data_get_link_url(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern cef_string_userfree_t cefingo_drag_data_get_link_title(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern cef_string_userfree_t cefingo_drag_data_get_link_metadata(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern cef_string_userfree_t cefingo_drag_data_get_fragment_text(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern cef_string_userfree_t cefingo_drag_data_get_fragment_html(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern cef_string_userfree_t cefingo_drag_data_get_fragment_base_url(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern cef_string_userfree_t cefingo_drag_data_get_file_name(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern size_t cefingo_drag_data_get_file_contents(
-	struct _cef_drag_data_t* self,
-	struct _cef_stream_writer_t* writer
+    struct _cef_drag_data_t* self,
+    struct _cef_stream_writer_t* writer
 );
 
 extern int cefingo_drag_data_get_file_names(
-	struct _cef_drag_data_t* self,
-	cef_string_list_t names
+    struct _cef_drag_data_t* self,
+    cef_string_list_t names
 );
 
 extern void cefingo_drag_data_set_link_url(
-	struct _cef_drag_data_t* self,
-	const cef_string_t* url
+    struct _cef_drag_data_t* self,
+    const cef_string_t* url
 );
 
 extern void cefingo_drag_data_set_link_title(
-	struct _cef_drag_data_t* self,
-	const cef_string_t* title
+    struct _cef_drag_data_t* self,
+    const cef_string_t* title
 );
 
 extern void cefingo_drag_data_set_link_metadata(
-	struct _cef_drag_data_t* self,
-	const cef_string_t* data
+    struct _cef_drag_data_t* self,
+    const cef_string_t* data
 );
 
 extern void cefingo_drag_data_set_fragment_text(
-	struct _cef_drag_data_t* self,
-	const cef_string_t* text
+    struct _cef_drag_data_t* self,
+    const cef_string_t* text
 );
 
 extern void cefingo_drag_data_set_fragment_html(
-	struct _cef_drag_data_t* self,
-	const cef_string_t* html
+    struct _cef_drag_data_t* self,
+    const cef_string_t* html
 );
 
 extern void cefingo_drag_data_set_fragment_base_url(
-	struct _cef_drag_data_t* self,
-	const cef_string_t* base_url
+    struct _cef_drag_data_t* self,
+    const cef_string_t* base_url
 );
 
 extern void cefingo_drag_data_reset_file_contents(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern void cefingo_drag_data_add_file(
-	struct _cef_drag_data_t* self,
-	const cef_string_t* path,
-	const cef_string_t* display_name
+    struct _cef_drag_data_t* self,
+    const cef_string_t* path,
+    const cef_string_t* display_name
 );
 
 extern struct _cef_image_t* cefingo_drag_data_get_image(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern cef_point_t cefingo_drag_data_get_image_hotspot(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 extern int cefingo_drag_data_has_image(
-	struct _cef_drag_data_t* self
+    struct _cef_drag_data_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_drag_handler_t, cefingo_drag_handler_wrapper_t);
 extern cef_drag_handler_t *cefingo_construct_drag_handler(cefingo_drag_handler_wrapper_t* drag_handler);
 
 extern cef_string_userfree_t cefingo_extension_get_identifier(
-	struct _cef_extension_t* self
+    struct _cef_extension_t* self
 );
 
 extern cef_string_userfree_t cefingo_extension_get_path(
-	struct _cef_extension_t* self
+    struct _cef_extension_t* self
 );
 
 extern struct _cef_dictionary_value_t* cefingo_extension_get_manifest(
-	struct _cef_extension_t* self
+    struct _cef_extension_t* self
 );
 
 extern int cefingo_extension_is_same(
-	struct _cef_extension_t* self,
-	struct _cef_extension_t* that
+    struct _cef_extension_t* self,
+    struct _cef_extension_t* that
 );
 
 extern struct _cef_extension_handler_t* cefingo_extension_get_handler(
-	struct _cef_extension_t* self
+    struct _cef_extension_t* self
 );
 
 extern struct _cef_request_context_t* cefingo_extension_get_loader_context(
-	struct _cef_extension_t* self
+    struct _cef_extension_t* self
 );
 
 extern int cefingo_extension_is_loaded(
-	struct _cef_extension_t* self
+    struct _cef_extension_t* self
 );
 
 extern void cefingo_extension_unload(
-	struct _cef_extension_t* self
+    struct _cef_extension_t* self
 );
 
 extern void cefingo_get_extension_resource_callback_cont(
-	struct _cef_get_extension_resource_callback_t* self,
-	struct _cef_stream_reader_t* stream
+    struct _cef_get_extension_resource_callback_t* self,
+    struct _cef_stream_reader_t* stream
 );
 
 extern void cefingo_get_extension_resource_callback_cancel(
-	struct _cef_get_extension_resource_callback_t* self
+    struct _cef_get_extension_resource_callback_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_extension_handler_t, cefingo_extension_handler_wrapper_t);
@@ -1133,206 +1133,206 @@ CEFINGO_REF_COUNTER_WRAPPER(cef_focus_handler_t, cefingo_focus_handler_wrapper_t
 extern cef_focus_handler_t *cefingo_construct_focus_handler(cefingo_focus_handler_wrapper_t* focus_handler);
 
 extern int cefingo_frame_is_valid(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_undo(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_redo(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_cut(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_copy(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_paste(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_del(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_select_all(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_view_source(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_get_source(
-	struct _cef_frame_t* self,
-	struct _cef_string_visitor_t* visitor
+    struct _cef_frame_t* self,
+    struct _cef_string_visitor_t* visitor
 );
 
 extern void cefingo_frame_get_text(
-	struct _cef_frame_t* self,
-	struct _cef_string_visitor_t* visitor
+    struct _cef_frame_t* self,
+    struct _cef_string_visitor_t* visitor
 );
 
 extern void cefingo_frame_load_request(
-	struct _cef_frame_t* self,
-	struct _cef_request_t* request
+    struct _cef_frame_t* self,
+    struct _cef_request_t* request
 );
 
 extern void cefingo_frame_load_url(
-	struct _cef_frame_t* self,
-	const cef_string_t* url
+    struct _cef_frame_t* self,
+    const cef_string_t* url
 );
 
 extern void cefingo_frame_execute_java_script(
-	struct _cef_frame_t* self,
-	const cef_string_t* code,
-	const cef_string_t* script_url,
-	int start_line
+    struct _cef_frame_t* self,
+    const cef_string_t* code,
+    const cef_string_t* script_url,
+    int start_line
 );
 
 extern int cefingo_frame_is_main(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern int cefingo_frame_is_focused(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern cef_string_userfree_t cefingo_frame_get_name(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern int64 cefingo_frame_get_identifier(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern struct _cef_frame_t* cefingo_frame_get_parent(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern cef_string_userfree_t cefingo_frame_get_url(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern struct _cef_browser_t* cefingo_frame_get_browser(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern struct _cef_v8context_t* cefingo_frame_get_v8context(
-	struct _cef_frame_t* self
+    struct _cef_frame_t* self
 );
 
 extern void cefingo_frame_visit_dom(
-	struct _cef_frame_t* self,
-	struct _cef_domvisitor_t* visitor
+    struct _cef_frame_t* self,
+    struct _cef_domvisitor_t* visitor
 );
 
 extern struct _cef_urlrequest_t* cefingo_frame_create_urlrequest(
-	struct _cef_frame_t* self,
-	struct _cef_request_t* request,
-	struct _cef_urlrequest_client_t* client
+    struct _cef_frame_t* self,
+    struct _cef_request_t* request,
+    struct _cef_urlrequest_client_t* client
 );
 
 extern void cefingo_frame_send_process_message(
-	struct _cef_frame_t* self,
-	cef_process_id_t target_process,
-	struct _cef_process_message_t* message
+    struct _cef_frame_t* self,
+    cef_process_id_t target_process,
+    struct _cef_process_message_t* message
 );
 
 extern int cefingo_image_is_empty(
-	struct _cef_image_t* self
+    struct _cef_image_t* self
 );
 
 extern int cefingo_image_is_same(
-	struct _cef_image_t* self,
-	struct _cef_image_t* that
+    struct _cef_image_t* self,
+    struct _cef_image_t* that
 );
 
 extern int cefingo_image_add_bitmap(
-	struct _cef_image_t* self,
-	float scale_factor,
-	int pixel_width,
-	int pixel_height,
-	cef_color_type_t color_type,
-	cef_alpha_type_t alpha_type,
-	const void* pixel_data,
-	size_t pixel_data_size
+    struct _cef_image_t* self,
+    float scale_factor,
+    int pixel_width,
+    int pixel_height,
+    cef_color_type_t color_type,
+    cef_alpha_type_t alpha_type,
+    const void* pixel_data,
+    size_t pixel_data_size
 );
 
 extern int cefingo_image_add_png(
-	struct _cef_image_t* self,
-	float scale_factor,
-	const void* png_data,
-	size_t png_data_size
+    struct _cef_image_t* self,
+    float scale_factor,
+    const void* png_data,
+    size_t png_data_size
 );
 
 extern int cefingo_image_add_jpeg(
-	struct _cef_image_t* self,
-	float scale_factor,
-	const void* jpeg_data,
-	size_t jpeg_data_size
+    struct _cef_image_t* self,
+    float scale_factor,
+    const void* jpeg_data,
+    size_t jpeg_data_size
 );
 
 extern size_t cefingo_image_get_width(
-	struct _cef_image_t* self
+    struct _cef_image_t* self
 );
 
 extern size_t cefingo_image_get_height(
-	struct _cef_image_t* self
+    struct _cef_image_t* self
 );
 
 extern int cefingo_image_has_representation(
-	struct _cef_image_t* self,
-	float scale_factor
+    struct _cef_image_t* self,
+    float scale_factor
 );
 
 extern int cefingo_image_remove_representation(
-	struct _cef_image_t* self,
-	float scale_factor
+    struct _cef_image_t* self,
+    float scale_factor
 );
 
 extern int cefingo_image_get_representation_info(
-	struct _cef_image_t* self,
-	float scale_factor,
-	float* actual_scale_factor,
-	int* pixel_width,
-	int* pixel_height
+    struct _cef_image_t* self,
+    float scale_factor,
+    float* actual_scale_factor,
+    int* pixel_width,
+    int* pixel_height
 );
 
 extern struct _cef_binary_value_t* cefingo_image_get_as_bitmap(
-	struct _cef_image_t* self,
-	float scale_factor,
-	cef_color_type_t color_type,
-	cef_alpha_type_t alpha_type,
-	int* pixel_width,
-	int* pixel_height
+    struct _cef_image_t* self,
+    float scale_factor,
+    cef_color_type_t color_type,
+    cef_alpha_type_t alpha_type,
+    int* pixel_width,
+    int* pixel_height
 );
 
 extern struct _cef_binary_value_t* cefingo_image_get_as_png(
-	struct _cef_image_t* self,
-	float scale_factor,
-	int with_transparency,
-	int* pixel_width,
-	int* pixel_height
+    struct _cef_image_t* self,
+    float scale_factor,
+    int with_transparency,
+    int* pixel_width,
+    int* pixel_height
 );
 
 extern struct _cef_binary_value_t* cefingo_image_get_as_jpeg(
-	struct _cef_image_t* self,
-	float scale_factor,
-	int quality,
-	int* pixel_width,
-	int* pixel_height
+    struct _cef_image_t* self,
+    float scale_factor,
+    int quality,
+    int* pixel_width,
+    int* pixel_height
 );
 
 extern void cefingo_jsdialog_callback_cont(
-	struct _cef_jsdialog_callback_t* self,
-	int success,
-	const cef_string_t* user_input
+    struct _cef_jsdialog_callback_t* self,
+    int success,
+    const cef_string_t* user_input
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_jsdialog_handler_t, cefingo_jsdialog_handler_wrapper_t);
@@ -1348,540 +1348,540 @@ CEFINGO_REF_COUNTER_WRAPPER(cef_load_handler_t, cefingo_load_handler_wrapper_t);
 extern cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_t* load_handler);
 
 extern int cefingo_menu_model_is_sub_menu(
-	struct _cef_menu_model_t* self
+    struct _cef_menu_model_t* self
 );
 
 extern int cefingo_menu_model_clear(
-	struct _cef_menu_model_t* self
+    struct _cef_menu_model_t* self
 );
 
 extern int cefingo_menu_model_get_count(
-	struct _cef_menu_model_t* self
+    struct _cef_menu_model_t* self
 );
 
 extern int cefingo_menu_model_add_separator(
-	struct _cef_menu_model_t* self
+    struct _cef_menu_model_t* self
 );
 
 extern int cefingo_menu_model_add_item(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	const cef_string_t* label
+    struct _cef_menu_model_t* self,
+    int command_id,
+    const cef_string_t* label
 );
 
 extern int cefingo_menu_model_add_check_item(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	const cef_string_t* label
+    struct _cef_menu_model_t* self,
+    int command_id,
+    const cef_string_t* label
 );
 
 extern int cefingo_menu_model_add_radio_item(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	const cef_string_t* label,
-	int group_id
+    struct _cef_menu_model_t* self,
+    int command_id,
+    const cef_string_t* label,
+    int group_id
 );
 
 extern struct _cef_menu_model_t* cefingo_menu_model_add_sub_menu(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	const cef_string_t* label
+    struct _cef_menu_model_t* self,
+    int command_id,
+    const cef_string_t* label
 );
 
 extern int cefingo_menu_model_insert_separator_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_insert_item_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int command_id,
-	const cef_string_t* label
+    struct _cef_menu_model_t* self,
+    int index,
+    int command_id,
+    const cef_string_t* label
 );
 
 extern int cefingo_menu_model_insert_check_item_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int command_id,
-	const cef_string_t* label
+    struct _cef_menu_model_t* self,
+    int index,
+    int command_id,
+    const cef_string_t* label
 );
 
 extern int cefingo_menu_model_insert_radio_item_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int command_id,
-	const cef_string_t* label,
-	int group_id
+    struct _cef_menu_model_t* self,
+    int index,
+    int command_id,
+    const cef_string_t* label,
+    int group_id
 );
 
 extern struct _cef_menu_model_t* cefingo_menu_model_insert_sub_menu_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int command_id,
-	const cef_string_t* label
+    struct _cef_menu_model_t* self,
+    int index,
+    int command_id,
+    const cef_string_t* label
 );
 
 extern int cefingo_menu_model_remove(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern int cefingo_menu_model_remove_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_get_index_of(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern int cefingo_menu_model_get_command_id_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_set_command_id_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int index,
+    int command_id
 );
 
 extern cef_string_userfree_t cefingo_menu_model_get_label(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern cef_string_userfree_t cefingo_menu_model_get_label_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_set_label(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	const cef_string_t* label
+    struct _cef_menu_model_t* self,
+    int command_id,
+    const cef_string_t* label
 );
 
 extern int cefingo_menu_model_set_label_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	const cef_string_t* label
+    struct _cef_menu_model_t* self,
+    int index,
+    const cef_string_t* label
 );
 
 extern cef_menu_item_type_t cefingo_menu_model_get_type(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern cef_menu_item_type_t cefingo_menu_model_get_type_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_get_group_id(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern int cefingo_menu_model_get_group_id_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_set_group_id(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	int group_id
+    struct _cef_menu_model_t* self,
+    int command_id,
+    int group_id
 );
 
 extern int cefingo_menu_model_set_group_id_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int group_id
+    struct _cef_menu_model_t* self,
+    int index,
+    int group_id
 );
 
 extern struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_is_visible(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern int cefingo_menu_model_is_visible_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_set_visible(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	int visible
+    struct _cef_menu_model_t* self,
+    int command_id,
+    int visible
 );
 
 extern int cefingo_menu_model_set_visible_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int visible
+    struct _cef_menu_model_t* self,
+    int index,
+    int visible
 );
 
 extern int cefingo_menu_model_is_enabled(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern int cefingo_menu_model_is_enabled_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_set_enabled(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	int enabled
+    struct _cef_menu_model_t* self,
+    int command_id,
+    int enabled
 );
 
 extern int cefingo_menu_model_set_enabled_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int enabled
+    struct _cef_menu_model_t* self,
+    int index,
+    int enabled
 );
 
 extern int cefingo_menu_model_is_checked(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern int cefingo_menu_model_is_checked_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_set_checked(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	int checked
+    struct _cef_menu_model_t* self,
+    int command_id,
+    int checked
 );
 
 extern int cefingo_menu_model_set_checked_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int checked
+    struct _cef_menu_model_t* self,
+    int index,
+    int checked
 );
 
 extern int cefingo_menu_model_has_accelerator(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern int cefingo_menu_model_has_accelerator_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_set_accelerator(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	int key_code,
-	int shift_pressed,
-	int ctrl_pressed,
-	int alt_pressed
+    struct _cef_menu_model_t* self,
+    int command_id,
+    int key_code,
+    int shift_pressed,
+    int ctrl_pressed,
+    int alt_pressed
 );
 
 extern int cefingo_menu_model_set_accelerator_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int key_code,
-	int shift_pressed,
-	int ctrl_pressed,
-	int alt_pressed
+    struct _cef_menu_model_t* self,
+    int index,
+    int key_code,
+    int shift_pressed,
+    int ctrl_pressed,
+    int alt_pressed
 );
 
 extern int cefingo_menu_model_remove_accelerator(
-	struct _cef_menu_model_t* self,
-	int command_id
+    struct _cef_menu_model_t* self,
+    int command_id
 );
 
 extern int cefingo_menu_model_remove_accelerator_at(
-	struct _cef_menu_model_t* self,
-	int index
+    struct _cef_menu_model_t* self,
+    int index
 );
 
 extern int cefingo_menu_model_get_accelerator(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	int* key_code,
-	int* shift_pressed,
-	int* ctrl_pressed,
-	int* alt_pressed
+    struct _cef_menu_model_t* self,
+    int command_id,
+    int* key_code,
+    int* shift_pressed,
+    int* ctrl_pressed,
+    int* alt_pressed
 );
 
 extern int cefingo_menu_model_get_accelerator_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	int* key_code,
-	int* shift_pressed,
-	int* ctrl_pressed,
-	int* alt_pressed
+    struct _cef_menu_model_t* self,
+    int index,
+    int* key_code,
+    int* shift_pressed,
+    int* ctrl_pressed,
+    int* alt_pressed
 );
 
 extern int cefingo_menu_model_set_color(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	cef_menu_color_type_t color_type,
-	cef_color_t color
+    struct _cef_menu_model_t* self,
+    int command_id,
+    cef_menu_color_type_t color_type,
+    cef_color_t color
 );
 
 extern int cefingo_menu_model_set_color_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	cef_menu_color_type_t color_type,
-	cef_color_t color
+    struct _cef_menu_model_t* self,
+    int index,
+    cef_menu_color_type_t color_type,
+    cef_color_t color
 );
 
 extern int cefingo_menu_model_get_color(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	cef_menu_color_type_t color_type,
-	cef_color_t* color
+    struct _cef_menu_model_t* self,
+    int command_id,
+    cef_menu_color_type_t color_type,
+    cef_color_t* color
 );
 
 extern int cefingo_menu_model_get_color_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	cef_menu_color_type_t color_type,
-	cef_color_t* color
+    struct _cef_menu_model_t* self,
+    int index,
+    cef_menu_color_type_t color_type,
+    cef_color_t* color
 );
 
 extern int cefingo_menu_model_set_font_list(
-	struct _cef_menu_model_t* self,
-	int command_id,
-	const cef_string_t* font_list
+    struct _cef_menu_model_t* self,
+    int command_id,
+    const cef_string_t* font_list
 );
 
 extern int cefingo_menu_model_set_font_list_at(
-	struct _cef_menu_model_t* self,
-	int index,
-	const cef_string_t* font_list
+    struct _cef_menu_model_t* self,
+    int index,
+    const cef_string_t* font_list
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_menu_model_delegate_t, cefingo_menu_model_delegate_wrapper_t);
 extern cef_menu_model_delegate_t *cefingo_construct_menu_model_delegate(cefingo_menu_model_delegate_wrapper_t* menu_model_delegate);
 
 extern int cefingo_navigation_entry_is_valid(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern cef_string_userfree_t cefingo_navigation_entry_get_url(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern cef_string_userfree_t cefingo_navigation_entry_get_display_url(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern cef_string_userfree_t cefingo_navigation_entry_get_original_url(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern cef_string_userfree_t cefingo_navigation_entry_get_title(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern cef_transition_type_t cefingo_navigation_entry_get_transition_type(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern int cefingo_navigation_entry_has_post_data(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern cef_time_t cefingo_navigation_entry_get_completion_time(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern int cefingo_navigation_entry_get_http_status_code(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern struct _cef_sslstatus_t* cefingo_navigation_entry_get_sslstatus(
-	struct _cef_navigation_entry_t* self
+    struct _cef_navigation_entry_t* self
 );
 
 extern void cefingo_print_dialog_callback_cont(
-	struct _cef_print_dialog_callback_t* self,
-	struct _cef_print_settings_t* settings
+    struct _cef_print_dialog_callback_t* self,
+    struct _cef_print_settings_t* settings
 );
 
 extern void cefingo_print_dialog_callback_cancel(
-	struct _cef_print_dialog_callback_t* self
+    struct _cef_print_dialog_callback_t* self
 );
 
 extern void cefingo_print_job_callback_cont(
-	struct _cef_print_job_callback_t* self
+    struct _cef_print_job_callback_t* self
 );
 
 extern void cefingo_print_handler_on_print_start(
-	struct _cef_print_handler_t* self,
-	struct _cef_browser_t* browser
+    struct _cef_print_handler_t* self,
+    struct _cef_browser_t* browser
 );
 
 extern void cefingo_print_handler_on_print_settings(
-	struct _cef_print_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_print_settings_t* settings,
-	int get_defaults
+    struct _cef_print_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_print_settings_t* settings,
+    int get_defaults
 );
 
 extern int cefingo_print_handler_on_print_dialog(
-	struct _cef_print_handler_t* self,
-	struct _cef_browser_t* browser,
-	int has_selection,
-	struct _cef_print_dialog_callback_t* callback
+    struct _cef_print_handler_t* self,
+    struct _cef_browser_t* browser,
+    int has_selection,
+    struct _cef_print_dialog_callback_t* callback
 );
 
 extern int cefingo_print_handler_on_print_job(
-	struct _cef_print_handler_t* self,
-	struct _cef_browser_t* browser,
-	const cef_string_t* document_name,
-	const cef_string_t* pdf_file_path,
-	struct _cef_print_job_callback_t* callback
+    struct _cef_print_handler_t* self,
+    struct _cef_browser_t* browser,
+    const cef_string_t* document_name,
+    const cef_string_t* pdf_file_path,
+    struct _cef_print_job_callback_t* callback
 );
 
 extern void cefingo_print_handler_on_print_reset(
-	struct _cef_print_handler_t* self,
-	struct _cef_browser_t* browser
+    struct _cef_print_handler_t* self,
+    struct _cef_browser_t* browser
 );
 
 extern cef_size_t cefingo_print_handler_get_pdf_paper_size(
-	struct _cef_print_handler_t* self,
-	int device_units_per_inch
+    struct _cef_print_handler_t* self,
+    int device_units_per_inch
 );
 
 extern int cefingo_print_settings_is_valid(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern int cefingo_print_settings_is_read_only(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_orientation(
-	struct _cef_print_settings_t* self,
-	int landscape
+    struct _cef_print_settings_t* self,
+    int landscape
 );
 
 extern int cefingo_print_settings_is_landscape(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_printer_printable_area(
-	struct _cef_print_settings_t* self,
-	const cef_size_t* physical_size_device_units,
-	const cef_rect_t* printable_area_device_units,
-	int landscape_needs_flip
+    struct _cef_print_settings_t* self,
+    const cef_size_t* physical_size_device_units,
+    const cef_rect_t* printable_area_device_units,
+    int landscape_needs_flip
 );
 
 extern void cefingo_print_settings_set_device_name(
-	struct _cef_print_settings_t* self,
-	const cef_string_t* name
+    struct _cef_print_settings_t* self,
+    const cef_string_t* name
 );
 
 extern cef_string_userfree_t cefingo_print_settings_get_device_name(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_dpi(
-	struct _cef_print_settings_t* self,
-	int dpi
+    struct _cef_print_settings_t* self,
+    int dpi
 );
 
 extern int cefingo_print_settings_get_dpi(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_page_ranges(
-	struct _cef_print_settings_t* self,
-	size_t rangesCount,
-	const cef_range_t* ranges
+    struct _cef_print_settings_t* self,
+    size_t rangesCount,
+    const cef_range_t* ranges
 );
 
 extern size_t cefingo_print_settings_get_page_ranges_count(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_selection_only(
-	struct _cef_print_settings_t* self,
-	int selection_only
+    struct _cef_print_settings_t* self,
+    int selection_only
 );
 
 extern int cefingo_print_settings_is_selection_only(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_collate(
-	struct _cef_print_settings_t* self,
-	int collate
+    struct _cef_print_settings_t* self,
+    int collate
 );
 
 extern int cefingo_print_settings_will_collate(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_color_model(
-	struct _cef_print_settings_t* self,
-	cef_color_model_t model
+    struct _cef_print_settings_t* self,
+    cef_color_model_t model
 );
 
 extern cef_color_model_t cefingo_print_settings_get_color_model(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_copies(
-	struct _cef_print_settings_t* self,
-	int copies
+    struct _cef_print_settings_t* self,
+    int copies
 );
 
 extern int cefingo_print_settings_get_copies(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern void cefingo_print_settings_set_duplex_mode(
-	struct _cef_print_settings_t* self,
-	cef_duplex_mode_t mode
+    struct _cef_print_settings_t* self,
+    cef_duplex_mode_t mode
 );
 
 extern cef_duplex_mode_t cefingo_print_settings_get_duplex_mode(
-	struct _cef_print_settings_t* self
+    struct _cef_print_settings_t* self
 );
 
 extern int cefingo_process_message_is_valid(
-	struct _cef_process_message_t* self
+    struct _cef_process_message_t* self
 );
 
 extern int cefingo_process_message_is_read_only(
-	struct _cef_process_message_t* self
+    struct _cef_process_message_t* self
 );
 
 extern struct _cef_process_message_t* cefingo_process_message_copy(
-	struct _cef_process_message_t* self
+    struct _cef_process_message_t* self
 );
 
 extern cef_string_userfree_t cefingo_process_message_get_name(
-	struct _cef_process_message_t* self
+    struct _cef_process_message_t* self
 );
 
 extern struct _cef_list_value_t* cefingo_process_message_get_argument_list(
-	struct _cef_process_message_t* self
+    struct _cef_process_message_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_render_handler_t, cefingo_render_handler_wrapper_t);
@@ -1891,312 +1891,312 @@ CEFINGO_REF_COUNTER_WRAPPER(cef_render_process_handler_t, cefingo_render_process
 extern cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_render_process_handler_wrapper_t* render_process_handler);
 
 extern void cefingo_request_callback_cont(
-	struct _cef_request_callback_t* self,
-	int allow
+    struct _cef_request_callback_t* self,
+    int allow
 );
 
 extern void cefingo_request_callback_cancel(
-	struct _cef_request_callback_t* self
+    struct _cef_request_callback_t* self
 );
 
 extern int cefingo_request_is_read_only(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern cef_string_userfree_t cefingo_request_get_url(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern void cefingo_request_set_url(
-	struct _cef_request_t* self,
-	const cef_string_t* url
+    struct _cef_request_t* self,
+    const cef_string_t* url
 );
 
 extern cef_string_userfree_t cefingo_request_get_method(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern void cefingo_request_set_method(
-	struct _cef_request_t* self,
-	const cef_string_t* method
+    struct _cef_request_t* self,
+    const cef_string_t* method
 );
 
 extern void cefingo_request_set_referrer(
-	struct _cef_request_t* self,
-	const cef_string_t* referrer_url,
-	cef_referrer_policy_t policy
+    struct _cef_request_t* self,
+    const cef_string_t* referrer_url,
+    cef_referrer_policy_t policy
 );
 
 extern cef_string_userfree_t cefingo_request_get_referrer_url(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern cef_referrer_policy_t cefingo_request_get_referrer_policy(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern struct _cef_post_data_t* cefingo_request_get_post_data(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern void cefingo_request_set_post_data(
-	struct _cef_request_t* self,
-	struct _cef_post_data_t* postData
+    struct _cef_request_t* self,
+    struct _cef_post_data_t* postData
 );
 
 extern void cefingo_request_get_header_map(
-	struct _cef_request_t* self,
-	cef_string_multimap_t headerMap
+    struct _cef_request_t* self,
+    cef_string_multimap_t headerMap
 );
 
 extern void cefingo_request_set_header_map(
-	struct _cef_request_t* self,
-	cef_string_multimap_t headerMap
+    struct _cef_request_t* self,
+    cef_string_multimap_t headerMap
 );
 
 extern cef_string_userfree_t cefingo_request_get_header_by_name(
-	struct _cef_request_t* self,
-	const cef_string_t* name
+    struct _cef_request_t* self,
+    const cef_string_t* name
 );
 
 extern void cefingo_request_set_header_by_name(
-	struct _cef_request_t* self,
-	const cef_string_t* name,
-	const cef_string_t* value,
-	int overwrite
+    struct _cef_request_t* self,
+    const cef_string_t* name,
+    const cef_string_t* value,
+    int overwrite
 );
 
 extern void cefingo_request_set(
-	struct _cef_request_t* self,
-	const cef_string_t* url,
-	const cef_string_t* method,
-	struct _cef_post_data_t* postData,
-	cef_string_multimap_t headerMap
+    struct _cef_request_t* self,
+    const cef_string_t* url,
+    const cef_string_t* method,
+    struct _cef_post_data_t* postData,
+    cef_string_multimap_t headerMap
 );
 
 extern int cefingo_request_get_flags(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern void cefingo_request_set_flags(
-	struct _cef_request_t* self,
-	int flags
+    struct _cef_request_t* self,
+    int flags
 );
 
 extern cef_string_userfree_t cefingo_request_get_first_party_for_cookies(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern void cefingo_request_set_first_party_for_cookies(
-	struct _cef_request_t* self,
-	const cef_string_t* url
+    struct _cef_request_t* self,
+    const cef_string_t* url
 );
 
 extern cef_resource_type_t cefingo_request_get_resource_type(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern cef_transition_type_t cefingo_request_get_transition_type(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern uint64 cefingo_request_get_identifier(
-	struct _cef_request_t* self
+    struct _cef_request_t* self
 );
 
 extern int cefingo_post_data_is_read_only(
-	struct _cef_post_data_t* self
+    struct _cef_post_data_t* self
 );
 
 extern int cefingo_post_data_has_excluded_elements(
-	struct _cef_post_data_t* self
+    struct _cef_post_data_t* self
 );
 
 extern size_t cefingo_post_data_get_element_count(
-	struct _cef_post_data_t* self
+    struct _cef_post_data_t* self
 );
 
 extern int cefingo_post_data_remove_element(
-	struct _cef_post_data_t* self,
-	struct _cef_post_data_element_t* element
+    struct _cef_post_data_t* self,
+    struct _cef_post_data_element_t* element
 );
 
 extern int cefingo_post_data_add_element(
-	struct _cef_post_data_t* self,
-	struct _cef_post_data_element_t* element
+    struct _cef_post_data_t* self,
+    struct _cef_post_data_element_t* element
 );
 
 extern void cefingo_post_data_remove_elements(
-	struct _cef_post_data_t* self
+    struct _cef_post_data_t* self
 );
 
 extern int cefingo_post_data_element_is_read_only(
-	struct _cef_post_data_element_t* self
+    struct _cef_post_data_element_t* self
 );
 
 extern void cefingo_post_data_element_set_to_empty(
-	struct _cef_post_data_element_t* self
+    struct _cef_post_data_element_t* self
 );
 
 extern void cefingo_post_data_element_set_to_file(
-	struct _cef_post_data_element_t* self,
-	const cef_string_t* fileName
+    struct _cef_post_data_element_t* self,
+    const cef_string_t* fileName
 );
 
 extern void cefingo_post_data_element_set_to_bytes(
-	struct _cef_post_data_element_t* self,
-	size_t size,
-	const void* bytes
+    struct _cef_post_data_element_t* self,
+    size_t size,
+    const void* bytes
 );
 
 extern cef_postdataelement_type_t cefingo_post_data_element_get_type(
-	struct _cef_post_data_element_t* self
+    struct _cef_post_data_element_t* self
 );
 
 extern cef_string_userfree_t cefingo_post_data_element_get_file(
-	struct _cef_post_data_element_t* self
+    struct _cef_post_data_element_t* self
 );
 
 extern size_t cefingo_post_data_element_get_bytes_count(
-	struct _cef_post_data_element_t* self
+    struct _cef_post_data_element_t* self
 );
 
 extern size_t cefingo_post_data_element_get_bytes(
-	struct _cef_post_data_element_t* self,
-	size_t size,
-	void* bytes
+    struct _cef_post_data_element_t* self,
+    size_t size,
+    void* bytes
 );
 
 extern void cefingo_resolve_callback_on_resolve_completed(
-	struct _cef_resolve_callback_t* self,
-	cef_errorcode_t result,
-	cef_string_list_t resolved_ips
+    struct _cef_resolve_callback_t* self,
+    cef_errorcode_t result,
+    cef_string_list_t resolved_ips
 );
 
 extern int cefingo_request_context_is_same(
-	struct _cef_request_context_t* self,
-	struct _cef_request_context_t* other
+    struct _cef_request_context_t* self,
+    struct _cef_request_context_t* other
 );
 
 extern int cefingo_request_context_is_sharing_with(
-	struct _cef_request_context_t* self,
-	struct _cef_request_context_t* other
+    struct _cef_request_context_t* self,
+    struct _cef_request_context_t* other
 );
 
 extern int cefingo_request_context_is_global(
-	struct _cef_request_context_t* self
+    struct _cef_request_context_t* self
 );
 
 extern struct _cef_request_context_handler_t* cefingo_request_context_get_handler(
-	struct _cef_request_context_t* self
+    struct _cef_request_context_t* self
 );
 
 extern cef_string_userfree_t cefingo_request_context_get_cache_path(
-	struct _cef_request_context_t* self
+    struct _cef_request_context_t* self
 );
 
 extern struct _cef_cookie_manager_t* cefingo_request_context_get_cookie_manager(
-	struct _cef_request_context_t* self,
-	struct _cef_completion_callback_t* callback
+    struct _cef_request_context_t* self,
+    struct _cef_completion_callback_t* callback
 );
 
 extern int cefingo_request_context_register_scheme_handler_factory(
-	struct _cef_request_context_t* self,
-	const cef_string_t* scheme_name,
-	const cef_string_t* domain_name,
-	struct _cef_scheme_handler_factory_t* factory
+    struct _cef_request_context_t* self,
+    const cef_string_t* scheme_name,
+    const cef_string_t* domain_name,
+    struct _cef_scheme_handler_factory_t* factory
 );
 
 extern int cefingo_request_context_clear_scheme_handler_factories(
-	struct _cef_request_context_t* self
+    struct _cef_request_context_t* self
 );
 
 extern void cefingo_request_context_purge_plugin_list_cache(
-	struct _cef_request_context_t* self,
-	int reload_pages
+    struct _cef_request_context_t* self,
+    int reload_pages
 );
 
 extern int cefingo_request_context_has_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
+    struct _cef_request_context_t* self,
+    const cef_string_t* name
 );
 
 extern struct _cef_value_t* cefingo_request_context_get_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
+    struct _cef_request_context_t* self,
+    const cef_string_t* name
 );
 
 extern struct _cef_dictionary_value_t* cefingo_request_context_get_all_preferences(
-	struct _cef_request_context_t* self,
-	int include_defaults
+    struct _cef_request_context_t* self,
+    int include_defaults
 );
 
 extern int cefingo_request_context_can_set_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
+    struct _cef_request_context_t* self,
+    const cef_string_t* name
 );
 
 extern int cefingo_request_context_set_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name,
-	struct _cef_value_t* value,
-	cef_string_t* error
+    struct _cef_request_context_t* self,
+    const cef_string_t* name,
+    struct _cef_value_t* value,
+    cef_string_t* error
 );
 
 extern void cefingo_request_context_clear_certificate_exceptions(
-	struct _cef_request_context_t* self,
-	struct _cef_completion_callback_t* callback
+    struct _cef_request_context_t* self,
+    struct _cef_completion_callback_t* callback
 );
 
 extern void cefingo_request_context_clear_http_auth_credentials(
-	struct _cef_request_context_t* self,
-	struct _cef_completion_callback_t* callback
+    struct _cef_request_context_t* self,
+    struct _cef_completion_callback_t* callback
 );
 
 extern void cefingo_request_context_close_all_connections(
-	struct _cef_request_context_t* self,
-	struct _cef_completion_callback_t* callback
+    struct _cef_request_context_t* self,
+    struct _cef_completion_callback_t* callback
 );
 
 extern void cefingo_request_context_resolve_host(
-	struct _cef_request_context_t* self,
-	const cef_string_t* origin,
-	struct _cef_resolve_callback_t* callback
+    struct _cef_request_context_t* self,
+    const cef_string_t* origin,
+    struct _cef_resolve_callback_t* callback
 );
 
 extern void cefingo_request_context_load_extension(
-	struct _cef_request_context_t* self,
-	const cef_string_t* root_directory,
-	struct _cef_dictionary_value_t* manifest,
-	struct _cef_extension_handler_t* handler
+    struct _cef_request_context_t* self,
+    const cef_string_t* root_directory,
+    struct _cef_dictionary_value_t* manifest,
+    struct _cef_extension_handler_t* handler
 );
 
 extern int cefingo_request_context_did_load_extension(
-	struct _cef_request_context_t* self,
-	const cef_string_t* extension_id
+    struct _cef_request_context_t* self,
+    const cef_string_t* extension_id
 );
 
 extern int cefingo_request_context_has_extension(
-	struct _cef_request_context_t* self,
-	const cef_string_t* extension_id
+    struct _cef_request_context_t* self,
+    const cef_string_t* extension_id
 );
 
 extern int cefingo_request_context_get_extensions(
-	struct _cef_request_context_t* self,
-	cef_string_list_t extension_ids
+    struct _cef_request_context_t* self,
+    cef_string_list_t extension_ids
 );
 
 extern struct _cef_extension_t* cefingo_request_context_get_extension(
-	struct _cef_request_context_t* self,
-	const cef_string_t* extension_id
+    struct _cef_request_context_t* self,
+    const cef_string_t* extension_id
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_request_context_handler_t, cefingo_request_context_handler_wrapper_t);
 extern cef_request_context_handler_t *cefingo_construct_request_context_handler(cefingo_request_context_handler_wrapper_t* request_context_handler);
 
 extern void cefingo_select_client_certificate_callback_select(
-	struct _cef_select_client_certificate_callback_t* self,
-	struct _cef_x509certificate_t* cert
+    struct _cef_select_client_certificate_callback_t* self,
+    struct _cef_x509certificate_t* cert
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_request_handler_t, cefingo_request_handler_wrapper_t);
@@ -2206,1331 +2206,1331 @@ CEFINGO_REF_COUNTER_WRAPPER(cef_resource_bundle_handler_t, cefingo_resource_bund
 extern cef_resource_bundle_handler_t *cefingo_construct_resource_bundle_handler(cefingo_resource_bundle_handler_wrapper_t* resource_bundle_handler);
 
 extern void cefingo_resource_skip_callback_cont(
-	struct _cef_resource_skip_callback_t* self,
-	int64 bytes_skipped
+    struct _cef_resource_skip_callback_t* self,
+    int64 bytes_skipped
 );
 
 extern void cefingo_resource_read_callback_cont(
-	struct _cef_resource_read_callback_t* self,
-	int bytes_read
+    struct _cef_resource_read_callback_t* self,
+    int bytes_read
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_resource_handler_t, cefingo_resource_handler_wrapper_t);
 extern cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_handler_wrapper_t* resource_handler);
 
 extern struct _cef_cookie_access_filter_t* cefingo_resource_request_handler_get_cookie_access_filter(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request
+    struct _cef_resource_request_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request
 );
 
 extern cef_return_value_t cefingo_resource_request_handler_on_before_resource_load(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_request_callback_t* callback
+    struct _cef_resource_request_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request,
+    struct _cef_request_callback_t* callback
 );
 
 extern struct _cef_resource_handler_t* cefingo_resource_request_handler_get_resource_handler(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request
+    struct _cef_resource_request_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request
 );
 
 extern void cefingo_resource_request_handler_on_resource_redirect(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response,
-	cef_string_t* new_url
+    struct _cef_resource_request_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request,
+    struct _cef_response_t* response,
+    cef_string_t* new_url
 );
 
 extern int cefingo_resource_request_handler_on_resource_response(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response
+    struct _cef_resource_request_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request,
+    struct _cef_response_t* response
 );
 
 extern struct _cef_response_filter_t* cefingo_resource_request_handler_get_resource_response_filter(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response
+    struct _cef_resource_request_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request,
+    struct _cef_response_t* response
 );
 
 extern void cefingo_resource_request_handler_on_resource_load_complete(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response,
-	cef_urlrequest_status_t status,
-	int64 received_content_length
+    struct _cef_resource_request_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request,
+    struct _cef_response_t* response,
+    cef_urlrequest_status_t status,
+    int64 received_content_length
 );
 
 extern void cefingo_resource_request_handler_on_protocol_execution(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	int* allow_os_execution
+    struct _cef_resource_request_handler_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request,
+    int* allow_os_execution
 );
 
 extern int cefingo_cookie_access_filter_can_send_cookie(
-	struct _cef_cookie_access_filter_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	const struct _cef_cookie_t* cookie
+    struct _cef_cookie_access_filter_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request,
+    const struct _cef_cookie_t* cookie
 );
 
 extern int cefingo_cookie_access_filter_can_save_cookie(
-	struct _cef_cookie_access_filter_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response,
-	const struct _cef_cookie_t* cookie
+    struct _cef_cookie_access_filter_t* self,
+    struct _cef_browser_t* browser,
+    struct _cef_frame_t* frame,
+    struct _cef_request_t* request,
+    struct _cef_response_t* response,
+    const struct _cef_cookie_t* cookie
 );
 
 extern int cefingo_response_is_read_only(
-	struct _cef_response_t* self
+    struct _cef_response_t* self
 );
 
 extern cef_errorcode_t cefingo_response_get_error(
-	struct _cef_response_t* self
+    struct _cef_response_t* self
 );
 
 extern void cefingo_response_set_error(
-	struct _cef_response_t* self,
-	cef_errorcode_t error
+    struct _cef_response_t* self,
+    cef_errorcode_t error
 );
 
 extern int cefingo_response_get_status(
-	struct _cef_response_t* self
+    struct _cef_response_t* self
 );
 
 extern void cefingo_response_set_status(
-	struct _cef_response_t* self,
-	int status
+    struct _cef_response_t* self,
+    int status
 );
 
 extern cef_string_userfree_t cefingo_response_get_status_text(
-	struct _cef_response_t* self
+    struct _cef_response_t* self
 );
 
 extern void cefingo_response_set_status_text(
-	struct _cef_response_t* self,
-	const cef_string_t* statusText
+    struct _cef_response_t* self,
+    const cef_string_t* statusText
 );
 
 extern cef_string_userfree_t cefingo_response_get_mime_type(
-	struct _cef_response_t* self
+    struct _cef_response_t* self
 );
 
 extern void cefingo_response_set_mime_type(
-	struct _cef_response_t* self,
-	const cef_string_t* mimeType
+    struct _cef_response_t* self,
+    const cef_string_t* mimeType
 );
 
 extern cef_string_userfree_t cefingo_response_get_charset(
-	struct _cef_response_t* self
+    struct _cef_response_t* self
 );
 
 extern void cefingo_response_set_charset(
-	struct _cef_response_t* self,
-	const cef_string_t* charset
+    struct _cef_response_t* self,
+    const cef_string_t* charset
 );
 
 extern cef_string_userfree_t cefingo_response_get_header_by_name(
-	struct _cef_response_t* self,
-	const cef_string_t* name
+    struct _cef_response_t* self,
+    const cef_string_t* name
 );
 
 extern void cefingo_response_set_header_by_name(
-	struct _cef_response_t* self,
-	const cef_string_t* name,
-	const cef_string_t* value,
-	int overwrite
+    struct _cef_response_t* self,
+    const cef_string_t* name,
+    const cef_string_t* value,
+    int overwrite
 );
 
 extern void cefingo_response_get_header_map(
-	struct _cef_response_t* self,
-	cef_string_multimap_t headerMap
+    struct _cef_response_t* self,
+    cef_string_multimap_t headerMap
 );
 
 extern void cefingo_response_set_header_map(
-	struct _cef_response_t* self,
-	cef_string_multimap_t headerMap
+    struct _cef_response_t* self,
+    cef_string_multimap_t headerMap
 );
 
 extern cef_string_userfree_t cefingo_response_get_url(
-	struct _cef_response_t* self
+    struct _cef_response_t* self
 );
 
 extern void cefingo_response_set_url(
-	struct _cef_response_t* self,
-	const cef_string_t* url
+    struct _cef_response_t* self,
+    const cef_string_t* url
 );
 
 extern int cefingo_response_filter_init_filter(
-	struct _cef_response_filter_t* self
+    struct _cef_response_filter_t* self
 );
 
 extern cef_response_filter_status_t cefingo_response_filter_filter(
-	struct _cef_response_filter_t* self,
-	void* data_in,
-	size_t data_in_size,
-	size_t* data_in_read,
-	void* data_out,
-	size_t data_out_size,
-	size_t* data_out_written
+    struct _cef_response_filter_t* self,
+    void* data_in,
+    size_t data_in_size,
+    size_t* data_in_read,
+    void* data_out,
+    size_t data_out_size,
+    size_t* data_out_written
 );
 
 extern int cefingo_scheme_registrar_add_custom_scheme(
-	struct _cef_scheme_registrar_t* self,
-	const cef_string_t* scheme_name,
-	int options
+    struct _cef_scheme_registrar_t* self,
+    const cef_string_t* scheme_name,
+    int options
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_scheme_handler_factory_t, cefingo_scheme_handler_factory_wrapper_t);
 extern cef_scheme_handler_factory_t *cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_factory_wrapper_t* scheme_handler_factory);
 
 extern cef_cert_status_t cefingo_sslinfo_get_cert_status(
-	struct _cef_sslinfo_t* self
+    struct _cef_sslinfo_t* self
 );
 
 extern struct _cef_x509certificate_t* cefingo_sslinfo_get_x509certificate(
-	struct _cef_sslinfo_t* self
+    struct _cef_sslinfo_t* self
 );
 
 extern int cefingo_sslstatus_is_secure_connection(
-	struct _cef_sslstatus_t* self
+    struct _cef_sslstatus_t* self
 );
 
 extern cef_cert_status_t cefingo_sslstatus_get_cert_status(
-	struct _cef_sslstatus_t* self
+    struct _cef_sslstatus_t* self
 );
 
 extern cef_ssl_version_t cefingo_sslstatus_get_sslversion(
-	struct _cef_sslstatus_t* self
+    struct _cef_sslstatus_t* self
 );
 
 extern cef_ssl_content_status_t cefingo_sslstatus_get_content_status(
-	struct _cef_sslstatus_t* self
+    struct _cef_sslstatus_t* self
 );
 
 extern struct _cef_x509certificate_t* cefingo_sslstatus_get_x509certificate(
-	struct _cef_sslstatus_t* self
+    struct _cef_sslstatus_t* self
 );
 
 extern size_t cefingo_read_handler_read(
-	struct _cef_read_handler_t* self,
-	void* ptr,
-	size_t size,
-	size_t n
+    struct _cef_read_handler_t* self,
+    void* ptr,
+    size_t size,
+    size_t n
 );
 
 extern int cefingo_read_handler_seek(
-	struct _cef_read_handler_t* self,
-	int64 offset,
-	int whence
+    struct _cef_read_handler_t* self,
+    int64 offset,
+    int whence
 );
 
 extern int64 cefingo_read_handler_tell(
-	struct _cef_read_handler_t* self
+    struct _cef_read_handler_t* self
 );
 
 extern int cefingo_read_handler_eof(
-	struct _cef_read_handler_t* self
+    struct _cef_read_handler_t* self
 );
 
 extern int cefingo_read_handler_may_block(
-	struct _cef_read_handler_t* self
+    struct _cef_read_handler_t* self
 );
 
 extern size_t cefingo_stream_reader_read(
-	struct _cef_stream_reader_t* self,
-	void* ptr,
-	size_t size,
-	size_t n
+    struct _cef_stream_reader_t* self,
+    void* ptr,
+    size_t size,
+    size_t n
 );
 
 extern int cefingo_stream_reader_seek(
-	struct _cef_stream_reader_t* self,
-	int64 offset,
-	int whence
+    struct _cef_stream_reader_t* self,
+    int64 offset,
+    int whence
 );
 
 extern int64 cefingo_stream_reader_tell(
-	struct _cef_stream_reader_t* self
+    struct _cef_stream_reader_t* self
 );
 
 extern int cefingo_stream_reader_eof(
-	struct _cef_stream_reader_t* self
+    struct _cef_stream_reader_t* self
 );
 
 extern int cefingo_stream_reader_may_block(
-	struct _cef_stream_reader_t* self
+    struct _cef_stream_reader_t* self
 );
 
 extern size_t cefingo_write_handler_write(
-	struct _cef_write_handler_t* self,
-	const void* ptr,
-	size_t size,
-	size_t n
+    struct _cef_write_handler_t* self,
+    const void* ptr,
+    size_t size,
+    size_t n
 );
 
 extern int cefingo_write_handler_seek(
-	struct _cef_write_handler_t* self,
-	int64 offset,
-	int whence
+    struct _cef_write_handler_t* self,
+    int64 offset,
+    int whence
 );
 
 extern int64 cefingo_write_handler_tell(
-	struct _cef_write_handler_t* self
+    struct _cef_write_handler_t* self
 );
 
 extern int cefingo_write_handler_flush(
-	struct _cef_write_handler_t* self
+    struct _cef_write_handler_t* self
 );
 
 extern int cefingo_write_handler_may_block(
-	struct _cef_write_handler_t* self
+    struct _cef_write_handler_t* self
 );
 
 extern size_t cefingo_stream_writer_write(
-	struct _cef_stream_writer_t* self,
-	const void* ptr,
-	size_t size,
-	size_t n
+    struct _cef_stream_writer_t* self,
+    const void* ptr,
+    size_t size,
+    size_t n
 );
 
 extern int cefingo_stream_writer_seek(
-	struct _cef_stream_writer_t* self,
-	int64 offset,
-	int whence
+    struct _cef_stream_writer_t* self,
+    int64 offset,
+    int whence
 );
 
 extern int64 cefingo_stream_writer_tell(
-	struct _cef_stream_writer_t* self
+    struct _cef_stream_writer_t* self
 );
 
 extern int cefingo_stream_writer_flush(
-	struct _cef_stream_writer_t* self
+    struct _cef_stream_writer_t* self
 );
 
 extern int cefingo_stream_writer_may_block(
-	struct _cef_stream_writer_t* self
+    struct _cef_stream_writer_t* self
 );
 
 extern void cefingo_string_visitor_visit(
-	struct _cef_string_visitor_t* self,
-	const cef_string_t* string
+    struct _cef_string_visitor_t* self,
+    const cef_string_t* string
 );
 
 extern void cefingo_task_execute(
-	struct _cef_task_t* self
+    struct _cef_task_t* self
 );
 
 extern int cefingo_task_runner_is_same(
-	struct _cef_task_runner_t* self,
-	struct _cef_task_runner_t* that
+    struct _cef_task_runner_t* self,
+    struct _cef_task_runner_t* that
 );
 
 extern int cefingo_task_runner_belongs_to_current_thread(
-	struct _cef_task_runner_t* self
+    struct _cef_task_runner_t* self
 );
 
 extern int cefingo_task_runner_belongs_to_thread(
-	struct _cef_task_runner_t* self,
-	cef_thread_id_t threadId
+    struct _cef_task_runner_t* self,
+    cef_thread_id_t threadId
 );
 
 extern int cefingo_task_runner_post_task(
-	struct _cef_task_runner_t* self,
-	struct _cef_task_t* task
+    struct _cef_task_runner_t* self,
+    struct _cef_task_t* task
 );
 
 extern int cefingo_task_runner_post_delayed_task(
-	struct _cef_task_runner_t* self,
-	struct _cef_task_t* task,
-	int64 delay_ms
+    struct _cef_task_runner_t* self,
+    struct _cef_task_t* task,
+    int64 delay_ms
 );
 
 extern struct _cef_request_t* cefingo_urlrequest_get_request(
-	struct _cef_urlrequest_t* self
+    struct _cef_urlrequest_t* self
 );
 
 extern struct _cef_urlrequest_client_t* cefingo_urlrequest_get_client(
-	struct _cef_urlrequest_t* self
+    struct _cef_urlrequest_t* self
 );
 
 extern cef_urlrequest_status_t cefingo_urlrequest_get_request_status(
-	struct _cef_urlrequest_t* self
+    struct _cef_urlrequest_t* self
 );
 
 extern cef_errorcode_t cefingo_urlrequest_get_request_error(
-	struct _cef_urlrequest_t* self
+    struct _cef_urlrequest_t* self
 );
 
 extern struct _cef_response_t* cefingo_urlrequest_get_response(
-	struct _cef_urlrequest_t* self
+    struct _cef_urlrequest_t* self
 );
 
 extern int cefingo_urlrequest_response_was_cached(
-	struct _cef_urlrequest_t* self
+    struct _cef_urlrequest_t* self
 );
 
 extern void cefingo_urlrequest_cancel(
-	struct _cef_urlrequest_t* self
+    struct _cef_urlrequest_t* self
 );
 
 extern void cefingo_urlrequest_client_on_request_complete(
-	struct _cef_urlrequest_client_t* self,
-	struct _cef_urlrequest_t* request
+    struct _cef_urlrequest_client_t* self,
+    struct _cef_urlrequest_t* request
 );
 
 extern void cefingo_urlrequest_client_on_upload_progress(
-	struct _cef_urlrequest_client_t* self,
-	struct _cef_urlrequest_t* request,
-	int64 current,
-	int64 total
+    struct _cef_urlrequest_client_t* self,
+    struct _cef_urlrequest_t* request,
+    int64 current,
+    int64 total
 );
 
 extern void cefingo_urlrequest_client_on_download_progress(
-	struct _cef_urlrequest_client_t* self,
-	struct _cef_urlrequest_t* request,
-	int64 current,
-	int64 total
+    struct _cef_urlrequest_client_t* self,
+    struct _cef_urlrequest_t* request,
+    int64 current,
+    int64 total
 );
 
 extern void cefingo_urlrequest_client_on_download_data(
-	struct _cef_urlrequest_client_t* self,
-	struct _cef_urlrequest_t* request,
-	const void* data,
-	size_t data_length
+    struct _cef_urlrequest_client_t* self,
+    struct _cef_urlrequest_t* request,
+    const void* data,
+    size_t data_length
 );
 
 extern int cefingo_urlrequest_client_get_auth_credentials(
-	struct _cef_urlrequest_client_t* self,
-	int isProxy,
-	const cef_string_t* host,
-	int port,
-	const cef_string_t* realm,
-	const cef_string_t* scheme,
-	struct _cef_auth_callback_t* callback
+    struct _cef_urlrequest_client_t* self,
+    int isProxy,
+    const cef_string_t* host,
+    int port,
+    const cef_string_t* realm,
+    const cef_string_t* scheme,
+    struct _cef_auth_callback_t* callback
 );
 
 extern struct _cef_task_runner_t* cefingo_v8context_get_task_runner(
-	struct _cef_v8context_t* self
+    struct _cef_v8context_t* self
 );
 
 extern int cefingo_v8context_is_valid(
-	struct _cef_v8context_t* self
+    struct _cef_v8context_t* self
 );
 
 extern struct _cef_browser_t* cefingo_v8context_get_browser(
-	struct _cef_v8context_t* self
+    struct _cef_v8context_t* self
 );
 
 extern struct _cef_frame_t* cefingo_v8context_get_frame(
-	struct _cef_v8context_t* self
+    struct _cef_v8context_t* self
 );
 
 extern struct _cef_v8value_t* cefingo_v8context_get_global(
-	struct _cef_v8context_t* self
+    struct _cef_v8context_t* self
 );
 
 extern int cefingo_v8context_enter(
-	struct _cef_v8context_t* self
+    struct _cef_v8context_t* self
 );
 
 extern int cefingo_v8context_exit(
-	struct _cef_v8context_t* self
+    struct _cef_v8context_t* self
 );
 
 extern int cefingo_v8context_is_same(
-	struct _cef_v8context_t* self,
-	struct _cef_v8context_t* that
+    struct _cef_v8context_t* self,
+    struct _cef_v8context_t* that
 );
 
 extern int cefingo_v8context_eval(
-	struct _cef_v8context_t* self,
-	const cef_string_t* code,
-	const cef_string_t* script_url,
-	int start_line,
-	struct _cef_v8value_t** retval,
-	struct _cef_v8exception_t** exception
+    struct _cef_v8context_t* self,
+    const cef_string_t* code,
+    const cef_string_t* script_url,
+    int start_line,
+    struct _cef_v8value_t** retval,
+    struct _cef_v8exception_t** exception
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_v8handler_t, cefingo_v8handler_wrapper_t);
 extern cef_v8handler_t *cefingo_construct_v8handler(cefingo_v8handler_wrapper_t* v8handler);
 
 extern int cefingo_v8accessor_get(
-	struct _cef_v8accessor_t* self,
-	const cef_string_t* name,
-	struct _cef_v8value_t* object,
-	struct _cef_v8value_t** retval,
-	cef_string_t* exception
+    struct _cef_v8accessor_t* self,
+    const cef_string_t* name,
+    struct _cef_v8value_t* object,
+    struct _cef_v8value_t** retval,
+    cef_string_t* exception
 );
 
 extern int cefingo_v8accessor_set(
-	struct _cef_v8accessor_t* self,
-	const cef_string_t* name,
-	struct _cef_v8value_t* object,
-	struct _cef_v8value_t* value,
-	cef_string_t* exception
+    struct _cef_v8accessor_t* self,
+    const cef_string_t* name,
+    struct _cef_v8value_t* object,
+    struct _cef_v8value_t* value,
+    cef_string_t* exception
 );
 
 extern int cefingo_v8interceptor_get_byname(
-	struct _cef_v8interceptor_t* self,
-	const cef_string_t* name,
-	struct _cef_v8value_t* object,
-	struct _cef_v8value_t** retval,
-	cef_string_t* exception
+    struct _cef_v8interceptor_t* self,
+    const cef_string_t* name,
+    struct _cef_v8value_t* object,
+    struct _cef_v8value_t** retval,
+    cef_string_t* exception
 );
 
 extern int cefingo_v8interceptor_get_byindex(
-	struct _cef_v8interceptor_t* self,
-	int index,
-	struct _cef_v8value_t* object,
-	struct _cef_v8value_t** retval,
-	cef_string_t* exception
+    struct _cef_v8interceptor_t* self,
+    int index,
+    struct _cef_v8value_t* object,
+    struct _cef_v8value_t** retval,
+    cef_string_t* exception
 );
 
 extern int cefingo_v8interceptor_set_byname(
-	struct _cef_v8interceptor_t* self,
-	const cef_string_t* name,
-	struct _cef_v8value_t* object,
-	struct _cef_v8value_t* value,
-	cef_string_t* exception
+    struct _cef_v8interceptor_t* self,
+    const cef_string_t* name,
+    struct _cef_v8value_t* object,
+    struct _cef_v8value_t* value,
+    cef_string_t* exception
 );
 
 extern int cefingo_v8interceptor_set_byindex(
-	struct _cef_v8interceptor_t* self,
-	int index,
-	struct _cef_v8value_t* object,
-	struct _cef_v8value_t* value,
-	cef_string_t* exception
+    struct _cef_v8interceptor_t* self,
+    int index,
+    struct _cef_v8value_t* object,
+    struct _cef_v8value_t* value,
+    cef_string_t* exception
 );
 
 extern cef_string_userfree_t cefingo_v8exception_get_message(
-	struct _cef_v8exception_t* self
+    struct _cef_v8exception_t* self
 );
 
 extern cef_string_userfree_t cefingo_v8exception_get_source_line(
-	struct _cef_v8exception_t* self
+    struct _cef_v8exception_t* self
 );
 
 extern cef_string_userfree_t cefingo_v8exception_get_script_resource_name(
-	struct _cef_v8exception_t* self
+    struct _cef_v8exception_t* self
 );
 
 extern int cefingo_v8exception_get_line_number(
-	struct _cef_v8exception_t* self
+    struct _cef_v8exception_t* self
 );
 
 extern int cefingo_v8exception_get_start_position(
-	struct _cef_v8exception_t* self
+    struct _cef_v8exception_t* self
 );
 
 extern int cefingo_v8exception_get_end_position(
-	struct _cef_v8exception_t* self
+    struct _cef_v8exception_t* self
 );
 
 extern int cefingo_v8exception_get_start_column(
-	struct _cef_v8exception_t* self
+    struct _cef_v8exception_t* self
 );
 
 extern int cefingo_v8exception_get_end_column(
-	struct _cef_v8exception_t* self
+    struct _cef_v8exception_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_v8array_buffer_release_callback_t, cefingo_v8array_buffer_release_callback_wrapper_t);
 extern cef_v8array_buffer_release_callback_t *cefingo_construct_v8array_buffer_release_callback(cefingo_v8array_buffer_release_callback_wrapper_t* v8array_buffer_release_callback);
 
 extern int cefingo_v8value_is_valid(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_undefined(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_null(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_bool(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_int(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_uint(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_double(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_date(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_string(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_object(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_array(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_array_buffer(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_function(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_same(
-	struct _cef_v8value_t* self,
-	struct _cef_v8value_t* that
+    struct _cef_v8value_t* self,
+    struct _cef_v8value_t* that
 );
 
 extern int cefingo_v8value_get_bool_value(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int32 cefingo_v8value_get_int_value(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern uint32 cefingo_v8value_get_uint_value(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern double cefingo_v8value_get_double_value(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern cef_time_t cefingo_v8value_get_date_value(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern cef_string_userfree_t cefingo_v8value_get_string_value(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_is_user_created(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_has_exception(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern struct _cef_v8exception_t* cefingo_v8value_get_exception(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_clear_exception(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_will_rethrow_exceptions(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_set_rethrow_exceptions(
-	struct _cef_v8value_t* self,
-	int rethrow
+    struct _cef_v8value_t* self,
+    int rethrow
 );
 
 extern int cefingo_v8value_has_value_bykey(
-	struct _cef_v8value_t* self,
-	const cef_string_t* key
+    struct _cef_v8value_t* self,
+    const cef_string_t* key
 );
 
 extern int cefingo_v8value_has_value_byindex(
-	struct _cef_v8value_t* self,
-	int index
+    struct _cef_v8value_t* self,
+    int index
 );
 
 extern int cefingo_v8value_delete_value_bykey(
-	struct _cef_v8value_t* self,
-	const cef_string_t* key
+    struct _cef_v8value_t* self,
+    const cef_string_t* key
 );
 
 extern int cefingo_v8value_delete_value_byindex(
-	struct _cef_v8value_t* self,
-	int index
+    struct _cef_v8value_t* self,
+    int index
 );
 
 extern struct _cef_v8value_t* cefingo_v8value_get_value_bykey(
-	struct _cef_v8value_t* self,
-	const cef_string_t* key
+    struct _cef_v8value_t* self,
+    const cef_string_t* key
 );
 
 extern struct _cef_v8value_t* cefingo_v8value_get_value_byindex(
-	struct _cef_v8value_t* self,
-	int index
+    struct _cef_v8value_t* self,
+    int index
 );
 
 extern int cefingo_v8value_set_value_bykey(
-	struct _cef_v8value_t* self,
-	const cef_string_t* key,
-	struct _cef_v8value_t* value,
-	cef_v8_propertyattribute_t attribute
+    struct _cef_v8value_t* self,
+    const cef_string_t* key,
+    struct _cef_v8value_t* value,
+    cef_v8_propertyattribute_t attribute
 );
 
 extern int cefingo_v8value_set_value_byindex(
-	struct _cef_v8value_t* self,
-	int index,
-	struct _cef_v8value_t* value
+    struct _cef_v8value_t* self,
+    int index,
+    struct _cef_v8value_t* value
 );
 
 extern int cefingo_v8value_set_value_byaccessor(
-	struct _cef_v8value_t* self,
-	const cef_string_t* key,
-	cef_v8_accesscontrol_t settings,
-	cef_v8_propertyattribute_t attribute
+    struct _cef_v8value_t* self,
+    const cef_string_t* key,
+    cef_v8_accesscontrol_t settings,
+    cef_v8_propertyattribute_t attribute
 );
 
 extern int cefingo_v8value_get_keys(
-	struct _cef_v8value_t* self,
-	cef_string_list_t keys
+    struct _cef_v8value_t* self,
+    cef_string_list_t keys
 );
 
 extern int cefingo_v8value_get_externally_allocated_memory(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_adjust_externally_allocated_memory(
-	struct _cef_v8value_t* self,
-	int change_in_bytes
+    struct _cef_v8value_t* self,
+    int change_in_bytes
 );
 
 extern int cefingo_v8value_get_array_length(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern struct _cef_v8array_buffer_release_callback_t* cefingo_v8value_get_array_buffer_release_callback(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern int cefingo_v8value_neuter_array_buffer(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern cef_string_userfree_t cefingo_v8value_get_function_name(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern struct _cef_v8handler_t* cefingo_v8value_get_function_handler(
-	struct _cef_v8value_t* self
+    struct _cef_v8value_t* self
 );
 
 extern struct _cef_v8value_t* cefingo_v8value_execute_function(
-	struct _cef_v8value_t* self,
-	struct _cef_v8value_t* object,
-	size_t argumentsCount,
-	struct _cef_v8value_t* const * arguments
+    struct _cef_v8value_t* self,
+    struct _cef_v8value_t* object,
+    size_t argumentsCount,
+    struct _cef_v8value_t* const * arguments
 );
 
 extern struct _cef_v8value_t* cefingo_v8value_execute_function_with_context(
-	struct _cef_v8value_t* self,
-	struct _cef_v8context_t* context,
-	struct _cef_v8value_t* object,
-	size_t argumentsCount,
-	struct _cef_v8value_t* const * arguments
+    struct _cef_v8value_t* self,
+    struct _cef_v8context_t* context,
+    struct _cef_v8value_t* object,
+    size_t argumentsCount,
+    struct _cef_v8value_t* const * arguments
 );
 
 extern int cefingo_v8stack_trace_is_valid(
-	struct _cef_v8stack_trace_t* self
+    struct _cef_v8stack_trace_t* self
 );
 
 extern int cefingo_v8stack_trace_get_frame_count(
-	struct _cef_v8stack_trace_t* self
+    struct _cef_v8stack_trace_t* self
 );
 
 extern struct _cef_v8stack_frame_t* cefingo_v8stack_trace_get_frame(
-	struct _cef_v8stack_trace_t* self,
-	int index
+    struct _cef_v8stack_trace_t* self,
+    int index
 );
 
 extern int cefingo_v8stack_frame_is_valid(
-	struct _cef_v8stack_frame_t* self
+    struct _cef_v8stack_frame_t* self
 );
 
 extern cef_string_userfree_t cefingo_v8stack_frame_get_script_name(
-	struct _cef_v8stack_frame_t* self
+    struct _cef_v8stack_frame_t* self
 );
 
 extern cef_string_userfree_t cefingo_v8stack_frame_get_script_name_or_source_url(
-	struct _cef_v8stack_frame_t* self
+    struct _cef_v8stack_frame_t* self
 );
 
 extern cef_string_userfree_t cefingo_v8stack_frame_get_function_name(
-	struct _cef_v8stack_frame_t* self
+    struct _cef_v8stack_frame_t* self
 );
 
 extern int cefingo_v8stack_frame_get_line_number(
-	struct _cef_v8stack_frame_t* self
+    struct _cef_v8stack_frame_t* self
 );
 
 extern int cefingo_v8stack_frame_get_column(
-	struct _cef_v8stack_frame_t* self
+    struct _cef_v8stack_frame_t* self
 );
 
 extern int cefingo_v8stack_frame_is_eval(
-	struct _cef_v8stack_frame_t* self
+    struct _cef_v8stack_frame_t* self
 );
 
 extern int cefingo_v8stack_frame_is_constructor(
-	struct _cef_v8stack_frame_t* self
+    struct _cef_v8stack_frame_t* self
 );
 
 extern int cefingo_value_is_valid(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern int cefingo_value_is_owned(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern int cefingo_value_is_read_only(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern int cefingo_value_is_same(
-	struct _cef_value_t* self,
-	struct _cef_value_t* that
+    struct _cef_value_t* self,
+    struct _cef_value_t* that
 );
 
 extern int cefingo_value_is_equal(
-	struct _cef_value_t* self,
-	struct _cef_value_t* that
+    struct _cef_value_t* self,
+    struct _cef_value_t* that
 );
 
 extern struct _cef_value_t* cefingo_value_copy(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern cef_value_type_t cefingo_value_get_type(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern int cefingo_value_get_bool(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern int cefingo_value_get_int(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern double cefingo_value_get_double(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern cef_string_userfree_t cefingo_value_get_string(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern struct _cef_binary_value_t* cefingo_value_get_binary(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern struct _cef_dictionary_value_t* cefingo_value_get_dictionary(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern struct _cef_list_value_t* cefingo_value_get_list(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern int cefingo_value_set_null(
-	struct _cef_value_t* self
+    struct _cef_value_t* self
 );
 
 extern int cefingo_value_set_bool(
-	struct _cef_value_t* self,
-	int value
+    struct _cef_value_t* self,
+    int value
 );
 
 extern int cefingo_value_set_int(
-	struct _cef_value_t* self,
-	int value
+    struct _cef_value_t* self,
+    int value
 );
 
 extern int cefingo_value_set_double(
-	struct _cef_value_t* self,
-	double value
+    struct _cef_value_t* self,
+    double value
 );
 
 extern int cefingo_value_set_string(
-	struct _cef_value_t* self,
-	const cef_string_t* value
+    struct _cef_value_t* self,
+    const cef_string_t* value
 );
 
 extern int cefingo_value_set_binary(
-	struct _cef_value_t* self,
-	struct _cef_binary_value_t* value
+    struct _cef_value_t* self,
+    struct _cef_binary_value_t* value
 );
 
 extern int cefingo_value_set_dictionary(
-	struct _cef_value_t* self,
-	struct _cef_dictionary_value_t* value
+    struct _cef_value_t* self,
+    struct _cef_dictionary_value_t* value
 );
 
 extern int cefingo_value_set_list(
-	struct _cef_value_t* self,
-	struct _cef_list_value_t* value
+    struct _cef_value_t* self,
+    struct _cef_list_value_t* value
 );
 
 extern int cefingo_binary_value_is_valid(
-	struct _cef_binary_value_t* self
+    struct _cef_binary_value_t* self
 );
 
 extern int cefingo_binary_value_is_owned(
-	struct _cef_binary_value_t* self
+    struct _cef_binary_value_t* self
 );
 
 extern int cefingo_binary_value_is_same(
-	struct _cef_binary_value_t* self,
-	struct _cef_binary_value_t* that
+    struct _cef_binary_value_t* self,
+    struct _cef_binary_value_t* that
 );
 
 extern int cefingo_binary_value_is_equal(
-	struct _cef_binary_value_t* self,
-	struct _cef_binary_value_t* that
+    struct _cef_binary_value_t* self,
+    struct _cef_binary_value_t* that
 );
 
 extern struct _cef_binary_value_t* cefingo_binary_value_copy(
-	struct _cef_binary_value_t* self
+    struct _cef_binary_value_t* self
 );
 
 extern size_t cefingo_binary_value_get_size(
-	struct _cef_binary_value_t* self
+    struct _cef_binary_value_t* self
 );
 
 extern size_t cefingo_binary_value_get_data(
-	struct _cef_binary_value_t* self,
-	void* buffer,
-	size_t buffer_size,
-	size_t data_offset
+    struct _cef_binary_value_t* self,
+    void* buffer,
+    size_t buffer_size,
+    size_t data_offset
 );
 
 extern int cefingo_dictionary_value_is_valid(
-	struct _cef_dictionary_value_t* self
+    struct _cef_dictionary_value_t* self
 );
 
 extern int cefingo_dictionary_value_is_owned(
-	struct _cef_dictionary_value_t* self
+    struct _cef_dictionary_value_t* self
 );
 
 extern int cefingo_dictionary_value_is_read_only(
-	struct _cef_dictionary_value_t* self
+    struct _cef_dictionary_value_t* self
 );
 
 extern int cefingo_dictionary_value_is_same(
-	struct _cef_dictionary_value_t* self,
-	struct _cef_dictionary_value_t* that
+    struct _cef_dictionary_value_t* self,
+    struct _cef_dictionary_value_t* that
 );
 
 extern int cefingo_dictionary_value_is_equal(
-	struct _cef_dictionary_value_t* self,
-	struct _cef_dictionary_value_t* that
+    struct _cef_dictionary_value_t* self,
+    struct _cef_dictionary_value_t* that
 );
 
 extern struct _cef_dictionary_value_t* cefingo_dictionary_value_copy(
-	struct _cef_dictionary_value_t* self,
-	int exclude_empty_children
+    struct _cef_dictionary_value_t* self,
+    int exclude_empty_children
 );
 
 extern size_t cefingo_dictionary_value_get_size(
-	struct _cef_dictionary_value_t* self
+    struct _cef_dictionary_value_t* self
 );
 
 extern int cefingo_dictionary_value_clear(
-	struct _cef_dictionary_value_t* self
+    struct _cef_dictionary_value_t* self
 );
 
 extern int cefingo_dictionary_value_has_key(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern int cefingo_dictionary_value_get_keys(
-	struct _cef_dictionary_value_t* self,
-	cef_string_list_t keys
+    struct _cef_dictionary_value_t* self,
+    cef_string_list_t keys
 );
 
 extern int cefingo_dictionary_value_remove(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern cef_value_type_t cefingo_dictionary_value_get_type(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern struct _cef_value_t* cefingo_dictionary_value_get_value(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern int cefingo_dictionary_value_get_bool(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern int cefingo_dictionary_value_get_int(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern double cefingo_dictionary_value_get_double(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern cef_string_userfree_t cefingo_dictionary_value_get_string(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern struct _cef_binary_value_t* cefingo_dictionary_value_get_binary(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern struct _cef_dictionary_value_t* cefingo_dictionary_value_get_dictionary(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern struct _cef_list_value_t* cefingo_dictionary_value_get_list(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern int cefingo_dictionary_value_set_value(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key,
-	struct _cef_value_t* value
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key,
+    struct _cef_value_t* value
 );
 
 extern int cefingo_dictionary_value_set_null(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key
 );
 
 extern int cefingo_dictionary_value_set_bool(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key,
-	int value
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key,
+    int value
 );
 
 extern int cefingo_dictionary_value_set_int(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key,
-	int value
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key,
+    int value
 );
 
 extern int cefingo_dictionary_value_set_double(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key,
-	double value
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key,
+    double value
 );
 
 extern int cefingo_dictionary_value_set_string(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key,
-	const cef_string_t* value
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key,
+    const cef_string_t* value
 );
 
 extern int cefingo_dictionary_value_set_binary(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key,
-	struct _cef_binary_value_t* value
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key,
+    struct _cef_binary_value_t* value
 );
 
 extern int cefingo_dictionary_value_set_dictionary(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key,
-	struct _cef_dictionary_value_t* value
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key,
+    struct _cef_dictionary_value_t* value
 );
 
 extern int cefingo_dictionary_value_set_list(
-	struct _cef_dictionary_value_t* self,
-	const cef_string_t* key,
-	struct _cef_list_value_t* value
+    struct _cef_dictionary_value_t* self,
+    const cef_string_t* key,
+    struct _cef_list_value_t* value
 );
 
 extern int cefingo_list_value_is_valid(
-	struct _cef_list_value_t* self
+    struct _cef_list_value_t* self
 );
 
 extern int cefingo_list_value_is_owned(
-	struct _cef_list_value_t* self
+    struct _cef_list_value_t* self
 );
 
 extern int cefingo_list_value_is_read_only(
-	struct _cef_list_value_t* self
+    struct _cef_list_value_t* self
 );
 
 extern int cefingo_list_value_is_same(
-	struct _cef_list_value_t* self,
-	struct _cef_list_value_t* that
+    struct _cef_list_value_t* self,
+    struct _cef_list_value_t* that
 );
 
 extern int cefingo_list_value_is_equal(
-	struct _cef_list_value_t* self,
-	struct _cef_list_value_t* that
+    struct _cef_list_value_t* self,
+    struct _cef_list_value_t* that
 );
 
 extern struct _cef_list_value_t* cefingo_list_value_copy(
-	struct _cef_list_value_t* self
+    struct _cef_list_value_t* self
 );
 
 extern int cefingo_list_value_set_size(
-	struct _cef_list_value_t* self,
-	size_t size
+    struct _cef_list_value_t* self,
+    size_t size
 );
 
 extern size_t cefingo_list_value_get_size(
-	struct _cef_list_value_t* self
+    struct _cef_list_value_t* self
 );
 
 extern int cefingo_list_value_clear(
-	struct _cef_list_value_t* self
+    struct _cef_list_value_t* self
 );
 
 extern int cefingo_list_value_remove(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern cef_value_type_t cefingo_list_value_get_type(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern struct _cef_value_t* cefingo_list_value_get_value(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern int cefingo_list_value_get_bool(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern int cefingo_list_value_get_int(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern double cefingo_list_value_get_double(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern cef_string_userfree_t cefingo_list_value_get_string(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern struct _cef_binary_value_t* cefingo_list_value_get_binary(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern struct _cef_dictionary_value_t* cefingo_list_value_get_dictionary(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern struct _cef_list_value_t* cefingo_list_value_get_list(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern int cefingo_list_value_set_value(
-	struct _cef_list_value_t* self,
-	size_t index,
-	struct _cef_value_t* value
+    struct _cef_list_value_t* self,
+    size_t index,
+    struct _cef_value_t* value
 );
 
 extern int cefingo_list_value_set_null(
-	struct _cef_list_value_t* self,
-	size_t index
+    struct _cef_list_value_t* self,
+    size_t index
 );
 
 extern int cefingo_list_value_set_bool(
-	struct _cef_list_value_t* self,
-	size_t index,
-	int value
+    struct _cef_list_value_t* self,
+    size_t index,
+    int value
 );
 
 extern int cefingo_list_value_set_int(
-	struct _cef_list_value_t* self,
-	size_t index,
-	int value
+    struct _cef_list_value_t* self,
+    size_t index,
+    int value
 );
 
 extern int cefingo_list_value_set_double(
-	struct _cef_list_value_t* self,
-	size_t index,
-	double value
+    struct _cef_list_value_t* self,
+    size_t index,
+    double value
 );
 
 extern int cefingo_list_value_set_string(
-	struct _cef_list_value_t* self,
-	size_t index,
-	const cef_string_t* value
+    struct _cef_list_value_t* self,
+    size_t index,
+    const cef_string_t* value
 );
 
 extern int cefingo_list_value_set_binary(
-	struct _cef_list_value_t* self,
-	size_t index,
-	struct _cef_binary_value_t* value
+    struct _cef_list_value_t* self,
+    size_t index,
+    struct _cef_binary_value_t* value
 );
 
 extern int cefingo_list_value_set_dictionary(
-	struct _cef_list_value_t* self,
-	size_t index,
-	struct _cef_dictionary_value_t* value
+    struct _cef_list_value_t* self,
+    size_t index,
+    struct _cef_dictionary_value_t* value
 );
 
 extern int cefingo_list_value_set_list(
-	struct _cef_list_value_t* self,
-	size_t index,
-	struct _cef_list_value_t* value
+    struct _cef_list_value_t* self,
+    size_t index,
+    struct _cef_list_value_t* value
 );
 
 extern cef_string_userfree_t cefingo_web_plugin_info_get_name(
-	struct _cef_web_plugin_info_t* self
+    struct _cef_web_plugin_info_t* self
 );
 
 extern cef_string_userfree_t cefingo_web_plugin_info_get_path(
-	struct _cef_web_plugin_info_t* self
+    struct _cef_web_plugin_info_t* self
 );
 
 extern cef_string_userfree_t cefingo_web_plugin_info_get_version(
-	struct _cef_web_plugin_info_t* self
+    struct _cef_web_plugin_info_t* self
 );
 
 extern cef_string_userfree_t cefingo_web_plugin_info_get_description(
-	struct _cef_web_plugin_info_t* self
+    struct _cef_web_plugin_info_t* self
 );
 
 extern int cefingo_web_plugin_info_visitor_visit(
-	struct _cef_web_plugin_info_visitor_t* self,
-	struct _cef_web_plugin_info_t* info,
-	int count,
-	int total
+    struct _cef_web_plugin_info_visitor_t* self,
+    struct _cef_web_plugin_info_t* info,
+    int count,
+    int total
 );
 
 extern void cefingo_web_plugin_unstable_callback_is_unstable(
-	struct _cef_web_plugin_unstable_callback_t* self,
-	const cef_string_t* path,
-	int unstable
+    struct _cef_web_plugin_unstable_callback_t* self,
+    const cef_string_t* path,
+    int unstable
 );
 
 extern void cefingo_register_cdm_callback_on_cdm_registration_complete(
-	struct _cef_register_cdm_callback_t* self,
-	cef_cdm_registration_error_t result,
-	const cef_string_t* error_message
+    struct _cef_register_cdm_callback_t* self,
+    cef_cdm_registration_error_t result,
+    const cef_string_t* error_message
 );
 
 extern cef_string_userfree_t cefingo_x509cert_principal_get_display_name(
-	struct _cef_x509cert_principal_t* self
+    struct _cef_x509cert_principal_t* self
 );
 
 extern cef_string_userfree_t cefingo_x509cert_principal_get_common_name(
-	struct _cef_x509cert_principal_t* self
+    struct _cef_x509cert_principal_t* self
 );
 
 extern cef_string_userfree_t cefingo_x509cert_principal_get_locality_name(
-	struct _cef_x509cert_principal_t* self
+    struct _cef_x509cert_principal_t* self
 );
 
 extern cef_string_userfree_t cefingo_x509cert_principal_get_state_or_province_name(
-	struct _cef_x509cert_principal_t* self
+    struct _cef_x509cert_principal_t* self
 );
 
 extern cef_string_userfree_t cefingo_x509cert_principal_get_country_name(
-	struct _cef_x509cert_principal_t* self
+    struct _cef_x509cert_principal_t* self
 );
 
 extern void cefingo_x509cert_principal_get_street_addresses(
-	struct _cef_x509cert_principal_t* self,
-	cef_string_list_t addresses
+    struct _cef_x509cert_principal_t* self,
+    cef_string_list_t addresses
 );
 
 extern void cefingo_x509cert_principal_get_organization_names(
-	struct _cef_x509cert_principal_t* self,
-	cef_string_list_t names
+    struct _cef_x509cert_principal_t* self,
+    cef_string_list_t names
 );
 
 extern void cefingo_x509cert_principal_get_organization_unit_names(
-	struct _cef_x509cert_principal_t* self,
-	cef_string_list_t names
+    struct _cef_x509cert_principal_t* self,
+    cef_string_list_t names
 );
 
 extern void cefingo_x509cert_principal_get_domain_components(
-	struct _cef_x509cert_principal_t* self,
-	cef_string_list_t components
+    struct _cef_x509cert_principal_t* self,
+    cef_string_list_t components
 );
 
 extern struct _cef_x509cert_principal_t* cefingo_x509certificate_get_subject(
-	struct _cef_x509certificate_t* self
+    struct _cef_x509certificate_t* self
 );
 
 extern struct _cef_x509cert_principal_t* cefingo_x509certificate_get_issuer(
-	struct _cef_x509certificate_t* self
+    struct _cef_x509certificate_t* self
 );
 
 extern struct _cef_binary_value_t* cefingo_x509certificate_get_serial_number(
-	struct _cef_x509certificate_t* self
+    struct _cef_x509certificate_t* self
 );
 
 extern cef_time_t cefingo_x509certificate_get_valid_start(
-	struct _cef_x509certificate_t* self
+    struct _cef_x509certificate_t* self
 );
 
 extern cef_time_t cefingo_x509certificate_get_valid_expiry(
-	struct _cef_x509certificate_t* self
+    struct _cef_x509certificate_t* self
 );
 
 extern struct _cef_binary_value_t* cefingo_x509certificate_get_derencoded(
-	struct _cef_x509certificate_t* self
+    struct _cef_x509certificate_t* self
 );
 
 extern struct _cef_binary_value_t* cefingo_x509certificate_get_pemencoded(
-	struct _cef_x509certificate_t* self
+    struct _cef_x509certificate_t* self
 );
 
 extern size_t cefingo_x509certificate_get_issuer_chain_size(
-	struct _cef_x509certificate_t* self
+    struct _cef_x509certificate_t* self
 );
 #endif //CEFINGO_GEN_H_

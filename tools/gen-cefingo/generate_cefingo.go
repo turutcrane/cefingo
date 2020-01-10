@@ -4,7 +4,9 @@ package main
 
 import (
 	"bufio"
-	// "cefingo-org/gen-cefingo/parser"
+	"bytes"
+	"fmt"
+	"go/format"
 	"io/ioutil"
 	"log"
 	"os"
@@ -237,7 +239,7 @@ func getComments(fname string) {
 func outHandlerClass(gf, expf, cf, hf *Generator, d *parser.StructDecl) {
 	log.Printf("T226: Callback class: %s\n", d.Token())
 	outComment(gf, d.LineOfTypedef())
-	genGotype(gf, d)
+	WriteGoType(gf, d, gf.Lines())
 	genGoInterface(gf, d)
 	genGoAlloc(gf, d)
 	genBindFunc(gf, d)
@@ -344,7 +346,7 @@ func genChConstructFunc(cf, hf *Generator, st *parser.StructDecl) {
 func outCefObjectClass(gf, cf, hf *Generator, d *parser.StructDecl) {
 	log.Printf("T541: Cef object: %s\n", d.Token())
 	outComment(gf, d.LineOfTypedef())
-	genGotype(gf, d)
+	WriteGoType(gf, d, gf.Lines())
 	outCefObjectMethod(gf, cf, hf, d)
 }
 
@@ -360,4 +362,36 @@ func outCefObjectMethod(gf, cf, hf *Generator, d *parser.StructDecl) {
 		WriteCefObjectMethodC(cf, m)
 		WriteCefObjectMethodH(hf, m)
 	}
+}
+
+// Generator holds the state of the analysis. Primarily used to buffer
+// the output for format.Source.
+type Generator struct {
+	fname string
+	buf   bytes.Buffer // Accumulated output.
+}
+
+func (g *Generator) Printf(format string, args ...interface{}) {
+	fmt.Fprintf(&g.buf, format, args...)
+}
+
+func (g *Generator) Write(p []byte) (n int, err error) {
+	return g.buf.Write(p)
+}
+
+func (g *Generator) Lines() (line int) {
+	return bytes.Count(g.buf.Bytes(), []byte("\n"))
+}
+
+// format returns the gofmt-ed contents of the Generator's buffer.
+func (g *Generator) format() []byte {
+	src, err := format.Source(g.buf.Bytes())
+	if err != nil {
+		// Should never happen, but can arise when developing this code.
+		// The user can compile the output to see the error.
+		log.Printf("warning: internal error: invalid Go generated: %s", err)
+		log.Printf("warning: compile the package to analyze the error")
+		return g.buf.Bytes()
+	}
+	return src
 }

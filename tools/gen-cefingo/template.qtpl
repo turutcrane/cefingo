@@ -555,11 +555,34 @@ extern {%s methodCSig(m) %};
 {% endfunc %}
 
 // newCXxxxT()
-{% func NewGoType(d *parser.StructDecl, line int) %}
+{% func GoType(d *parser.StructDecl, line int) %}
 {% code goName := d.Token().GoName()
 	cName := d.Token().Name()
 	typeName := d.Token().BaseName()
+	line = line + 25
 -%}
+// Go type for {%s cName %}	
+type {%s goName %} struct {
+	p_{%s typeName %} *C.{%s cName %}
+}
+
+type RefTo{%s goName %} struct {
+	p_{%s typeName %} *{%s goName %}
+}
+
+type {%s goName %}Accessor interface {
+	Get{%s goName %}() *{%s goName %}
+	Set{%s goName %}(*{%s goName %})
+}
+
+func (r RefTo{%s goName %}) Get{%s goName %}() *{%s goName %} {
+	return r.p_{%s typeName %}
+}
+
+func (r *RefTo{%s goName %}) Set{%s goName %}(p *{%s goName %}) {
+	r.p_{%s typeName %} = p
+}
+
 // Go type {%s goName %} wraps cef type *C.{%s cName %}
 func new{%s goName %}(p *C.{%s cName %}) *{%s goName %} {
 	if p == nil {
@@ -578,4 +601,14 @@ func new{%s goName %}(p *C.{%s cName %}) *{%s goName %} {
 	{%- endif -%}
 	return &go_{%s typeName %}
 }
+{% if d.St == parser.StRefCounted -%}
+// *C.{%s cName %} has refCounted interface
+func ({%s typeName %} *{%s goName %}) HasOneRef() bool {
+	return BaseHasOneRef({%s typeName %}.p_{%s typeName %})
+}
+
+func (p *C.{%s cName %}) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+{% endif -%}
 {% endfunc %}
