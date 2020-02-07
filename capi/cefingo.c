@@ -4,8 +4,8 @@
 
 void cefingo_init()
 {
-    assert(sizeof(long) <= 8);
-    assert(sizeof(long long) == 8);
+	assert(sizeof(long) <= 8);
+	assert(sizeof(long long) == 8);
 }
 
 // cef_life_span_handler_t *cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t *handler)
@@ -102,11 +102,11 @@ void cefingo_init()
 
 
 typedef void(CEF_CALLBACK* on_load_error_t)(struct _cef_load_handler_t* self,
-        struct _cef_browser_t* browser,
-        struct _cef_frame_t* frame,
-        cef_errorcode_t errorCode,
-        const cef_string_t* errorText,
-        const cef_string_t* failedUrl);
+		struct _cef_browser_t* browser,
+		struct _cef_frame_t* frame,
+		cef_errorcode_t errorCode,
+		const cef_string_t* errorText,
+		const cef_string_t* failedUrl);
 
 // cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_t *handler)
 // {

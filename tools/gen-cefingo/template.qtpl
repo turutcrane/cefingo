@@ -1,11 +1,10 @@
-{% stripspace %}
 {% package main %}
 {% import (
 	"log"
 	"strings"
+
 	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
 )%}
-{% endstripspace %}
 
 Generate parameter name for Go func.
 {% func goParamName(p parser.Param) -%}
@@ -543,7 +542,8 @@ extern {%s methodCSig(m) %};
 
 {% func CefObjectMethodC(m *parser.MethodDecl) %}
 {% code retGoType := m.ReturnGoType() -%}
-{%s methodCSig(m) %}{
+{%s methodCSig(m) %}
+{
 	{% if retGoType != "" %}return {% endif %}self->{%s m.Funcname.Name() %}(
 		{%- for i, p := range m.Params -%}
 		{%- if i > 0 %}, 

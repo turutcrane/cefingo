@@ -1,6 +1,6 @@
 package parser
 
-//go:generate stringer -output parse_srting.go -type IdentKind,Ty,StructType,DefKind,TypeQualifier parse.go
+//go:generate go run golang.org/x/tools/cmd/stringer -output parse_srting.go -type IdentKind,Ty,StructType,DefKind,TypeQualifier parse.go
 
 import (
 	"fmt"
@@ -155,8 +155,6 @@ var duplicatedHandler = map[string]void{
 
 var outParameter = map[string]void{
 	"cef_cookie_visitor_t::visit::deleteCookie":                                 setElement,
-	"cef_response_filter_t::filter::data_in_read":                               setElement,
-	"cef_response_filter_t::filter::data_out_written":                           setElement,
 	"cef_image_t::get_representation_info::pixel_height":                        setElement,
 	"cef_image_t::get_representation_info::pixel_width":                         setElement,
 	"cef_image_t::get_as_bitmap::pixel_height":                                  setElement,
@@ -183,7 +181,9 @@ var outParameter = map[string]void{
 	"cef_request_context_handler_t::on_before_plugin_load::plugin_policy":       setElement,
 	"cef_request_handler_t::on_protocol_execution::allow_os_execution":          setElement,
 	"cef_request_handler_t::on_resource_redirect::new_url":                      setElement,
+	"cef_response_filter_t::filter::data_in_read":                               setElement,
 	"cef_response_filter_t::filter::data_out":                                   setElement,
+	"cef_response_filter_t::filter::data_out_written":                           setElement,
 	"cef_resource_handler_t::get_response_headers::redirectUrl":                 setElement,
 	"cef_resource_handler_t::open::handle_request":                              setElement,
 	"cef_resource_handler_t::read::bytes_read":                                  setElement,
@@ -204,6 +204,7 @@ var outParameter = map[string]void{
 	"cef_v8interceptor_t::get_byindex::exception":                               setElement,
 	"cef_v8interceptor_t::get_byindex::retval":                                  setElement,
 	"cef_v8interceptor_t::set_byindex::exception":                               setElement,
+	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":                 setElement,
 }
 
 var inOutParameter = map[string]void{
@@ -237,7 +238,9 @@ var sliceParameter = map[string]string{
 	"cef_v8handler_t::execute::arguments":                               "argumentsCount",
 	"cef_v8value_t::execute_function::arguments":                        "argumentsCount",
 	"cef_v8value_t::execute_function_with_context::arguments":           "argumentsCount",
+	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":         "chainCount",
 }
+
 var sliceLengthParameter = map[string]string{}
 
 func init() {
@@ -881,7 +884,7 @@ func handleFunc(base DeclCommon) (decl Decl) {
 	}
 
 	if _, nf := unGenerateMethod[f.CalleeName()]; nf {
-		log.Printf("T554: Skip: %s\n", fname.Name())
+		log.Printf("T887: Skip: %s\n", fname.Name())
 		return nil
 	}
 	return f
@@ -1379,7 +1382,7 @@ func getFuncPointer(sdecl *StructDecl, sd cc.StructDeclaration) (methodP *Method
 		}
 		m.Funcname = Token(f.Declarator.DirectDeclarator.Token)
 		if _, um := unGenerateMethod[m.CalleeName()]; um {
-			log.Printf("T954: Skip: %s\n", m.CalleeName())
+			log.Printf("T1385: Skip: %s\n", m.CalleeName())
 			return &MethodDecl{noToken, nil, sd, nil, sdecl}
 		}
 		for p := dd.ParameterTypeList.ParameterList; p != nil; p = p.ParameterList {

@@ -36,29 +36,29 @@ extern void cefingo_response_set_header_map(struct _cef_response_t* self, cef_st
 extern int cefingo_process_message_is_valid(struct _cef_process_message_t* self);
 extern int cefingo_process_message_is_read_only(struct _cef_process_message_t* self);
 extern struct _cef_process_message_t* cefingo_process_message_copy(
-    struct _cef_process_message_t* self);
+	struct _cef_process_message_t* self);
 extern cef_string_userfree_t cefingo_process_message_get_name(
-    struct _cef_process_message_t* self);
+	struct _cef_process_message_t* self);
 extern struct _cef_list_value_t* cefingo_process_message_get_argument_list(
-    struct _cef_process_message_t* self);
+	struct _cef_process_message_t* self);
 
 
 extern struct _cef_browser_host_t* cefingo_browser_get_host(
-    struct _cef_browser_t* self);
+	struct _cef_browser_t* self);
 extern struct _cef_frame_t* cefingo_browser_get_focused_frame(
-    struct _cef_browser_t* self);
+	struct _cef_browser_t* self);
 extern int cefingo_browser_send_process_message(
-    struct _cef_browser_t* self,
-    cef_process_id_t target_process,
-    struct _cef_process_message_t* message);
+	struct _cef_browser_t* self,
+	cef_process_id_t target_process,
+	struct _cef_process_message_t* message);
 
 extern void cefingo_browser_host_run_file_dialog(
-    struct _cef_browser_host_t* self,
-    cef_file_dialog_mode_t mode,
-    const cef_string_t* title,
-    const cef_string_t* default_file_path,
-    cef_string_list_t accept_filters,
-    int selected_accept_filter,
-    struct _cef_run_file_dialog_callback_t* callback);
+	struct _cef_browser_host_t* self,
+	cef_file_dialog_mode_t mode,
+	const cef_string_t* title,
+	const cef_string_t* default_file_path,
+	cef_string_list_t accept_filters,
+	int selected_accept_filter,
+	struct _cef_run_file_dialog_callback_t* callback);
 
 #endif // CEFINGO_H_

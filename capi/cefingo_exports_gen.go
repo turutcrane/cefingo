@@ -1305,7 +1305,7 @@ func cefingo_drag_handler_on_draggable_regions_changed(
 }
 
 ///
-// Called if the cef_request_tContext::LoadExtension request fails. |result|
+// Called if the cef_request_context_t::LoadExtension request fails. |result|
 // will be the error code.
 ///
 //export cefingo_extension_handler_on_extension_load_failed
@@ -1334,7 +1334,7 @@ func cefingo_extension_handler_on_extension_load_failed(
 }
 
 ///
-// Called if the cef_request_tContext::LoadExtension request succeeds.
+// Called if the cef_request_context_t::LoadExtension request succeeds.
 // |extension| is the loaded extension.
 ///
 //export cefingo_extension_handler_on_extension_loaded
@@ -1527,7 +1527,7 @@ func cefingo_extension_handler_on_before_browser(
 // tabId parameter (e.g. chrome.tabs.*). |extension| and |browser| are the
 // source of the API call. Return the browser that will be acted on by the API
 // call or return NULL to act on |browser|. The returned browser must share
-// the same cef_request_tContext as |browser|. Incognito browsers should not
+// the same cef_request_context_t as |browser|. Incognito browsers should not
 // be considered unless the source extension has incognito access enabled, in
 // which case |include_incognito| will be true (1).
 ///
@@ -3703,7 +3703,7 @@ func cefingo_request_context_handler_on_request_context_initialized(
 // |plugin_policy| to PLUGIN_POLICY_DISABLED may be cached when
 // |top_origin_url| is NULL. To purge the plugin list cache and potentially
 // trigger new calls to this function call
-// cef_request_tContext::PurgePluginListCache.
+// cef_request_context_t::PurgePluginListCache.
 ///
 //export cefingo_request_context_handler_on_before_plugin_load
 func cefingo_request_context_handler_on_before_plugin_load(
@@ -3927,8 +3927,8 @@ func cefingo_request_handler_get_auth_credentials(
 // size via the webkitStorageInfo.requestQuota function. |origin_url| is the
 // origin of the page making the request. |new_size| is the requested quota
 // size in bytes. Return true (1) to continue the request and call
-// cef_request_tCallback::cont() either in this function or at a later time to
-// grant or deny the request. Return false (0) to cancel the request
+// cef_request_callback_t::cont() either in this function or at a later time
+// to grant or deny the request. Return false (0) to cancel the request
 // immediately.
 ///
 //export cefingo_request_handler_on_quota_request
@@ -3969,7 +3969,7 @@ func cefingo_request_handler_on_quota_request(
 
 ///
 // Called on the UI thread to handle requests for URLs with an invalid SSL
-// certificate. Return true (1) and call cef_request_tCallback::cont() either
+// certificate. Return true (1) and call cef_request_callback_t::cont() either
 // in this function or at a later time to continue or cancel the request.
 // Return false (0) to cancel the request immediately. If
 // CefSettings.ignore_certificate_errors is set all invalid certificates will

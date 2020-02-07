@@ -5,11 +5,13 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"flag"
 	"fmt"
 	"go/format"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -17,11 +19,14 @@ import (
 	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
 )
 
-var goFormat bool = true
-
-var fileComments map[int][]string
+var (
+	goFormat     bool = true
+	fileComments map[int][]string
+	capiDir      = flag.String("capidir", "capi", "outpu directory")
+)
 
 func main() {
+	flag.Parse()
 	tus := parser.Parse()
 	for i, tu := range tus {
 		parser.ExternalDeclaration(i, tu.ExternalDeclaration)
@@ -135,7 +140,7 @@ func outFileGo(gf *Generator) {
 	}
 
 	// Write to file.
-	outputName := "capi/" + gf.fname
+	outputName := filepath.Join(*capiDir, gf.fname)
 
 	err := ioutil.WriteFile(outputName, src, 0644)
 	if err != nil {
@@ -161,7 +166,7 @@ func newFileCH() (cFile, hFile *Generator) {
 func outFileCH(cFile, hFile *Generator) {
 
 	// Write to C file.
-	outputCName := "capi/cefingo_gen.c"
+	outputCName := filepath.Join(*capiDir, "cefingo_gen.c")
 	err := ioutil.WriteFile(outputCName, cFile.buf.Bytes(), 0644)
 	if err != nil {
 		log.Panicf("writing output: %s", err)
@@ -169,7 +174,7 @@ func outFileCH(cFile, hFile *Generator) {
 
 	// Write to H file.
 	hFile.Printf("#endif //CEFINGO_GEN_H_")
-	outputHName := "capi/cefingo_gen.h"
+	outputHName := filepath.Join(*capiDir, "cefingo_gen.h")
 	err = ioutil.WriteFile(outputHName, hFile.buf.Bytes(), 0644)
 	if err != nil {
 		log.Panicf("writing output: %s", err)

@@ -126,31 +126,6 @@ func Initialize(s Settings, app *CAppT) {
 
 }
 
-// func RunMessageLoop() {
-// 	///
-// 	// Run the CEF message loop. Use this function instead of an application-
-// 	// provided message loop to get the best balance between performance and CPU
-// 	// usage. This function should only be called on the main application thread and
-// 	// only if cef_initialize() is called with a
-// 	// CefSettings.multi_threaded_message_loop value of false (0). This function
-// 	// will block until a quit message is received by the system.
-// 	// https://github.com/chromiumembedded/cef/blob/3497/include/capi/cef_app_capi.h#L167-L175
-// 	///
-// 	C.cef_run_message_loop()
-// }
-
-// // QuitMessageLoop
-// func QuitMessageLoop() {
-// 	Logf("L166:")
-// 	C.cef_quit_message_loop()
-// }
-
-// // Shutdown CEF
-// func Shutdown() {
-// 	Logf("L118:")
-// 	C.cef_shutdown()
-// }
-
 func BrowserHostCreateBrowser(window_name, url_string string, client *CClientT) {
 	Logf("L330:")
 	// Window info

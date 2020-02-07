@@ -1876,7 +1876,7 @@ func (self *CBrowserHostT) SetAutoResizeEnabled(
 
 ///
 // Returns the extension hosted in this browser or NULL if no extension is
-// hosted. See cef_request_tContext::LoadExtension for details.
+// hosted. See cef_request_context_t::LoadExtension for details.
 ///
 func (self *CBrowserHostT) GetExtension() *CExtensionT {
 
@@ -1888,7 +1888,7 @@ func (self *CBrowserHostT) GetExtension() *CExtensionT {
 ///
 // Returns true (1) if this browser is hosting an extension background script.
 // Background hosts do not have a window and are not displayable. See
-// cef_request_tContext::LoadExtension for details.
+// cef_request_context_t::LoadExtension for details.
 ///
 func (self *CBrowserHostT) IsBackgroundHost() bool {
 
@@ -3580,8 +3580,8 @@ func (self *CCookieManagerT) FlushStore(
 // CefSettings.cache_path if specified or in memory otherwise. If |callback| is
 // non-NULL it will be executed asnychronously on the UI thread after the
 // manager's storage has been initialized. Using this function is equivalent to
-// calling cef_request_tContext::cef_request_context_get_global_context()->GetDe
-// faultCookieManager().
+// calling cef_request_context_t::cef_request_context_get_global_context()->GetD
+// efaultCookieManager().
 ///
 func CookieManagerGetGlobalManager(
 	callback *CCompletionCallbackT,
@@ -6045,7 +6045,7 @@ func (self *CExtensionT) GetIdentifier() string {
 ///
 // Returns the absolute path to the extension directory on disk. This value
 // will be prefixed with PK_DIR_RESOURCES if a relative path was passed to
-// cef_request_tContext::LoadExtension.
+// cef_request_context_t::LoadExtension.
 ///
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CExtensionT) GetPath() string {
@@ -6092,7 +6092,7 @@ func (self *CExtensionT) IsSame(
 ///
 // Returns the handler for this extension. Will return NULL for internal
 // extensions or if no handler was passed to
-// cef_request_tContext::LoadExtension.
+// cef_request_context_t::LoadExtension.
 ///
 func (self *CExtensionT) GetHandler() *CExtensionHandlerT {
 
@@ -6104,7 +6104,7 @@ func (self *CExtensionT) GetHandler() *CExtensionHandlerT {
 ///
 // Returns the request context that loaded this extension. Will return NULL
 // for internal extensions or if the extension has been unloaded. See the
-// cef_request_tContext::LoadExtension documentation for more information
+// cef_request_context_t::LoadExtension documentation for more information
 // about loader contexts. Must be called on the browser process UI thread.
 ///
 func (self *CExtensionT) GetLoaderContext() *CRequestContextT {
@@ -6128,7 +6128,7 @@ func (self *CExtensionT) IsLoaded() bool {
 ///
 // Unload this extension if it is not an internal extension and is currently
 // loaded. Will result in a call to
-// cef_extension_tHandler::OnExtensionUnloaded on success.
+// cef_extension_handler_t::OnExtensionUnloaded on success.
 ///
 func (self *CExtensionT) Unload() {
 
@@ -6139,7 +6139,7 @@ func (self *CExtensionT) Unload() {
 
 ///
 // Callback structure used for asynchronous continuation of
-// cef_extension_tHandler::GetExtensionResource.
+// cef_extension_handler_t::GetExtensionResource.
 ///
 
 // Go type for cef_get_extension_resource_callback_t
@@ -6214,7 +6214,7 @@ func (self *CGetExtensionResourceCallbackT) Cancel() {
 ///
 // Implement this structure to handle events related to browser extensions. The
 // functions of this structure will be called on the UI thread. See
-// cef_request_tContext::LoadExtension for information about extension loading.
+// cef_request_context_t::LoadExtension for information about extension loading.
 ///
 
 // Go type for cef_extension_handler_t
@@ -6264,7 +6264,7 @@ func (p *C.cef_extension_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_r
 }
 
 ///
-// Called if the cef_request_tContext::LoadExtension request fails. |result|
+// Called if the cef_request_context_t::LoadExtension request fails. |result|
 // will be the error code.
 ///
 type OnExtensionLoadFailedHandler interface {
@@ -6275,7 +6275,7 @@ type OnExtensionLoadFailedHandler interface {
 }
 
 ///
-// Called if the cef_request_tContext::LoadExtension request succeeds.
+// Called if the cef_request_context_t::LoadExtension request succeeds.
 // |extension| is the loaded extension.
 ///
 type OnExtensionLoadedHandler interface {
@@ -6355,7 +6355,7 @@ type OnBeforeBrowserHandler interface {
 // tabId parameter (e.g. chrome.tabs.*). |extension| and |browser| are the
 // source of the API call. Return the browser that will be acted on by the API
 // call or return NULL to act on |browser|. The returned browser must share
-// the same cef_request_tContext as |browser|. Incognito browsers should not
+// the same cef_request_context_t as |browser|. Incognito browsers should not
 // be considered unless the source extension has incognito access enabled, in
 // which case |include_incognito| will be true (1).
 ///
@@ -11765,7 +11765,7 @@ func PostDataElementCreate() *CPostDataElementT {
 // cef_request_context_capi.h, include/capi/cef_request_context_capi.h:73:3,
 
 ///
-// Callback structure for cef_request_tContext::ResolveHost.
+// Callback structure for cef_request_context_t::ResolveHost.
 ///
 
 // Go type for cef_resolve_callback_t
@@ -12031,7 +12031,7 @@ func (self *CRequestContextT) ClearSchemeHandlerFactories() bool {
 // Tells all renderer processes associated with this context to throw away
 // their plugin list cache. If |reload_pages| is true (1) they will also
 // reload all pages with plugins.
-// cef_request_tContextHandler::OnBeforePluginLoad may be called to rebuild
+// cef_request_context_handler_t::OnBeforePluginLoad may be called to rebuild
 // the plugin list cache.
 ///
 func (self *CRequestContextT) PurgePluginListCache(
@@ -12138,7 +12138,7 @@ func (self *CRequestContextT) SetPreference(
 
 ///
 // Clears all certificate exceptions that were added as part of handling
-// cef_request_tHandler::on_certificate_error(). If you call this it is
+// cef_request_handler_t::on_certificate_error(). If you call this it is
 // recommended that you also call close_all_connections() or you risk not
 // being prompted again for server certificates if you reconnect quickly. If
 // |callback| is non-NULL it will be executed on the UI thread after
@@ -12176,7 +12176,7 @@ func (self *CRequestContextT) ClearHttpAuthCredentials(
 ///
 // Clears all active and idle connections that Chromium currently has. This is
 // only recommended if you have released all other CEF objects but don&#39;t yet
-// want to call Cefshutdown(). If |callback| is non-NULL it will be executed
+// want to call cef_shutdown(). If |callback| is non-NULL it will be executed
 // on the UI thread after completion.
 ///
 func (self *CRequestContextT) CloseAllConnections(
@@ -12216,8 +12216,8 @@ func (self *CRequestContextT) ResolveHost(
 // If extension resources will be read from disk using the default load
 // implementation then |root_directory| should be the absolute path to the
 // extension resources directory and |manifest| should be NULL. If extension
-// resources will be provided by the client (e.g. via cef_request_tHandler
-// and/or cef_extension_tHandler) then |root_directory| should be a path
+// resources will be provided by the client (e.g. via cef_request_handler_t
+// and/or cef_extension_handler_t) then |root_directory| should be a path
 // component unique to the extension (if not absolute this will be internally
 // prefixed with the PK_DIR_RESOURCES path) and |manifest| should contain the
 // contents that would otherwise be read from the &quot;manifest.json&quot; file on
@@ -12226,17 +12226,17 @@ func (self *CRequestContextT) ResolveHost(
 // The loaded extension will be accessible in all contexts sharing the same
 // storage (HasExtension returns true (1)). However, only the context on which
 // this function was called is considered the loader (DidLoadExtension returns
-// true (1)) and only the loader will receive cef_request_tContextHandler
+// true (1)) and only the loader will receive cef_request_context_handler_t
 // callbacks for the extension.
 //
-// cef_extension_tHandler::OnExtensionLoaded will be called on load success or
-// cef_extension_tHandler::OnExtensionLoadFailed will be called on load
+// cef_extension_handler_t::OnExtensionLoaded will be called on load success
+// or cef_extension_handler_t::OnExtensionLoadFailed will be called on load
 // failure.
 //
 // If the extension specifies a background script via the &quot;background&quot;
-// manifest key then cef_extension_tHandler::OnBeforeBackgroundBrowser will be
-// called to create the background browser. See that function for additional
-// information about background scripts.
+// manifest key then cef_extension_handler_t::OnBeforeBackgroundBrowser will
+// be called to create the background browser. See that function for
+// additional information about background scripts.
 //
 // For visible extension views the client application should evaluate the
 // manifest to determine the correct extension URL to load and then pass that
@@ -12479,7 +12479,7 @@ type OnRequestContextInitializedHandler interface {
 // |plugin_policy| to PLUGIN_POLICY_DISABLED may be cached when
 // |top_origin_url| is NULL. To purge the plugin list cache and potentially
 // trigger new calls to this function call
-// cef_request_tContext::PurgePluginListCache.
+// cef_request_context_t::PurgePluginListCache.
 ///
 type OnBeforePluginLoadHandler interface {
 	OnBeforePluginLoad(
@@ -12753,8 +12753,8 @@ type GetAuthCredentialsHandler interface {
 // size via the webkitStorageInfo.requestQuota function. |origin_url| is the
 // origin of the page making the request. |new_size| is the requested quota
 // size in bytes. Return true (1) to continue the request and call
-// cef_request_tCallback::cont() either in this function or at a later time to
-// grant or deny the request. Return false (0) to cancel the request
+// cef_request_callback_t::cont() either in this function or at a later time
+// to grant or deny the request. Return false (0) to cancel the request
 // immediately.
 ///
 type OnQuotaRequestHandler interface {
@@ -12769,7 +12769,7 @@ type OnQuotaRequestHandler interface {
 
 ///
 // Called on the UI thread to handle requests for URLs with an invalid SSL
-// certificate. Return true (1) and call cef_request_tCallback::cont() either
+// certificate. Return true (1) and call cef_request_callback_t::cont() either
 // in this function or at a later time to continue or cancel the request.
 // Return false (0) to cancel the request immediately. If
 // CefSettings.ignore_certificate_errors is set all invalid certificates will
@@ -13552,7 +13552,7 @@ func (self *CResourceRequestHandlerT) GetCookieAccessFilter(
 // or change the resource load optionally modify |request|. Modification of
 // the request URL will be treated as a redirect. Return RV_CONTINUE to
 // continue the request immediately. Return RV_CONTINUE_ASYNC and call
-// cef_request_tCallback:: cont() at a later time to continue or cancel the
+// cef_request_callback_t:: cont() at a later time to continue or cancel the
 // request asynchronously. Return RV_CANCEL to cancel the request immediately.
 //
 ///
@@ -14542,9 +14542,9 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 // function may be called multiple times to change or remove the factory that
 // matches the specified |scheme_name| and optional |domain_name|. Returns false
 // (0) if an error occurs. This function may be called on any thread in the
-// browser process. Using this function is equivalent to calling cef_request_tCo
-// ntext::cef_request_context_get_global_context()->register_scheme_handler_fact
-// ory().
+// browser process. Using this function is equivalent to calling cef_request_con
+// text_t::cef_request_context_get_global_context()->register_scheme_handler_fac
+// tory().
 ///
 func RegisterSchemeHandlerFactory(
 	scheme_name string,
@@ -14570,8 +14570,8 @@ func RegisterSchemeHandlerFactory(
 // Clear all scheme handler factories registered with the global request
 // context. Returns false (0) on error. This function may be called on any
 // thread in the browser process. Using this function is equivalent to calling c
-// ef_request_tContext::cef_request_context_get_global_context()->clear_scheme_h
-// andler_factories().
+// ef_request_context_t::cef_request_context_get_global_context()->clear_scheme_
+// handler_factories().
 ///
 func ClearSchemeHandlerFactories() bool {
 
@@ -15579,7 +15579,7 @@ func TaskRunnerGetForThread(
 
 ///
 // Returns true (1) if called on the specified thread. Equivalent to using
-// cef_task_tRunner::GetForThread(threadId)->belongs_to_current_thread().
+// cef_task_runner_t::GetForThread(threadId)->belongs_to_current_thread().
 ///
 func CurrentlyOn(
 	threadId CThreadIdT,
@@ -15592,7 +15592,7 @@ func CurrentlyOn(
 
 ///
 // Post a task for execution on the specified thread. Equivalent to using
-// cef_task_tRunner::GetForThread(threadId)->PostTask(task).
+// cef_task_runner_t::GetForThread(threadId)->PostTask(task).
 ///
 func PostTask(
 	threadId CThreadIdT,
@@ -15611,7 +15611,7 @@ func PostTask(
 
 ///
 // Post a task for delayed execution on the specified thread. Equivalent to
-// using cef_task_tRunner::GetForThread(threadId)->PostDelayedTask(task,
+// using cef_task_runner_t::GetForThread(threadId)->PostDelayedTask(task,
 // delay_ms).
 ///
 func PostDelayedTask(
@@ -15940,7 +15940,7 @@ func (self *CUrlrequestClientT) OnDownloadData(
 // the request and call cef_auth_callback_t::cont() when the authentication
 // information is available. If the request has an associated browser/frame
 // then returning false (0) will result in a call to GetAuthCredentials on the
-// cef_request_tHandler associated with that browser, if any. Otherwise,
+// cef_request_handler_t associated with that browser, if any. Otherwise,
 // returning false (0) will cancel the request immediately. This function will
 // only be called for requests initiated from the browser process.
 ///
