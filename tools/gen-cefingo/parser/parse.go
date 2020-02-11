@@ -1,6 +1,6 @@
 package parser
 
-//go:generate go run golang.org/x/tools/cmd/stringer -output parse_srting.go -type IdentKind,Ty,StructType,DefKind,TypeQualifier parse.go
+//go:generate go run golang.org/x/tools/cmd/stringer -output parse_string.go -type IdentKind,Ty,StructType,DefKind,TypeQualifier parse.go
 
 import (
 	"fmt"
