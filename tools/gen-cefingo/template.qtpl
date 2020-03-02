@@ -16,52 +16,47 @@ Generate parameter name for Go func.
 {% endswitch -%}
 {% endfunc %}
 
+Generate parameter name for Go func.
+{% func goParamNameOut(p parser.Param) -%}
+{%= goParamName(p) -%}
+{% if p.IsInOutParam() %}Out{% endif -%}
+{% endfunc %}
+
 {% func goTempName(p parser.Param) -%}
 goTmp{%s p.Name() -%}
 {% endfunc %}
 
+{% func goTempNameOut(p parser.Param) -%}
+{%s goTempName(p) + "Out" -%}
+{% endfunc %}
+
 Statemens to convert from C.param to Go type.
 {% func convToGoTypeStmts(p parser.Param, line *int) -%}
-{% if p.IsOutParam() -%}
+{% if p.IsInOutParam() -%}
 	{%- if p.Type().Ty == parser.TyStringT -%}
-		var _{%s p.Name() %} string
-		{%= goTempName(p) %} := &_{%s p.Name() %}{% code *line +=2 %}
-	{%- else -%}
-		var _{%s p.Name() %} {%s p.Type().Unpointer().GoType() %}
-		{%= goTempName(p) %} := &_{%s p.Name() %}{% code *line +=2 %}
-	{%- endif -%}
-{% elseif p.IsInOutParam() -%}
-	{%- if p.Type().Ty == parser.TyStringT -%}
-		_{%s p.Name() %} := string_from_cef_string({%s goParamName(p) %})
-		{%= goTempName(p) %} := &_{%s p.Name() %}{% code *line +=2 %}
-	{%- elseif p.Type().Pointer == 2 && p.Type().Unpointer().IsRefCountedClass() -%}
-		_{%s p.Name() %} := {%s ConvToGoTypeExp(p.Type().Unpointer(), "*" + goParamName(p)) %}{% code *line +=1 %}
-		cefp := _{%s p.Name() %}.p_{%s p.Type().BaseName() %}
-		{%= goTempName(p) %} := &_{%s p.Name() %}
+		{%= goTempName(p) %} := string_from_cef_string({%s goParamName(p) %})
+	{%- elseif p.Type().Pointer == 2 && p.Type().Deref().IsRefCountedClass() -%}
+		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type().Deref(), "*" + goParamName(p)) %}{% code *line +=1 %}
+		cefp := {%s goTempName(p) %}.p_{%s p.Type().BaseName() %}
 	{%- elseif p.Type().Ty == parser.TyStructSimple || p.Type().Ty ==  parser.TyInt -%}
-		_{%s p.Name() %} := {%s p.Type().Unpointer().GoType() %}(*{%s p.Name() %})
-		{%= goTempName(p) %} := &_{%s p.Name() %}
+		{%= goTempName(p) %} := {%s p.Type().Deref().GoType() %}(*{%s p.Name() %})
 	{%- else -%}
 	{%- code log.Panicf("E43: %s::%s::%s", p.CalleeName(), p.Name(), p.Type()) -%}
 	{%- endif -%}
-{% elseif bs, maxLenArg := p.IsByteSliceParam(); bs -%}
+{% elseif !p.IsOutParam() -%}
+	{%- if bs, maxLenArg := p.IsByteSliceParam(); bs -%}
 		{%= goTempName(p) %} := (*[1 << 30]byte)({%s p.Name() %})[:{%s maxLenArg %}:{%s maxLenArg %}]{% code *line +=1 %}
-{% elseif s, maxLenArg := p.IsSliceParam(); s -%}
-		slice := (*[1 << 30]({%s p.Type().Unpointer().GoCType() %}))(unsafe.Pointer({%s p.Name() %}))[:{%s maxLenArg %}:{%s maxLenArg %}]
+	{%- elseif s, maxLenArg := p.IsSliceParam(); s -%}
+		slice := (*[1 << 30]({%s p.Type().Deref().GoCType() %}))(unsafe.Pointer({%s p.Name() %}))[:{%s maxLenArg %}:{%s maxLenArg %}]
 		{%= goTempName(p) %} := make({%s p.GoType() %}, {%s maxLenArg %})
 		for i, v := range slice {
-			{%= goTempName(p) %}[i] = new{%s p.Type().Unpointer().Unpointer().GoType() %}(v)
+			{%= goTempName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(v)
 		}
-{% else -%}
+	{%- else -%}
 		{%- if !p.IsSliceLengthParam() -%}
 		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type(), goParamName(p)) %}{% code *line +=1 %}
 		{%- endif -%}
-{% endif -%}
-{% endfunc %}
-
-{% func ReleaseGoType(p parser.Param) -%}
-{% if p.IsRefCountedClass() -%}
-BaseRelease({%= goTempName(p) %}.p_{%s p.Type().BaseName() + ")" -%}
+	{%- endif -%}
 {% endif -%}
 {% endfunc %}
 
@@ -69,31 +64,32 @@ Set returned Go value to C.param and cleanup
 {% func afterProcess(p parser.Param, line *int) -%}
 {% if p.IsOutParam() -%}
 	{%- if p.Type().Ty == parser.TyStringT -%}
-		set_cef_string({%s goParamName(p) %}, _{%s p.Name() %}){% code *line +=1 %}
-	{%- elseif p.Type().Unpointer().IsRefCountedClass() -%}
-		if _{%s p.Name() %} != nil {
-			*{%s goParamName(p) %} = _{%s p.Name() %}.p_{%s p.Type().BaseName() %}
+		set_cef_string({%= goParamName(p) %}, {%= goTempNameOut(p) %}){% code *line +=1 %}
+	{%- elseif p.Type().Deref().IsRefCountedClass() -%}
+		if {%s goTempNameOut(p) %} != nil {
+			*{%s goParamName(p) %} = {%s goTempNameOut(p) %}.p_{%s p.Type().BaseName() %}
 			BaseAddRef(*{%s goParamName(p) %})
 		}{% code *line +=4 %}
 	{%- else -%}
-		*{%s goParamName(p) %} = ({%s p.Type().Unpointer().GoCType() %})(_{%s p.Name() %}){% code *line +=1 %}
+		*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})({%s goTempNameOut(p) %}){% code *line +=1 %}
 	{%- endif -%}
 {% elseif p.IsInOutParam() -%}
 	{%- if p.Type().Ty == parser.TyStringT -%}
-		set_cef_string({%s goParamName(p) %}, _{%s p.Name() %}){% code *line +=1 %}
+		set_cef_string({%s goParamName(p) %},{%s goTempNameOut(p) %}){% code *line +=1 %}
 	{% elseif p.Type().Ty == parser.TyStructSimple  || p.Type().Ty ==  parser.TyInt -%}
-		*{%s p.Name() %} = {%s p.Type().Unpointer().GoCType() %}(_{%s p.Name() %})
+		*{%s p.Name() %} = {%s p.Type().Deref().GoCType() %}({%s goTempNameOut(p) %})
 	{%- elseif p.Type().Pointer == 2 -%}
-		if cefp != (*{%= goTempName(p) %}).p_{%s p.Type().BaseName() %} {
-			*{%s goParamName(p) %} = (*{%= goTempName(p) %}).p_{%s p.Type().BaseName() %}
+		if cefp != {%= goTempNameOut(p) %}.p_{%s p.Type().BaseName() %} {
+			*{%s goParamName(p) %} = {%= goTempNameOut(p) %}.p_{%s p.Type().BaseName() %}
 			BaseAddRef(*{%s goParamName(p) %})
 		}
 	{%- else -%}
 	{%- code log.Panicf("E88: %s::%s::%s", p.CalleeName(), p.Name(), p.Type()) -%}
 	{%- endif -%}
 {% elseif p.Name() != "self" -%}
-	{%- if release := ReleaseGoType(p); release != "" -%}
-		{%s release %}{% code *line +=1 %}
+	{%- if p.IsRefCountedClass() -%}
+		BaseRelease({%= goTempName(p) %}.p_{%s p.Type().BaseName() %})
+		{%- code *line +=1 -%}
 	{%- endif -%}
 {% endif -%}
 {% endfunc %}
@@ -104,6 +100,18 @@ Set returned Go value to C.param and cleanup
 {% endfor -%}
 {% endfunc -%}
 
+{% func goRecieveValue(m *parser.MethodDecl) -%}
+{% code first := true -%}
+{% if m.HasReturnValue() %}goRet{% code first = false %}{% endif -%}
+{%- for _, p := range m.Params() -%}
+	{%- if p.IsOutParam() || p.IsInOutParam() -%}
+		{%- if !first %}, {% endif -%}
+		{%-s goTempNameOut(p) %}{% code first = false -%}
+	{%- endif -%}
+{%- endfor -%}
+{%- if m.HasReturnValue() || m.HasOutParam() -%}:= {% endif -%}
+{% endfunc %}
+
 {% func GoCallback(line int, m *parser.MethodDecl, baseName string) %}
 {% code
 	var retCtype string
@@ -112,9 +120,9 @@ Set returned Go value to C.param and cleanup
 {%= MethodComments(m, &line) -%}
 //export cefingo_{%s baseName %}_{%s m.Funcname.Name() %}
 func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
-	{%- for _, p := range m.Params -%}
+{%- for _, p := range m.Params() -%}
 	{%s goParamName(p) %} {%s p.GoCType() %},{% code line += 1 %}
-	{%- endfor -%}
+{%- endfor -%}
 ) {% if retCtype != "" %}(cRet {%s retCtype %}){% endif %} {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
@@ -125,16 +133,16 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 	cefingoIfaceAccess.Unlock()
 
 	if f != nil {
-		{%- for _, p := range m.Params -%}
+		{%- for _, p := range m.Params() -%}
 			{%- if exp := convToGoTypeStmts(p, &line); exp != "" && !p.IsByteSliceLengthParam() -%}
 				{%-s= exp -%}
 			{%- endif -%}
 		{%- endfor %}
-		{% if retCtype != "" %}goRet := {% endif %}f.{%s m.Funcname.TitleCase()%}{%s "(" -%}
-		{%- for _, p := range m.Params -%}
-		{%- if !(p.IsSliceLengthParam() || p.IsByteSliceLengthParam()) %}{%= goTempName(p) %},{% endif -%}
+		{%= goRecieveValue(m) %}f.{%s m.Funcname.TitleCase()%}{%s "(" -%}
+		{%- for _, p := range m.Params() -%}
+		{%- if !(p.IsSliceLengthParam() || p.IsByteSliceLengthParam() || p.IsOutParam()) %}{%= goTempName(p) %},{% endif -%}
 		{%- endfor %})
-		{%- for _, p := range m.Params -%}
+		{%- for _, p := range m.Params() -%}
 			{%- if exp := afterProcess(p, &line); exp != "" -%}
 				{%-s exp -%}
 			{%- endif -%}
@@ -234,12 +242,12 @@ import "C"
 {%= MethodComments(m, &line) -%}
 type {%s m.IfName() %} interface {
 	{%s m.Funcname.TitleCase() %} (
-		{%- for _, p := range m.Params -%}
-		{%- if !(p.IsSliceLengthParam() || p.IsByteSliceLengthParam()) -%}
-		{%s goParamName(p) %} {%s p.GoType() %},
+		{%- for _, p := range m.Params() -%}
+		{%- if !(p.IsSliceLengthParam() || p.IsByteSliceLengthParam() || p.IsOutParam()) -%}
+		{%s goParamName(p) %} {%s p.GoTypeIn() %},
 		{%- endif -%}
 		{%- endfor -%}
-	) {%s m.ReturnGoType() %}
+	) {%s retTypes(m) %}
 }
 {% endfunc %}
 
@@ -307,7 +315,7 @@ T_{%s strings.ToUpper(callee) -%}
 {% if m.HasConstParams() -%}
 typedef {%s m.ReturnType().CType() -%}
  (*{%s methodCTypeName(m) %})(
-{% for i, p := range m.Params -%}
+{% for i, p := range m.Params() -%}
 {% if i > 0 %}, 
 {% endif %}	{%s p.CType() -%}
 {% endfor%}
@@ -345,7 +353,7 @@ extern {%s constructorName(st) %};
 	{%s cTempName(p) %} := create_cef_string("")
 	defer clear_cef_string({%s cTempName(p) %})
 	{%- else -%}
-	var {%s cTempName(p) %} {%s p.Type().Unpointer().GoCType() %}
+	var {%s cTempName(p) %} {%s p.Type().Deref().GoCType() %}
 	{%- endif -%}
 {% elseif ok, argLen := p.IsByteSliceParam(); ok && !p.IsInOutParam() -%}
 	{%s argLen %} := len({%s goParamName(p) %})
@@ -353,7 +361,7 @@ extern {%s constructorName(st) %};
 {% elseif ok, argLen := p.IsSliceParam(); ok -%}
 	{%s argLen %} := len({%s goParamName(p) %})
 	{%s cTempName(p) %} := c_calloc(C.size_t({%s argLen %}), (C.size_t)(unsafe.Sizeof({%= goParamName(p) %}[0])), "T{%d *line %}:{%s p.CalleeName() + "::" + p.Name() %}")
-	slice := (*[1 << 30]{%s p.Type().Unpointer().GoCType() %})({%s cTempName(p) %})[:{%s argLen %}:{%s argLen %}]
+	slice := (*[1 << 30]{%s p.Type().Deref().GoCType() %})({%s cTempName(p) %})[:{%s argLen %}:{%s argLen %}]
 	for i, v := range {%s goParamName(p) %} {
 		cefp := v.p_{%s p.Type().BaseName() %}
 		if cefp != nil {
@@ -379,9 +387,6 @@ extern {%s constructorName(st) %};
 	{%- code *line += 2 -%}
 	{%s cName(p) %} := create_cef_string({%s goParamName(p) %})
 	defer clear_cef_string({%s cName(p) %})
-{% case "*time.Time" -%}
-	{%- code *line += 1 -%}
-	var {%s cName(p) %} C.time_t
 {% case "time.Time" -%}
 	{%- code *line += 1 -%}
 	{%s cName(p) %} := {%s goParamName(p) %}.Unix()
@@ -436,90 +441,110 @@ tmp{%= cName(p) -%}
 {% func postConvFromC(p parser.Param, line *int) -%}
 {% if p.IsOutParam() -%}
 	{%- if ok, argLen := p.IsByteSliceParam(); ok -%}
-	copy({%s goParamName(p) %}, C.GoBytes({%s cTempName(p) %}, C.int({%s argLen %})))
+	{%s goParamName(p) %} = C.GoBytes({%s cTempName(p) %}, C.int({%s argLen %}))
 	C.free({%s cTempName(p) %})
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
-	*{%s goParamName(p) %} = string_from_cef_string({%s cTempName(p) %})
-	{%- elseif p.Type().Unpointer().IsRefCountedClass() -%}
-	*{%s goParamName(p) %} = new{%s p.Type().Unpointer().Unpointer().GoType() %}({%s cTempName(p) %})
+	{%s goParamName(p) %} = string_from_cef_string({%s cTempName(p) %})
+	{%- elseif p.Type().Deref().IsRefCountedClass() -%}
+	{%s goParamName(p) %} = new{%s p.Type().Deref().Deref().GoType() %}({%s cTempName(p) %})
+	{%- elseif p.Type().Ty == parser.TyTimeT %}
+	{%s goParamName(p) %} = time.Unix(int64({%= cTempName(p) %}), 0)
 	{%- else -%}
-	*{%s goParamName(p) %} = ({%s p.Type().Unpointer().GoType() %})({%s cTempName(p) %})
+	{%s goParamName(p) %} = ({%s p.Type().Deref().GoType() %})({%s cTempName(p) %})
 	{%- endif -%}
 {% elseif ok, _ := p.IsByteSliceParam(); ok && !p.IsInOutParam() -%}
 	C.free({%s cTempName(p) %})
-{% else -%}
-{% switch p.Type().GoType() -%}
-{% case "*time.Time" -%}
-	*{%s goParamName(p) %} = time.Unix(int64({%s cName(p) %}), 0)
-{% endswitch -%}
 {% endif -%}
 {% endfunc %}
 
 {% func GoFunction(line int, f *parser.FuncDecl) -%}
-{% code retGoType := f.ReturnGoType() -%}
 func {%s f.Funcname.TitleCase() %}(
-	{%- for _, p := range f.Params -%}
-	{%- if !p.IsByteSliceLengthParam() -%}
+	{%- for _, p := range f.Params() -%}
+	{%- if !p.IsByteSliceLengthParam() && !p.IsOutParam() -%}
 	{%s goParamName(p) %} {%s p.GoType() %},
 	{%- endif -%}
 	{%- endfor -%}
-) {% if retGoType != "" %}{%s retGoType %} {% endif %}{
-	{%- for _, p := range f.Params -%}
+) {%= retTypes(f) %}{
+	{%- for _, p := range f.Params() -%}
 		{%- if exp := preConvToC(p, &line); exp != "" -%}
 			{%-s= exp -%}
 		{%- endif -%}
 	{%- endfor %}
-	{% if retGoType != "" %}ret := {% endif %}C.{%s f.Name() %}({% for i, p := range f.Params -%}
+	{% if f.HasReturnValue() %}cRet := {% endif %}C.{%s f.Name() %}({% for i, p := range f.Params() -%}
 	{%- if i > 0 %}, {% endif %}{%= convToC(p) -%}
 	{%- endfor %})
 
-	{%- for _, p := range f.Params -%}{%s postConvFromC(p, &line) %}{%endfor -%}
-	{%- if f.IsBoolValueMethod() -%}
-	return ret == 1
-	{%- elseif retGoType != "" -%}
-	return {%s ConvToGoTypeExp(f.ReturnType(), "ret") %}
-	{%- endif -%}
+	{%- for _, p := range f.Params() -%}{%s postConvFromC(p, &line) %}{%endfor -%}
+	{%= goReturnStmt(f) %}
 }
+{% endfunc %}
+
+Generate Go func Return Types
+{% func retTypes(m parser.Callable) -%}
+{% if m.HasReturnValue() || m.HasOutParam() -%}
+({% if m.HasReturnValue() -%}ret {%s m.ReturnGoType() -%},{%- endif -%}
+{% for _, p := range m.Params() -%}
+{% if p.IsOutParam() || p.IsInOutParam() -%}
+{%s goParamNameOut(p) %} {% if p.Type().Ty == parser.TyStringT && p.Type().Pointer == 1 -%}
+{%s p.Type().GoType() %}{% else %}{%s p.Type().Deref().GoType() %}{% endif -%}
+, {% endif -%}
+{% endfor -%}
+{%s ")" -%}
+{% endif -%}
 {% endfunc %}
 
 Generate Go method call to object method (self->method(...))
 {% func CefObjectMethod(line int, m *parser.MethodDecl) %}
-{% code retGoType := m.ReturnGoType() -%}
 {% for _, c := range m.Comment -%}
 {%s c %}
 {% endfor -%}
-func  ({%s goParamName(m.Params[0]) %} {%s m.Params[0].GoType() %}) {%s m.Funcname.TitleCase() %}(
-{% for i, p := range m.Params -%}
-	{%- if i > 0 -%}
+func  ({%s goParamName(m.Params()[0]) %} {%s m.Params()[0].GoType() %}) {%s m.Funcname.TitleCase() %}(
+{% for i, p := range m.Params() -%}
+	{%- if i > 0 && !p.IsOutParam() -%}
 	{%- if !p.IsByteSliceLengthParam() && !p.IsSliceLengthParam() -%}
 	{%s goParamName(p) %} {%s p.GoType() %},
 	{%- endif -%}
 	{%- endif -%}
 {% endfor -%}
-) {% if retGoType != "" %}{%s retGoType %} {% endif %}{
-	{%- for i, p := range m.Params -%}
+) {%= retTypes(m) %}{
+	{%- for i, p := range m.Params() -%}
 	{%- if !(i == 0 && p.Name() == "self") -%}
 		{%- if stmts := preConvToC(p, &line); stmts != "" -%}
 			{%-s= stmts -%}
 		{%- endif -%}
 	{%- endif -%}
 	{%- endfor %}
-	{% if retGoType != "" %}ret := {% endif %}C.{%s methodCName(m) %}({% for i, p := range m.Params -%}
+	{% if m.HasReturnValue() %}cRet := {% endif %}C.{%s methodCName(m) %}({% for i, p := range m.Params() -%}
 	{%- if i > 0 %}, {% endif %}{%= convToC(p) -%}
 	{%- endfor %})
-	{%- for _, p := range m.Params -%}{%s postConvFromC(p, &line) %}{%endfor -%}
-	{%- if m.IsBoolValueMethod() %}
-	return ret == 1
-	{%- elseif m.ReturnType().Ty == parser.TyStringUserfreeT %}
-	s := string_from_cef_string((*C.cef_string_t)(ret))
-	if ret != nil {
-		C.cef_string_userfree_free(ret)
-	}
-	return s
-	{%- elseif retGoType != "" %}
-	return {%s ConvToGoTypeExp(m.ReturnType(), "ret") %}
-	{%- endif -%}
+
+	{%- for _, p := range m.Params() -%}{%s postConvFromC(p, &line) %}{%endfor -%}
+	{%= goReturnStmt(m) %}
 }
+{% endfunc %}
+
+{% func goReturnStmt(m parser.Callable) -%}
+	{%- if m.HasReturnValue() -%}
+	{%- if m.IsBoolValueMethod() %}
+	ret = cRet == 1
+	{%- elseif m.ReturnType().Ty == parser.TyStringUserfreeT %}
+	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	if cRet != nil {
+		C.cef_string_userfree_free(cRet)
+	}
+	ret = s
+	{%- else %}
+	ret = {%s ConvToGoTypeExp(m.ReturnType(), "cRet") %}
+	{%- endif -%}
+	{%- endif -%}
+	{%- if m.HasReturnValue() || m.HasOutParam() -%}{% code first := true -%}
+	return {%if m.HasReturnValue() %}ret{%code first = false %}{% endif -%}
+	{%- for _, p := range m.Params() -%}
+		{%- if p.IsOutParam() || p.IsInOutParam() -%}
+			{%- if !first %}, {% endif %}{%s goParamName(p) %}{%code first = false -%}
+		{%- endif -%}
+	{%- endfor -%}
+	{%- endif -%}
 {% endfunc %}
 
 {% func methodCName(m *parser.MethodDecl) -%}
@@ -528,7 +553,7 @@ func  ({%s goParamName(m.Params[0]) %} {%s m.Params[0].GoType() %}) {%s m.Funcna
 
 {% func methodCSig(m *parser.MethodDecl) -%}
 {%s m.ReturnType().CType() %} {%s methodCName(m) %}(
-{% for i, p := range m.Params -%}
+{% for i, p := range m.Params() -%}
 {% if i > 0 %},
 {% endif -%}
 	{%s p.CType() %} {%s p.Name() -%}
@@ -545,7 +570,7 @@ extern {%s methodCSig(m) %};
 {%s methodCSig(m) %}
 {
 	{% if retGoType != "" %}return {% endif %}self->{%s m.Funcname.Name() %}(
-		{%- for i, p := range m.Params -%}
+		{%- for i, p := range m.Params() -%}
 		{%- if i > 0 %}, 
 		{%- endif -%}
 		{%s p.Name() -%}
@@ -563,6 +588,7 @@ extern {%s methodCSig(m) %};
 -%}
 // Go type for {%s cName %}	
 type {%s goName %} struct {
+	noCopy noCopy
 	p_{%s typeName %} *C.{%s cName %}
 }
 
@@ -592,7 +618,7 @@ func new{%s goName %}(p *C.{%s cName %}) *{%s goName %} {
 	{%- if d.St == parser.StRefCounted -%}
 	BaseAddRef(p)
 	{%- endif -%}
-	go_{%s typeName %} := {%s goName %}{p}
+	go_{%s typeName %} := {%s goName %}{noCopy{}, p}
 	{%- if d.St == parser.StRefCounted -%}
 	runtime.SetFinalizer(&go_{%s typeName %}, func(g *{%s goName %}) {
 		Tracef(unsafe.Pointer(g.p_{%s typeName %}), "T{%d line + 8 %}:")

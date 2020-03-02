@@ -104,11 +104,10 @@ func (c *Context) GetElementsByClassName(cls string) (elements Value, err error)
 }
 
 func EnterContext(c *capi.CV8contextT) (ctx *Context, err error) {
-	runtime.LockOSThread()
+	runtime.LockOSThread() // UnlockOSThread at ExitContext()
 	if c.Enter() {
 		return GetContext()
 	}
-	runtime.UnlockOSThread()
 	return nil, fmt.Errorf("E105: Enter Error")
 }
 
@@ -159,21 +158,20 @@ func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	name string,
 	object *capi.CV8valueT,
 	arguments []*capi.CV8valueT,
-	retval **capi.CV8valueT,
-	exception *string,
-) (sts bool) {
+) (sts bool, retval *capi.CV8valueT, exception string) {
 	if len(arguments) == 0 {
 		err := errors.Errorf("%s: No Arguments", name)
 		capi.Logf("%+v", err)
-		return false
+		return false, nil, ""
 	}
 	err := f(Value{object}, Value{arguments[0]})
 	if err == nil {
 		sts = true
 	} else {
-		capi.Logf("L134: %s Not Handled %v", name, err)
+		exception = fmt.Sprintf("L134: %s Not Handled %v", name, err)
+		capi.Logf(exception)
 	}
-	return sts
+	return sts, retval, exception
 }
 
 func NewFunction(name string, f capi.ExecuteHandler) Value {
@@ -433,9 +431,10 @@ func CreateStringFromByteArray(b []byte) Value {
 }
 
 func (c *Context) Eval(code string) (v Value, err error) {
+	var ok bool
 	var v8v *capi.CV8valueT
 	var e *capi.CV8exceptionT
-	if c.V8context.Eval(code, "", 0, &v8v, &e) {
+	if ok, v8v, e = c.V8context.Eval(code, "", 0); ok {
 		v = Value{v8v}
 	} else {
 		err = errors.Errorf("Eval Error<%s> %s", code, e.GetMessage())

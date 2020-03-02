@@ -5541,142 +5541,32 @@ cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_hand
 	return (cef_resource_handler_t*)resource_handler;
 }
 
-struct _cef_cookie_access_filter_t* cefingo_resource_request_handler_get_cookie_access_filter(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request
-)
-{
-	return self->get_cookie_access_filter(
-		self, 
-		browser, 
-		frame, 
-		request
-	);
-}
 
-cef_return_value_t cefingo_resource_request_handler_on_before_resource_load(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_request_callback_t* callback
-)
+cef_resource_request_handler_t *cefingo_construct_resource_request_handler(cefingo_resource_request_handler_wrapper_t* resource_request_handler)
 {
-	return self->on_before_resource_load(
-		self, 
-		browser, 
-		frame, 
-		request, 
-		callback
-	);
-}
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*resource_request_handler), counter),
+		(cef_base_ref_counted_t*) resource_request_handler);
+	
+	// callbacks
+	resource_request_handler->body.get_cookie_access_filter = 
+		cefingo_resource_request_handler_get_cookie_access_filter;
+	resource_request_handler->body.on_before_resource_load = 
+		cefingo_resource_request_handler_on_before_resource_load;
+	resource_request_handler->body.get_resource_handler = 
+		cefingo_resource_request_handler_get_resource_handler;
+	resource_request_handler->body.on_resource_redirect = 
+		cefingo_resource_request_handler_on_resource_redirect;
+	resource_request_handler->body.on_resource_response = 
+		cefingo_resource_request_handler_on_resource_response;
+	resource_request_handler->body.get_resource_response_filter = 
+		cefingo_resource_request_handler_get_resource_response_filter;
+	resource_request_handler->body.on_resource_load_complete = 
+		cefingo_resource_request_handler_on_resource_load_complete;
+	resource_request_handler->body.on_protocol_execution = 
+		cefingo_resource_request_handler_on_protocol_execution;
 
-struct _cef_resource_handler_t* cefingo_resource_request_handler_get_resource_handler(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request
-)
-{
-	return self->get_resource_handler(
-		self, 
-		browser, 
-		frame, 
-		request
-	);
-}
-
-void cefingo_resource_request_handler_on_resource_redirect(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response,
-	cef_string_t* new_url
-)
-{
-	self->on_resource_redirect(
-		self, 
-		browser, 
-		frame, 
-		request, 
-		response, 
-		new_url
-	);
-}
-
-int cefingo_resource_request_handler_on_resource_response(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response
-)
-{
-	return self->on_resource_response(
-		self, 
-		browser, 
-		frame, 
-		request, 
-		response
-	);
-}
-
-struct _cef_response_filter_t* cefingo_resource_request_handler_get_resource_response_filter(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response
-)
-{
-	return self->get_resource_response_filter(
-		self, 
-		browser, 
-		frame, 
-		request, 
-		response
-	);
-}
-
-void cefingo_resource_request_handler_on_resource_load_complete(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	struct _cef_response_t* response,
-	cef_urlrequest_status_t status,
-	int64 received_content_length
-)
-{
-	self->on_resource_load_complete(
-		self, 
-		browser, 
-		frame, 
-		request, 
-		response, 
-		status, 
-		received_content_length
-	);
-}
-
-void cefingo_resource_request_handler_on_protocol_execution(
-	struct _cef_resource_request_handler_t* self,
-	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame,
-	struct _cef_request_t* request,
-	int* allow_os_execution
-)
-{
-	self->on_protocol_execution(
-		self, 
-		browser, 
-		frame, 
-		request, 
-		allow_os_execution
-	);
+	return (cef_resource_request_handler_t*)resource_request_handler;
 }
 
 int cefingo_cookie_access_filter_can_send_cookie(
@@ -5892,34 +5782,20 @@ void cefingo_response_set_url(
 	);
 }
 
-int cefingo_response_filter_init_filter(
-	struct _cef_response_filter_t* self
-)
-{
-	return self->init_filter(
-		self
-	);
-}
 
-cef_response_filter_status_t cefingo_response_filter_filter(
-	struct _cef_response_filter_t* self,
-	void* data_in,
-	size_t data_in_size,
-	size_t* data_in_read,
-	void* data_out,
-	size_t data_out_size,
-	size_t* data_out_written
-)
+cef_response_filter_t *cefingo_construct_response_filter(cefingo_response_filter_wrapper_t* response_filter)
 {
-	return self->filter(
-		self, 
-		data_in, 
-		data_in_size, 
-		data_in_read, 
-		data_out, 
-		data_out_size, 
-		data_out_written
-	);
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*response_filter), counter),
+		(cef_base_ref_counted_t*) response_filter);
+	
+	// callbacks
+	response_filter->body.init_filter = 
+		cefingo_response_filter_init_filter;
+	response_filter->body.filter = 
+		cefingo_response_filter_filter;
+
+	return (cef_response_filter_t*)response_filter;
 }
 
 int cefingo_scheme_registrar_add_custom_scheme(

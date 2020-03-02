@@ -21,11 +21,12 @@ type CStringListT C.cef_string_list_t
 ///
 // Allocate a new string map.
 ///
-func StringListAlloc() CStringListT {
+func StringListAlloc() (ret CStringListT) {
 
-	ret := C.cef_string_list_alloc()
+	cRet := C.cef_string_list_alloc()
 
-	return (CStringListT)(ret)
+	ret = (CStringListT)(cRet)
+	return ret
 }
 
 ///
@@ -33,11 +34,12 @@ func StringListAlloc() CStringListT {
 ///
 func StringListSize(
 	list CStringListT,
-) int64 {
+) (ret int64) {
 
-	ret := C.cef_string_list_size((C.cef_string_list_t)(list))
+	cRet := C.cef_string_list_size((C.cef_string_list_t)(list))
 
-	return (int64)(ret)
+	ret = (int64)(cRet)
+	return ret
 }
 
 ///
@@ -81,11 +83,12 @@ func StringListFree(
 ///
 func StringListCopy(
 	list CStringListT,
-) CStringListT {
+) (ret CStringListT) {
 
-	ret := C.cef_string_list_copy((C.cef_string_list_t)(list))
+	cRet := C.cef_string_list_copy((C.cef_string_list_t)(list))
 
-	return (CStringListT)(ret)
+	ret = (CStringListT)(cRet)
+	return ret
 }
 
 // cef_string_map.h, include/internal/cef_string_map.h:44:15,
@@ -98,11 +101,12 @@ type CStringMapT C.cef_string_map_t
 ///
 // Allocate a new string map.
 ///
-func StringMapAlloc() CStringMapT {
+func StringMapAlloc() (ret CStringMapT) {
 
-	ret := C.cef_string_map_alloc()
+	cRet := C.cef_string_map_alloc()
 
-	return (CStringMapT)(ret)
+	ret = (CStringMapT)(cRet)
+	return ret
 }
 
 ///
@@ -110,11 +114,12 @@ func StringMapAlloc() CStringMapT {
 ///
 func StringMapSize(
 	cmap CStringMapT,
-) int64 {
+) (ret int64) {
 
-	ret := C.cef_string_map_size((C.cef_string_map_t)(cmap))
+	cRet := C.cef_string_map_size((C.cef_string_map_t)(cmap))
 
-	return (int64)(ret)
+	ret = (int64)(cRet)
+	return ret
 }
 
 ///
@@ -124,15 +129,16 @@ func StringMapAppend(
 	cmap CStringMapT,
 	key string,
 	value string,
-) bool {
+) (ret bool) {
 	c_key := create_cef_string(key)
 	defer clear_cef_string(c_key)
 	c_value := create_cef_string(value)
 	defer clear_cef_string(c_value)
 
-	ret := C.cef_string_map_append((C.cef_string_map_t)(cmap), (*C.cef_string_t)(c_key), (*C.cef_string_t)(c_value))
+	cRet := C.cef_string_map_append((C.cef_string_map_t)(cmap), (*C.cef_string_t)(c_key), (*C.cef_string_t)(c_value))
 
-	return ret == 1
+	ret = cRet == 1
+	return ret
 }
 
 ///
@@ -168,11 +174,12 @@ type CStringMultimapT C.cef_string_multimap_t
 ///
 // Allocate a new string multimap.
 ///
-func StringMultimapAlloc() CStringMultimapT {
+func StringMultimapAlloc() (ret CStringMultimapT) {
 
-	ret := C.cef_string_multimap_alloc()
+	cRet := C.cef_string_multimap_alloc()
 
-	return (CStringMultimapT)(ret)
+	ret = (CStringMultimapT)(cRet)
+	return ret
 }
 
 ///
@@ -180,11 +187,12 @@ func StringMultimapAlloc() CStringMultimapT {
 ///
 func StringMultimapSize(
 	cmap CStringMultimapT,
-) int64 {
+) (ret int64) {
 
-	ret := C.cef_string_multimap_size((C.cef_string_multimap_t)(cmap))
+	cRet := C.cef_string_multimap_size((C.cef_string_multimap_t)(cmap))
 
-	return (int64)(ret)
+	ret = (int64)(cRet)
+	return ret
 }
 
 ///
@@ -193,13 +201,14 @@ func StringMultimapSize(
 func StringMultimapFindCount(
 	cmap CStringMultimapT,
 	key string,
-) int64 {
+) (ret int64) {
 	c_key := create_cef_string(key)
 	defer clear_cef_string(c_key)
 
-	ret := C.cef_string_multimap_find_count((C.cef_string_multimap_t)(cmap), (*C.cef_string_t)(c_key))
+	cRet := C.cef_string_multimap_find_count((C.cef_string_multimap_t)(cmap), (*C.cef_string_t)(c_key))
 
-	return (int64)(ret)
+	ret = (int64)(cRet)
+	return ret
 }
 
 ///
@@ -209,15 +218,16 @@ func StringMultimapAppend(
 	cmap CStringMultimapT,
 	key string,
 	value string,
-) bool {
+) (ret bool) {
 	c_key := create_cef_string(key)
 	defer clear_cef_string(c_key)
 	c_value := create_cef_string(value)
 	defer clear_cef_string(c_value)
 
-	ret := C.cef_string_multimap_append((C.cef_string_multimap_t)(cmap), (*C.cef_string_t)(c_key), (*C.cef_string_t)(c_value))
+	cRet := C.cef_string_multimap_append((C.cef_string_multimap_t)(cmap), (*C.cef_string_t)(c_key), (*C.cef_string_t)(c_value))
 
-	return ret == 1
+	ret = cRet == 1
+	return ret
 }
 
 ///
@@ -255,24 +265,26 @@ type CTimeT C.cef_time_t
 ///
 func TimeToTimet(
 	cef_time *CTimeT,
-	ctime *time.Time,
-) bool {
-	var c_ctime C.time_t
+) (ret bool, ctime time.Time) {
+	var tmpc_ctime C.time_t
 
-	ret := C.cef_time_to_timet((*C.cef_time_t)(cef_time), &c_ctime)
+	cRet := C.cef_time_to_timet((*C.cef_time_t)(cef_time), &tmpc_ctime)
 
-	*ctime = time.Unix(int64(c_ctime), 0)
-	return ret == 1
+	ctime = time.Unix(int64(tmpc_ctime), 0)
+
+	ret = cRet == 1
+	return ret, ctime
 }
 func TimeFromTimet(
 	ctime time.Time,
 	cef_time *CTimeT,
-) bool {
+) (ret bool) {
 	c_ctime := ctime.Unix()
 
-	ret := C.cef_time_from_timet(C.time_t(c_ctime), (*C.cef_time_t)(cef_time))
+	cRet := C.cef_time_from_timet(C.time_t(c_ctime), (*C.cef_time_t)(cef_time))
 
-	return ret == 1
+	ret = cRet == 1
+	return ret
 }
 
 ///
@@ -284,20 +296,22 @@ func TimeFromTimet(
 func TimeToDoublet(
 	cef_time *CTimeT,
 	ctime *float64,
-) bool {
+) (ret bool) {
 
-	ret := C.cef_time_to_doublet((*C.cef_time_t)(cef_time), (*C.double)(ctime))
+	cRet := C.cef_time_to_doublet((*C.cef_time_t)(cef_time), (*C.double)(ctime))
 
-	return ret == 1
+	ret = cRet == 1
+	return ret
 }
 func TimeFromDoublet(
 	ctime float64,
 	cef_time *CTimeT,
-) bool {
+) (ret bool) {
 
-	ret := C.cef_time_from_doublet((C.double)(ctime), (*C.cef_time_t)(cef_time))
+	cRet := C.cef_time_from_doublet((C.double)(ctime), (*C.cef_time_t)(cef_time))
 
-	return ret == 1
+	ret = cRet == 1
+	return ret
 }
 
 ///
@@ -305,11 +319,12 @@ func TimeFromDoublet(
 //
 func TimeNow(
 	cef_time *CTimeT,
-) bool {
+) (ret bool) {
 
-	ret := C.cef_time_now((*C.cef_time_t)(cef_time))
+	cRet := C.cef_time_now((*C.cef_time_t)(cef_time))
 
-	return ret == 1
+	ret = cRet == 1
+	return ret
 }
 
 ///
@@ -319,11 +334,12 @@ func TimeDelta(
 	cef_time1 *CTimeT,
 	cef_time2 *CTimeT,
 	delta *int64,
-) bool {
+) (ret bool) {
 
-	ret := C.cef_time_delta((*C.cef_time_t)(cef_time1), (*C.cef_time_t)(cef_time2), (*C.LONGLONG)(delta))
+	cRet := C.cef_time_delta((*C.cef_time_t)(cef_time1), (*C.cef_time_t)(cef_time2), (*C.LONGLONG)(delta))
 
-	return ret == 1
+	ret = cRet == 1
+	return ret
 }
 
 // cef_types.h, include/internal/cef_types.h:50:16,

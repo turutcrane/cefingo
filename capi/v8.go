@@ -35,12 +35,6 @@ func CreateArrayBuffer(
 	return ab
 }
 
-// //export cefingo_v8array_buffer_release_callback_release_buffer
-// func cefingo_v8array_buffer_release_callback_release_buffer(self *C.cef_v8array_buffer_release_callback_t, buffer unsafe.Pointer) {
-// 	Tracef(unsafe.Pointer(buffer), "L46:")
-// 	// C.free(buffer) // ??
-// }
-
 func V8valueCreateStringFromByteArray(b []byte) (val *CV8valueT) {
 	cef_string := create_cef_string_from_byte_array(b)
 	defer clear_cef_string(cef_string)
@@ -48,33 +42,6 @@ func V8valueCreateStringFromByteArray(b []byte) (val *CV8valueT) {
 	v := C.cef_v8value_create_string(cef_string)
 	return newCV8valueT(v)
 }
-
-// func V8valueCreateArrayBuffer(buffer []byte) *CV8valueT {
-// 	release_callback := AllocCV8arrayBufferReleaseCallbackT()
-
-// 	// buf := [100]byte{}
-// 	cbytes := C.CBytes(buffer[:])
-// 	buffer_len := (C.size_t)(len(buffer[:]))
-// 	BaseAddRef(release_callback.p_v8array_buffer_release_callback)
-// 	ab := C.cef_v8value_create_array_buffer(
-// 		cbytes,
-// 		buffer_len,
-// 		release_callback.p_v8array_buffer_release_callback,
-// 	)
-// 	return newCV8valueT(ab)
-// }
-
-// func (self *CV8contextT) Enter() bool {
-// 	runtime.LockOSThread()
-// 	c := C.cefingo_v8context_enter(self.p_v8context)
-// 	return (c == 1)
-// }
-
-// func (self *CV8contextT) Exit() bool {
-// 	c := C.cefingo_v8context_exit(self.p_v8context)
-// 	runtime.UnlockOSThread()
-// 	return (c == 1)
-// }
 
 // func (self *CV8valueT) GetFunctionName() (s string) {
 // 	if self.IsFunction() {

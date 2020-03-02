@@ -61,6 +61,11 @@ func init() {
 
 var main_args = C.cef_main_args_t{}
 
+type noCopy struct{}
+
+func (*noCopy) Lock()   {}
+func (*noCopy) UNlock() {}
+
 func ExecuteProcess(app *CAppT) {
 
 	setup_main_args(&main_args)

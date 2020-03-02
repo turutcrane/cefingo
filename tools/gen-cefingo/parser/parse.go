@@ -105,19 +105,21 @@ var handlerClasses = map[string]void{
 	"cef_render_handler_t":                  setElement,
 	"cef_render_process_handler_t":          setElement,
 	"cef_request_handler_t":                 setElement,
-	"cef_resource_handler_t":                setElement,
 	"cef_request_context_handler_t":         setElement,
-	"cef_run_file_dialog_callback_t":        setElement,
 	"cef_resource_bundle_handler_t":         setElement,
+	"cef_resource_handler_t":                setElement,
+	"cef_resource_request_handler_t":        setElement,
+	"cef_response_filter_t":                 setElement,
+	"cef_run_file_dialog_callback_t":        setElement,
 	"cef_scheme_handler_factory_t":          setElement,
 	"cef_v8handler_t":                       setElement,
 	"cef_v8array_buffer_release_callback_t": setElement,
 }
 
 var unGenerateMethod = map[string]void{
+	"cef_post_data_t::get_elements":                              setElement, // elements **CPostDataElementT (ElementVector& elements)
 	"cef_command_line_t::init_from_argv":                         setElement, // use char *
 	"cef_browser_t::get_frame_identifiers":                       setElement, // parameter identifiers should be **int64 instead of *int64
-	"cef_post_data_t::get_elements":                              setElement, // elements **CPostDataElementT (ElementVector& elements)
 	"cef_print_settings_t::get_page_ranges":                      setElement, // parameter ranges should be cef_range_t** instead of cef_range_t* (PageRangeList& ranges)
 	"cef_resource_bundle_handler_t::get_data_resource":           setElement, // void **data is set address of resouce and it should not be freed
 	"cef_resource_bundle_handler_t::get_data_resource_for_scale": setElement, // void **data is set address of resouce and it should not be freed
@@ -145,7 +147,9 @@ var notBoolValueMethod = map[string]void{
 }
 
 var notGetMethod = map[string]void{
-	"cef_request_handler_t::get_resource_handler": setElement, // Because it has multiple parameter, so has to be user custom implementation
+	"cef_request_handler_t::get_resource_handler":              setElement, // Because it has multiple parameter, so has to be user custom implementation
+	"cef_resource_request_handler_t::get_cookie_access_filter": setElement, // It has multiple parameter
+	"cef_resource_request_handler_t::get_resource_handler":     setElement, // It has multiple parameter
 }
 
 var duplicatedHandler = map[string]void{
@@ -155,6 +159,7 @@ var duplicatedHandler = map[string]void{
 
 var outParameter = map[string]void{
 	"cef_cookie_visitor_t::visit::deleteCookie":                                 setElement,
+	"cef_image_t::get_representation_info::actual_scale_factor":                 setElement,
 	"cef_image_t::get_representation_info::pixel_height":                        setElement,
 	"cef_image_t::get_representation_info::pixel_width":                         setElement,
 	"cef_image_t::get_as_bitmap::pixel_height":                                  setElement,
@@ -182,12 +187,13 @@ var outParameter = map[string]void{
 	"cef_request_handler_t::on_protocol_execution::allow_os_execution":          setElement,
 	"cef_request_handler_t::on_resource_redirect::new_url":                      setElement,
 	"cef_response_filter_t::filter::data_in_read":                               setElement,
-	"cef_response_filter_t::filter::data_out":                                   setElement,
 	"cef_response_filter_t::filter::data_out_written":                           setElement,
+	"cef_resource_handler_t::get_response_headers::response_length":             setElement,
 	"cef_resource_handler_t::get_response_headers::redirectUrl":                 setElement,
 	"cef_resource_handler_t::open::handle_request":                              setElement,
 	"cef_resource_handler_t::read::bytes_read":                                  setElement,
 	"cef_resource_handler_t::read_response::bytes_read":                         setElement,
+	"cef_resource_handler_t::skip::bytes_skipped":                               setElement,
 	"cef_resource_bundle_handler_t::get_localized_string::string":               setElement,
 	"cef_resource_request_handler_t::on_resource_redirect::new_url":             setElement,
 	"cef_resource_request_handler_t::on_protocol_execution::allow_os_execution": setElement,
@@ -205,6 +211,7 @@ var outParameter = map[string]void{
 	"cef_v8interceptor_t::get_byindex::retval":                                  setElement,
 	"cef_v8interceptor_t::set_byindex::exception":                               setElement,
 	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":                 setElement,
+	"::cef_time_to_timet::time": setElement,
 }
 
 var inOutParameter = map[string]void{
@@ -219,7 +226,6 @@ var inOutParameter = map[string]void{
 	"cef_life_span_handler_t::on_before_popup::settings":              setElement,
 	"cef_life_span_handler_t::on_before_popup::no_javascript_access":  setElement,
 	"cef_menu_model_delegate_t::format_label::label":                  setElement,
-	"cef_resource_handler_t::get_response_headers::redirectUrl":       setElement,
 }
 
 var byteSliceParameter = map[string]string{
@@ -342,7 +348,11 @@ type Type struct {
 }
 
 func (t Type) String() string {
-	return t.Ty.String() + " : " + t.Token.FilePos()
+	var ptr string
+	for i := 0; i < t.Pointer; i++ {
+		ptr += "*"
+	}
+	return ptr + t.Ty.String() + " : " + t.Token.FilePos()
 }
 
 type StructType int
@@ -472,15 +482,28 @@ type Callee interface {
 type FuncDecl struct {
 	DeclCommon
 	Funcname Token
-	Params   []Param
+	params   []Param
 }
 
 type MethodDecl struct {
 	Funcname Token
-	Params   []Param
+	params   []Param
 	sd       cc.StructDeclaration // Struct Member Declaration
 	Comment  []string
 	sdecl    *StructDecl // Struct Declaration
+}
+
+type Callable interface {
+	Params() []Param
+	HasReturnValue() bool
+	HasOutParam() bool
+	IsBoolValueMethod() bool
+	ReturnGoType() string
+	ReturnType() Type
+}
+
+func (m MethodDecl) Params() []Param {
+	return m.params
 }
 
 func (m MethodDecl) FirstLine() (line int) {
@@ -518,7 +541,7 @@ func (m MethodDecl) IfName() (ifname string) {
 }
 
 func (m MethodDecl) HasConstParams() (has bool) {
-	for _, p := range m.Params {
+	for _, p := range m.Params() {
 		if p.Type().Const {
 			return true
 		}
@@ -529,6 +552,19 @@ func (m MethodDecl) HasConstParams() (has bool) {
 		}
 	}
 	return false
+}
+
+func (m MethodDecl) HasReturnValue() (has bool) {
+	return m.ReturnGoType() != ""
+}
+
+func (m MethodDecl) HasOutParam() (has bool) {
+	for _, p := range m.Params() {
+		if p.IsOutParam() || p.IsInOutParam() {
+			has = true
+		}
+	}
+	return has
 }
 
 func InTargetFile(t Token) (f bool, fname string) {
@@ -869,17 +905,17 @@ func handleFunc(base DeclCommon) (decl Decl) {
 	switch dd.Case {
 	case 6: // DirectDeclarator '(' ParameterTypeList ')'
 		for p := dd.ParameterTypeList.ParameterList; p != nil; p = p.ParameterList {
-			f.Params = append(f.Params, getParam(p.ParameterDeclaration, f))
+			f.params = append(f.params, getParam(p.ParameterDeclaration, f))
 		}
 		if dd.ParameterTypeList.Case == 1 { //ParameterList ',' "..."  // Case 1
 			variadic := Param{nil, true, noToken, nil}
-			f.Params = append(f.Params, variadic)
+			f.params = append(f.params, variadic)
 		}
 	case 7: // DirectDeclarator '(' IdentifierListOpt ')' No Arguments
 	default:
 		log.Panicf("T335: %v\n", decl)
 	}
-	for i, p := range f.Params {
+	for i, p := range f.params {
 		log.Printf("T342:   p%d, %s", i, p)
 	}
 
@@ -921,6 +957,10 @@ func (f *FuncDecl) ReturnType() (retType Type) {
 	return retType
 }
 
+func (f FuncDecl) Params() []Param {
+	return f.params
+}
+
 func (f FuncDecl) IsBoolValueMethod() (boolMethod bool) {
 	_, notBoolMethod := notBoolValueMethod[f.CalleeName()]
 	if f.ReturnType().Ty == TyInt && !notBoolMethod {
@@ -938,6 +978,19 @@ func (f FuncDecl) ReturnGoType() string {
 		return "string"
 	}
 	return retType.GoType()
+}
+
+func (f FuncDecl) HasOutParam() (has bool) {
+	for _, p := range f.Params() {
+		if p.IsOutParam() || p.IsInOutParam() {
+			has = true
+		}
+	}
+	return has
+}
+
+func (f FuncDecl) HasReturnValue() (has bool) {
+	return f.ReturnGoType() != ""
 }
 
 func handleTypedef(base DeclCommon) (decl Decl) {
@@ -1027,7 +1080,7 @@ MLOOP:
 				ts := getTypeSpecifier(m0)
 				ty := getTsType(ts)
 				log.Printf("T372:   Case %d, %s %t", ts.Case, ty.Token.Name(), ty.Typedef)
-				for i, p := range fp.Params {
+				for i, p := range fp.params {
 					log.Printf("T378:   p%d, %s", i, p)
 				}
 				sdecl.Methods = append(sdecl.Methods, fp)
@@ -1236,12 +1289,24 @@ func (p Param) Name() string {
 	return p.paramNameToken.Name()
 }
 
+func (p Param) GoTypeIn() (t string) {
+	if p.IsInOutParam() {
+		if p.Type().Ty == TyStringT && p.Type().Pointer == 1 {
+			return p.GoType()
+		} else {
+			return p.Type().Deref().GoType()
+		}
+	} else {
+		return p.GoType()
+	}
+}
+
 func (p Param) GoType() (t string) {
 	if bs, _ := p.IsByteSliceParam(); bs {
 		return "[]byte"
 	}
 	if s, _ := p.IsSliceParam(); s {
-		return "[]" + p.Type().Unpointer().GoType()
+		return "[]" + p.Type().Deref().GoType()
 	}
 	if p.IsBoolParam() {
 		return "bool"
@@ -1386,11 +1451,11 @@ func getFuncPointer(sdecl *StructDecl, sd cc.StructDeclaration) (methodP *Method
 			return &MethodDecl{noToken, nil, sd, nil, sdecl}
 		}
 		for p := dd.ParameterTypeList.ParameterList; p != nil; p = p.ParameterList {
-			m.Params = append(m.Params, getParam(p.ParameterDeclaration, m))
+			m.params = append(m.params, getParam(p.ParameterDeclaration, m))
 		}
 		if dd.ParameterTypeList.Case == 1 { //ParameterList ',' "..."  // Case 1
 			variadic := Param{nil, true, noToken, nil}
-			m.Params = append(m.Params, variadic)
+			m.params = append(m.params, variadic)
 		}
 	default:
 		log.Panicf("T525: %v\n", dd)
@@ -1623,11 +1688,11 @@ func (t Type) GoType() (ret string) {
 		ret = t.Token.GoName()
 	case TyStringT:
 		pointerOffset += 1
-		if t.Const {
-			ret = "string"
-		} else {
-			ret = "*string"
-		}
+		// if t.Const {
+		ret = "string"
+		//} else {
+		// 	ret = "string"
+		// }
 		if t.Pointer == 0 {
 			log.Panicf("T1074: Not cef_string_t *\n")
 		}
@@ -1673,7 +1738,7 @@ func (t Type) GoType() (ret string) {
 	return ret
 }
 
-func (t Type) Unpointer() (t0 Type) {
+func (t Type) Deref() (t0 Type) {
 	t0 = t
 	if t0.Pointer > 0 {
 		t0.Pointer--

@@ -304,13 +304,13 @@ func ConvToGoTypeExp(t parser.Type, val string) (exp string) {
 		exp = "(" + t.GoType() + ")(" + val + ")"
 	case parser.TyStructRefCounted:
 		if t.Pointer == 1 {
-			exp = "new" + t.Unpointer().GoType() + "(" + val + ")"
+			exp = "new" + t.Deref().GoType() + "(" + val + ")"
 		} else {
 			log.Panicf("T448: %s: %v, %t, %v\n", val, t.Ty, t.IsRefCountedClass(), t.GoType())
 		}
 	case parser.TyStructScoped:
 		if t.Pointer == 1 {
-			exp = "new" + t.Unpointer().GoType() + "(" + val + ")"
+			exp = "new" + t.Deref().GoType() + "(" + val + ")"
 		} else {
 			log.Panicf("T454: %s: %v\n", val, t)
 		}
@@ -330,7 +330,7 @@ func ConvToGoTypeExp(t parser.Type, val string) (exp string) {
 		}
 	case parser.TyMSG:
 		if t.Pointer == 1 {
-			exp = t.Unpointer().GoType() + "(" + val + ")"
+			exp = t.Deref().GoType() + "(" + val + ")"
 		} else {
 			log.Panicf("E326: %v\n", t)
 		}

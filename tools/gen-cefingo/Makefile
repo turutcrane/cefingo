@@ -8,8 +8,12 @@ parser/parse_string.go: parser/parse.go
 
 .PHONY: vet
 vet: template.qtpl.go *.go parser/parse_string.go
-	@# エラーメッセージのパスを VSCode が解釈しやすいように cd する。
-	cd .. ; go vet gen-cefingo/*.go
+	@# adjust path produced in error meesage
+	cd ../.. ; go vet tools/gen-cefingo/*.go
+
+capi:
+	@# output path is ../../capi
+	cd ../.. ; go run tools/gen-cefingo/*.go
 
 .PHONY: fmt
 fmt:
