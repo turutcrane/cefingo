@@ -974,7 +974,7 @@ func GoCallback(line int, m *parser.MethodDecl, baseName string) string {
 }
 
 //line template.qtpl:172
-func StreamGoBindFunc(qw422016 *qt422016.Writer, line int, st *parser.StructDecl) {
+func StreamGoBindFunc(qw422016 *qt422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:172
 	qw422016.N().S(`
 `)
@@ -1084,7 +1084,7 @@ func StreamGoBindFunc(qw422016 *qt422016.Writer, line int, st *parser.StructDecl
 }
 
 //line template.qtpl:199
-func WriteGoBindFunc(qq422016 qtio422016.Writer, line int, st *parser.StructDecl) {
+func WriteGoBindFunc(qq422016 qtio422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:199
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line template.qtpl:199
@@ -1095,7 +1095,7 @@ func WriteGoBindFunc(qq422016 qtio422016.Writer, line int, st *parser.StructDecl
 }
 
 //line template.qtpl:199
-func GoBindFunc(line int, st *parser.StructDecl) string {
+func GoBindFunc(line int, st *parser.CefClassDecl) string {
 //line template.qtpl:199
 	qb422016 := qt422016.AcquireByteBuffer()
 //line template.qtpl:199
@@ -1518,7 +1518,7 @@ func memberGoType(m *parser.MethodDecl) string {
 }
 
 //line template.qtpl:277
-func StreamIfaceStruct(qw422016 *qt422016.Writer, line int, st *parser.StructDecl) {
+func StreamIfaceStruct(qw422016 *qt422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:277
 	qw422016.N().S(`
 var `)
@@ -1571,7 +1571,7 @@ var `)
 }
 
 //line template.qtpl:287
-func WriteIfaceStruct(qq422016 qtio422016.Writer, line int, st *parser.StructDecl) {
+func WriteIfaceStruct(qq422016 qtio422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:287
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line template.qtpl:287
@@ -1582,7 +1582,7 @@ func WriteIfaceStruct(qq422016 qtio422016.Writer, line int, st *parser.StructDec
 }
 
 //line template.qtpl:287
-func IfaceStruct(line int, st *parser.StructDecl) string {
+func IfaceStruct(line int, st *parser.CefClassDecl) string {
 //line template.qtpl:287
 	qb422016 := qt422016.AcquireByteBuffer()
 //line template.qtpl:287
@@ -1597,7 +1597,7 @@ func IfaceStruct(line int, st *parser.StructDecl) string {
 }
 
 //line template.qtpl:289
-func StreamGoAllocFunc(qw422016 *qt422016.Writer, line int, st *parser.StructDecl) {
+func StreamGoAllocFunc(qw422016 *qt422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:289
 	qw422016.N().S(`
 // Alloc`)
@@ -1686,7 +1686,7 @@ func Alloc`)
 }
 
 //line template.qtpl:309
-func WriteGoAllocFunc(qq422016 qtio422016.Writer, line int, st *parser.StructDecl) {
+func WriteGoAllocFunc(qq422016 qtio422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:309
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line template.qtpl:309
@@ -1697,7 +1697,7 @@ func WriteGoAllocFunc(qq422016 qtio422016.Writer, line int, st *parser.StructDec
 }
 
 //line template.qtpl:309
-func GoAllocFunc(line int, st *parser.StructDecl) string {
+func GoAllocFunc(line int, st *parser.CefClassDecl) string {
 //line template.qtpl:309
 	qb422016 := qt422016.AcquireByteBuffer()
 //line template.qtpl:309
@@ -1750,14 +1750,14 @@ func methodCTypeName(m *parser.MethodDecl) string {
 }
 
 //line template.qtpl:316
-func streamconstructorName(qw422016 *qt422016.Writer, st *parser.StructDecl) {
+func streamconstructorName(qw422016 *qt422016.Writer, st *parser.CefClassDecl) {
 //line template.qtpl:317
 	qw422016.E().S(st.Name() + " *cefingo_construct_" + st.BaseName() + "(cefingo_" + st.BaseName() + "_wrapper_t* " + st.BaseName() + ")")
 //line template.qtpl:318
 }
 
 //line template.qtpl:318
-func writeconstructorName(qq422016 qtio422016.Writer, st *parser.StructDecl) {
+func writeconstructorName(qq422016 qtio422016.Writer, st *parser.CefClassDecl) {
 //line template.qtpl:318
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line template.qtpl:318
@@ -1768,7 +1768,7 @@ func writeconstructorName(qq422016 qtio422016.Writer, st *parser.StructDecl) {
 }
 
 //line template.qtpl:318
-func constructorName(st *parser.StructDecl) string {
+func constructorName(st *parser.CefClassDecl) string {
 //line template.qtpl:318
 	qb422016 := qt422016.AcquireByteBuffer()
 //line template.qtpl:318
@@ -1783,7 +1783,7 @@ func constructorName(st *parser.StructDecl) string {
 }
 
 //line template.qtpl:320
-func StreamCConstruct(qw422016 *qt422016.Writer, line int, st *parser.StructDecl) {
+func StreamCConstruct(qw422016 *qt422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:320
 	qw422016.N().S(`
 `)
@@ -1900,7 +1900,7 @@ func StreamCConstruct(qw422016 *qt422016.Writer, line int, st *parser.StructDecl
 }
 
 //line template.qtpl:347
-func WriteCConstruct(qq422016 qtio422016.Writer, line int, st *parser.StructDecl) {
+func WriteCConstruct(qq422016 qtio422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:347
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line template.qtpl:347
@@ -1911,7 +1911,7 @@ func WriteCConstruct(qq422016 qtio422016.Writer, line int, st *parser.StructDecl
 }
 
 //line template.qtpl:347
-func CConstruct(line int, st *parser.StructDecl) string {
+func CConstruct(line int, st *parser.CefClassDecl) string {
 //line template.qtpl:347
 	qb422016 := qt422016.AcquireByteBuffer()
 //line template.qtpl:347
@@ -1926,7 +1926,7 @@ func CConstruct(line int, st *parser.StructDecl) string {
 }
 
 //line template.qtpl:349
-func StreamHCallback(qw422016 *qt422016.Writer, line int, st *parser.StructDecl) {
+func StreamHCallback(qw422016 *qt422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:349
 	qw422016.N().S(`
 CEFINGO_REF_COUNTER_WRAPPER(cef_`)
@@ -1948,7 +1948,7 @@ extern `)
 }
 
 //line template.qtpl:352
-func WriteHCallback(qq422016 qtio422016.Writer, line int, st *parser.StructDecl) {
+func WriteHCallback(qq422016 qtio422016.Writer, line int, st *parser.CefClassDecl) {
 //line template.qtpl:352
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line template.qtpl:352
@@ -1959,7 +1959,7 @@ func WriteHCallback(qq422016 qtio422016.Writer, line int, st *parser.StructDecl)
 }
 
 //line template.qtpl:352
-func HCallback(line int, st *parser.StructDecl) string {
+func HCallback(line int, st *parser.CefClassDecl) string {
 //line template.qtpl:352
 	qb422016 := qt422016.AcquireByteBuffer()
 //line template.qtpl:352
@@ -3337,7 +3337,7 @@ func CefObjectMethodC(m *parser.MethodDecl) string {
 // newCXxxxT()
 
 //line template.qtpl:608
-func StreamGoType(qw422016 *qt422016.Writer, d *parser.StructDecl, line int) {
+func StreamGoType(qw422016 *qt422016.Writer, d *parser.CefClassDecl, line int) {
 //line template.qtpl:608
 	qw422016.N().S(`
 `)
@@ -3580,7 +3580,7 @@ func (p *C.`)
 }
 
 //line template.qtpl:665
-func WriteGoType(qq422016 qtio422016.Writer, d *parser.StructDecl, line int) {
+func WriteGoType(qq422016 qtio422016.Writer, d *parser.CefClassDecl, line int) {
 //line template.qtpl:665
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line template.qtpl:665
@@ -3591,7 +3591,7 @@ func WriteGoType(qq422016 qtio422016.Writer, d *parser.StructDecl, line int) {
 }
 
 //line template.qtpl:665
-func GoType(d *parser.StructDecl, line int) string {
+func GoType(d *parser.CefClassDecl, line int) string {
 //line template.qtpl:665
 	qb422016 := qt422016.AcquireByteBuffer()
 //line template.qtpl:665

@@ -366,6 +366,9 @@ const (
 	StYetNotDefined
 )
 
+var structDefNames = map[string]void {
+}
+
 var simpleDefNames = map[string]void{
 	"cef_settings_t":                 setElement,
 	"cef_request_context_settings_t": setElement,
@@ -399,6 +402,11 @@ func isSimpleDefName(s string) (b bool) {
 	return b
 }
 
+func isStructDefName(s string) (b bool) {
+	_, b = structDefNames[s]
+	return b
+}
+
 func IsHandlerClass(t Token) (c bool) {
 	return isHandlerClass(t.Name())
 }
@@ -412,6 +420,7 @@ const (
 	DkEnum
 	DkCefClass
 	DkFunc
+	// DkStruct
 )
 
 type Decl interface {
@@ -443,7 +452,7 @@ func (s *DeclCommon) SetComment(comments map[int][]string) {
 	}
 }
 
-func (s *StructDecl) SetComment(comments map[int][]string) {
+func (s *CefClassDecl) SetComment(comments map[int][]string) {
 	switch s.DeclCommon.Dk {
 	case DkCefClass:
 		s.DeclCommon.SetComment(comments)
@@ -466,7 +475,7 @@ type SimpleDecl struct {
 	DeclCommon
 }
 
-type StructDecl struct {
+type CefClassDecl struct {
 	DeclCommon
 	St      StructType
 	Methods []*MethodDecl
@@ -492,7 +501,7 @@ type MethodDecl struct {
 	params   []Param
 	sd       cc.StructDeclaration // Struct Member Declaration
 	Comment  []string
-	sdecl    *StructDecl // Struct Declaration
+	sdecl    *CefClassDecl // Struct Declaration
 }
 
 type Callable interface {
@@ -712,7 +721,7 @@ func processDeclaration(d *cc.Declaration) {
 			tag := getTag(d.DeclarationSpecifiers)
 			typedefName := tagToTypdefName(tag.Name())
 			if _, ok := Defs[typedefName]; !ok {
-				Defs[typedefName] = &StructDecl{
+				Defs[typedefName] = &CefClassDecl{
 					DeclCommon{DkUnknown, d, nil},
 					StYetNotDefined,
 					nil,
@@ -1006,7 +1015,7 @@ func handleTypedef(base DeclCommon) (decl Decl) {
 	switch ds.TypeSpecifier.Case {
 	case 11: // StructOrUnionSpecifier
 		sdecl := handleStruct(base, ds.TypeSpecifier.StructOrUnionSpecifier)
-		if s, ok := sdecl.(*StructDecl); ok && s.St == StUnknown {
+		if s, ok := sdecl.(*CefClassDecl); ok && s.St == StUnknown {
 			log.Printf("OUT-S: type %s C.%s", s.GoName(), name)
 		}
 		decl = sdecl
@@ -1025,6 +1034,9 @@ func handleTypedef(base DeclCommon) (decl Decl) {
 		} else if isSimpleDefName(name) {
 			sdecl.Dk = DkSimple
 			log.Printf("OUT-S: type %s C.%s", sdecl.GoName(), name)
+		// } else if isStructDefName(name) {
+		// 	sdecl.Dk = DkStruct
+		// 	log.Printf("OUT-St: type %s C.%s", sdecl.GoName(), name)
 		} else {
 			log.Panicf("T595: %s :%s, %s\n", name, typeDefName, base.Token().FilePos())
 		}
@@ -1058,8 +1070,8 @@ func handleStruct(base DeclCommon, st *cc.StructOrUnionSpecifier) (decl Decl) {
 	}
 	var stType StructType
 	base.Dk = DkCefClass
-	var sdecl *StructDecl
-	sdecl = &StructDecl{base, StUnknown, nil}
+	var sdecl *CefClassDecl
+	sdecl = &CefClassDecl{base, StUnknown, nil}
 MLOOP:
 	for i, m0 := range sm {
 		if i == 0 {
@@ -1142,7 +1154,7 @@ func getTsType(ts *cc.TypeSpecifier) (ty Type) {
 		if decl, ok := Defs[name]; ok {
 			if _, ok := decl.(*SimpleDecl); ok {
 				ty.Ty = TyStructSimple
-			} else if s, ok := decl.(*StructDecl); ok {
+			} else if s, ok := decl.(*CefClassDecl); ok {
 				switch s.St {
 				case StRefCounted:
 					ty.Ty = TyStructRefCounted
@@ -1171,7 +1183,7 @@ func getTsType(ts *cc.TypeSpecifier) (ty Type) {
 			if decl, ok := Defs[name]; ok {
 				switch decl.Common().Dk {
 				case DkCefClass:
-					s := decl.(*StructDecl)
+					s := decl.(*CefClassDecl)
 					switch s.St {
 					case StRefCounted:
 						ty.Ty = TyStructRefCounted
@@ -1436,7 +1448,7 @@ func getDirectDeclarator(sd cc.StructDeclaration) (dd *cc.DirectDeclarator) {
 	return d.DirectDeclarator
 }
 
-func getFuncPointer(sdecl *StructDecl, sd cc.StructDeclaration) (methodP *MethodDecl) {
+func getFuncPointer(sdecl *CefClassDecl, sd cc.StructDeclaration) (methodP *MethodDecl) {
 	dd := getDirectDeclarator(sd)
 	m := &MethodDecl{noToken, nil, sd, nil, sdecl}
 	switch dd.Case {
@@ -1703,7 +1715,7 @@ func (t Type) GoType() (ret string) {
 		ret = t.Token.GoName()
 	case TyStructNotDefined:
 		if decl, ok := Defs[tagToTypdefName(t.Token.Name())]; ok {
-			if s, ok := decl.(*StructDecl); ok {
+			if s, ok := decl.(*CefClassDecl); ok {
 				switch s.St {
 				case StRefCounted:
 					t.Ty = TyStructRefCounted

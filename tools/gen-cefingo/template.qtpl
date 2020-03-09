@@ -169,7 +169,7 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 }
 {% endfunc %}
 
-{% func GoBindFunc(line int, st *parser.StructDecl) %}
+{% func GoBindFunc(line int, st *parser.CefClassDecl) %}
 {% code
 	goName := st.Common().GoName()
 	baseName := st.Common().BaseName()
@@ -274,7 +274,7 @@ type {%s m.IfName() %} interface {
 {%- endif -%}
 {% endfunc %}
 
-{% func IfaceStruct(line int, st *parser.StructDecl) %}
+{% func IfaceStruct(line int, st *parser.CefClassDecl) %}
 var {%s st.BaseName() %}_handlers = struct {
 	{%- for _, m := range st.Methods -%}
 	{%= memberName(m) %} map[*C.{%s st.Name() %}]{%= memberGoType(m) %}
@@ -286,7 +286,7 @@ var {%s st.BaseName() %}_handlers = struct {
 }
 {% endfunc %}
 
-{% func GoAllocFunc(line int, st *parser.StructDecl) %}
+{% func GoAllocFunc(line int, st *parser.CefClassDecl) %}
 // Alloc{%s st.GoName()%} allocates {%s st.GoName() %} and construct it
 func Alloc{%s st.GoName()%}() *{%s st.GoName()%} {
 	up := c_calloc(1, C.sizeof_cefingo_{%s st.BaseName() %}_wrapper_t, "T{%d line + 4 %}:")
@@ -313,11 +313,11 @@ func Alloc{%s st.GoName()%}() *{%s st.GoName()%} {
 T_{%s strings.ToUpper(callee) -%}
 {% endfunc %}
 
-{% func constructorName(st *parser.StructDecl) -%}
+{% func constructorName(st *parser.CefClassDecl) -%}
 {%s st.Name() + " *cefingo_construct_" + st.BaseName() + "(cefingo_" + st.BaseName() + "_wrapper_t* " + st.BaseName() + ")" -%}
 {% endfunc %}
 
-{% func CConstruct(line int, st *parser.StructDecl) %}
+{% func CConstruct(line int, st *parser.CefClassDecl) %}
 {% for _, m := range st.Methods -%}
 {% if m.HasConstParams() -%}
 typedef {%s m.ReturnType().CType() -%}
@@ -346,7 +346,7 @@ typedef {%s m.ReturnType().CType() -%}
 }
 {% endfunc %}
 
-{% func HCallback(line int, st *parser.StructDecl) %}
+{% func HCallback(line int, st *parser.CefClassDecl) %}
 CEFINGO_REF_COUNTER_WRAPPER(cef_{%s st.BaseName() %}_t, cefingo_{%s st.BaseName() %}_wrapper_t);
 extern {%s constructorName(st) %};
 {% endfunc %}
@@ -605,7 +605,7 @@ extern {%s methodCSig(m) %};
 {% endfunc %}
 
 // newCXxxxT()
-{% func GoType(d *parser.StructDecl, line int) %}
+{% func GoType(d *parser.CefClassDecl, line int) %}
 {% code goName := d.Token().GoName()
 	cName := d.Token().Name()
 	typeName := d.Token().BaseName()

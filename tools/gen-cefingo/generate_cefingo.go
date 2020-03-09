@@ -70,11 +70,14 @@ func main() {
 			case parser.DkSimple:
 				s := d.(*parser.SimpleDecl)
 				outSimple(goFile, s)
+			// case parser.DkStruct:
+			// 	s := d.(*parser.SimpleDecl)
+			// 	outSimple(goFile, s)
 			case parser.DkEnum:
 				e := d.(*parser.EnumDecl)
 				outEnum(goFile, e)
 			case parser.DkCefClass:
-				s := d.(*parser.StructDecl)
+				s := d.(*parser.CefClassDecl)
 				if parser.IsHandlerClass(s.Token()) {
 					outHandlerClass(goFile, goExportFile, cFile, hFile, s)
 				} else {
@@ -241,7 +244,7 @@ func getComments(fname string) {
 	}
 }
 
-func outHandlerClass(gf, expf, cf, hf *Generator, d *parser.StructDecl) {
+func outHandlerClass(gf, expf, cf, hf *Generator, d *parser.CefClassDecl) {
 	log.Printf("T226: Callback class: %s\n", d.Token())
 	outComment(gf, d.LineOfTypedef())
 	WriteGoType(gf, d, gf.Lines())
@@ -253,7 +256,7 @@ func outHandlerClass(gf, expf, cf, hf *Generator, d *parser.StructDecl) {
 	genChConstructFunc(cf, hf, d)
 }
 
-func genGoInterface(gf *Generator, st *parser.StructDecl) {
+func genGoInterface(gf *Generator, st *parser.CefClassDecl) {
 	line := gf.Lines()
 	for _, m := range st.Methods {
 		if !m.IsGetFunc() {
@@ -263,17 +266,17 @@ func genGoInterface(gf *Generator, st *parser.StructDecl) {
 	WriteIfaceStruct(gf, line, st)
 }
 
-func genGoAlloc(gf *Generator, st *parser.StructDecl) {
+func genGoAlloc(gf *Generator, st *parser.CefClassDecl) {
 	line := gf.Lines()
 	WriteGoAllocFunc(gf, line, st)
 }
 
-func genBindFunc(gf *Generator, st *parser.StructDecl) {
+func genBindFunc(gf *Generator, st *parser.CefClassDecl) {
 	line := gf.Lines()
 	WriteGoBindFunc(gf, line, st)
 }
 
-func genGoGetFunc(gf, expf *Generator, st *parser.StructDecl) {
+func genGoGetFunc(gf, expf *Generator, st *parser.CefClassDecl) {
 	goName := st.GoName()
 	baseName := st.BaseName()
 	cName := st.Name()
@@ -287,7 +290,7 @@ func genGoGetFunc(gf, expf *Generator, st *parser.StructDecl) {
 	}
 }
 
-func genGoCallbackFunc(gf *Generator, st *parser.StructDecl) {
+func genGoCallbackFunc(gf *Generator, st *parser.CefClassDecl) {
 	for _, m := range st.Methods {
 		if !m.IsGetFunc() {
 			line := gf.Lines()
@@ -341,7 +344,7 @@ func ConvToGoTypeExp(t parser.Type, val string) (exp string) {
 	return exp
 }
 
-func genChConstructFunc(cf, hf *Generator, st *parser.StructDecl) {
+func genChConstructFunc(cf, hf *Generator, st *parser.CefClassDecl) {
 	line := cf.Lines()
 	WriteCConstruct(cf, line, st)
 
@@ -349,7 +352,7 @@ func genChConstructFunc(cf, hf *Generator, st *parser.StructDecl) {
 	WriteHCallback(hf, line, st)
 }
 
-func outCefObjectClass(gf, cf, hf *Generator, d *parser.StructDecl) {
+func outCefObjectClass(gf, cf, hf *Generator, d *parser.CefClassDecl) {
 	log.Printf("T541: Cef object: %s\n", d.Token())
 	outComment(gf, d.LineOfTypedef())
 	WriteGoType(gf, d, gf.Lines())
@@ -362,7 +365,7 @@ func outGoFunction(gf *Generator, f *parser.FuncDecl) {
 	WriteGoFunction(gf, gf.Lines(), f)
 }
 
-func outCefObjectMethod(gf, cf, hf *Generator, d *parser.StructDecl) {
+func outCefObjectMethod(gf, cf, hf *Generator, d *parser.CefClassDecl) {
 	for _, m := range d.Methods {
 		WriteCefObjectMethod(gf, gf.Lines(), m)
 		WriteCefObjectMethodC(cf, m)
