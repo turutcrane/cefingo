@@ -2016,6 +2016,12 @@ extern size_t cefingo_post_data_get_element_count(
 	struct _cef_post_data_t* self
 );
 
+extern void cefingo_post_data_get_elements(
+	struct _cef_post_data_t* self,
+	size_t* elementsCount,
+	struct _cef_post_data_element_t** elements
+);
+
 extern int cefingo_post_data_remove_element(
 	struct _cef_post_data_t* self,
 	struct _cef_post_data_element_t* element
@@ -3459,5 +3465,17 @@ extern struct _cef_binary_value_t* cefingo_x509certificate_get_pemencoded(
 
 extern size_t cefingo_x509certificate_get_issuer_chain_size(
 	struct _cef_x509certificate_t* self
+);
+
+extern void cefingo_x509certificate_get_derencoded_issuer_chain(
+	struct _cef_x509certificate_t* self,
+	size_t* chainCount,
+	struct _cef_binary_value_t** chain
+);
+
+extern void cefingo_x509certificate_get_pemencoded_issuer_chain(
+	struct _cef_x509certificate_t* self,
+	size_t* chainCount,
+	struct _cef_binary_value_t** chain
 );
 #endif //CEFINGO_GEN_H_

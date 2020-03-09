@@ -20,8 +20,7 @@ type Settings struct {
 	RemoteDebuggingPort      int
 }
 
-type CLangSizeT C.size_t
-type CWindowHandleT C.cef_window_handle_t
+// type CLangSizeT C.size_t
 type CEventHandleT C.cef_event_handle_t
 type CCursorHandleT C.cef_cursor_handle_t
 
@@ -59,13 +58,12 @@ func init() {
 	Logf("maxInt: %d\n", maxInt)
 }
 
-var main_args = C.cef_main_args_t{}
-
 type noCopy struct{}
 
 func (*noCopy) Lock()   {}
 func (*noCopy) UNlock() {}
 
+var main_args = C.cef_main_args_t{}
 func ExecuteProcess(app *CAppT) {
 
 	setup_main_args(&main_args)

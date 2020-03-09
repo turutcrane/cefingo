@@ -323,9 +323,10 @@ func ConvToGoTypeExp(t parser.Type, val string) (exp string) {
 	case parser.TyEnum:
 		exp = t.GoType() + "(" + val + ")"
 	case parser.TyVoid:
-		if t.Pointer == 1 {
+		switch t.Pointer {
+		case 1:
 			exp = "unsafe.Pointer(" + val + ")"
-		} else {
+		default:
 			log.Panicf("T474: %s: %v\n", val, t)
 		}
 	case parser.TyMSG:

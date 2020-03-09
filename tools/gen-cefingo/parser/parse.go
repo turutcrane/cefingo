@@ -117,31 +117,27 @@ var handlerClasses = map[string]void{
 }
 
 var unGenerateMethod = map[string]void{
-	"cef_post_data_t::get_elements":                              setElement, // elements **CPostDataElementT (ElementVector& elements)
-	"cef_command_line_t::init_from_argv":                         setElement, // use char *
-	"cef_browser_t::get_frame_identifiers":                       setElement, // parameter identifiers should be **int64 instead of *int64
-	"cef_print_settings_t::get_page_ranges":                      setElement, // parameter ranges should be cef_range_t** instead of cef_range_t* (PageRangeList& ranges)
-	"cef_resource_bundle_handler_t::get_data_resource":           setElement, // void **data is set address of resouce and it should not be freed
-	"cef_resource_bundle_handler_t::get_data_resource_for_scale": setElement, // void **data is set address of resouce and it should not be freed
-	"cef_audio_handler_t::on_audio_stream_packet":                setElement, // data parameter type **float shoud be *float (float[frame * length of channel_layout])
-	"cef_v8value_t::get_user_data":                               setElement, // use struct _cef_base_ref_counted_t*
-	"cef_v8value_t::set_user_data":                               setElement, // use struct _cef_base_ref_counted_t*
-	"cef_x509certificate_t::get_derencoded_issuer_chain":         setElement, // out chan list by struct _cef_binary_value_t** (IssuerChainBinaryList& chain)
-	"cef_x509certificate_t::get_pemencoded_issuer_chain":         setElement, // out chan list by struct _cef_binary_value_t** (IssuerChainBinaryList& chain)
+	"cef_command_line_t::init_from_argv":          setElement, // use char *
+	"cef_browser_t::get_frame_identifiers":        setElement, // parameter identifiers should be **int64 instead of *int64
+	"cef_print_settings_t::get_page_ranges":       setElement, // parameter ranges should be cef_range_t** instead of cef_range_t* (PageRangeList& ranges)
+	"cef_audio_handler_t::on_audio_stream_packet": setElement, // data parameter type **float shoud be *float (float[frame * length of channel_layout])
+	"cef_v8value_t::get_user_data":                setElement, // use struct _cef_base_ref_counted_t*
+	"cef_v8value_t::set_user_data":                setElement, // use struct _cef_base_ref_counted_t*
 	"::cef_execute_process":                                      setElement,
 	"::cef_initialize":                                           setElement,
 	"::cef_browser_host_create_browser":                          setElement,
 	"::cef_browser_host_create_browser_sync":                     setElement,
-	"::cef_string_list_value":                                    setElement,
-	"::cef_string_map_find":                                      setElement,
-	"::cef_string_map_key":                                       setElement,
-	"::cef_string_map_value":                                     setElement,
-	"::cef_string_multimap_enumerate":                            setElement,
-	"::cef_string_multimap_key":                                  setElement,
-	"::cef_string_multimap_value":                                setElement,
+	"::cef_string_list_value":         setElement,
+	"::cef_string_map_find":           setElement,
+	"::cef_string_map_key":            setElement,
+	"::cef_string_map_value":          setElement,
+	"::cef_string_multimap_enumerate": setElement,
+	"::cef_string_multimap_key":       setElement,
+	"::cef_string_multimap_value":     setElement,
 }
 
 var notBoolValueMethod = map[string]void{
+	"::cef_execute_process":     setElement,
 	"::cef_string_list_size":    setElement,
 	"cef_list_value_t::get_int": setElement,
 }
@@ -188,6 +184,8 @@ var outParameter = map[string]void{
 	"cef_request_handler_t::on_resource_redirect::new_url":                      setElement,
 	"cef_response_filter_t::filter::data_in_read":                               setElement,
 	"cef_response_filter_t::filter::data_out_written":                           setElement,
+	"cef_resource_bundle_handler_t::get_data_resource::data":                    setElement,
+	"cef_resource_bundle_handler_t::get_data_resource_for_scale::data":          setElement,
 	"cef_resource_handler_t::get_response_headers::response_length":             setElement,
 	"cef_resource_handler_t::get_response_headers::redirectUrl":                 setElement,
 	"cef_resource_handler_t::open::handle_request":                              setElement,
@@ -211,7 +209,8 @@ var outParameter = map[string]void{
 	"cef_v8interceptor_t::get_byindex::retval":                                  setElement,
 	"cef_v8interceptor_t::set_byindex::exception":                               setElement,
 	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":                 setElement,
-	"::cef_time_to_timet::time": setElement,
+	"cef_x509certificate_t::get_pemencoded_issuer_chain::chain":                 setElement,
+	"::cef_time_to_timet::time":                                                 setElement,
 }
 
 var inOutParameter = map[string]void{
@@ -229,11 +228,13 @@ var inOutParameter = map[string]void{
 }
 
 var byteSliceParameter = map[string]string{
-	"cef_response_filter_t::filter::data_in":          "data_in_size",
-	"cef_response_filter_t::filter::data_out":         "data_out_size",
-	"cef_resource_handler_t::read::data_out":          "bytes_to_read",
-	"cef_resource_handler_t::read_response::data_out": "bytes_to_read",
-	"::cef_binary_value_create::data":                 "data_size",
+	"cef_response_filter_t::filter::data_in":                           "data_in_size",
+	"cef_response_filter_t::filter::data_out":                          "data_out_size",
+	"cef_resource_bundle_handler_t::get_data_resource::data":           "data_size",
+	"cef_resource_bundle_handler_t::get_data_resource_for_scale::data": "data_size",
+	"cef_resource_handler_t::read::data_out":                           "bytes_to_read",
+	"cef_resource_handler_t::read_response::data_out":                  "bytes_to_read",
+	"::cef_binary_value_create::data":                                  "data_size",
 	// "::cef_v8value_create_array_buffer::buffer":       "length", buffer parameter should be shared with cef_v8array_buffer_release_callback_t
 }
 var byteSliceLengthParameter = map[string]string{}
@@ -245,6 +246,7 @@ var sliceParameter = map[string]string{
 	"cef_v8value_t::execute_function::arguments":                        "argumentsCount",
 	"cef_v8value_t::execute_function_with_context::arguments":           "argumentsCount",
 	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":         "chainCount",
+	"cef_x509certificate_t::get_pemencoded_issuer_chain::chain":         "chainCount",
 }
 
 var sliceLengthParameter = map[string]string{}
@@ -589,7 +591,8 @@ var FileDefs = map[string][]Decl{}
 
 func init() {
 	Defs["cef_window_info_t"] = &SimpleDecl{DeclCommon{DkSimple, nil, nil}}
-	Defs["cef_main_args_t"] = &UnhandledDecl{DeclCommon{DkUnhandled, nil, nil}}
+	Defs["cef_main_args_t"] = &SimpleDecl{DeclCommon{DkSimple, nil, nil}}
+	// Defs["cef_main_args_t"] = &UnhandledDecl{DeclCommon{DkUnhandled, nil, nil}}
 }
 
 var hasHandlerClass = map[string]bool{}
@@ -1757,27 +1760,31 @@ func (t Type) TitleCase() (ret string) {
 }
 
 func (t Type) GoCType() (ct string) {
+	pointer := t.Pointer
 	if t.Ty == TyVoid {
 		switch t.Pointer {
 		case 0:
-			return ct
-		case 1:
-			return "C.VOIDP"
+			return ""
+		case 1, 2:
+			pointer--
+			ct = "VOIDP"
 		default:
 			log.Panicf("T1263: %v\n", t)
 		}
-	}
-	ct = t.Name()
-	switch t.Ty {
-	case TyStructRefCounted, TyStructScoped, TyStructSimple:
-		ct = "cef_" + t.Token.BaseName() + "_t"
-	case TyLongLong:
-		ct = "LONGLONG"
-	case TyULongLong:
-		ct = "ULONGLONG"
+	} else {
+		switch t.Ty {
+		case TyStructRefCounted, TyStructScoped, TyStructSimple:
+			ct = "cef_" + t.Token.BaseName() + "_t"
+		case TyLongLong:
+			ct = "LONGLONG"
+		case TyULongLong:
+			ct = "ULONGLONG"
+		default:
+			ct = t.Name()
+		}
 	}
 	ct = "C." + ct
-	for i := 0; i < t.Pointer; i++ {
+	for i := 0; i < pointer; i++ {
 		ct = "*" + ct
 	}
 	return ct

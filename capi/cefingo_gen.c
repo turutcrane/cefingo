@@ -4955,6 +4955,19 @@ size_t cefingo_post_data_get_element_count(
 	);
 }
 
+void cefingo_post_data_get_elements(
+	struct _cef_post_data_t* self,
+	size_t* elementsCount,
+	struct _cef_post_data_element_t** elements
+)
+{
+	self->get_elements(
+		self, 
+		elementsCount, 
+		elements
+	);
+}
+
 int cefingo_post_data_remove_element(
 	struct _cef_post_data_t* self,
 	struct _cef_post_data_element_t* element
@@ -5489,6 +5502,10 @@ cef_resource_bundle_handler_t *cefingo_construct_resource_bundle_handler(cefingo
 	// callbacks
 	resource_bundle_handler->body.get_localized_string = 
 		cefingo_resource_bundle_handler_get_localized_string;
+	resource_bundle_handler->body.get_data_resource = 
+		cefingo_resource_bundle_handler_get_data_resource;
+	resource_bundle_handler->body.get_data_resource_for_scale = 
+		cefingo_resource_bundle_handler_get_data_resource_for_scale;
 
 	return (cef_resource_bundle_handler_t*)resource_bundle_handler;
 }
@@ -8351,5 +8368,31 @@ size_t cefingo_x509certificate_get_issuer_chain_size(
 {
 	return self->get_issuer_chain_size(
 		self
+	);
+}
+
+void cefingo_x509certificate_get_derencoded_issuer_chain(
+	struct _cef_x509certificate_t* self,
+	size_t* chainCount,
+	struct _cef_binary_value_t** chain
+)
+{
+	self->get_derencoded_issuer_chain(
+		self, 
+		chainCount, 
+		chain
+	);
+}
+
+void cefingo_x509certificate_get_pemencoded_issuer_chain(
+	struct _cef_x509certificate_t* self,
+	size_t* chainCount,
+	struct _cef_binary_value_t** chain
+)
+{
+	self->get_pemencoded_issuer_chain(
+		self, 
+		chainCount, 
+		chain
 	);
 }

@@ -70,13 +70,20 @@ Set returned Go value to C.param and cleanup
 			*{%s goParamName(p) %} = {%s goTempNameOut(p) %}.p_{%s p.Type().BaseName() %}
 			BaseAddRef(*{%s goParamName(p) %})
 		}{% code *line +=4 %}
+	{%- elseif isSlice, sliceLen := p.IsByteSliceParam(); isSlice -%}
+		*{%s sliceLen %} = (C.size_t)(len({%s goTempNameOut(p) %}))
+		*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})(C.calloc(1, C.size_t(len({%s goTempNameOut(p) %}))))
+		target := (*[1<<30]byte)(unsafe.Pointer(*{%s goParamName(p) %}))[:*{%s sliceLen %}:*{%s sliceLen %}]
+		copy(target, {%s goTempNameOut(p) %})
+	{%- elseif isSlice, _ := p.IsSliceParam(); isSlice -%}
+		{% code log.Panicf("T76: Not implemented %v", p) %}
 	{%- else -%}
 		*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})({%s goTempNameOut(p) %}){% code *line +=1 %}
 	{%- endif -%}
 {% elseif p.IsInOutParam() -%}
 	{%- if p.Type().Ty == parser.TyStringT -%}
 		set_cef_string({%s goParamName(p) %},{%s goTempNameOut(p) %}){% code *line +=1 %}
-	{% elseif p.Type().Ty == parser.TyStructSimple  || p.Type().Ty ==  parser.TyInt -%}
+	{%- elseif p.Type().Ty == parser.TyStructSimple  || p.Type().Ty ==  parser.TyInt -%}
 		*{%s p.Name() %} = {%s p.Type().Deref().GoCType() %}({%s goTempNameOut(p) %})
 	{%- elseif p.Type().Pointer == 2 -%}
 		if cefp != {%= goTempNameOut(p) %}.p_{%s p.Type().BaseName() %} {
@@ -144,7 +151,7 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 		{%- endfor %})
 		{%- for _, p := range m.Params() -%}
 			{%- if exp := afterProcess(p, &line); exp != "" -%}
-				{%-s exp -%}
+				{%-s= exp -%}
 			{%- endif -%}
 		{%- endfor %}
 		{%- if m.IsBoolValueMethod() %}{% code line +=1 -%}
@@ -349,6 +356,10 @@ extern {%s constructorName(st) %};
 	{%- if ok, argLen := p.IsByteSliceParam(); ok -%}
 	{%s argLen %} := len({%s goParamName(p) %})
 	{%s cTempName(p) %} := c_calloc(1, C.size_t({%s argLen %}), "T{%d *line %}:{%s p.CalleeName() + "::" + p.Name() %}")
+	{%- elseif isSlice, argLen := p.IsSliceParam(); isSlice -%}
+	var _{%s argLen %} C.size_t
+	{%s argLen %} := &_{%s argLen %}
+	var {%s cTempName(p) %} {%s p.Type().Deref().GoCType() %}
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
 	{%s cTempName(p) %} := create_cef_string("")
 	defer clear_cef_string({%s cTempName(p) %})
@@ -440,9 +451,15 @@ tmp{%= cName(p) -%}
 
 {% func postConvFromC(p parser.Param, line *int) -%}
 {% if p.IsOutParam() -%}
-	{%- if ok, argLen := p.IsByteSliceParam(); ok -%}
+	{%- if isSlice, argLen := p.IsByteSliceParam(); isSlice -%}
 	{%s goParamName(p) %} = C.GoBytes({%s cTempName(p) %}, C.int({%s argLen %}))
 	C.free({%s cTempName(p) %})
+	{%- elseif isSlice, argLen := p.IsSliceParam(); isSlice -%}
+	{%s goParamName(p) %} = make([]{%s p.Type().Deref().GoType() %}, *{%s argLen %})
+	_{%s cTempName(p) %} := (*[1 << 30]({%s p.Type().Deref().GoCType() %}))(unsafe.Pointer({%s cTempName(p) %}))[:*{%s argLen %}:*{%s argLen %}]
+	for i := C.size_t(0); i {%s= "<" %} *{%s argLen %}; i++ {
+		{%s goParamName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(_{%s cTempName(p) %}[i])
+	}
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
 	{%s goParamName(p) %} = string_from_cef_string({%s cTempName(p) %})
 	{%- elseif p.Type().Deref().IsRefCountedClass() -%}
@@ -474,7 +491,7 @@ func {%s f.Funcname.TitleCase() %}(
 	{%- if i > 0 %}, {% endif %}{%= convToC(p) -%}
 	{%- endfor %})
 
-	{%- for _, p := range f.Params() -%}{%s postConvFromC(p, &line) %}{%endfor -%}
+	{%- for _, p := range f.Params() -%}{%= postConvFromC(p, &line) %}{%endfor -%}
 	{%= goReturnStmt(f) %}
 }
 {% endfunc %}
@@ -485,8 +502,16 @@ Generate Go func Return Types
 ({% if m.HasReturnValue() -%}ret {%s m.ReturnGoType() -%},{%- endif -%}
 {% for _, p := range m.Params() -%}
 {% if p.IsOutParam() || p.IsInOutParam() -%}
-{%s goParamNameOut(p) %} {% if p.Type().Ty == parser.TyStringT && p.Type().Pointer == 1 -%}
-{%s p.Type().GoType() %}{% else %}{%s p.Type().Deref().GoType() %}{% endif -%}
+{%s goParamNameOut(p) + " " -%}
+{% if p.Type().Ty == parser.TyStringT && p.Type().Pointer == 1 -%}
+	{%-s p.Type().GoType() -%}
+{% elseif isSlice, _ := p.IsSliceParam(); isSlice -%}
+	{%-s "[]" + p.Type().Deref().GoType() -%}
+{% elseif isSlice, _ := p.IsByteSliceParam(); isSlice -%}
+	{%-s "[]byte" -%}
+{% else -%}
+	{%-s p.Type().Deref().GoType() -%}
+{% endif -%}
 , {% endif -%}
 {% endfor -%}
 {%s ")" -%}
@@ -518,8 +543,8 @@ func  ({%s goParamName(m.Params()[0]) %} {%s m.Params()[0].GoType() %}) {%s m.Fu
 	{%- if i > 0 %}, {% endif %}{%= convToC(p) -%}
 	{%- endfor %})
 
-	{%- for _, p := range m.Params() -%}{%s postConvFromC(p, &line) %}{%endfor -%}
-	{%= goReturnStmt(m) %}
+	{%- for _, p := range m.Params() -%}{%= postConvFromC(p, &line) %}{%endfor -%}
+	{%-= goReturnStmt(m) %}
 }
 {% endfunc %}
 
