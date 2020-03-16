@@ -49,3 +49,7 @@ func NewStringMultimap() StringMultimap {
 func (o StringMultimap) CefObject() capi.CStringMultimapT {
 	return o.m.cef
 }
+
+func (o *StringMultimap) Append(key, value string) bool {
+	return capi.StringMultimapAppend(o.CefObject(), key, value)
+}

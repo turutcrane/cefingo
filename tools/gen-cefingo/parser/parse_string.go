@@ -61,11 +61,14 @@ func _() {
 	_ = x[TySimple-29]
 	_ = x[TyMSG-30]
 	_ = x[TyHCURSOR-31]
+	_ = x[TyHINSTANCE-32]
+	_ = x[TyDWORD-33]
+	_ = x[TyHMENU-34]
 }
 
-const _Ty_name = "TyUnknownTyVoidTyCharTyUnsignedTyIntTyLongTyLongLongTyULongTyULongLongTyFloatTyDoubleTySizeTTyHWNDTyStructUnhandledTyStructSimpleTyStructRefCountedTyStructScopedTyStructNotDefinedTyInt16TyInt32TyInt64TyUint16TyUint32TyUint64TyTimeTTyStringTTyStringUserfreeTTyOtherTyEnumTySimpleTyMSGTyHCURSOR"
+const _Ty_name = "TyUnknownTyVoidTyCharTyUnsignedTyIntTyLongTyLongLongTyULongTyULongLongTyFloatTyDoubleTySizeTTyHWNDTyStructUnhandledTyStructSimpleTyStructRefCountedTyStructScopedTyStructNotDefinedTyInt16TyInt32TyInt64TyUint16TyUint32TyUint64TyTimeTTyStringTTyStringUserfreeTTyOtherTyEnumTySimpleTyMSGTyHCURSORTyHINSTANCETyDWORDTyHMENU"
 
-var _Ty_index = [...]uint16{0, 9, 15, 21, 31, 36, 42, 52, 59, 70, 77, 85, 92, 98, 115, 129, 147, 161, 179, 186, 193, 200, 208, 216, 224, 231, 240, 257, 264, 270, 278, 283, 292}
+var _Ty_index = [...]uint16{0, 9, 15, 21, 31, 36, 42, 52, 59, 70, 77, 85, 92, 98, 115, 129, 147, 161, 179, 186, 193, 200, 208, 216, 224, 231, 240, 257, 264, 270, 278, 283, 292, 303, 310, 317}
 
 func (i Ty) String() string {
 	if i < 0 || i >= Ty(len(_Ty_index)-1) {
@@ -103,11 +106,12 @@ func _() {
 	_ = x[DkEnum-3]
 	_ = x[DkCefClass-4]
 	_ = x[DkFunc-5]
+	_ = x[DkStruct-6]
 }
 
-const _DefKind_name = "DkUnknownDkUnhandledDkSimpleDkEnumDkCefClassDkFunc"
+const _DefKind_name = "DkUnknownDkUnhandledDkSimpleDkEnumDkCefClassDkFuncDkStruct"
 
-var _DefKind_index = [...]uint8{0, 9, 20, 28, 34, 44, 50}
+var _DefKind_index = [...]uint8{0, 9, 20, 28, 34, 44, 50, 58}
 
 func (i DefKind) String() string {
 	if i < 0 || i >= DefKind(len(_DefKind_index)-1) {

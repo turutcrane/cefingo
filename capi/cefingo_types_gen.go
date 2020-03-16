@@ -4,6 +4,7 @@ package capi
 import (
 	"sync"
 	"time"
+	"unsafe"
 )
 
 // #include "cefingo.h"
@@ -427,11 +428,287 @@ const (
 ///
 type CSettingsT C.cef_settings_t
 
+func NewCSettingsT() *CSettingsT {
+	s := &CSettingsT{}
+	s.size = C.sizeof_cef_settings_t
+	return s
+}
+
+func (st *CSettingsT) NoSandbox() int {
+	return int(st.no_sandbox)
+}
+
+func (st *CSettingsT) SetNoSandbox(v int) {
+	st.no_sandbox = (C.int)(v)
+}
+
+func (st *CSettingsT) BrowserSubprocessPath() string {
+	return string_from_cef_string(&st.browser_subprocess_path)
+}
+
+func (st *CSettingsT) SetBrowserSubprocessPath(v string) {
+	set_cef_string(&st.browser_subprocess_path, v)
+}
+
+func (st *CSettingsT) FrameworkDirPath() string {
+	return string_from_cef_string(&st.framework_dir_path)
+}
+
+func (st *CSettingsT) SetFrameworkDirPath(v string) {
+	set_cef_string(&st.framework_dir_path, v)
+}
+
+func (st *CSettingsT) MainBundlePath() string {
+	return string_from_cef_string(&st.main_bundle_path)
+}
+
+func (st *CSettingsT) SetMainBundlePath(v string) {
+	set_cef_string(&st.main_bundle_path, v)
+}
+
+func (st *CSettingsT) MultiThreadedMessageLoop() int {
+	return int(st.multi_threaded_message_loop)
+}
+
+func (st *CSettingsT) SetMultiThreadedMessageLoop(v int) {
+	st.multi_threaded_message_loop = (C.int)(v)
+}
+
+func (st *CSettingsT) ExternalMessagePump() int {
+	return int(st.external_message_pump)
+}
+
+func (st *CSettingsT) SetExternalMessagePump(v int) {
+	st.external_message_pump = (C.int)(v)
+}
+
+func (st *CSettingsT) WindowlessRenderingEnabled() int {
+	return int(st.windowless_rendering_enabled)
+}
+
+func (st *CSettingsT) SetWindowlessRenderingEnabled(v int) {
+	st.windowless_rendering_enabled = (C.int)(v)
+}
+
+func (st *CSettingsT) CommandLineArgsDisabled() int {
+	return int(st.command_line_args_disabled)
+}
+
+func (st *CSettingsT) SetCommandLineArgsDisabled(v int) {
+	st.command_line_args_disabled = (C.int)(v)
+}
+
+func (st *CSettingsT) CachePath() string {
+	return string_from_cef_string(&st.cache_path)
+}
+
+func (st *CSettingsT) SetCachePath(v string) {
+	set_cef_string(&st.cache_path, v)
+}
+
+func (st *CSettingsT) RootCachePath() string {
+	return string_from_cef_string(&st.root_cache_path)
+}
+
+func (st *CSettingsT) SetRootCachePath(v string) {
+	set_cef_string(&st.root_cache_path, v)
+}
+
+func (st *CSettingsT) UserDataPath() string {
+	return string_from_cef_string(&st.user_data_path)
+}
+
+func (st *CSettingsT) SetUserDataPath(v string) {
+	set_cef_string(&st.user_data_path, v)
+}
+
+func (st *CSettingsT) PersistSessionCookies() int {
+	return int(st.persist_session_cookies)
+}
+
+func (st *CSettingsT) SetPersistSessionCookies(v int) {
+	st.persist_session_cookies = (C.int)(v)
+}
+
+func (st *CSettingsT) PersistUserPreferences() int {
+	return int(st.persist_user_preferences)
+}
+
+func (st *CSettingsT) SetPersistUserPreferences(v int) {
+	st.persist_user_preferences = (C.int)(v)
+}
+
+func (st *CSettingsT) UserAgent() string {
+	return string_from_cef_string(&st.user_agent)
+}
+
+func (st *CSettingsT) SetUserAgent(v string) {
+	set_cef_string(&st.user_agent, v)
+}
+
+func (st *CSettingsT) ProductVersion() string {
+	return string_from_cef_string(&st.product_version)
+}
+
+func (st *CSettingsT) SetProductVersion(v string) {
+	set_cef_string(&st.product_version, v)
+}
+
+func (st *CSettingsT) Locale() string {
+	return string_from_cef_string(&st.locale)
+}
+
+func (st *CSettingsT) SetLocale(v string) {
+	set_cef_string(&st.locale, v)
+}
+
+func (st *CSettingsT) LogFile() string {
+	return string_from_cef_string(&st.log_file)
+}
+
+func (st *CSettingsT) SetLogFile(v string) {
+	set_cef_string(&st.log_file, v)
+}
+
+func (st *CSettingsT) LogSeverity() CLogSeverityT {
+	return CLogSeverityT(st.log_severity)
+}
+
+func (st *CSettingsT) SetLogSeverity(v CLogSeverityT) {
+	st.log_severity = (C.cef_log_severity_t)(v)
+}
+
+func (st *CSettingsT) JavascriptFlags() string {
+	return string_from_cef_string(&st.javascript_flags)
+}
+
+func (st *CSettingsT) SetJavascriptFlags(v string) {
+	set_cef_string(&st.javascript_flags, v)
+}
+
+func (st *CSettingsT) ResourcesDirPath() string {
+	return string_from_cef_string(&st.resources_dir_path)
+}
+
+func (st *CSettingsT) SetResourcesDirPath(v string) {
+	set_cef_string(&st.resources_dir_path, v)
+}
+
+func (st *CSettingsT) LocalesDirPath() string {
+	return string_from_cef_string(&st.locales_dir_path)
+}
+
+func (st *CSettingsT) SetLocalesDirPath(v string) {
+	set_cef_string(&st.locales_dir_path, v)
+}
+
+func (st *CSettingsT) PackLoadingDisabled() int {
+	return int(st.pack_loading_disabled)
+}
+
+func (st *CSettingsT) SetPackLoadingDisabled(v int) {
+	st.pack_loading_disabled = (C.int)(v)
+}
+
+func (st *CSettingsT) RemoteDebuggingPort() int {
+	return int(st.remote_debugging_port)
+}
+
+func (st *CSettingsT) SetRemoteDebuggingPort(v int) {
+	st.remote_debugging_port = (C.int)(v)
+}
+
+func (st *CSettingsT) UncaughtExceptionStackSize() int {
+	return int(st.uncaught_exception_stack_size)
+}
+
+func (st *CSettingsT) SetUncaughtExceptionStackSize(v int) {
+	st.uncaught_exception_stack_size = (C.int)(v)
+}
+
+func (st *CSettingsT) IgnoreCertificateErrors() int {
+	return int(st.ignore_certificate_errors)
+}
+
+func (st *CSettingsT) SetIgnoreCertificateErrors(v int) {
+	st.ignore_certificate_errors = (C.int)(v)
+}
+
+func (st *CSettingsT) BackgroundColor() CColorT {
+	return CColorT(st.background_color)
+}
+
+func (st *CSettingsT) SetBackgroundColor(v CColorT) {
+	st.background_color = (C.cef_color_t)(v)
+}
+
+func (st *CSettingsT) AcceptLanguageList() string {
+	return string_from_cef_string(&st.accept_language_list)
+}
+
+func (st *CSettingsT) SetAcceptLanguageList(v string) {
+	set_cef_string(&st.accept_language_list, v)
+}
+
+func (st *CSettingsT) ApplicationClientIdForFileScanning() string {
+	return string_from_cef_string(&st.application_client_id_for_file_scanning)
+}
+
+func (st *CSettingsT) SetApplicationClientIdForFileScanning(v string) {
+	set_cef_string(&st.application_client_id_for_file_scanning, v)
+}
+
 ///
 // Request context initialization settings. Specify NULL or 0 to get the
 // recommended default values.
 ///
 type CRequestContextSettingsT C.cef_request_context_settings_t
+
+func NewCRequestContextSettingsT() *CRequestContextSettingsT {
+	s := &CRequestContextSettingsT{}
+	s.size = C.sizeof_cef_request_context_settings_t
+	return s
+}
+
+func (st *CRequestContextSettingsT) CachePath() string {
+	return string_from_cef_string(&st.cache_path)
+}
+
+func (st *CRequestContextSettingsT) SetCachePath(v string) {
+	set_cef_string(&st.cache_path, v)
+}
+
+func (st *CRequestContextSettingsT) PersistSessionCookies() int {
+	return int(st.persist_session_cookies)
+}
+
+func (st *CRequestContextSettingsT) SetPersistSessionCookies(v int) {
+	st.persist_session_cookies = (C.int)(v)
+}
+
+func (st *CRequestContextSettingsT) PersistUserPreferences() int {
+	return int(st.persist_user_preferences)
+}
+
+func (st *CRequestContextSettingsT) SetPersistUserPreferences(v int) {
+	st.persist_user_preferences = (C.int)(v)
+}
+
+func (st *CRequestContextSettingsT) IgnoreCertificateErrors() int {
+	return int(st.ignore_certificate_errors)
+}
+
+func (st *CRequestContextSettingsT) SetIgnoreCertificateErrors(v int) {
+	st.ignore_certificate_errors = (C.int)(v)
+}
+
+func (st *CRequestContextSettingsT) AcceptLanguageList() string {
+	return string_from_cef_string(&st.accept_language_list)
+}
+
+func (st *CRequestContextSettingsT) SetAcceptLanguageList(v string) {
+	set_cef_string(&st.accept_language_list, v)
+}
 
 ///
 // Browser initialization settings. Specify NULL or 0 to get the recommended
@@ -440,6 +717,260 @@ type CRequestContextSettingsT C.cef_request_context_settings_t
 // line switches.
 ///
 type CBrowserSettingsT C.cef_browser_settings_t
+
+func NewCBrowserSettingsT() *CBrowserSettingsT {
+	s := &CBrowserSettingsT{}
+	s.size = C.sizeof_cef_browser_settings_t
+	return s
+}
+
+func (st *CBrowserSettingsT) WindowlessFrameRate() int {
+	return int(st.windowless_frame_rate)
+}
+
+func (st *CBrowserSettingsT) SetWindowlessFrameRate(v int) {
+	st.windowless_frame_rate = (C.int)(v)
+}
+
+func (st *CBrowserSettingsT) StandardFontFamily() string {
+	return string_from_cef_string(&st.standard_font_family)
+}
+
+func (st *CBrowserSettingsT) SetStandardFontFamily(v string) {
+	set_cef_string(&st.standard_font_family, v)
+}
+
+func (st *CBrowserSettingsT) FixedFontFamily() string {
+	return string_from_cef_string(&st.fixed_font_family)
+}
+
+func (st *CBrowserSettingsT) SetFixedFontFamily(v string) {
+	set_cef_string(&st.fixed_font_family, v)
+}
+
+func (st *CBrowserSettingsT) SerifFontFamily() string {
+	return string_from_cef_string(&st.serif_font_family)
+}
+
+func (st *CBrowserSettingsT) SetSerifFontFamily(v string) {
+	set_cef_string(&st.serif_font_family, v)
+}
+
+func (st *CBrowserSettingsT) SansSerifFontFamily() string {
+	return string_from_cef_string(&st.sans_serif_font_family)
+}
+
+func (st *CBrowserSettingsT) SetSansSerifFontFamily(v string) {
+	set_cef_string(&st.sans_serif_font_family, v)
+}
+
+func (st *CBrowserSettingsT) CursiveFontFamily() string {
+	return string_from_cef_string(&st.cursive_font_family)
+}
+
+func (st *CBrowserSettingsT) SetCursiveFontFamily(v string) {
+	set_cef_string(&st.cursive_font_family, v)
+}
+
+func (st *CBrowserSettingsT) FantasyFontFamily() string {
+	return string_from_cef_string(&st.fantasy_font_family)
+}
+
+func (st *CBrowserSettingsT) SetFantasyFontFamily(v string) {
+	set_cef_string(&st.fantasy_font_family, v)
+}
+
+func (st *CBrowserSettingsT) DefaultFontSize() int {
+	return int(st.default_font_size)
+}
+
+func (st *CBrowserSettingsT) SetDefaultFontSize(v int) {
+	st.default_font_size = (C.int)(v)
+}
+
+func (st *CBrowserSettingsT) DefaultFixedFontSize() int {
+	return int(st.default_fixed_font_size)
+}
+
+func (st *CBrowserSettingsT) SetDefaultFixedFontSize(v int) {
+	st.default_fixed_font_size = (C.int)(v)
+}
+
+func (st *CBrowserSettingsT) MinimumFontSize() int {
+	return int(st.minimum_font_size)
+}
+
+func (st *CBrowserSettingsT) SetMinimumFontSize(v int) {
+	st.minimum_font_size = (C.int)(v)
+}
+
+func (st *CBrowserSettingsT) MinimumLogicalFontSize() int {
+	return int(st.minimum_logical_font_size)
+}
+
+func (st *CBrowserSettingsT) SetMinimumLogicalFontSize(v int) {
+	st.minimum_logical_font_size = (C.int)(v)
+}
+
+func (st *CBrowserSettingsT) DefaultEncoding() string {
+	return string_from_cef_string(&st.default_encoding)
+}
+
+func (st *CBrowserSettingsT) SetDefaultEncoding(v string) {
+	set_cef_string(&st.default_encoding, v)
+}
+
+func (st *CBrowserSettingsT) RemoteFonts() CStateT {
+	return CStateT(st.remote_fonts)
+}
+
+func (st *CBrowserSettingsT) SetRemoteFonts(v CStateT) {
+	st.remote_fonts = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) Javascript() CStateT {
+	return CStateT(st.javascript)
+}
+
+func (st *CBrowserSettingsT) SetJavascript(v CStateT) {
+	st.javascript = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) JavascriptCloseWindows() CStateT {
+	return CStateT(st.javascript_close_windows)
+}
+
+func (st *CBrowserSettingsT) SetJavascriptCloseWindows(v CStateT) {
+	st.javascript_close_windows = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) JavascriptAccessClipboard() CStateT {
+	return CStateT(st.javascript_access_clipboard)
+}
+
+func (st *CBrowserSettingsT) SetJavascriptAccessClipboard(v CStateT) {
+	st.javascript_access_clipboard = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) JavascriptDomPaste() CStateT {
+	return CStateT(st.javascript_dom_paste)
+}
+
+func (st *CBrowserSettingsT) SetJavascriptDomPaste(v CStateT) {
+	st.javascript_dom_paste = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) Plugins() CStateT {
+	return CStateT(st.plugins)
+}
+
+func (st *CBrowserSettingsT) SetPlugins(v CStateT) {
+	st.plugins = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) UniversalAccessFromFileUrls() CStateT {
+	return CStateT(st.universal_access_from_file_urls)
+}
+
+func (st *CBrowserSettingsT) SetUniversalAccessFromFileUrls(v CStateT) {
+	st.universal_access_from_file_urls = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) FileAccessFromFileUrls() CStateT {
+	return CStateT(st.file_access_from_file_urls)
+}
+
+func (st *CBrowserSettingsT) SetFileAccessFromFileUrls(v CStateT) {
+	st.file_access_from_file_urls = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) WebSecurity() CStateT {
+	return CStateT(st.web_security)
+}
+
+func (st *CBrowserSettingsT) SetWebSecurity(v CStateT) {
+	st.web_security = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) ImageLoading() CStateT {
+	return CStateT(st.image_loading)
+}
+
+func (st *CBrowserSettingsT) SetImageLoading(v CStateT) {
+	st.image_loading = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) ImageShrinkStandaloneToFit() CStateT {
+	return CStateT(st.image_shrink_standalone_to_fit)
+}
+
+func (st *CBrowserSettingsT) SetImageShrinkStandaloneToFit(v CStateT) {
+	st.image_shrink_standalone_to_fit = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) TextAreaResize() CStateT {
+	return CStateT(st.text_area_resize)
+}
+
+func (st *CBrowserSettingsT) SetTextAreaResize(v CStateT) {
+	st.text_area_resize = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) TabToLinks() CStateT {
+	return CStateT(st.tab_to_links)
+}
+
+func (st *CBrowserSettingsT) SetTabToLinks(v CStateT) {
+	st.tab_to_links = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) LocalStorage() CStateT {
+	return CStateT(st.local_storage)
+}
+
+func (st *CBrowserSettingsT) SetLocalStorage(v CStateT) {
+	st.local_storage = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) Databases() CStateT {
+	return CStateT(st.databases)
+}
+
+func (st *CBrowserSettingsT) SetDatabases(v CStateT) {
+	st.databases = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) ApplicationCache() CStateT {
+	return CStateT(st.application_cache)
+}
+
+func (st *CBrowserSettingsT) SetApplicationCache(v CStateT) {
+	st.application_cache = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) Webgl() CStateT {
+	return CStateT(st.webgl)
+}
+
+func (st *CBrowserSettingsT) SetWebgl(v CStateT) {
+	st.webgl = (C.cef_state_t)(v)
+}
+
+func (st *CBrowserSettingsT) BackgroundColor() CColorT {
+	return CColorT(st.background_color)
+}
+
+func (st *CBrowserSettingsT) SetBackgroundColor(v CColorT) {
+	st.background_color = (C.cef_color_t)(v)
+}
+
+func (st *CBrowserSettingsT) AcceptLanguageList() string {
+	return string_from_cef_string(&st.accept_language_list)
+}
+
+func (st *CBrowserSettingsT) SetAcceptLanguageList(v string) {
+	set_cef_string(&st.accept_language_list, v)
+}
 
 ///
 // Return value types.
@@ -469,10 +1000,172 @@ const (
 ///
 type CUrlpartsT C.cef_urlparts_t
 
+func NewCUrlpartsT() *CUrlpartsT {
+	s := &CUrlpartsT{}
+	return s
+}
+
+func (st *CUrlpartsT) Spec() string {
+	return string_from_cef_string(&st.spec)
+}
+
+func (st *CUrlpartsT) SetSpec(v string) {
+	set_cef_string(&st.spec, v)
+}
+
+func (st *CUrlpartsT) Scheme() string {
+	return string_from_cef_string(&st.scheme)
+}
+
+func (st *CUrlpartsT) SetScheme(v string) {
+	set_cef_string(&st.scheme, v)
+}
+
+func (st *CUrlpartsT) Username() string {
+	return string_from_cef_string(&st.username)
+}
+
+func (st *CUrlpartsT) SetUsername(v string) {
+	set_cef_string(&st.username, v)
+}
+
+func (st *CUrlpartsT) Password() string {
+	return string_from_cef_string(&st.password)
+}
+
+func (st *CUrlpartsT) SetPassword(v string) {
+	set_cef_string(&st.password, v)
+}
+
+func (st *CUrlpartsT) Host() string {
+	return string_from_cef_string(&st.host)
+}
+
+func (st *CUrlpartsT) SetHost(v string) {
+	set_cef_string(&st.host, v)
+}
+
+func (st *CUrlpartsT) Port() string {
+	return string_from_cef_string(&st.port)
+}
+
+func (st *CUrlpartsT) SetPort(v string) {
+	set_cef_string(&st.port, v)
+}
+
+func (st *CUrlpartsT) Origin() string {
+	return string_from_cef_string(&st.origin)
+}
+
+func (st *CUrlpartsT) SetOrigin(v string) {
+	set_cef_string(&st.origin, v)
+}
+
+func (st *CUrlpartsT) Path() string {
+	return string_from_cef_string(&st.path)
+}
+
+func (st *CUrlpartsT) SetPath(v string) {
+	set_cef_string(&st.path, v)
+}
+
+func (st *CUrlpartsT) Query() string {
+	return string_from_cef_string(&st.query)
+}
+
+func (st *CUrlpartsT) SetQuery(v string) {
+	set_cef_string(&st.query, v)
+}
+
 ///
 // Cookie information.
 ///
 type CCookieT C.cef_cookie_t
+
+func NewCCookieT() *CCookieT {
+	s := &CCookieT{}
+	return s
+}
+
+func (st *CCookieT) Name() string {
+	return string_from_cef_string(&st.name)
+}
+
+func (st *CCookieT) SetName(v string) {
+	set_cef_string(&st.name, v)
+}
+
+func (st *CCookieT) Value() string {
+	return string_from_cef_string(&st.value)
+}
+
+func (st *CCookieT) SetValue(v string) {
+	set_cef_string(&st.value, v)
+}
+
+func (st *CCookieT) Domain() string {
+	return string_from_cef_string(&st.domain)
+}
+
+func (st *CCookieT) SetDomain(v string) {
+	set_cef_string(&st.domain, v)
+}
+
+func (st *CCookieT) Path() string {
+	return string_from_cef_string(&st.path)
+}
+
+func (st *CCookieT) SetPath(v string) {
+	set_cef_string(&st.path, v)
+}
+
+func (st *CCookieT) Secure() int {
+	return int(st.secure)
+}
+
+func (st *CCookieT) SetSecure(v int) {
+	st.secure = (C.int)(v)
+}
+
+func (st *CCookieT) Httponly() int {
+	return int(st.httponly)
+}
+
+func (st *CCookieT) SetHttponly(v int) {
+	st.httponly = (C.int)(v)
+}
+
+func (st *CCookieT) Creation() CTimeT {
+	return CTimeT(st.creation)
+}
+
+func (st *CCookieT) SetCreation(v CTimeT) {
+	st.creation = (C.cef_time_t)(v)
+}
+
+func (st *CCookieT) LastAccess() CTimeT {
+	return CTimeT(st.last_access)
+}
+
+func (st *CCookieT) SetLastAccess(v CTimeT) {
+	st.last_access = (C.cef_time_t)(v)
+}
+
+func (st *CCookieT) HasExpires() int {
+	return int(st.has_expires)
+}
+
+func (st *CCookieT) SetHasExpires(v int) {
+	st.has_expires = (C.int)(v)
+}
+
+func (st *CCookieT) Expires() CTimeT {
+	return CTimeT(st.expires)
+}
+
+func (st *CCookieT) SetExpires(v CTimeT) {
+	st.expires = (C.cef_time_t)(v)
+}
 
 ///
 // Process termination status values.
@@ -1424,30 +2117,188 @@ const (
 ///
 type CPointT C.cef_point_t
 
+func NewCPointT() *CPointT {
+	s := &CPointT{}
+	return s
+}
+
+func (st *CPointT) X() int {
+	return int(st.x)
+}
+
+func (st *CPointT) SetX(v int) {
+	st.x = (C.int)(v)
+}
+
+func (st *CPointT) Y() int {
+	return int(st.y)
+}
+
+func (st *CPointT) SetY(v int) {
+	st.y = (C.int)(v)
+}
+
 ///
 // Structure representing a rectangle.
 ///
 type CRectT C.cef_rect_t
+
+func NewCRectT() *CRectT {
+	s := &CRectT{}
+	return s
+}
+
+func (st *CRectT) X() int {
+	return int(st.x)
+}
+
+func (st *CRectT) SetX(v int) {
+	st.x = (C.int)(v)
+}
+
+func (st *CRectT) Y() int {
+	return int(st.y)
+}
+
+func (st *CRectT) SetY(v int) {
+	st.y = (C.int)(v)
+}
+
+func (st *CRectT) Width() int {
+	return int(st.width)
+}
+
+func (st *CRectT) SetWidth(v int) {
+	st.width = (C.int)(v)
+}
+
+func (st *CRectT) Height() int {
+	return int(st.height)
+}
+
+func (st *CRectT) SetHeight(v int) {
+	st.height = (C.int)(v)
+}
 
 ///
 // Structure representing a size.
 ///
 type CSizeT C.cef_size_t
 
+func NewCSizeT() *CSizeT {
+	s := &CSizeT{}
+	return s
+}
+
+func (st *CSizeT) Width() int {
+	return int(st.width)
+}
+
+func (st *CSizeT) SetWidth(v int) {
+	st.width = (C.int)(v)
+}
+
+func (st *CSizeT) Height() int {
+	return int(st.height)
+}
+
+func (st *CSizeT) SetHeight(v int) {
+	st.height = (C.int)(v)
+}
+
 ///
 // Structure representing a range.
 ///
 type CRangeT C.cef_range_t
+
+func NewCRangeT() *CRangeT {
+	s := &CRangeT{}
+	return s
+}
+
+func (st *CRangeT) From() int {
+	return int(st.from)
+}
+
+func (st *CRangeT) SetFrom(v int) {
+	st.from = (C.int)(v)
+}
+
+func (st *CRangeT) To() int {
+	return int(st.to)
+}
+
+func (st *CRangeT) SetTo(v int) {
+	st.to = (C.int)(v)
+}
 
 ///
 // Structure representing insets.
 ///
 type CInsetsT C.cef_insets_t
 
+func NewCInsetsT() *CInsetsT {
+	s := &CInsetsT{}
+	return s
+}
+
+func (st *CInsetsT) Top() int {
+	return int(st.top)
+}
+
+func (st *CInsetsT) SetTop(v int) {
+	st.top = (C.int)(v)
+}
+
+func (st *CInsetsT) Left() int {
+	return int(st.left)
+}
+
+func (st *CInsetsT) SetLeft(v int) {
+	st.left = (C.int)(v)
+}
+
+func (st *CInsetsT) Bottom() int {
+	return int(st.bottom)
+}
+
+func (st *CInsetsT) SetBottom(v int) {
+	st.bottom = (C.int)(v)
+}
+
+func (st *CInsetsT) Right() int {
+	return int(st.right)
+}
+
+func (st *CInsetsT) SetRight(v int) {
+	st.right = (C.int)(v)
+}
+
 ///
 // Structure representing a draggable region.
 ///
 type CDraggableRegionT C.cef_draggable_region_t
+
+func NewCDraggableRegionT() *CDraggableRegionT {
+	s := &CDraggableRegionT{}
+	return s
+}
+
+func (st *CDraggableRegionT) Bounds() CRectT {
+	return CRectT(st.bounds)
+}
+
+func (st *CDraggableRegionT) SetBounds(v CRectT) {
+	st.bounds = (C.cef_rect_t)(v)
+}
+
+func (st *CDraggableRegionT) Draggable() int {
+	return int(st.draggable)
+}
+
+func (st *CDraggableRegionT) SetDraggable(v int) {
+	st.draggable = (C.int)(v)
+}
 
 ///
 // Existing process IDs.
@@ -1649,6 +2500,59 @@ const (
 ///
 type CScreenInfoT C.cef_screen_info_t
 
+func NewCScreenInfoT() *CScreenInfoT {
+	s := &CScreenInfoT{}
+	return s
+}
+
+func (st *CScreenInfoT) DeviceScaleFactor() float32 {
+	return float32(st.device_scale_factor)
+}
+
+func (st *CScreenInfoT) SetDeviceScaleFactor(v float32) {
+	st.device_scale_factor = (C.float)(v)
+}
+
+func (st *CScreenInfoT) Depth() int {
+	return int(st.depth)
+}
+
+func (st *CScreenInfoT) SetDepth(v int) {
+	st.depth = (C.int)(v)
+}
+
+func (st *CScreenInfoT) DepthPerComponent() int {
+	return int(st.depth_per_component)
+}
+
+func (st *CScreenInfoT) SetDepthPerComponent(v int) {
+	st.depth_per_component = (C.int)(v)
+}
+
+func (st *CScreenInfoT) IsMonochrome() int {
+	return int(st.is_monochrome)
+}
+
+func (st *CScreenInfoT) SetIsMonochrome(v int) {
+	st.is_monochrome = (C.int)(v)
+}
+
+func (st *CScreenInfoT) Rect() CRectT {
+	return CRectT(st.rect)
+}
+
+func (st *CScreenInfoT) SetRect(v CRectT) {
+	st.rect = (C.cef_rect_t)(v)
+}
+
+func (st *CScreenInfoT) AvailableRect() CRectT {
+	return CRectT(st.available_rect)
+}
+
+func (st *CScreenInfoT) SetAvailableRect(v CRectT) {
+	st.available_rect = (C.cef_rect_t)(v)
+}
+
 ///
 // Supported menu IDs. Non-English translations can be provided for the
 // IDS_MENU_* strings in CefResourceBundleHandler::GetLocalizedString().
@@ -1716,6 +2620,35 @@ const (
 ///
 type CMouseEventT C.cef_mouse_event_t
 
+func NewCMouseEventT() *CMouseEventT {
+	s := &CMouseEventT{}
+	return s
+}
+
+func (st *CMouseEventT) X() int {
+	return int(st.x)
+}
+
+func (st *CMouseEventT) SetX(v int) {
+	st.x = (C.int)(v)
+}
+
+func (st *CMouseEventT) Y() int {
+	return int(st.y)
+}
+
+func (st *CMouseEventT) SetY(v int) {
+	st.y = (C.int)(v)
+}
+
+func (st *CMouseEventT) Modifiers() uint32 {
+	return uint32(st.modifiers)
+}
+
+func (st *CMouseEventT) SetModifiers(v uint32) {
+	st.modifiers = (C.uint32)(v)
+}
+
 ///
 // Touch points states types.
 ///
@@ -1745,6 +2678,91 @@ const (
 // Structure representing touch event information.
 ///
 type CTouchEventT C.cef_touch_event_t
+
+func NewCTouchEventT() *CTouchEventT {
+	s := &CTouchEventT{}
+	return s
+}
+
+func (st *CTouchEventT) Id() int {
+	return int(st.id)
+}
+
+func (st *CTouchEventT) SetId(v int) {
+	st.id = (C.int)(v)
+}
+
+func (st *CTouchEventT) X() float32 {
+	return float32(st.x)
+}
+
+func (st *CTouchEventT) SetX(v float32) {
+	st.x = (C.float)(v)
+}
+
+func (st *CTouchEventT) Y() float32 {
+	return float32(st.y)
+}
+
+func (st *CTouchEventT) SetY(v float32) {
+	st.y = (C.float)(v)
+}
+
+func (st *CTouchEventT) RadiusX() float32 {
+	return float32(st.radius_x)
+}
+
+func (st *CTouchEventT) SetRadiusX(v float32) {
+	st.radius_x = (C.float)(v)
+}
+
+func (st *CTouchEventT) RadiusY() float32 {
+	return float32(st.radius_y)
+}
+
+func (st *CTouchEventT) SetRadiusY(v float32) {
+	st.radius_y = (C.float)(v)
+}
+
+func (st *CTouchEventT) RotationAngle() float32 {
+	return float32(st.rotation_angle)
+}
+
+func (st *CTouchEventT) SetRotationAngle(v float32) {
+	st.rotation_angle = (C.float)(v)
+}
+
+func (st *CTouchEventT) Pressure() float32 {
+	return float32(st.pressure)
+}
+
+func (st *CTouchEventT) SetPressure(v float32) {
+	st.pressure = (C.float)(v)
+}
+
+func (st *CTouchEventT) Type() CTouchEventTypeT {
+	return CTouchEventTypeT(st._type)
+}
+
+func (st *CTouchEventT) SetType(v CTouchEventTypeT) {
+	st._type = (C.cef_touch_event_type_t)(v)
+}
+
+func (st *CTouchEventT) Modifiers() uint32 {
+	return uint32(st.modifiers)
+}
+
+func (st *CTouchEventT) SetModifiers(v uint32) {
+	st.modifiers = (C.uint32)(v)
+}
+
+func (st *CTouchEventT) PointerType() CPointerTypeT {
+	return CPointerTypeT(st.pointer_type)
+}
+
+func (st *CTouchEventT) SetPointerType(v CPointerTypeT) {
+	st.pointer_type = (C.cef_pointer_type_t)(v)
+}
 
 ///
 // Paint element types.
@@ -1947,6 +2965,75 @@ const (
 ///
 type CKeyEventT C.cef_key_event_t
 
+func NewCKeyEventT() *CKeyEventT {
+	s := &CKeyEventT{}
+	return s
+}
+
+func (st *CKeyEventT) Type() CKeyEventTypeT {
+	return CKeyEventTypeT(st._type)
+}
+
+func (st *CKeyEventT) SetType(v CKeyEventTypeT) {
+	st._type = (C.cef_key_event_type_t)(v)
+}
+
+func (st *CKeyEventT) Modifiers() uint32 {
+	return uint32(st.modifiers)
+}
+
+func (st *CKeyEventT) SetModifiers(v uint32) {
+	st.modifiers = (C.uint32)(v)
+}
+
+func (st *CKeyEventT) WindowsKeyCode() int {
+	return int(st.windows_key_code)
+}
+
+func (st *CKeyEventT) SetWindowsKeyCode(v int) {
+	st.windows_key_code = (C.int)(v)
+}
+
+func (st *CKeyEventT) NativeKeyCode() int {
+	return int(st.native_key_code)
+}
+
+func (st *CKeyEventT) SetNativeKeyCode(v int) {
+	st.native_key_code = (C.int)(v)
+}
+
+func (st *CKeyEventT) IsSystemKey() int {
+	return int(st.is_system_key)
+}
+
+func (st *CKeyEventT) SetIsSystemKey(v int) {
+	st.is_system_key = (C.int)(v)
+}
+
+func (st *CKeyEventT) Character() uint16 {
+	return uint16(st.character)
+}
+
+func (st *CKeyEventT) SetCharacter(v uint16) {
+	st.character = (C.char16)(v)
+}
+
+func (st *CKeyEventT) UnmodifiedCharacter() uint16 {
+	return uint16(st.unmodified_character)
+}
+
+func (st *CKeyEventT) SetUnmodifiedCharacter(v uint16) {
+	st.unmodified_character = (C.char16)(v)
+}
+
+func (st *CKeyEventT) FocusOnEditableField() int {
+	return int(st.focus_on_editable_field)
+}
+
+func (st *CKeyEventT) SetFocusOnEditableField(v int) {
+	st.focus_on_editable_field = (C.int)(v)
+}
+
 ///
 // Focus sources.
 ///
@@ -2018,6 +3105,107 @@ const (
 // Popup window features.
 ///
 type CPopupFeaturesT C.cef_popup_features_t
+
+func NewCPopupFeaturesT() *CPopupFeaturesT {
+	s := &CPopupFeaturesT{}
+	return s
+}
+
+func (st *CPopupFeaturesT) X() int {
+	return int(st.x)
+}
+
+func (st *CPopupFeaturesT) SetX(v int) {
+	st.x = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Xset() int {
+	return int(st.xSet)
+}
+
+func (st *CPopupFeaturesT) SetXset(v int) {
+	st.xSet = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Y() int {
+	return int(st.y)
+}
+
+func (st *CPopupFeaturesT) SetY(v int) {
+	st.y = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Yset() int {
+	return int(st.ySet)
+}
+
+func (st *CPopupFeaturesT) SetYset(v int) {
+	st.ySet = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Width() int {
+	return int(st.width)
+}
+
+func (st *CPopupFeaturesT) SetWidth(v int) {
+	st.width = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Widthset() int {
+	return int(st.widthSet)
+}
+
+func (st *CPopupFeaturesT) SetWidthset(v int) {
+	st.widthSet = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Height() int {
+	return int(st.height)
+}
+
+func (st *CPopupFeaturesT) SetHeight(v int) {
+	st.height = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Heightset() int {
+	return int(st.heightSet)
+}
+
+func (st *CPopupFeaturesT) SetHeightset(v int) {
+	st.heightSet = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Menubarvisible() int {
+	return int(st.menuBarVisible)
+}
+
+func (st *CPopupFeaturesT) SetMenubarvisible(v int) {
+	st.menuBarVisible = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Statusbarvisible() int {
+	return int(st.statusBarVisible)
+}
+
+func (st *CPopupFeaturesT) SetStatusbarvisible(v int) {
+	st.statusBarVisible = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Toolbarvisible() int {
+	return int(st.toolBarVisible)
+}
+
+func (st *CPopupFeaturesT) SetToolbarvisible(v int) {
+	st.toolBarVisible = (C.int)(v)
+}
+
+func (st *CPopupFeaturesT) Scrollbarsvisible() int {
+	return int(st.scrollbarsVisible)
+}
+
+func (st *CPopupFeaturesT) SetScrollbarsvisible(v int) {
+	st.scrollbarsVisible = (C.int)(v)
+}
 
 ///
 // DOM document types.
@@ -2231,6 +3419,43 @@ const (
 ///
 type CCursorInfoT C.cef_cursor_info_t
 
+func NewCCursorInfoT() *CCursorInfoT {
+	s := &CCursorInfoT{}
+	return s
+}
+
+func (st *CCursorInfoT) Hotspot() CPointT {
+	return CPointT(st.hotspot)
+}
+
+func (st *CCursorInfoT) SetHotspot(v CPointT) {
+	st.hotspot = (C.cef_point_t)(v)
+}
+
+func (st *CCursorInfoT) ImageScaleFactor() float32 {
+	return float32(st.image_scale_factor)
+}
+
+func (st *CCursorInfoT) SetImageScaleFactor(v float32) {
+	st.image_scale_factor = (C.float)(v)
+}
+
+func (st *CCursorInfoT) Buffer() unsafe.Pointer {
+	return unsafe.Pointer(st.buffer)
+}
+
+func (st *CCursorInfoT) SetBuffer(v unsafe.Pointer) {
+	st.buffer = (unsafe.Pointer)(v)
+}
+
+func (st *CCursorInfoT) Size() CSizeT {
+	return CSizeT(st.size)
+}
+
+func (st *CCursorInfoT) SetSize(v CSizeT) {
+	st.size = (C.cef_size_t)(v)
+}
+
 ///
 // URI unescape rules passed to CefURIDecode().
 ///
@@ -2400,6 +3625,123 @@ const (
 // Structure representing PDF print settings.
 ///
 type CPdfPrintSettingsT C.cef_pdf_print_settings_t
+
+func NewCPdfPrintSettingsT() *CPdfPrintSettingsT {
+	s := &CPdfPrintSettingsT{}
+	return s
+}
+
+func (st *CPdfPrintSettingsT) HeaderFooterTitle() string {
+	return string_from_cef_string(&st.header_footer_title)
+}
+
+func (st *CPdfPrintSettingsT) SetHeaderFooterTitle(v string) {
+	set_cef_string(&st.header_footer_title, v)
+}
+
+func (st *CPdfPrintSettingsT) HeaderFooterUrl() string {
+	return string_from_cef_string(&st.header_footer_url)
+}
+
+func (st *CPdfPrintSettingsT) SetHeaderFooterUrl(v string) {
+	set_cef_string(&st.header_footer_url, v)
+}
+
+func (st *CPdfPrintSettingsT) PageWidth() int {
+	return int(st.page_width)
+}
+
+func (st *CPdfPrintSettingsT) SetPageWidth(v int) {
+	st.page_width = (C.int)(v)
+}
+
+func (st *CPdfPrintSettingsT) PageHeight() int {
+	return int(st.page_height)
+}
+
+func (st *CPdfPrintSettingsT) SetPageHeight(v int) {
+	st.page_height = (C.int)(v)
+}
+
+func (st *CPdfPrintSettingsT) ScaleFactor() int {
+	return int(st.scale_factor)
+}
+
+func (st *CPdfPrintSettingsT) SetScaleFactor(v int) {
+	st.scale_factor = (C.int)(v)
+}
+
+func (st *CPdfPrintSettingsT) MarginTop() float64 {
+	return float64(st.margin_top)
+}
+
+func (st *CPdfPrintSettingsT) SetMarginTop(v float64) {
+	st.margin_top = (C.double)(v)
+}
+
+func (st *CPdfPrintSettingsT) MarginRight() float64 {
+	return float64(st.margin_right)
+}
+
+func (st *CPdfPrintSettingsT) SetMarginRight(v float64) {
+	st.margin_right = (C.double)(v)
+}
+
+func (st *CPdfPrintSettingsT) MarginBottom() float64 {
+	return float64(st.margin_bottom)
+}
+
+func (st *CPdfPrintSettingsT) SetMarginBottom(v float64) {
+	st.margin_bottom = (C.double)(v)
+}
+
+func (st *CPdfPrintSettingsT) MarginLeft() float64 {
+	return float64(st.margin_left)
+}
+
+func (st *CPdfPrintSettingsT) SetMarginLeft(v float64) {
+	st.margin_left = (C.double)(v)
+}
+
+func (st *CPdfPrintSettingsT) MarginType() CPdfPrintMarginTypeT {
+	return CPdfPrintMarginTypeT(st.margin_type)
+}
+
+func (st *CPdfPrintSettingsT) SetMarginType(v CPdfPrintMarginTypeT) {
+	st.margin_type = (C.cef_pdf_print_margin_type_t)(v)
+}
+
+func (st *CPdfPrintSettingsT) HeaderFooterEnabled() int {
+	return int(st.header_footer_enabled)
+}
+
+func (st *CPdfPrintSettingsT) SetHeaderFooterEnabled(v int) {
+	st.header_footer_enabled = (C.int)(v)
+}
+
+func (st *CPdfPrintSettingsT) SelectionOnly() int {
+	return int(st.selection_only)
+}
+
+func (st *CPdfPrintSettingsT) SetSelectionOnly(v int) {
+	st.selection_only = (C.int)(v)
+}
+
+func (st *CPdfPrintSettingsT) Landscape() int {
+	return int(st.landscape)
+}
+
+func (st *CPdfPrintSettingsT) SetLandscape(v int) {
+	st.landscape = (C.int)(v)
+}
+
+func (st *CPdfPrintSettingsT) BackgroundsEnabled() int {
+	return int(st.backgrounds_enabled)
+}
+
+func (st *CPdfPrintSettingsT) SetBackgroundsEnabled(v int) {
+	st.backgrounds_enabled = (C.int)(v)
+}
 
 ///
 // Supported UI scale factors for the platform. SCALE_FACTOR_NONE is used for
@@ -2650,6 +3992,83 @@ const (
 ///
 type CBoxLayoutSettingsT C.cef_box_layout_settings_t
 
+func NewCBoxLayoutSettingsT() *CBoxLayoutSettingsT {
+	s := &CBoxLayoutSettingsT{}
+	return s
+}
+
+func (st *CBoxLayoutSettingsT) Horizontal() int {
+	return int(st.horizontal)
+}
+
+func (st *CBoxLayoutSettingsT) SetHorizontal(v int) {
+	st.horizontal = (C.int)(v)
+}
+
+func (st *CBoxLayoutSettingsT) InsideBorderHorizontalSpacing() int {
+	return int(st.inside_border_horizontal_spacing)
+}
+
+func (st *CBoxLayoutSettingsT) SetInsideBorderHorizontalSpacing(v int) {
+	st.inside_border_horizontal_spacing = (C.int)(v)
+}
+
+func (st *CBoxLayoutSettingsT) InsideBorderVerticalSpacing() int {
+	return int(st.inside_border_vertical_spacing)
+}
+
+func (st *CBoxLayoutSettingsT) SetInsideBorderVerticalSpacing(v int) {
+	st.inside_border_vertical_spacing = (C.int)(v)
+}
+
+func (st *CBoxLayoutSettingsT) InsideBorderInsets() CInsetsT {
+	return CInsetsT(st.inside_border_insets)
+}
+
+func (st *CBoxLayoutSettingsT) SetInsideBorderInsets(v CInsetsT) {
+	st.inside_border_insets = (C.cef_insets_t)(v)
+}
+
+func (st *CBoxLayoutSettingsT) BetweenChildSpacing() int {
+	return int(st.between_child_spacing)
+}
+
+func (st *CBoxLayoutSettingsT) SetBetweenChildSpacing(v int) {
+	st.between_child_spacing = (C.int)(v)
+}
+
+func (st *CBoxLayoutSettingsT) MainAxisAlignment() CMainAxisAlignmentT {
+	return CMainAxisAlignmentT(st.main_axis_alignment)
+}
+
+func (st *CBoxLayoutSettingsT) SetMainAxisAlignment(v CMainAxisAlignmentT) {
+	st.main_axis_alignment = (C.cef_main_axis_alignment_t)(v)
+}
+
+func (st *CBoxLayoutSettingsT) CrossAxisAlignment() CCrossAxisAlignmentT {
+	return CCrossAxisAlignmentT(st.cross_axis_alignment)
+}
+
+func (st *CBoxLayoutSettingsT) SetCrossAxisAlignment(v CCrossAxisAlignmentT) {
+	st.cross_axis_alignment = (C.cef_cross_axis_alignment_t)(v)
+}
+
+func (st *CBoxLayoutSettingsT) MinimumCrossAxisSize() int {
+	return int(st.minimum_cross_axis_size)
+}
+
+func (st *CBoxLayoutSettingsT) SetMinimumCrossAxisSize(v int) {
+	st.minimum_cross_axis_size = (C.int)(v)
+}
+
+func (st *CBoxLayoutSettingsT) DefaultFlex() int {
+	return int(st.default_flex)
+}
+
+func (st *CBoxLayoutSettingsT) SetDefaultFlex(v int) {
+	st.default_flex = (C.int)(v)
+}
+
 ///
 // Specifies the button display state.
 ///
@@ -2857,3 +4276,40 @@ const (
 // sync with that.
 ///
 type CCompositionUnderlineT C.cef_composition_underline_t
+
+func NewCCompositionUnderlineT() *CCompositionUnderlineT {
+	s := &CCompositionUnderlineT{}
+	return s
+}
+
+func (st *CCompositionUnderlineT) Range() CRangeT {
+	return CRangeT(st._range)
+}
+
+func (st *CCompositionUnderlineT) SetRange(v CRangeT) {
+	st._range = (C.cef_range_t)(v)
+}
+
+func (st *CCompositionUnderlineT) Color() CColorT {
+	return CColorT(st.color)
+}
+
+func (st *CCompositionUnderlineT) SetColor(v CColorT) {
+	st.color = (C.cef_color_t)(v)
+}
+
+func (st *CCompositionUnderlineT) BackgroundColor() CColorT {
+	return CColorT(st.background_color)
+}
+
+func (st *CCompositionUnderlineT) SetBackgroundColor(v CColorT) {
+	st.background_color = (C.cef_color_t)(v)
+}
+
+func (st *CCompositionUnderlineT) Thick() int {
+	return int(st.thick)
+}
+
+func (st *CCompositionUnderlineT) SetThick(v int) {
+	st.thick = (C.int)(v)
+}

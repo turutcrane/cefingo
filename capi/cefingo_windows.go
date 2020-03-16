@@ -10,8 +10,6 @@ import (
 import "C"
 
 type CWindowHandleT C.cef_window_handle_t
-type CWindowInfoT C.cef_window_info_t
-type CMainArgsT C.cef_main_args_t
 
 const (
 	WinWsOverlapped         = C.WS_OVERLAPPED
@@ -72,6 +70,8 @@ const (
 )
 
 type WinHinstance C.HINSTANCE
+type WinDword C.DWORD
+type WinHmenu C.HMENU
 
 func GetWinHandle() WinHinstance {
 	kernel32 := syscall.MustLoadDLL("kernel32.dll")

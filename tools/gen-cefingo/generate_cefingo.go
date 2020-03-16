@@ -34,6 +34,9 @@ func main() {
 	goTypeFile := newFileGo("cefingo_types_gen.go", false)
 	defer outFileGo(goTypeFile)
 
+	goTypeWinFile := newFileGo("cefingo_types_win_gen.go", false)
+	defer outFileGo(goTypeWinFile)
+
 	goExportFile := newFileGo("cefingo_exports_gen.go", false)
 	defer outFileGo(goExportFile)
 
@@ -52,6 +55,8 @@ func main() {
 		log.Printf("T35: Process %s\n", fname)
 		if strings.HasSuffix(fname, "_capi.h") {
 			goFile = goGenFile // newFileGo(makeGoFileName(fname), parser.HasHandlerClass(fname))
+		} else if fname == "cef_types_win.h" {
+			goFile = goTypeWinFile
 		} else {
 			goFile = goTypeFile
 		}
@@ -70,9 +75,14 @@ func main() {
 			case parser.DkSimple:
 				s := d.(*parser.SimpleDecl)
 				outSimple(goFile, s)
-			// case parser.DkStruct:
-			// 	s := d.(*parser.SimpleDecl)
-			// 	outSimple(goFile, s)
+			case parser.DkStruct:
+				if s, ok := d.(*parser.StructDecl); ok {
+					outStruct(goFile, s)
+				} else if s, ok := d.(*parser.SimpleDecl); ok {
+					outSimple(goFile, s)
+				} else {
+					log.Panicf("T84: Can not handle: %v\n", d)
+				}
 			case parser.DkEnum:
 				e := d.(*parser.EnumDecl)
 				outEnum(goFile, e)
@@ -103,20 +113,21 @@ func newFileGo(fname string, hasCallbackClass bool) (gf *Generator) {
 	gf = &Generator{}
 	gf.fname = fname
 
-	var useRuntime, useSync, useTime, useUnsafe, defMutex bool
+	var imports []string
+	var defIfMutex bool
+	var winOnly bool
 	if fname == "cefingo_types_gen.go" {
-		useSync = true
-		useTime = true
-		defMutex = true
+		imports = []string{"sync", "time", "unsafe"}
+		defIfMutex = true
 	} else if fname == "cefingo_exports.go" {
-		useUnsafe = true
-		useRuntime = true
+		imports = []string{"unsafe", "runtime"}
+	} else if fname == "cefingo_types_win_gen.go" {
+		winOnly = true
 	} else {
-		useUnsafe = true
-		useRuntime = true
+		imports = []string{"unsafe", "runtime"}
 	}
 
-	WriteGoHead(gf, useRuntime, useSync, useTime, useUnsafe, defMutex)
+	WriteGoHead(gf, imports, defIfMutex, winOnly)
 	return gf
 }
 
@@ -198,6 +209,19 @@ func outSimple(gf *Generator, d *parser.SimpleDecl) {
 	outComment(gf, line)
 	// fmt.Fprintf(fileGoTypes, "// Pos: %d\n", d.Line())
 	gf.Printf("type %s C.%s\n", d.GoName(), d.CefName())
+}
+
+func outStruct(gf *Generator, d *parser.StructDecl) {
+	line := d.LineOfTypedef()
+	outComment(gf, line)
+	// fmt.Fprintf(fileGoTypes, "// Pos: %d\n", d.Line())
+	gf.Printf("type %s C.%s\n", d.GoName(), d.CefName())
+	WriteNewStruct(gf, d)
+	for i, m := range d.Members {
+		if !(i == 0 && m.Type().Ty == parser.TySizeT && m.Name() == "size") {
+			WriteMemberAccessor(gf, d, m)
+		}
+	}
 }
 
 func outEnum(gf *Generator, d *parser.EnumDecl) {

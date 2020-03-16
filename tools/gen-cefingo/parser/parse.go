@@ -20,6 +20,7 @@ var setElement void
 
 var TargetFileList = map[string]void{
 	"cef_types.h":                         setElement,
+	"cef_types_win.h":                     setElement,
 	"cef_accessibility_handler_capi.h":    setElement,
 	"cef_app_capi.h":                      setElement,
 	"cef_auth_callback_capi.h":            setElement,
@@ -123,10 +124,7 @@ var unGenerateMethod = map[string]void{
 	"cef_audio_handler_t::on_audio_stream_packet": setElement, // data parameter type **float shoud be *float (float[frame * length of channel_layout])
 	"cef_v8value_t::get_user_data":                setElement, // use struct _cef_base_ref_counted_t*
 	"cef_v8value_t::set_user_data":                setElement, // use struct _cef_base_ref_counted_t*
-	"::cef_execute_process":                                      setElement,
-	"::cef_initialize":                                           setElement,
-	"::cef_browser_host_create_browser":                          setElement,
-	"::cef_browser_host_create_browser_sync":                     setElement,
+
 	"::cef_string_list_value":         setElement,
 	"::cef_string_map_find":           setElement,
 	"::cef_string_map_key":            setElement,
@@ -317,19 +315,25 @@ const (
 	TySimple
 	TyMSG
 	TyHCURSOR
+	TyHINSTANCE
+	TyDWORD
+	TyHMENU
 )
 
 var primitiveTypeDef = map[string]Ty{
-	"size_t": TySizeT,
-	"HWND":   TyHWND,
-	"int32":  TyInt32,
-	"int64":  TyInt64,
-	"uint32": TyUint32,
-	"uint64": TyUint64,
-	"time_t": TyTimeT,
-	"int16":  TyInt16,
-	"uint16": TyUint16,
-	"char16": TyUint16,
+	"size_t":    TySizeT,
+	"HWND":      TyHWND,
+	"int32":     TyInt32,
+	"int64":     TyInt64,
+	"uint32":    TyUint32,
+	"uint64":    TyUint64,
+	"time_t":    TyTimeT,
+	"int16":     TyInt16,
+	"uint16":    TyUint16,
+	"char16":    TyUint16,
+	"HINSTANCE": TyHINSTANCE,
+	"DWORD":     TyDWORD,
+	"HMENU":     TyHMENU,
 }
 
 type TypeQualifier int
@@ -366,11 +370,10 @@ const (
 	StYetNotDefined
 )
 
-var structDefNames = map[string]void {
-}
-
-var simpleDefNames = map[string]void{
+var structDefNames = map[string]void{
 	"cef_settings_t":                 setElement,
+	"cef_main_args_t":                setElement,
+	"cef_window_info_t":              setElement,
 	"cef_request_context_settings_t": setElement,
 	"cef_browser_settings_t":         setElement,
 	"cef_urlparts_t":                 setElement,
@@ -390,11 +393,14 @@ var simpleDefNames = map[string]void{
 	"cef_pdf_print_settings_t":       setElement,
 	"cef_box_layout_settings_t":      setElement,
 	"cef_composition_underline_t":    setElement,
-	"cef_time_t":                     setElement,
-	"cef_string_list_t":              setElement,
-	"cef_string_map_t":               setElement,
-	"cef_string_multimap_t":          setElement,
 	"cef_color_t":                    setElement,
+}
+
+var simpleDefNames = map[string]void{
+	"cef_time_t":            setElement,
+	"cef_string_list_t":     setElement,
+	"cef_string_map_t":      setElement,
+	"cef_string_multimap_t": setElement,
 }
 
 func isSimpleDefName(s string) (b bool) {
@@ -420,7 +426,7 @@ const (
 	DkEnum
 	DkCefClass
 	DkFunc
-	// DkStruct
+	DkStruct
 )
 
 type Decl interface {
@@ -473,6 +479,36 @@ type UnhandledDecl struct {
 
 type SimpleDecl struct {
 	DeclCommon
+}
+
+type Member struct {
+	token Token
+	typ   Type
+	st    *cc.StructDeclaration
+}
+
+func (m Member) Name() string {
+	return m.token.Name()
+}
+
+func (m Member) GoName() string {
+	return m.token.TitleCase()
+}
+
+func (m Member) GoType() string {
+	if m.typ.Ty == TyStringT && m.typ.Pointer == 0 {
+		return "string"
+	}
+	return m.typ.GoType()
+}
+
+func (m Member) Type() Type {
+	return m.typ
+}
+
+type StructDecl struct {
+	DeclCommon
+	Members []Member
 }
 
 type CefClassDecl struct {
@@ -588,21 +624,14 @@ func InCefHeader(t Token) bool {
 	base := filepath.Base(t.Filename())
 	if strings.HasPrefix(base, "cef_") && strings.HasSuffix(base, ".h") &&
 		base != "cef_string_types.h" && base != "cef_string.h" &&
-		base != "cef_types_win.h" && base != "cef_base_capi.h" {
+		base != "cef_base_capi.h" {
 		return true
 	}
 	return false
 }
 
-var simpleStructTags = map[string]Decl{}
 var Defs = map[string]Decl{}
 var FileDefs = map[string][]Decl{}
-
-func init() {
-	Defs["cef_window_info_t"] = &SimpleDecl{DeclCommon{DkSimple, nil, nil}}
-	Defs["cef_main_args_t"] = &SimpleDecl{DeclCommon{DkSimple, nil, nil}}
-	// Defs["cef_main_args_t"] = &UnhandledDecl{DeclCommon{DkUnhandled, nil, nil}}
-}
 
 var hasHandlerClass = map[string]bool{}
 
@@ -1034,9 +1063,9 @@ func handleTypedef(base DeclCommon) (decl Decl) {
 		} else if isSimpleDefName(name) {
 			sdecl.Dk = DkSimple
 			log.Printf("OUT-S: type %s C.%s", sdecl.GoName(), name)
-		// } else if isStructDefName(name) {
-		// 	sdecl.Dk = DkStruct
-		// 	log.Printf("OUT-St: type %s C.%s", sdecl.GoName(), name)
+		} else if isStructDefName(name) {
+			sdecl.Dk = DkStruct
+			log.Printf("OUT-St: type %s C.%s", sdecl.GoName(), name)
 		} else {
 			log.Panicf("T595: %s :%s, %s\n", name, typeDefName, base.Token().FilePos())
 		}
@@ -1068,58 +1097,77 @@ func handleStruct(base DeclCommon, st *cc.StructOrUnionSpecifier) (decl Decl) {
 		// member.StructDeclarationList = nil
 		sm = append(sm, member)
 	}
-	var stType StructType
-	base.Dk = DkCefClass
-	var sdecl *CefClassDecl
-	sdecl = &CefClassDecl{base, StUnknown, nil}
-MLOOP:
-	for i, m0 := range sm {
-		if i == 0 {
-			stType = checkBase(m0)
-			switch stType {
-			case StRefCounted:
-				sdecl.St = StRefCounted
-				log.Printf("T737: %s\n", name)
-			case StScoped:
-				sdecl.St = StScoped
-				log.Printf("T771: %s\n", name)
-			default:
-				log.Printf("T743: %s\n", name)
-				break MLOOP
-			}
-			Defs[name] = sdecl // for following method handling
-		} else {
-			fp := getFuncPointer(sdecl, m0)
-			if fp.Funcname != noToken {
-				log.Printf("T647: Fn: %s", fp.Funcname.Name())
-				ts := getTypeSpecifier(m0)
-				ty := getTsType(ts)
-				log.Printf("T372:   Case %d, %s %t", ts.Case, ty.Token.Name(), ty.Typedef)
-				for i, p := range fp.params {
-					log.Printf("T378:   p%d, %s", i, p)
+	if isStructDefName(name) {
+		stDecl := &StructDecl{base, nil}
+		decl = stDecl
+		stDecl.Common().Dk = DkStruct
+		for _, m := range sm {
+			ts := getTypeSpecifier(m)
+			ty := getTsType(ts)
+			d := getDeclarator(m)
+			if d.PointerOpt != nil {
+				ty.Pointer++
+				if d.PointerOpt.Pointer.Case == 1 {
+					log.Panicf("T1103: %s, %v\n", ty.Ty, m)
 				}
-				sdecl.Methods = append(sdecl.Methods, fp)
+			}
+			dd := d.DirectDeclarator
+			stDecl.Members = append(stDecl.Members, Member{Token(dd.Token), ty, &m})
+		}
+	} else {
+		var stType StructType
+		base.Dk = DkCefClass
+		var sdecl *CefClassDecl
+		sdecl = &CefClassDecl{base, StUnknown, nil}
+	MLOOP:
+		for i, m0 := range sm {
+			if i == 0 {
+				stType = checkBase(m0)
+				switch stType {
+				case StRefCounted:
+					sdecl.St = StRefCounted
+					log.Printf("T737: %s\n", name)
+				case StScoped:
+					sdecl.St = StScoped
+					log.Printf("T771: %s\n", name)
+				default:
+					log.Printf("T743: %s\n", name)
+					break MLOOP
+				}
+				Defs[name] = sdecl // for following method handling
+			} else {
+				fp := getFuncPointer(sdecl, m0)
+				if fp.Funcname != noToken {
+					log.Printf("T647: Fn: %s", fp.Funcname.Name())
+					ts := getTypeSpecifier(m0)
+					ty := getTsType(ts)
+					log.Printf("T372:   Case %d, %s %t", ts.Case, ty.Token.Name(), ty.Typedef)
+					for i, p := range fp.params {
+						log.Printf("T378:   p%d, %s", i, p)
+					}
+					sdecl.Methods = append(sdecl.Methods, fp)
+				}
 			}
 		}
-	}
 
-	switch sdecl.St {
-	case StUnknown:
-		if isSimpleDefName(name) {
-			decl = &SimpleDecl{*sdecl.Common()}
-			decl.Common().Dk = DkSimple
-			simpleStructTags[tag.Name()] = decl
-		} else {
-			log.Panicf("T460: Can not Handle, %v", sdecl.d)
+		switch sdecl.St {
+		case StUnknown:
+			if isSimpleDefName(name) {
+				decl = &SimpleDecl{*sdecl.Common()}
+				decl.Common().Dk = DkSimple
+			} else {
+				log.Panicf("1163: Can not Handle, %v", sdecl.d)
+			}
+		default:
+			decl = sdecl
 		}
-	default:
-		decl = sdecl
-	}
-	if decl == nil {
-		log.Panicf("T733:\n")
+		if decl == nil {
+			log.Panicf("T733:\n")
+		}
 	}
 	Defs[name] = decl
 	return decl
+
 }
 
 func getTypeSpecifier(sd cc.StructDeclaration) *cc.TypeSpecifier {
@@ -1165,10 +1213,12 @@ func getTsType(ts *cc.TypeSpecifier) (ty Type) {
 				default:
 					log.Panicf("T716: %s, %s, %v\n", name, decl.Common().Dk, ts)
 				}
+			} else if _, ok := decl.(*StructDecl); ok {
+				ty.Ty = TyStructSimple
 			} else if _, ok := decl.(*UnhandledDecl); ok {
 				ty.Ty = TyStructUnhandled
 			} else {
-				log.Panicf("T775: %v\n", decl)
+				log.Panicf("T775: %s, %v\n", name, decl)
 			}
 		} else {
 			log.Panicf("T719: %s: %v", name, ts)
@@ -1198,8 +1248,10 @@ func getTsType(ts *cc.TypeSpecifier) (ty Type) {
 					ty.Ty = TySimple
 				case DkUnhandled:
 					ty.Ty = TyStructUnhandled
+				case DkStruct:
+					ty.Ty = TyStructSimple
 				default:
-					log.Panicf("T863: %s, %s, %v\n", name, decl.Common().Dk, ts)
+					log.Panicf("1256: %s, %s, %v\n", name, decl.Common().Dk, ts)
 				}
 			} else if name == "cef_string_t" {
 				ty.Ty = TyStringT
@@ -1328,14 +1380,6 @@ func (p Param) GoType() (t string) {
 	}
 
 	pType := p.Type()
-	if pType.Typedef && pType.Ty == TyStructSimple && pType.Pointer == 1 &&
-		pType.Token.Name() == "cef_string_t" {
-		if pType.Const {
-			return "string"
-		} else {
-			return "*string"
-		}
-	}
 
 	return pType.GoType()
 }
@@ -1619,6 +1663,8 @@ func (t Type) CType() (ret string) {
 		ret = "int32"
 	case TyInt64:
 		ret = "int64"
+	case TyUint16:
+		ret = "uint16"
 	case TyUint32:
 		ret = "uint32"
 	case TyUint64:
@@ -1629,8 +1675,14 @@ func (t Type) CType() (ret string) {
 		ret = "cef_string_t"
 	case TyStringUserfreeT:
 		ret = "cef_string_userfree_t"
-	case TyStructRefCounted, TyStructScoped, TyStructSimple:
+	case TyStructRefCounted, TyStructScoped:
 		ret = "struct " + t.Name()
+	case TyStructSimple:
+		if t.Name()[0] == '_' {
+			ret = "struct " + t.Name()
+		} else {
+			ret = t.Name()
+		}
 	case TyEnum:
 		ret = t.Name()
 	case TySimple:
@@ -1654,6 +1706,12 @@ func (t Type) CType() (ret string) {
 		}
 	case TyHCURSOR:
 		ret = "cef_cursor_handle_t"
+	case TyHINSTANCE:
+		ret = "HINSTANCE"
+	case TyDWORD:
+		ret = "DWORD"
+	case TyHMENU:
+		ret = "HMENU"
 	default:
 		log.Panicf("T1561: %v\n", t)
 	}
@@ -1689,6 +1747,8 @@ func (t Type) GoType() (ret string) {
 		ret = "int32"
 	case TyInt64:
 		ret = "int64"
+	case TyUint16:
+		ret = "uint16"
 	case TyUint32:
 		ret = "uint32"
 	case TyUint64:
@@ -1703,13 +1763,9 @@ func (t Type) GoType() (ret string) {
 		ret = t.Token.GoName()
 	case TyStringT:
 		pointerOffset += 1
-		// if t.Const {
 		ret = "string"
-		//} else {
-		// 	ret = "string"
-		// }
 		if t.Pointer == 0 {
-			log.Panicf("T1074: Not cef_string_t *\n")
+			log.Panicf("T1748: Not cef_string_t *\n")
 		}
 	case TyEnum:
 		ret = t.Token.GoName()
@@ -1742,6 +1798,12 @@ func (t Type) GoType() (ret string) {
 		ret = "CEventHandleT"
 	case TyHCURSOR:
 		ret = "CCursorHandleT"
+	case TyHINSTANCE:
+		ret = "WinHinstance"
+	case TyDWORD:
+		ret = "WinDword"
+	case TyHMENU:
+		ret = "WinHmenu"
 	default:
 		log.Panicf("T841: %s, %s\n", t.Ty, t.Token)
 	}
