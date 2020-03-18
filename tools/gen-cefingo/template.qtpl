@@ -232,11 +232,13 @@ func ({%s baseName %} *{%s goName %}) Assoc{%s m.ReturnType().TitleCase() %}(han
 {% endif -%}
 package capi
 
+{% if len(imports) > 0 -%}
 import (
 {% for _, p := range imports -%}
 	"{%s p %}"
 {% endfor -%}
 )
+{% endif -%}
 // #include "cefingo.h"
 import "C"
 {% if defIfMutex %}var cefingoIfaceAccess sync.Mutex

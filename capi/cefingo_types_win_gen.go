@@ -2,8 +2,6 @@
 // +build windows
 package capi
 
-import ()
-
 // #include "cefingo.h"
 import "C"
 

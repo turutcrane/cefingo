@@ -154,6 +154,8 @@ func (v Value) AddEventListener(e EventType, h capi.ExecuteHandler) (err error) 
 
 type EventHandlerFunc func(object Value, event Value) error
 
+var _ capi.ExecuteHandler = EventHandlerFunc(func(o, e Value) error { return nil })
+
 func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	name string,
 	object *capi.CV8valueT,
@@ -217,27 +219,27 @@ func (f Function) ExecuteFunction(object Value, args []Value) (val Value, err er
 
 type HandlerFunction func(this Value, args []Value) (v Value, err error)
 
-func (f HandlerFunction) Execute(self *capi.CV8handlerT,
+var _ capi.ExecuteHandler = HandlerFunction(func(v Value, args []Value) (Value, error) { return Value{}, nil })
+
+func (f HandlerFunction) Execute(
+	self *capi.CV8handlerT,
 	name string,
 	thisObject *capi.CV8valueT,
-	// argumentsCount int,
 	arguments []*capi.CV8valueT,
-	retval **capi.CV8valueT,
-	exception *string,
-) (sts bool) {
+) (sts bool, retval *capi.CV8valueT, exception string) {
 	args := []Value{}
 	for _, a := range arguments {
 		args = append(args, NewValue(a))
 	}
 	v, err := f(Value{thisObject}, args)
 	if err == nil {
-		*retval = v.v8v
+		retval = v.v8v
 		sts = true
 	} else {
 		capi.Logf("L134: %s Not Handled %v", name, err)
-		*exception = err.Error()
+		exception = err.Error()
 	}
-	return sts
+	return sts, retval, exception
 }
 
 func (v Value) IsValid() bool {
