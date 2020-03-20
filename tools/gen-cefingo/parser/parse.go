@@ -174,6 +174,8 @@ var outParameter = map[string]void{
 	"cef_menu_model_t::get_accelerator_at::ctrl_pressed":                        setElement,
 	"cef_menu_model_t::get_accelerator_at::alt_pressed":                         setElement,
 	"cef_post_data_t::get_elements::elements":                                   setElement,
+	"cef_render_handler_t::get_view_rect::rect":                                 setElement,
+	"cef_render_handler_t::get_root_screen_rect::rect":                          setElement,
 	"cef_render_handler_t::get_screen_point::screenX":                           setElement,
 	"cef_render_handler_t::get_screen_point::screenY":                           setElement,
 	"cef_request_context_t::set_preference::error":                              setElement,

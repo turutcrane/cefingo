@@ -2736,10 +2736,10 @@ func cefingo_render_handler_get_root_screen_rect(
 	if f != nil {
 		goTmpself := newCRenderHandlerT(self)
 		goTmpbrowser := newCBrowserT(browser)
-		goTmprect := (*CRectT)(rect)
 
-		goRet := f.GetRootScreenRect(goTmpself, goTmpbrowser, goTmprect)
+		goRet, goTmprectOut := f.GetRootScreenRect(goTmpself, goTmpbrowser)
 		BaseRelease(goTmpbrowser.p_browser)
+		*rect = (C.cef_rect_t)(goTmprectOut)
 
 		if goRet {
 			cRet = 1
@@ -2771,10 +2771,10 @@ func cefingo_render_handler_get_view_rect(
 	if f != nil {
 		goTmpself := newCRenderHandlerT(self)
 		goTmpbrowser := newCBrowserT(browser)
-		goTmprect := (*CRectT)(rect)
 
-		f.GetViewRect(goTmpself, goTmpbrowser, goTmprect)
+		goTmprectOut := f.GetViewRect(goTmpself, goTmpbrowser)
 		BaseRelease(goTmpbrowser.p_browser)
+		*rect = (C.cef_rect_t)(goTmprectOut)
 
 	} else {
 		Logf("T2735: get_view_rect: Noo!")
