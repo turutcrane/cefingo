@@ -127,7 +127,7 @@ func (v Value) IsNil() bool {
 	return v.v8v == nil
 }
 
-func (v Value) AddEventListener(e EventType, h capi.ExecuteHandler) (err error) {
+func (v Value) AddEventListener(e EventType, h capi.CV8handlerTExecuteHandler) (err error) {
 
 	f, err := v.GetValueBykey("addEventListener")
 	if err != nil {
@@ -154,7 +154,7 @@ func (v Value) AddEventListener(e EventType, h capi.ExecuteHandler) (err error) 
 
 type EventHandlerFunc func(object Value, event Value) error
 
-var _ capi.ExecuteHandler = EventHandlerFunc(func(o, e Value) error { return nil })
+var _ capi.CV8handlerTExecuteHandler = EventHandlerFunc(func(o, e Value) error { return nil })
 
 func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	name string,
@@ -176,7 +176,7 @@ func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	return sts, retval, exception
 }
 
-func NewFunction(name string, f capi.ExecuteHandler) Value {
+func NewFunction(name string, f capi.CV8handlerTExecuteHandler) Value {
 	h := capi.AllocCV8handlerT().Bind(f)
 	v8f := capi.V8valueCreateFunction(name, h)
 	return NewValue(v8f)
@@ -254,7 +254,7 @@ func (f Function) ExecuteFunctionWithContext(context Context, object Value, args
 
 type HandlerFunction func(this Value, args []Value) (v Value, err error)
 
-var _ capi.ExecuteHandler = HandlerFunction(func(v Value, args []Value) (Value, error) { return Value{}, nil })
+var _ capi.CV8handlerTExecuteHandler = HandlerFunction(func(v Value, args []Value) (Value, error) { return Value{}, nil })
 
 func (f HandlerFunction) Execute(
 	self *capi.CV8handlerT,

@@ -774,6 +774,105 @@ func cefingo_context_menu_handler_on_context_menu_dismissed(
 }
 
 ///
+// Method that will be called once for each cookie. |count| is the 0-based
+// index for the current cookie. |total| is the total number of cookies. Set
+// |deleteCookie| to true (1) to delete the cookie currently being visited.
+// Return false (0) to stop visiting cookies. This function may never be
+// called if no cookies are found.
+///
+//export cefingo_cookie_visitor_visit
+func cefingo_cookie_visitor_visit(
+	self *C.cef_cookie_visitor_t,
+	cookie *C.cef_cookie_t,
+	count C.int,
+	total C.int,
+	deleteCookie *C.int,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T785:")
+	cefingoIfaceAccess.Lock()
+	f := cookie_visitor_handlers.visit_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCCookieVisitorT(self)
+		goTmpcookie := (*CCookieT)(cookie)
+		goTmpcount := (int)(count)
+		goTmptotal := (int)(total)
+
+		goRet, goTmpdeleteCookieOut := f.Visit(goTmpself, goTmpcookie, goTmpcount, goTmptotal)
+		*deleteCookie = (C.int)(goTmpdeleteCookieOut)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T801: visit: Noo!")
+	}
+	return cRet
+}
+
+///
+// Method that will be called upon completion. |success| will be true (1) if
+// the cookie was set successfully.
+///
+//export cefingo_set_cookie_callback_on_complete
+func cefingo_set_cookie_callback_on_complete(
+	self *C.cef_set_cookie_callback_t,
+	success C.int,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T818:")
+	cefingoIfaceAccess.Lock()
+	f := set_cookie_callback_handlers.on_complete_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCSetCookieCallbackT(self)
+		goTmpsuccess := (int)(success)
+
+		f.OnComplete(goTmpself, goTmpsuccess)
+
+	} else {
+		Logf("T830: on_complete: Noo!")
+	}
+
+}
+
+///
+// Method that will be called upon completion. |num_deleted| will be the
+// number of cookies that were deleted.
+///
+//export cefingo_delete_cookies_callback_on_complete
+func cefingo_delete_cookies_callback_on_complete(
+	self *C.cef_delete_cookies_callback_t,
+	num_deleted C.int,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T847:")
+	cefingoIfaceAccess.Lock()
+	f := delete_cookies_callback_handlers.on_complete_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCDeleteCookiesCallbackT(self)
+		goTmpnum_deleted := (int)(num_deleted)
+
+		f.OnComplete(goTmpself, goTmpnum_deleted)
+
+	} else {
+		Logf("T859: on_complete: Noo!")
+	}
+
+}
+
+///
 // Called to run a file chooser dialog. |mode| represents the type of dialog
 // to display. |title| to the title to be used for the dialog and may be NULL
 // to show the default title (&quot;Open&quot; or &quot;Save&quot; depending on the mode).
@@ -802,7 +901,7 @@ func cefingo_dialog_handler_on_file_dialog(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T796:")
+	Tracef(unsafe.Pointer(self), "T893:")
 	cefingoIfaceAccess.Lock()
 	f := dialog_handler_handlers.on_file_dialog_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -825,7 +924,7 @@ func cefingo_dialog_handler_on_file_dialog(
 			cRet = 1
 		}
 	} else {
-		Logf("T817: on_file_dialog: Noo!")
+		Logf("T914: on_file_dialog: Noo!")
 	}
 	return cRet
 }
@@ -843,7 +942,7 @@ func cefingo_display_handler_on_address_change(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T835:")
+	Tracef(unsafe.Pointer(self), "T932:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_address_change_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -859,7 +958,7 @@ func cefingo_display_handler_on_address_change(
 		BaseRelease(goTmpframe.p_frame)
 
 	} else {
-		Logf("T851: on_address_change: Noo!")
+		Logf("T948: on_address_change: Noo!")
 	}
 
 }
@@ -876,7 +975,7 @@ func cefingo_display_handler_on_title_change(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T868:")
+	Tracef(unsafe.Pointer(self), "T965:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_title_change_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -890,7 +989,7 @@ func cefingo_display_handler_on_title_change(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T882: on_title_change: Noo!")
+		Logf("T979: on_title_change: Noo!")
 	}
 
 }
@@ -907,7 +1006,7 @@ func cefingo_display_handler_on_favicon_urlchange(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T899:")
+	Tracef(unsafe.Pointer(self), "T996:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_favicon_urlchange_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -921,7 +1020,7 @@ func cefingo_display_handler_on_favicon_urlchange(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T913: on_favicon_urlchange: Noo!")
+		Logf("T1010: on_favicon_urlchange: Noo!")
 	}
 
 }
@@ -942,7 +1041,7 @@ func cefingo_display_handler_on_fullscreen_mode_change(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T934:")
+	Tracef(unsafe.Pointer(self), "T1031:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_fullscreen_mode_change_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -956,7 +1055,7 @@ func cefingo_display_handler_on_fullscreen_mode_change(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T948: on_fullscreen_mode_change: Noo!")
+		Logf("T1045: on_fullscreen_mode_change: Noo!")
 	}
 
 }
@@ -978,7 +1077,7 @@ func cefingo_display_handler_on_tooltip(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T970:")
+	Tracef(unsafe.Pointer(self), "T1067:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_tooltip_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -996,7 +1095,7 @@ func cefingo_display_handler_on_tooltip(
 			cRet = 1
 		}
 	} else {
-		Logf("T985: on_tooltip: Noo!")
+		Logf("T1082: on_tooltip: Noo!")
 	}
 	return cRet
 }
@@ -1014,7 +1113,7 @@ func cefingo_display_handler_on_status_message(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1004:")
+	Tracef(unsafe.Pointer(self), "T1101:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_status_message_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1028,7 +1127,7 @@ func cefingo_display_handler_on_status_message(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T1018: on_status_message: Noo!")
+		Logf("T1115: on_status_message: Noo!")
 	}
 
 }
@@ -1049,7 +1148,7 @@ func cefingo_display_handler_on_console_message(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1039:")
+	Tracef(unsafe.Pointer(self), "T1136:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_console_message_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1069,7 +1168,7 @@ func cefingo_display_handler_on_console_message(
 			cRet = 1
 		}
 	} else {
-		Logf("T1057: on_console_message: Noo!")
+		Logf("T1154: on_console_message: Noo!")
 	}
 	return cRet
 }
@@ -1089,7 +1188,7 @@ func cefingo_display_handler_on_auto_resize(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1077:")
+	Tracef(unsafe.Pointer(self), "T1174:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_auto_resize_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1106,7 +1205,7 @@ func cefingo_display_handler_on_auto_resize(
 			cRet = 1
 		}
 	} else {
-		Logf("T1092: on_auto_resize: Noo!")
+		Logf("T1189: on_auto_resize: Noo!")
 	}
 	return cRet
 }
@@ -1124,7 +1223,7 @@ func cefingo_display_handler_on_loading_progress_change(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1110:")
+	Tracef(unsafe.Pointer(self), "T1207:")
 	cefingoIfaceAccess.Lock()
 	f := display_handler_handlers.on_loading_progress_change_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1138,7 +1237,7 @@ func cefingo_display_handler_on_loading_progress_change(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T1124: on_loading_progress_change: Noo!")
+		Logf("T1221: on_loading_progress_change: Noo!")
 	}
 
 }
@@ -1158,7 +1257,7 @@ func cefingo_domvisitor_visit(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1144:")
+	Tracef(unsafe.Pointer(self), "T1241:")
 	cefingoIfaceAccess.Lock()
 	f := domvisitor_handlers.visit_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1171,7 +1270,7 @@ func cefingo_domvisitor_visit(
 		BaseRelease(goTmpdocument.p_domdocument)
 
 	} else {
-		Logf("T1157: visit: Noo!")
+		Logf("T1254: visit: Noo!")
 	}
 
 }
@@ -1194,7 +1293,7 @@ func cefingo_download_handler_on_before_download(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1180:")
+	Tracef(unsafe.Pointer(self), "T1277:")
 	cefingoIfaceAccess.Lock()
 	f := download_handler_handlers.on_before_download_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1212,7 +1311,7 @@ func cefingo_download_handler_on_before_download(
 		BaseRelease(goTmpcallback.p_before_download_callback)
 
 	} else {
-		Logf("T1198: on_before_download: Noo!")
+		Logf("T1295: on_before_download: Noo!")
 	}
 
 }
@@ -1234,7 +1333,7 @@ func cefingo_download_handler_on_download_updated(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1220:")
+	Tracef(unsafe.Pointer(self), "T1317:")
 	cefingoIfaceAccess.Lock()
 	f := download_handler_handlers.on_download_updated_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1251,7 +1350,7 @@ func cefingo_download_handler_on_download_updated(
 		BaseRelease(goTmpcallback.p_download_item_callback)
 
 	} else {
-		Logf("T1237: on_download_updated: Noo!")
+		Logf("T1334: on_download_updated: Noo!")
 	}
 
 }
@@ -1272,7 +1371,7 @@ func cefingo_drag_handler_on_drag_enter(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1258:")
+	Tracef(unsafe.Pointer(self), "T1355:")
 	cefingoIfaceAccess.Lock()
 	f := drag_handler_handlers.on_drag_enter_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1291,7 +1390,7 @@ func cefingo_drag_handler_on_drag_enter(
 			cRet = 1
 		}
 	} else {
-		Logf("T1275: on_drag_enter: Noo!")
+		Logf("T1372: on_drag_enter: Noo!")
 	}
 	return cRet
 }
@@ -1314,7 +1413,7 @@ func cefingo_drag_handler_on_draggable_regions_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1298:")
+	Tracef(unsafe.Pointer(self), "T1395:")
 	cefingoIfaceAccess.Lock()
 	f := drag_handler_handlers.on_draggable_regions_changed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1331,7 +1430,7 @@ func cefingo_drag_handler_on_draggable_regions_changed(
 		BaseRelease(goTmpframe.p_frame)
 
 	} else {
-		Logf("T1315: on_draggable_regions_changed: Noo!")
+		Logf("T1412: on_draggable_regions_changed: Noo!")
 	}
 
 }
@@ -1348,7 +1447,7 @@ func cefingo_extension_handler_on_extension_load_failed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1332:")
+	Tracef(unsafe.Pointer(self), "T1429:")
 	cefingoIfaceAccess.Lock()
 	f := extension_handler_handlers.on_extension_load_failed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1360,7 +1459,7 @@ func cefingo_extension_handler_on_extension_load_failed(
 		f.OnExtensionLoadFailed(goTmpself, goTmpresult)
 
 	} else {
-		Logf("T1344: on_extension_load_failed: Noo!")
+		Logf("T1441: on_extension_load_failed: Noo!")
 	}
 
 }
@@ -1377,7 +1476,7 @@ func cefingo_extension_handler_on_extension_loaded(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1361:")
+	Tracef(unsafe.Pointer(self), "T1458:")
 	cefingoIfaceAccess.Lock()
 	f := extension_handler_handlers.on_extension_loaded_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1390,7 +1489,7 @@ func cefingo_extension_handler_on_extension_loaded(
 		BaseRelease(goTmpextension.p_extension)
 
 	} else {
-		Logf("T1374: on_extension_loaded: Noo!")
+		Logf("T1471: on_extension_loaded: Noo!")
 	}
 
 }
@@ -1406,7 +1505,7 @@ func cefingo_extension_handler_on_extension_unloaded(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1390:")
+	Tracef(unsafe.Pointer(self), "T1487:")
 	cefingoIfaceAccess.Lock()
 	f := extension_handler_handlers.on_extension_unloaded_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1419,7 +1518,7 @@ func cefingo_extension_handler_on_extension_unloaded(
 		BaseRelease(goTmpextension.p_extension)
 
 	} else {
-		Logf("T1403: on_extension_unloaded: Noo!")
+		Logf("T1500: on_extension_unloaded: Noo!")
 	}
 
 }
@@ -1450,7 +1549,7 @@ func cefingo_extension_handler_on_before_background_browser(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1434:")
+	Tracef(unsafe.Pointer(self), "T1531:")
 	cefingoIfaceAccess.Lock()
 	f := extension_handler_handlers.on_before_background_browser_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1475,7 +1574,7 @@ func cefingo_extension_handler_on_before_background_browser(
 			cRet = 1
 		}
 	} else {
-		Logf("T1450: on_before_background_browser: Noo!")
+		Logf("T1547: on_before_background_browser: Noo!")
 	}
 	return cRet
 }
@@ -1511,7 +1610,7 @@ func cefingo_extension_handler_on_before_browser(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1493:")
+	Tracef(unsafe.Pointer(self), "T1590:")
 	cefingoIfaceAccess.Lock()
 	f := extension_handler_handlers.on_before_browser_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1544,7 +1643,7 @@ func cefingo_extension_handler_on_before_browser(
 			cRet = 1
 		}
 	} else {
-		Logf("T1515: on_before_browser: Noo!")
+		Logf("T1612: on_before_browser: Noo!")
 	}
 	return cRet
 }
@@ -1568,7 +1667,7 @@ func cefingo_extension_handler_get_active_browser(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1548:")
+	Tracef(unsafe.Pointer(self), "T1645:")
 	cefingoIfaceAccess.Lock()
 	f := extension_handler_handlers.get_active_browser_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1586,7 +1685,7 @@ func cefingo_extension_handler_get_active_browser(
 		cRet = (*C.cef_browser_t)(goRet.p_browser)
 		BaseAddRef(cRet)
 	} else {
-		Logf("T1565: get_active_browser: Noo!")
+		Logf("T1662: get_active_browser: Noo!")
 	}
 	return cRet
 }
@@ -1610,7 +1709,7 @@ func cefingo_extension_handler_can_access_browser(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1590:")
+	Tracef(unsafe.Pointer(self), "T1687:")
 	cefingoIfaceAccess.Lock()
 	f := extension_handler_handlers.can_access_browser_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1631,7 +1730,7 @@ func cefingo_extension_handler_can_access_browser(
 			cRet = 1
 		}
 	} else {
-		Logf("T1609: can_access_browser: Noo!")
+		Logf("T1706: can_access_browser: Noo!")
 	}
 	return cRet
 }
@@ -1657,7 +1756,7 @@ func cefingo_extension_handler_get_extension_resource(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1635:")
+	Tracef(unsafe.Pointer(self), "T1732:")
 	cefingoIfaceAccess.Lock()
 	f := extension_handler_handlers.get_extension_resource_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1678,7 +1777,7 @@ func cefingo_extension_handler_get_extension_resource(
 			cRet = 1
 		}
 	} else {
-		Logf("T1654: get_extension_resource: Noo!")
+		Logf("T1751: get_extension_resource: Noo!")
 	}
 	return cRet
 }
@@ -1704,7 +1803,7 @@ func cefingo_find_handler_on_find_result(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1680:")
+	Tracef(unsafe.Pointer(self), "T1777:")
 	cefingoIfaceAccess.Lock()
 	f := find_handler_handlers.on_find_result_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1722,7 +1821,7 @@ func cefingo_find_handler_on_find_result(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T1698: on_find_result: Noo!")
+		Logf("T1795: on_find_result: Noo!")
 	}
 
 }
@@ -1742,7 +1841,7 @@ func cefingo_focus_handler_on_take_focus(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1718:")
+	Tracef(unsafe.Pointer(self), "T1815:")
 	cefingoIfaceAccess.Lock()
 	f := focus_handler_handlers.on_take_focus_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1756,7 +1855,7 @@ func cefingo_focus_handler_on_take_focus(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T1732: on_take_focus: Noo!")
+		Logf("T1829: on_take_focus: Noo!")
 	}
 
 }
@@ -1775,7 +1874,7 @@ func cefingo_focus_handler_on_set_focus(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1751:")
+	Tracef(unsafe.Pointer(self), "T1848:")
 	cefingoIfaceAccess.Lock()
 	f := focus_handler_handlers.on_set_focus_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1792,7 +1891,7 @@ func cefingo_focus_handler_on_set_focus(
 			cRet = 1
 		}
 	} else {
-		Logf("T1766: on_set_focus: Noo!")
+		Logf("T1863: on_set_focus: Noo!")
 	}
 	return cRet
 }
@@ -1808,7 +1907,7 @@ func cefingo_focus_handler_on_got_focus(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1782:")
+	Tracef(unsafe.Pointer(self), "T1879:")
 	cefingoIfaceAccess.Lock()
 	f := focus_handler_handlers.on_got_focus_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1821,7 +1920,7 @@ func cefingo_focus_handler_on_got_focus(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T1795: on_got_focus: Noo!")
+		Logf("T1892: on_got_focus: Noo!")
 	}
 
 }
@@ -1857,7 +1956,7 @@ func cefingo_jsdialog_handler_on_jsdialog(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1831:")
+	Tracef(unsafe.Pointer(self), "T1928:")
 	cefingoIfaceAccess.Lock()
 	f := jsdialog_handler_handlers.on_jsdialog_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1880,7 +1979,7 @@ func cefingo_jsdialog_handler_on_jsdialog(
 			cRet = 1
 		}
 	} else {
-		Logf("T1852: on_jsdialog: Noo!")
+		Logf("T1949: on_jsdialog: Noo!")
 	}
 	return cRet
 }
@@ -1904,7 +2003,7 @@ func cefingo_jsdialog_handler_on_before_unload_dialog(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1876:")
+	Tracef(unsafe.Pointer(self), "T1973:")
 	cefingoIfaceAccess.Lock()
 	f := jsdialog_handler_handlers.on_before_unload_dialog_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1924,7 +2023,7 @@ func cefingo_jsdialog_handler_on_before_unload_dialog(
 			cRet = 1
 		}
 	} else {
-		Logf("T1894: on_before_unload_dialog: Noo!")
+		Logf("T1991: on_before_unload_dialog: Noo!")
 	}
 	return cRet
 }
@@ -1942,7 +2041,7 @@ func cefingo_jsdialog_handler_on_reset_dialog_state(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1912:")
+	Tracef(unsafe.Pointer(self), "T2009:")
 	cefingoIfaceAccess.Lock()
 	f := jsdialog_handler_handlers.on_reset_dialog_state_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1955,7 +2054,7 @@ func cefingo_jsdialog_handler_on_reset_dialog_state(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T1925: on_reset_dialog_state: Noo!")
+		Logf("T2022: on_reset_dialog_state: Noo!")
 	}
 
 }
@@ -1971,7 +2070,7 @@ func cefingo_jsdialog_handler_on_dialog_closed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1941:")
+	Tracef(unsafe.Pointer(self), "T2038:")
 	cefingoIfaceAccess.Lock()
 	f := jsdialog_handler_handlers.on_dialog_closed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -1984,7 +2083,7 @@ func cefingo_jsdialog_handler_on_dialog_closed(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T1954: on_dialog_closed: Noo!")
+		Logf("T2051: on_dialog_closed: Noo!")
 	}
 
 }
@@ -2007,7 +2106,7 @@ func cefingo_keyboard_handler_on_pre_key_event(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T1977:")
+	Tracef(unsafe.Pointer(self), "T2074:")
 	cefingoIfaceAccess.Lock()
 	f := keyboard_handler_handlers.on_pre_key_event_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2026,7 +2125,7 @@ func cefingo_keyboard_handler_on_pre_key_event(
 			cRet = 1
 		}
 	} else {
-		Logf("T1994: on_pre_key_event: Noo!")
+		Logf("T2091: on_pre_key_event: Noo!")
 	}
 	return cRet
 }
@@ -2047,7 +2146,7 @@ func cefingo_keyboard_handler_on_key_event(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2015:")
+	Tracef(unsafe.Pointer(self), "T2112:")
 	cefingoIfaceAccess.Lock()
 	f := keyboard_handler_handlers.on_key_event_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2065,7 +2164,7 @@ func cefingo_keyboard_handler_on_key_event(
 			cRet = 1
 		}
 	} else {
-		Logf("T2031: on_key_event: Noo!")
+		Logf("T2128: on_key_event: Noo!")
 	}
 	return cRet
 }
@@ -2114,7 +2213,7 @@ func cefingo_life_span_handler_on_before_popup(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2080:")
+	Tracef(unsafe.Pointer(self), "T2177:")
 	cefingoIfaceAccess.Lock()
 	f := life_span_handler_handlers.on_before_popup_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2153,7 +2252,7 @@ func cefingo_life_span_handler_on_before_popup(
 			cRet = 1
 		}
 	} else {
-		Logf("T2106: on_before_popup: Noo!")
+		Logf("T2203: on_before_popup: Noo!")
 	}
 	return cRet
 }
@@ -2170,7 +2269,7 @@ func cefingo_life_span_handler_on_after_created(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2134:")
+	Tracef(unsafe.Pointer(self), "T2231:")
 	cefingoIfaceAccess.Lock()
 	f := life_span_handler_handlers.on_after_created_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2183,7 +2282,7 @@ func cefingo_life_span_handler_on_after_created(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T2147: on_after_created: Noo!")
+		Logf("T2244: on_after_created: Noo!")
 	}
 
 }
@@ -2285,7 +2384,7 @@ func cefingo_life_span_handler_do_close(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2249:")
+	Tracef(unsafe.Pointer(self), "T2346:")
 	cefingoIfaceAccess.Lock()
 	f := life_span_handler_handlers.do_close_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2301,7 +2400,7 @@ func cefingo_life_span_handler_do_close(
 			cRet = 1
 		}
 	} else {
-		Logf("T2263: do_close: Noo!")
+		Logf("T2360: do_close: Noo!")
 	}
 	return cRet
 }
@@ -2325,7 +2424,7 @@ func cefingo_life_span_handler_on_before_close(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2287:")
+	Tracef(unsafe.Pointer(self), "T2384:")
 	cefingoIfaceAccess.Lock()
 	f := life_span_handler_handlers.on_before_close_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2338,7 +2437,7 @@ func cefingo_life_span_handler_on_before_close(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T2300: on_before_close: Noo!")
+		Logf("T2397: on_before_close: Noo!")
 	}
 
 }
@@ -2361,7 +2460,7 @@ func cefingo_load_handler_on_loading_state_change(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2323:")
+	Tracef(unsafe.Pointer(self), "T2420:")
 	cefingoIfaceAccess.Lock()
 	f := load_handler_handlers.on_loading_state_change_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2377,7 +2476,7 @@ func cefingo_load_handler_on_loading_state_change(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T2339: on_loading_state_change: Noo!")
+		Logf("T2436: on_loading_state_change: Noo!")
 	}
 
 }
@@ -2404,7 +2503,7 @@ func cefingo_load_handler_on_load_start(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2366:")
+	Tracef(unsafe.Pointer(self), "T2463:")
 	cefingoIfaceAccess.Lock()
 	f := load_handler_handlers.on_load_start_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2420,7 +2519,7 @@ func cefingo_load_handler_on_load_start(
 		BaseRelease(goTmpframe.p_frame)
 
 	} else {
-		Logf("T2382: on_load_start: Noo!")
+		Logf("T2479: on_load_start: Noo!")
 	}
 
 }
@@ -2445,7 +2544,7 @@ func cefingo_load_handler_on_load_end(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2407:")
+	Tracef(unsafe.Pointer(self), "T2504:")
 	cefingoIfaceAccess.Lock()
 	f := load_handler_handlers.on_load_end_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2461,7 +2560,7 @@ func cefingo_load_handler_on_load_end(
 		BaseRelease(goTmpframe.p_frame)
 
 	} else {
-		Logf("T2423: on_load_end: Noo!")
+		Logf("T2520: on_load_end: Noo!")
 	}
 
 }
@@ -2485,7 +2584,7 @@ func cefingo_load_handler_on_load_error(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2447:")
+	Tracef(unsafe.Pointer(self), "T2544:")
 	cefingoIfaceAccess.Lock()
 	f := load_handler_handlers.on_load_error_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2503,7 +2602,7 @@ func cefingo_load_handler_on_load_error(
 		BaseRelease(goTmpframe.p_frame)
 
 	} else {
-		Logf("T2465: on_load_error: Noo!")
+		Logf("T2562: on_load_error: Noo!")
 	}
 
 }
@@ -2522,7 +2621,7 @@ func cefingo_menu_model_delegate_execute_command(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2484:")
+	Tracef(unsafe.Pointer(self), "T2581:")
 	cefingoIfaceAccess.Lock()
 	f := menu_model_delegate_handlers.execute_command_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2537,7 +2636,7 @@ func cefingo_menu_model_delegate_execute_command(
 		BaseRelease(goTmpmenu_model.p_menu_model)
 
 	} else {
-		Logf("T2499: execute_command: Noo!")
+		Logf("T2596: execute_command: Noo!")
 	}
 
 }
@@ -2555,7 +2654,7 @@ func cefingo_menu_model_delegate_mouse_outside_menu(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2517:")
+	Tracef(unsafe.Pointer(self), "T2614:")
 	cefingoIfaceAccess.Lock()
 	f := menu_model_delegate_handlers.mouse_outside_menu_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2569,7 +2668,7 @@ func cefingo_menu_model_delegate_mouse_outside_menu(
 		BaseRelease(goTmpmenu_model.p_menu_model)
 
 	} else {
-		Logf("T2531: mouse_outside_menu: Noo!")
+		Logf("T2628: mouse_outside_menu: Noo!")
 	}
 
 }
@@ -2587,7 +2686,7 @@ func cefingo_menu_model_delegate_unhandled_open_submenu(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2549:")
+	Tracef(unsafe.Pointer(self), "T2646:")
 	cefingoIfaceAccess.Lock()
 	f := menu_model_delegate_handlers.unhandled_open_submenu_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2601,7 +2700,7 @@ func cefingo_menu_model_delegate_unhandled_open_submenu(
 		BaseRelease(goTmpmenu_model.p_menu_model)
 
 	} else {
-		Logf("T2563: unhandled_open_submenu: Noo!")
+		Logf("T2660: unhandled_open_submenu: Noo!")
 	}
 
 }
@@ -2619,7 +2718,7 @@ func cefingo_menu_model_delegate_unhandled_close_submenu(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2581:")
+	Tracef(unsafe.Pointer(self), "T2678:")
 	cefingoIfaceAccess.Lock()
 	f := menu_model_delegate_handlers.unhandled_close_submenu_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2633,7 +2732,7 @@ func cefingo_menu_model_delegate_unhandled_close_submenu(
 		BaseRelease(goTmpmenu_model.p_menu_model)
 
 	} else {
-		Logf("T2595: unhandled_close_submenu: Noo!")
+		Logf("T2692: unhandled_close_submenu: Noo!")
 	}
 
 }
@@ -2649,7 +2748,7 @@ func cefingo_menu_model_delegate_menu_will_show(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2611:")
+	Tracef(unsafe.Pointer(self), "T2708:")
 	cefingoIfaceAccess.Lock()
 	f := menu_model_delegate_handlers.menu_will_show_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2662,7 +2761,7 @@ func cefingo_menu_model_delegate_menu_will_show(
 		BaseRelease(goTmpmenu_model.p_menu_model)
 
 	} else {
-		Logf("T2624: menu_will_show: Noo!")
+		Logf("T2721: menu_will_show: Noo!")
 	}
 
 }
@@ -2678,7 +2777,7 @@ func cefingo_menu_model_delegate_menu_closed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2640:")
+	Tracef(unsafe.Pointer(self), "T2737:")
 	cefingoIfaceAccess.Lock()
 	f := menu_model_delegate_handlers.menu_closed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2691,7 +2790,7 @@ func cefingo_menu_model_delegate_menu_closed(
 		BaseRelease(goTmpmenu_model.p_menu_model)
 
 	} else {
-		Logf("T2653: menu_closed: Noo!")
+		Logf("T2750: menu_closed: Noo!")
 	}
 
 }
@@ -2709,7 +2808,7 @@ func cefingo_menu_model_delegate_format_label(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2671:")
+	Tracef(unsafe.Pointer(self), "T2768:")
 	cefingoIfaceAccess.Lock()
 	f := menu_model_delegate_handlers.format_label_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2727,7 +2826,214 @@ func cefingo_menu_model_delegate_format_label(
 			cRet = 1
 		}
 	} else {
-		Logf("T2686: format_label: Noo!")
+		Logf("T2783: format_label: Noo!")
+	}
+	return cRet
+}
+
+///
+// Called when printing has started for the specified |browser|. This function
+// will be called before the other OnPrint*() functions and irrespective of
+// how printing was initiated (e.g. cef_browser_host_t::print(), JavaScript
+// window.print() or PDF extension print button).
+///
+//export cefingo_print_handler_on_print_start
+func cefingo_print_handler_on_print_start(
+	self *C.cef_print_handler_t,
+	browser *C.cef_browser_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T2803:")
+	cefingoIfaceAccess.Lock()
+	f := print_handler_handlers.on_print_start_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCPrintHandlerT(self)
+		goTmpbrowser := newCBrowserT(browser)
+
+		f.OnPrintStart(goTmpself, goTmpbrowser)
+		BaseRelease(goTmpbrowser.p_browser)
+
+	} else {
+		Logf("T2816: on_print_start: Noo!")
+	}
+
+}
+
+///
+// Synchronize |settings| with client state. If |get_defaults| is true (1)
+// then populate |settings| with the default print settings. Do not keep a
+// reference to |settings| outside of this callback.
+///
+//export cefingo_print_handler_on_print_settings
+func cefingo_print_handler_on_print_settings(
+	self *C.cef_print_handler_t,
+	browser *C.cef_browser_t,
+	settings *C.cef_print_settings_t,
+	get_defaults C.int,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T2836:")
+	cefingoIfaceAccess.Lock()
+	f := print_handler_handlers.on_print_settings_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCPrintHandlerT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmpsettings := newCPrintSettingsT(settings)
+		goTmpget_defaults := (int)(get_defaults)
+
+		f.OnPrintSettings(goTmpself, goTmpbrowser, goTmpsettings, goTmpget_defaults)
+		BaseRelease(goTmpbrowser.p_browser)
+		BaseRelease(goTmpsettings.p_print_settings)
+
+	} else {
+		Logf("T2852: on_print_settings: Noo!")
+	}
+
+}
+
+///
+// Show the print dialog. Execute |callback| once the dialog is dismissed.
+// Return true (1) if the dialog will be displayed or false (0) to cancel the
+// printing immediately.
+///
+//export cefingo_print_handler_on_print_dialog
+func cefingo_print_handler_on_print_dialog(
+	self *C.cef_print_handler_t,
+	browser *C.cef_browser_t,
+	has_selection C.int,
+	callback *C.cef_print_dialog_callback_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T2872:")
+	cefingoIfaceAccess.Lock()
+	f := print_handler_handlers.on_print_dialog_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCPrintHandlerT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmphas_selection := (int)(has_selection)
+		goTmpcallback := newCPrintDialogCallbackT(callback)
+
+		goRet := f.OnPrintDialog(goTmpself, goTmpbrowser, goTmphas_selection, goTmpcallback)
+		BaseRelease(goTmpbrowser.p_browser)
+		BaseRelease(goTmpcallback.p_print_dialog_callback)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T2889: on_print_dialog: Noo!")
+	}
+	return cRet
+}
+
+///
+// Send the print job to the printer. Execute |callback| once the job is
+// completed. Return true (1) if the job will proceed or false (0) to cancel
+// the job immediately.
+///
+//export cefingo_print_handler_on_print_job
+func cefingo_print_handler_on_print_job(
+	self *C.cef_print_handler_t,
+	browser *C.cef_browser_t,
+	document_name *C.cef_string_t,
+	pdf_file_path *C.cef_string_t,
+	callback *C.cef_print_job_callback_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T2910:")
+	cefingoIfaceAccess.Lock()
+	f := print_handler_handlers.on_print_job_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCPrintHandlerT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmpdocument_name := string_from_cef_string(document_name)
+		goTmppdf_file_path := string_from_cef_string(pdf_file_path)
+		goTmpcallback := newCPrintJobCallbackT(callback)
+
+		goRet := f.OnPrintJob(goTmpself, goTmpbrowser, goTmpdocument_name, goTmppdf_file_path, goTmpcallback)
+		BaseRelease(goTmpbrowser.p_browser)
+		BaseRelease(goTmpcallback.p_print_job_callback)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T2928: on_print_job: Noo!")
+	}
+	return cRet
+}
+
+///
+// Reset client state related to printing.
+///
+//export cefingo_print_handler_on_print_reset
+func cefingo_print_handler_on_print_reset(
+	self *C.cef_print_handler_t,
+	browser *C.cef_browser_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T2944:")
+	cefingoIfaceAccess.Lock()
+	f := print_handler_handlers.on_print_reset_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCPrintHandlerT(self)
+		goTmpbrowser := newCBrowserT(browser)
+
+		f.OnPrintReset(goTmpself, goTmpbrowser)
+		BaseRelease(goTmpbrowser.p_browser)
+
+	} else {
+		Logf("T2957: on_print_reset: Noo!")
+	}
+
+}
+
+///
+// Return the PDF paper size in device units. Used in combination with
+// cef_browser_host_t::print_to_pdf().
+///
+//export cefingo_print_handler_get_pdf_paper_size
+func cefingo_print_handler_get_pdf_paper_size(
+	self *C.cef_print_handler_t,
+	device_units_per_inch C.int,
+) (cRet C.cef_size_t) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T2974:")
+	cefingoIfaceAccess.Lock()
+	f := print_handler_handlers.get_pdf_paper_size_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCPrintHandlerT(self)
+		goTmpdevice_units_per_inch := (int)(device_units_per_inch)
+
+		goRet := f.GetPdfPaperSize(goTmpself, goTmpdevice_units_per_inch)
+
+		cRet = (C.cef_size_t)(goRet)
+	} else {
+		Logf("T2987: get_pdf_paper_size: Noo!")
 	}
 	return cRet
 }
@@ -2739,7 +3045,7 @@ func cefingo_render_handler_get_accessibility_handler(self *C.cef_render_handler
 
 	handler := render_handler_handlers.accessibility_handler[self]
 	if handler == nil {
-		Logf("T2702: get_accessibility_handler")
+		Logf("T3002: get_accessibility_handler")
 	} else {
 		BaseAddRef(handler.p_accessibility_handler)
 		ch = handler.p_accessibility_handler
@@ -2761,7 +3067,7 @@ func cefingo_render_handler_get_root_screen_rect(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2721:")
+	Tracef(unsafe.Pointer(self), "T3021:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.get_root_screen_rect_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2778,7 +3084,7 @@ func cefingo_render_handler_get_root_screen_rect(
 			cRet = 1
 		}
 	} else {
-		Logf("T2736: get_root_screen_rect: Noo!")
+		Logf("T3036: get_root_screen_rect: Noo!")
 	}
 	return cRet
 }
@@ -2796,7 +3102,7 @@ func cefingo_render_handler_get_view_rect(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2754:")
+	Tracef(unsafe.Pointer(self), "T3054:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.get_view_rect_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2810,7 +3116,7 @@ func cefingo_render_handler_get_view_rect(
 		*rect = (C.cef_rect_t)(goTmprectOut)
 
 	} else {
-		Logf("T2768: get_view_rect: Noo!")
+		Logf("T3068: get_view_rect: Noo!")
 	}
 
 }
@@ -2831,7 +3137,7 @@ func cefingo_render_handler_get_screen_point(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2789:")
+	Tracef(unsafe.Pointer(self), "T3089:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.get_screen_point_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2851,7 +3157,7 @@ func cefingo_render_handler_get_screen_point(
 			cRet = 1
 		}
 	} else {
-		Logf("T2807: get_screen_point: Noo!")
+		Logf("T3107: get_screen_point: Noo!")
 	}
 	return cRet
 }
@@ -2874,7 +3180,7 @@ func cefingo_render_handler_get_screen_info(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2830:")
+	Tracef(unsafe.Pointer(self), "T3130:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.get_screen_info_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2891,7 +3197,7 @@ func cefingo_render_handler_get_screen_info(
 			cRet = 1
 		}
 	} else {
-		Logf("T2845: get_screen_info: Noo!")
+		Logf("T3145: get_screen_info: Noo!")
 	}
 	return cRet
 }
@@ -2909,7 +3215,7 @@ func cefingo_render_handler_on_popup_show(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2863:")
+	Tracef(unsafe.Pointer(self), "T3163:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_popup_show_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2923,7 +3229,7 @@ func cefingo_render_handler_on_popup_show(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T2877: on_popup_show: Noo!")
+		Logf("T3177: on_popup_show: Noo!")
 	}
 
 }
@@ -2941,7 +3247,7 @@ func cefingo_render_handler_on_popup_size(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2895:")
+	Tracef(unsafe.Pointer(self), "T3195:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_popup_size_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -2955,7 +3261,7 @@ func cefingo_render_handler_on_popup_size(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T2909: on_popup_size: Noo!")
+		Logf("T3209: on_popup_size: Noo!")
 	}
 
 }
@@ -2985,7 +3291,7 @@ func cefingo_render_handler_on_paint(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2939:")
+	Tracef(unsafe.Pointer(self), "T3239:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_paint_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3004,7 +3310,7 @@ func cefingo_render_handler_on_paint(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T2958: on_paint: Noo!")
+		Logf("T3258: on_paint: Noo!")
 	}
 
 }
@@ -3030,7 +3336,7 @@ func cefingo_render_handler_on_accelerated_paint(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T2984:")
+	Tracef(unsafe.Pointer(self), "T3284:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_accelerated_paint_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3047,7 +3353,7 @@ func cefingo_render_handler_on_accelerated_paint(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T3001: on_accelerated_paint: Noo!")
+		Logf("T3301: on_accelerated_paint: Noo!")
 	}
 
 }
@@ -3067,7 +3373,7 @@ func cefingo_render_handler_on_cursor_change(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3021:")
+	Tracef(unsafe.Pointer(self), "T3321:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_cursor_change_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3083,7 +3389,7 @@ func cefingo_render_handler_on_cursor_change(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T3037: on_cursor_change: Noo!")
+		Logf("T3337: on_cursor_change: Noo!")
 	}
 
 }
@@ -3114,7 +3420,7 @@ func cefingo_render_handler_start_dragging(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3068:")
+	Tracef(unsafe.Pointer(self), "T3368:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.start_dragging_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3135,7 +3441,7 @@ func cefingo_render_handler_start_dragging(
 			cRet = 1
 		}
 	} else {
-		Logf("T3087: start_dragging: Noo!")
+		Logf("T3387: start_dragging: Noo!")
 	}
 	return cRet
 }
@@ -3154,7 +3460,7 @@ func cefingo_render_handler_update_drag_cursor(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3106:")
+	Tracef(unsafe.Pointer(self), "T3406:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.update_drag_cursor_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3168,7 +3474,7 @@ func cefingo_render_handler_update_drag_cursor(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T3120: update_drag_cursor: Noo!")
+		Logf("T3420: update_drag_cursor: Noo!")
 	}
 
 }
@@ -3186,7 +3492,7 @@ func cefingo_render_handler_on_scroll_offset_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3138:")
+	Tracef(unsafe.Pointer(self), "T3438:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_scroll_offset_changed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3201,7 +3507,7 @@ func cefingo_render_handler_on_scroll_offset_changed(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T3153: on_scroll_offset_changed: Noo!")
+		Logf("T3453: on_scroll_offset_changed: Noo!")
 	}
 
 }
@@ -3222,7 +3528,7 @@ func cefingo_render_handler_on_ime_composition_range_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3174:")
+	Tracef(unsafe.Pointer(self), "T3474:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_ime_composition_range_changed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3238,7 +3544,7 @@ func cefingo_render_handler_on_ime_composition_range_changed(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T3190: on_ime_composition_range_changed: Noo!")
+		Logf("T3490: on_ime_composition_range_changed: Noo!")
 	}
 
 }
@@ -3258,7 +3564,7 @@ func cefingo_render_handler_on_text_selection_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3210:")
+	Tracef(unsafe.Pointer(self), "T3510:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_text_selection_changed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3273,7 +3579,7 @@ func cefingo_render_handler_on_text_selection_changed(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T3225: on_text_selection_changed: Noo!")
+		Logf("T3525: on_text_selection_changed: Noo!")
 	}
 
 }
@@ -3293,7 +3599,7 @@ func cefingo_render_handler_on_virtual_keyboard_requested(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3245:")
+	Tracef(unsafe.Pointer(self), "T3545:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_virtual_keyboard_requested_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3307,7 +3613,7 @@ func cefingo_render_handler_on_virtual_keyboard_requested(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T3259: on_virtual_keyboard_requested: Noo!")
+		Logf("T3559: on_virtual_keyboard_requested: Noo!")
 	}
 
 }
@@ -3319,7 +3625,7 @@ func cefingo_render_process_handler_get_load_handler(self *C.cef_render_process_
 
 	handler := render_process_handler_handlers.load_handler[self]
 	if handler == nil {
-		Logf("T3274: get_load_handler")
+		Logf("T3574: get_load_handler")
 	} else {
 		BaseAddRef(handler.p_load_handler)
 		ch = handler.p_load_handler
@@ -3341,7 +3647,7 @@ func cefingo_render_process_handler_on_render_thread_created(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3293:")
+	Tracef(unsafe.Pointer(self), "T3593:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_render_thread_created_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3354,7 +3660,7 @@ func cefingo_render_process_handler_on_render_thread_created(
 		BaseRelease(goTmpextra_info.p_list_value)
 
 	} else {
-		Logf("T3306: on_render_thread_created: Noo!")
+		Logf("T3606: on_render_thread_created: Noo!")
 	}
 
 }
@@ -3369,7 +3675,7 @@ func cefingo_render_process_handler_on_web_kit_initialized(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3321:")
+	Tracef(unsafe.Pointer(self), "T3621:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_web_kit_initialized_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3380,7 +3686,7 @@ func cefingo_render_process_handler_on_web_kit_initialized(
 		f.OnWebKitInitialized(goTmpself)
 
 	} else {
-		Logf("T3332: on_web_kit_initialized: Noo!")
+		Logf("T3632: on_web_kit_initialized: Noo!")
 	}
 
 }
@@ -3403,7 +3709,7 @@ func cefingo_render_process_handler_on_browser_created(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3355:")
+	Tracef(unsafe.Pointer(self), "T3655:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_browser_created_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3418,7 +3724,7 @@ func cefingo_render_process_handler_on_browser_created(
 		BaseRelease(goTmpextra_info.p_dictionary_value)
 
 	} else {
-		Logf("T3370: on_browser_created: Noo!")
+		Logf("T3670: on_browser_created: Noo!")
 	}
 
 }
@@ -3434,7 +3740,7 @@ func cefingo_render_process_handler_on_browser_destroyed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3386:")
+	Tracef(unsafe.Pointer(self), "T3686:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_browser_destroyed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3447,7 +3753,7 @@ func cefingo_render_process_handler_on_browser_destroyed(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T3399: on_browser_destroyed: Noo!")
+		Logf("T3699: on_browser_destroyed: Noo!")
 	}
 
 }
@@ -3470,7 +3776,7 @@ func cefingo_render_process_handler_on_context_created(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3422:")
+	Tracef(unsafe.Pointer(self), "T3722:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_context_created_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3487,7 +3793,7 @@ func cefingo_render_process_handler_on_context_created(
 		BaseRelease(goTmpcontext.p_v8context)
 
 	} else {
-		Logf("T3439: on_context_created: Noo!")
+		Logf("T3739: on_context_created: Noo!")
 	}
 
 }
@@ -3506,7 +3812,7 @@ func cefingo_render_process_handler_on_context_released(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3458:")
+	Tracef(unsafe.Pointer(self), "T3758:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_context_released_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3523,7 +3829,7 @@ func cefingo_render_process_handler_on_context_released(
 		BaseRelease(goTmpcontext.p_v8context)
 
 	} else {
-		Logf("T3475: on_context_released: Noo!")
+		Logf("T3775: on_context_released: Noo!")
 	}
 
 }
@@ -3545,7 +3851,7 @@ func cefingo_render_process_handler_on_uncaught_exception(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3497:")
+	Tracef(unsafe.Pointer(self), "T3797:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_uncaught_exception_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3566,7 +3872,7 @@ func cefingo_render_process_handler_on_uncaught_exception(
 		BaseRelease(goTmpstackTrace.p_v8stack_trace)
 
 	} else {
-		Logf("T3518: on_uncaught_exception: Noo!")
+		Logf("T3818: on_uncaught_exception: Noo!")
 	}
 
 }
@@ -3589,7 +3895,7 @@ func cefingo_render_process_handler_on_focused_node_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3541:")
+	Tracef(unsafe.Pointer(self), "T3841:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_focused_node_changed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3606,7 +3912,7 @@ func cefingo_render_process_handler_on_focused_node_changed(
 		BaseRelease(goTmpnode.p_domnode)
 
 	} else {
-		Logf("T3558: on_focused_node_changed: Noo!")
+		Logf("T3858: on_focused_node_changed: Noo!")
 	}
 
 }
@@ -3627,7 +3933,7 @@ func cefingo_render_process_handler_on_process_message_received(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3579:")
+	Tracef(unsafe.Pointer(self), "T3879:")
 	cefingoIfaceAccess.Lock()
 	f := render_process_handler_handlers.on_process_message_received_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3648,7 +3954,7 @@ func cefingo_render_process_handler_on_process_message_received(
 			cRet = 1
 		}
 	} else {
-		Logf("T3598: on_process_message_received: Noo!")
+		Logf("T3898: on_process_message_received: Noo!")
 	}
 	return cRet
 }
@@ -3660,7 +3966,7 @@ func cefingo_request_context_handler_get_resource_request_handler(self *C.cef_re
 
 	handler := request_context_handler_handlers.resource_request_handler[self]
 	if handler == nil {
-		Logf("T3613: get_resource_request_handler")
+		Logf("T3913: get_resource_request_handler")
 	} else {
 		BaseAddRef(handler.p_resource_request_handler)
 		ch = handler.p_resource_request_handler
@@ -3680,7 +3986,7 @@ func cefingo_request_context_handler_on_request_context_initialized(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3630:")
+	Tracef(unsafe.Pointer(self), "T3930:")
 	cefingoIfaceAccess.Lock()
 	f := request_context_handler_handlers.on_request_context_initialized_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3693,7 +3999,7 @@ func cefingo_request_context_handler_on_request_context_initialized(
 		BaseRelease(goTmprequest_context.p_request_context)
 
 	} else {
-		Logf("T3643: on_request_context_initialized: Noo!")
+		Logf("T3943: on_request_context_initialized: Noo!")
 	}
 
 }
@@ -3730,7 +4036,7 @@ func cefingo_request_context_handler_on_before_plugin_load(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3680:")
+	Tracef(unsafe.Pointer(self), "T3980:")
 	cefingoIfaceAccess.Lock()
 	f := request_context_handler_handlers.on_before_plugin_load_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3751,7 +4057,7 @@ func cefingo_request_context_handler_on_before_plugin_load(
 			cRet = 1
 		}
 	} else {
-		Logf("T3699: on_before_plugin_load: Noo!")
+		Logf("T3999: on_before_plugin_load: Noo!")
 	}
 	return cRet
 }
@@ -3763,7 +4069,7 @@ func cefingo_request_handler_get_resource_request_handler(self *C.cef_request_ha
 
 	handler := request_handler_handlers.resource_request_handler[self]
 	if handler == nil {
-		Logf("T3714: get_resource_request_handler")
+		Logf("T4014: get_resource_request_handler")
 	} else {
 		BaseAddRef(handler.p_resource_request_handler)
 		ch = handler.p_resource_request_handler
@@ -3795,7 +4101,7 @@ func cefingo_request_handler_on_before_browse(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3743:")
+	Tracef(unsafe.Pointer(self), "T4043:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.on_before_browse_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3817,7 +4123,7 @@ func cefingo_request_handler_on_before_browse(
 			cRet = 1
 		}
 	} else {
-		Logf("T3763: on_before_browse: Noo!")
+		Logf("T4063: on_before_browse: Noo!")
 	}
 	return cRet
 }
@@ -3850,7 +4156,7 @@ func cefingo_request_handler_on_open_urlfrom_tab(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3796:")
+	Tracef(unsafe.Pointer(self), "T4096:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.on_open_urlfrom_tab_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3871,7 +4177,7 @@ func cefingo_request_handler_on_open_urlfrom_tab(
 			cRet = 1
 		}
 	} else {
-		Logf("T3815: on_open_urlfrom_tab: Noo!")
+		Logf("T4115: on_open_urlfrom_tab: Noo!")
 	}
 	return cRet
 }
@@ -3903,7 +4209,7 @@ func cefingo_request_handler_get_auth_credentials(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3847:")
+	Tracef(unsafe.Pointer(self), "T4147:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.get_auth_credentials_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3927,7 +4233,7 @@ func cefingo_request_handler_get_auth_credentials(
 			cRet = 1
 		}
 	} else {
-		Logf("T3869: get_auth_credentials: Noo!")
+		Logf("T4169: get_auth_credentials: Noo!")
 	}
 	return cRet
 }
@@ -3952,7 +4258,7 @@ func cefingo_request_handler_on_quota_request(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3894:")
+	Tracef(unsafe.Pointer(self), "T4194:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.on_quota_request_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -3972,7 +4278,7 @@ func cefingo_request_handler_on_quota_request(
 			cRet = 1
 		}
 	} else {
-		Logf("T3912: on_quota_request: Noo!")
+		Logf("T4212: on_quota_request: Noo!")
 	}
 	return cRet
 }
@@ -3997,7 +4303,7 @@ func cefingo_request_handler_on_certificate_error(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3937:")
+	Tracef(unsafe.Pointer(self), "T4237:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.on_certificate_error_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4019,7 +4325,7 @@ func cefingo_request_handler_on_certificate_error(
 			cRet = 1
 		}
 	} else {
-		Logf("T3957: on_certificate_error: Noo!")
+		Logf("T4257: on_certificate_error: Noo!")
 	}
 	return cRet
 }
@@ -4051,7 +4357,7 @@ func cefingo_request_handler_on_select_client_certificate(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T3989:")
+	Tracef(unsafe.Pointer(self), "T4289:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.on_select_client_certificate_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4077,7 +4383,7 @@ func cefingo_request_handler_on_select_client_certificate(
 			cRet = 1
 		}
 	} else {
-		Logf("T4008: on_select_client_certificate: Noo!")
+		Logf("T4308: on_select_client_certificate: Noo!")
 	}
 	return cRet
 }
@@ -4095,7 +4401,7 @@ func cefingo_request_handler_on_plugin_crashed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4031:")
+	Tracef(unsafe.Pointer(self), "T4331:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.on_plugin_crashed_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4109,7 +4415,7 @@ func cefingo_request_handler_on_plugin_crashed(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T4045: on_plugin_crashed: Noo!")
+		Logf("T4345: on_plugin_crashed: Noo!")
 	}
 
 }
@@ -4127,7 +4433,7 @@ func cefingo_request_handler_on_render_view_ready(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4063:")
+	Tracef(unsafe.Pointer(self), "T4363:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.on_render_view_ready_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4140,7 +4446,7 @@ func cefingo_request_handler_on_render_view_ready(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T4076: on_render_view_ready: Noo!")
+		Logf("T4376: on_render_view_ready: Noo!")
 	}
 
 }
@@ -4158,7 +4464,7 @@ func cefingo_request_handler_on_render_process_terminated(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4094:")
+	Tracef(unsafe.Pointer(self), "T4394:")
 	cefingoIfaceAccess.Lock()
 	f := request_handler_handlers.on_render_process_terminated_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4172,7 +4478,7 @@ func cefingo_request_handler_on_render_process_terminated(
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
-		Logf("T4108: on_render_process_terminated: Noo!")
+		Logf("T4408: on_render_process_terminated: Noo!")
 	}
 
 }
@@ -4192,7 +4498,7 @@ func cefingo_resource_bundle_handler_get_localized_string(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4128:")
+	Tracef(unsafe.Pointer(self), "T4428:")
 	cefingoIfaceAccess.Lock()
 	f := resource_bundle_handler_handlers.get_localized_string_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4208,7 +4514,7 @@ func cefingo_resource_bundle_handler_get_localized_string(
 			cRet = 1
 		}
 	} else {
-		Logf("T4142: get_localized_string: Noo!")
+		Logf("T4442: get_localized_string: Noo!")
 	}
 	return cRet
 }
@@ -4231,7 +4537,7 @@ func cefingo_resource_bundle_handler_get_data_resource(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4165:")
+	Tracef(unsafe.Pointer(self), "T4465:")
 	cefingoIfaceAccess.Lock()
 	f := resource_bundle_handler_handlers.get_data_resource_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4250,7 +4556,7 @@ func cefingo_resource_bundle_handler_get_data_resource(
 			cRet = 1
 		}
 	} else {
-		Logf("T4179: get_data_resource: Noo!")
+		Logf("T4479: get_data_resource: Noo!")
 	}
 	return cRet
 }
@@ -4274,7 +4580,7 @@ func cefingo_resource_bundle_handler_get_data_resource_for_scale(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4206:")
+	Tracef(unsafe.Pointer(self), "T4506:")
 	cefingoIfaceAccess.Lock()
 	f := resource_bundle_handler_handlers.get_data_resource_for_scale_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4294,7 +4600,7 @@ func cefingo_resource_bundle_handler_get_data_resource_for_scale(
 			cRet = 1
 		}
 	} else {
-		Logf("T4221: get_data_resource_for_scale: Noo!")
+		Logf("T4521: get_data_resource_for_scale: Noo!")
 	}
 	return cRet
 }
@@ -4319,7 +4625,7 @@ func cefingo_resource_handler_open(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4249:")
+	Tracef(unsafe.Pointer(self), "T4549:")
 	cefingoIfaceAccess.Lock()
 	f := resource_handler_handlers.open_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4338,7 +4644,7 @@ func cefingo_resource_handler_open(
 			cRet = 1
 		}
 	} else {
-		Logf("T4266: open: Noo!")
+		Logf("T4566: open: Noo!")
 	}
 	return cRet
 }
@@ -4361,7 +4667,7 @@ func cefingo_resource_handler_process_request(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4289:")
+	Tracef(unsafe.Pointer(self), "T4589:")
 	cefingoIfaceAccess.Lock()
 	f := resource_handler_handlers.process_request_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4379,7 +4685,7 @@ func cefingo_resource_handler_process_request(
 			cRet = 1
 		}
 	} else {
-		Logf("T4305: process_request: Noo!")
+		Logf("T4605: process_request: Noo!")
 	}
 	return cRet
 }
@@ -4409,7 +4715,7 @@ func cefingo_resource_handler_get_response_headers(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4335:")
+	Tracef(unsafe.Pointer(self), "T4635:")
 	cefingoIfaceAccess.Lock()
 	f := resource_handler_handlers.get_response_headers_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4424,7 +4730,7 @@ func cefingo_resource_handler_get_response_headers(
 		set_cef_string(redirectUrl, goTmpredirectUrlOut)
 
 	} else {
-		Logf("T4350: get_response_headers: Noo!")
+		Logf("T4650: get_response_headers: Noo!")
 	}
 
 }
@@ -4448,7 +4754,7 @@ func cefingo_resource_handler_skip(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4374:")
+	Tracef(unsafe.Pointer(self), "T4674:")
 	cefingoIfaceAccess.Lock()
 	f := resource_handler_handlers.skip_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4466,7 +4772,7 @@ func cefingo_resource_handler_skip(
 			cRet = 1
 		}
 	} else {
-		Logf("T4390: skip: Noo!")
+		Logf("T4690: skip: Noo!")
 	}
 	return cRet
 }
@@ -4495,7 +4801,7 @@ func cefingo_resource_handler_read(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4419:")
+	Tracef(unsafe.Pointer(self), "T4719:")
 	cefingoIfaceAccess.Lock()
 	f := resource_handler_handlers.read_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4513,7 +4819,7 @@ func cefingo_resource_handler_read(
 			cRet = 1
 		}
 	} else {
-		Logf("T4436: read: Noo!")
+		Logf("T4736: read: Noo!")
 	}
 	return cRet
 }
@@ -4538,7 +4844,7 @@ func cefingo_resource_handler_read_response(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4460:")
+	Tracef(unsafe.Pointer(self), "T4760:")
 	cefingoIfaceAccess.Lock()
 	f := resource_handler_handlers.read_response_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4556,7 +4862,7 @@ func cefingo_resource_handler_read_response(
 			cRet = 1
 		}
 	} else {
-		Logf("T4477: read_response: Noo!")
+		Logf("T4777: read_response: Noo!")
 	}
 	return cRet
 }
@@ -4571,7 +4877,7 @@ func cefingo_resource_handler_cancel(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4491:")
+	Tracef(unsafe.Pointer(self), "T4791:")
 	cefingoIfaceAccess.Lock()
 	f := resource_handler_handlers.cancel_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4582,7 +4888,7 @@ func cefingo_resource_handler_cancel(
 		f.Cancel(goTmpself)
 
 	} else {
-		Logf("T4502: cancel: Noo!")
+		Logf("T4802: cancel: Noo!")
 	}
 
 }
@@ -4605,7 +4911,7 @@ func cefingo_resource_request_handler_get_cookie_access_filter(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4525:")
+	Tracef(unsafe.Pointer(self), "T4825:")
 	cefingoIfaceAccess.Lock()
 	f := resource_request_handler_handlers.get_cookie_access_filter_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4624,7 +4930,7 @@ func cefingo_resource_request_handler_get_cookie_access_filter(
 		cRet = (*C.cef_cookie_access_filter_t)(goRet.p_cookie_access_filter)
 		BaseAddRef(cRet)
 	} else {
-		Logf("T4543: get_cookie_access_filter: Noo!")
+		Logf("T4843: get_cookie_access_filter: Noo!")
 	}
 	return cRet
 }
@@ -4651,7 +4957,7 @@ func cefingo_resource_request_handler_on_before_resource_load(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4571:")
+	Tracef(unsafe.Pointer(self), "T4871:")
 	cefingoIfaceAccess.Lock()
 	f := resource_request_handler_handlers.on_before_resource_load_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4671,7 +4977,7 @@ func cefingo_resource_request_handler_on_before_resource_load(
 
 		cRet = (C.cef_return_value_t)(goRet)
 	} else {
-		Logf("T4591: on_before_resource_load: Noo!")
+		Logf("T4891: on_before_resource_load: Noo!")
 	}
 	return cRet
 }
@@ -4694,7 +5000,7 @@ func cefingo_resource_request_handler_get_resource_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4614:")
+	Tracef(unsafe.Pointer(self), "T4914:")
 	cefingoIfaceAccess.Lock()
 	f := resource_request_handler_handlers.get_resource_handler_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4713,7 +5019,7 @@ func cefingo_resource_request_handler_get_resource_handler(
 		cRet = (*C.cef_resource_handler_t)(goRet.p_resource_handler)
 		BaseAddRef(cRet)
 	} else {
-		Logf("T4632: get_resource_handler: Noo!")
+		Logf("T4932: get_resource_handler: Noo!")
 	}
 	return cRet
 }
@@ -4740,7 +5046,7 @@ func cefingo_resource_request_handler_on_resource_redirect(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4660:")
+	Tracef(unsafe.Pointer(self), "T4960:")
 	cefingoIfaceAccess.Lock()
 	f := resource_request_handler_handlers.on_resource_redirect_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4760,7 +5066,7 @@ func cefingo_resource_request_handler_on_resource_redirect(
 		set_cef_string(new_url, goTmpnew_urlOut)
 
 	} else {
-		Logf("T4680: on_resource_redirect: Noo!")
+		Logf("T4980: on_resource_redirect: Noo!")
 	}
 
 }
@@ -4789,7 +5095,7 @@ func cefingo_resource_request_handler_on_resource_response(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4709:")
+	Tracef(unsafe.Pointer(self), "T5009:")
 	cefingoIfaceAccess.Lock()
 	f := resource_request_handler_handlers.on_resource_response_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4811,7 +5117,7 @@ func cefingo_resource_request_handler_on_resource_response(
 			cRet = 1
 		}
 	} else {
-		Logf("T4729: on_resource_response: Noo!")
+		Logf("T5029: on_resource_response: Noo!")
 	}
 	return cRet
 }
@@ -4834,7 +5140,7 @@ func cefingo_resource_request_handler_get_resource_response_filter(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4752:")
+	Tracef(unsafe.Pointer(self), "T5052:")
 	cefingoIfaceAccess.Lock()
 	f := resource_request_handler_handlers.get_resource_response_filter_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4855,7 +5161,7 @@ func cefingo_resource_request_handler_get_resource_response_filter(
 		cRet = (*C.cef_response_filter_t)(goRet.p_response_filter)
 		BaseAddRef(cRet)
 	} else {
-		Logf("T4772: get_resource_response_filter: Noo!")
+		Logf("T5072: get_resource_response_filter: Noo!")
 	}
 	return cRet
 }
@@ -4889,7 +5195,7 @@ func cefingo_resource_request_handler_on_resource_load_complete(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4807:")
+	Tracef(unsafe.Pointer(self), "T5107:")
 	cefingoIfaceAccess.Lock()
 	f := resource_request_handler_handlers.on_resource_load_complete_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4910,7 +5216,7 @@ func cefingo_resource_request_handler_on_resource_load_complete(
 		BaseRelease(goTmpresponse.p_response)
 
 	} else {
-		Logf("T4828: on_resource_load_complete: Noo!")
+		Logf("T5128: on_resource_load_complete: Noo!")
 	}
 
 }
@@ -4936,7 +5242,7 @@ func cefingo_resource_request_handler_on_protocol_execution(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4854:")
+	Tracef(unsafe.Pointer(self), "T5154:")
 	cefingoIfaceAccess.Lock()
 	f := resource_request_handler_handlers.on_protocol_execution_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4954,9 +5260,101 @@ func cefingo_resource_request_handler_on_protocol_execution(
 		*allow_os_execution = (C.int)(goTmpallow_os_executionOut)
 
 	} else {
-		Logf("T4872: on_protocol_execution: Noo!")
+		Logf("T5172: on_protocol_execution: Noo!")
 	}
 
+}
+
+///
+// Called on the IO thread before a resource request is sent. The |browser|
+// and |frame| values represent the source of the request, and may be NULL for
+// requests originating from service workers or cef_urlrequest_t. |request|
+// cannot be modified in this callback. Return true (1) if the specified
+// cookie can be sent with the request or false (0) otherwise.
+///
+//export cefingo_cookie_access_filter_can_send_cookie
+func cefingo_cookie_access_filter_can_send_cookie(
+	self *C.cef_cookie_access_filter_t,
+	browser *C.cef_browser_t,
+	frame *C.cef_frame_t,
+	request *C.cef_request_t,
+	cookie *C.cef_cookie_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5195:")
+	cefingoIfaceAccess.Lock()
+	f := cookie_access_filter_handlers.can_send_cookie_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCCookieAccessFilterT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmpframe := newCFrameT(frame)
+		goTmprequest := newCRequestT(request)
+		goTmpcookie := (*CCookieT)(cookie)
+
+		goRet := f.CanSendCookie(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpcookie)
+		BaseRelease(goTmpbrowser.p_browser)
+		BaseRelease(goTmpframe.p_frame)
+		BaseRelease(goTmprequest.p_request)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5214: can_send_cookie: Noo!")
+	}
+	return cRet
+}
+
+///
+// Called on the IO thread after a resource response is received. The
+// |browser| and |frame| values represent the source of the request, and may
+// be NULL for requests originating from service workers or cef_urlrequest_t.
+// |request| cannot be modified in this callback. Return true (1) if the
+// specified cookie returned with the response can be saved or false (0)
+// otherwise.
+///
+//export cefingo_cookie_access_filter_can_save_cookie
+func cefingo_cookie_access_filter_can_save_cookie(
+	self *C.cef_cookie_access_filter_t,
+	browser *C.cef_browser_t,
+	frame *C.cef_frame_t,
+	request *C.cef_request_t,
+	response *C.cef_response_t,
+	cookie *C.cef_cookie_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5239:")
+	cefingoIfaceAccess.Lock()
+	f := cookie_access_filter_handlers.can_save_cookie_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCCookieAccessFilterT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmpframe := newCFrameT(frame)
+		goTmprequest := newCRequestT(request)
+		goTmpresponse := newCResponseT(response)
+		goTmpcookie := (*CCookieT)(cookie)
+
+		goRet := f.CanSaveCookie(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpresponse, goTmpcookie)
+		BaseRelease(goTmpbrowser.p_browser)
+		BaseRelease(goTmpframe.p_frame)
+		BaseRelease(goTmprequest.p_request)
+		BaseRelease(goTmpresponse.p_response)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5260: can_save_cookie: Noo!")
+	}
+	return cRet
 }
 
 ///
@@ -4970,7 +5368,7 @@ func cefingo_response_filter_init_filter(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4888:")
+	Tracef(unsafe.Pointer(self), "T5276:")
 	cefingoIfaceAccess.Lock()
 	f := response_filter_handlers.init_filter_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -4984,7 +5382,7 @@ func cefingo_response_filter_init_filter(
 			cRet = 1
 		}
 	} else {
-		Logf("T4900: init_filter: Noo!")
+		Logf("T5288: init_filter: Noo!")
 	}
 	return cRet
 }
@@ -5033,7 +5431,7 @@ func cefingo_response_filter_filter(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4949:")
+	Tracef(unsafe.Pointer(self), "T5337:")
 	cefingoIfaceAccess.Lock()
 	f := response_filter_handlers.filter_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -5049,7 +5447,7 @@ func cefingo_response_filter_filter(
 
 		cRet = (C.cef_response_filter_status_t)(goRet)
 	} else {
-		Logf("T4967: filter: Noo!")
+		Logf("T5355: filter: Noo!")
 	}
 	return cRet
 }
@@ -5073,7 +5471,7 @@ func cefingo_scheme_handler_factory_create(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T4989:")
+	Tracef(unsafe.Pointer(self), "T5377:")
 	cefingoIfaceAccess.Lock()
 	f := scheme_handler_factory_handlers.create_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -5093,7 +5491,556 @@ func cefingo_scheme_handler_factory_create(
 		cRet = (*C.cef_resource_handler_t)(goRet.p_resource_handler)
 		BaseAddRef(cRet)
 	} else {
-		Logf("T5008: create: Noo!")
+		Logf("T5396: create: Noo!")
+	}
+	return cRet
+}
+
+///
+// Read raw binary data.
+///
+//export cefingo_read_handler_read
+func cefingo_read_handler_read(
+	self *C.cef_read_handler_t,
+	ptr C.VOIDP,
+	size C.size_t,
+	n C.size_t,
+) (cRet C.size_t) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5415:")
+	cefingoIfaceAccess.Lock()
+	f := read_handler_handlers.read_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCReadHandlerT(self)
+		goTmpptr := unsafe.Pointer(ptr)
+		goTmpsize := (int64)(size)
+		goTmpn := (int64)(n)
+
+		goRet := f.Read(goTmpself, goTmpptr, goTmpsize, goTmpn)
+
+		cRet = (C.size_t)(goRet)
+	} else {
+		Logf("T5430: read: Noo!")
+	}
+	return cRet
+}
+
+///
+// Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
+// SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
+///
+//export cefingo_read_handler_seek
+func cefingo_read_handler_seek(
+	self *C.cef_read_handler_t,
+	offset C.int64,
+	whence C.int,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5448:")
+	cefingoIfaceAccess.Lock()
+	f := read_handler_handlers.seek_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCReadHandlerT(self)
+		goTmpoffset := (int64)(offset)
+		goTmpwhence := (int)(whence)
+
+		goRet := f.Seek(goTmpself, goTmpoffset, goTmpwhence)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5462: seek: Noo!")
+	}
+	return cRet
+}
+
+///
+// Return the current offset position.
+///
+//export cefingo_read_handler_tell
+func cefingo_read_handler_tell(
+	self *C.cef_read_handler_t,
+) (cRet C.int64) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5477:")
+	cefingoIfaceAccess.Lock()
+	f := read_handler_handlers.tell_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCReadHandlerT(self)
+
+		goRet := f.Tell(goTmpself)
+
+		cRet = (C.int64)(goRet)
+	} else {
+		Logf("T5489: tell: Noo!")
+	}
+	return cRet
+}
+
+///
+// Return non-zero if at end of file.
+///
+//export cefingo_read_handler_eof
+func cefingo_read_handler_eof(
+	self *C.cef_read_handler_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5504:")
+	cefingoIfaceAccess.Lock()
+	f := read_handler_handlers.eof_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCReadHandlerT(self)
+
+		goRet := f.Eof(goTmpself)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5516: eof: Noo!")
+	}
+	return cRet
+}
+
+///
+// Return true (1) if this handler performs work like accessing the file
+// system which may block. Used as a hint for determining the thread to access
+// the handler from.
+///
+//export cefingo_read_handler_may_block
+func cefingo_read_handler_may_block(
+	self *C.cef_read_handler_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5533:")
+	cefingoIfaceAccess.Lock()
+	f := read_handler_handlers.may_block_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCReadHandlerT(self)
+
+		goRet := f.MayBlock(goTmpself)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5545: may_block: Noo!")
+	}
+	return cRet
+}
+
+///
+// Write raw binary data.
+///
+//export cefingo_write_handler_write
+func cefingo_write_handler_write(
+	self *C.cef_write_handler_t,
+	ptr C.VOIDP,
+	size C.size_t,
+	n C.size_t,
+) (cRet C.size_t) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5563:")
+	cefingoIfaceAccess.Lock()
+	f := write_handler_handlers.write_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCWriteHandlerT(self)
+		goTmpptr := unsafe.Pointer(ptr)
+		goTmpsize := (int64)(size)
+		goTmpn := (int64)(n)
+
+		goRet := f.Write(goTmpself, goTmpptr, goTmpsize, goTmpn)
+
+		cRet = (C.size_t)(goRet)
+	} else {
+		Logf("T5578: write: Noo!")
+	}
+	return cRet
+}
+
+///
+// Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
+// SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
+///
+//export cefingo_write_handler_seek
+func cefingo_write_handler_seek(
+	self *C.cef_write_handler_t,
+	offset C.int64,
+	whence C.int,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5596:")
+	cefingoIfaceAccess.Lock()
+	f := write_handler_handlers.seek_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCWriteHandlerT(self)
+		goTmpoffset := (int64)(offset)
+		goTmpwhence := (int)(whence)
+
+		goRet := f.Seek(goTmpself, goTmpoffset, goTmpwhence)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5610: seek: Noo!")
+	}
+	return cRet
+}
+
+///
+// Return the current offset position.
+///
+//export cefingo_write_handler_tell
+func cefingo_write_handler_tell(
+	self *C.cef_write_handler_t,
+) (cRet C.int64) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5625:")
+	cefingoIfaceAccess.Lock()
+	f := write_handler_handlers.tell_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCWriteHandlerT(self)
+
+		goRet := f.Tell(goTmpself)
+
+		cRet = (C.int64)(goRet)
+	} else {
+		Logf("T5637: tell: Noo!")
+	}
+	return cRet
+}
+
+///
+// Flush the stream.
+///
+//export cefingo_write_handler_flush
+func cefingo_write_handler_flush(
+	self *C.cef_write_handler_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5652:")
+	cefingoIfaceAccess.Lock()
+	f := write_handler_handlers.flush_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCWriteHandlerT(self)
+
+		goRet := f.Flush(goTmpself)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5664: flush: Noo!")
+	}
+	return cRet
+}
+
+///
+// Return true (1) if this handler performs work like accessing the file
+// system which may block. Used as a hint for determining the thread to access
+// the handler from.
+///
+//export cefingo_write_handler_may_block
+func cefingo_write_handler_may_block(
+	self *C.cef_write_handler_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5681:")
+	cefingoIfaceAccess.Lock()
+	f := write_handler_handlers.may_block_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCWriteHandlerT(self)
+
+		goRet := f.MayBlock(goTmpself)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5693: may_block: Noo!")
+	}
+	return cRet
+}
+
+///
+// Method that will be executed.
+///
+//export cefingo_string_visitor_visit
+func cefingo_string_visitor_visit(
+	self *C.cef_string_visitor_t,
+	cstring *C.cef_string_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5709:")
+	cefingoIfaceAccess.Lock()
+	f := string_visitor_handlers.visit_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCStringVisitorT(self)
+		goTmpstring := string_from_cef_string(cstring)
+
+		f.Visit(goTmpself, goTmpstring)
+
+	} else {
+		Logf("T5721: visit: Noo!")
+	}
+
+}
+
+///
+// Method that will be executed on the target thread.
+///
+//export cefingo_task_execute
+func cefingo_task_execute(
+	self *C.cef_task_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5736:")
+	cefingoIfaceAccess.Lock()
+	f := task_handlers.execute_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCTaskT(self)
+
+		f.Execute(goTmpself)
+
+	} else {
+		Logf("T5747: execute: Noo!")
+	}
+
+}
+
+///
+// Notifies the client that the request has completed. Use the
+// cef_urlrequest_t::GetRequestStatus function to determine if the request was
+// successful or not.
+///
+//export cefingo_urlrequest_client_on_request_complete
+func cefingo_urlrequest_client_on_request_complete(
+	self *C.cef_urlrequest_client_t,
+	request *C.cef_urlrequest_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5765:")
+	cefingoIfaceAccess.Lock()
+	f := urlrequest_client_handlers.on_request_complete_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCUrlrequestClientT(self)
+		goTmprequest := newCUrlrequestT(request)
+
+		f.OnRequestComplete(goTmpself, goTmprequest)
+		BaseRelease(goTmprequest.p_urlrequest)
+
+	} else {
+		Logf("T5778: on_request_complete: Noo!")
+	}
+
+}
+
+///
+// Notifies the client of upload progress. |current| denotes the number of
+// bytes sent so far and |total| is the total size of uploading data (or -1 if
+// chunked upload is enabled). This function will only be called if the
+// UR_FLAG_REPORT_UPLOAD_PROGRESS flag is set on the request.
+///
+//export cefingo_urlrequest_client_on_upload_progress
+func cefingo_urlrequest_client_on_upload_progress(
+	self *C.cef_urlrequest_client_t,
+	request *C.cef_urlrequest_t,
+	current C.int64,
+	total C.int64,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5799:")
+	cefingoIfaceAccess.Lock()
+	f := urlrequest_client_handlers.on_upload_progress_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCUrlrequestClientT(self)
+		goTmprequest := newCUrlrequestT(request)
+		goTmpcurrent := (int64)(current)
+		goTmptotal := (int64)(total)
+
+		f.OnUploadProgress(goTmpself, goTmprequest, goTmpcurrent, goTmptotal)
+		BaseRelease(goTmprequest.p_urlrequest)
+
+	} else {
+		Logf("T5814: on_upload_progress: Noo!")
+	}
+
+}
+
+///
+// Notifies the client of download progress. |current| denotes the number of
+// bytes received up to the call and |total| is the expected total size of the
+// response (or -1 if not determined).
+///
+//export cefingo_urlrequest_client_on_download_progress
+func cefingo_urlrequest_client_on_download_progress(
+	self *C.cef_urlrequest_client_t,
+	request *C.cef_urlrequest_t,
+	current C.int64,
+	total C.int64,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5834:")
+	cefingoIfaceAccess.Lock()
+	f := urlrequest_client_handlers.on_download_progress_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCUrlrequestClientT(self)
+		goTmprequest := newCUrlrequestT(request)
+		goTmpcurrent := (int64)(current)
+		goTmptotal := (int64)(total)
+
+		f.OnDownloadProgress(goTmpself, goTmprequest, goTmpcurrent, goTmptotal)
+		BaseRelease(goTmprequest.p_urlrequest)
+
+	} else {
+		Logf("T5849: on_download_progress: Noo!")
+	}
+
+}
+
+///
+// Called when some part of the response is read. |data| contains the current
+// bytes received since the last call. This function will not be called if the
+// UR_FLAG_NO_DOWNLOAD_DATA flag is set on the request.
+///
+//export cefingo_urlrequest_client_on_download_data
+func cefingo_urlrequest_client_on_download_data(
+	self *C.cef_urlrequest_client_t,
+	request *C.cef_urlrequest_t,
+	data C.VOIDP,
+	data_length C.size_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5869:")
+	cefingoIfaceAccess.Lock()
+	f := urlrequest_client_handlers.on_download_data_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCUrlrequestClientT(self)
+		goTmprequest := newCUrlrequestT(request)
+		goTmpdata := unsafe.Pointer(data)
+		goTmpdata_length := (int64)(data_length)
+
+		f.OnDownloadData(goTmpself, goTmprequest, goTmpdata, goTmpdata_length)
+		BaseRelease(goTmprequest.p_urlrequest)
+
+	} else {
+		Logf("T5884: on_download_data: Noo!")
+	}
+
+}
+
+///
+// Called on the IO thread when the browser needs credentials from the user.
+// |isProxy| indicates whether the host is a proxy server. |host| contains the
+// hostname and |port| contains the port number. Return true (1) to continue
+// the request and call cef_auth_callback_t::cont() when the authentication
+// information is available. If the request has an associated browser/frame
+// then returning false (0) will result in a call to GetAuthCredentials on the
+// cef_request_handler_t associated with that browser, if any. Otherwise,
+// returning false (0) will cancel the request immediately. This function will
+// only be called for requests initiated from the browser process.
+///
+//export cefingo_urlrequest_client_get_auth_credentials
+func cefingo_urlrequest_client_get_auth_credentials(
+	self *C.cef_urlrequest_client_t,
+	isProxy C.int,
+	host *C.cef_string_t,
+	port C.int,
+	realm *C.cef_string_t,
+	scheme *C.cef_string_t,
+	callback *C.cef_auth_callback_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T5913:")
+	cefingoIfaceAccess.Lock()
+	f := urlrequest_client_handlers.get_auth_credentials_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCUrlrequestClientT(self)
+		goTmpisProxy := (int)(isProxy)
+		goTmphost := string_from_cef_string(host)
+		goTmpport := (int)(port)
+		goTmprealm := string_from_cef_string(realm)
+		goTmpscheme := string_from_cef_string(scheme)
+		goTmpcallback := newCAuthCallbackT(callback)
+
+		goRet := f.GetAuthCredentials(goTmpself, goTmpisProxy, goTmphost, goTmpport, goTmprealm, goTmpscheme, goTmpcallback)
+		BaseRelease(goTmpcallback.p_auth_callback)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T5932: get_auth_credentials: Noo!")
 	}
 	return cRet
 }
@@ -5118,7 +6065,7 @@ func cefingo_v8handler_execute(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T5034:")
+	Tracef(unsafe.Pointer(self), "T5957:")
 	cefingoIfaceAccess.Lock()
 	f := v8handler_handlers.execute_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -5145,7 +6092,95 @@ func cefingo_v8handler_execute(
 			cRet = 1
 		}
 	} else {
-		Logf("T5054: execute: Noo!")
+		Logf("T5977: execute: Noo!")
+	}
+	return cRet
+}
+
+///
+// Handle retrieval the accessor value identified by |name|. |object| is the
+// receiver (&#39;this&#39; object) of the accessor. If retrieval succeeds set
+// |retval| to the return value. If retrieval fails set |exception| to the
+// exception that will be thrown. Return true (1) if accessor retrieval was
+// handled.
+///
+//export cefingo_v8accessor_get
+func cefingo_v8accessor_get(
+	self *C.cef_v8accessor_t,
+	name *C.cef_string_t,
+	object *C.cef_v8value_t,
+	retval **C.cef_v8value_t,
+	exception *C.cef_string_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T6005:")
+	cefingoIfaceAccess.Lock()
+	f := v8accessor_handlers.get_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCV8accessorT(self)
+		goTmpname := string_from_cef_string(name)
+		goTmpobject := newCV8valueT(object)
+
+		goRet, goTmpretvalOut, goTmpexceptionOut := f.Get(goTmpself, goTmpname, goTmpobject)
+		BaseRelease(goTmpobject.p_v8value)
+		if goTmpretvalOut != nil {
+			*retval = goTmpretvalOut.p_v8value
+			BaseAddRef(*retval)
+		}
+		set_cef_string(exception, goTmpexceptionOut)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T6025: get: Noo!")
+	}
+	return cRet
+}
+
+///
+// Handle assignment of the accessor value identified by |name|. |object| is
+// the receiver (&#39;this&#39; object) of the accessor. |value| is the new value
+// being assigned to the accessor. If assignment fails set |exception| to the
+// exception that will be thrown. Return true (1) if accessor assignment was
+// handled.
+///
+//export cefingo_v8accessor_set
+func cefingo_v8accessor_set(
+	self *C.cef_v8accessor_t,
+	name *C.cef_string_t,
+	object *C.cef_v8value_t,
+	value *C.cef_v8value_t,
+	exception *C.cef_string_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T6048:")
+	cefingoIfaceAccess.Lock()
+	f := v8accessor_handlers.set_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCV8accessorT(self)
+		goTmpname := string_from_cef_string(name)
+		goTmpobject := newCV8valueT(object)
+		goTmpvalue := newCV8valueT(value)
+
+		goRet, goTmpexceptionOut := f.Set(goTmpself, goTmpname, goTmpobject, goTmpvalue)
+		BaseRelease(goTmpobject.p_v8value)
+		BaseRelease(goTmpvalue.p_v8value)
+		set_cef_string(exception, goTmpexceptionOut)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T6066: set: Noo!")
 	}
 	return cRet
 }
@@ -5163,7 +6198,7 @@ func cefingo_v8array_buffer_release_callback_release_buffer(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T5077:")
+	Tracef(unsafe.Pointer(self), "T6084:")
 	cefingoIfaceAccess.Lock()
 	f := v8array_buffer_release_callback_handlers.release_buffer_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -5175,7 +6210,111 @@ func cefingo_v8array_buffer_release_callback_release_buffer(
 		f.ReleaseBuffer(goTmpself, goTmpbuffer)
 
 	} else {
-		Logf("T5089: release_buffer: Noo!")
+		Logf("T6096: release_buffer: Noo!")
+	}
+
+}
+
+///
+// Method that will be called once for each plugin. |count| is the 0-based
+// index for the current plugin. |total| is the total number of plugins.
+// Return false (0) to stop visiting plugins. This function may never be
+// called if no plugins are found.
+///
+//export cefingo_web_plugin_info_visitor_visit
+func cefingo_web_plugin_info_visitor_visit(
+	self *C.cef_web_plugin_info_visitor_t,
+	info *C.cef_web_plugin_info_t,
+	count C.int,
+	total C.int,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T6117:")
+	cefingoIfaceAccess.Lock()
+	f := web_plugin_info_visitor_handlers.visit_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCWebPluginInfoVisitorT(self)
+		goTmpinfo := newCWebPluginInfoT(info)
+		goTmpcount := (int)(count)
+		goTmptotal := (int)(total)
+
+		goRet := f.Visit(goTmpself, goTmpinfo, goTmpcount, goTmptotal)
+		BaseRelease(goTmpinfo.p_web_plugin_info)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T6133: visit: Noo!")
+	}
+	return cRet
+}
+
+///
+// Method that will be called for the requested plugin. |unstable| will be
+// true (1) if the plugin has reached the crash count threshold of 3 times in
+// 120 seconds.
+///
+//export cefingo_web_plugin_unstable_callback_is_unstable
+func cefingo_web_plugin_unstable_callback_is_unstable(
+	self *C.cef_web_plugin_unstable_callback_t,
+	path *C.cef_string_t,
+	unstable C.int,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T6152:")
+	cefingoIfaceAccess.Lock()
+	f := web_plugin_unstable_callback_handlers.is_unstable_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCWebPluginUnstableCallbackT(self)
+		goTmppath := string_from_cef_string(path)
+		goTmpunstable := (int)(unstable)
+
+		f.IsUnstable(goTmpself, goTmppath, goTmpunstable)
+
+	} else {
+		Logf("T6165: is_unstable: Noo!")
+	}
+
+}
+
+///
+// Method that will be called when CDM registration is complete. |result| will
+// be CEF_CDM_REGISTRATION_ERROR_NONE if registration completed successfully.
+// Otherwise, |result| and |error_message| will contain additional information
+// about why registration failed.
+///
+//export cefingo_register_cdm_callback_on_cdm_registration_complete
+func cefingo_register_cdm_callback_on_cdm_registration_complete(
+	self *C.cef_register_cdm_callback_t,
+	result C.cef_cdm_registration_error_t,
+	error_message *C.cef_string_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T6185:")
+	cefingoIfaceAccess.Lock()
+	f := register_cdm_callback_handlers.on_cdm_registration_complete_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCRegisterCdmCallbackT(self)
+		goTmpresult := CCdmRegistrationErrorT(result)
+		goTmperror_message := string_from_cef_string(error_message)
+
+		f.OnCdmRegistrationComplete(goTmpself, goTmpresult, goTmperror_message)
+
+	} else {
+		Logf("T6198: on_cdm_registration_complete: Noo!")
 	}
 
 }

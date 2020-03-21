@@ -82,6 +82,27 @@ var TargetFileList = map[string]void{
 	"cef_string_map.h":      setElement,
 	"cef_string_multimap.h": setElement,
 	"cef_time.h":            setElement,
+
+	"cef_box_layout_capi.h":            setElement,
+	"cef_browser_view_delegate_capi.h": setElement,
+	"cef_browser_view_capi.h":          setElement,
+	"cef_button_capi.h":                setElement,
+	"cef_button_delegate_capi.h":       setElement,
+	"cef_display_capi.h":               setElement,
+	"cef_fill_layout_capi.h":           setElement,
+	"cef_label_button_capi.h":          setElement,
+	"cef_layout_capi.h":                setElement,
+	"cef_menu_button_capi.h":           setElement,
+	"cef_menu_button_delegate_capi.h":  setElement,
+	"cef_panel_capi.h":                 setElement,
+	"cef_panel_delegate_capi.h":        setElement,
+	"cef_scroll_view_capi.h":           setElement,
+	"cef_textfield_capi.h":             setElement,
+	"cef_textfield_delegate_capi.h":    setElement,
+	"cef_view_capi.h":                  setElement,
+	"cef_view_delegate_capi.h":         setElement,
+	"cef_window_capi.h":                setElement,
+	"cef_window_delegate_capi.h":       setElement,
 }
 
 var handlerClasses = map[string]void{
@@ -90,32 +111,56 @@ var handlerClasses = map[string]void{
 	"cef_audio_handler_t":                   setElement,
 	"cef_browser_process_handler_t":         setElement,
 	"cef_client_t":                          setElement,
+	"cef_cookie_visitor_t":                  setElement,
+	"cef_cookie_access_filter_t":            setElement,
+	"cef_set_cookie_callback_t":             setElement,
+	"cef_delete_cookies_callback_t":         setElement,
 	"cef_context_menu_handler_t":            setElement,
-	"cef_domvisitor_t":                      setElement,
-	"cef_download_handler_t":                setElement,
 	"cef_dialog_handler_t":                  setElement,
 	"cef_display_handler_t":                 setElement,
+	"cef_domvisitor_t":                      setElement,
+	"cef_download_handler_t":                setElement,
 	"cef_drag_handler_t":                    setElement,
+	"cef_end_tracing_callback_t":            setElement,
 	"cef_extension_handler_t":               setElement,
 	"cef_find_handler_t":                    setElement,
 	"cef_focus_handler_t":                   setElement,
-	"cef_keyboard_handler_t":                setElement,
 	"cef_jsdialog_handler_t":                setElement,
-	"cef_load_handler_t":                    setElement,
+	"cef_keyboard_handler_t":                setElement,
 	"cef_life_span_handler_t":               setElement,
+	"cef_load_handler_t":                    setElement,
 	"cef_menu_model_delegate_t":             setElement,
+	"cef_print_handler_t":                   setElement,
+	"cef_read_handler_t":                    setElement,
+	"cef_register_cdm_callback_t":           setElement,
 	"cef_render_handler_t":                  setElement,
 	"cef_render_process_handler_t":          setElement,
-	"cef_request_handler_t":                 setElement,
 	"cef_request_context_handler_t":         setElement,
+	"cef_request_handler_t":                 setElement,
 	"cef_resource_bundle_handler_t":         setElement,
 	"cef_resource_handler_t":                setElement,
 	"cef_resource_request_handler_t":        setElement,
 	"cef_response_filter_t":                 setElement,
 	"cef_run_file_dialog_callback_t":        setElement,
 	"cef_scheme_handler_factory_t":          setElement,
+	"cef_server_handler_t":                  setElement,
+	"cef_string_visitor_t":                  setElement,
+	"cef_v8accessor_t":                      setElement,
 	"cef_v8handler_t":                       setElement,
 	"cef_v8array_buffer_release_callback_t": setElement,
+	"cef_task_t":                            setElement,
+	"cef_urlrequest_client_t":               setElement,
+	"cef_web_plugin_info_visitor_t":         setElement,
+	"cef_web_plugin_unstable_callback_t":    setElement,
+	"cef_write_handler_t":                   setElement,
+
+	"cef_browser_view_delegate_t": setElement,
+	"cef_button_delegate_t":       setElement,
+	"cef_menu_button_delegate_t":  setElement,
+	"cef_panel_delegate_t":        setElement,
+	"cef_textfield_delegate_t":    setElement,
+	"cef_view_delegate_t":         setElement,
+	"cef_window_delegate_t":       setElement,
 }
 
 var unGenerateMethod = map[string]void{
@@ -148,8 +193,16 @@ var notGetMethod = map[string]void{
 }
 
 var duplicatedHandler = map[string]void{
-	"on_process_message_received": setElement,
 	"can_set_cookie":              setElement,
+	"execute":                     setElement,
+	"get_auth_credentials":        setElement,
+	"may_block":                   setElement,
+	"on_complete":                 setElement,
+	"on_process_message_received": setElement,
+	"read":                        setElement,
+	"seek":                        setElement,
+	"tell":                        setElement,
+	"visit":                       setElement,
 }
 
 var outParameter = map[string]void{
@@ -1159,7 +1212,7 @@ func handleStruct(base DeclCommon, st *cc.StructOrUnionSpecifier) (decl Decl) {
 				decl = &SimpleDecl{*sdecl.Common()}
 				decl.Common().Dk = DkSimple
 			} else {
-				log.Panicf("1163: Can not Handle, %v", sdecl.d)
+				log.Panicf("T1163: Can not Handle, %v", sdecl.d)
 			}
 		default:
 			decl = sdecl
