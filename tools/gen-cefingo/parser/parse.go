@@ -91,6 +91,7 @@ var handlerClasses = map[string]void{
 	"cef_browser_process_handler_t":         setElement,
 	"cef_client_t":                          setElement,
 	"cef_context_menu_handler_t":            setElement,
+	"cef_domvisitor_t":                      setElement,
 	"cef_download_handler_t":                setElement,
 	"cef_dialog_handler_t":                  setElement,
 	"cef_display_handler_t":                 setElement,
@@ -1320,7 +1321,7 @@ func (decl DeclCommon) BaseName() string {
 	return decl.Token().BaseName()
 }
 
-func (decl DeclCommon) Name() string {
+func (decl DeclCommon) CefName() string {
 	return decl.Token().Name()
 }
 
@@ -1331,10 +1332,6 @@ func (decl DeclCommon) RetStr() (str string) {
 		str = "int"
 	}
 	return str
-}
-
-func (decl DeclCommon) CefName() string {
-	return decl.Token().Name()
 }
 
 func (decl DeclCommon) Call() (call string) {

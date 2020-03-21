@@ -1536,7 +1536,7 @@ var `)
 //line template.qtpl:280
 		qw422016.N().S(` map[*C.`)
 //line template.qtpl:280
-		qw422016.E().S(st.Name())
+		qw422016.E().S(st.CefName())
 //line template.qtpl:280
 		qw422016.N().S(`]`)
 //line template.qtpl:280
@@ -1554,7 +1554,7 @@ var `)
 //line template.qtpl:283
 		qw422016.N().S(`	map[*C.`)
 //line template.qtpl:284
-		qw422016.E().S(st.Name())
+		qw422016.E().S(st.CefName())
 //line template.qtpl:284
 		qw422016.N().S(`]`)
 //line template.qtpl:284
@@ -1640,12 +1640,12 @@ func Alloc`)
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to `)
 //line template.qtpl:296
-	qw422016.E().S(st.Name())
+	qw422016.E().S(st.CefName())
 //line template.qtpl:296
 	qw422016.N().S(` itself in DeassocFunc,
 		// or `)
 //line template.qtpl:297
-	qw422016.E().S(st.Name())
+	qw422016.E().S(st.CefName())
 //line template.qtpl:297
 	qw422016.N().S(` is never GCed.
 		Tracef(up, "T`)
@@ -1752,7 +1752,7 @@ func methodCTypeName(m *parser.MethodDecl) string {
 //line template.qtpl:316
 func streamconstructorName(qw422016 *qt422016.Writer, st *parser.CefClassDecl) {
 //line template.qtpl:317
-	qw422016.E().S(st.Name() + " *cefingo_construct_" + st.BaseName() + "(cefingo_" + st.BaseName() + "_wrapper_t* " + st.BaseName() + ")")
+	qw422016.E().S(st.CefName() + " *cefingo_construct_" + st.BaseName() + "(cefingo_" + st.BaseName() + "_wrapper_t* " + st.BaseName() + ")")
 //line template.qtpl:318
 }
 
@@ -1887,7 +1887,7 @@ func StreamCConstruct(qw422016 *qt422016.Writer, line int, st *parser.CefClassDe
 	qw422016.N().S(`
 	return (`)
 //line template.qtpl:345
-	qw422016.E().S(st.Name())
+	qw422016.E().S(st.CefName())
 //line template.qtpl:345
 	qw422016.N().S(`*)`)
 //line template.qtpl:345
@@ -2732,7 +2732,7 @@ func StreamGoFunction(qw422016 *qt422016.Writer, line int, f *parser.FuncDecl) {
 //line template.qtpl:490
 	qw422016.N().S(`C.`)
 //line template.qtpl:490
-	qw422016.E().S(f.Name())
+	qw422016.E().S(f.CefName())
 //line template.qtpl:490
 	qw422016.N().S(`(`)
 //line template.qtpl:490

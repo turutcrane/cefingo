@@ -303,7 +303,7 @@ func genBindFunc(gf *Generator, st *parser.CefClassDecl) {
 func genGoGetFunc(gf, expf *Generator, st *parser.CefClassDecl) {
 	goName := st.GoName()
 	baseName := st.BaseName()
-	cName := st.Name()
+	cName := st.CefName()
 	for _, m := range st.Methods {
 		if m.IsGetFunc() {
 			line := expf.Lines()

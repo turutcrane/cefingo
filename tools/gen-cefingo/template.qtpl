@@ -277,11 +277,11 @@ type {%s m.IfName() %} interface {
 {% func IfaceStruct(line int, st *parser.CefClassDecl) %}
 var {%s st.BaseName() %}_handlers = struct {
 	{%- for _, m := range st.Methods -%}
-	{%= memberName(m) %} map[*C.{%s st.Name() %}]{%= memberGoType(m) %}
+	{%= memberName(m) %} map[*C.{%s st.CefName() %}]{%= memberGoType(m) %}
 	{%- endfor -%}
 }{
 	{%- for _, m := range st.Methods -%}
-	map[*C.{%s st.Name() %}]{%= memberGoType(m) %}{},
+	map[*C.{%s st.CefName() %}]{%= memberGoType(m) %}{},
 	{%- endfor -%}
 }
 {% endfunc %}
@@ -293,8 +293,8 @@ func Alloc{%s st.GoName()%}() *{%s st.GoName()%} {
 	cefp := C.cefingo_construct_{%s st.BaseName() %}((*C.cefingo_{%s st.BaseName() %}_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
-		// Do not have reference to {%s st.Name() %} itself in DeassocFunc,
-		// or {%s st.Name() %} is never GCed.
+		// Do not have reference to {%s st.CefName() %} itself in DeassocFunc,
+		// or {%s st.CefName() %} is never GCed.
 		Tracef(up, "T{%d line + 10%}:")
 
 		cefingoIfaceAccess.Lock()
@@ -314,7 +314,7 @@ T_{%s strings.ToUpper(callee) -%}
 {% endfunc %}
 
 {% func constructorName(st *parser.CefClassDecl) -%}
-{%s st.Name() + " *cefingo_construct_" + st.BaseName() + "(cefingo_" + st.BaseName() + "_wrapper_t* " + st.BaseName() + ")" -%}
+{%s st.CefName() + " *cefingo_construct_" + st.BaseName() + "(cefingo_" + st.BaseName() + "_wrapper_t* " + st.BaseName() + ")" -%}
 {% endfunc %}
 
 {% func CConstruct(line int, st *parser.CefClassDecl) %}
@@ -342,7 +342,7 @@ typedef {%s m.ReturnType().CType() -%}
 		cefingo_{%s st.BaseName() %}_{%s m.Funcname.Name() %};
 	{%- endfor -%}
 
-	return ({%s st.Name() %}*){%s st.BaseName() %};
+	return ({%s st.CefName() %}*){%s st.BaseName() %};
 }
 {% endfunc %}
 
@@ -487,7 +487,7 @@ func {%s f.Funcname.TitleCase() %}(
 			{%-s= exp -%}
 		{%- endif -%}
 	{%- endfor %}
-	{% if f.HasReturnValue() %}cRet := {% endif %}C.{%s f.Name() %}({% for i, p := range f.Params() -%}
+	{% if f.HasReturnValue() %}cRet := {% endif %}C.{%s f.CefName() %}({% for i, p := range f.Params() -%}
 	{%- if i > 0 %}, {% endif %}{%= convToC(p) -%}
 	{%- endfor %})
 

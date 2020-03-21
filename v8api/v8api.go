@@ -217,6 +217,41 @@ func (f Function) ExecuteFunction(object Value, args []Value) (val Value, err er
 	return val, err
 }
 
+func (f Function) ExecuteFunctionWithContext(context Context, object Value, args []Value) (val Value, err error) {
+
+	if !f.v8v.IsFunction() {
+		cause := errors.Errorf("Object is Not Function")
+		return Value{}, cause
+	}
+
+	capiArgs := make([]*capi.CV8valueT, len(args))
+	for i, _ := range capiArgs {
+		capiArgs[i] = args[i].v8v
+	}
+
+	v8vf := f.v8v
+	ret := v8vf.ExecuteFunctionWithContext(context.V8context, object.v8v, capiArgs)
+	name := v8vf.GetFunctionName()
+	if ret == nil {
+		if v8vf.HasException() {
+			e := v8vf.GetException()
+			m := e.GetMessage()
+			err = errors.Errorf("E172: %s returns NULL and %s has Exception: %s", name, name, m)
+		} else if object.v8v != nil && object.HasException() {
+			e := object.GetException()
+			m := e.GetMessage()
+			err = errors.Errorf("E176: %s returns NULL and (this) has Exception: %s", name, m)
+		} else {
+			err = errors.Errorf("E178: %s returns NULL", name)
+		}
+	} else if ret.IsValid() {
+		val = NewValue(ret)
+	} else {
+		err = errors.Errorf("E189: %s return value is not valid", name)
+	}
+	return val, err
+}
+
 type HandlerFunction func(this Value, args []Value) (v Value, err error)
 
 var _ capi.ExecuteHandler = HandlerFunction(func(v Value, args []Value) (Value, error) { return Value{}, nil })
@@ -410,6 +445,22 @@ func (f Value) ExecuteFunction(this Value, args []Value) (r Value, e error) {
 
 	if f.IsFunction() {
 		rv, e = Function(f).ExecuteFunction(this, args)
+		if e != nil {
+			capi.Logf("T347:x %v", e)
+		}
+	} else {
+		e = errors.Errorf("E318: <%v> is not function", f)
+		capi.Logf("T350: %v", e)
+	}
+	return rv, e
+}
+
+func (f Value) ExecuteFunctionWithContext(context Context, this Value, args []Value) (r Value, e error) {
+	capi.Logf("T340:")
+	var rv Value
+
+	if f.IsFunction() {
+		rv, e = Function(f).ExecuteFunctionWithContext(context, this, args)
 		if e != nil {
 			capi.Logf("T347:x %v", e)
 		}

@@ -705,10 +705,8 @@ extern cef_dialog_handler_t *cefingo_construct_dialog_handler(cefingo_dialog_han
 CEFINGO_REF_COUNTER_WRAPPER(cef_display_handler_t, cefingo_display_handler_wrapper_t);
 extern cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler_wrapper_t* display_handler);
 
-extern void cefingo_domvisitor_visit(
-	struct _cef_domvisitor_t* self,
-	struct _cef_domdocument_t* document
-);
+CEFINGO_REF_COUNTER_WRAPPER(cef_domvisitor_t, cefingo_domvisitor_wrapper_t);
+extern cef_domvisitor_t *cefingo_construct_domvisitor(cefingo_domvisitor_wrapper_t* domvisitor);
 
 extern cef_dom_document_type_t cefingo_domdocument_get_type(
 	struct _cef_domdocument_t* self
