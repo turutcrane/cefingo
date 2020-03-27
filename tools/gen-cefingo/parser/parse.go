@@ -197,7 +197,10 @@ var duplicatedHandler = map[string]void{
 	"execute":                     setElement,
 	"get_auth_credentials":        setElement,
 	"may_block":                   setElement,
+	"on_browser_created":          setElement,
+	"on_browser_destroyed":        setElement,
 	"on_complete":                 setElement,
+	"on_key_event":                setElement,
 	"on_process_message_received": setElement,
 	"read":                        setElement,
 	"seek":                        setElement,
@@ -264,7 +267,12 @@ var outParameter = map[string]void{
 	"cef_v8interceptor_t::set_byindex::exception":                               setElement,
 	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":                 setElement,
 	"cef_x509certificate_t::get_pemencoded_issuer_chain::chain":                 setElement,
-	"::cef_time_to_timet::time":                                                 setElement,
+
+	"::cef_time_to_timet::time": setElement,
+
+	"cef_window_delegate_t::get_parent_window::is_menu":           setElement,
+	"cef_window_delegate_t::get_parent_window::can_activate_menu": setElement,
+	"::cef_display_get_alls::displays":                            setElement,
 }
 
 var inOutParameter = map[string]void{
@@ -301,6 +309,7 @@ var sliceParameter = map[string]string{
 	"cef_v8value_t::execute_function_with_context::arguments":           "argumentsCount",
 	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":         "chainCount",
 	"cef_x509certificate_t::get_pemencoded_issuer_chain::chain":         "chainCount",
+	"::cef_display_get_alls::displays":                                  "displaysCount",
 }
 
 var sliceLengthParameter = map[string]string{}
@@ -318,10 +327,12 @@ func init() {
 }
 
 var boolParameter = map[string]void{
-	"cef_dictionary_value_t::set_bool::value": setElement,
-	"cef_list_value_t::set_bool::value":       setElement,
-	"cef_value_t::set_bool::value":            setElement,
-	"cef_v8value_t::create_bool::value":       setElement,
+	"cef_dictionary_value_t::set_bool::value":                     setElement,
+	"cef_list_value_t::set_bool::value":                           setElement,
+	"cef_value_t::set_bool::value":                                setElement,
+	"cef_v8value_t::create_bool::value":                           setElement,
+	"cef_window_delegate_t::get_parent_window::is_menu":           setElement,
+	"cef_window_delegate_t::get_parent_window::can_activate_menu": setElement,
 }
 
 var cefdir string
@@ -529,6 +540,16 @@ func (s *CefClassDecl) SetComment(comments map[int][]string) {
 	}
 }
 
+func (s *CefClassDecl) GetBase() (base *CefClassDecl) {
+	if c, ok := Defs[s.BaseType]; ok {
+		if base, cefClass := c.(*CefClassDecl); cefClass {
+			return base
+		}
+	}
+	return nil
+}
+
+
 type UnhandledDecl struct {
 	DeclCommon
 }
@@ -569,8 +590,9 @@ type StructDecl struct {
 
 type CefClassDecl struct {
 	DeclCommon
-	St      StructType
-	Methods []*MethodDecl
+	St       StructType
+	BaseType string
+	Methods  []*MethodDecl
 }
 
 type EnumDecl struct {
@@ -612,7 +634,7 @@ func (m MethodDecl) Params() []Param {
 func (m MethodDecl) FirstLine() (line int) {
 	ts := getTypeSpecifier(m.sd)
 	switch ts.Case {
-	case 0, 3, 6, 13: // void, int, double, TYPEDEFNAME
+	case 0, 3, 5, 6, 13: // void, int, float, double, TYPEDEFNAME
 		line = ts.Token.Position().Line
 	case 11: // StructOrUnionSpecifier
 		sous := ts.StructOrUnionSpecifier
@@ -809,6 +831,7 @@ func processDeclaration(d *cc.Declaration) {
 				Defs[typedefName] = &CefClassDecl{
 					DeclCommon{DkUnknown, d, nil},
 					StYetNotDefined,
+					"",
 					nil,
 				}
 			}
@@ -1172,19 +1195,22 @@ func handleStruct(base DeclCommon, st *cc.StructOrUnionSpecifier) (decl Decl) {
 		}
 	} else {
 		var stType StructType
+		var stBase string
 		base.Dk = DkCefClass
 		var sdecl *CefClassDecl
-		sdecl = &CefClassDecl{base, StUnknown, nil}
+		sdecl = &CefClassDecl{base, StUnknown, "", nil}
 	MLOOP:
 		for i, m0 := range sm {
 			if i == 0 {
-				stType = checkBase(m0)
+				stType, stBase = checkBase(m0)
 				switch stType {
 				case StRefCounted:
 					sdecl.St = StRefCounted
+					sdecl.BaseType = stBase
 					log.Printf("T737: %s\n", name)
 				case StScoped:
 					sdecl.St = StScoped
+					sdecl.BaseType = stBase
 					log.Printf("T771: %s\n", name)
 				default:
 					log.Printf("T743: %s\n", name)
@@ -1267,7 +1293,7 @@ func getTsType(ts *cc.TypeSpecifier) (ty Type) {
 				case StYetNotDefined:
 					ty.Ty = TyStructNotDefined
 				default:
-					log.Panicf("T716: %s, %s, %v\n", name, decl.Common().Dk, ts)
+					log.Panicf("T1271: %s, %s, %v\n", name, decl.Common().Dk, ts)
 				}
 			} else if _, ok := decl.(*StructDecl); ok {
 				ty.Ty = TyStructSimple
@@ -1336,22 +1362,36 @@ func tagToTypdefName(tag string) (name string) {
 	return name
 }
 
-func checkBase(sd cc.StructDeclaration) (stType StructType) {
+func checkBase(sd cc.StructDeclaration) (stType StructType, stBase string) {
 	tq := getTypeSpecifier(sd)
 	t := Token(tq.Token)
 	name := t.Name()
 	if tq.Case != 13 { // TYPEDEFNAME
 		log.Printf("T419:   Not Typedef Name, %v\n", name)
-		return stType
+		return stType, stBase
 	}
 	switch name {
 	case "cef_base_ref_counted_t":
 		stType = StRefCounted
+		stBase = name
 	case "cef_base_scoped_t":
 		stType = StScoped
-		log.Printf("T558:   %s is cef_base_scoped_t\n", name)
+		stBase = name
+	default:
+		b := Defs[name]
+		if c, ok := b.(*CefClassDecl); ok {
+			if c.St == StRefCounted {
+				stType = StRefCounted
+				stBase = name
+				log.Printf("T1362:   %s is base name\n", name)
+			} else {
+				log.Panicf("T1364: Unpredicted baseL %s, %v\n", name, sd)
+			}
+		} else {
+			log.Panicf("T1367: %s, %v\n", name, sd)
+		}
 	}
-	return stType
+	return stType, stBase
 	// c := v.(lex.Char)
 	// r := c.Rune
 	// s := yySymName(int(r))
@@ -1830,7 +1870,7 @@ func (t Type) GoType() (ret string) {
 				case StScoped:
 					t.Ty = TyStructScoped
 				default:
-					log.Panicf("T1164: %v\n", t)
+					log.Panicf("T1164: %s: %v\n", t.Token.Name(), t)
 				}
 				return t.GoType()
 			} else {
@@ -1917,8 +1957,10 @@ func (t Type) GoCType() (ct string) {
 }
 
 func (t Type) IsRefCountedClass() bool {
-	if t.Ty == TyStructRefCounted && t.Pointer == 1 {
-		return true
+	if t.Pointer == 1 {
+		if t.Ty == TyStructRefCounted {
+			return true
+		}
 	}
 	return false
 }

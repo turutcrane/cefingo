@@ -18,6 +18,17 @@ extern void cefingo_auth_callback_cancel(
 	struct _cef_auth_callback_t* self
 );
 
+extern void cefingo_box_layout_set_flex_for_view(
+	struct _cef_box_layout_t* self,
+	struct _cef_view_t* view,
+	int flex
+);
+
+extern void cefingo_box_layout_clear_flex_for_view(
+	struct _cef_box_layout_t* self,
+	struct _cef_view_t* view
+);
+
 extern struct _cef_browser_host_t* cefingo_browser_get_host(
 	struct _cef_browser_t* self
 );
@@ -432,6 +443,49 @@ extern int cefingo_browser_host_is_audio_muted(
 CEFINGO_REF_COUNTER_WRAPPER(cef_browser_process_handler_t, cefingo_browser_process_handler_wrapper_t);
 extern cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo_browser_process_handler_wrapper_t* browser_process_handler);
 
+extern struct _cef_browser_t* cefingo_browser_view_get_browser(
+	struct _cef_browser_view_t* self
+);
+
+extern void cefingo_browser_view_set_prefer_accelerators(
+	struct _cef_browser_view_t* self,
+	int prefer_accelerators
+);
+
+CEFINGO_REF_COUNTER_WRAPPER(cef_browser_view_delegate_t, cefingo_browser_view_delegate_wrapper_t);
+extern cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_browser_view_delegate_wrapper_t* browser_view_delegate);
+
+extern struct _cef_label_button_t* cefingo_button_as_label_button(
+	struct _cef_button_t* self
+);
+
+extern void cefingo_button_set_state(
+	struct _cef_button_t* self,
+	cef_button_state_t state
+);
+
+extern cef_button_state_t cefingo_button_get_state(
+	struct _cef_button_t* self
+);
+
+extern void cefingo_button_set_ink_drop_enabled(
+	struct _cef_button_t* self,
+	int enabled
+);
+
+extern void cefingo_button_set_tooltip_text(
+	struct _cef_button_t* self,
+	const cef_string_t* tooltip_text
+);
+
+extern void cefingo_button_set_accessible_name(
+	struct _cef_button_t* self,
+	const cef_string_t* name
+);
+
+CEFINGO_REF_COUNTER_WRAPPER(cef_button_delegate_t, cefingo_button_delegate_wrapper_t);
+extern cef_button_delegate_t *cefingo_construct_button_delegate(cefingo_button_delegate_wrapper_t* button_delegate);
+
 extern void cefingo_callback_cont(
 	struct _cef_callback_t* self
 );
@@ -692,6 +746,36 @@ extern void cefingo_file_dialog_callback_cancel(
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_dialog_handler_t, cefingo_dialog_handler_wrapper_t);
 extern cef_dialog_handler_t *cefingo_construct_dialog_handler(cefingo_dialog_handler_wrapper_t* dialog_handler);
+
+extern int64 cefingo_display_get_id(
+	struct _cef_display_t* self
+);
+
+extern float cefingo_display_get_device_scale_factor(
+	struct _cef_display_t* self
+);
+
+extern void cefingo_display_convert_point_to_pixels(
+	struct _cef_display_t* self,
+	cef_point_t* point
+);
+
+extern void cefingo_display_convert_point_from_pixels(
+	struct _cef_display_t* self,
+	cef_point_t* point
+);
+
+extern cef_rect_t cefingo_display_get_bounds(
+	struct _cef_display_t* self
+);
+
+extern cef_rect_t cefingo_display_get_work_area(
+	struct _cef_display_t* self
+);
+
+extern int cefingo_display_get_rotation(
+	struct _cef_display_t* self
+);
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_display_handler_t, cefingo_display_handler_wrapper_t);
 extern cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler_wrapper_t* display_handler);
@@ -1330,11 +1414,92 @@ extern cef_jsdialog_handler_t *cefingo_construct_jsdialog_handler(cefingo_jsdial
 CEFINGO_REF_COUNTER_WRAPPER(cef_keyboard_handler_t, cefingo_keyboard_handler_wrapper_t);
 extern cef_keyboard_handler_t *cefingo_construct_keyboard_handler(cefingo_keyboard_handler_wrapper_t* keyboard_handler);
 
+extern struct _cef_menu_button_t* cefingo_label_button_as_menu_button(
+	struct _cef_label_button_t* self
+);
+
+extern void cefingo_label_button_set_text(
+	struct _cef_label_button_t* self,
+	const cef_string_t* text
+);
+
+extern cef_string_userfree_t cefingo_label_button_get_text(
+	struct _cef_label_button_t* self
+);
+
+extern void cefingo_label_button_set_image(
+	struct _cef_label_button_t* self,
+	cef_button_state_t button_state,
+	struct _cef_image_t* image
+);
+
+extern struct _cef_image_t* cefingo_label_button_get_image(
+	struct _cef_label_button_t* self,
+	cef_button_state_t button_state
+);
+
+extern void cefingo_label_button_set_text_color(
+	struct _cef_label_button_t* self,
+	cef_button_state_t for_state,
+	cef_color_t color
+);
+
+extern void cefingo_label_button_set_enabled_text_colors(
+	struct _cef_label_button_t* self,
+	cef_color_t color
+);
+
+extern void cefingo_label_button_set_font_list(
+	struct _cef_label_button_t* self,
+	const cef_string_t* font_list
+);
+
+extern void cefingo_label_button_set_horizontal_alignment(
+	struct _cef_label_button_t* self,
+	cef_horizontal_alignment_t alignment
+);
+
+extern void cefingo_label_button_set_minimum_size(
+	struct _cef_label_button_t* self,
+	const cef_size_t* size
+);
+
+extern void cefingo_label_button_set_maximum_size(
+	struct _cef_label_button_t* self,
+	const cef_size_t* size
+);
+
+extern struct _cef_box_layout_t* cefingo_layout_as_box_layout(
+	struct _cef_layout_t* self
+);
+
+extern struct _cef_fill_layout_t* cefingo_layout_as_fill_layout(
+	struct _cef_layout_t* self
+);
+
+extern int cefingo_layout_is_valid(
+	struct _cef_layout_t* self
+);
+
 CEFINGO_REF_COUNTER_WRAPPER(cef_life_span_handler_t, cefingo_life_span_handler_wrapper_t);
 extern cef_life_span_handler_t *cefingo_construct_life_span_handler(cefingo_life_span_handler_wrapper_t* life_span_handler);
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_load_handler_t, cefingo_load_handler_wrapper_t);
 extern cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_t* load_handler);
+
+extern void cefingo_menu_button_show_menu(
+	struct _cef_menu_button_t* self,
+	struct _cef_menu_model_t* menu_model,
+	const cef_point_t* screen_point,
+	cef_menu_anchor_position_t anchor_position
+);
+
+extern void cefingo_menu_button_trigger_menu(
+	struct _cef_menu_button_t* self
+);
+
+CEFINGO_REF_COUNTER_WRAPPER(cef_menu_button_delegate_t, cefingo_menu_button_delegate_wrapper_t);
+extern cef_menu_button_delegate_t *cefingo_construct_menu_button_delegate(cefingo_menu_button_delegate_wrapper_t* menu_button_delegate);
 
 extern int cefingo_menu_model_is_sub_menu(
 	struct _cef_menu_model_t* self
@@ -1705,6 +1870,65 @@ extern int cefingo_navigation_entry_get_http_status_code(
 extern struct _cef_sslstatus_t* cefingo_navigation_entry_get_sslstatus(
 	struct _cef_navigation_entry_t* self
 );
+
+extern struct _cef_window_t* cefingo_panel_as_window(
+	struct _cef_panel_t* self
+);
+
+extern struct _cef_fill_layout_t* cefingo_panel_set_to_fill_layout(
+	struct _cef_panel_t* self
+);
+
+extern struct _cef_box_layout_t* cefingo_panel_set_to_box_layout(
+	struct _cef_panel_t* self,
+	const struct _cef_box_layout_settings_t* settings
+);
+
+extern struct _cef_layout_t* cefingo_panel_get_layout(
+	struct _cef_panel_t* self
+);
+
+extern void cefingo_panel_layout(
+	struct _cef_panel_t* self
+);
+
+extern void cefingo_panel_add_child_view(
+	struct _cef_panel_t* self,
+	struct _cef_view_t* view
+);
+
+extern void cefingo_panel_add_child_view_at(
+	struct _cef_panel_t* self,
+	struct _cef_view_t* view,
+	int index
+);
+
+extern void cefingo_panel_reorder_child_view(
+	struct _cef_panel_t* self,
+	struct _cef_view_t* view,
+	int index
+);
+
+extern void cefingo_panel_remove_child_view(
+	struct _cef_panel_t* self,
+	struct _cef_view_t* view
+);
+
+extern void cefingo_panel_remove_all_child_views(
+	struct _cef_panel_t* self
+);
+
+extern size_t cefingo_panel_get_child_view_count(
+	struct _cef_panel_t* self
+);
+
+extern struct _cef_view_t* cefingo_panel_get_child_view_at(
+	struct _cef_panel_t* self,
+	int index
+);
+
+CEFINGO_REF_COUNTER_WRAPPER(cef_panel_delegate_t, cefingo_panel_delegate_wrapper_t);
+extern cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wrapper_t* panel_delegate);
 
 extern void cefingo_print_dialog_callback_cont(
 	struct _cef_print_dialog_callback_t* self,
@@ -2277,6 +2501,35 @@ extern int cefingo_scheme_registrar_add_custom_scheme(
 CEFINGO_REF_COUNTER_WRAPPER(cef_scheme_handler_factory_t, cefingo_scheme_handler_factory_wrapper_t);
 extern cef_scheme_handler_factory_t *cefingo_construct_scheme_handler_factory(cefingo_scheme_handler_factory_wrapper_t* scheme_handler_factory);
 
+extern void cefingo_scroll_view_set_content_view(
+	struct _cef_scroll_view_t* self,
+	struct _cef_view_t* view
+);
+
+extern struct _cef_view_t* cefingo_scroll_view_get_content_view(
+	struct _cef_scroll_view_t* self
+);
+
+extern cef_rect_t cefingo_scroll_view_get_visible_content_rect(
+	struct _cef_scroll_view_t* self
+);
+
+extern int cefingo_scroll_view_has_horizontal_scrollbar(
+	struct _cef_scroll_view_t* self
+);
+
+extern int cefingo_scroll_view_get_horizontal_scrollbar_height(
+	struct _cef_scroll_view_t* self
+);
+
+extern int cefingo_scroll_view_has_vertical_scrollbar(
+	struct _cef_scroll_view_t* self
+);
+
+extern int cefingo_scroll_view_get_vertical_scrollbar_width(
+	struct _cef_scroll_view_t* self
+);
+
 extern cef_cert_status_t cefingo_sslinfo_get_cert_status(
 	struct _cef_sslinfo_t* self
 );
@@ -2391,6 +2644,154 @@ extern int cefingo_task_runner_post_delayed_task(
 	struct _cef_task_t* task,
 	int64 delay_ms
 );
+
+extern void cefingo_textfield_set_password_input(
+	struct _cef_textfield_t* self,
+	int password_input
+);
+
+extern int cefingo_textfield_is_password_input(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_set_read_only(
+	struct _cef_textfield_t* self,
+	int read_only
+);
+
+extern int cefingo_textfield_is_read_only(
+	struct _cef_textfield_t* self
+);
+
+extern cef_string_userfree_t cefingo_textfield_get_text(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_set_text(
+	struct _cef_textfield_t* self,
+	const cef_string_t* text
+);
+
+extern void cefingo_textfield_append_text(
+	struct _cef_textfield_t* self,
+	const cef_string_t* text
+);
+
+extern void cefingo_textfield_insert_or_replace_text(
+	struct _cef_textfield_t* self,
+	const cef_string_t* text
+);
+
+extern int cefingo_textfield_has_selection(
+	struct _cef_textfield_t* self
+);
+
+extern cef_string_userfree_t cefingo_textfield_get_selected_text(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_select_all(
+	struct _cef_textfield_t* self,
+	int reversed
+);
+
+extern void cefingo_textfield_clear_selection(
+	struct _cef_textfield_t* self
+);
+
+extern cef_range_t cefingo_textfield_get_selected_range(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_select_range(
+	struct _cef_textfield_t* self,
+	const cef_range_t* range
+);
+
+extern size_t cefingo_textfield_get_cursor_position(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_set_text_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color
+);
+
+extern cef_color_t cefingo_textfield_get_text_color(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_set_selection_text_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color
+);
+
+extern cef_color_t cefingo_textfield_get_selection_text_color(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_set_selection_background_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color
+);
+
+extern cef_color_t cefingo_textfield_get_selection_background_color(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_set_font_list(
+	struct _cef_textfield_t* self,
+	const cef_string_t* font_list
+);
+
+extern void cefingo_textfield_apply_text_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color,
+	const cef_range_t* range
+);
+
+extern void cefingo_textfield_apply_text_style(
+	struct _cef_textfield_t* self,
+	cef_text_style_t style,
+	int add,
+	const cef_range_t* range
+);
+
+extern int cefingo_textfield_is_command_enabled(
+	struct _cef_textfield_t* self,
+	int command_id
+);
+
+extern void cefingo_textfield_execute_command(
+	struct _cef_textfield_t* self,
+	int command_id
+);
+
+extern void cefingo_textfield_clear_edit_history(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_set_placeholder_text(
+	struct _cef_textfield_t* self,
+	const cef_string_t* text
+);
+
+extern cef_string_userfree_t cefingo_textfield_get_placeholder_text(
+	struct _cef_textfield_t* self
+);
+
+extern void cefingo_textfield_set_placeholder_text_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color
+);
+
+extern void cefingo_textfield_set_accessible_name(
+	struct _cef_textfield_t* self,
+	const cef_string_t* name
+);
+
+CEFINGO_REF_COUNTER_WRAPPER(cef_textfield_delegate_t, cefingo_textfield_delegate_wrapper_t);
+extern cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield_delegate_wrapper_t* textfield_delegate);
 
 extern struct _cef_request_t* cefingo_urlrequest_get_request(
 	struct _cef_urlrequest_t* self
@@ -3208,6 +3609,222 @@ extern int cefingo_list_value_set_list(
 	struct _cef_list_value_t* value
 );
 
+extern struct _cef_browser_view_t* cefingo_view_as_browser_view(
+	struct _cef_view_t* self
+);
+
+extern struct _cef_button_t* cefingo_view_as_button(
+	struct _cef_view_t* self
+);
+
+extern struct _cef_panel_t* cefingo_view_as_panel(
+	struct _cef_view_t* self
+);
+
+extern struct _cef_scroll_view_t* cefingo_view_as_scroll_view(
+	struct _cef_view_t* self
+);
+
+extern struct _cef_textfield_t* cefingo_view_as_textfield(
+	struct _cef_view_t* self
+);
+
+extern cef_string_userfree_t cefingo_view_get_type_string(
+	struct _cef_view_t* self
+);
+
+extern cef_string_userfree_t cefingo_view_to_string(
+	struct _cef_view_t* self,
+	int include_children
+);
+
+extern int cefingo_view_is_valid(
+	struct _cef_view_t* self
+);
+
+extern int cefingo_view_is_attached(
+	struct _cef_view_t* self
+);
+
+extern int cefingo_view_is_same(
+	struct _cef_view_t* self,
+	struct _cef_view_t* that
+);
+
+extern struct _cef_view_delegate_t* cefingo_view_get_delegate(
+	struct _cef_view_t* self
+);
+
+extern struct _cef_window_t* cefingo_view_get_window(
+	struct _cef_view_t* self
+);
+
+extern int cefingo_view_get_id(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_set_id(
+	struct _cef_view_t* self,
+	int id
+);
+
+extern int cefingo_view_get_group_id(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_set_group_id(
+	struct _cef_view_t* self,
+	int group_id
+);
+
+extern struct _cef_view_t* cefingo_view_get_parent_view(
+	struct _cef_view_t* self
+);
+
+extern struct _cef_view_t* cefingo_view_get_view_for_id(
+	struct _cef_view_t* self,
+	int id
+);
+
+extern void cefingo_view_set_bounds(
+	struct _cef_view_t* self,
+	const cef_rect_t* bounds
+);
+
+extern cef_rect_t cefingo_view_get_bounds(
+	struct _cef_view_t* self
+);
+
+extern cef_rect_t cefingo_view_get_bounds_in_screen(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_set_size(
+	struct _cef_view_t* self,
+	const cef_size_t* size
+);
+
+extern cef_size_t cefingo_view_get_size(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_set_position(
+	struct _cef_view_t* self,
+	const cef_point_t* position
+);
+
+extern cef_point_t cefingo_view_get_position(
+	struct _cef_view_t* self
+);
+
+extern cef_size_t cefingo_view_get_preferred_size(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_size_to_preferred_size(
+	struct _cef_view_t* self
+);
+
+extern cef_size_t cefingo_view_get_minimum_size(
+	struct _cef_view_t* self
+);
+
+extern cef_size_t cefingo_view_get_maximum_size(
+	struct _cef_view_t* self
+);
+
+extern int cefingo_view_get_height_for_width(
+	struct _cef_view_t* self,
+	int width
+);
+
+extern void cefingo_view_invalidate_layout(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_set_visible(
+	struct _cef_view_t* self,
+	int visible
+);
+
+extern int cefingo_view_is_visible(
+	struct _cef_view_t* self
+);
+
+extern int cefingo_view_is_drawn(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_set_enabled(
+	struct _cef_view_t* self,
+	int enabled
+);
+
+extern int cefingo_view_is_enabled(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_set_focusable(
+	struct _cef_view_t* self,
+	int focusable
+);
+
+extern int cefingo_view_is_focusable(
+	struct _cef_view_t* self
+);
+
+extern int cefingo_view_is_accessibility_focusable(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_request_focus(
+	struct _cef_view_t* self
+);
+
+extern void cefingo_view_set_background_color(
+	struct _cef_view_t* self,
+	cef_color_t color
+);
+
+extern cef_color_t cefingo_view_get_background_color(
+	struct _cef_view_t* self
+);
+
+extern int cefingo_view_convert_point_to_screen(
+	struct _cef_view_t* self,
+	cef_point_t* point
+);
+
+extern int cefingo_view_convert_point_from_screen(
+	struct _cef_view_t* self,
+	cef_point_t* point
+);
+
+extern int cefingo_view_convert_point_to_window(
+	struct _cef_view_t* self,
+	cef_point_t* point
+);
+
+extern int cefingo_view_convert_point_from_window(
+	struct _cef_view_t* self,
+	cef_point_t* point
+);
+
+extern int cefingo_view_convert_point_to_view(
+	struct _cef_view_t* self,
+	struct _cef_view_t* view,
+	cef_point_t* point
+);
+
+extern int cefingo_view_convert_point_from_view(
+	struct _cef_view_t* self,
+	struct _cef_view_t* view,
+	cef_point_t* point
+);
+
+CEFINGO_REF_COUNTER_WRAPPER(cef_view_delegate_t, cefingo_view_delegate_wrapper_t);
+extern cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapper_t* view_delegate);
+
 extern cef_string_userfree_t cefingo_web_plugin_info_get_name(
 	struct _cef_web_plugin_info_t* self
 );
@@ -3232,6 +3849,177 @@ extern cef_web_plugin_unstable_callback_t *cefingo_construct_web_plugin_unstable
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_register_cdm_callback_t, cefingo_register_cdm_callback_wrapper_t);
 extern cef_register_cdm_callback_t *cefingo_construct_register_cdm_callback(cefingo_register_cdm_callback_wrapper_t* register_cdm_callback);
+
+extern void cefingo_window_show(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_hide(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_center_window(
+	struct _cef_window_t* self,
+	const cef_size_t* size
+);
+
+extern void cefingo_window_close(
+	struct _cef_window_t* self
+);
+
+extern int cefingo_window_is_closed(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_activate(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_deactivate(
+	struct _cef_window_t* self
+);
+
+extern int cefingo_window_is_active(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_bring_to_top(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_set_always_on_top(
+	struct _cef_window_t* self,
+	int on_top
+);
+
+extern int cefingo_window_is_always_on_top(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_maximize(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_minimize(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_restore(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_set_fullscreen(
+	struct _cef_window_t* self,
+	int fullscreen
+);
+
+extern int cefingo_window_is_maximized(
+	struct _cef_window_t* self
+);
+
+extern int cefingo_window_is_minimized(
+	struct _cef_window_t* self
+);
+
+extern int cefingo_window_is_fullscreen(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_set_title(
+	struct _cef_window_t* self,
+	const cef_string_t* title
+);
+
+extern cef_string_userfree_t cefingo_window_get_title(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_set_window_icon(
+	struct _cef_window_t* self,
+	struct _cef_image_t* image
+);
+
+extern struct _cef_image_t* cefingo_window_get_window_icon(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_set_window_app_icon(
+	struct _cef_window_t* self,
+	struct _cef_image_t* image
+);
+
+extern struct _cef_image_t* cefingo_window_get_window_app_icon(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_show_menu(
+	struct _cef_window_t* self,
+	struct _cef_menu_model_t* menu_model,
+	const cef_point_t* screen_point,
+	cef_menu_anchor_position_t anchor_position
+);
+
+extern void cefingo_window_cancel_menu(
+	struct _cef_window_t* self
+);
+
+extern struct _cef_display_t* cefingo_window_get_display(
+	struct _cef_window_t* self
+);
+
+extern cef_rect_t cefingo_window_get_client_area_bounds_in_screen(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_set_draggable_regions(
+	struct _cef_window_t* self,
+	size_t regionsCount,
+	const cef_draggable_region_t* regions
+);
+
+extern cef_window_handle_t cefingo_window_get_window_handle(
+	struct _cef_window_t* self
+);
+
+extern void cefingo_window_send_key_press(
+	struct _cef_window_t* self,
+	int key_code,
+	uint32 event_flags
+);
+
+extern void cefingo_window_send_mouse_move(
+	struct _cef_window_t* self,
+	int screen_x,
+	int screen_y
+);
+
+extern void cefingo_window_send_mouse_events(
+	struct _cef_window_t* self,
+	cef_mouse_button_type_t button,
+	int mouse_down,
+	int mouse_up
+);
+
+extern void cefingo_window_set_accelerator(
+	struct _cef_window_t* self,
+	int command_id,
+	int key_code,
+	int shift_pressed,
+	int ctrl_pressed,
+	int alt_pressed
+);
+
+extern void cefingo_window_remove_accelerator(
+	struct _cef_window_t* self,
+	int command_id
+);
+
+extern void cefingo_window_remove_all_accelerators(
+	struct _cef_window_t* self
+);
+
+CEFINGO_REF_COUNTER_WRAPPER(cef_window_delegate_t, cefingo_window_delegate_wrapper_t);
+extern cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate_wrapper_t* window_delegate);
 
 extern cef_string_userfree_t cefingo_x509cert_principal_get_display_name(
 	struct _cef_x509cert_principal_t* self

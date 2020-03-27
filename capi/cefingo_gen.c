@@ -67,6 +67,30 @@ void cefingo_auth_callback_cancel(
 	);
 }
 
+void cefingo_box_layout_set_flex_for_view(
+	struct _cef_box_layout_t* self,
+	struct _cef_view_t* view,
+	int flex
+)
+{
+	self->set_flex_for_view(
+		self, 
+		view, 
+		flex
+	);
+}
+
+void cefingo_box_layout_clear_flex_for_view(
+	struct _cef_box_layout_t* self,
+	struct _cef_view_t* view
+)
+{
+	self->clear_flex_for_view(
+		self, 
+		view
+	);
+}
+
 struct _cef_browser_host_t* cefingo_browser_get_host(
 	struct _cef_browser_t* self
 )
@@ -1000,6 +1024,163 @@ cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo
 	return (cef_browser_process_handler_t*)browser_process_handler;
 }
 
+struct _cef_browser_t* cefingo_browser_view_get_browser(
+	struct _cef_browser_view_t* self
+)
+{
+	return self->get_browser(
+		self
+	);
+}
+
+void cefingo_browser_view_set_prefer_accelerators(
+	struct _cef_browser_view_t* self,
+	int prefer_accelerators
+)
+{
+	self->set_prefer_accelerators(
+		self, 
+		prefer_accelerators
+	);
+}
+
+typedef struct _cef_browser_view_delegate_t* (*T_CEF_BROWSER_VIEW_DELEGATE_T_GET_DELEGATE_FOR_POPUP_BROWSER_VIEW)(
+	struct _cef_browser_view_delegate_t*, 
+	struct _cef_browser_view_t*, 
+	const struct _cef_browser_settings_t*, 
+	struct _cef_client_t*, 
+	int
+);
+
+cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_browser_view_delegate_wrapper_t* browser_view_delegate)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*browser_view_delegate), counter),
+		(cef_base_ref_counted_t*) browser_view_delegate);
+	
+	// callbacks
+	browser_view_delegate->body.on_browser_created = 
+		cefingo_browser_view_delegate_on_browser_created;
+	browser_view_delegate->body.on_browser_destroyed = 
+		cefingo_browser_view_delegate_on_browser_destroyed;
+	browser_view_delegate->body.get_delegate_for_popup_browser_view = (T_CEF_BROWSER_VIEW_DELEGATE_T_GET_DELEGATE_FOR_POPUP_BROWSER_VIEW)
+		cefingo_browser_view_delegate_get_delegate_for_popup_browser_view;
+	browser_view_delegate->body.on_popup_browser_view_created = 
+		cefingo_browser_view_delegate_on_popup_browser_view_created;
+	browser_view_delegate->body.base.get_preferred_size = 
+		cefingo_browser_view_delegate_get_preferred_size;
+	browser_view_delegate->body.base.get_minimum_size = 
+		cefingo_browser_view_delegate_get_minimum_size;
+	browser_view_delegate->body.base.get_maximum_size = 
+		cefingo_browser_view_delegate_get_maximum_size;
+	browser_view_delegate->body.base.get_height_for_width = 
+		cefingo_browser_view_delegate_get_height_for_width;
+	browser_view_delegate->body.base.on_parent_view_changed = 
+		cefingo_browser_view_delegate_on_parent_view_changed;
+	browser_view_delegate->body.base.on_child_view_changed = 
+		cefingo_browser_view_delegate_on_child_view_changed;
+	browser_view_delegate->body.base.on_focus = 
+		cefingo_browser_view_delegate_on_focus;
+	browser_view_delegate->body.base.on_blur = 
+		cefingo_browser_view_delegate_on_blur;
+
+	return (cef_browser_view_delegate_t*)browser_view_delegate;
+}
+
+struct _cef_label_button_t* cefingo_button_as_label_button(
+	struct _cef_button_t* self
+)
+{
+	return self->as_label_button(
+		self
+	);
+}
+
+void cefingo_button_set_state(
+	struct _cef_button_t* self,
+	cef_button_state_t state
+)
+{
+	self->set_state(
+		self, 
+		state
+	);
+}
+
+cef_button_state_t cefingo_button_get_state(
+	struct _cef_button_t* self
+)
+{
+	return self->get_state(
+		self
+	);
+}
+
+void cefingo_button_set_ink_drop_enabled(
+	struct _cef_button_t* self,
+	int enabled
+)
+{
+	self->set_ink_drop_enabled(
+		self, 
+		enabled
+	);
+}
+
+void cefingo_button_set_tooltip_text(
+	struct _cef_button_t* self,
+	const cef_string_t* tooltip_text
+)
+{
+	self->set_tooltip_text(
+		self, 
+		tooltip_text
+	);
+}
+
+void cefingo_button_set_accessible_name(
+	struct _cef_button_t* self,
+	const cef_string_t* name
+)
+{
+	self->set_accessible_name(
+		self, 
+		name
+	);
+}
+
+
+cef_button_delegate_t *cefingo_construct_button_delegate(cefingo_button_delegate_wrapper_t* button_delegate)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*button_delegate), counter),
+		(cef_base_ref_counted_t*) button_delegate);
+	
+	// callbacks
+	button_delegate->body.on_button_pressed = 
+		cefingo_button_delegate_on_button_pressed;
+	button_delegate->body.on_button_state_changed = 
+		cefingo_button_delegate_on_button_state_changed;
+	button_delegate->body.base.get_preferred_size = 
+		cefingo_button_delegate_get_preferred_size;
+	button_delegate->body.base.get_minimum_size = 
+		cefingo_button_delegate_get_minimum_size;
+	button_delegate->body.base.get_maximum_size = 
+		cefingo_button_delegate_get_maximum_size;
+	button_delegate->body.base.get_height_for_width = 
+		cefingo_button_delegate_get_height_for_width;
+	button_delegate->body.base.on_parent_view_changed = 
+		cefingo_button_delegate_on_parent_view_changed;
+	button_delegate->body.base.on_child_view_changed = 
+		cefingo_button_delegate_on_child_view_changed;
+	button_delegate->body.base.on_focus = 
+		cefingo_button_delegate_on_focus;
+	button_delegate->body.base.on_blur = 
+		cefingo_button_delegate_on_blur;
+
+	return (cef_button_delegate_t*)button_delegate;
+}
+
 void cefingo_callback_cont(
 	struct _cef_callback_t* self
 )
@@ -1670,6 +1851,73 @@ cef_dialog_handler_t *cefingo_construct_dialog_handler(cefingo_dialog_handler_wr
 		cefingo_dialog_handler_on_file_dialog;
 
 	return (cef_dialog_handler_t*)dialog_handler;
+}
+
+int64 cefingo_display_get_id(
+	struct _cef_display_t* self
+)
+{
+	return self->get_id(
+		self
+	);
+}
+
+float cefingo_display_get_device_scale_factor(
+	struct _cef_display_t* self
+)
+{
+	return self->get_device_scale_factor(
+		self
+	);
+}
+
+void cefingo_display_convert_point_to_pixels(
+	struct _cef_display_t* self,
+	cef_point_t* point
+)
+{
+	self->convert_point_to_pixels(
+		self, 
+		point
+	);
+}
+
+void cefingo_display_convert_point_from_pixels(
+	struct _cef_display_t* self,
+	cef_point_t* point
+)
+{
+	self->convert_point_from_pixels(
+		self, 
+		point
+	);
+}
+
+cef_rect_t cefingo_display_get_bounds(
+	struct _cef_display_t* self
+)
+{
+	return self->get_bounds(
+		self
+	);
+}
+
+cef_rect_t cefingo_display_get_work_area(
+	struct _cef_display_t* self
+)
+{
+	return self->get_work_area(
+		self
+	);
+}
+
+int cefingo_display_get_rotation(
+	struct _cef_display_t* self
+)
+{
+	return self->get_rotation(
+		self
+	);
 }
 
 typedef void (*T_CEF_DISPLAY_HANDLER_T_ON_ADDRESS_CHANGE)(
@@ -3307,6 +3555,154 @@ cef_keyboard_handler_t *cefingo_construct_keyboard_handler(cefingo_keyboard_hand
 	return (cef_keyboard_handler_t*)keyboard_handler;
 }
 
+struct _cef_menu_button_t* cefingo_label_button_as_menu_button(
+	struct _cef_label_button_t* self
+)
+{
+	return self->as_menu_button(
+		self
+	);
+}
+
+void cefingo_label_button_set_text(
+	struct _cef_label_button_t* self,
+	const cef_string_t* text
+)
+{
+	self->set_text(
+		self, 
+		text
+	);
+}
+
+cef_string_userfree_t cefingo_label_button_get_text(
+	struct _cef_label_button_t* self
+)
+{
+	return self->get_text(
+		self
+	);
+}
+
+void cefingo_label_button_set_image(
+	struct _cef_label_button_t* self,
+	cef_button_state_t button_state,
+	struct _cef_image_t* image
+)
+{
+	self->set_image(
+		self, 
+		button_state, 
+		image
+	);
+}
+
+struct _cef_image_t* cefingo_label_button_get_image(
+	struct _cef_label_button_t* self,
+	cef_button_state_t button_state
+)
+{
+	return self->get_image(
+		self, 
+		button_state
+	);
+}
+
+void cefingo_label_button_set_text_color(
+	struct _cef_label_button_t* self,
+	cef_button_state_t for_state,
+	cef_color_t color
+)
+{
+	self->set_text_color(
+		self, 
+		for_state, 
+		color
+	);
+}
+
+void cefingo_label_button_set_enabled_text_colors(
+	struct _cef_label_button_t* self,
+	cef_color_t color
+)
+{
+	self->set_enabled_text_colors(
+		self, 
+		color
+	);
+}
+
+void cefingo_label_button_set_font_list(
+	struct _cef_label_button_t* self,
+	const cef_string_t* font_list
+)
+{
+	self->set_font_list(
+		self, 
+		font_list
+	);
+}
+
+void cefingo_label_button_set_horizontal_alignment(
+	struct _cef_label_button_t* self,
+	cef_horizontal_alignment_t alignment
+)
+{
+	self->set_horizontal_alignment(
+		self, 
+		alignment
+	);
+}
+
+void cefingo_label_button_set_minimum_size(
+	struct _cef_label_button_t* self,
+	const cef_size_t* size
+)
+{
+	self->set_minimum_size(
+		self, 
+		size
+	);
+}
+
+void cefingo_label_button_set_maximum_size(
+	struct _cef_label_button_t* self,
+	const cef_size_t* size
+)
+{
+	self->set_maximum_size(
+		self, 
+		size
+	);
+}
+
+struct _cef_box_layout_t* cefingo_layout_as_box_layout(
+	struct _cef_layout_t* self
+)
+{
+	return self->as_box_layout(
+		self
+	);
+}
+
+struct _cef_fill_layout_t* cefingo_layout_as_fill_layout(
+	struct _cef_layout_t* self
+)
+{
+	return self->as_fill_layout(
+		self
+	);
+}
+
+int cefingo_layout_is_valid(
+	struct _cef_layout_t* self
+)
+{
+	return self->is_valid(
+		self
+	);
+}
+
 typedef int (*T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)(
 	struct _cef_life_span_handler_t*, 
 	struct _cef_browser_t*, 
@@ -3368,6 +3764,70 @@ cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_
 		cefingo_load_handler_on_load_error;
 
 	return (cef_load_handler_t*)load_handler;
+}
+
+void cefingo_menu_button_show_menu(
+	struct _cef_menu_button_t* self,
+	struct _cef_menu_model_t* menu_model,
+	const cef_point_t* screen_point,
+	cef_menu_anchor_position_t anchor_position
+)
+{
+	self->show_menu(
+		self, 
+		menu_model, 
+		screen_point, 
+		anchor_position
+	);
+}
+
+void cefingo_menu_button_trigger_menu(
+	struct _cef_menu_button_t* self
+)
+{
+	self->trigger_menu(
+		self
+	);
+}
+
+typedef void (*T_CEF_MENU_BUTTON_DELEGATE_T_ON_MENU_BUTTON_PRESSED)(
+	struct _cef_menu_button_delegate_t*, 
+	struct _cef_menu_button_t*, 
+	const cef_point_t*, 
+	struct _cef_menu_button_pressed_lock_t*
+);
+
+cef_menu_button_delegate_t *cefingo_construct_menu_button_delegate(cefingo_menu_button_delegate_wrapper_t* menu_button_delegate)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*menu_button_delegate), counter),
+		(cef_base_ref_counted_t*) menu_button_delegate);
+	
+	// callbacks
+	menu_button_delegate->body.on_menu_button_pressed = (T_CEF_MENU_BUTTON_DELEGATE_T_ON_MENU_BUTTON_PRESSED)
+		cefingo_menu_button_delegate_on_menu_button_pressed;
+	menu_button_delegate->body.base.on_button_pressed = 
+		cefingo_menu_button_delegate_on_button_pressed;
+	menu_button_delegate->body.base.on_button_state_changed = 
+		cefingo_menu_button_delegate_on_button_state_changed;
+	menu_button_delegate->body.base.base.get_preferred_size = 
+		cefingo_menu_button_delegate_get_preferred_size;
+	menu_button_delegate->body.base.base.get_minimum_size = 
+		cefingo_menu_button_delegate_get_minimum_size;
+	menu_button_delegate->body.base.base.get_maximum_size = 
+		cefingo_menu_button_delegate_get_maximum_size;
+	menu_button_delegate->body.base.base.get_height_for_width = 
+		cefingo_menu_button_delegate_get_height_for_width;
+	menu_button_delegate->body.base.base.on_parent_view_changed = 
+		cefingo_menu_button_delegate_on_parent_view_changed;
+	menu_button_delegate->body.base.base.on_child_view_changed = 
+		cefingo_menu_button_delegate_on_child_view_changed;
+	menu_button_delegate->body.base.base.on_focus = 
+		cefingo_menu_button_delegate_on_focus;
+	menu_button_delegate->body.base.base.on_blur = 
+		cefingo_menu_button_delegate_on_blur;
+
+	return (cef_menu_button_delegate_t*)menu_button_delegate;
 }
 
 int cefingo_menu_model_is_sub_menu(
@@ -4199,6 +4659,158 @@ struct _cef_sslstatus_t* cefingo_navigation_entry_get_sslstatus(
 	return self->get_sslstatus(
 		self
 	);
+}
+
+struct _cef_window_t* cefingo_panel_as_window(
+	struct _cef_panel_t* self
+)
+{
+	return self->as_window(
+		self
+	);
+}
+
+struct _cef_fill_layout_t* cefingo_panel_set_to_fill_layout(
+	struct _cef_panel_t* self
+)
+{
+	return self->set_to_fill_layout(
+		self
+	);
+}
+
+struct _cef_box_layout_t* cefingo_panel_set_to_box_layout(
+	struct _cef_panel_t* self,
+	const struct _cef_box_layout_settings_t* settings
+)
+{
+	return self->set_to_box_layout(
+		self, 
+		settings
+	);
+}
+
+struct _cef_layout_t* cefingo_panel_get_layout(
+	struct _cef_panel_t* self
+)
+{
+	return self->get_layout(
+		self
+	);
+}
+
+void cefingo_panel_layout(
+	struct _cef_panel_t* self
+)
+{
+	self->layout(
+		self
+	);
+}
+
+void cefingo_panel_add_child_view(
+	struct _cef_panel_t* self,
+	struct _cef_view_t* view
+)
+{
+	self->add_child_view(
+		self, 
+		view
+	);
+}
+
+void cefingo_panel_add_child_view_at(
+	struct _cef_panel_t* self,
+	struct _cef_view_t* view,
+	int index
+)
+{
+	self->add_child_view_at(
+		self, 
+		view, 
+		index
+	);
+}
+
+void cefingo_panel_reorder_child_view(
+	struct _cef_panel_t* self,
+	struct _cef_view_t* view,
+	int index
+)
+{
+	self->reorder_child_view(
+		self, 
+		view, 
+		index
+	);
+}
+
+void cefingo_panel_remove_child_view(
+	struct _cef_panel_t* self,
+	struct _cef_view_t* view
+)
+{
+	self->remove_child_view(
+		self, 
+		view
+	);
+}
+
+void cefingo_panel_remove_all_child_views(
+	struct _cef_panel_t* self
+)
+{
+	self->remove_all_child_views(
+		self
+	);
+}
+
+size_t cefingo_panel_get_child_view_count(
+	struct _cef_panel_t* self
+)
+{
+	return self->get_child_view_count(
+		self
+	);
+}
+
+struct _cef_view_t* cefingo_panel_get_child_view_at(
+	struct _cef_panel_t* self,
+	int index
+)
+{
+	return self->get_child_view_at(
+		self, 
+		index
+	);
+}
+
+
+cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wrapper_t* panel_delegate)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*panel_delegate), counter),
+		(cef_base_ref_counted_t*) panel_delegate);
+	
+	// callbacks
+	panel_delegate->body.base.get_preferred_size = 
+		cefingo_panel_delegate_get_preferred_size;
+	panel_delegate->body.base.get_minimum_size = 
+		cefingo_panel_delegate_get_minimum_size;
+	panel_delegate->body.base.get_maximum_size = 
+		cefingo_panel_delegate_get_maximum_size;
+	panel_delegate->body.base.get_height_for_width = 
+		cefingo_panel_delegate_get_height_for_width;
+	panel_delegate->body.base.on_parent_view_changed = 
+		cefingo_panel_delegate_on_parent_view_changed;
+	panel_delegate->body.base.on_child_view_changed = 
+		cefingo_panel_delegate_on_child_view_changed;
+	panel_delegate->body.base.on_focus = 
+		cefingo_panel_delegate_on_focus;
+	panel_delegate->body.base.on_blur = 
+		cefingo_panel_delegate_on_blur;
+
+	return (cef_panel_delegate_t*)panel_delegate;
 }
 
 void cefingo_print_dialog_callback_cont(
@@ -5808,6 +6420,71 @@ cef_scheme_handler_factory_t *cefingo_construct_scheme_handler_factory(cefingo_s
 	return (cef_scheme_handler_factory_t*)scheme_handler_factory;
 }
 
+void cefingo_scroll_view_set_content_view(
+	struct _cef_scroll_view_t* self,
+	struct _cef_view_t* view
+)
+{
+	self->set_content_view(
+		self, 
+		view
+	);
+}
+
+struct _cef_view_t* cefingo_scroll_view_get_content_view(
+	struct _cef_scroll_view_t* self
+)
+{
+	return self->get_content_view(
+		self
+	);
+}
+
+cef_rect_t cefingo_scroll_view_get_visible_content_rect(
+	struct _cef_scroll_view_t* self
+)
+{
+	return self->get_visible_content_rect(
+		self
+	);
+}
+
+int cefingo_scroll_view_has_horizontal_scrollbar(
+	struct _cef_scroll_view_t* self
+)
+{
+	return self->has_horizontal_scrollbar(
+		self
+	);
+}
+
+int cefingo_scroll_view_get_horizontal_scrollbar_height(
+	struct _cef_scroll_view_t* self
+)
+{
+	return self->get_horizontal_scrollbar_height(
+		self
+	);
+}
+
+int cefingo_scroll_view_has_vertical_scrollbar(
+	struct _cef_scroll_view_t* self
+)
+{
+	return self->has_vertical_scrollbar(
+		self
+	);
+}
+
+int cefingo_scroll_view_get_vertical_scrollbar_width(
+	struct _cef_scroll_view_t* self
+)
+{
+	return self->get_vertical_scrollbar_width(
+		self
+	);
+}
+
 cef_cert_status_t cefingo_sslinfo_get_cert_status(
 	struct _cef_sslinfo_t* self
 )
@@ -6116,6 +6793,364 @@ int cefingo_task_runner_post_delayed_task(
 		task, 
 		delay_ms
 	);
+}
+
+void cefingo_textfield_set_password_input(
+	struct _cef_textfield_t* self,
+	int password_input
+)
+{
+	self->set_password_input(
+		self, 
+		password_input
+	);
+}
+
+int cefingo_textfield_is_password_input(
+	struct _cef_textfield_t* self
+)
+{
+	return self->is_password_input(
+		self
+	);
+}
+
+void cefingo_textfield_set_read_only(
+	struct _cef_textfield_t* self,
+	int read_only
+)
+{
+	self->set_read_only(
+		self, 
+		read_only
+	);
+}
+
+int cefingo_textfield_is_read_only(
+	struct _cef_textfield_t* self
+)
+{
+	return self->is_read_only(
+		self
+	);
+}
+
+cef_string_userfree_t cefingo_textfield_get_text(
+	struct _cef_textfield_t* self
+)
+{
+	return self->get_text(
+		self
+	);
+}
+
+void cefingo_textfield_set_text(
+	struct _cef_textfield_t* self,
+	const cef_string_t* text
+)
+{
+	self->set_text(
+		self, 
+		text
+	);
+}
+
+void cefingo_textfield_append_text(
+	struct _cef_textfield_t* self,
+	const cef_string_t* text
+)
+{
+	self->append_text(
+		self, 
+		text
+	);
+}
+
+void cefingo_textfield_insert_or_replace_text(
+	struct _cef_textfield_t* self,
+	const cef_string_t* text
+)
+{
+	self->insert_or_replace_text(
+		self, 
+		text
+	);
+}
+
+int cefingo_textfield_has_selection(
+	struct _cef_textfield_t* self
+)
+{
+	return self->has_selection(
+		self
+	);
+}
+
+cef_string_userfree_t cefingo_textfield_get_selected_text(
+	struct _cef_textfield_t* self
+)
+{
+	return self->get_selected_text(
+		self
+	);
+}
+
+void cefingo_textfield_select_all(
+	struct _cef_textfield_t* self,
+	int reversed
+)
+{
+	self->select_all(
+		self, 
+		reversed
+	);
+}
+
+void cefingo_textfield_clear_selection(
+	struct _cef_textfield_t* self
+)
+{
+	self->clear_selection(
+		self
+	);
+}
+
+cef_range_t cefingo_textfield_get_selected_range(
+	struct _cef_textfield_t* self
+)
+{
+	return self->get_selected_range(
+		self
+	);
+}
+
+void cefingo_textfield_select_range(
+	struct _cef_textfield_t* self,
+	const cef_range_t* range
+)
+{
+	self->select_range(
+		self, 
+		range
+	);
+}
+
+size_t cefingo_textfield_get_cursor_position(
+	struct _cef_textfield_t* self
+)
+{
+	return self->get_cursor_position(
+		self
+	);
+}
+
+void cefingo_textfield_set_text_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color
+)
+{
+	self->set_text_color(
+		self, 
+		color
+	);
+}
+
+cef_color_t cefingo_textfield_get_text_color(
+	struct _cef_textfield_t* self
+)
+{
+	return self->get_text_color(
+		self
+	);
+}
+
+void cefingo_textfield_set_selection_text_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color
+)
+{
+	self->set_selection_text_color(
+		self, 
+		color
+	);
+}
+
+cef_color_t cefingo_textfield_get_selection_text_color(
+	struct _cef_textfield_t* self
+)
+{
+	return self->get_selection_text_color(
+		self
+	);
+}
+
+void cefingo_textfield_set_selection_background_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color
+)
+{
+	self->set_selection_background_color(
+		self, 
+		color
+	);
+}
+
+cef_color_t cefingo_textfield_get_selection_background_color(
+	struct _cef_textfield_t* self
+)
+{
+	return self->get_selection_background_color(
+		self
+	);
+}
+
+void cefingo_textfield_set_font_list(
+	struct _cef_textfield_t* self,
+	const cef_string_t* font_list
+)
+{
+	self->set_font_list(
+		self, 
+		font_list
+	);
+}
+
+void cefingo_textfield_apply_text_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color,
+	const cef_range_t* range
+)
+{
+	self->apply_text_color(
+		self, 
+		color, 
+		range
+	);
+}
+
+void cefingo_textfield_apply_text_style(
+	struct _cef_textfield_t* self,
+	cef_text_style_t style,
+	int add,
+	const cef_range_t* range
+)
+{
+	self->apply_text_style(
+		self, 
+		style, 
+		add, 
+		range
+	);
+}
+
+int cefingo_textfield_is_command_enabled(
+	struct _cef_textfield_t* self,
+	int command_id
+)
+{
+	return self->is_command_enabled(
+		self, 
+		command_id
+	);
+}
+
+void cefingo_textfield_execute_command(
+	struct _cef_textfield_t* self,
+	int command_id
+)
+{
+	self->execute_command(
+		self, 
+		command_id
+	);
+}
+
+void cefingo_textfield_clear_edit_history(
+	struct _cef_textfield_t* self
+)
+{
+	self->clear_edit_history(
+		self
+	);
+}
+
+void cefingo_textfield_set_placeholder_text(
+	struct _cef_textfield_t* self,
+	const cef_string_t* text
+)
+{
+	self->set_placeholder_text(
+		self, 
+		text
+	);
+}
+
+cef_string_userfree_t cefingo_textfield_get_placeholder_text(
+	struct _cef_textfield_t* self
+)
+{
+	return self->get_placeholder_text(
+		self
+	);
+}
+
+void cefingo_textfield_set_placeholder_text_color(
+	struct _cef_textfield_t* self,
+	cef_color_t color
+)
+{
+	self->set_placeholder_text_color(
+		self, 
+		color
+	);
+}
+
+void cefingo_textfield_set_accessible_name(
+	struct _cef_textfield_t* self,
+	const cef_string_t* name
+)
+{
+	self->set_accessible_name(
+		self, 
+		name
+	);
+}
+
+typedef int (*T_CEF_TEXTFIELD_DELEGATE_T_ON_KEY_EVENT)(
+	struct _cef_textfield_delegate_t*, 
+	struct _cef_textfield_t*, 
+	const struct _cef_key_event_t*
+);
+
+cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield_delegate_wrapper_t* textfield_delegate)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*textfield_delegate), counter),
+		(cef_base_ref_counted_t*) textfield_delegate);
+	
+	// callbacks
+	textfield_delegate->body.on_key_event = (T_CEF_TEXTFIELD_DELEGATE_T_ON_KEY_EVENT)
+		cefingo_textfield_delegate_on_key_event;
+	textfield_delegate->body.on_after_user_action = 
+		cefingo_textfield_delegate_on_after_user_action;
+	textfield_delegate->body.base.get_preferred_size = 
+		cefingo_textfield_delegate_get_preferred_size;
+	textfield_delegate->body.base.get_minimum_size = 
+		cefingo_textfield_delegate_get_minimum_size;
+	textfield_delegate->body.base.get_maximum_size = 
+		cefingo_textfield_delegate_get_maximum_size;
+	textfield_delegate->body.base.get_height_for_width = 
+		cefingo_textfield_delegate_get_height_for_width;
+	textfield_delegate->body.base.on_parent_view_changed = 
+		cefingo_textfield_delegate_on_parent_view_changed;
+	textfield_delegate->body.base.on_child_view_changed = 
+		cefingo_textfield_delegate_on_child_view_changed;
+	textfield_delegate->body.base.on_focus = 
+		cefingo_textfield_delegate_on_focus;
+	textfield_delegate->body.base.on_blur = 
+		cefingo_textfield_delegate_on_blur;
+
+	return (cef_textfield_delegate_t*)textfield_delegate;
 }
 
 struct _cef_request_t* cefingo_urlrequest_get_request(
@@ -8000,6 +9035,508 @@ int cefingo_list_value_set_list(
 	);
 }
 
+struct _cef_browser_view_t* cefingo_view_as_browser_view(
+	struct _cef_view_t* self
+)
+{
+	return self->as_browser_view(
+		self
+	);
+}
+
+struct _cef_button_t* cefingo_view_as_button(
+	struct _cef_view_t* self
+)
+{
+	return self->as_button(
+		self
+	);
+}
+
+struct _cef_panel_t* cefingo_view_as_panel(
+	struct _cef_view_t* self
+)
+{
+	return self->as_panel(
+		self
+	);
+}
+
+struct _cef_scroll_view_t* cefingo_view_as_scroll_view(
+	struct _cef_view_t* self
+)
+{
+	return self->as_scroll_view(
+		self
+	);
+}
+
+struct _cef_textfield_t* cefingo_view_as_textfield(
+	struct _cef_view_t* self
+)
+{
+	return self->as_textfield(
+		self
+	);
+}
+
+cef_string_userfree_t cefingo_view_get_type_string(
+	struct _cef_view_t* self
+)
+{
+	return self->get_type_string(
+		self
+	);
+}
+
+cef_string_userfree_t cefingo_view_to_string(
+	struct _cef_view_t* self,
+	int include_children
+)
+{
+	return self->to_string(
+		self, 
+		include_children
+	);
+}
+
+int cefingo_view_is_valid(
+	struct _cef_view_t* self
+)
+{
+	return self->is_valid(
+		self
+	);
+}
+
+int cefingo_view_is_attached(
+	struct _cef_view_t* self
+)
+{
+	return self->is_attached(
+		self
+	);
+}
+
+int cefingo_view_is_same(
+	struct _cef_view_t* self,
+	struct _cef_view_t* that
+)
+{
+	return self->is_same(
+		self, 
+		that
+	);
+}
+
+struct _cef_view_delegate_t* cefingo_view_get_delegate(
+	struct _cef_view_t* self
+)
+{
+	return self->get_delegate(
+		self
+	);
+}
+
+struct _cef_window_t* cefingo_view_get_window(
+	struct _cef_view_t* self
+)
+{
+	return self->get_window(
+		self
+	);
+}
+
+int cefingo_view_get_id(
+	struct _cef_view_t* self
+)
+{
+	return self->get_id(
+		self
+	);
+}
+
+void cefingo_view_set_id(
+	struct _cef_view_t* self,
+	int id
+)
+{
+	self->set_id(
+		self, 
+		id
+	);
+}
+
+int cefingo_view_get_group_id(
+	struct _cef_view_t* self
+)
+{
+	return self->get_group_id(
+		self
+	);
+}
+
+void cefingo_view_set_group_id(
+	struct _cef_view_t* self,
+	int group_id
+)
+{
+	self->set_group_id(
+		self, 
+		group_id
+	);
+}
+
+struct _cef_view_t* cefingo_view_get_parent_view(
+	struct _cef_view_t* self
+)
+{
+	return self->get_parent_view(
+		self
+	);
+}
+
+struct _cef_view_t* cefingo_view_get_view_for_id(
+	struct _cef_view_t* self,
+	int id
+)
+{
+	return self->get_view_for_id(
+		self, 
+		id
+	);
+}
+
+void cefingo_view_set_bounds(
+	struct _cef_view_t* self,
+	const cef_rect_t* bounds
+)
+{
+	self->set_bounds(
+		self, 
+		bounds
+	);
+}
+
+cef_rect_t cefingo_view_get_bounds(
+	struct _cef_view_t* self
+)
+{
+	return self->get_bounds(
+		self
+	);
+}
+
+cef_rect_t cefingo_view_get_bounds_in_screen(
+	struct _cef_view_t* self
+)
+{
+	return self->get_bounds_in_screen(
+		self
+	);
+}
+
+void cefingo_view_set_size(
+	struct _cef_view_t* self,
+	const cef_size_t* size
+)
+{
+	self->set_size(
+		self, 
+		size
+	);
+}
+
+cef_size_t cefingo_view_get_size(
+	struct _cef_view_t* self
+)
+{
+	return self->get_size(
+		self
+	);
+}
+
+void cefingo_view_set_position(
+	struct _cef_view_t* self,
+	const cef_point_t* position
+)
+{
+	self->set_position(
+		self, 
+		position
+	);
+}
+
+cef_point_t cefingo_view_get_position(
+	struct _cef_view_t* self
+)
+{
+	return self->get_position(
+		self
+	);
+}
+
+cef_size_t cefingo_view_get_preferred_size(
+	struct _cef_view_t* self
+)
+{
+	return self->get_preferred_size(
+		self
+	);
+}
+
+void cefingo_view_size_to_preferred_size(
+	struct _cef_view_t* self
+)
+{
+	self->size_to_preferred_size(
+		self
+	);
+}
+
+cef_size_t cefingo_view_get_minimum_size(
+	struct _cef_view_t* self
+)
+{
+	return self->get_minimum_size(
+		self
+	);
+}
+
+cef_size_t cefingo_view_get_maximum_size(
+	struct _cef_view_t* self
+)
+{
+	return self->get_maximum_size(
+		self
+	);
+}
+
+int cefingo_view_get_height_for_width(
+	struct _cef_view_t* self,
+	int width
+)
+{
+	return self->get_height_for_width(
+		self, 
+		width
+	);
+}
+
+void cefingo_view_invalidate_layout(
+	struct _cef_view_t* self
+)
+{
+	self->invalidate_layout(
+		self
+	);
+}
+
+void cefingo_view_set_visible(
+	struct _cef_view_t* self,
+	int visible
+)
+{
+	self->set_visible(
+		self, 
+		visible
+	);
+}
+
+int cefingo_view_is_visible(
+	struct _cef_view_t* self
+)
+{
+	return self->is_visible(
+		self
+	);
+}
+
+int cefingo_view_is_drawn(
+	struct _cef_view_t* self
+)
+{
+	return self->is_drawn(
+		self
+	);
+}
+
+void cefingo_view_set_enabled(
+	struct _cef_view_t* self,
+	int enabled
+)
+{
+	self->set_enabled(
+		self, 
+		enabled
+	);
+}
+
+int cefingo_view_is_enabled(
+	struct _cef_view_t* self
+)
+{
+	return self->is_enabled(
+		self
+	);
+}
+
+void cefingo_view_set_focusable(
+	struct _cef_view_t* self,
+	int focusable
+)
+{
+	self->set_focusable(
+		self, 
+		focusable
+	);
+}
+
+int cefingo_view_is_focusable(
+	struct _cef_view_t* self
+)
+{
+	return self->is_focusable(
+		self
+	);
+}
+
+int cefingo_view_is_accessibility_focusable(
+	struct _cef_view_t* self
+)
+{
+	return self->is_accessibility_focusable(
+		self
+	);
+}
+
+void cefingo_view_request_focus(
+	struct _cef_view_t* self
+)
+{
+	self->request_focus(
+		self
+	);
+}
+
+void cefingo_view_set_background_color(
+	struct _cef_view_t* self,
+	cef_color_t color
+)
+{
+	self->set_background_color(
+		self, 
+		color
+	);
+}
+
+cef_color_t cefingo_view_get_background_color(
+	struct _cef_view_t* self
+)
+{
+	return self->get_background_color(
+		self
+	);
+}
+
+int cefingo_view_convert_point_to_screen(
+	struct _cef_view_t* self,
+	cef_point_t* point
+)
+{
+	return self->convert_point_to_screen(
+		self, 
+		point
+	);
+}
+
+int cefingo_view_convert_point_from_screen(
+	struct _cef_view_t* self,
+	cef_point_t* point
+)
+{
+	return self->convert_point_from_screen(
+		self, 
+		point
+	);
+}
+
+int cefingo_view_convert_point_to_window(
+	struct _cef_view_t* self,
+	cef_point_t* point
+)
+{
+	return self->convert_point_to_window(
+		self, 
+		point
+	);
+}
+
+int cefingo_view_convert_point_from_window(
+	struct _cef_view_t* self,
+	cef_point_t* point
+)
+{
+	return self->convert_point_from_window(
+		self, 
+		point
+	);
+}
+
+int cefingo_view_convert_point_to_view(
+	struct _cef_view_t* self,
+	struct _cef_view_t* view,
+	cef_point_t* point
+)
+{
+	return self->convert_point_to_view(
+		self, 
+		view, 
+		point
+	);
+}
+
+int cefingo_view_convert_point_from_view(
+	struct _cef_view_t* self,
+	struct _cef_view_t* view,
+	cef_point_t* point
+)
+{
+	return self->convert_point_from_view(
+		self, 
+		view, 
+		point
+	);
+}
+
+
+cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapper_t* view_delegate)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*view_delegate), counter),
+		(cef_base_ref_counted_t*) view_delegate);
+	
+	// callbacks
+	view_delegate->body.get_preferred_size = 
+		cefingo_view_delegate_get_preferred_size;
+	view_delegate->body.get_minimum_size = 
+		cefingo_view_delegate_get_minimum_size;
+	view_delegate->body.get_maximum_size = 
+		cefingo_view_delegate_get_maximum_size;
+	view_delegate->body.get_height_for_width = 
+		cefingo_view_delegate_get_height_for_width;
+	view_delegate->body.on_parent_view_changed = 
+		cefingo_view_delegate_on_parent_view_changed;
+	view_delegate->body.on_child_view_changed = 
+		cefingo_view_delegate_on_child_view_changed;
+	view_delegate->body.on_focus = 
+		cefingo_view_delegate_on_focus;
+	view_delegate->body.on_blur = 
+		cefingo_view_delegate_on_blur;
+
+	return (cef_view_delegate_t*)view_delegate;
+}
+
 cef_string_userfree_t cefingo_web_plugin_info_get_name(
 	struct _cef_web_plugin_info_t* self
 )
@@ -8086,6 +9623,431 @@ cef_register_cdm_callback_t *cefingo_construct_register_cdm_callback(cefingo_reg
 		cefingo_register_cdm_callback_on_cdm_registration_complete;
 
 	return (cef_register_cdm_callback_t*)register_cdm_callback;
+}
+
+void cefingo_window_show(
+	struct _cef_window_t* self
+)
+{
+	self->show(
+		self
+	);
+}
+
+void cefingo_window_hide(
+	struct _cef_window_t* self
+)
+{
+	self->hide(
+		self
+	);
+}
+
+void cefingo_window_center_window(
+	struct _cef_window_t* self,
+	const cef_size_t* size
+)
+{
+	self->center_window(
+		self, 
+		size
+	);
+}
+
+void cefingo_window_close(
+	struct _cef_window_t* self
+)
+{
+	self->close(
+		self
+	);
+}
+
+int cefingo_window_is_closed(
+	struct _cef_window_t* self
+)
+{
+	return self->is_closed(
+		self
+	);
+}
+
+void cefingo_window_activate(
+	struct _cef_window_t* self
+)
+{
+	self->activate(
+		self
+	);
+}
+
+void cefingo_window_deactivate(
+	struct _cef_window_t* self
+)
+{
+	self->deactivate(
+		self
+	);
+}
+
+int cefingo_window_is_active(
+	struct _cef_window_t* self
+)
+{
+	return self->is_active(
+		self
+	);
+}
+
+void cefingo_window_bring_to_top(
+	struct _cef_window_t* self
+)
+{
+	self->bring_to_top(
+		self
+	);
+}
+
+void cefingo_window_set_always_on_top(
+	struct _cef_window_t* self,
+	int on_top
+)
+{
+	self->set_always_on_top(
+		self, 
+		on_top
+	);
+}
+
+int cefingo_window_is_always_on_top(
+	struct _cef_window_t* self
+)
+{
+	return self->is_always_on_top(
+		self
+	);
+}
+
+void cefingo_window_maximize(
+	struct _cef_window_t* self
+)
+{
+	self->maximize(
+		self
+	);
+}
+
+void cefingo_window_minimize(
+	struct _cef_window_t* self
+)
+{
+	self->minimize(
+		self
+	);
+}
+
+void cefingo_window_restore(
+	struct _cef_window_t* self
+)
+{
+	self->restore(
+		self
+	);
+}
+
+void cefingo_window_set_fullscreen(
+	struct _cef_window_t* self,
+	int fullscreen
+)
+{
+	self->set_fullscreen(
+		self, 
+		fullscreen
+	);
+}
+
+int cefingo_window_is_maximized(
+	struct _cef_window_t* self
+)
+{
+	return self->is_maximized(
+		self
+	);
+}
+
+int cefingo_window_is_minimized(
+	struct _cef_window_t* self
+)
+{
+	return self->is_minimized(
+		self
+	);
+}
+
+int cefingo_window_is_fullscreen(
+	struct _cef_window_t* self
+)
+{
+	return self->is_fullscreen(
+		self
+	);
+}
+
+void cefingo_window_set_title(
+	struct _cef_window_t* self,
+	const cef_string_t* title
+)
+{
+	self->set_title(
+		self, 
+		title
+	);
+}
+
+cef_string_userfree_t cefingo_window_get_title(
+	struct _cef_window_t* self
+)
+{
+	return self->get_title(
+		self
+	);
+}
+
+void cefingo_window_set_window_icon(
+	struct _cef_window_t* self,
+	struct _cef_image_t* image
+)
+{
+	self->set_window_icon(
+		self, 
+		image
+	);
+}
+
+struct _cef_image_t* cefingo_window_get_window_icon(
+	struct _cef_window_t* self
+)
+{
+	return self->get_window_icon(
+		self
+	);
+}
+
+void cefingo_window_set_window_app_icon(
+	struct _cef_window_t* self,
+	struct _cef_image_t* image
+)
+{
+	self->set_window_app_icon(
+		self, 
+		image
+	);
+}
+
+struct _cef_image_t* cefingo_window_get_window_app_icon(
+	struct _cef_window_t* self
+)
+{
+	return self->get_window_app_icon(
+		self
+	);
+}
+
+void cefingo_window_show_menu(
+	struct _cef_window_t* self,
+	struct _cef_menu_model_t* menu_model,
+	const cef_point_t* screen_point,
+	cef_menu_anchor_position_t anchor_position
+)
+{
+	self->show_menu(
+		self, 
+		menu_model, 
+		screen_point, 
+		anchor_position
+	);
+}
+
+void cefingo_window_cancel_menu(
+	struct _cef_window_t* self
+)
+{
+	self->cancel_menu(
+		self
+	);
+}
+
+struct _cef_display_t* cefingo_window_get_display(
+	struct _cef_window_t* self
+)
+{
+	return self->get_display(
+		self
+	);
+}
+
+cef_rect_t cefingo_window_get_client_area_bounds_in_screen(
+	struct _cef_window_t* self
+)
+{
+	return self->get_client_area_bounds_in_screen(
+		self
+	);
+}
+
+void cefingo_window_set_draggable_regions(
+	struct _cef_window_t* self,
+	size_t regionsCount,
+	const cef_draggable_region_t* regions
+)
+{
+	self->set_draggable_regions(
+		self, 
+		regionsCount, 
+		regions
+	);
+}
+
+cef_window_handle_t cefingo_window_get_window_handle(
+	struct _cef_window_t* self
+)
+{
+	return self->get_window_handle(
+		self
+	);
+}
+
+void cefingo_window_send_key_press(
+	struct _cef_window_t* self,
+	int key_code,
+	uint32 event_flags
+)
+{
+	self->send_key_press(
+		self, 
+		key_code, 
+		event_flags
+	);
+}
+
+void cefingo_window_send_mouse_move(
+	struct _cef_window_t* self,
+	int screen_x,
+	int screen_y
+)
+{
+	self->send_mouse_move(
+		self, 
+		screen_x, 
+		screen_y
+	);
+}
+
+void cefingo_window_send_mouse_events(
+	struct _cef_window_t* self,
+	cef_mouse_button_type_t button,
+	int mouse_down,
+	int mouse_up
+)
+{
+	self->send_mouse_events(
+		self, 
+		button, 
+		mouse_down, 
+		mouse_up
+	);
+}
+
+void cefingo_window_set_accelerator(
+	struct _cef_window_t* self,
+	int command_id,
+	int key_code,
+	int shift_pressed,
+	int ctrl_pressed,
+	int alt_pressed
+)
+{
+	self->set_accelerator(
+		self, 
+		command_id, 
+		key_code, 
+		shift_pressed, 
+		ctrl_pressed, 
+		alt_pressed
+	);
+}
+
+void cefingo_window_remove_accelerator(
+	struct _cef_window_t* self,
+	int command_id
+)
+{
+	self->remove_accelerator(
+		self, 
+		command_id
+	);
+}
+
+void cefingo_window_remove_all_accelerators(
+	struct _cef_window_t* self
+)
+{
+	self->remove_all_accelerators(
+		self
+	);
+}
+
+typedef int (*T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT)(
+	struct _cef_window_delegate_t*, 
+	struct _cef_window_t*, 
+	const struct _cef_key_event_t*
+);
+
+cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate_wrapper_t* window_delegate)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*window_delegate), counter),
+		(cef_base_ref_counted_t*) window_delegate);
+	
+	// callbacks
+	window_delegate->body.on_window_created = 
+		cefingo_window_delegate_on_window_created;
+	window_delegate->body.on_window_destroyed = 
+		cefingo_window_delegate_on_window_destroyed;
+	window_delegate->body.get_parent_window = 
+		cefingo_window_delegate_get_parent_window;
+	window_delegate->body.is_frameless = 
+		cefingo_window_delegate_is_frameless;
+	window_delegate->body.can_resize = 
+		cefingo_window_delegate_can_resize;
+	window_delegate->body.can_maximize = 
+		cefingo_window_delegate_can_maximize;
+	window_delegate->body.can_minimize = 
+		cefingo_window_delegate_can_minimize;
+	window_delegate->body.can_close = 
+		cefingo_window_delegate_can_close;
+	window_delegate->body.on_accelerator = 
+		cefingo_window_delegate_on_accelerator;
+	window_delegate->body.on_key_event = (T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT)
+		cefingo_window_delegate_on_key_event;
+	window_delegate->body.base.base.get_preferred_size = 
+		cefingo_window_delegate_get_preferred_size;
+	window_delegate->body.base.base.get_minimum_size = 
+		cefingo_window_delegate_get_minimum_size;
+	window_delegate->body.base.base.get_maximum_size = 
+		cefingo_window_delegate_get_maximum_size;
+	window_delegate->body.base.base.get_height_for_width = 
+		cefingo_window_delegate_get_height_for_width;
+	window_delegate->body.base.base.on_parent_view_changed = 
+		cefingo_window_delegate_on_parent_view_changed;
+	window_delegate->body.base.base.on_child_view_changed = 
+		cefingo_window_delegate_on_child_view_changed;
+	window_delegate->body.base.base.on_focus = 
+		cefingo_window_delegate_on_focus;
+	window_delegate->body.base.base.on_blur = 
+		cefingo_window_delegate_on_blur;
+
+	return (cef_window_delegate_t*)window_delegate;
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_display_name(

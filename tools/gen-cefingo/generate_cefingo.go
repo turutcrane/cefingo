@@ -304,21 +304,25 @@ func genGoGetFunc(gf, expf *Generator, st *parser.CefClassDecl) {
 	goName := st.GoName()
 	baseName := st.BaseName()
 	cName := st.CefName()
-	for _, m := range st.Methods {
-		if m.IsGetFunc() {
-			line := expf.Lines()
-			WriteGoGetFunc(expf, line, m, goName, baseName, cName)
-			line = gf.Lines()
-			WriteAssocGetFunc(gf, line, m, goName, baseName, cName)
+	for c := st; c != nil; c = c.GetBase() {
+		for _, m := range c.Methods {
+			if m.IsGetFunc() {
+				line := expf.Lines()
+				WriteGoGetFunc(expf, line, m, goName, baseName, cName)
+				line = gf.Lines()
+				WriteAssocGetFunc(gf, line, m, goName, baseName, cName)
+			}
 		}
 	}
 }
 
 func genGoCallbackFunc(gf *Generator, st *parser.CefClassDecl) {
-	for _, m := range st.Methods {
-		if !m.IsGetFunc() {
-			line := gf.Lines()
-			WriteGoCallback(gf, line, m, st.Common().Token().BaseName())
+	for c := st; c != nil; c = c.GetBase() {
+		for _, m := range c.Methods {
+			if !m.IsGetFunc() {
+				line := gf.Lines()
+				WriteGoCallback(gf, line, m, st)
+			}
 		}
 	}
 }
