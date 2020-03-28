@@ -180,11 +180,9 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 {% endfunc %}
 
 {% func GoBindFunc(line int, st *parser.CefClassDecl) %}
-{% code
-	goName := st.Common().GoName()
-	baseName := st.Common().BaseName()
+{% code baseName := st.BaseName()
 	self := baseName -%}
-func ({%s self %} *{%s goName %}) Bind(a interface{}) *{%s goName %} {
+func ({%s self %} *{%s st.GoName() %}) Bind(a interface{}) *{%s st.GoName() %} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 	{%- code funcnum := 0 -%}
@@ -202,8 +200,8 @@ func ({%s self %} *{%s goName %}) Bind(a interface{}) *{%s goName %} {
 	{%- endif -%}
 	{%- endfor -%}
 	{%- endfor %}
-	if accessor, ok := a.({%s goName %}Accessor); ok {
-		accessor.Set{%s goName %}({%s self %})
+	if accessor, ok := a.({%s st.GoName() %}Accessor); ok {
+		accessor.Set{%s st.GoName() %}({%s self %})
 		Logf("T{%d (line + funcnum * 4) + 22 %}:")
 	}
 
@@ -631,9 +629,9 @@ extern {%s methodCSig(m) %};
 
 // newCXxxxT()
 {% func GoType(d *parser.CefClassDecl, line int) %}
-{% code goName := d.Token().GoName()
-	cName := d.Token().Name()
-	typeName := d.Token().BaseName()
+{% code goName := d.GoName()
+	typeName := d.BaseName()
+	cName := d.CefName()
 	line = line + 25
 -%}
 // Go type for {%s cName %}	
@@ -685,6 +683,12 @@ func ({%s typeName %} *{%s goName %}) HasOneRef() bool {
 
 func (p *C.{%s cName %}) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+{% endif -%}
+{% if p := d.GetBase(); p != nil %}
+func ({%s typeName %} *{%s goName %}) To{%s p.GoName() %}() *{%s p.GoName() %}{
+	p := (*C.{%s p.CefName() %})(unsafe.Pointer({%s typeName %}.p_{%s typeName %}))
+	return new{%s p.GoName() %}(p)
 }
 {% endif -%}
 {% endfunc %}

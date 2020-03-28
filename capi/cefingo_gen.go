@@ -573,6 +573,11 @@ func (p *C.cef_box_layout_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+func (box_layout *CBoxLayoutT) ToCLayoutT() *CLayoutT {
+	p := (*C.cef_layout_t)(unsafe.Pointer(box_layout.p_box_layout))
+	return newCLayoutT(p)
+}
+
 ///
 // Set the flex weight for the given |view|. Using the preferred size as the
 // basis, free space along the main axis is distributed to views in the ratio
@@ -648,11 +653,11 @@ func newCBrowserT(p *C.cef_browser_t) *CBrowserT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T664:")
+	Tracef(unsafe.Pointer(p), "T669:")
 	BaseAddRef(p)
 	go_browser := CBrowserT{noCopy{}, p}
 	runtime.SetFinalizer(&go_browser, func(g *CBrowserT) {
-		Tracef(unsafe.Pointer(g.p_browser), "T668:")
+		Tracef(unsafe.Pointer(g.p_browser), "T673:")
 		BaseRelease(g.p_browser)
 	})
 	return &go_browser
@@ -915,11 +920,11 @@ func newCRunFileDialogCallbackT(p *C.cef_run_file_dialog_callback_t) *CRunFileDi
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T964:")
+	Tracef(unsafe.Pointer(p), "T969:")
 	BaseAddRef(p)
 	go_run_file_dialog_callback := CRunFileDialogCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_run_file_dialog_callback, func(g *CRunFileDialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_run_file_dialog_callback), "T968:")
+		Tracef(unsafe.Pointer(g.p_run_file_dialog_callback), "T973:")
 		BaseRelease(g.p_run_file_dialog_callback)
 	})
 	return &go_run_file_dialog_callback
@@ -957,13 +962,13 @@ var run_file_dialog_callback_handlers = struct {
 
 // AllocCRunFileDialogCallbackT allocates CRunFileDialogCallbackT and construct it
 func AllocCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
-	up := c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "T1006:")
+	up := c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "T1011:")
 	cefp := C.cefingo_construct_run_file_dialog_callback((*C.cefingo_run_file_dialog_callback_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_run_file_dialog_callback_t itself in DeassocFunc,
 		// or cef_run_file_dialog_callback_t is never GCed.
-		Tracef(up, "T1012:")
+		Tracef(up, "T1017:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -985,7 +990,7 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CR
 
 	if accessor, ok := a.(CRunFileDialogCallbackTAccessor); ok {
 		accessor.SetCRunFileDialogCallbackT(run_file_dialog_callback)
-		Logf("T1046:")
+		Logf("T1051:")
 	}
 
 	return run_file_dialog_callback
@@ -1024,11 +1029,11 @@ func newCNavigationEntryVisitorT(p *C.cef_navigation_entry_visitor_t) *CNavigati
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T1072:")
+	Tracef(unsafe.Pointer(p), "T1077:")
 	BaseAddRef(p)
 	go_navigation_entry_visitor := CNavigationEntryVisitorT{noCopy{}, p}
 	runtime.SetFinalizer(&go_navigation_entry_visitor, func(g *CNavigationEntryVisitorT) {
-		Tracef(unsafe.Pointer(g.p_navigation_entry_visitor), "T1076:")
+		Tracef(unsafe.Pointer(g.p_navigation_entry_visitor), "T1081:")
 		BaseRelease(g.p_navigation_entry_visitor)
 	})
 	return &go_navigation_entry_visitor
@@ -1101,11 +1106,11 @@ func newCPdfPrintCallbackT(p *C.cef_pdf_print_callback_t) *CPdfPrintCallbackT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T1149:")
+	Tracef(unsafe.Pointer(p), "T1154:")
 	BaseAddRef(p)
 	go_pdf_print_callback := CPdfPrintCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_pdf_print_callback, func(g *CPdfPrintCallbackT) {
-		Tracef(unsafe.Pointer(g.p_pdf_print_callback), "T1153:")
+		Tracef(unsafe.Pointer(g.p_pdf_print_callback), "T1158:")
 		BaseRelease(g.p_pdf_print_callback)
 	})
 	return &go_pdf_print_callback
@@ -1169,11 +1174,11 @@ func newCDownloadImageCallbackT(p *C.cef_download_image_callback_t) *CDownloadIm
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T1217:")
+	Tracef(unsafe.Pointer(p), "T1222:")
 	BaseAddRef(p)
 	go_download_image_callback := CDownloadImageCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_download_image_callback, func(g *CDownloadImageCallbackT) {
-		Tracef(unsafe.Pointer(g.p_download_image_callback), "T1221:")
+		Tracef(unsafe.Pointer(g.p_download_image_callback), "T1226:")
 		BaseRelease(g.p_download_image_callback)
 	})
 	return &go_download_image_callback
@@ -1246,11 +1251,11 @@ func newCBrowserHostT(p *C.cef_browser_host_t) *CBrowserHostT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T1294:")
+	Tracef(unsafe.Pointer(p), "T1299:")
 	BaseAddRef(p)
 	go_browser_host := CBrowserHostT{noCopy{}, p}
 	runtime.SetFinalizer(&go_browser_host, func(g *CBrowserHostT) {
-		Tracef(unsafe.Pointer(g.p_browser_host), "T1298:")
+		Tracef(unsafe.Pointer(g.p_browser_host), "T1303:")
 		BaseRelease(g.p_browser_host)
 	})
 	return &go_browser_host
@@ -2278,11 +2283,11 @@ func newCBrowserProcessHandlerT(p *C.cef_browser_process_handler_t) *CBrowserPro
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T2412:")
+	Tracef(unsafe.Pointer(p), "T2417:")
 	BaseAddRef(p)
 	go_browser_process_handler := CBrowserProcessHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_browser_process_handler, func(g *CBrowserProcessHandlerT) {
-		Tracef(unsafe.Pointer(g.p_browser_process_handler), "T2416:")
+		Tracef(unsafe.Pointer(g.p_browser_process_handler), "T2421:")
 		BaseRelease(g.p_browser_process_handler)
 	})
 	return &go_browser_process_handler
@@ -2371,13 +2376,13 @@ var browser_process_handler_handlers = struct {
 
 // AllocCBrowserProcessHandlerT allocates CBrowserProcessHandlerT and construct it
 func AllocCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t, "T2505:")
+	up := c_calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t, "T2510:")
 	cefp := C.cefingo_construct_browser_process_handler((*C.cefingo_browser_process_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_browser_process_handler_t itself in DeassocFunc,
 		// or cef_browser_process_handler_t is never GCed.
-		Tracef(up, "T2511:")
+		Tracef(up, "T2516:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -2415,7 +2420,7 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 
 	if accessor, ok := a.(CBrowserProcessHandlerTAccessor); ok {
 		accessor.SetCBrowserProcessHandlerT(browser_process_handler)
-		Logf("T2561:")
+		Logf("T2566:")
 	}
 
 	return browser_process_handler
@@ -2464,11 +2469,11 @@ func newCBrowserViewT(p *C.cef_browser_view_t) *CBrowserViewT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T2597:")
+	Tracef(unsafe.Pointer(p), "T2602:")
 	BaseAddRef(p)
 	go_browser_view := CBrowserViewT{noCopy{}, p}
 	runtime.SetFinalizer(&go_browser_view, func(g *CBrowserViewT) {
-		Tracef(unsafe.Pointer(g.p_browser_view), "T2601:")
+		Tracef(unsafe.Pointer(g.p_browser_view), "T2606:")
 		BaseRelease(g.p_browser_view)
 	})
 	return &go_browser_view
@@ -2481,6 +2486,11 @@ func (browser_view *CBrowserViewT) HasOneRef() bool {
 
 func (p *C.cef_browser_view_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (browser_view *CBrowserViewT) ToCViewT() *CViewT {
+	p := (*C.cef_view_t)(unsafe.Pointer(browser_view.p_browser_view))
+	return newCViewT(p)
 }
 
 ///
@@ -2610,11 +2620,11 @@ func newCBrowserViewDelegateT(p *C.cef_browser_view_delegate_t) *CBrowserViewDel
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T2747:")
+	Tracef(unsafe.Pointer(p), "T2757:")
 	BaseAddRef(p)
 	go_browser_view_delegate := CBrowserViewDelegateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_browser_view_delegate, func(g *CBrowserViewDelegateT) {
-		Tracef(unsafe.Pointer(g.p_browser_view_delegate), "T2751:")
+		Tracef(unsafe.Pointer(g.p_browser_view_delegate), "T2761:")
 		BaseRelease(g.p_browser_view_delegate)
 	})
 	return &go_browser_view_delegate
@@ -2627,6 +2637,11 @@ func (browser_view_delegate *CBrowserViewDelegateT) HasOneRef() bool {
 
 func (p *C.cef_browser_view_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (browser_view_delegate *CBrowserViewDelegateT) ToCViewDelegateT() *CViewDelegateT {
+	p := (*C.cef_view_delegate_t)(unsafe.Pointer(browser_view_delegate.p_browser_view_delegate))
+	return newCViewDelegateT(p)
 }
 
 ///
@@ -2722,13 +2737,13 @@ var browser_view_delegate_handlers = struct {
 
 // AllocCBrowserViewDelegateT allocates CBrowserViewDelegateT and construct it
 func AllocCBrowserViewDelegateT() *CBrowserViewDelegateT {
-	up := c_calloc(1, C.sizeof_cefingo_browser_view_delegate_wrapper_t, "T2859:")
+	up := c_calloc(1, C.sizeof_cefingo_browser_view_delegate_wrapper_t, "T2874:")
 	cefp := C.cefingo_construct_browser_view_delegate((*C.cefingo_browser_view_delegate_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_browser_view_delegate_t itself in DeassocFunc,
 		// or cef_browser_view_delegate_t is never GCed.
-		Tracef(up, "T2865:")
+		Tracef(up, "T2880:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -2805,7 +2820,7 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 
 	if accessor, ok := a.(CBrowserViewDelegateTAccessor); ok {
 		accessor.SetCBrowserViewDelegateT(browser_view_delegate)
-		Logf("T2954:")
+		Logf("T2969:")
 	}
 
 	return browser_view_delegate
@@ -2847,11 +2862,11 @@ func newCButtonT(p *C.cef_button_t) *CButtonT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T2983:")
+	Tracef(unsafe.Pointer(p), "T2998:")
 	BaseAddRef(p)
 	go_button := CButtonT{noCopy{}, p}
 	runtime.SetFinalizer(&go_button, func(g *CButtonT) {
-		Tracef(unsafe.Pointer(g.p_button), "T2987:")
+		Tracef(unsafe.Pointer(g.p_button), "T3002:")
 		BaseRelease(g.p_button)
 	})
 	return &go_button
@@ -2864,6 +2879,11 @@ func (button *CButtonT) HasOneRef() bool {
 
 func (p *C.cef_button_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (button *CButtonT) ToCViewT() *CViewT {
+	p := (*C.cef_view_t)(unsafe.Pointer(button.p_button))
+	return newCViewT(p)
 }
 
 ///
@@ -2973,11 +2993,11 @@ func newCButtonDelegateT(p *C.cef_button_delegate_t) *CButtonDelegateT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T3116:")
+	Tracef(unsafe.Pointer(p), "T3136:")
 	BaseAddRef(p)
 	go_button_delegate := CButtonDelegateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_button_delegate, func(g *CButtonDelegateT) {
-		Tracef(unsafe.Pointer(g.p_button_delegate), "T3120:")
+		Tracef(unsafe.Pointer(g.p_button_delegate), "T3140:")
 		BaseRelease(g.p_button_delegate)
 	})
 	return &go_button_delegate
@@ -2990,6 +3010,11 @@ func (button_delegate *CButtonDelegateT) HasOneRef() bool {
 
 func (p *C.cef_button_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (button_delegate *CButtonDelegateT) ToCViewDelegateT() *CViewDelegateT {
+	p := (*C.cef_view_delegate_t)(unsafe.Pointer(button_delegate.p_button_delegate))
+	return newCViewDelegateT(p)
 }
 
 ///
@@ -3038,13 +3063,13 @@ var button_delegate_handlers = struct {
 
 // AllocCButtonDelegateT allocates CButtonDelegateT and construct it
 func AllocCButtonDelegateT() *CButtonDelegateT {
-	up := c_calloc(1, C.sizeof_cefingo_button_delegate_wrapper_t, "T3181:")
+	up := c_calloc(1, C.sizeof_cefingo_button_delegate_wrapper_t, "T3206:")
 	cefp := C.cefingo_construct_button_delegate((*C.cefingo_button_delegate_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_button_delegate_t itself in DeassocFunc,
 		// or cef_button_delegate_t is never GCed.
-		Tracef(up, "T3187:")
+		Tracef(up, "T3212:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -3111,7 +3136,7 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 
 	if accessor, ok := a.(CButtonDelegateTAccessor); ok {
 		accessor.SetCButtonDelegateT(button_delegate)
-		Logf("T3266:")
+		Logf("T3291:")
 	}
 
 	return button_delegate
@@ -3151,11 +3176,11 @@ func newCCallbackT(p *C.cef_callback_t) *CCallbackT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T3293:")
+	Tracef(unsafe.Pointer(p), "T3318:")
 	BaseAddRef(p)
 	go_callback := CCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_callback, func(g *CCallbackT) {
-		Tracef(unsafe.Pointer(g.p_callback), "T3297:")
+		Tracef(unsafe.Pointer(g.p_callback), "T3322:")
 		BaseRelease(g.p_callback)
 	})
 	return &go_callback
@@ -3220,11 +3245,11 @@ func newCCompletionCallbackT(p *C.cef_completion_callback_t) *CCompletionCallbac
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T3365:")
+	Tracef(unsafe.Pointer(p), "T3390:")
 	BaseAddRef(p)
 	go_completion_callback := CCompletionCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_completion_callback, func(g *CCompletionCallbackT) {
-		Tracef(unsafe.Pointer(g.p_completion_callback), "T3369:")
+		Tracef(unsafe.Pointer(g.p_completion_callback), "T3394:")
 		BaseRelease(g.p_completion_callback)
 	})
 	return &go_completion_callback
@@ -3282,11 +3307,11 @@ func newCClientT(p *C.cef_client_t) *CClientT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T3428:")
+	Tracef(unsafe.Pointer(p), "T3453:")
 	BaseAddRef(p)
 	go_client := CClientT{noCopy{}, p}
 	runtime.SetFinalizer(&go_client, func(g *CClientT) {
-		Tracef(unsafe.Pointer(g.p_client), "T3432:")
+		Tracef(unsafe.Pointer(g.p_client), "T3457:")
 		BaseRelease(g.p_client)
 	})
 	return &go_client
@@ -3350,13 +3375,13 @@ var client_handlers = struct {
 
 // AllocCClientT allocates CClientT and construct it
 func AllocCClientT() *CClientT {
-	up := c_calloc(1, C.sizeof_cefingo_client_wrapper_t, "T3496:")
+	up := c_calloc(1, C.sizeof_cefingo_client_wrapper_t, "T3521:")
 	cefp := C.cefingo_construct_client((*C.cefingo_client_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_client_t itself in DeassocFunc,
 		// or cef_client_t is never GCed.
-		Tracef(up, "T3502:")
+		Tracef(up, "T3527:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -3391,7 +3416,7 @@ func (client *CClientT) Bind(a interface{}) *CClientT {
 
 	if accessor, ok := a.(CClientTAccessor); ok {
 		accessor.SetCClientT(client)
-		Logf("T3549:")
+		Logf("T3574:")
 	}
 
 	return client
@@ -3542,11 +3567,11 @@ func newCCommandLineT(p *C.cef_command_line_t) *CCommandLineT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T3687:")
+	Tracef(unsafe.Pointer(p), "T3712:")
 	BaseAddRef(p)
 	go_command_line := CCommandLineT{noCopy{}, p}
 	runtime.SetFinalizer(&go_command_line, func(g *CCommandLineT) {
-		Tracef(unsafe.Pointer(g.p_command_line), "T3691:")
+		Tracef(unsafe.Pointer(g.p_command_line), "T3716:")
 		BaseRelease(g.p_command_line)
 	})
 	return &go_command_line
@@ -3873,11 +3898,11 @@ func newCRunContextMenuCallbackT(p *C.cef_run_context_menu_callback_t) *CRunCont
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T4048:")
+	Tracef(unsafe.Pointer(p), "T4073:")
 	BaseAddRef(p)
 	go_run_context_menu_callback := CRunContextMenuCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_run_context_menu_callback, func(g *CRunContextMenuCallbackT) {
-		Tracef(unsafe.Pointer(g.p_run_context_menu_callback), "T4052:")
+		Tracef(unsafe.Pointer(g.p_run_context_menu_callback), "T4077:")
 		BaseRelease(g.p_run_context_menu_callback)
 	})
 	return &go_run_context_menu_callback
@@ -3947,11 +3972,11 @@ func newCContextMenuHandlerT(p *C.cef_context_menu_handler_t) *CContextMenuHandl
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T4124:")
+	Tracef(unsafe.Pointer(p), "T4149:")
 	BaseAddRef(p)
 	go_context_menu_handler := CContextMenuHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_context_menu_handler, func(g *CContextMenuHandlerT) {
-		Tracef(unsafe.Pointer(g.p_context_menu_handler), "T4128:")
+		Tracef(unsafe.Pointer(g.p_context_menu_handler), "T4153:")
 		BaseRelease(g.p_context_menu_handler)
 	})
 	return &go_context_menu_handler
@@ -4048,13 +4073,13 @@ var context_menu_handler_handlers = struct {
 
 // AllocCContextMenuHandlerT allocates CContextMenuHandlerT and construct it
 func AllocCContextMenuHandlerT() *CContextMenuHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_context_menu_handler_wrapper_t, "T4225:")
+	up := c_calloc(1, C.sizeof_cefingo_context_menu_handler_wrapper_t, "T4250:")
 	cefp := C.cefingo_construct_context_menu_handler((*C.cefingo_context_menu_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_context_menu_handler_t itself in DeassocFunc,
 		// or cef_context_menu_handler_t is never GCed.
-		Tracef(up, "T4231:")
+		Tracef(up, "T4256:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -4091,7 +4116,7 @@ func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextM
 
 	if accessor, ok := a.(CContextMenuHandlerTAccessor); ok {
 		accessor.SetCContextMenuHandlerT(context_menu_handler)
-		Logf("T4280:")
+		Logf("T4305:")
 	}
 
 	return context_menu_handler
@@ -4130,11 +4155,11 @@ func newCContextMenuParamsT(p *C.cef_context_menu_params_t) *CContextMenuParamsT
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T4306:")
+	Tracef(unsafe.Pointer(p), "T4331:")
 	BaseAddRef(p)
 	go_context_menu_params := CContextMenuParamsT{noCopy{}, p}
 	runtime.SetFinalizer(&go_context_menu_params, func(g *CContextMenuParamsT) {
-		Tracef(unsafe.Pointer(g.p_context_menu_params), "T4310:")
+		Tracef(unsafe.Pointer(g.p_context_menu_params), "T4335:")
 		BaseRelease(g.p_context_menu_params)
 	})
 	return &go_context_menu_params
@@ -4480,11 +4505,11 @@ func newCCookieManagerT(p *C.cef_cookie_manager_t) *CCookieManagerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T4696:")
+	Tracef(unsafe.Pointer(p), "T4721:")
 	BaseAddRef(p)
 	go_cookie_manager := CCookieManagerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_cookie_manager, func(g *CCookieManagerT) {
-		Tracef(unsafe.Pointer(g.p_cookie_manager), "T4700:")
+		Tracef(unsafe.Pointer(g.p_cookie_manager), "T4725:")
 		BaseRelease(g.p_cookie_manager)
 	})
 	return &go_cookie_manager
@@ -4705,11 +4730,11 @@ func newCCookieVisitorT(p *C.cef_cookie_visitor_t) *CCookieVisitorT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T4927:")
+	Tracef(unsafe.Pointer(p), "T4952:")
 	BaseAddRef(p)
 	go_cookie_visitor := CCookieVisitorT{noCopy{}, p}
 	runtime.SetFinalizer(&go_cookie_visitor, func(g *CCookieVisitorT) {
-		Tracef(unsafe.Pointer(g.p_cookie_visitor), "T4931:")
+		Tracef(unsafe.Pointer(g.p_cookie_visitor), "T4956:")
 		BaseRelease(g.p_cookie_visitor)
 	})
 	return &go_cookie_visitor
@@ -4748,13 +4773,13 @@ var cookie_visitor_handlers = struct {
 
 // AllocCCookieVisitorT allocates CCookieVisitorT and construct it
 func AllocCCookieVisitorT() *CCookieVisitorT {
-	up := c_calloc(1, C.sizeof_cefingo_cookie_visitor_wrapper_t, "T4970:")
+	up := c_calloc(1, C.sizeof_cefingo_cookie_visitor_wrapper_t, "T4995:")
 	cefp := C.cefingo_construct_cookie_visitor((*C.cefingo_cookie_visitor_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_cookie_visitor_t itself in DeassocFunc,
 		// or cef_cookie_visitor_t is never GCed.
-		Tracef(up, "T4976:")
+		Tracef(up, "T5001:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -4776,7 +4801,7 @@ func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
 
 	if accessor, ok := a.(CCookieVisitorTAccessor); ok {
 		accessor.SetCCookieVisitorT(cookie_visitor)
-		Logf("T5010:")
+		Logf("T5035:")
 	}
 
 	return cookie_visitor
@@ -4815,11 +4840,11 @@ func newCSetCookieCallbackT(p *C.cef_set_cookie_callback_t) *CSetCookieCallbackT
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T5036:")
+	Tracef(unsafe.Pointer(p), "T5061:")
 	BaseAddRef(p)
 	go_set_cookie_callback := CSetCookieCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_set_cookie_callback, func(g *CSetCookieCallbackT) {
-		Tracef(unsafe.Pointer(g.p_set_cookie_callback), "T5040:")
+		Tracef(unsafe.Pointer(g.p_set_cookie_callback), "T5065:")
 		BaseRelease(g.p_set_cookie_callback)
 	})
 	return &go_set_cookie_callback
@@ -4853,13 +4878,13 @@ var set_cookie_callback_handlers = struct {
 
 // AllocCSetCookieCallbackT allocates CSetCookieCallbackT and construct it
 func AllocCSetCookieCallbackT() *CSetCookieCallbackT {
-	up := c_calloc(1, C.sizeof_cefingo_set_cookie_callback_wrapper_t, "T5074:")
+	up := c_calloc(1, C.sizeof_cefingo_set_cookie_callback_wrapper_t, "T5099:")
 	cefp := C.cefingo_construct_set_cookie_callback((*C.cefingo_set_cookie_callback_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_set_cookie_callback_t itself in DeassocFunc,
 		// or cef_set_cookie_callback_t is never GCed.
-		Tracef(up, "T5080:")
+		Tracef(up, "T5105:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -4881,7 +4906,7 @@ func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieC
 
 	if accessor, ok := a.(CSetCookieCallbackTAccessor); ok {
 		accessor.SetCSetCookieCallbackT(set_cookie_callback)
-		Logf("T5114:")
+		Logf("T5139:")
 	}
 
 	return set_cookie_callback
@@ -4920,11 +4945,11 @@ func newCDeleteCookiesCallbackT(p *C.cef_delete_cookies_callback_t) *CDeleteCook
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T5140:")
+	Tracef(unsafe.Pointer(p), "T5165:")
 	BaseAddRef(p)
 	go_delete_cookies_callback := CDeleteCookiesCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_delete_cookies_callback, func(g *CDeleteCookiesCallbackT) {
-		Tracef(unsafe.Pointer(g.p_delete_cookies_callback), "T5144:")
+		Tracef(unsafe.Pointer(g.p_delete_cookies_callback), "T5169:")
 		BaseRelease(g.p_delete_cookies_callback)
 	})
 	return &go_delete_cookies_callback
@@ -4958,13 +4983,13 @@ var delete_cookies_callback_handlers = struct {
 
 // AllocCDeleteCookiesCallbackT allocates CDeleteCookiesCallbackT and construct it
 func AllocCDeleteCookiesCallbackT() *CDeleteCookiesCallbackT {
-	up := c_calloc(1, C.sizeof_cefingo_delete_cookies_callback_wrapper_t, "T5178:")
+	up := c_calloc(1, C.sizeof_cefingo_delete_cookies_callback_wrapper_t, "T5203:")
 	cefp := C.cefingo_construct_delete_cookies_callback((*C.cefingo_delete_cookies_callback_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_delete_cookies_callback_t itself in DeassocFunc,
 		// or cef_delete_cookies_callback_t is never GCed.
-		Tracef(up, "T5184:")
+		Tracef(up, "T5209:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -4986,7 +5011,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDe
 
 	if accessor, ok := a.(CDeleteCookiesCallbackTAccessor); ok {
 		accessor.SetCDeleteCookiesCallbackT(delete_cookies_callback)
-		Logf("T5218:")
+		Logf("T5243:")
 	}
 
 	return delete_cookies_callback
@@ -5026,11 +5051,11 @@ func newCFileDialogCallbackT(p *C.cef_file_dialog_callback_t) *CFileDialogCallba
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T5245:")
+	Tracef(unsafe.Pointer(p), "T5270:")
 	BaseAddRef(p)
 	go_file_dialog_callback := CFileDialogCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_file_dialog_callback, func(g *CFileDialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_file_dialog_callback), "T5249:")
+		Tracef(unsafe.Pointer(g.p_file_dialog_callback), "T5274:")
 		BaseRelease(g.p_file_dialog_callback)
 	})
 	return &go_file_dialog_callback
@@ -5103,11 +5128,11 @@ func newCDialogHandlerT(p *C.cef_dialog_handler_t) *CDialogHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T5324:")
+	Tracef(unsafe.Pointer(p), "T5349:")
 	BaseAddRef(p)
 	go_dialog_handler := CDialogHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_dialog_handler, func(g *CDialogHandlerT) {
-		Tracef(unsafe.Pointer(g.p_dialog_handler), "T5328:")
+		Tracef(unsafe.Pointer(g.p_dialog_handler), "T5353:")
 		BaseRelease(g.p_dialog_handler)
 	})
 	return &go_dialog_handler
@@ -5158,13 +5183,13 @@ var dialog_handler_handlers = struct {
 
 // AllocCDialogHandlerT allocates CDialogHandlerT and construct it
 func AllocCDialogHandlerT() *CDialogHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_dialog_handler_wrapper_t, "T5379:")
+	up := c_calloc(1, C.sizeof_cefingo_dialog_handler_wrapper_t, "T5404:")
 	cefp := C.cefingo_construct_dialog_handler((*C.cefingo_dialog_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_dialog_handler_t itself in DeassocFunc,
 		// or cef_dialog_handler_t is never GCed.
-		Tracef(up, "T5385:")
+		Tracef(up, "T5410:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -5186,7 +5211,7 @@ func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
 
 	if accessor, ok := a.(CDialogHandlerTAccessor); ok {
 		accessor.SetCDialogHandlerT(dialog_handler)
-		Logf("T5419:")
+		Logf("T5444:")
 	}
 
 	return dialog_handler
@@ -5231,11 +5256,11 @@ func newCDisplayT(p *C.cef_display_t) *CDisplayT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T5451:")
+	Tracef(unsafe.Pointer(p), "T5476:")
 	BaseAddRef(p)
 	go_display := CDisplayT{noCopy{}, p}
 	runtime.SetFinalizer(&go_display, func(g *CDisplayT) {
-		Tracef(unsafe.Pointer(g.p_display), "T5455:")
+		Tracef(unsafe.Pointer(g.p_display), "T5480:")
 		BaseRelease(g.p_display)
 	})
 	return &go_display
@@ -5441,11 +5466,11 @@ func newCDisplayHandlerT(p *C.cef_display_handler_t) *CDisplayHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T5679:")
+	Tracef(unsafe.Pointer(p), "T5704:")
 	BaseAddRef(p)
 	go_display_handler := CDisplayHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_display_handler, func(g *CDisplayHandlerT) {
-		Tracef(unsafe.Pointer(g.p_display_handler), "T5683:")
+		Tracef(unsafe.Pointer(g.p_display_handler), "T5708:")
 		BaseRelease(g.p_display_handler)
 	})
 	return &go_display_handler
@@ -5602,13 +5627,13 @@ var display_handler_handlers = struct {
 
 // AllocCDisplayHandlerT allocates CDisplayHandlerT and construct it
 func AllocCDisplayHandlerT() *CDisplayHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_display_handler_wrapper_t, "T5840:")
+	up := c_calloc(1, C.sizeof_cefingo_display_handler_wrapper_t, "T5865:")
 	cefp := C.cefingo_construct_display_handler((*C.cefingo_display_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_display_handler_t itself in DeassocFunc,
 		// or cef_display_handler_t is never GCed.
-		Tracef(up, "T5846:")
+		Tracef(up, "T5871:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -5670,7 +5695,7 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 
 	if accessor, ok := a.(CDisplayHandlerTAccessor); ok {
 		accessor.SetCDisplayHandlerT(display_handler)
-		Logf("T5920:")
+		Logf("T5945:")
 	}
 
 	return display_handler
@@ -5711,11 +5736,11 @@ func newCDomvisitorT(p *C.cef_domvisitor_t) *CDomvisitorT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T5948:")
+	Tracef(unsafe.Pointer(p), "T5973:")
 	BaseAddRef(p)
 	go_domvisitor := CDomvisitorT{noCopy{}, p}
 	runtime.SetFinalizer(&go_domvisitor, func(g *CDomvisitorT) {
-		Tracef(unsafe.Pointer(g.p_domvisitor), "T5952:")
+		Tracef(unsafe.Pointer(g.p_domvisitor), "T5977:")
 		BaseRelease(g.p_domvisitor)
 	})
 	return &go_domvisitor
@@ -5752,13 +5777,13 @@ var domvisitor_handlers = struct {
 
 // AllocCDomvisitorT allocates CDomvisitorT and construct it
 func AllocCDomvisitorT() *CDomvisitorT {
-	up := c_calloc(1, C.sizeof_cefingo_domvisitor_wrapper_t, "T5989:")
+	up := c_calloc(1, C.sizeof_cefingo_domvisitor_wrapper_t, "T6014:")
 	cefp := C.cefingo_construct_domvisitor((*C.cefingo_domvisitor_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_domvisitor_t itself in DeassocFunc,
 		// or cef_domvisitor_t is never GCed.
-		Tracef(up, "T5995:")
+		Tracef(up, "T6020:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -5780,7 +5805,7 @@ func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
 
 	if accessor, ok := a.(CDomvisitorTAccessor); ok {
 		accessor.SetCDomvisitorT(domvisitor)
-		Logf("T6029:")
+		Logf("T6054:")
 	}
 
 	return domvisitor
@@ -5819,11 +5844,11 @@ func newCDomdocumentT(p *C.cef_domdocument_t) *CDomdocumentT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T6055:")
+	Tracef(unsafe.Pointer(p), "T6080:")
 	BaseAddRef(p)
 	go_domdocument := CDomdocumentT{noCopy{}, p}
 	runtime.SetFinalizer(&go_domdocument, func(g *CDomdocumentT) {
-		Tracef(unsafe.Pointer(g.p_domdocument), "T6059:")
+		Tracef(unsafe.Pointer(g.p_domdocument), "T6084:")
 		BaseRelease(g.p_domdocument)
 	})
 	return &go_domdocument
@@ -6059,11 +6084,11 @@ func newCDomnodeT(p *C.cef_domnode_t) *CDomnodeT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T6320:")
+	Tracef(unsafe.Pointer(p), "T6345:")
 	BaseAddRef(p)
 	go_domnode := CDomnodeT{noCopy{}, p}
 	runtime.SetFinalizer(&go_domnode, func(g *CDomnodeT) {
-		Tracef(unsafe.Pointer(g.p_domnode), "T6324:")
+		Tracef(unsafe.Pointer(g.p_domnode), "T6349:")
 		BaseRelease(g.p_domnode)
 	})
 	return &go_domnode
@@ -6461,11 +6486,11 @@ func newCBeforeDownloadCallbackT(p *C.cef_before_download_callback_t) *CBeforeDo
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T6767:")
+	Tracef(unsafe.Pointer(p), "T6792:")
 	BaseAddRef(p)
 	go_before_download_callback := CBeforeDownloadCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_before_download_callback, func(g *CBeforeDownloadCallbackT) {
-		Tracef(unsafe.Pointer(g.p_before_download_callback), "T6771:")
+		Tracef(unsafe.Pointer(g.p_before_download_callback), "T6796:")
 		BaseRelease(g.p_before_download_callback)
 	})
 	return &go_before_download_callback
@@ -6529,11 +6554,11 @@ func newCDownloadItemCallbackT(p *C.cef_download_item_callback_t) *CDownloadItem
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T6835:")
+	Tracef(unsafe.Pointer(p), "T6860:")
 	BaseAddRef(p)
 	go_download_item_callback := CDownloadItemCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_download_item_callback, func(g *CDownloadItemCallbackT) {
-		Tracef(unsafe.Pointer(g.p_download_item_callback), "T6839:")
+		Tracef(unsafe.Pointer(g.p_download_item_callback), "T6864:")
 		BaseRelease(g.p_download_item_callback)
 	})
 	return &go_download_item_callback
@@ -6608,11 +6633,11 @@ func newCDownloadHandlerT(p *C.cef_download_handler_t) *CDownloadHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T6919:")
+	Tracef(unsafe.Pointer(p), "T6944:")
 	BaseAddRef(p)
 	go_download_handler := CDownloadHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_download_handler, func(g *CDownloadHandlerT) {
-		Tracef(unsafe.Pointer(g.p_download_handler), "T6923:")
+		Tracef(unsafe.Pointer(g.p_download_handler), "T6948:")
 		BaseRelease(g.p_download_handler)
 	})
 	return &go_download_handler
@@ -6670,13 +6695,13 @@ var download_handler_handlers = struct {
 
 // AllocCDownloadHandlerT allocates CDownloadHandlerT and construct it
 func AllocCDownloadHandlerT() *CDownloadHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_download_handler_wrapper_t, "T6981:")
+	up := c_calloc(1, C.sizeof_cefingo_download_handler_wrapper_t, "T7006:")
 	cefp := C.cefingo_construct_download_handler((*C.cefingo_download_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_download_handler_t itself in DeassocFunc,
 		// or cef_download_handler_t is never GCed.
-		Tracef(up, "T6987:")
+		Tracef(up, "T7012:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -6703,7 +6728,7 @@ func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandler
 
 	if accessor, ok := a.(CDownloadHandlerTAccessor); ok {
 		accessor.SetCDownloadHandlerT(download_handler)
-		Logf("T7026:")
+		Logf("T7051:")
 	}
 
 	return download_handler
@@ -6743,11 +6768,11 @@ func newCDownloadItemT(p *C.cef_download_item_t) *CDownloadItemT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T7053:")
+	Tracef(unsafe.Pointer(p), "T7078:")
 	BaseAddRef(p)
 	go_download_item := CDownloadItemT{noCopy{}, p}
 	runtime.SetFinalizer(&go_download_item, func(g *CDownloadItemT) {
-		Tracef(unsafe.Pointer(g.p_download_item), "T7057:")
+		Tracef(unsafe.Pointer(g.p_download_item), "T7082:")
 		BaseRelease(g.p_download_item)
 	})
 	return &go_download_item
@@ -7016,11 +7041,11 @@ func newCDragDataT(p *C.cef_drag_data_t) *CDragDataT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T7359:")
+	Tracef(unsafe.Pointer(p), "T7384:")
 	BaseAddRef(p)
 	go_drag_data := CDragDataT{noCopy{}, p}
 	runtime.SetFinalizer(&go_drag_data, func(g *CDragDataT) {
-		Tracef(unsafe.Pointer(g.p_drag_data), "T7363:")
+		Tracef(unsafe.Pointer(g.p_drag_data), "T7388:")
 		BaseRelease(g.p_drag_data)
 	})
 	return &go_drag_data
@@ -7423,11 +7448,11 @@ func newCDragHandlerT(p *C.cef_drag_handler_t) *CDragHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T7808:")
+	Tracef(unsafe.Pointer(p), "T7833:")
 	BaseAddRef(p)
 	go_drag_handler := CDragHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_drag_handler, func(g *CDragHandlerT) {
-		Tracef(unsafe.Pointer(g.p_drag_handler), "T7812:")
+		Tracef(unsafe.Pointer(g.p_drag_handler), "T7837:")
 		BaseRelease(g.p_drag_handler)
 	})
 	return &go_drag_handler
@@ -7484,13 +7509,13 @@ var drag_handler_handlers = struct {
 
 // AllocCDragHandlerT allocates CDragHandlerT and construct it
 func AllocCDragHandlerT() *CDragHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_drag_handler_wrapper_t, "T7869:")
+	up := c_calloc(1, C.sizeof_cefingo_drag_handler_wrapper_t, "T7894:")
 	cefp := C.cefingo_construct_drag_handler((*C.cefingo_drag_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_drag_handler_t itself in DeassocFunc,
 		// or cef_drag_handler_t is never GCed.
-		Tracef(up, "T7875:")
+		Tracef(up, "T7900:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -7517,7 +7542,7 @@ func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
 
 	if accessor, ok := a.(CDragHandlerTAccessor); ok {
 		accessor.SetCDragHandlerT(drag_handler)
-		Logf("T7914:")
+		Logf("T7939:")
 	}
 
 	return drag_handler
@@ -7558,11 +7583,11 @@ func newCExtensionT(p *C.cef_extension_t) *CExtensionT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T7942:")
+	Tracef(unsafe.Pointer(p), "T7967:")
 	BaseAddRef(p)
 	go_extension := CExtensionT{noCopy{}, p}
 	runtime.SetFinalizer(&go_extension, func(g *CExtensionT) {
-		Tracef(unsafe.Pointer(g.p_extension), "T7946:")
+		Tracef(unsafe.Pointer(g.p_extension), "T7971:")
 		BaseRelease(g.p_extension)
 	})
 	return &go_extension
@@ -7730,11 +7755,11 @@ func newCGetExtensionResourceCallbackT(p *C.cef_get_extension_resource_callback_
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T8128:")
+	Tracef(unsafe.Pointer(p), "T8153:")
 	BaseAddRef(p)
 	go_get_extension_resource_callback := CGetExtensionResourceCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_get_extension_resource_callback, func(g *CGetExtensionResourceCallbackT) {
-		Tracef(unsafe.Pointer(g.p_get_extension_resource_callback), "T8132:")
+		Tracef(unsafe.Pointer(g.p_get_extension_resource_callback), "T8157:")
 		BaseRelease(g.p_get_extension_resource_callback)
 	})
 	return &go_get_extension_resource_callback
@@ -7808,11 +7833,11 @@ func newCExtensionHandlerT(p *C.cef_extension_handler_t) *CExtensionHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T8208:")
+	Tracef(unsafe.Pointer(p), "T8233:")
 	BaseAddRef(p)
 	go_extension_handler := CExtensionHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_extension_handler, func(g *CExtensionHandlerT) {
-		Tracef(unsafe.Pointer(g.p_extension_handler), "T8212:")
+		Tracef(unsafe.Pointer(g.p_extension_handler), "T8237:")
 		BaseRelease(g.p_extension_handler)
 	})
 	return &go_extension_handler
@@ -7992,13 +8017,13 @@ var extension_handler_handlers = struct {
 
 // AllocCExtensionHandlerT allocates CExtensionHandlerT and construct it
 func AllocCExtensionHandlerT() *CExtensionHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_extension_handler_wrapper_t, "T8392:")
+	up := c_calloc(1, C.sizeof_cefingo_extension_handler_wrapper_t, "T8417:")
 	cefp := C.cefingo_construct_extension_handler((*C.cefingo_extension_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_extension_handler_t itself in DeassocFunc,
 		// or cef_extension_handler_t is never GCed.
-		Tracef(up, "T8398:")
+		Tracef(up, "T8423:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -8055,7 +8080,7 @@ func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHand
 
 	if accessor, ok := a.(CExtensionHandlerTAccessor); ok {
 		accessor.SetCExtensionHandlerT(extension_handler)
-		Logf("T8467:")
+		Logf("T8492:")
 	}
 
 	return extension_handler
@@ -8097,11 +8122,11 @@ func newCFillLayoutT(p *C.cef_fill_layout_t) *CFillLayoutT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T8496:")
+	Tracef(unsafe.Pointer(p), "T8521:")
 	BaseAddRef(p)
 	go_fill_layout := CFillLayoutT{noCopy{}, p}
 	runtime.SetFinalizer(&go_fill_layout, func(g *CFillLayoutT) {
-		Tracef(unsafe.Pointer(g.p_fill_layout), "T8500:")
+		Tracef(unsafe.Pointer(g.p_fill_layout), "T8525:")
 		BaseRelease(g.p_fill_layout)
 	})
 	return &go_fill_layout
@@ -8114,6 +8139,11 @@ func (fill_layout *CFillLayoutT) HasOneRef() bool {
 
 func (p *C.cef_fill_layout_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (fill_layout *CFillLayoutT) ToCLayoutT() *CLayoutT {
+	p := (*C.cef_layout_t)(unsafe.Pointer(fill_layout.p_fill_layout))
+	return newCLayoutT(p)
 }
 
 // cef_find_handler_capi.h, include/capi/cef_find_handler_capi.h:75:3,
@@ -8151,11 +8181,11 @@ func newCFindHandlerT(p *C.cef_find_handler_t) *CFindHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T8549:")
+	Tracef(unsafe.Pointer(p), "T8579:")
 	BaseAddRef(p)
 	go_find_handler := CFindHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_find_handler, func(g *CFindHandlerT) {
-		Tracef(unsafe.Pointer(g.p_find_handler), "T8553:")
+		Tracef(unsafe.Pointer(g.p_find_handler), "T8583:")
 		BaseRelease(g.p_find_handler)
 	})
 	return &go_find_handler
@@ -8198,13 +8228,13 @@ var find_handler_handlers = struct {
 
 // AllocCFindHandlerT allocates CFindHandlerT and construct it
 func AllocCFindHandlerT() *CFindHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_find_handler_wrapper_t, "T8596:")
+	up := c_calloc(1, C.sizeof_cefingo_find_handler_wrapper_t, "T8626:")
 	cefp := C.cefingo_construct_find_handler((*C.cefingo_find_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_find_handler_t itself in DeassocFunc,
 		// or cef_find_handler_t is never GCed.
-		Tracef(up, "T8602:")
+		Tracef(up, "T8632:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -8226,7 +8256,7 @@ func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
 
 	if accessor, ok := a.(CFindHandlerTAccessor); ok {
 		accessor.SetCFindHandlerT(find_handler)
-		Logf("T8636:")
+		Logf("T8666:")
 	}
 
 	return find_handler
@@ -8267,11 +8297,11 @@ func newCFocusHandlerT(p *C.cef_focus_handler_t) *CFocusHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T8664:")
+	Tracef(unsafe.Pointer(p), "T8694:")
 	BaseAddRef(p)
 	go_focus_handler := CFocusHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_focus_handler, func(g *CFocusHandlerT) {
-		Tracef(unsafe.Pointer(g.p_focus_handler), "T8668:")
+		Tracef(unsafe.Pointer(g.p_focus_handler), "T8698:")
 		BaseRelease(g.p_focus_handler)
 	})
 	return &go_focus_handler
@@ -8335,13 +8365,13 @@ var focus_handler_handlers = struct {
 
 // AllocCFocusHandlerT allocates CFocusHandlerT and construct it
 func AllocCFocusHandlerT() *CFocusHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_focus_handler_wrapper_t, "T8732:")
+	up := c_calloc(1, C.sizeof_cefingo_focus_handler_wrapper_t, "T8762:")
 	cefp := C.cefingo_construct_focus_handler((*C.cefingo_focus_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_focus_handler_t itself in DeassocFunc,
 		// or cef_focus_handler_t is never GCed.
-		Tracef(up, "T8738:")
+		Tracef(up, "T8768:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -8373,7 +8403,7 @@ func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
 
 	if accessor, ok := a.(CFocusHandlerTAccessor); ok {
 		accessor.SetCFocusHandlerT(focus_handler)
-		Logf("T8782:")
+		Logf("T8812:")
 	}
 
 	return focus_handler
@@ -8416,11 +8446,11 @@ func newCFrameT(p *C.cef_frame_t) *CFrameT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T8812:")
+	Tracef(unsafe.Pointer(p), "T8842:")
 	BaseAddRef(p)
 	go_frame := CFrameT{noCopy{}, p}
 	runtime.SetFinalizer(&go_frame, func(g *CFrameT) {
-		Tracef(unsafe.Pointer(g.p_frame), "T8816:")
+		Tracef(unsafe.Pointer(g.p_frame), "T8846:")
 		BaseRelease(g.p_frame)
 	})
 	return &go_frame
@@ -8832,11 +8862,11 @@ func newCImageT(p *C.cef_image_t) *CImageT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T9269:")
+	Tracef(unsafe.Pointer(p), "T9299:")
 	BaseAddRef(p)
 	go_image := CImageT{noCopy{}, p}
 	runtime.SetFinalizer(&go_image, func(g *CImageT) {
-		Tracef(unsafe.Pointer(g.p_image), "T9273:")
+		Tracef(unsafe.Pointer(g.p_image), "T9303:")
 		BaseRelease(g.p_image)
 	})
 	return &go_image
@@ -9131,11 +9161,11 @@ func newCJsdialogCallbackT(p *C.cef_jsdialog_callback_t) *CJsdialogCallbackT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T9581:")
+	Tracef(unsafe.Pointer(p), "T9611:")
 	BaseAddRef(p)
 	go_jsdialog_callback := CJsdialogCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_jsdialog_callback, func(g *CJsdialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_jsdialog_callback), "T9585:")
+		Tracef(unsafe.Pointer(g.p_jsdialog_callback), "T9615:")
 		BaseRelease(g.p_jsdialog_callback)
 	})
 	return &go_jsdialog_callback
@@ -9198,11 +9228,11 @@ func newCJsdialogHandlerT(p *C.cef_jsdialog_handler_t) *CJsdialogHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T9648:")
+	Tracef(unsafe.Pointer(p), "T9678:")
 	BaseAddRef(p)
 	go_jsdialog_handler := CJsdialogHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_jsdialog_handler, func(g *CJsdialogHandlerT) {
-		Tracef(unsafe.Pointer(g.p_jsdialog_handler), "T9652:")
+		Tracef(unsafe.Pointer(g.p_jsdialog_handler), "T9682:")
 		BaseRelease(g.p_jsdialog_handler)
 	})
 	return &go_jsdialog_handler
@@ -9300,13 +9330,13 @@ var jsdialog_handler_handlers = struct {
 
 // AllocCJsdialogHandlerT allocates CJsdialogHandlerT and construct it
 func AllocCJsdialogHandlerT() *CJsdialogHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_jsdialog_handler_wrapper_t, "T9750:")
+	up := c_calloc(1, C.sizeof_cefingo_jsdialog_handler_wrapper_t, "T9780:")
 	cefp := C.cefingo_construct_jsdialog_handler((*C.cefingo_jsdialog_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_jsdialog_handler_t itself in DeassocFunc,
 		// or cef_jsdialog_handler_t is never GCed.
-		Tracef(up, "T9756:")
+		Tracef(up, "T9786:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -9343,7 +9373,7 @@ func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandler
 
 	if accessor, ok := a.(CJsdialogHandlerTAccessor); ok {
 		accessor.SetCJsdialogHandlerT(jsdialog_handler)
-		Logf("T9805:")
+		Logf("T9835:")
 	}
 
 	return jsdialog_handler
@@ -9384,11 +9414,11 @@ func newCKeyboardHandlerT(p *C.cef_keyboard_handler_t) *CKeyboardHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T9833:")
+	Tracef(unsafe.Pointer(p), "T9863:")
 	BaseAddRef(p)
 	go_keyboard_handler := CKeyboardHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_keyboard_handler, func(g *CKeyboardHandlerT) {
-		Tracef(unsafe.Pointer(g.p_keyboard_handler), "T9837:")
+		Tracef(unsafe.Pointer(g.p_keyboard_handler), "T9867:")
 		BaseRelease(g.p_keyboard_handler)
 	})
 	return &go_keyboard_handler
@@ -9444,13 +9474,13 @@ var keyboard_handler_handlers = struct {
 
 // AllocCKeyboardHandlerT allocates CKeyboardHandlerT and construct it
 func AllocCKeyboardHandlerT() *CKeyboardHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_keyboard_handler_wrapper_t, "T9893:")
+	up := c_calloc(1, C.sizeof_cefingo_keyboard_handler_wrapper_t, "T9923:")
 	cefp := C.cefingo_construct_keyboard_handler((*C.cefingo_keyboard_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_keyboard_handler_t itself in DeassocFunc,
 		// or cef_keyboard_handler_t is never GCed.
-		Tracef(up, "T9899:")
+		Tracef(up, "T9929:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -9477,7 +9507,7 @@ func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandler
 
 	if accessor, ok := a.(CKeyboardHandlerTAccessor); ok {
 		accessor.SetCKeyboardHandlerT(keyboard_handler)
-		Logf("T9938:")
+		Logf("T9968:")
 	}
 
 	return keyboard_handler
@@ -9518,11 +9548,11 @@ func newCLabelButtonT(p *C.cef_label_button_t) *CLabelButtonT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T9966:")
+	Tracef(unsafe.Pointer(p), "T9996:")
 	BaseAddRef(p)
 	go_label_button := CLabelButtonT{noCopy{}, p}
 	runtime.SetFinalizer(&go_label_button, func(g *CLabelButtonT) {
-		Tracef(unsafe.Pointer(g.p_label_button), "T9970:")
+		Tracef(unsafe.Pointer(g.p_label_button), "T10000:")
 		BaseRelease(g.p_label_button)
 	})
 	return &go_label_button
@@ -9535,6 +9565,11 @@ func (label_button *CLabelButtonT) HasOneRef() bool {
 
 func (p *C.cef_label_button_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (label_button *CLabelButtonT) ToCButtonT() *CButtonT {
+	p := (*C.cef_button_t)(unsafe.Pointer(label_button.p_label_button))
+	return newCButtonT(p)
 }
 
 ///
@@ -9748,11 +9783,11 @@ func newCLayoutT(p *C.cef_layout_t) *CLayoutT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T10209:")
+	Tracef(unsafe.Pointer(p), "T10244:")
 	BaseAddRef(p)
 	go_layout := CLayoutT{noCopy{}, p}
 	runtime.SetFinalizer(&go_layout, func(g *CLayoutT) {
-		Tracef(unsafe.Pointer(g.p_layout), "T10213:")
+		Tracef(unsafe.Pointer(g.p_layout), "T10248:")
 		BaseRelease(g.p_layout)
 	})
 	return &go_layout
@@ -9836,11 +9871,11 @@ func newCLifeSpanHandlerT(p *C.cef_life_span_handler_t) *CLifeSpanHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T10302:")
+	Tracef(unsafe.Pointer(p), "T10337:")
 	BaseAddRef(p)
 	go_life_span_handler := CLifeSpanHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_life_span_handler, func(g *CLifeSpanHandlerT) {
-		Tracef(unsafe.Pointer(g.p_life_span_handler), "T10306:")
+		Tracef(unsafe.Pointer(g.p_life_span_handler), "T10341:")
 		BaseRelease(g.p_life_span_handler)
 	})
 	return &go_life_span_handler
@@ -10036,13 +10071,13 @@ var life_span_handler_handlers = struct {
 
 // AllocCLifeSpanHandlerT allocates CLifeSpanHandlerT and construct it
 func AllocCLifeSpanHandlerT() *CLifeSpanHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t, "T10502:")
+	up := c_calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t, "T10537:")
 	cefp := C.cefingo_construct_life_span_handler((*C.cefingo_life_span_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_life_span_handler_t itself in DeassocFunc,
 		// or cef_life_span_handler_t is never GCed.
-		Tracef(up, "T10508:")
+		Tracef(up, "T10543:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -10079,7 +10114,7 @@ func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandle
 
 	if accessor, ok := a.(CLifeSpanHandlerTAccessor); ok {
 		accessor.SetCLifeSpanHandlerT(life_span_handler)
-		Logf("T10557:")
+		Logf("T10592:")
 	}
 
 	return life_span_handler
@@ -10121,11 +10156,11 @@ func newCLoadHandlerT(p *C.cef_load_handler_t) *CLoadHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T10586:")
+	Tracef(unsafe.Pointer(p), "T10621:")
 	BaseAddRef(p)
 	go_load_handler := CLoadHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_load_handler, func(g *CLoadHandlerT) {
-		Tracef(unsafe.Pointer(g.p_load_handler), "T10590:")
+		Tracef(unsafe.Pointer(g.p_load_handler), "T10625:")
 		BaseRelease(g.p_load_handler)
 	})
 	return &go_load_handler
@@ -10229,13 +10264,13 @@ var load_handler_handlers = struct {
 
 // AllocCLoadHandlerT allocates CLoadHandlerT and construct it
 func AllocCLoadHandlerT() *CLoadHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_load_handler_wrapper_t, "T10694:")
+	up := c_calloc(1, C.sizeof_cefingo_load_handler_wrapper_t, "T10729:")
 	cefp := C.cefingo_construct_load_handler((*C.cefingo_load_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_load_handler_t itself in DeassocFunc,
 		// or cef_load_handler_t is never GCed.
-		Tracef(up, "T10700:")
+		Tracef(up, "T10735:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -10272,7 +10307,7 @@ func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
 
 	if accessor, ok := a.(CLoadHandlerTAccessor); ok {
 		accessor.SetCLoadHandlerT(load_handler)
-		Logf("T10749:")
+		Logf("T10784:")
 	}
 
 	return load_handler
@@ -10315,11 +10350,11 @@ func newCMenuButtonT(p *C.cef_menu_button_t) *CMenuButtonT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T10779:")
+	Tracef(unsafe.Pointer(p), "T10814:")
 	BaseAddRef(p)
 	go_menu_button := CMenuButtonT{noCopy{}, p}
 	runtime.SetFinalizer(&go_menu_button, func(g *CMenuButtonT) {
-		Tracef(unsafe.Pointer(g.p_menu_button), "T10783:")
+		Tracef(unsafe.Pointer(g.p_menu_button), "T10818:")
 		BaseRelease(g.p_menu_button)
 	})
 	return &go_menu_button
@@ -10332,6 +10367,11 @@ func (menu_button *CMenuButtonT) HasOneRef() bool {
 
 func (p *C.cef_menu_button_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (menu_button *CMenuButtonT) ToCLabelButtonT() *CLabelButtonT {
+	p := (*C.cef_label_button_t)(unsafe.Pointer(menu_button.p_menu_button))
+	return newCLabelButtonT(p)
 }
 
 ///
@@ -10426,11 +10466,11 @@ func newCMenuButtonPressedLockT(p *C.cef_menu_button_pressed_lock_t) *CMenuButto
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T10893:")
+	Tracef(unsafe.Pointer(p), "T10933:")
 	BaseAddRef(p)
 	go_menu_button_pressed_lock := CMenuButtonPressedLockT{noCopy{}, p}
 	runtime.SetFinalizer(&go_menu_button_pressed_lock, func(g *CMenuButtonPressedLockT) {
-		Tracef(unsafe.Pointer(g.p_menu_button_pressed_lock), "T10897:")
+		Tracef(unsafe.Pointer(g.p_menu_button_pressed_lock), "T10937:")
 		BaseRelease(g.p_menu_button_pressed_lock)
 	})
 	return &go_menu_button_pressed_lock
@@ -10479,11 +10519,11 @@ func newCMenuButtonDelegateT(p *C.cef_menu_button_delegate_t) *CMenuButtonDelega
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T10945:")
+	Tracef(unsafe.Pointer(p), "T10985:")
 	BaseAddRef(p)
 	go_menu_button_delegate := CMenuButtonDelegateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_menu_button_delegate, func(g *CMenuButtonDelegateT) {
-		Tracef(unsafe.Pointer(g.p_menu_button_delegate), "T10949:")
+		Tracef(unsafe.Pointer(g.p_menu_button_delegate), "T10989:")
 		BaseRelease(g.p_menu_button_delegate)
 	})
 	return &go_menu_button_delegate
@@ -10496,6 +10536,11 @@ func (menu_button_delegate *CMenuButtonDelegateT) HasOneRef() bool {
 
 func (p *C.cef_menu_button_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (menu_button_delegate *CMenuButtonDelegateT) ToCButtonDelegateT() *CButtonDelegateT {
+	p := (*C.cef_button_delegate_t)(unsafe.Pointer(menu_button_delegate.p_menu_button_delegate))
+	return newCButtonDelegateT(p)
 }
 
 ///
@@ -10541,13 +10586,13 @@ var menu_button_delegate_handlers = struct {
 
 // AllocCMenuButtonDelegateT allocates CMenuButtonDelegateT and construct it
 func AllocCMenuButtonDelegateT() *CMenuButtonDelegateT {
-	up := c_calloc(1, C.sizeof_cefingo_menu_button_delegate_wrapper_t, "T11007:")
+	up := c_calloc(1, C.sizeof_cefingo_menu_button_delegate_wrapper_t, "T11052:")
 	cefp := C.cefingo_construct_menu_button_delegate((*C.cefingo_menu_button_delegate_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_menu_button_delegate_t itself in DeassocFunc,
 		// or cef_menu_button_delegate_t is never GCed.
-		Tracef(up, "T11013:")
+		Tracef(up, "T11058:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -10619,7 +10664,7 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 
 	if accessor, ok := a.(CMenuButtonDelegateTAccessor); ok {
 		accessor.SetCMenuButtonDelegateT(menu_button_delegate)
-		Logf("T11097:")
+		Logf("T11142:")
 	}
 
 	return menu_button_delegate
@@ -10662,11 +10707,11 @@ func newCMenuModelT(p *C.cef_menu_model_t) *CMenuModelT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T11127:")
+	Tracef(unsafe.Pointer(p), "T11172:")
 	BaseAddRef(p)
 	go_menu_model := CMenuModelT{noCopy{}, p}
 	runtime.SetFinalizer(&go_menu_model, func(g *CMenuModelT) {
-		Tracef(unsafe.Pointer(g.p_menu_model), "T11131:")
+		Tracef(unsafe.Pointer(g.p_menu_model), "T11176:")
 		BaseRelease(g.p_menu_model)
 	})
 	return &go_menu_model
@@ -11609,11 +11654,11 @@ func newCMenuModelDelegateT(p *C.cef_menu_model_delegate_t) *CMenuModelDelegateT
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T12132:")
+	Tracef(unsafe.Pointer(p), "T12177:")
 	BaseAddRef(p)
 	go_menu_model_delegate := CMenuModelDelegateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_menu_model_delegate, func(g *CMenuModelDelegateT) {
-		Tracef(unsafe.Pointer(g.p_menu_model_delegate), "T12136:")
+		Tracef(unsafe.Pointer(g.p_menu_model_delegate), "T12181:")
 		BaseRelease(g.p_menu_model_delegate)
 	})
 	return &go_menu_model_delegate
@@ -11729,13 +11774,13 @@ var menu_model_delegate_handlers = struct {
 
 // AllocCMenuModelDelegateT allocates CMenuModelDelegateT and construct it
 func AllocCMenuModelDelegateT() *CMenuModelDelegateT {
-	up := c_calloc(1, C.sizeof_cefingo_menu_model_delegate_wrapper_t, "T12252:")
+	up := c_calloc(1, C.sizeof_cefingo_menu_model_delegate_wrapper_t, "T12297:")
 	cefp := C.cefingo_construct_menu_model_delegate((*C.cefingo_menu_model_delegate_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_menu_model_delegate_t itself in DeassocFunc,
 		// or cef_menu_model_delegate_t is never GCed.
-		Tracef(up, "T12258:")
+		Tracef(up, "T12303:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -11787,7 +11832,7 @@ func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelD
 
 	if accessor, ok := a.(CMenuModelDelegateTAccessor); ok {
 		accessor.SetCMenuModelDelegateT(menu_model_delegate)
-		Logf("T12322:")
+		Logf("T12367:")
 	}
 
 	return menu_model_delegate
@@ -11827,11 +11872,11 @@ func newCNavigationEntryT(p *C.cef_navigation_entry_t) *CNavigationEntryT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T12349:")
+	Tracef(unsafe.Pointer(p), "T12394:")
 	BaseAddRef(p)
 	go_navigation_entry := CNavigationEntryT{noCopy{}, p}
 	runtime.SetFinalizer(&go_navigation_entry, func(g *CNavigationEntryT) {
-		Tracef(unsafe.Pointer(g.p_navigation_entry), "T12353:")
+		Tracef(unsafe.Pointer(g.p_navigation_entry), "T12398:")
 		BaseRelease(g.p_navigation_entry)
 	})
 	return &go_navigation_entry
@@ -12019,11 +12064,11 @@ func newCPanelT(p *C.cef_panel_t) *CPanelT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T12560:")
+	Tracef(unsafe.Pointer(p), "T12605:")
 	BaseAddRef(p)
 	go_panel := CPanelT{noCopy{}, p}
 	runtime.SetFinalizer(&go_panel, func(g *CPanelT) {
-		Tracef(unsafe.Pointer(g.p_panel), "T12564:")
+		Tracef(unsafe.Pointer(g.p_panel), "T12609:")
 		BaseRelease(g.p_panel)
 	})
 	return &go_panel
@@ -12036,6 +12081,11 @@ func (panel *CPanelT) HasOneRef() bool {
 
 func (p *C.cef_panel_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (panel *CPanelT) ToCViewT() *CViewT {
+	p := (*C.cef_view_t)(unsafe.Pointer(panel.p_panel))
+	return newCViewT(p)
 }
 
 ///
@@ -12250,11 +12300,11 @@ func newCPanelDelegateT(p *C.cef_panel_delegate_t) *CPanelDelegateT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T12809:")
+	Tracef(unsafe.Pointer(p), "T12859:")
 	BaseAddRef(p)
 	go_panel_delegate := CPanelDelegateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_panel_delegate, func(g *CPanelDelegateT) {
-		Tracef(unsafe.Pointer(g.p_panel_delegate), "T12813:")
+		Tracef(unsafe.Pointer(g.p_panel_delegate), "T12863:")
 		BaseRelease(g.p_panel_delegate)
 	})
 	return &go_panel_delegate
@@ -12267,6 +12317,11 @@ func (panel_delegate *CPanelDelegateT) HasOneRef() bool {
 
 func (p *C.cef_panel_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (panel_delegate *CPanelDelegateT) ToCViewDelegateT() *CViewDelegateT {
+	p := (*C.cef_view_delegate_t)(unsafe.Pointer(panel_delegate.p_panel_delegate))
+	return newCViewDelegateT(p)
 }
 
 var panel_delegate_handlers = struct {
@@ -12291,13 +12346,13 @@ var panel_delegate_handlers = struct {
 
 // AllocCPanelDelegateT allocates CPanelDelegateT and construct it
 func AllocCPanelDelegateT() *CPanelDelegateT {
-	up := c_calloc(1, C.sizeof_cefingo_panel_delegate_wrapper_t, "T12850:")
+	up := c_calloc(1, C.sizeof_cefingo_panel_delegate_wrapper_t, "T12905:")
 	cefp := C.cefingo_construct_panel_delegate((*C.cefingo_panel_delegate_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_panel_delegate_t itself in DeassocFunc,
 		// or cef_panel_delegate_t is never GCed.
-		Tracef(up, "T12856:")
+		Tracef(up, "T12911:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -12354,7 +12409,7 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 
 	if accessor, ok := a.(CPanelDelegateTAccessor); ok {
 		accessor.SetCPanelDelegateT(panel_delegate)
-		Logf("T12925:")
+		Logf("T12980:")
 	}
 
 	return panel_delegate
@@ -12394,11 +12449,11 @@ func newCPrintDialogCallbackT(p *C.cef_print_dialog_callback_t) *CPrintDialogCal
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T12952:")
+	Tracef(unsafe.Pointer(p), "T13007:")
 	BaseAddRef(p)
 	go_print_dialog_callback := CPrintDialogCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_print_dialog_callback, func(g *CPrintDialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_print_dialog_callback), "T12956:")
+		Tracef(unsafe.Pointer(g.p_print_dialog_callback), "T13011:")
 		BaseRelease(g.p_print_dialog_callback)
 	})
 	return &go_print_dialog_callback
@@ -12470,11 +12525,11 @@ func newCPrintJobCallbackT(p *C.cef_print_job_callback_t) *CPrintJobCallbackT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T13030:")
+	Tracef(unsafe.Pointer(p), "T13085:")
 	BaseAddRef(p)
 	go_print_job_callback := CPrintJobCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_print_job_callback, func(g *CPrintJobCallbackT) {
-		Tracef(unsafe.Pointer(g.p_print_job_callback), "T13034:")
+		Tracef(unsafe.Pointer(g.p_print_job_callback), "T13089:")
 		BaseRelease(g.p_print_job_callback)
 	})
 	return &go_print_job_callback
@@ -12532,11 +12587,11 @@ func newCPrintHandlerT(p *C.cef_print_handler_t) *CPrintHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T13093:")
+	Tracef(unsafe.Pointer(p), "T13148:")
 	BaseAddRef(p)
 	go_print_handler := CPrintHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_print_handler, func(g *CPrintHandlerT) {
-		Tracef(unsafe.Pointer(g.p_print_handler), "T13097:")
+		Tracef(unsafe.Pointer(g.p_print_handler), "T13152:")
 		BaseRelease(g.p_print_handler)
 	})
 	return &go_print_handler
@@ -12646,13 +12701,13 @@ var print_handler_handlers = struct {
 
 // AllocCPrintHandlerT allocates CPrintHandlerT and construct it
 func AllocCPrintHandlerT() *CPrintHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_print_handler_wrapper_t, "T13207:")
+	up := c_calloc(1, C.sizeof_cefingo_print_handler_wrapper_t, "T13262:")
 	cefp := C.cefingo_construct_print_handler((*C.cefingo_print_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_print_handler_t itself in DeassocFunc,
 		// or cef_print_handler_t is never GCed.
-		Tracef(up, "T13213:")
+		Tracef(up, "T13268:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -12699,7 +12754,7 @@ func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
 
 	if accessor, ok := a.(CPrintHandlerTAccessor); ok {
 		accessor.SetCPrintHandlerT(print_handler)
-		Logf("T13272:")
+		Logf("T13327:")
 	}
 
 	return print_handler
@@ -12739,11 +12794,11 @@ func newCPrintSettingsT(p *C.cef_print_settings_t) *CPrintSettingsT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T13299:")
+	Tracef(unsafe.Pointer(p), "T13354:")
 	BaseAddRef(p)
 	go_print_settings := CPrintSettingsT{noCopy{}, p}
 	runtime.SetFinalizer(&go_print_settings, func(g *CPrintSettingsT) {
-		Tracef(unsafe.Pointer(g.p_print_settings), "T13303:")
+		Tracef(unsafe.Pointer(g.p_print_settings), "T13358:")
 		BaseRelease(g.p_print_settings)
 	})
 	return &go_print_settings
@@ -13048,11 +13103,11 @@ func newCProcessMessageT(p *C.cef_process_message_t) *CProcessMessageT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T13641:")
+	Tracef(unsafe.Pointer(p), "T13696:")
 	BaseAddRef(p)
 	go_process_message := CProcessMessageT{noCopy{}, p}
 	runtime.SetFinalizer(&go_process_message, func(g *CProcessMessageT) {
-		Tracef(unsafe.Pointer(g.p_process_message), "T13645:")
+		Tracef(unsafe.Pointer(g.p_process_message), "T13700:")
 		BaseRelease(g.p_process_message)
 	})
 	return &go_process_message
@@ -13179,11 +13234,11 @@ func newCRenderHandlerT(p *C.cef_render_handler_t) *CRenderHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T13782:")
+	Tracef(unsafe.Pointer(p), "T13837:")
 	BaseAddRef(p)
 	go_render_handler := CRenderHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_render_handler, func(g *CRenderHandlerT) {
-		Tracef(unsafe.Pointer(g.p_render_handler), "T13786:")
+		Tracef(unsafe.Pointer(g.p_render_handler), "T13841:")
 		BaseRelease(g.p_render_handler)
 	})
 	return &go_render_handler
@@ -13464,13 +13519,13 @@ var render_handler_handlers = struct {
 
 // AllocCRenderHandlerT allocates CRenderHandlerT and construct it
 func AllocCRenderHandlerT() *CRenderHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_render_handler_wrapper_t, "T14067:")
+	up := c_calloc(1, C.sizeof_cefingo_render_handler_wrapper_t, "T14122:")
 	cefp := C.cefingo_construct_render_handler((*C.cefingo_render_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_render_handler_t itself in DeassocFunc,
 		// or cef_render_handler_t is never GCed.
-		Tracef(up, "T14073:")
+		Tracef(up, "T14128:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -13563,7 +13618,7 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 
 	if accessor, ok := a.(CRenderHandlerTAccessor); ok {
 		accessor.SetCRenderHandlerT(render_handler)
-		Logf("T14178:")
+		Logf("T14233:")
 	}
 
 	return render_handler
@@ -13613,11 +13668,11 @@ func newCRenderProcessHandlerT(p *C.cef_render_process_handler_t) *CRenderProces
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T14215:")
+	Tracef(unsafe.Pointer(p), "T14270:")
 	BaseAddRef(p)
 	go_render_process_handler := CRenderProcessHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_render_process_handler, func(g *CRenderProcessHandlerT) {
-		Tracef(unsafe.Pointer(g.p_render_process_handler), "T14219:")
+		Tracef(unsafe.Pointer(g.p_render_process_handler), "T14274:")
 		BaseRelease(g.p_render_process_handler)
 	})
 	return &go_render_process_handler
@@ -13785,13 +13840,13 @@ var render_process_handler_handlers = struct {
 
 // AllocCRenderProcessHandlerT allocates CRenderProcessHandlerT and construct it
 func AllocCRenderProcessHandlerT() *CRenderProcessHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "T14387:")
+	up := c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "T14442:")
 	cefp := C.cefingo_construct_render_process_handler((*C.cefingo_render_process_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_render_process_handler_t itself in DeassocFunc,
 		// or cef_render_process_handler_t is never GCed.
-		Tracef(up, "T14393:")
+		Tracef(up, "T14448:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -13854,7 +13909,7 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 
 	if accessor, ok := a.(CRenderProcessHandlerTAccessor); ok {
 		accessor.SetCRenderProcessHandlerT(render_process_handler)
-		Logf("T14468:")
+		Logf("T14523:")
 	}
 
 	return render_process_handler
@@ -13902,11 +13957,11 @@ func newCRequestCallbackT(p *C.cef_request_callback_t) *CRequestCallbackT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T14503:")
+	Tracef(unsafe.Pointer(p), "T14558:")
 	BaseAddRef(p)
 	go_request_callback := CRequestCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_request_callback, func(g *CRequestCallbackT) {
-		Tracef(unsafe.Pointer(g.p_request_callback), "T14507:")
+		Tracef(unsafe.Pointer(g.p_request_callback), "T14562:")
 		BaseRelease(g.p_request_callback)
 	})
 	return &go_request_callback
@@ -13977,11 +14032,11 @@ func newCRequestT(p *C.cef_request_t) *CRequestT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T14580:")
+	Tracef(unsafe.Pointer(p), "T14635:")
 	BaseAddRef(p)
 	go_request := CRequestT{noCopy{}, p}
 	runtime.SetFinalizer(&go_request, func(g *CRequestT) {
-		Tracef(unsafe.Pointer(g.p_request), "T14584:")
+		Tracef(unsafe.Pointer(g.p_request), "T14639:")
 		BaseRelease(g.p_request)
 	})
 	return &go_request
@@ -14361,11 +14416,11 @@ func newCPostDataT(p *C.cef_post_data_t) *CPostDataT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T14998:")
+	Tracef(unsafe.Pointer(p), "T15053:")
 	BaseAddRef(p)
 	go_post_data := CPostDataT{noCopy{}, p}
 	runtime.SetFinalizer(&go_post_data, func(g *CPostDataT) {
-		Tracef(unsafe.Pointer(g.p_post_data), "T15002:")
+		Tracef(unsafe.Pointer(g.p_post_data), "T15057:")
 		BaseRelease(g.p_post_data)
 	})
 	return &go_post_data
@@ -14524,11 +14579,11 @@ func newCPostDataElementT(p *C.cef_post_data_element_t) *CPostDataElementT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T15173:")
+	Tracef(unsafe.Pointer(p), "T15228:")
 	BaseAddRef(p)
 	go_post_data_element := CPostDataElementT{noCopy{}, p}
 	runtime.SetFinalizer(&go_post_data_element, func(g *CPostDataElementT) {
-		Tracef(unsafe.Pointer(g.p_post_data_element), "T15177:")
+		Tracef(unsafe.Pointer(g.p_post_data_element), "T15232:")
 		BaseRelease(g.p_post_data_element)
 	})
 	return &go_post_data_element
@@ -14687,11 +14742,11 @@ func newCResolveCallbackT(p *C.cef_resolve_callback_t) *CResolveCallbackT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T15350:")
+	Tracef(unsafe.Pointer(p), "T15405:")
 	BaseAddRef(p)
 	go_resolve_callback := CResolveCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_resolve_callback, func(g *CResolveCallbackT) {
-		Tracef(unsafe.Pointer(g.p_resolve_callback), "T15354:")
+		Tracef(unsafe.Pointer(g.p_resolve_callback), "T15409:")
 		BaseRelease(g.p_resolve_callback)
 	})
 	return &go_resolve_callback
@@ -14765,11 +14820,11 @@ func newCRequestContextT(p *C.cef_request_context_t) *CRequestContextT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T15428:")
+	Tracef(unsafe.Pointer(p), "T15483:")
 	BaseAddRef(p)
 	go_request_context := CRequestContextT{noCopy{}, p}
 	runtime.SetFinalizer(&go_request_context, func(g *CRequestContextT) {
-		Tracef(unsafe.Pointer(g.p_request_context), "T15432:")
+		Tracef(unsafe.Pointer(g.p_request_context), "T15487:")
 		BaseRelease(g.p_request_context)
 	})
 	return &go_request_context
@@ -15353,11 +15408,11 @@ func newCRequestContextHandlerT(p *C.cef_request_context_handler_t) *CRequestCon
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T16045:")
+	Tracef(unsafe.Pointer(p), "T16100:")
 	BaseAddRef(p)
 	go_request_context_handler := CRequestContextHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_request_context_handler, func(g *CRequestContextHandlerT) {
-		Tracef(unsafe.Pointer(g.p_request_context_handler), "T16049:")
+		Tracef(unsafe.Pointer(g.p_request_context_handler), "T16104:")
 		BaseRelease(g.p_request_context_handler)
 	})
 	return &go_request_context_handler
@@ -15425,13 +15480,13 @@ var request_context_handler_handlers = struct {
 
 // AllocCRequestContextHandlerT allocates CRequestContextHandlerT and construct it
 func AllocCRequestContextHandlerT() *CRequestContextHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_request_context_handler_wrapper_t, "T16117:")
+	up := c_calloc(1, C.sizeof_cefingo_request_context_handler_wrapper_t, "T16172:")
 	cefp := C.cefingo_construct_request_context_handler((*C.cefingo_request_context_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_request_context_handler_t itself in DeassocFunc,
 		// or cef_request_context_handler_t is never GCed.
-		Tracef(up, "T16123:")
+		Tracef(up, "T16178:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -15459,7 +15514,7 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 
 	if accessor, ok := a.(CRequestContextHandlerTAccessor); ok {
 		accessor.SetCRequestContextHandlerT(request_context_handler)
-		Logf("T16163:")
+		Logf("T16218:")
 	}
 
 	return request_context_handler
@@ -15507,11 +15562,11 @@ func newCSelectClientCertificateCallbackT(p *C.cef_select_client_certificate_cal
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T16198:")
+	Tracef(unsafe.Pointer(p), "T16253:")
 	BaseAddRef(p)
 	go_select_client_certificate_callback := CSelectClientCertificateCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_select_client_certificate_callback, func(g *CSelectClientCertificateCallbackT) {
-		Tracef(unsafe.Pointer(g.p_select_client_certificate_callback), "T16202:")
+		Tracef(unsafe.Pointer(g.p_select_client_certificate_callback), "T16257:")
 		BaseRelease(g.p_select_client_certificate_callback)
 	})
 	return &go_select_client_certificate_callback
@@ -15576,11 +15631,11 @@ func newCRequestHandlerT(p *C.cef_request_handler_t) *CRequestHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T16267:")
+	Tracef(unsafe.Pointer(p), "T16322:")
 	BaseAddRef(p)
 	go_request_handler := CRequestHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_request_handler, func(g *CRequestHandlerT) {
-		Tracef(unsafe.Pointer(g.p_request_handler), "T16271:")
+		Tracef(unsafe.Pointer(g.p_request_handler), "T16326:")
 		BaseRelease(g.p_request_handler)
 	})
 	return &go_request_handler
@@ -15796,13 +15851,13 @@ var request_handler_handlers = struct {
 
 // AllocCRequestHandlerT allocates CRequestHandlerT and construct it
 func AllocCRequestHandlerT() *CRequestHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_request_handler_wrapper_t, "T16487:")
+	up := c_calloc(1, C.sizeof_cefingo_request_handler_wrapper_t, "T16542:")
 	cefp := C.cefingo_construct_request_handler((*C.cefingo_request_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_request_handler_t itself in DeassocFunc,
 		// or cef_request_handler_t is never GCed.
-		Tracef(up, "T16493:")
+		Tracef(up, "T16548:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -15865,7 +15920,7 @@ func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
 
 	if accessor, ok := a.(CRequestHandlerTAccessor); ok {
 		accessor.SetCRequestHandlerT(request_handler)
-		Logf("T16568:")
+		Logf("T16623:")
 	}
 
 	return request_handler
@@ -15915,11 +15970,11 @@ func newCResourceBundleHandlerT(p *C.cef_resource_bundle_handler_t) *CResourceBu
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T16605:")
+	Tracef(unsafe.Pointer(p), "T16660:")
 	BaseAddRef(p)
 	go_resource_bundle_handler := CResourceBundleHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_resource_bundle_handler, func(g *CResourceBundleHandlerT) {
-		Tracef(unsafe.Pointer(g.p_resource_bundle_handler), "T16609:")
+		Tracef(unsafe.Pointer(g.p_resource_bundle_handler), "T16664:")
 		BaseRelease(g.p_resource_bundle_handler)
 	})
 	return &go_resource_bundle_handler
@@ -15990,13 +16045,13 @@ var resource_bundle_handler_handlers = struct {
 
 // AllocCResourceBundleHandlerT allocates CResourceBundleHandlerT and construct it
 func AllocCResourceBundleHandlerT() *CResourceBundleHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_resource_bundle_handler_wrapper_t, "T16680:")
+	up := c_calloc(1, C.sizeof_cefingo_resource_bundle_handler_wrapper_t, "T16735:")
 	cefp := C.cefingo_construct_resource_bundle_handler((*C.cefingo_resource_bundle_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_resource_bundle_handler_t itself in DeassocFunc,
 		// or cef_resource_bundle_handler_t is never GCed.
-		Tracef(up, "T16686:")
+		Tracef(up, "T16741:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -16028,7 +16083,7 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CRe
 
 	if accessor, ok := a.(CResourceBundleHandlerTAccessor); ok {
 		accessor.SetCResourceBundleHandlerT(resource_bundle_handler)
-		Logf("T16730:")
+		Logf("T16785:")
 	}
 
 	return resource_bundle_handler
@@ -16068,11 +16123,11 @@ func newCResourceSkipCallbackT(p *C.cef_resource_skip_callback_t) *CResourceSkip
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T16757:")
+	Tracef(unsafe.Pointer(p), "T16812:")
 	BaseAddRef(p)
 	go_resource_skip_callback := CResourceSkipCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_resource_skip_callback, func(g *CResourceSkipCallbackT) {
-		Tracef(unsafe.Pointer(g.p_resource_skip_callback), "T16761:")
+		Tracef(unsafe.Pointer(g.p_resource_skip_callback), "T16816:")
 		BaseRelease(g.p_resource_skip_callback)
 	})
 	return &go_resource_skip_callback
@@ -16133,11 +16188,11 @@ func newCResourceReadCallbackT(p *C.cef_resource_read_callback_t) *CResourceRead
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T16822:")
+	Tracef(unsafe.Pointer(p), "T16877:")
 	BaseAddRef(p)
 	go_resource_read_callback := CResourceReadCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_resource_read_callback, func(g *CResourceReadCallbackT) {
-		Tracef(unsafe.Pointer(g.p_resource_read_callback), "T16826:")
+		Tracef(unsafe.Pointer(g.p_resource_read_callback), "T16881:")
 		BaseRelease(g.p_resource_read_callback)
 	})
 	return &go_resource_read_callback
@@ -16200,11 +16255,11 @@ func newCResourceHandlerT(p *C.cef_resource_handler_t) *CResourceHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T16889:")
+	Tracef(unsafe.Pointer(p), "T16944:")
 	BaseAddRef(p)
 	go_resource_handler := CResourceHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_resource_handler, func(g *CResourceHandlerT) {
-		Tracef(unsafe.Pointer(g.p_resource_handler), "T16893:")
+		Tracef(unsafe.Pointer(g.p_resource_handler), "T16948:")
 		BaseRelease(g.p_resource_handler)
 	})
 	return &go_resource_handler
@@ -16360,13 +16415,13 @@ var resource_handler_handlers = struct {
 
 // AllocCResourceHandlerT allocates CResourceHandlerT and construct it
 func AllocCResourceHandlerT() *CResourceHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_resource_handler_wrapper_t, "T17049:")
+	up := c_calloc(1, C.sizeof_cefingo_resource_handler_wrapper_t, "T17104:")
 	cefp := C.cefingo_construct_resource_handler((*C.cefingo_resource_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_resource_handler_t itself in DeassocFunc,
 		// or cef_resource_handler_t is never GCed.
-		Tracef(up, "T17055:")
+		Tracef(up, "T17110:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -16418,7 +16473,7 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 
 	if accessor, ok := a.(CResourceHandlerTAccessor); ok {
 		accessor.SetCResourceHandlerT(resource_handler)
-		Logf("T17119:")
+		Logf("T17174:")
 	}
 
 	return resource_handler
@@ -16460,11 +16515,11 @@ func newCResourceRequestHandlerT(p *C.cef_resource_request_handler_t) *CResource
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T17148:")
+	Tracef(unsafe.Pointer(p), "T17203:")
 	BaseAddRef(p)
 	go_resource_request_handler := CResourceRequestHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_resource_request_handler, func(g *CResourceRequestHandlerT) {
-		Tracef(unsafe.Pointer(g.p_resource_request_handler), "T17152:")
+		Tracef(unsafe.Pointer(g.p_resource_request_handler), "T17207:")
 		BaseRelease(g.p_resource_request_handler)
 	})
 	return &go_resource_request_handler
@@ -16663,13 +16718,13 @@ var resource_request_handler_handlers = struct {
 
 // AllocCResourceRequestHandlerT allocates CResourceRequestHandlerT and construct it
 func AllocCResourceRequestHandlerT() *CResourceRequestHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_resource_request_handler_wrapper_t, "T17351:")
+	up := c_calloc(1, C.sizeof_cefingo_resource_request_handler_wrapper_t, "T17406:")
 	cefp := C.cefingo_construct_resource_request_handler((*C.cefingo_resource_request_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_resource_request_handler_t itself in DeassocFunc,
 		// or cef_resource_request_handler_t is never GCed.
-		Tracef(up, "T17357:")
+		Tracef(up, "T17412:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -16726,7 +16781,7 @@ func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *C
 
 	if accessor, ok := a.(CResourceRequestHandlerTAccessor); ok {
 		accessor.SetCResourceRequestHandlerT(resource_request_handler)
-		Logf("T17426:")
+		Logf("T17481:")
 	}
 
 	return resource_request_handler
@@ -16766,11 +16821,11 @@ func newCCookieAccessFilterT(p *C.cef_cookie_access_filter_t) *CCookieAccessFilt
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T17453:")
+	Tracef(unsafe.Pointer(p), "T17508:")
 	BaseAddRef(p)
 	go_cookie_access_filter := CCookieAccessFilterT{noCopy{}, p}
 	runtime.SetFinalizer(&go_cookie_access_filter, func(g *CCookieAccessFilterT) {
-		Tracef(unsafe.Pointer(g.p_cookie_access_filter), "T17457:")
+		Tracef(unsafe.Pointer(g.p_cookie_access_filter), "T17512:")
 		BaseRelease(g.p_cookie_access_filter)
 	})
 	return &go_cookie_access_filter
@@ -16831,13 +16886,13 @@ var cookie_access_filter_handlers = struct {
 
 // AllocCCookieAccessFilterT allocates CCookieAccessFilterT and construct it
 func AllocCCookieAccessFilterT() *CCookieAccessFilterT {
-	up := c_calloc(1, C.sizeof_cefingo_cookie_access_filter_wrapper_t, "T17518:")
+	up := c_calloc(1, C.sizeof_cefingo_cookie_access_filter_wrapper_t, "T17573:")
 	cefp := C.cefingo_construct_cookie_access_filter((*C.cefingo_cookie_access_filter_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_cookie_access_filter_t itself in DeassocFunc,
 		// or cef_cookie_access_filter_t is never GCed.
-		Tracef(up, "T17524:")
+		Tracef(up, "T17579:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -16864,7 +16919,7 @@ func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAc
 
 	if accessor, ok := a.(CCookieAccessFilterTAccessor); ok {
 		accessor.SetCCookieAccessFilterT(cookie_access_filter)
-		Logf("T17563:")
+		Logf("T17618:")
 	}
 
 	return cookie_access_filter
@@ -16905,11 +16960,11 @@ func newCResponseT(p *C.cef_response_t) *CResponseT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T17591:")
+	Tracef(unsafe.Pointer(p), "T17646:")
 	BaseAddRef(p)
 	go_response := CResponseT{noCopy{}, p}
 	runtime.SetFinalizer(&go_response, func(g *CResponseT) {
-		Tracef(unsafe.Pointer(g.p_response), "T17595:")
+		Tracef(unsafe.Pointer(g.p_response), "T17650:")
 		BaseRelease(g.p_response)
 	})
 	return &go_response
@@ -17203,11 +17258,11 @@ func newCResponseFilterT(p *C.cef_response_filter_t) *CResponseFilterT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T17914:")
+	Tracef(unsafe.Pointer(p), "T17969:")
 	BaseAddRef(p)
 	go_response_filter := CResponseFilterT{noCopy{}, p}
 	runtime.SetFinalizer(&go_response_filter, func(g *CResponseFilterT) {
-		Tracef(unsafe.Pointer(g.p_response_filter), "T17918:")
+		Tracef(unsafe.Pointer(g.p_response_filter), "T17973:")
 		BaseRelease(g.p_response_filter)
 	})
 	return &go_response_filter
@@ -17281,13 +17336,13 @@ var response_filter_handlers = struct {
 
 // AllocCResponseFilterT allocates CResponseFilterT and construct it
 func AllocCResponseFilterT() *CResponseFilterT {
-	up := c_calloc(1, C.sizeof_cefingo_response_filter_wrapper_t, "T17992:")
+	up := c_calloc(1, C.sizeof_cefingo_response_filter_wrapper_t, "T18047:")
 	cefp := C.cefingo_construct_response_filter((*C.cefingo_response_filter_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_response_filter_t itself in DeassocFunc,
 		// or cef_response_filter_t is never GCed.
-		Tracef(up, "T17998:")
+		Tracef(up, "T18053:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -17314,7 +17369,7 @@ func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
 
 	if accessor, ok := a.(CResponseFilterTAccessor); ok {
 		accessor.SetCResponseFilterT(response_filter)
-		Logf("T18037:")
+		Logf("T18092:")
 	}
 
 	return response_filter
@@ -17354,7 +17409,7 @@ func newCSchemeRegistrarT(p *C.cef_scheme_registrar_t) *CSchemeRegistrarT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T18064:")
+	Tracef(unsafe.Pointer(p), "T18119:")
 	go_scheme_registrar := CSchemeRegistrarT{noCopy{}, p}
 	return &go_scheme_registrar
 }
@@ -17416,11 +17471,11 @@ func newCSchemeHandlerFactoryT(p *C.cef_scheme_handler_factory_t) *CSchemeHandle
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T18127:")
+	Tracef(unsafe.Pointer(p), "T18182:")
 	BaseAddRef(p)
 	go_scheme_handler_factory := CSchemeHandlerFactoryT{noCopy{}, p}
 	runtime.SetFinalizer(&go_scheme_handler_factory, func(g *CSchemeHandlerFactoryT) {
-		Tracef(unsafe.Pointer(g.p_scheme_handler_factory), "T18131:")
+		Tracef(unsafe.Pointer(g.p_scheme_handler_factory), "T18186:")
 		BaseRelease(g.p_scheme_handler_factory)
 	})
 	return &go_scheme_handler_factory
@@ -17461,13 +17516,13 @@ var scheme_handler_factory_handlers = struct {
 
 // AllocCSchemeHandlerFactoryT allocates CSchemeHandlerFactoryT and construct it
 func AllocCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
-	up := c_calloc(1, C.sizeof_cefingo_scheme_handler_factory_wrapper_t, "T18172:")
+	up := c_calloc(1, C.sizeof_cefingo_scheme_handler_factory_wrapper_t, "T18227:")
 	cefp := C.cefingo_construct_scheme_handler_factory((*C.cefingo_scheme_handler_factory_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_scheme_handler_factory_t itself in DeassocFunc,
 		// or cef_scheme_handler_factory_t is never GCed.
-		Tracef(up, "T18178:")
+		Tracef(up, "T18233:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -17489,7 +17544,7 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 
 	if accessor, ok := a.(CSchemeHandlerFactoryTAccessor); ok {
 		accessor.SetCSchemeHandlerFactoryT(scheme_handler_factory)
-		Logf("T18212:")
+		Logf("T18267:")
 	}
 
 	return scheme_handler_factory
@@ -17582,11 +17637,11 @@ func newCScrollViewT(p *C.cef_scroll_view_t) *CScrollViewT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T18295:")
+	Tracef(unsafe.Pointer(p), "T18350:")
 	BaseAddRef(p)
 	go_scroll_view := CScrollViewT{noCopy{}, p}
 	runtime.SetFinalizer(&go_scroll_view, func(g *CScrollViewT) {
-		Tracef(unsafe.Pointer(g.p_scroll_view), "T18299:")
+		Tracef(unsafe.Pointer(g.p_scroll_view), "T18354:")
 		BaseRelease(g.p_scroll_view)
 	})
 	return &go_scroll_view
@@ -17599,6 +17654,11 @@ func (scroll_view *CScrollViewT) HasOneRef() bool {
 
 func (p *C.cef_scroll_view_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (scroll_view *CScrollViewT) ToCViewT() *CViewT {
+	p := (*C.cef_view_t)(unsafe.Pointer(scroll_view.p_scroll_view))
+	return newCViewT(p)
 }
 
 ///
@@ -17736,11 +17796,11 @@ func newCSslinfoT(p *C.cef_sslinfo_t) *CSslinfoT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T18462:")
+	Tracef(unsafe.Pointer(p), "T18522:")
 	BaseAddRef(p)
 	go_sslinfo := CSslinfoT{noCopy{}, p}
 	runtime.SetFinalizer(&go_sslinfo, func(g *CSslinfoT) {
-		Tracef(unsafe.Pointer(g.p_sslinfo), "T18466:")
+		Tracef(unsafe.Pointer(g.p_sslinfo), "T18526:")
 		BaseRelease(g.p_sslinfo)
 	})
 	return &go_sslinfo
@@ -17825,11 +17885,11 @@ func newCSslstatusT(p *C.cef_sslstatus_t) *CSslstatusT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T18555:")
+	Tracef(unsafe.Pointer(p), "T18615:")
 	BaseAddRef(p)
 	go_sslstatus := CSslstatusT{noCopy{}, p}
 	runtime.SetFinalizer(&go_sslstatus, func(g *CSslstatusT) {
-		Tracef(unsafe.Pointer(g.p_sslstatus), "T18559:")
+		Tracef(unsafe.Pointer(g.p_sslstatus), "T18619:")
 		BaseRelease(g.p_sslstatus)
 	})
 	return &go_sslstatus
@@ -17935,11 +17995,11 @@ func newCReadHandlerT(p *C.cef_read_handler_t) *CReadHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T18674:")
+	Tracef(unsafe.Pointer(p), "T18734:")
 	BaseAddRef(p)
 	go_read_handler := CReadHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_read_handler, func(g *CReadHandlerT) {
-		Tracef(unsafe.Pointer(g.p_read_handler), "T18678:")
+		Tracef(unsafe.Pointer(g.p_read_handler), "T18738:")
 		BaseRelease(g.p_read_handler)
 	})
 	return &go_read_handler
@@ -18023,13 +18083,13 @@ var read_handler_handlers = struct {
 
 // AllocCReadHandlerT allocates CReadHandlerT and construct it
 func AllocCReadHandlerT() *CReadHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_read_handler_wrapper_t, "T18762:")
+	up := c_calloc(1, C.sizeof_cefingo_read_handler_wrapper_t, "T18822:")
 	cefp := C.cefingo_construct_read_handler((*C.cefingo_read_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_read_handler_t itself in DeassocFunc,
 		// or cef_read_handler_t is never GCed.
-		Tracef(up, "T18768:")
+		Tracef(up, "T18828:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -18071,7 +18131,7 @@ func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
 
 	if accessor, ok := a.(CReadHandlerTAccessor); ok {
 		accessor.SetCReadHandlerT(read_handler)
-		Logf("T18822:")
+		Logf("T18882:")
 	}
 
 	return read_handler
@@ -18110,11 +18170,11 @@ func newCStreamReaderT(p *C.cef_stream_reader_t) *CStreamReaderT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T18848:")
+	Tracef(unsafe.Pointer(p), "T18908:")
 	BaseAddRef(p)
 	go_stream_reader := CStreamReaderT{noCopy{}, p}
 	runtime.SetFinalizer(&go_stream_reader, func(g *CStreamReaderT) {
-		Tracef(unsafe.Pointer(g.p_stream_reader), "T18852:")
+		Tracef(unsafe.Pointer(g.p_stream_reader), "T18912:")
 		BaseRelease(g.p_stream_reader)
 	})
 	return &go_stream_reader
@@ -18274,11 +18334,11 @@ func newCWriteHandlerT(p *C.cef_write_handler_t) *CWriteHandlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T19022:")
+	Tracef(unsafe.Pointer(p), "T19082:")
 	BaseAddRef(p)
 	go_write_handler := CWriteHandlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_write_handler, func(g *CWriteHandlerT) {
-		Tracef(unsafe.Pointer(g.p_write_handler), "T19026:")
+		Tracef(unsafe.Pointer(g.p_write_handler), "T19086:")
 		BaseRelease(g.p_write_handler)
 	})
 	return &go_write_handler
@@ -18362,13 +18422,13 @@ var write_handler_handlers = struct {
 
 // AllocCWriteHandlerT allocates CWriteHandlerT and construct it
 func AllocCWriteHandlerT() *CWriteHandlerT {
-	up := c_calloc(1, C.sizeof_cefingo_write_handler_wrapper_t, "T19110:")
+	up := c_calloc(1, C.sizeof_cefingo_write_handler_wrapper_t, "T19170:")
 	cefp := C.cefingo_construct_write_handler((*C.cefingo_write_handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_write_handler_t itself in DeassocFunc,
 		// or cef_write_handler_t is never GCed.
-		Tracef(up, "T19116:")
+		Tracef(up, "T19176:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -18410,7 +18470,7 @@ func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
 
 	if accessor, ok := a.(CWriteHandlerTAccessor); ok {
 		accessor.SetCWriteHandlerT(write_handler)
-		Logf("T19170:")
+		Logf("T19230:")
 	}
 
 	return write_handler
@@ -18449,11 +18509,11 @@ func newCStreamWriterT(p *C.cef_stream_writer_t) *CStreamWriterT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T19196:")
+	Tracef(unsafe.Pointer(p), "T19256:")
 	BaseAddRef(p)
 	go_stream_writer := CStreamWriterT{noCopy{}, p}
 	runtime.SetFinalizer(&go_stream_writer, func(g *CStreamWriterT) {
-		Tracef(unsafe.Pointer(g.p_stream_writer), "T19200:")
+		Tracef(unsafe.Pointer(g.p_stream_writer), "T19260:")
 		BaseRelease(g.p_stream_writer)
 	})
 	return &go_stream_writer
@@ -18600,11 +18660,11 @@ func newCStringVisitorT(p *C.cef_string_visitor_t) *CStringVisitorT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T19356:")
+	Tracef(unsafe.Pointer(p), "T19416:")
 	BaseAddRef(p)
 	go_string_visitor := CStringVisitorT{noCopy{}, p}
 	runtime.SetFinalizer(&go_string_visitor, func(g *CStringVisitorT) {
-		Tracef(unsafe.Pointer(g.p_string_visitor), "T19360:")
+		Tracef(unsafe.Pointer(g.p_string_visitor), "T19420:")
 		BaseRelease(g.p_string_visitor)
 	})
 	return &go_string_visitor
@@ -18637,13 +18697,13 @@ var string_visitor_handlers = struct {
 
 // AllocCStringVisitorT allocates CStringVisitorT and construct it
 func AllocCStringVisitorT() *CStringVisitorT {
-	up := c_calloc(1, C.sizeof_cefingo_string_visitor_wrapper_t, "T19393:")
+	up := c_calloc(1, C.sizeof_cefingo_string_visitor_wrapper_t, "T19453:")
 	cefp := C.cefingo_construct_string_visitor((*C.cefingo_string_visitor_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_string_visitor_t itself in DeassocFunc,
 		// or cef_string_visitor_t is never GCed.
-		Tracef(up, "T19399:")
+		Tracef(up, "T19459:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -18665,7 +18725,7 @@ func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
 
 	if accessor, ok := a.(CStringVisitorTAccessor); ok {
 		accessor.SetCStringVisitorT(string_visitor)
-		Logf("T19433:")
+		Logf("T19493:")
 	}
 
 	return string_visitor
@@ -18710,11 +18770,11 @@ func newCTaskT(p *C.cef_task_t) *CTaskT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T19465:")
+	Tracef(unsafe.Pointer(p), "T19525:")
 	BaseAddRef(p)
 	go_task := CTaskT{noCopy{}, p}
 	runtime.SetFinalizer(&go_task, func(g *CTaskT) {
-		Tracef(unsafe.Pointer(g.p_task), "T19469:")
+		Tracef(unsafe.Pointer(g.p_task), "T19529:")
 		BaseRelease(g.p_task)
 	})
 	return &go_task
@@ -18746,13 +18806,13 @@ var task_handlers = struct {
 
 // AllocCTaskT allocates CTaskT and construct it
 func AllocCTaskT() *CTaskT {
-	up := c_calloc(1, C.sizeof_cefingo_task_wrapper_t, "T19501:")
+	up := c_calloc(1, C.sizeof_cefingo_task_wrapper_t, "T19561:")
 	cefp := C.cefingo_construct_task((*C.cefingo_task_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_task_t itself in DeassocFunc,
 		// or cef_task_t is never GCed.
-		Tracef(up, "T19507:")
+		Tracef(up, "T19567:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -18774,7 +18834,7 @@ func (task *CTaskT) Bind(a interface{}) *CTaskT {
 
 	if accessor, ok := a.(CTaskTAccessor); ok {
 		accessor.SetCTaskT(task)
-		Logf("T19541:")
+		Logf("T19601:")
 	}
 
 	return task
@@ -18818,11 +18878,11 @@ func newCTaskRunnerT(p *C.cef_task_runner_t) *CTaskRunnerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T19572:")
+	Tracef(unsafe.Pointer(p), "T19632:")
 	BaseAddRef(p)
 	go_task_runner := CTaskRunnerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_task_runner, func(g *CTaskRunnerT) {
-		Tracef(unsafe.Pointer(g.p_task_runner), "T19576:")
+		Tracef(unsafe.Pointer(g.p_task_runner), "T19636:")
 		BaseRelease(g.p_task_runner)
 	})
 	return &go_task_runner
@@ -19039,11 +19099,11 @@ func newCTextfieldT(p *C.cef_textfield_t) *CTextfieldT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T19804:")
+	Tracef(unsafe.Pointer(p), "T19864:")
 	BaseAddRef(p)
 	go_textfield := CTextfieldT{noCopy{}, p}
 	runtime.SetFinalizer(&go_textfield, func(g *CTextfieldT) {
-		Tracef(unsafe.Pointer(g.p_textfield), "T19808:")
+		Tracef(unsafe.Pointer(g.p_textfield), "T19868:")
 		BaseRelease(g.p_textfield)
 	})
 	return &go_textfield
@@ -19056,6 +19116,11 @@ func (textfield *CTextfieldT) HasOneRef() bool {
 
 func (p *C.cef_textfield_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (textfield *CTextfieldT) ToCViewT() *CViewT {
+	p := (*C.cef_view_t)(unsafe.Pointer(textfield.p_textfield))
+	return newCViewT(p)
 }
 
 ///
@@ -19502,11 +19567,11 @@ func newCTextfieldDelegateT(p *C.cef_textfield_delegate_t) *CTextfieldDelegateT 
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T20311:")
+	Tracef(unsafe.Pointer(p), "T20376:")
 	BaseAddRef(p)
 	go_textfield_delegate := CTextfieldDelegateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_textfield_delegate, func(g *CTextfieldDelegateT) {
-		Tracef(unsafe.Pointer(g.p_textfield_delegate), "T20315:")
+		Tracef(unsafe.Pointer(g.p_textfield_delegate), "T20380:")
 		BaseRelease(g.p_textfield_delegate)
 	})
 	return &go_textfield_delegate
@@ -19519,6 +19584,11 @@ func (textfield_delegate *CTextfieldDelegateT) HasOneRef() bool {
 
 func (p *C.cef_textfield_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (textfield_delegate *CTextfieldDelegateT) ToCViewDelegateT() *CViewDelegateT {
+	p := (*C.cef_view_delegate_t)(unsafe.Pointer(textfield_delegate.p_textfield_delegate))
+	return newCViewDelegateT(p)
 }
 
 ///
@@ -19570,13 +19640,13 @@ var textfield_delegate_handlers = struct {
 
 // AllocCTextfieldDelegateT allocates CTextfieldDelegateT and construct it
 func AllocCTextfieldDelegateT() *CTextfieldDelegateT {
-	up := c_calloc(1, C.sizeof_cefingo_textfield_delegate_wrapper_t, "T20379:")
+	up := c_calloc(1, C.sizeof_cefingo_textfield_delegate_wrapper_t, "T20449:")
 	cefp := C.cefingo_construct_textfield_delegate((*C.cefingo_textfield_delegate_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_textfield_delegate_t itself in DeassocFunc,
 		// or cef_textfield_delegate_t is never GCed.
-		Tracef(up, "T20385:")
+		Tracef(up, "T20455:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -19643,7 +19713,7 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 
 	if accessor, ok := a.(CTextfieldDelegateTAccessor); ok {
 		accessor.SetCTextfieldDelegateT(textfield_delegate)
-		Logf("T20464:")
+		Logf("T20534:")
 	}
 
 	return textfield_delegate
@@ -19687,11 +19757,11 @@ func newCUrlrequestT(p *C.cef_urlrequest_t) *CUrlrequestT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T20495:")
+	Tracef(unsafe.Pointer(p), "T20565:")
 	BaseAddRef(p)
 	go_urlrequest := CUrlrequestT{noCopy{}, p}
 	runtime.SetFinalizer(&go_urlrequest, func(g *CUrlrequestT) {
-		Tracef(unsafe.Pointer(g.p_urlrequest), "T20499:")
+		Tracef(unsafe.Pointer(g.p_urlrequest), "T20569:")
 		BaseRelease(g.p_urlrequest)
 	})
 	return &go_urlrequest
@@ -19868,11 +19938,11 @@ func newCUrlrequestClientT(p *C.cef_urlrequest_client_t) *CUrlrequestClientT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T20690:")
+	Tracef(unsafe.Pointer(p), "T20760:")
 	BaseAddRef(p)
 	go_urlrequest_client := CUrlrequestClientT{noCopy{}, p}
 	runtime.SetFinalizer(&go_urlrequest_client, func(g *CUrlrequestClientT) {
-		Tracef(unsafe.Pointer(g.p_urlrequest_client), "T20694:")
+		Tracef(unsafe.Pointer(g.p_urlrequest_client), "T20764:")
 		BaseRelease(g.p_urlrequest_client)
 	})
 	return &go_urlrequest_client
@@ -19981,13 +20051,13 @@ var urlrequest_client_handlers = struct {
 
 // AllocCUrlrequestClientT allocates CUrlrequestClientT and construct it
 func AllocCUrlrequestClientT() *CUrlrequestClientT {
-	up := c_calloc(1, C.sizeof_cefingo_urlrequest_client_wrapper_t, "T20803:")
+	up := c_calloc(1, C.sizeof_cefingo_urlrequest_client_wrapper_t, "T20873:")
 	cefp := C.cefingo_construct_urlrequest_client((*C.cefingo_urlrequest_client_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_urlrequest_client_t itself in DeassocFunc,
 		// or cef_urlrequest_client_t is never GCed.
-		Tracef(up, "T20809:")
+		Tracef(up, "T20879:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -20029,7 +20099,7 @@ func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestCli
 
 	if accessor, ok := a.(CUrlrequestClientTAccessor); ok {
 		accessor.SetCUrlrequestClientT(urlrequest_client)
-		Logf("T20863:")
+		Logf("T20933:")
 	}
 
 	return urlrequest_client
@@ -20073,11 +20143,11 @@ func newCV8contextT(p *C.cef_v8context_t) *CV8contextT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T20894:")
+	Tracef(unsafe.Pointer(p), "T20964:")
 	BaseAddRef(p)
 	go_v8context := CV8contextT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8context, func(g *CV8contextT) {
-		Tracef(unsafe.Pointer(g.p_v8context), "T20898:")
+		Tracef(unsafe.Pointer(g.p_v8context), "T20968:")
 		BaseRelease(g.p_v8context)
 	})
 	return &go_v8context
@@ -20296,11 +20366,11 @@ func newCV8handlerT(p *C.cef_v8handler_t) *CV8handlerT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T21137:")
+	Tracef(unsafe.Pointer(p), "T21207:")
 	BaseAddRef(p)
 	go_v8handler := CV8handlerT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8handler, func(g *CV8handlerT) {
-		Tracef(unsafe.Pointer(g.p_v8handler), "T21141:")
+		Tracef(unsafe.Pointer(g.p_v8handler), "T21211:")
 		BaseRelease(g.p_v8handler)
 	})
 	return &go_v8handler
@@ -20339,13 +20409,13 @@ var v8handler_handlers = struct {
 
 // AllocCV8handlerT allocates CV8handlerT and construct it
 func AllocCV8handlerT() *CV8handlerT {
-	up := c_calloc(1, C.sizeof_cefingo_v8handler_wrapper_t, "T21180:")
+	up := c_calloc(1, C.sizeof_cefingo_v8handler_wrapper_t, "T21250:")
 	cefp := C.cefingo_construct_v8handler((*C.cefingo_v8handler_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_v8handler_t itself in DeassocFunc,
 		// or cef_v8handler_t is never GCed.
-		Tracef(up, "T21186:")
+		Tracef(up, "T21256:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -20367,7 +20437,7 @@ func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
 
 	if accessor, ok := a.(CV8handlerTAccessor); ok {
 		accessor.SetCV8handlerT(v8handler)
-		Logf("T21220:")
+		Logf("T21290:")
 	}
 
 	return v8handler
@@ -20408,11 +20478,11 @@ func newCV8accessorT(p *C.cef_v8accessor_t) *CV8accessorT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T21248:")
+	Tracef(unsafe.Pointer(p), "T21318:")
 	BaseAddRef(p)
 	go_v8accessor := CV8accessorT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8accessor, func(g *CV8accessorT) {
-		Tracef(unsafe.Pointer(g.p_v8accessor), "T21252:")
+		Tracef(unsafe.Pointer(g.p_v8accessor), "T21322:")
 		BaseRelease(g.p_v8accessor)
 	})
 	return &go_v8accessor
@@ -20468,13 +20538,13 @@ var v8accessor_handlers = struct {
 
 // AllocCV8accessorT allocates CV8accessorT and construct it
 func AllocCV8accessorT() *CV8accessorT {
-	up := c_calloc(1, C.sizeof_cefingo_v8accessor_wrapper_t, "T21308:")
+	up := c_calloc(1, C.sizeof_cefingo_v8accessor_wrapper_t, "T21378:")
 	cefp := C.cefingo_construct_v8accessor((*C.cefingo_v8accessor_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_v8accessor_t itself in DeassocFunc,
 		// or cef_v8accessor_t is never GCed.
-		Tracef(up, "T21314:")
+		Tracef(up, "T21384:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -20501,7 +20571,7 @@ func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
 
 	if accessor, ok := a.(CV8accessorTAccessor); ok {
 		accessor.SetCV8accessorT(v8accessor)
-		Logf("T21353:")
+		Logf("T21423:")
 	}
 
 	return v8accessor
@@ -20544,11 +20614,11 @@ func newCV8interceptorT(p *C.cef_v8interceptor_t) *CV8interceptorT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T21383:")
+	Tracef(unsafe.Pointer(p), "T21453:")
 	BaseAddRef(p)
 	go_v8interceptor := CV8interceptorT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8interceptor, func(g *CV8interceptorT) {
-		Tracef(unsafe.Pointer(g.p_v8interceptor), "T21387:")
+		Tracef(unsafe.Pointer(g.p_v8interceptor), "T21457:")
 		BaseRelease(g.p_v8interceptor)
 	})
 	return &go_v8interceptor
@@ -20728,11 +20798,11 @@ func newCV8exceptionT(p *C.cef_v8exception_t) *CV8exceptionT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T21566:")
+	Tracef(unsafe.Pointer(p), "T21636:")
 	BaseAddRef(p)
 	go_v8exception := CV8exceptionT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8exception, func(g *CV8exceptionT) {
-		Tracef(unsafe.Pointer(g.p_v8exception), "T21570:")
+		Tracef(unsafe.Pointer(g.p_v8exception), "T21640:")
 		BaseRelease(g.p_v8exception)
 	})
 	return &go_v8exception
@@ -20888,11 +20958,11 @@ func newCV8arrayBufferReleaseCallbackT(p *C.cef_v8array_buffer_release_callback_
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T21741:")
+	Tracef(unsafe.Pointer(p), "T21811:")
 	BaseAddRef(p)
 	go_v8array_buffer_release_callback := CV8arrayBufferReleaseCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8array_buffer_release_callback, func(g *CV8arrayBufferReleaseCallbackT) {
-		Tracef(unsafe.Pointer(g.p_v8array_buffer_release_callback), "T21745:")
+		Tracef(unsafe.Pointer(g.p_v8array_buffer_release_callback), "T21815:")
 		BaseRelease(g.p_v8array_buffer_release_callback)
 	})
 	return &go_v8array_buffer_release_callback
@@ -20927,13 +20997,13 @@ var v8array_buffer_release_callback_handlers = struct {
 
 // AllocCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT and construct it
 func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
-	up := c_calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t, "T21780:")
+	up := c_calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t, "T21850:")
 	cefp := C.cefingo_construct_v8array_buffer_release_callback((*C.cefingo_v8array_buffer_release_callback_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_v8array_buffer_release_callback_t itself in DeassocFunc,
 		// or cef_v8array_buffer_release_callback_t is never GCed.
-		Tracef(up, "T21786:")
+		Tracef(up, "T21856:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -20955,7 +21025,7 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a in
 
 	if accessor, ok := a.(CV8arrayBufferReleaseCallbackTAccessor); ok {
 		accessor.SetCV8arrayBufferReleaseCallbackT(v8array_buffer_release_callback)
-		Logf("T21820:")
+		Logf("T21890:")
 	}
 
 	return v8array_buffer_release_callback
@@ -20997,11 +21067,11 @@ func newCV8valueT(p *C.cef_v8value_t) *CV8valueT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T21849:")
+	Tracef(unsafe.Pointer(p), "T21919:")
 	BaseAddRef(p)
 	go_v8value := CV8valueT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8value, func(g *CV8valueT) {
-		Tracef(unsafe.Pointer(g.p_v8value), "T21853:")
+		Tracef(unsafe.Pointer(g.p_v8value), "T21923:")
 		BaseRelease(g.p_v8value)
 	})
 	return &go_v8value
@@ -21619,7 +21689,7 @@ func (self *CV8valueT) ExecuteFunction(
 		BaseAddRef(goTmpobject)
 	}
 	argumentsCount := len(arguments)
-	tmparguments := c_calloc(C.size_t(argumentsCount), (C.size_t)(unsafe.Sizeof(arguments[0])), "T22521:cef_v8value_t::execute_function::arguments")
+	tmparguments := c_calloc(C.size_t(argumentsCount), (C.size_t)(unsafe.Sizeof(arguments[0])), "T22591:cef_v8value_t::execute_function::arguments")
 	slice := (*[1 << 30]*C.cef_v8value_t)(tmparguments)[:argumentsCount:argumentsCount]
 	for i, v := range arguments {
 		cefp := v.p_v8value
@@ -21659,7 +21729,7 @@ func (self *CV8valueT) ExecuteFunctionWithContext(
 		BaseAddRef(goTmpobject)
 	}
 	argumentsCount := len(arguments)
-	tmparguments := c_calloc(C.size_t(argumentsCount), (C.size_t)(unsafe.Sizeof(arguments[0])), "T22559:cef_v8value_t::execute_function_with_context::arguments")
+	tmparguments := c_calloc(C.size_t(argumentsCount), (C.size_t)(unsafe.Sizeof(arguments[0])), "T22629:cef_v8value_t::execute_function_with_context::arguments")
 	slice := (*[1 << 30]*C.cef_v8value_t)(tmparguments)[:argumentsCount:argumentsCount]
 	for i, v := range arguments {
 		cefp := v.p_v8value
@@ -21913,11 +21983,11 @@ func newCV8stackTraceT(p *C.cef_v8stack_trace_t) *CV8stackTraceT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T22853:")
+	Tracef(unsafe.Pointer(p), "T22923:")
 	BaseAddRef(p)
 	go_v8stack_trace := CV8stackTraceT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8stack_trace, func(g *CV8stackTraceT) {
-		Tracef(unsafe.Pointer(g.p_v8stack_trace), "T22857:")
+		Tracef(unsafe.Pointer(g.p_v8stack_trace), "T22927:")
 		BaseRelease(g.p_v8stack_trace)
 	})
 	return &go_v8stack_trace
@@ -22019,11 +22089,11 @@ func newCV8stackFrameT(p *C.cef_v8stack_frame_t) *CV8stackFrameT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T22964:")
+	Tracef(unsafe.Pointer(p), "T23034:")
 	BaseAddRef(p)
 	go_v8stack_frame := CV8stackFrameT{noCopy{}, p}
 	runtime.SetFinalizer(&go_v8stack_frame, func(g *CV8stackFrameT) {
-		Tracef(unsafe.Pointer(g.p_v8stack_frame), "T22968:")
+		Tracef(unsafe.Pointer(g.p_v8stack_frame), "T23038:")
 		BaseRelease(g.p_v8stack_frame)
 	})
 	return &go_v8stack_frame
@@ -22259,11 +22329,11 @@ func newCValueT(p *C.cef_value_t) *CValueT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T23220:")
+	Tracef(unsafe.Pointer(p), "T23290:")
 	BaseAddRef(p)
 	go_value := CValueT{noCopy{}, p}
 	runtime.SetFinalizer(&go_value, func(g *CValueT) {
-		Tracef(unsafe.Pointer(g.p_value), "T23224:")
+		Tracef(unsafe.Pointer(g.p_value), "T23294:")
 		BaseRelease(g.p_value)
 	})
 	return &go_value
@@ -22652,11 +22722,11 @@ func newCBinaryValueT(p *C.cef_binary_value_t) *CBinaryValueT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T23649:")
+	Tracef(unsafe.Pointer(p), "T23719:")
 	BaseAddRef(p)
 	go_binary_value := CBinaryValueT{noCopy{}, p}
 	runtime.SetFinalizer(&go_binary_value, func(g *CBinaryValueT) {
-		Tracef(unsafe.Pointer(g.p_binary_value), "T23653:")
+		Tracef(unsafe.Pointer(g.p_binary_value), "T23723:")
 		BaseRelease(g.p_binary_value)
 	})
 	return &go_binary_value
@@ -22823,11 +22893,11 @@ func newCDictionaryValueT(p *C.cef_dictionary_value_t) *CDictionaryValueT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T23830:")
+	Tracef(unsafe.Pointer(p), "T23900:")
 	BaseAddRef(p)
 	go_dictionary_value := CDictionaryValueT{noCopy{}, p}
 	runtime.SetFinalizer(&go_dictionary_value, func(g *CDictionaryValueT) {
-		Tracef(unsafe.Pointer(g.p_dictionary_value), "T23834:")
+		Tracef(unsafe.Pointer(g.p_dictionary_value), "T23904:")
 		BaseRelease(g.p_dictionary_value)
 	})
 	return &go_dictionary_value
@@ -23381,11 +23451,11 @@ func newCListValueT(p *C.cef_list_value_t) *CListValueT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T24423:")
+	Tracef(unsafe.Pointer(p), "T24493:")
 	BaseAddRef(p)
 	go_list_value := CListValueT{noCopy{}, p}
 	runtime.SetFinalizer(&go_list_value, func(g *CListValueT) {
-		Tracef(unsafe.Pointer(g.p_list_value), "T24427:")
+		Tracef(unsafe.Pointer(g.p_list_value), "T24497:")
 		BaseRelease(g.p_list_value)
 	})
 	return &go_list_value
@@ -23888,11 +23958,11 @@ func newCViewT(p *C.cef_view_t) *CViewT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T24965:")
+	Tracef(unsafe.Pointer(p), "T25035:")
 	BaseAddRef(p)
 	go_view := CViewT{noCopy{}, p}
 	runtime.SetFinalizer(&go_view, func(g *CViewT) {
-		Tracef(unsafe.Pointer(g.p_view), "T24969:")
+		Tracef(unsafe.Pointer(g.p_view), "T25039:")
 		BaseRelease(g.p_view)
 	})
 	return &go_view
@@ -24566,11 +24636,11 @@ func newCViewDelegateT(p *C.cef_view_delegate_t) *CViewDelegateT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T25719:")
+	Tracef(unsafe.Pointer(p), "T25789:")
 	BaseAddRef(p)
 	go_view_delegate := CViewDelegateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_view_delegate, func(g *CViewDelegateT) {
-		Tracef(unsafe.Pointer(g.p_view_delegate), "T25723:")
+		Tracef(unsafe.Pointer(g.p_view_delegate), "T25793:")
 		BaseRelease(g.p_view_delegate)
 	})
 	return &go_view_delegate
@@ -24705,13 +24775,13 @@ var view_delegate_handlers = struct {
 
 // AllocCViewDelegateT allocates CViewDelegateT and construct it
 func AllocCViewDelegateT() *CViewDelegateT {
-	up := c_calloc(1, C.sizeof_cefingo_view_delegate_wrapper_t, "T25858:")
+	up := c_calloc(1, C.sizeof_cefingo_view_delegate_wrapper_t, "T25928:")
 	cefp := C.cefingo_construct_view_delegate((*C.cefingo_view_delegate_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_view_delegate_t itself in DeassocFunc,
 		// or cef_view_delegate_t is never GCed.
-		Tracef(up, "T25864:")
+		Tracef(up, "T25934:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -24768,7 +24838,7 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 
 	if accessor, ok := a.(CViewDelegateTAccessor); ok {
 		accessor.SetCViewDelegateT(view_delegate)
-		Logf("T25933:")
+		Logf("T26003:")
 	}
 
 	return view_delegate
@@ -24808,11 +24878,11 @@ func newCWebPluginInfoT(p *C.cef_web_plugin_info_t) *CWebPluginInfoT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T25960:")
+	Tracef(unsafe.Pointer(p), "T26030:")
 	BaseAddRef(p)
 	go_web_plugin_info := CWebPluginInfoT{noCopy{}, p}
 	runtime.SetFinalizer(&go_web_plugin_info, func(g *CWebPluginInfoT) {
-		Tracef(unsafe.Pointer(g.p_web_plugin_info), "T25964:")
+		Tracef(unsafe.Pointer(g.p_web_plugin_info), "T26034:")
 		BaseRelease(g.p_web_plugin_info)
 	})
 	return &go_web_plugin_info
@@ -24924,11 +24994,11 @@ func newCWebPluginInfoVisitorT(p *C.cef_web_plugin_info_visitor_t) *CWebPluginIn
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T26083:")
+	Tracef(unsafe.Pointer(p), "T26153:")
 	BaseAddRef(p)
 	go_web_plugin_info_visitor := CWebPluginInfoVisitorT{noCopy{}, p}
 	runtime.SetFinalizer(&go_web_plugin_info_visitor, func(g *CWebPluginInfoVisitorT) {
-		Tracef(unsafe.Pointer(g.p_web_plugin_info_visitor), "T26087:")
+		Tracef(unsafe.Pointer(g.p_web_plugin_info_visitor), "T26157:")
 		BaseRelease(g.p_web_plugin_info_visitor)
 	})
 	return &go_web_plugin_info_visitor
@@ -24966,13 +25036,13 @@ var web_plugin_info_visitor_handlers = struct {
 
 // AllocCWebPluginInfoVisitorT allocates CWebPluginInfoVisitorT and construct it
 func AllocCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT {
-	up := c_calloc(1, C.sizeof_cefingo_web_plugin_info_visitor_wrapper_t, "T26125:")
+	up := c_calloc(1, C.sizeof_cefingo_web_plugin_info_visitor_wrapper_t, "T26195:")
 	cefp := C.cefingo_construct_web_plugin_info_visitor((*C.cefingo_web_plugin_info_visitor_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_web_plugin_info_visitor_t itself in DeassocFunc,
 		// or cef_web_plugin_info_visitor_t is never GCed.
-		Tracef(up, "T26131:")
+		Tracef(up, "T26201:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -24994,7 +25064,7 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWeb
 
 	if accessor, ok := a.(CWebPluginInfoVisitorTAccessor); ok {
 		accessor.SetCWebPluginInfoVisitorT(web_plugin_info_visitor)
-		Logf("T26165:")
+		Logf("T26235:")
 	}
 
 	return web_plugin_info_visitor
@@ -25033,11 +25103,11 @@ func newCWebPluginUnstableCallbackT(p *C.cef_web_plugin_unstable_callback_t) *CW
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T26191:")
+	Tracef(unsafe.Pointer(p), "T26261:")
 	BaseAddRef(p)
 	go_web_plugin_unstable_callback := CWebPluginUnstableCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_web_plugin_unstable_callback, func(g *CWebPluginUnstableCallbackT) {
-		Tracef(unsafe.Pointer(g.p_web_plugin_unstable_callback), "T26195:")
+		Tracef(unsafe.Pointer(g.p_web_plugin_unstable_callback), "T26265:")
 		BaseRelease(g.p_web_plugin_unstable_callback)
 	})
 	return &go_web_plugin_unstable_callback
@@ -25073,13 +25143,13 @@ var web_plugin_unstable_callback_handlers = struct {
 
 // AllocCWebPluginUnstableCallbackT allocates CWebPluginUnstableCallbackT and construct it
 func AllocCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT {
-	up := c_calloc(1, C.sizeof_cefingo_web_plugin_unstable_callback_wrapper_t, "T26231:")
+	up := c_calloc(1, C.sizeof_cefingo_web_plugin_unstable_callback_wrapper_t, "T26301:")
 	cefp := C.cefingo_construct_web_plugin_unstable_callback((*C.cefingo_web_plugin_unstable_callback_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_web_plugin_unstable_callback_t itself in DeassocFunc,
 		// or cef_web_plugin_unstable_callback_t is never GCed.
-		Tracef(up, "T26237:")
+		Tracef(up, "T26307:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -25101,7 +25171,7 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interfac
 
 	if accessor, ok := a.(CWebPluginUnstableCallbackTAccessor); ok {
 		accessor.SetCWebPluginUnstableCallbackT(web_plugin_unstable_callback)
-		Logf("T26271:")
+		Logf("T26341:")
 	}
 
 	return web_plugin_unstable_callback
@@ -25141,11 +25211,11 @@ func newCRegisterCdmCallbackT(p *C.cef_register_cdm_callback_t) *CRegisterCdmCal
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T26298:")
+	Tracef(unsafe.Pointer(p), "T26368:")
 	BaseAddRef(p)
 	go_register_cdm_callback := CRegisterCdmCallbackT{noCopy{}, p}
 	runtime.SetFinalizer(&go_register_cdm_callback, func(g *CRegisterCdmCallbackT) {
-		Tracef(unsafe.Pointer(g.p_register_cdm_callback), "T26302:")
+		Tracef(unsafe.Pointer(g.p_register_cdm_callback), "T26372:")
 		BaseRelease(g.p_register_cdm_callback)
 	})
 	return &go_register_cdm_callback
@@ -25182,13 +25252,13 @@ var register_cdm_callback_handlers = struct {
 
 // AllocCRegisterCdmCallbackT allocates CRegisterCdmCallbackT and construct it
 func AllocCRegisterCdmCallbackT() *CRegisterCdmCallbackT {
-	up := c_calloc(1, C.sizeof_cefingo_register_cdm_callback_wrapper_t, "T26339:")
+	up := c_calloc(1, C.sizeof_cefingo_register_cdm_callback_wrapper_t, "T26409:")
 	cefp := C.cefingo_construct_register_cdm_callback((*C.cefingo_register_cdm_callback_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_register_cdm_callback_t itself in DeassocFunc,
 		// or cef_register_cdm_callback_t is never GCed.
-		Tracef(up, "T26345:")
+		Tracef(up, "T26415:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -25210,7 +25280,7 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegist
 
 	if accessor, ok := a.(CRegisterCdmCallbackTAccessor); ok {
 		accessor.SetCRegisterCdmCallbackT(register_cdm_callback)
-		Logf("T26379:")
+		Logf("T26449:")
 	}
 
 	return register_cdm_callback
@@ -25389,11 +25459,11 @@ func newCWindowT(p *C.cef_window_t) *CWindowT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T26552:")
+	Tracef(unsafe.Pointer(p), "T26622:")
 	BaseAddRef(p)
 	go_window := CWindowT{noCopy{}, p}
 	runtime.SetFinalizer(&go_window, func(g *CWindowT) {
-		Tracef(unsafe.Pointer(g.p_window), "T26556:")
+		Tracef(unsafe.Pointer(g.p_window), "T26626:")
 		BaseRelease(g.p_window)
 	})
 	return &go_window
@@ -25406,6 +25476,11 @@ func (window *CWindowT) HasOneRef() bool {
 
 func (p *C.cef_window_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (window *CWindowT) ToCPanelT() *CPanelT {
+	p := (*C.cef_panel_t)(unsafe.Pointer(window.p_window))
+	return newCPanelT(p)
 }
 
 ///
@@ -25897,11 +25972,11 @@ func newCWindowDelegateT(p *C.cef_window_delegate_t) *CWindowDelegateT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T27119:")
+	Tracef(unsafe.Pointer(p), "T27194:")
 	BaseAddRef(p)
 	go_window_delegate := CWindowDelegateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_window_delegate, func(g *CWindowDelegateT) {
-		Tracef(unsafe.Pointer(g.p_window_delegate), "T27123:")
+		Tracef(unsafe.Pointer(g.p_window_delegate), "T27198:")
 		BaseRelease(g.p_window_delegate)
 	})
 	return &go_window_delegate
@@ -25914,6 +25989,11 @@ func (window_delegate *CWindowDelegateT) HasOneRef() bool {
 
 func (p *C.cef_window_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (window_delegate *CWindowDelegateT) ToCPanelDelegateT() *CPanelDelegateT {
+	p := (*C.cef_panel_delegate_t)(unsafe.Pointer(window_delegate.p_window_delegate))
+	return newCPanelDelegateT(p)
 }
 
 ///
@@ -26074,13 +26154,13 @@ var window_delegate_handlers = struct {
 
 // AllocCWindowDelegateT allocates CWindowDelegateT and construct it
 func AllocCWindowDelegateT() *CWindowDelegateT {
-	up := c_calloc(1, C.sizeof_cefingo_window_delegate_wrapper_t, "T27296:")
+	up := c_calloc(1, C.sizeof_cefingo_window_delegate_wrapper_t, "T27376:")
 	cefp := C.cefingo_construct_window_delegate((*C.cefingo_window_delegate_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_window_delegate_t itself in DeassocFunc,
 		// or cef_window_delegate_t is never GCed.
-		Tracef(up, "T27302:")
+		Tracef(up, "T27382:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -26187,7 +26267,7 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 
 	if accessor, ok := a.(CWindowDelegateTAccessor); ok {
 		accessor.SetCWindowDelegateT(window_delegate)
-		Logf("T27421:")
+		Logf("T27501:")
 	}
 
 	return window_delegate
@@ -26227,11 +26307,11 @@ func newCX509certPrincipalT(p *C.cef_x509cert_principal_t) *CX509certPrincipalT 
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T27448:")
+	Tracef(unsafe.Pointer(p), "T27528:")
 	BaseAddRef(p)
 	go_x509cert_principal := CX509certPrincipalT{noCopy{}, p}
 	runtime.SetFinalizer(&go_x509cert_principal, func(g *CX509certPrincipalT) {
-		Tracef(unsafe.Pointer(g.p_x509cert_principal), "T27452:")
+		Tracef(unsafe.Pointer(g.p_x509cert_principal), "T27532:")
 		BaseRelease(g.p_x509cert_principal)
 	})
 	return &go_x509cert_principal
@@ -26404,11 +26484,11 @@ func newCX509certificateT(p *C.cef_x509certificate_t) *CX509certificateT {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T27638:")
+	Tracef(unsafe.Pointer(p), "T27718:")
 	BaseAddRef(p)
 	go_x509certificate := CX509certificateT{noCopy{}, p}
 	runtime.SetFinalizer(&go_x509certificate, func(g *CX509certificateT) {
-		Tracef(unsafe.Pointer(g.p_x509certificate), "T27642:")
+		Tracef(unsafe.Pointer(g.p_x509certificate), "T27722:")
 		BaseRelease(g.p_x509certificate)
 	})
 	return &go_x509certificate
