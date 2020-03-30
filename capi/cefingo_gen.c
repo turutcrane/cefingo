@@ -3766,6 +3766,262 @@ cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_
 	return (cef_load_handler_t*)load_handler;
 }
 
+struct _cef_registration_t* cefingo_media_router_add_observer(
+	struct _cef_media_router_t* self,
+	struct _cef_media_observer_t* observer
+)
+{
+	return self->add_observer(
+		self, 
+		observer
+	);
+}
+
+struct _cef_media_source_t* cefingo_media_router_get_source(
+	struct _cef_media_router_t* self,
+	const cef_string_t* urn
+)
+{
+	return self->get_source(
+		self, 
+		urn
+	);
+}
+
+void cefingo_media_router_notify_current_sinks(
+	struct _cef_media_router_t* self
+)
+{
+	self->notify_current_sinks(
+		self
+	);
+}
+
+void cefingo_media_router_create_route(
+	struct _cef_media_router_t* self,
+	struct _cef_media_source_t* source,
+	struct _cef_media_sink_t* sink,
+	struct _cef_media_route_create_callback_t* callback
+)
+{
+	self->create_route(
+		self, 
+		source, 
+		sink, 
+		callback
+	);
+}
+
+void cefingo_media_router_notify_current_routes(
+	struct _cef_media_router_t* self
+)
+{
+	self->notify_current_routes(
+		self
+	);
+}
+
+typedef void (*T_CEF_MEDIA_OBSERVER_T_ON_SINKS)(
+	struct _cef_media_observer_t*, 
+	size_t, 
+	struct _cef_media_sink_t* const *
+);
+typedef void (*T_CEF_MEDIA_OBSERVER_T_ON_ROUTES)(
+	struct _cef_media_observer_t*, 
+	size_t, 
+	struct _cef_media_route_t* const *
+);
+typedef void (*T_CEF_MEDIA_OBSERVER_T_ON_ROUTE_MESSAGE_RECEIVED)(
+	struct _cef_media_observer_t*, 
+	struct _cef_media_route_t*, 
+	const void*, 
+	size_t
+);
+
+cef_media_observer_t *cefingo_construct_media_observer(cefingo_media_observer_wrapper_t* media_observer)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*media_observer), counter),
+		(cef_base_ref_counted_t*) media_observer);
+	
+	// callbacks
+	media_observer->body.on_sinks = (T_CEF_MEDIA_OBSERVER_T_ON_SINKS)
+		cefingo_media_observer_on_sinks;
+	media_observer->body.on_routes = (T_CEF_MEDIA_OBSERVER_T_ON_ROUTES)
+		cefingo_media_observer_on_routes;
+	media_observer->body.on_route_state_changed = 
+		cefingo_media_observer_on_route_state_changed;
+	media_observer->body.on_route_message_received = (T_CEF_MEDIA_OBSERVER_T_ON_ROUTE_MESSAGE_RECEIVED)
+		cefingo_media_observer_on_route_message_received;
+
+	return (cef_media_observer_t*)media_observer;
+}
+
+cef_string_userfree_t cefingo_media_route_get_id(
+	struct _cef_media_route_t* self
+)
+{
+	return self->get_id(
+		self
+	);
+}
+
+struct _cef_media_source_t* cefingo_media_route_get_source(
+	struct _cef_media_route_t* self
+)
+{
+	return self->get_source(
+		self
+	);
+}
+
+struct _cef_media_sink_t* cefingo_media_route_get_sink(
+	struct _cef_media_route_t* self
+)
+{
+	return self->get_sink(
+		self
+	);
+}
+
+void cefingo_media_route_send_route_message(
+	struct _cef_media_route_t* self,
+	const void* message,
+	size_t message_size
+)
+{
+	self->send_route_message(
+		self, 
+		message, 
+		message_size
+	);
+}
+
+void cefingo_media_route_terminate(
+	struct _cef_media_route_t* self
+)
+{
+	self->terminate(
+		self
+	);
+}
+
+void cefingo_media_route_create_callback_on_media_route_create_finished(
+	struct _cef_media_route_create_callback_t* self,
+	cef_media_route_create_result_t result,
+	const cef_string_t* error,
+	struct _cef_media_route_t* route
+)
+{
+	self->on_media_route_create_finished(
+		self, 
+		result, 
+		error, 
+		route
+	);
+}
+
+cef_string_userfree_t cefingo_media_sink_get_id(
+	struct _cef_media_sink_t* self
+)
+{
+	return self->get_id(
+		self
+	);
+}
+
+int cefingo_media_sink_is_valid(
+	struct _cef_media_sink_t* self
+)
+{
+	return self->is_valid(
+		self
+	);
+}
+
+cef_string_userfree_t cefingo_media_sink_get_name(
+	struct _cef_media_sink_t* self
+)
+{
+	return self->get_name(
+		self
+	);
+}
+
+cef_string_userfree_t cefingo_media_sink_get_description(
+	struct _cef_media_sink_t* self
+)
+{
+	return self->get_description(
+		self
+	);
+}
+
+int cefingo_media_sink_is_cast_sink(
+	struct _cef_media_sink_t* self
+)
+{
+	return self->is_cast_sink(
+		self
+	);
+}
+
+int cefingo_media_sink_is_dial_sink(
+	struct _cef_media_sink_t* self
+)
+{
+	return self->is_dial_sink(
+		self
+	);
+}
+
+int cefingo_media_sink_is_compatible_with(
+	struct _cef_media_sink_t* self,
+	struct _cef_media_source_t* source
+)
+{
+	return self->is_compatible_with(
+		self, 
+		source
+	);
+}
+
+cef_string_userfree_t cefingo_media_source_get_id(
+	struct _cef_media_source_t* self
+)
+{
+	return self->get_id(
+		self
+	);
+}
+
+int cefingo_media_source_is_valid(
+	struct _cef_media_source_t* self
+)
+{
+	return self->is_valid(
+		self
+	);
+}
+
+int cefingo_media_source_is_cast_source(
+	struct _cef_media_source_t* self
+)
+{
+	return self->is_cast_source(
+		self
+	);
+}
+
+int cefingo_media_source_is_dial_source(
+	struct _cef_media_source_t* self
+)
+{
+	return self->is_dial_source(
+		self
+	);
+}
+
 void cefingo_menu_button_show_menu(
 	struct _cef_menu_button_t* self,
 	struct _cef_menu_model_t* menu_model,
@@ -5926,6 +6182,15 @@ struct _cef_extension_t* cefingo_request_context_get_extension(
 	return self->get_extension(
 		self, 
 		extension_id
+	);
+}
+
+struct _cef_media_router_t* cefingo_request_context_get_media_router(
+	struct _cef_request_context_t* self
+)
+{
+	return self->get_media_router(
+		self
 	);
 }
 

@@ -4313,3 +4313,36 @@ func (st *CCompositionUnderlineT) Thick() int {
 func (st *CCompositionUnderlineT) SetThick(v int) {
 	st.thick = (C.int)(v)
 }
+
+///
+// Result codes for CefMediaRouter::CreateRoute. These constants match
+// their equivalents in Chromium's route_request_result.h and should not be
+// renumbered.
+///
+type CMediaRouteCreateResultT C.cef_media_route_create_result_t
+
+const (
+	CefMrcrUnknownError        CMediaRouteCreateResultT = C.CEF_MRCR_UNKNOWN_ERROR
+	CefMrcrOk                  CMediaRouteCreateResultT = C.CEF_MRCR_OK
+	CefMrcrTimedOut            CMediaRouteCreateResultT = C.CEF_MRCR_TIMED_OUT
+	CefMrcrRouteNotFound       CMediaRouteCreateResultT = C.CEF_MRCR_ROUTE_NOT_FOUND
+	CefMrcrSinkNotFound        CMediaRouteCreateResultT = C.CEF_MRCR_SINK_NOT_FOUND
+	CefMrcrInvalidOrigin       CMediaRouteCreateResultT = C.CEF_MRCR_INVALID_ORIGIN
+	CefMrcrNoSupportedProvider CMediaRouteCreateResultT = C.CEF_MRCR_NO_SUPPORTED_PROVIDER
+	CefMrcrCancelled           CMediaRouteCreateResultT = C.CEF_MRCR_CANCELLED
+	CefMrcrRouteAlreadyExists  CMediaRouteCreateResultT = C.CEF_MRCR_ROUTE_ALREADY_EXISTS
+	CefMrcrTotalCount          CMediaRouteCreateResultT = C.CEF_MRCR_TOTAL_COUNT
+)
+
+///
+// Connection state for a MediaRoute object.
+///
+type CMediaRouteConnectionStateT C.cef_media_route_connection_state_t
+
+const (
+	CefMrcsUnknown    CMediaRouteConnectionStateT = C.CEF_MRCS_UNKNOWN
+	CefMrcsConnecting CMediaRouteConnectionStateT = C.CEF_MRCS_CONNECTING
+	CefMrcsConnected  CMediaRouteConnectionStateT = C.CEF_MRCS_CONNECTED
+	CefMrcsClosed     CMediaRouteConnectionStateT = C.CEF_MRCS_CLOSED
+	CefMrcsTerminated CMediaRouteConnectionStateT = C.CEF_MRCS_TERMINATED
+)

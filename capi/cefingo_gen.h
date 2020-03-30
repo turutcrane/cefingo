@@ -1487,6 +1487,108 @@ extern cef_life_span_handler_t *cefingo_construct_life_span_handler(cefingo_life
 CEFINGO_REF_COUNTER_WRAPPER(cef_load_handler_t, cefingo_load_handler_wrapper_t);
 extern cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_t* load_handler);
 
+extern struct _cef_registration_t* cefingo_media_router_add_observer(
+	struct _cef_media_router_t* self,
+	struct _cef_media_observer_t* observer
+);
+
+extern struct _cef_media_source_t* cefingo_media_router_get_source(
+	struct _cef_media_router_t* self,
+	const cef_string_t* urn
+);
+
+extern void cefingo_media_router_notify_current_sinks(
+	struct _cef_media_router_t* self
+);
+
+extern void cefingo_media_router_create_route(
+	struct _cef_media_router_t* self,
+	struct _cef_media_source_t* source,
+	struct _cef_media_sink_t* sink,
+	struct _cef_media_route_create_callback_t* callback
+);
+
+extern void cefingo_media_router_notify_current_routes(
+	struct _cef_media_router_t* self
+);
+
+CEFINGO_REF_COUNTER_WRAPPER(cef_media_observer_t, cefingo_media_observer_wrapper_t);
+extern cef_media_observer_t *cefingo_construct_media_observer(cefingo_media_observer_wrapper_t* media_observer);
+
+extern cef_string_userfree_t cefingo_media_route_get_id(
+	struct _cef_media_route_t* self
+);
+
+extern struct _cef_media_source_t* cefingo_media_route_get_source(
+	struct _cef_media_route_t* self
+);
+
+extern struct _cef_media_sink_t* cefingo_media_route_get_sink(
+	struct _cef_media_route_t* self
+);
+
+extern void cefingo_media_route_send_route_message(
+	struct _cef_media_route_t* self,
+	const void* message,
+	size_t message_size
+);
+
+extern void cefingo_media_route_terminate(
+	struct _cef_media_route_t* self
+);
+
+extern void cefingo_media_route_create_callback_on_media_route_create_finished(
+	struct _cef_media_route_create_callback_t* self,
+	cef_media_route_create_result_t result,
+	const cef_string_t* error,
+	struct _cef_media_route_t* route
+);
+
+extern cef_string_userfree_t cefingo_media_sink_get_id(
+	struct _cef_media_sink_t* self
+);
+
+extern int cefingo_media_sink_is_valid(
+	struct _cef_media_sink_t* self
+);
+
+extern cef_string_userfree_t cefingo_media_sink_get_name(
+	struct _cef_media_sink_t* self
+);
+
+extern cef_string_userfree_t cefingo_media_sink_get_description(
+	struct _cef_media_sink_t* self
+);
+
+extern int cefingo_media_sink_is_cast_sink(
+	struct _cef_media_sink_t* self
+);
+
+extern int cefingo_media_sink_is_dial_sink(
+	struct _cef_media_sink_t* self
+);
+
+extern int cefingo_media_sink_is_compatible_with(
+	struct _cef_media_sink_t* self,
+	struct _cef_media_source_t* source
+);
+
+extern cef_string_userfree_t cefingo_media_source_get_id(
+	struct _cef_media_source_t* self
+);
+
+extern int cefingo_media_source_is_valid(
+	struct _cef_media_source_t* self
+);
+
+extern int cefingo_media_source_is_cast_source(
+	struct _cef_media_source_t* self
+);
+
+extern int cefingo_media_source_is_dial_source(
+	struct _cef_media_source_t* self
+);
+
 extern void cefingo_menu_button_show_menu(
 	struct _cef_menu_button_t* self,
 	struct _cef_menu_model_t* menu_model,
@@ -2374,6 +2476,10 @@ extern int cefingo_request_context_get_extensions(
 extern struct _cef_extension_t* cefingo_request_context_get_extension(
 	struct _cef_request_context_t* self,
 	const cef_string_t* extension_id
+);
+
+extern struct _cef_media_router_t* cefingo_request_context_get_media_router(
+	struct _cef_request_context_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_request_context_handler_t, cefingo_request_context_handler_wrapper_t);

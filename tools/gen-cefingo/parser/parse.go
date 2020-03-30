@@ -48,6 +48,7 @@ var TargetFileList = map[string]void{
 	"cef_keyboard_handler_capi.h":         setElement,
 	"cef_life_span_handler_capi.h":        setElement,
 	"cef_load_handler_capi.h":             setElement,
+	"cef_media_router_capi.h":             setElement,
 	"cef_menu_model_capi.h":               setElement,
 	"cef_menu_model_delegate_capi.h":      setElement,
 	"cef_process_message_capi.h":          setElement,
@@ -69,6 +70,7 @@ var TargetFileList = map[string]void{
 	"cef_ssl_status_capi.h":               setElement,
 	"cef_string_visitor_capi.h":           setElement,
 	"cef_stream_capi.h":                   setElement,
+	"cef_registration_capi.h":             setElement,
 	"cef_response_capi.h":                 setElement,
 	"cef_scheme_capi.h":                   setElement,
 	"cef_task_capi.h":                     setElement,
@@ -130,6 +132,7 @@ var handlerClasses = map[string]void{
 	"cef_life_span_handler_t":               setElement,
 	"cef_load_handler_t":                    setElement,
 	"cef_menu_model_delegate_t":             setElement,
+	"cef_media_observer_t":                  setElement,
 	"cef_print_handler_t":                   setElement,
 	"cef_read_handler_t":                    setElement,
 	"cef_register_cdm_callback_t":           setElement,
@@ -302,6 +305,8 @@ var byteSliceParameter = map[string]string{
 var byteSliceLengthParameter = map[string]string{}
 
 var sliceParameter = map[string]string{
+	"cef_media_observer_t::on_sinks::sinks":                             "sinksCount",
+	"cef_media_observer_t::on_routes::routes":                           "routesCount",
 	"cef_post_data_t::get_elements::elements":                           "elementsCount",
 	"cef_request_handler_t::on_select_client_certificate::certificates": "certificatesCount",
 	"cef_v8handler_t::execute::arguments":                               "argumentsCount",
