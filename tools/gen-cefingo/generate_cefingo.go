@@ -45,7 +45,7 @@ func main() {
 
 	var goFile *Generator
 	fn := []string{}
-	for fname, _ := range parser.TargetFileList {
+	for fname, _ := range parser.FileDefs {
 		fn = append(fn, fname)
 	}
 	sort.Strings(fn)

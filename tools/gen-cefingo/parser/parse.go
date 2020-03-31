@@ -18,93 +18,13 @@ type void struct{}
 
 var setElement void
 
-var TargetFileList = map[string]void{
-	"cef_types.h":                         setElement,
-	"cef_types_win.h":                     setElement,
-	"cef_accessibility_handler_capi.h":    setElement,
-	"cef_app_capi.h":                      setElement,
-	"cef_auth_callback_capi.h":            setElement,
-	"cef_browser_capi.h":                  setElement,
-	"cef_browser_process_handler_capi.h":  setElement,
-	"cef_callback_capi.h":                 setElement,
-	"cef_cookie_capi.h":                   setElement,
-	"cef_client_capi.h":                   setElement,
-	"cef_command_line_capi.h":             setElement,
-	"cef_context_menu_handler_capi.h":     setElement,
-	"cef_dialog_handler_capi.h":           setElement,
-	"cef_display_handler_capi.h":          setElement,
-	"cef_download_handler_capi.h":         setElement,
-	"cef_download_item_capi.h":            setElement,
-	"cef_dom_capi.h":                      setElement,
-	"cef_drag_data_capi.h":                setElement,
-	"cef_drag_handler_capi.h":             setElement,
-	"cef_extension_capi.h":                setElement,
-	"cef_extension_handler_capi.h":        setElement,
-	"cef_frame_capi.h":                    setElement,
-	"cef_find_handler_capi.h":             setElement,
-	"cef_focus_handler_capi.h":            setElement,
-	"cef_image_capi.h":                    setElement,
-	"cef_jsdialog_handler_capi.h":         setElement,
-	"cef_keyboard_handler_capi.h":         setElement,
-	"cef_life_span_handler_capi.h":        setElement,
-	"cef_load_handler_capi.h":             setElement,
-	"cef_media_router_capi.h":             setElement,
-	"cef_menu_model_capi.h":               setElement,
-	"cef_menu_model_delegate_capi.h":      setElement,
-	"cef_process_message_capi.h":          setElement,
-	"cef_navigation_entry_capi.h":         setElement,
-	"cef_print_handler_capi.h":            setElement,
-	"cef_print_settings_capi.h":           setElement,
-	"cef_render_handler_capi.h":           setElement,
-	"cef_render_process_handler_capi.h":   setElement,
-	"cef_request_capi.h":                  setElement,
-	"cef_request_callback_capi.h":         setElement,
-	"cef_request_context_capi.h":          setElement,
-	"cef_request_context_handler_capi.h":  setElement,
-	"cef_request_handler_capi.h":          setElement,
-	"cef_resource_handler_capi.h":         setElement,
-	"cef_resource_bundle_handler_capi.h":  setElement,
-	"cef_resource_request_handler_capi.h": setElement,
-	"cef_response_filter_capi.h":          setElement,
-	"cef_ssl_info_capi.h":                 setElement,
-	"cef_ssl_status_capi.h":               setElement,
-	"cef_string_visitor_capi.h":           setElement,
-	"cef_stream_capi.h":                   setElement,
-	"cef_registration_capi.h":             setElement,
-	"cef_response_capi.h":                 setElement,
-	"cef_scheme_capi.h":                   setElement,
-	"cef_task_capi.h":                     setElement,
-	"cef_urlrequest_capi.h":               setElement,
-	"cef_v8_capi.h":                       setElement,
-	"cef_values_capi.h":                   setElement,
-	"cef_x509_certificate_capi.h":         setElement,
-	"cef_web_plugin_capi.h":               setElement,
-
+var targetFileList = map[string]void{
 	"cef_string_list.h":     setElement,
 	"cef_string_map.h":      setElement,
 	"cef_string_multimap.h": setElement,
 	"cef_time.h":            setElement,
-
-	"cef_box_layout_capi.h":            setElement,
-	"cef_browser_view_delegate_capi.h": setElement,
-	"cef_browser_view_capi.h":          setElement,
-	"cef_button_capi.h":                setElement,
-	"cef_button_delegate_capi.h":       setElement,
-	"cef_display_capi.h":               setElement,
-	"cef_fill_layout_capi.h":           setElement,
-	"cef_label_button_capi.h":          setElement,
-	"cef_layout_capi.h":                setElement,
-	"cef_menu_button_capi.h":           setElement,
-	"cef_menu_button_delegate_capi.h":  setElement,
-	"cef_panel_capi.h":                 setElement,
-	"cef_panel_delegate_capi.h":        setElement,
-	"cef_scroll_view_capi.h":           setElement,
-	"cef_textfield_capi.h":             setElement,
-	"cef_textfield_delegate_capi.h":    setElement,
-	"cef_view_capi.h":                  setElement,
-	"cef_view_delegate_capi.h":         setElement,
-	"cef_window_capi.h":                setElement,
-	"cef_window_delegate_capi.h":       setElement,
+	"cef_types.h":           setElement,
+	"cef_types_win.h":       setElement,
 }
 
 var handlerClasses = map[string]void{
@@ -554,7 +474,6 @@ func (s *CefClassDecl) GetBase() (base *CefClassDecl) {
 	return nil
 }
 
-
 type UnhandledDecl struct {
 	DeclCommon
 }
@@ -699,7 +618,10 @@ func (m MethodDecl) HasOutParam() (has bool) {
 
 func InTargetFile(t Token) (f bool, fname string) {
 	fn := filepath.Base(t.Filename())
-	_, f = TargetFileList[fn]
+	_, f = targetFileList[fn]
+	if !f && strings.HasPrefix(fn, "cef_") && strings.HasSuffix(fn, "_capi.h") {
+		f = true
+	}
 	return f, fn
 }
 
