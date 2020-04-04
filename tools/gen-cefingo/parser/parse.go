@@ -5,6 +5,7 @@ package parser
 import (
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
@@ -678,16 +679,23 @@ func Parse() []*cc.TranslationUnit {
 	cefdir = strings.Replace(string(out), "\n", "", 1)
 	cefdir = strings.Replace(cefdir, "\r", "", 1)
 	cefdir = filepath.ToSlash(filepath.Clean(cefdir))
+	out, err = exec.Command("cygpath", "-w", os.Getenv("MINGW_PREFIX")).Output()
+	if err != nil {
+		log.Panicf("T684: %v", err)
+	}
+	mingwPrefix := strings.Replace(string(out), "\n", "", 1)
+	mingwPrefix = strings.Replace(mingwPrefix, "\r", "\n", 1)
+	mingwPrefix = filepath.ToSlash(filepath.Clean(mingwPrefix))
 	// this list build from cpp -v /dev/null output and cef include path root
 	includePaths := []string{
-		filepath.Clean("C:/DiskC/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/include"),
-		filepath.Clean("C:/DiskC/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../include"),
-		filepath.Clean("C:/DiskC/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/include-fixed"),
-		filepath.Clean("C:/DiskC/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/include"),
-		cefdir,
+		filepath.Clean(mingwPrefix + "/lib/gcc/x86_64-w64-mingw32/9.1.0/include"),
+		filepath.Clean(mingwPrefix + "/include"),
+		filepath.Clean(mingwPrefix + "/lib/gcc/x86_64-w64-mingw32/9.1.0/include-fixed"),
+		filepath.Clean(mingwPrefix + "/x86_64-w64-mingw32/include"),
+		filepath.Clean(cefdir),
 	}
-	log.Printf("T259: CurrentDir: %s\n", GetCurrentDir())
-	log.Printf("T260: Cef dir: %s\n", cefdir)
+	// log.Printf("T259: CurrentDir: %s\n", GetCurrentDir())
+	// log.Printf("T260: Cef dir: %v\n", includePaths)
 
 	sourcePaths := []string{GetCurrentDir() + "/../parser_c/parser_root.c"}
 	predefined := strings.Join([]string{
