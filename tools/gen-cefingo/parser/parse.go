@@ -672,21 +672,22 @@ func getPredefinedMacros() string {
 }
 
 func Parse() []*cc.TranslationUnit {
+	stripNl := strings.NewReplacer("\n", "", "\r", "")
+
 	out, err := exec.Command("pkg-config", "cefingo", "--variable=includedir").Output()
 	if err != nil {
 		log.Panicf("T268: %v", err)
 	}
-	cefdir = strings.Replace(string(out), "\n", "", 1)
-	cefdir = strings.Replace(cefdir, "\r", "", 1)
-	cefdir = filepath.ToSlash(filepath.Clean(cefdir))
+	cefdir = filepath.ToSlash(filepath.Clean(stripNl.Replace(string(out))))
+
 	out, err = exec.Command("cygpath", "-w", os.Getenv("MINGW_PREFIX")).Output()
 	if err != nil {
 		log.Panicf("T684: %v", err)
 	}
-	mingwPrefix := strings.Replace(string(out), "\n", "", 1)
-	mingwPrefix = strings.Replace(mingwPrefix, "\r", "\n", 1)
-	mingwPrefix = filepath.ToSlash(filepath.Clean(mingwPrefix))
-	// this list build from cpp -v /dev/null output and cef include path root
+	mingwPrefix := filepath.ToSlash(filepath.Clean(stripNl.Replace(string(out))))
+
+	// this list build from following command output and cef include path root
+	// $ echo | cpp -v
 	includePaths := []string{
 		filepath.Clean(mingwPrefix + "/lib/gcc/x86_64-w64-mingw32/9.1.0/include"),
 		filepath.Clean(mingwPrefix + "/include"),
