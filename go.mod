@@ -3,7 +3,7 @@ module github.com/turutcrane/cefingo
 go 1.13
 
 require (
-	github.com/pkg/errors v0.8.1
+	github.com/pkg/errors v0.9.1
 	github.com/remyoudompheng/bigfft v0.0.0-20190512091148-babf20351dd7 // indirect
 	github.com/stoewer/go-strcase v1.0.2
 	github.com/valyala/quicktemplate v1.4.1

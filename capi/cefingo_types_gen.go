@@ -3505,17 +3505,6 @@ const (
 	UuUrlSpecialCharsExceptPathSeparators CUriUnescapeRuleT = C.UU_URL_SPECIAL_CHARS_EXCEPT_PATH_SEPARATORS
 
 	///
-	// Unescapes characters that can be used in spoofing attempts (such as LOCK)
-	// and control characters (such as BiDi control characters and %01).  This
-	// INCLUDES NULLs.  This is used for rare cases such as data: URL decoding
-	// where the result is binary data.
-	//
-	// DO NOT use UU_SPOOFING_AND_CONTROL_CHARS if the URL is going to be
-	// displayed in the UI for security reasons.
-	///
-	UuSpoofingAndControlChars CUriUnescapeRuleT = C.UU_SPOOFING_AND_CONTROL_CHARS
-
-	///
 	// URL queries use "+" for space. This flag controls that replacement.
 	///
 	UuReplacePlusWithSpace CUriUnescapeRuleT = C.UU_REPLACE_PLUS_WITH_SPACE
