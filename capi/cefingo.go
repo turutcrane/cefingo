@@ -46,12 +46,14 @@ func init() {
 	}
 	C.cefingo_init()
 
+}
+
+func DumpInfo() {
 	var i int
 	const maxUint = ^uint(0)
 	const minUint = 0
 	const maxInt = int(maxUint >> 1)
 	const minInt = -maxInt - 1
-	Logger = log.New(os.Stdout, "init", log.LstdFlags)
 	Logf("Size of var (reflect.TypeOf.Size): %d\n", reflect.TypeOf(i).Size())
 	Logf("Size of var (unsafe.Sizeof): %d\n", unsafe.Sizeof(i))
 	Logf("maxUint: %d\n", maxUint)
