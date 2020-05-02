@@ -3701,36 +3701,36 @@ func (st *CPdfPrintSettingsT) SetScaleFactor(v int) {
 	st.scale_factor = (C.int)(v)
 }
 
-func (st *CPdfPrintSettingsT) MarginTop() float64 {
-	return float64(st.margin_top)
+func (st *CPdfPrintSettingsT) MarginTop() int {
+	return int(st.margin_top)
 }
 
-func (st *CPdfPrintSettingsT) SetMarginTop(v float64) {
-	st.margin_top = (C.double)(v)
+func (st *CPdfPrintSettingsT) SetMarginTop(v int) {
+	st.margin_top = (C.int)(v)
 }
 
-func (st *CPdfPrintSettingsT) MarginRight() float64 {
-	return float64(st.margin_right)
+func (st *CPdfPrintSettingsT) MarginRight() int {
+	return int(st.margin_right)
 }
 
-func (st *CPdfPrintSettingsT) SetMarginRight(v float64) {
-	st.margin_right = (C.double)(v)
+func (st *CPdfPrintSettingsT) SetMarginRight(v int) {
+	st.margin_right = (C.int)(v)
 }
 
-func (st *CPdfPrintSettingsT) MarginBottom() float64 {
-	return float64(st.margin_bottom)
+func (st *CPdfPrintSettingsT) MarginBottom() int {
+	return int(st.margin_bottom)
 }
 
-func (st *CPdfPrintSettingsT) SetMarginBottom(v float64) {
-	st.margin_bottom = (C.double)(v)
+func (st *CPdfPrintSettingsT) SetMarginBottom(v int) {
+	st.margin_bottom = (C.int)(v)
 }
 
-func (st *CPdfPrintSettingsT) MarginLeft() float64 {
-	return float64(st.margin_left)
+func (st *CPdfPrintSettingsT) MarginLeft() int {
+	return int(st.margin_left)
 }
 
-func (st *CPdfPrintSettingsT) SetMarginLeft(v float64) {
-	st.margin_left = (C.double)(v)
+func (st *CPdfPrintSettingsT) SetMarginLeft(v int) {
+	st.margin_left = (C.int)(v)
 }
 
 func (st *CPdfPrintSettingsT) MarginType() CPdfPrintMarginTypeT {
