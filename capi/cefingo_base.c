@@ -83,7 +83,7 @@ extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self)
 		if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "T83: 0x%llx -count: %d", self, count);
 		if (count == 0) {
 			cefingo_base_deassoc(self);
-			// free(self);
+			free(self);
 		}
 	} else {
 		// cefingo_panicf(__func__, "T89: 0x%llx -count:%d", self, count);

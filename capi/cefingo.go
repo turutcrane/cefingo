@@ -65,10 +65,6 @@ type noCopy struct{}
 func (*noCopy) Lock()   {}
 func (*noCopy) UNlock() {}
 
-const (
-	WinCwUseDefault = C.CW_USEDEFAULT
-)
-
 func set_cef_string(cs *C.cef_string_t, s string) {
 	c_string := C.CString(s)
 	defer C.free(unsafe.Pointer(c_string))

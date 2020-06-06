@@ -19,65 +19,6 @@ func c_calloc(n C.size_t, s C.size_t, msg string, v ...interface{}) (p unsafe.Po
 	return p
 }
 
-// func cast_to_base_ref_counted_t(ptr interface{}) (refp *C.cef_base_ref_counted_t) {
-// 	var up unsafe.Pointer
-// 	switch p := ptr.(type) {
-// 	case *CAppT:
-// 		up = unsafe.Pointer(p)
-// 	case *CBinaryValueT:
-// 		up = unsafe.Pointer(p)
-// 	case *CBrowserT:
-// 		up = unsafe.Pointer(p)
-// 	case *CBrowserHostT:
-// 		up = unsafe.Pointer(p)
-// 	case *CBrowserProcessHandlerT:
-// 		up = unsafe.Pointer(p)
-// 	case *CClientT:
-// 		up = unsafe.Pointer(p)
-// 	case *CDictionaryValueT:
-// 		up = unsafe.Pointer(p)
-// 	case *CFrameT:
-// 		up = unsafe.Pointer(p)
-// 	case *CLifeSpanHandlerT:
-// 		up = unsafe.Pointer(p)
-// 	case *CListValueT:
-// 		up = unsafe.Pointer(p)
-// 	case *CLoadHandlerT:
-// 		up = unsafe.Pointer(p)
-// 	case *CProcessMessageT:
-// 		up = unsafe.Pointer(p)
-// 	case *CSchemeHandlerFactoryT:
-// 		up = unsafe.Pointer(p)
-// 	case *CRequestT:
-// 		up = unsafe.Pointer(p)
-// 	case *CRenderProcessHandlerT:
-// 		up = unsafe.Pointer(p)
-// 	case *CResourceHandlerT:
-// 		up = unsafe.Pointer(p)
-// 	case *CRunFileDialogCallbackT:
-// 		up = unsafe.Pointer(p)
-// 	case *CValueT:
-// 		up = unsafe.Pointer(p)
-// 	case *CV8valueT:
-// 		up = unsafe.Pointer(p)
-// 	case *CV8contextT:
-// 		up = unsafe.Pointer(p)
-// 	case *CV8arrayBufferReleaseCallbackT:
-// 		up = unsafe.Pointer(p)
-// 	case *CV8handlerT:
-// 		up = unsafe.Pointer(p)
-// 	case *CV8exceptionT:
-// 		up = unsafe.Pointer(p)
-// 	default:
-// 		Panicf("Not Refcounted Object: T: %T V: %v", p, p)
-// 	}
-// 	if up == nil {
-// 		Logf("L21: Null passed!")
-// 	}
-// 	refp = (*C.cef_base_ref_counted_t)(up)
-// 	return refp
-// }
-
 type refCounted interface {
 	cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }

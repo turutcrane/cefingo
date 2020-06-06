@@ -53,7 +53,9 @@ Statemens to convert from C.param to Go type.
 			{%= goTempName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(v)
 		}
 	{%- else -%}
-		{%- if !p.IsSliceLengthParam() -%}
+		{%- if p.IsBoolParam() -%}
+		{%= goTempName(p) %} := {%s= goParamName(p) %} != 0{% code *line +=1 %}
+		{%- elseif !p.IsSliceLengthParam() -%}
 		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type(), goParamName(p)) %}{% code *line +=1 %}
 		{%- endif -%}
 	{%- endif -%}
@@ -241,6 +243,7 @@ func ({%s baseName %} *{%s goName %}) Assoc{%s m.ReturnType().TitleCase() %}(han
 {% if winOnly -%}
 // +build windows
 {% endif -%}
+
 package capi
 
 {% if len(imports) > 0 -%}

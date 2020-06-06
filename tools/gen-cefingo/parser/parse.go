@@ -108,89 +108,93 @@ var notBoolValueMethod = map[string]void{
 	"::cef_execute_process":     setElement,
 	"::cef_string_list_size":    setElement,
 	"cef_list_value_t::get_int": setElement,
+	"cef_browser_t::get_identifier": setElement,
 }
 
 var notGetMethod = map[string]void{
-	"cef_request_handler_t::get_resource_handler":              setElement, // Because it has multiple parameter, so has to be user custom implementation
-	"cef_resource_request_handler_t::get_cookie_access_filter": setElement, // It has multiple parameter
-	"cef_resource_request_handler_t::get_resource_handler":     setElement, // It has multiple parameter
+	// "cef_resource_request_handler_t::get_cookie_access_filter":    setElement, // It has multiple parameter
+	// "cef_resource_request_handler_t::get_resource_handler":        setElement, // It has multiple parameter
+	// "cef_request_context_handler_t::get_resource_request_handler": setElement, // It has multiple parameter
 }
 
 var duplicatedHandler = map[string]void{
-	"can_set_cookie":              setElement,
-	"execute":                     setElement,
-	"get_auth_credentials":        setElement,
-	"may_block":                   setElement,
-	"on_browser_created":          setElement,
-	"on_browser_destroyed":        setElement,
-	"on_complete":                 setElement,
-	"on_key_event":                setElement,
-	"on_process_message_received": setElement,
-	"read":                        setElement,
-	"seek":                        setElement,
-	"tell":                        setElement,
-	"visit":                       setElement,
+	"can_set_cookie":               setElement,
+	"execute":                      setElement,
+	"get_auth_credentials":         setElement,
+	"get_resource_request_handler": setElement,
+	"may_block":                    setElement,
+	"on_browser_created":           setElement,
+	"on_browser_destroyed":         setElement,
+	"on_complete":                  setElement,
+	"on_key_event":                 setElement,
+	"on_process_message_received":  setElement,
+	"read":                         setElement,
+	"seek":                         setElement,
+	"tell":                         setElement,
+	"visit":                        setElement,
 }
 
 var outParameter = map[string]void{
-	"cef_cookie_visitor_t::visit::deleteCookie":                                 setElement,
-	"cef_image_t::get_representation_info::actual_scale_factor":                 setElement,
-	"cef_image_t::get_representation_info::pixel_height":                        setElement,
-	"cef_image_t::get_representation_info::pixel_width":                         setElement,
-	"cef_image_t::get_as_bitmap::pixel_height":                                  setElement,
-	"cef_image_t::get_as_bitmap::pixel_width":                                   setElement,
-	"cef_image_t::get_as_png::pixel_height":                                     setElement,
-	"cef_image_t::get_as_png::pixel_width":                                      setElement,
-	"cef_image_t::get_as_jpeg::pixel_height":                                    setElement,
-	"cef_image_t::get_as_jpeg::pixel_width":                                     setElement,
-	"cef_jsdialog_handler_t::on_jsdialog::suppress_message":                     setElement,
-	"cef_keyboard_handler_t::on_pre_key_event::is_keyboard_shortcut":            setElement,
-	"cef_life_span_handler_t::on_before_popup::extra_info":                      setElement,
-	"cef_menu_model_t::get_accelerator::key_code":                               setElement,
-	"cef_menu_model_t::get_accelerator::shift_pressed":                          setElement,
-	"cef_menu_model_t::get_accelerator::ctrl_pressed":                           setElement,
-	"cef_menu_model_t::get_accelerator::alt_pressed":                            setElement,
-	"cef_menu_model_t::get_accelerator_at::key_code":                            setElement,
-	"cef_menu_model_t::get_accelerator_at::shift_pressed":                       setElement,
-	"cef_menu_model_t::get_accelerator_at::ctrl_pressed":                        setElement,
-	"cef_menu_model_t::get_accelerator_at::alt_pressed":                         setElement,
-	"cef_post_data_t::get_elements::elements":                                   setElement,
-	"cef_render_handler_t::get_view_rect::rect":                                 setElement,
-	"cef_render_handler_t::get_root_screen_rect::rect":                          setElement,
-	"cef_render_handler_t::get_screen_point::screenX":                           setElement,
-	"cef_render_handler_t::get_screen_point::screenY":                           setElement,
-	"cef_request_context_t::set_preference::error":                              setElement,
-	"cef_request_context_handler_t::on_before_plugin_load::plugin_policy":       setElement,
-	"cef_request_handler_t::on_protocol_execution::allow_os_execution":          setElement,
-	"cef_request_handler_t::on_resource_redirect::new_url":                      setElement,
-	"cef_response_filter_t::filter::data_in_read":                               setElement,
-	"cef_response_filter_t::filter::data_out_written":                           setElement,
-	"cef_resource_bundle_handler_t::get_data_resource::data":                    setElement,
-	"cef_resource_bundle_handler_t::get_data_resource_for_scale::data":          setElement,
-	"cef_resource_handler_t::get_response_headers::response_length":             setElement,
-	"cef_resource_handler_t::get_response_headers::redirectUrl":                 setElement,
-	"cef_resource_handler_t::open::handle_request":                              setElement,
-	"cef_resource_handler_t::read::bytes_read":                                  setElement,
-	"cef_resource_handler_t::read_response::bytes_read":                         setElement,
-	"cef_resource_handler_t::skip::bytes_skipped":                               setElement,
-	"cef_resource_bundle_handler_t::get_localized_string::string":               setElement,
-	"cef_resource_request_handler_t::on_resource_redirect::new_url":             setElement,
-	"cef_resource_request_handler_t::on_protocol_execution::allow_os_execution": setElement,
-	"cef_v8accessor_t::get::exception":                                          setElement,
-	"cef_v8accessor_t::get::retval":                                             setElement,
-	"cef_v8accessor_t::set::exception":                                          setElement,
-	"cef_v8context_t::eval::exception":                                          setElement,
-	"cef_v8context_t::eval::retval":                                             setElement,
-	"cef_v8handler_t::execute::exception":                                       setElement,
-	"cef_v8handler_t::execute::retval":                                          setElement,
-	"cef_v8interceptor_t::get_byname::exception":                                setElement,
-	"cef_v8interceptor_t::get_byname::retval":                                   setElement,
-	"cef_v8interceptor_t::set_byname::exception":                                setElement,
-	"cef_v8interceptor_t::get_byindex::exception":                               setElement,
-	"cef_v8interceptor_t::get_byindex::retval":                                  setElement,
-	"cef_v8interceptor_t::set_byindex::exception":                               setElement,
-	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":                 setElement,
-	"cef_x509certificate_t::get_pemencoded_issuer_chain::chain":                 setElement,
+	"cef_cookie_visitor_t::visit::deleteCookie":                                             setElement,
+	"cef_image_t::get_representation_info::actual_scale_factor":                             setElement,
+	"cef_image_t::get_representation_info::pixel_height":                                    setElement,
+	"cef_image_t::get_representation_info::pixel_width":                                     setElement,
+	"cef_image_t::get_as_bitmap::pixel_height":                                              setElement,
+	"cef_image_t::get_as_bitmap::pixel_width":                                               setElement,
+	"cef_image_t::get_as_png::pixel_height":                                                 setElement,
+	"cef_image_t::get_as_png::pixel_width":                                                  setElement,
+	"cef_image_t::get_as_jpeg::pixel_height":                                                setElement,
+	"cef_image_t::get_as_jpeg::pixel_width":                                                 setElement,
+	"cef_jsdialog_handler_t::on_jsdialog::suppress_message":                                 setElement,
+	"cef_keyboard_handler_t::on_pre_key_event::is_keyboard_shortcut":                        setElement,
+	"cef_life_span_handler_t::on_before_popup::extra_info":                                  setElement,
+	"cef_menu_model_t::get_accelerator::key_code":                                           setElement,
+	"cef_menu_model_t::get_accelerator::shift_pressed":                                      setElement,
+	"cef_menu_model_t::get_accelerator::ctrl_pressed":                                       setElement,
+	"cef_menu_model_t::get_accelerator::alt_pressed":                                        setElement,
+	"cef_menu_model_t::get_accelerator_at::key_code":                                        setElement,
+	"cef_menu_model_t::get_accelerator_at::shift_pressed":                                   setElement,
+	"cef_menu_model_t::get_accelerator_at::ctrl_pressed":                                    setElement,
+	"cef_menu_model_t::get_accelerator_at::alt_pressed":                                     setElement,
+	"cef_post_data_t::get_elements::elements":                                               setElement,
+	"cef_render_handler_t::get_view_rect::rect":                                             setElement,
+	"cef_render_handler_t::get_root_screen_rect::rect":                                      setElement,
+	"cef_render_handler_t::get_screen_point::screenX":                                       setElement,
+	"cef_render_handler_t::get_screen_point::screenY":                                       setElement,
+	"cef_request_context_t::set_preference::error":                                          setElement,
+	"cef_request_context_handler_t::get_resource_request_handler::disable_default_handling": setElement,
+	"cef_request_context_handler_t::on_before_plugin_load::plugin_policy":                   setElement,
+	"cef_request_handler_t::get_resource_request_handler::disable_default_handling":         setElement,
+	"cef_request_handler_t::on_protocol_execution::allow_os_execution":                      setElement,
+	"cef_request_handler_t::on_resource_redirect::new_url":                                  setElement,
+	"cef_response_filter_t::filter::data_in_read":                                           setElement,
+	"cef_response_filter_t::filter::data_out_written":                                       setElement,
+	"cef_resource_bundle_handler_t::get_data_resource::data":                                setElement,
+	"cef_resource_bundle_handler_t::get_data_resource_for_scale::data":                      setElement,
+	"cef_resource_handler_t::get_response_headers::response_length":                         setElement,
+	"cef_resource_handler_t::get_response_headers::redirectUrl":                             setElement,
+	"cef_resource_handler_t::open::handle_request":                                          setElement,
+	"cef_resource_handler_t::read::bytes_read":                                              setElement,
+	"cef_resource_handler_t::read_response::bytes_read":                                     setElement,
+	"cef_resource_handler_t::skip::bytes_skipped":                                           setElement,
+	"cef_resource_bundle_handler_t::get_localized_string::string":                           setElement,
+	"cef_resource_request_handler_t::on_resource_redirect::new_url":                         setElement,
+	"cef_resource_request_handler_t::on_protocol_execution::allow_os_execution":             setElement,
+	"cef_v8accessor_t::get::exception":                                                      setElement,
+	"cef_v8accessor_t::get::retval":                                                         setElement,
+	"cef_v8accessor_t::set::exception":                                                      setElement,
+	"cef_v8context_t::eval::exception":                                                      setElement,
+	"cef_v8context_t::eval::retval":                                                         setElement,
+	"cef_v8handler_t::execute::exception":                                                   setElement,
+	"cef_v8handler_t::execute::retval":                                                      setElement,
+	"cef_v8interceptor_t::get_byname::exception":                                            setElement,
+	"cef_v8interceptor_t::get_byname::retval":                                               setElement,
+	"cef_v8interceptor_t::set_byname::exception":                                            setElement,
+	"cef_v8interceptor_t::get_byindex::exception":                                           setElement,
+	"cef_v8interceptor_t::get_byindex::retval":                                              setElement,
+	"cef_v8interceptor_t::set_byindex::exception":                                           setElement,
+	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":                             setElement,
+	"cef_x509certificate_t::get_pemencoded_issuer_chain::chain":                             setElement,
 
 	"::cef_time_to_timet::time": setElement,
 
@@ -253,6 +257,9 @@ func init() {
 }
 
 var boolParameter = map[string]void{
+	"cef_load_handler_t::on_loading_state_change::isLoading":      setElement,
+	"cef_load_handler_t::on_loading_state_change::canGoBack":      setElement,
+	"cef_load_handler_t::on_loading_state_change::canGoForward":   setElement,
 	"cef_dictionary_value_t::set_bool::value":                     setElement,
 	"cef_list_value_t::set_bool::value":                           setElement,
 	"cef_value_t::set_bool::value":                                setElement,
@@ -390,10 +397,11 @@ var structDefNames = map[string]void{
 }
 
 var simpleDefNames = map[string]void{
-	"cef_time_t":            setElement,
-	"cef_string_list_t":     setElement,
-	"cef_string_map_t":      setElement,
-	"cef_string_multimap_t": setElement,
+	"cef_audio_parameters_t": setElement,
+	"cef_time_t":             setElement,
+	"cef_string_list_t":      setElement,
+	"cef_string_map_t":       setElement,
+	"cef_string_multimap_t":  setElement,
 }
 
 func isSimpleDefName(s string) (b bool) {
@@ -577,7 +585,7 @@ func (m MethodDecl) FirstLine() (line int) {
 
 func (m MethodDecl) IsGetFunc() bool {
 	_, notGet := notGetMethod[m.CalleeName()]
-	if m.Funcname.Name() == "get_"+m.ReturnType().BaseName() && !notGet {
+	if len(m.Params()) == 1 && m.Funcname.Name() == "get_"+m.ReturnType().BaseName() && !notGet {
 		return true
 	}
 	return false
@@ -1324,7 +1332,8 @@ func checkBase(sd cc.StructDeclaration) (stType StructType, stBase string) {
 				log.Panicf("T1364: Unpredicted baseL %s, %v\n", name, sd)
 			}
 		} else {
-			log.Panicf("T1367: %s, %v\n", name, sd)
+			log.Printf("T1367: %s, %v\n", name, t.FilePos())
+			return stType, stBase
 		}
 	}
 	return stType, stBase

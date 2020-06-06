@@ -8,6 +8,9 @@ extern cef_accessibility_handler_t *cefingo_construct_accessibility_handler(cefi
 CEFINGO_REF_COUNTER_WRAPPER(cef_app_t, cefingo_app_wrapper_t);
 extern cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app);
 
+CEFINGO_REF_COUNTER_WRAPPER(cef_audio_handler_t, cefingo_audio_handler_wrapper_t);
+extern cef_audio_handler_t *cefingo_construct_audio_handler(cefingo_audio_handler_wrapper_t* audio_handler);
+
 extern void cefingo_auth_callback_cont(
 	struct _cef_auth_callback_t* self,
 	const cef_string_t* username,
@@ -1557,6 +1560,10 @@ extern cef_string_userfree_t cefingo_media_sink_get_name(
 );
 
 extern cef_string_userfree_t cefingo_media_sink_get_description(
+	struct _cef_media_sink_t* self
+);
+
+extern cef_media_sink_icon_type_t cefingo_media_sink_get_icon_type(
 	struct _cef_media_sink_t* self
 );
 
