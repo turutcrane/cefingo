@@ -248,6 +248,24 @@ extern int cefingo_browser_host_has_dev_tools(
 	struct _cef_browser_host_t* self
 );
 
+extern int cefingo_browser_host_send_dev_tools_message(
+	struct _cef_browser_host_t* self,
+	const void* message,
+	size_t message_size
+);
+
+extern int cefingo_browser_host_execute_dev_tools_method(
+	struct _cef_browser_host_t* self,
+	int message_id,
+	const cef_string_t* method,
+	struct _cef_dictionary_value_t* params
+);
+
+extern struct _cef_registration_t* cefingo_browser_host_add_dev_tools_message_observer(
+	struct _cef_browser_host_t* self,
+	struct _cef_dev_tools_message_observer_t* observer
+);
+
 extern void cefingo_browser_host_get_navigation_entries(
 	struct _cef_browser_host_t* self,
 	struct _cef_navigation_entry_visitor_t* visitor,
@@ -736,6 +754,40 @@ extern cef_set_cookie_callback_t *cefingo_construct_set_cookie_callback(cefingo_
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_delete_cookies_callback_t, cefingo_delete_cookies_callback_wrapper_t);
 extern cef_delete_cookies_callback_t *cefingo_construct_delete_cookies_callback(cefingo_delete_cookies_callback_wrapper_t* delete_cookies_callback);
+
+extern int cefingo_dev_tools_message_observer_on_dev_tools_message(
+	struct _cef_dev_tools_message_observer_t* self,
+	struct _cef_browser_t* browser,
+	const void* message,
+	size_t message_size
+);
+
+extern void cefingo_dev_tools_message_observer_on_dev_tools_method_result(
+	struct _cef_dev_tools_message_observer_t* self,
+	struct _cef_browser_t* browser,
+	int message_id,
+	int success,
+	const void* result,
+	size_t result_size
+);
+
+extern void cefingo_dev_tools_message_observer_on_dev_tools_event(
+	struct _cef_dev_tools_message_observer_t* self,
+	struct _cef_browser_t* browser,
+	const cef_string_t* method,
+	const void* params,
+	size_t params_size
+);
+
+extern void cefingo_dev_tools_message_observer_on_dev_tools_agent_attached(
+	struct _cef_dev_tools_message_observer_t* self,
+	struct _cef_browser_t* browser
+);
+
+extern void cefingo_dev_tools_message_observer_on_dev_tools_agent_detached(
+	struct _cef_dev_tools_message_observer_t* self,
+	struct _cef_browser_t* browser
+);
 
 extern void cefingo_file_dialog_callback_cont(
 	struct _cef_file_dialog_callback_t* self,

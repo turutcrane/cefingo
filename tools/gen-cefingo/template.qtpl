@@ -38,6 +38,8 @@ Statemens to convert from C.param to Go type.
 	{%- elseif p.Type().Pointer == 2 && p.Type().Deref().IsRefCountedClass() -%}
 		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type().Deref(), "*" + goParamName(p)) %}{% code *line +=1 %}
 		cefp := {%s goTempName(p) %}.p_{%s p.Type().BaseName() %}
+	{%- elseif p.IsBoolParam() -%}
+		{%= goTempName(p) %} := (*{%s p.Name() %}) != 0
 	{%- elseif p.Type().Ty == parser.TyStructSimple || p.Type().Ty ==  parser.TyInt -%}
 		{%= goTempName(p) %} := {%s p.Type().Deref().GoType() %}(*{%s p.Name() %})
 	{%- else -%}
@@ -90,6 +92,11 @@ Set returned Go value to C.param and cleanup
 {% elseif p.IsInOutParam() -%}
 	{%- if p.Type().Ty == parser.TyStringT -%}
 		set_cef_string({%s goParamName(p) %},{%s goTempNameOut(p) %}){% code *line +=1 %}
+	{%- elseif p.IsBoolParam() -%}
+		*{%s goParamName(p) %} = 0
+		if {%s goTempNameOut(p) %} {
+			*{%s goParamName(p) %} = 1
+		}
 	{%- elseif p.Type().Ty == parser.TyStructSimple  || p.Type().Ty ==  parser.TyInt -%}
 		*{%s p.Name() %} = {%s p.Type().Deref().GoCType() %}({%s goTempNameOut(p) %})
 	{%- elseif p.Type().Pointer == 2 -%}
@@ -707,6 +714,8 @@ func ({%s typeName %} *{%s goName %}) To{%s p.GoName() %}() *{%s p.GoName() %}{
 func (st *{%s d.GoName() %}) {%s m.GoName() %}() {%s m.GoType() %} {
 {% if m.Type().Ty == parser.TyStringT && m.Type().Pointer == 0 -%}
 	return string_from_cef_string(&st.{%s cField(m.Name()) %})
+{% elseif m.IsBoolMember() -%}
+	return st.{%s cField(m.Name()) %} != 0
 {% else -%}
 	return {%s m.GoType() %}(st.{%s cField(m.Name()) %})
 {% endif -%}
@@ -715,6 +724,12 @@ func (st *{%s d.GoName() %}) {%s m.GoName() %}() {%s m.GoType() %} {
 func (st *{%s d.GoName() %}) Set{%s m.GoName() %}(v {%s m.GoType() %}) {
 {% if m.Type().Ty == parser.TyStringT && m.Type().Pointer == 0 -%}
 	set_cef_string(&st.{%s cField(m.Name()) %}, v)
+{% elseif m.IsBoolMember() -%}
+	if v {
+		st.{%s cField(m.Name()) %} = 1
+	} else {
+		st.{%s cField(m.Name()) %} = 0
+	}
 {% else -%}
 	st.{%s cField(m.Name()) %} = ({%s castGoType(m.Type().GoCType()) %})(v)
 {% endif -%}

@@ -3178,12 +3178,16 @@ func (st *CPopupFeaturesT) SetX(v int) {
 	st.x = (C.int)(v)
 }
 
-func (st *CPopupFeaturesT) XSet() int {
-	return int(st.xSet)
+func (st *CPopupFeaturesT) XSet() bool {
+	return st.xSet != 0
 }
 
-func (st *CPopupFeaturesT) SetXSet(v int) {
-	st.xSet = (C.int)(v)
+func (st *CPopupFeaturesT) SetXSet(v bool) {
+	if v {
+		st.xSet = 1
+	} else {
+		st.xSet = 0
+	}
 }
 
 func (st *CPopupFeaturesT) Y() int {
@@ -3194,12 +3198,16 @@ func (st *CPopupFeaturesT) SetY(v int) {
 	st.y = (C.int)(v)
 }
 
-func (st *CPopupFeaturesT) YSet() int {
-	return int(st.ySet)
+func (st *CPopupFeaturesT) YSet() bool {
+	return st.ySet != 0
 }
 
-func (st *CPopupFeaturesT) SetYSet(v int) {
-	st.ySet = (C.int)(v)
+func (st *CPopupFeaturesT) SetYSet(v bool) {
+	if v {
+		st.ySet = 1
+	} else {
+		st.ySet = 0
+	}
 }
 
 func (st *CPopupFeaturesT) Width() int {
@@ -3210,12 +3218,16 @@ func (st *CPopupFeaturesT) SetWidth(v int) {
 	st.width = (C.int)(v)
 }
 
-func (st *CPopupFeaturesT) WidthSet() int {
-	return int(st.widthSet)
+func (st *CPopupFeaturesT) WidthSet() bool {
+	return st.widthSet != 0
 }
 
-func (st *CPopupFeaturesT) SetWidthSet(v int) {
-	st.widthSet = (C.int)(v)
+func (st *CPopupFeaturesT) SetWidthSet(v bool) {
+	if v {
+		st.widthSet = 1
+	} else {
+		st.widthSet = 0
+	}
 }
 
 func (st *CPopupFeaturesT) Height() int {
@@ -3226,12 +3238,16 @@ func (st *CPopupFeaturesT) SetHeight(v int) {
 	st.height = (C.int)(v)
 }
 
-func (st *CPopupFeaturesT) HeightSet() int {
-	return int(st.heightSet)
+func (st *CPopupFeaturesT) HeightSet() bool {
+	return st.heightSet != 0
 }
 
-func (st *CPopupFeaturesT) SetHeightSet(v int) {
-	st.heightSet = (C.int)(v)
+func (st *CPopupFeaturesT) SetHeightSet(v bool) {
+	if v {
+		st.heightSet = 1
+	} else {
+		st.heightSet = 0
+	}
 }
 
 func (st *CPopupFeaturesT) MenuBarVisible() int {

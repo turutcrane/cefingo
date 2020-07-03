@@ -105,9 +105,9 @@ var unGenerateMethod = map[string]void{
 }
 
 var notBoolValueMethod = map[string]void{
-	"::cef_execute_process":     setElement,
-	"::cef_string_list_size":    setElement,
-	"cef_list_value_t::get_int": setElement,
+	"::cef_execute_process":         setElement,
+	"::cef_string_list_size":        setElement,
+	"cef_list_value_t::get_int":     setElement,
 	"cef_browser_t::get_identifier": setElement,
 }
 
@@ -257,15 +257,27 @@ func init() {
 }
 
 var boolParameter = map[string]void{
-	"cef_load_handler_t::on_loading_state_change::isLoading":      setElement,
-	"cef_load_handler_t::on_loading_state_change::canGoBack":      setElement,
-	"cef_load_handler_t::on_loading_state_change::canGoForward":   setElement,
-	"cef_dictionary_value_t::set_bool::value":                     setElement,
-	"cef_list_value_t::set_bool::value":                           setElement,
-	"cef_value_t::set_bool::value":                                setElement,
-	"cef_v8value_t::create_bool::value":                           setElement,
-	"cef_window_delegate_t::get_parent_window::is_menu":           setElement,
-	"cef_window_delegate_t::get_parent_window::can_activate_menu": setElement,
+	"::cef_set_osmodal_loop::osModalLoop":                            setElement,
+	"cef_browser_host_t::set_focus::focus":                           setElement,
+	"cef_browser_host_t::close_browser::force_close":                 setElement,
+	"cef_life_span_handler_t::on_before_popup::no_javascript_access": setElement,
+	"cef_load_handler_t::on_loading_state_change::isLoading":         setElement,
+	"cef_load_handler_t::on_loading_state_change::canGoBack":         setElement,
+	"cef_load_handler_t::on_loading_state_change::canGoForward":      setElement,
+	"cef_dictionary_value_t::set_bool::value":                        setElement,
+	"cef_list_value_t::set_bool::value":                              setElement,
+	"cef_v8value_t::create_bool::value":                              setElement,
+	"cef_value_t::set_bool::value":                                   setElement,
+	"cef_view_t::set_focusable::focusable":                           setElement,
+	"cef_window_delegate_t::get_parent_window::is_menu":              setElement,
+	"cef_window_delegate_t::get_parent_window::can_activate_menu":    setElement,
+}
+
+var boolMember = map[string]void{
+	"cef_popup_features_t::xSet":      setElement,
+	"cef_popup_features_t::ySet":      setElement,
+	"cef_popup_features_t::widthSet":  setElement,
+	"cef_popup_features_t::heightSet": setElement,
 }
 
 var cefdir string
@@ -492,9 +504,10 @@ type SimpleDecl struct {
 }
 
 type Member struct {
-	token Token
-	typ   Type
-	st    *cc.StructDeclaration
+	token     Token
+	typ       Type
+	decl      *cc.StructDeclaration
+	container *StructDecl
 }
 
 func (m Member) Name() string {
@@ -509,7 +522,15 @@ func (m Member) GoType() string {
 	if m.typ.Ty == TyStringT && m.typ.Pointer == 0 {
 		return "string"
 	}
+	if m.IsBoolMember() {
+		return "bool"
+	}
 	return m.typ.GoType()
+}
+
+func (m Member) IsBoolMember() bool {
+	_, isBool := boolMember[m.container.CefName()+"::"+m.Name()]
+	return isBool
 }
 
 func (m Member) Type() Type {
@@ -1135,7 +1156,7 @@ func handleStruct(base DeclCommon, st *cc.StructOrUnionSpecifier) (decl Decl) {
 				}
 			}
 			dd := d.DirectDeclarator
-			stDecl.Members = append(stDecl.Members, Member{Token(dd.Token), ty, &m})
+			stDecl.Members = append(stDecl.Members, Member{Token(dd.Token), ty, &m, stDecl})
 		}
 	} else {
 		var stType StructType
@@ -1398,6 +1419,9 @@ func (p Param) GoTypeIn() (t string) {
 		if p.Type().Ty == TyStringT && p.Type().Pointer == 1 {
 			return p.GoType()
 		} else {
+			if p.IsBoolParam() {
+				return "bool"
+			}
 			return p.Type().Deref().GoType()
 		}
 	} else {
