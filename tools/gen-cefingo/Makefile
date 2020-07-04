@@ -13,7 +13,7 @@ vet: template.qtpl.go *.go parser/parse_string.go
 
 capi:
 	@# output path is ../../capi
-	cd ../.. ; go run tools/gen-cefingo/*.go
+	cd ../.. ; go run ./tools/gen-cefingo
 
 .PHONY: fmt
 fmt:

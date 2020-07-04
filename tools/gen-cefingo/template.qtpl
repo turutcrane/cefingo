@@ -31,12 +31,12 @@ goTmp{%s p.Name() -%}
 {% endfunc %}
 
 Statemens to convert from C.param to Go type.
-{% func convToGoTypeStmts(p parser.Param, line *int) -%}
+{% func convToGoTypeStmts(p parser.Param, lt *LogTag) -%}
 {% if p.IsInOutParam() -%}
 	{%- if p.Type().Ty == parser.TyStringT -%}
 		{%= goTempName(p) %} := string_from_cef_string({%s goParamName(p) %})
 	{%- elseif p.Type().Pointer == 2 && p.Type().Deref().IsRefCountedClass() -%}
-		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type().Deref(), "*" + goParamName(p)) %}{% code *line +=1 %}
+		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type().Deref(), "*" + goParamName(p)) %}
 		cefp := {%s goTempName(p) %}.p_{%s p.Type().BaseName() %}
 	{%- elseif p.IsBoolParam() -%}
 		{%= goTempName(p) %} := (*{%s p.Name() %}) != 0
@@ -47,7 +47,7 @@ Statemens to convert from C.param to Go type.
 	{%- endif -%}
 {% elseif !p.IsOutParam() -%}
 	{%- if bs, maxLenArg := p.IsByteSliceParam(); bs -%}
-		{%= goTempName(p) %} := (*[1 << 30]byte)({%s p.Name() %})[:{%s maxLenArg %}:{%s maxLenArg %}]{% code *line +=1 %}
+		{%= goTempName(p) %} := (*[1 << 30]byte)({%s p.Name() %})[:{%s maxLenArg %}:{%s maxLenArg %}]
 	{%- elseif s, maxLenArg := p.IsSliceParam(); s -%}
 		slice := (*[1 << 30]({%s p.Type().Deref().GoCType() %}))(unsafe.Pointer({%s p.Name() %}))[:{%s maxLenArg %}:{%s maxLenArg %}]
 		{%= goTempName(p) %} := make({%s p.GoType() %}, {%s maxLenArg %})
@@ -56,24 +56,24 @@ Statemens to convert from C.param to Go type.
 		}
 	{%- else -%}
 		{%- if p.IsBoolParam() -%}
-		{%= goTempName(p) %} := {%s= goParamName(p) %} != 0{% code *line +=1 %}
+		{%= goTempName(p) %} := {%s= goParamName(p) %} != 0
 		{%- elseif !p.IsSliceLengthParam() -%}
-		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type(), goParamName(p)) %}{% code *line +=1 %}
+		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type(), goParamName(p)) %}
 		{%- endif -%}
 	{%- endif -%}
 {% endif -%}
 {% endfunc %}
 
 Set returned Go value to C.param and cleanup
-{% func postProcess(p parser.Param, line *int) -%}
+{% func postProcess(p parser.Param, lt *LogTag) -%}
 {% if p.IsOutParam() -%}
 	{%- if p.Type().Ty == parser.TyStringT -%}
-		set_cef_string({%= goParamName(p) %}, {%= goTempNameOut(p) %}){% code *line +=1 %}
+		set_cef_string({%= goParamName(p) %}, {%= goTempNameOut(p) %})
 	{%- elseif p.Type().Deref().IsRefCountedClass() -%}
 		if {%s goTempNameOut(p) %} != nil {
 			*{%s goParamName(p) %} = {%s goTempNameOut(p) %}.p_{%s p.Type().BaseName() %}
 			BaseAddRef(*{%s goParamName(p) %})
-		}{% code *line +=4 %}
+		}
 	{%- elseif isSlice, sliceLen := p.IsByteSliceParam(); isSlice -%}
 		*{%s sliceLen %} = (C.size_t)(len({%s goTempNameOut(p) %}))
 		*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})(C.calloc(1, C.size_t(len({%s goTempNameOut(p) %}))))
@@ -87,11 +87,11 @@ Set returned Go value to C.param and cleanup
 			*{%s goParamName(p) %} = 1
 		}
 	{%- else -%}
-		*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})({%s goTempNameOut(p) %}){% code *line +=1 %}
+		*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})({%s goTempNameOut(p) %})
 	{%- endif -%}
 {% elseif p.IsInOutParam() -%}
 	{%- if p.Type().Ty == parser.TyStringT -%}
-		set_cef_string({%s goParamName(p) %},{%s goTempNameOut(p) %}){% code *line +=1 %}
+		set_cef_string({%s goParamName(p) %},{%s goTempNameOut(p) %})
 	{%- elseif p.IsBoolParam() -%}
 		*{%s goParamName(p) %} = 0
 		if {%s goTempNameOut(p) %} {
@@ -110,14 +110,13 @@ Set returned Go value to C.param and cleanup
 {% elseif p.Name() != "self" -%}
 	{%- if p.IsRefCountedClass() -%}
 		BaseRelease({%= goTempName(p) %}.p_{%s p.Type().BaseName() %})
-		{%- code *line +=1 -%}
 	{%- endif -%}
 {% endif -%}
 {% endfunc %}
 
-{% func MethodComments(m *parser.MethodDecl, line *int) -%}
+{% func MethodComments(m *parser.MethodDecl) -%}
 {% for _, c := range m.Comment -%}
-{%s c %}{% code *line++ %}
+{%s c %}
 {% endfor -%}
 {% endfunc -%}
 
@@ -133,23 +132,23 @@ Set returned Go value to C.param and cleanup
 {%- if m.HasReturnValue() || m.HasOutParam() -%}:= {% endif -%}
 {% endfunc %}
 
-{% func GoCallback(line int, m *parser.MethodDecl, st *parser.CefClassDecl) %}
+{% func GoCallback(m *parser.MethodDecl, st *parser.CefClassDecl, lt *LogTag) %}
 {% code
 	var retCtype string
 	retCtype = m.ReturnType().GoCType()
 	baseName := st.BaseName()
 -%}
-{%= MethodComments(m, &line) -%}
+{%= MethodComments(m) -%}
 //export cefingo_{%s baseName %}_{%s m.Funcname.Name() %}
 func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 {%- for _, p := range m.Params() -%}
-	{%s goParamName(p) %} {%s p.GoCType() %},{% code line += 1 %}
+	{%s goParamName(p) %} {%s p.GoCType() %},
 {%- endfor -%}
 ) {% if retCtype != "" %}(cRet {%s retCtype %}){% endif %} {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T{%d line + 5 %}:")
+	Tracef(unsafe.Pointer(self), "{%s lt.NextTag() %}:")
 	cefingoIfaceAccess.Lock()
 	{%- if "*C." + st.CefName() == m.Params()[0].GoCType() -%}
 	f := {%s baseName %}_handlers.{%= memberName(m) %}[self]
@@ -160,7 +159,7 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 
 	if f != nil {
 		{%- for _, p := range m.Params() -%}
-			{%- if exp := convToGoTypeStmts(p, &line); exp != "" && !p.IsByteSliceLengthParam() -%}
+			{%- if exp := convToGoTypeStmts(p, lt); exp != "" && !p.IsByteSliceLengthParam() -%}
 				{%-s= exp -%}
 			{%- endif -%}
 		{%- endfor %}
@@ -169,26 +168,26 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 		{%- if !(p.IsSliceLengthParam() || p.IsByteSliceLengthParam() || p.IsOutParam()) %}{%= goTempName(p) %},{% endif -%}
 		{%- endfor %})
 		{%- for _, p := range m.Params() -%}
-			{%- if exp := postProcess(p, &line); exp != "" -%}
+			{%- if exp := postProcess(p, lt); exp != "" -%}
 				{%-s= exp -%}
 			{%- endif -%}
 		{%- endfor %}
-		{%- if m.IsBoolValueMethod() %}{% code line +=1 -%}
+		{%- if m.IsBoolValueMethod() %}
 		if goRet {cRet = 1}
-		{%- elseif m.ReturnType().IsRefCountedClass() %}{% code line +=1 -%}
+		{%- elseif m.ReturnType().IsRefCountedClass() %}
 		cRet = ({%s retCtype %})(goRet.p_{%s m.ReturnType().BaseName() %})
 		BaseAddRef(cRet)
-		{%- elseif retCtype != "" %}{% code line +=1 -%}
+		{%- elseif retCtype != "" %}
 		cRet = ({%s retCtype %})(goRet)
 		{%- endif -%}
 	} else {
-		Logf("T{%d line + 15 %}: {%s m.Funcname.Name() %}: Noo!")
+		Logf("{%s lt.NextTag() %}: {%s m.Funcname.Name() %}: Noo!")
 	}
 	{% if retCtype !="" %}return cRet{% endif %}
 }
 {% endfunc %}
 
-{% func GoBindFunc(line int, st *parser.CefClassDecl) %}
+{% func GoBindFunc(st *parser.CefClassDecl, lt *LogTag) %}
 {% code baseName := st.BaseName()
 	self := baseName -%}
 func ({%s self %} *{%s st.GoName() %}) Bind(a interface{}) *{%s st.GoName() %} {
@@ -211,14 +210,14 @@ func ({%s self %} *{%s st.GoName() %}) Bind(a interface{}) *{%s st.GoName() %} {
 	{%- endfor %}
 	if accessor, ok := a.({%s st.GoName() %}Accessor); ok {
 		accessor.Set{%s st.GoName() %}({%s self %})
-		Logf("T{%d (line + funcnum * 4) + 22 %}:")
+		Logf("{%s lt.NextTag() %}:")
 	}
 
 	return {%s self %}
 }
 {% endfunc %}
 
-{% func GoGetFunc(line int, m *parser.MethodDecl, goName, baseName, cName string) %}
+{% func GoGetFunc(m *parser.MethodDecl, goName, baseName, cName string, lt *LogTag) %}
 //export cefingo_{%s baseName %}_{%s m.Funcname.Name() %}
 func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(self *C.{%s cName %}) (ch {%s m.ReturnType().GoCType() %}) {
 	cefingoIfaceAccess.Lock()
@@ -226,7 +225,7 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(self *C.{%s cName %}) (ch 
 
 	handler := {%s baseName %}_handlers.{%s memberName(m) %}[self]
 	if handler == nil {
-		Logf("T{%d line + 9 %}: {%s m.Funcname.Name() %}")
+		Logf("{%s lt.NextTag() %}: {%s m.Funcname.Name() %}")
 	} else {
 		BaseAddRef(handler.p_{%s m.ReturnType().BaseName() %})
 		ch = handler.p_{%s m.ReturnType().BaseName() %}
@@ -235,7 +234,7 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(self *C.{%s cName %}) (ch 
 }
 {% endfunc %}
 
-{% func AssocGetFunc(line int, m *parser.MethodDecl, goName, baseName, cName string) %}
+{% func AssocGetFunc(m *parser.MethodDecl, goName, baseName, cName string, lt *LogTag) %}
 func ({%s baseName %} *{%s goName %}) Assoc{%s m.ReturnType().TitleCase() %}(handler {%s m.ReturnType().GoType() %}) {
 	cp := {%s baseName %}.p_{%s baseName %}
 	cefingoIfaceAccess.Lock()
@@ -266,8 +265,8 @@ import "C"
 {% endif -%}
 {% endfunc %}
 
-{% func GoIface(line int, m *parser.MethodDecl) %}
-{%= MethodComments(m, &line) -%}
+{% func GoIface(m *parser.MethodDecl) %}
+{%= MethodComments(m) -%}
 type {%s m.IfName() %} interface {
 	{%s m.Funcname.TitleCase() %} (
 		{%- for _, p := range m.Params() -%}
@@ -295,7 +294,7 @@ type {%s m.IfName() %} interface {
 {%- endif -%}
 {% endfunc %}
 
-{% func IfaceStruct(line int, st *parser.CefClassDecl) %}
+{% func IfaceStruct(st *parser.CefClassDecl) %}
 var {%s st.BaseName() %}_handlers = struct {
 {% for c := st; c != nil; c = c.GetBase() -%}
 	{%- for _, m := range c.Methods -%}
@@ -311,16 +310,16 @@ var {%s st.BaseName() %}_handlers = struct {
 }
 {% endfunc %}
 
-{% func GoAllocFunc(line int, st *parser.CefClassDecl) %}
+{% func GoAllocFunc(st *parser.CefClassDecl, lt *LogTag) %}
 // Alloc{%s st.GoName()%} allocates {%s st.GoName() %} and construct it
 func Alloc{%s st.GoName()%}() *{%s st.GoName()%} {
-	up := c_calloc(1, C.sizeof_cefingo_{%s st.BaseName() %}_wrapper_t, "T{%d line + 4 %}:")
+	up := c_calloc(1, C.sizeof_cefingo_{%s st.BaseName() %}_wrapper_t, "{%s lt.NextTag() %}:")
 	cefp := C.cefingo_construct_{%s st.BaseName() %}((*C.cefingo_{%s st.BaseName() %}_wrapper_t)(up))
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to {%s st.CefName() %} itself in DeassocFunc,
 		// or {%s st.CefName() %} is never GCed.
-		Tracef(up, "T{%d line + 10%}:")
+		Tracef(up, "{%s lt.NextTag() %}:")
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
@@ -344,13 +343,13 @@ T_{%s strings.ToUpper(callee) -%}
 {%s st.CefName() + " *cefingo_construct_" + st.BaseName() + "(cefingo_" + st.BaseName() + "_wrapper_t* " + st.BaseName() + ")" -%}
 {% endfunc %}
 
-{% func CConstruct(line int, st *parser.CefClassDecl) %}
+{% func CConstruct(st *parser.CefClassDecl, lt *LogTag) %}
 {% for _, m := range st.Methods -%}
 {% if m.HasConstParams() -%}
 typedef {%s m.ReturnType().CType() -%}
  (*{%s methodCTypeName(m) %})(
 {% for i, p := range m.Params() -%}
-{% if i > 0 %}, 
+{% if i > 0 %},
 {% endif %}	{%s p.CType() -%}
 {% endfor%}
 );
@@ -367,7 +366,7 @@ typedef {%s m.ReturnType().CType() -%}
 	{%- code base := "" -%}
 	{%- for c := st; c != nil; c = c.GetBase() -%}
 	{%- for _, m := range c.Methods -%}
-	{%s st.BaseName() %}->body{%s base %}.{%s m.Funcname.Name() %} = {% if m.HasConstParams() %}({%s methodCTypeName(m) %}){% endif %}
+	{%s st.BaseName() %}->body{%s base %}.{%s m.Funcname.Name() %} ={% if m.HasConstParams() %} ({%s methodCTypeName(m) %}){% endif %}
 		cefingo_{%s st.BaseName() %}_{%s m.Funcname.Name() %};
 	{%- endfor -%}
 	{%- code base = base + ".base"-%}
@@ -377,16 +376,16 @@ typedef {%s m.ReturnType().CType() -%}
 }
 {% endfunc %}
 
-{% func HCallback(line int, st *parser.CefClassDecl) %}
+{% func HCallback(st *parser.CefClassDecl, lt *LogTag) %}
 CEFINGO_REF_COUNTER_WRAPPER(cef_{%s st.BaseName() %}_t, cefingo_{%s st.BaseName() %}_wrapper_t);
 extern {%s constructorName(st) %};
 {% endfunc %}
 
-{% func preConvToC(p parser.Param, line *int) -%}
+{% func preConvToC(p parser.Param, lt *LogTag) -%}
 {% if p.IsOutParam() -%}
 	{%- if ok, argLen := p.IsByteSliceParam(); ok -%}
 	{%s argLen %} := len({%s goParamName(p) %})
-	{%s cTempName(p) %} := c_calloc(1, C.size_t({%s argLen %}), "T{%d *line %}:{%s p.CalleeName() + "::" + p.Name() %}")
+	{%s cTempName(p) %} := c_calloc(1, C.size_t({%s argLen %}), "{%s lt.NextTag() %}:{%s p.CalleeName() + "::" + p.Name() %}")
 	{%- elseif isSlice, argLen := p.IsSliceParam(); isSlice -%}
 	var _{%s argLen %} C.size_t
 	{%s argLen %} := &_{%s argLen %}
@@ -402,7 +401,7 @@ extern {%s constructorName(st) %};
 	{%s cTempName(p) %} := C.CBytes({%s goParamName(p) %})
 {% elseif ok, argLen := p.IsSliceParam(); ok -%}
 	{%s argLen %} := len({%s goParamName(p) %})
-	{%s cTempName(p) %} := c_calloc(C.size_t({%s argLen %}), (C.size_t)(unsafe.Sizeof({%= goParamName(p) %}[0])), "T{%d *line %}:{%s p.CalleeName() + "::" + p.Name() %}")
+	{%s cTempName(p) %} := c_calloc(C.size_t({%s argLen %}), (C.size_t)(unsafe.Sizeof({%= goParamName(p) %}[0])), "{%s lt.NextTag() %}:{%s p.CalleeName() + "::" + p.Name() %}")
 	slice := (*[1 << 30]{%s p.Type().Deref().GoCType() %})({%s cTempName(p) %})[:{%s argLen %}:{%s argLen %}]
 	for i, v := range {%s goParamName(p) %} {
 		cefp := v.p_{%s p.Type().BaseName() %}
@@ -420,17 +419,14 @@ extern {%s constructorName(st) %};
 {% else -%}
 {% switch p.GoType() -%}
 {% case "bool" -%}
-	{%- code *line += 4 -%}
 	var {%s cTempName(p) %} int
 	if {%s goParamName(p) %} {
 		{%s cTempName(p) %} = 1
 	}
 {% case "string" -%}
-	{%- code *line += 2 -%}
 	{%s cName(p) %} := create_cef_string({%s goParamName(p) %})
 	defer clear_cef_string({%s cName(p) %})
 {% case "time.Time" -%}
-	{%- code *line += 1 -%}
 	{%s cName(p) %} := {%s goParamName(p) %}.Unix()
 {% endswitch -%}
 {% endif -%}
@@ -446,7 +442,7 @@ c_{% endswitch %}{%s goParamName(p) -%}
 tmp{%= cName(p) -%}
 {% endfunc %}
 
-{% func convToC(p parser.Param) -%}
+{% func convToC(p parser.Param, lt *LogTag) -%}
 {% if p.IsOutParam() -%}
 	{%- if ok, _ := p.IsByteSliceParam(); ok -%}
 	{%-s= cTempName(p) -%}
@@ -480,7 +476,7 @@ tmp{%= cName(p) -%}
 {% endif -%}
 {% endfunc %}
 
-{% func postConvFromC(p parser.Param, line *int) -%}
+{% func postConvFromC(p parser.Param, lt *LogTag) -%}
 {% if p.IsOutParam() -%}
 	{%- if isSlice, argLen := p.IsByteSliceParam(); isSlice -%}
 	{%s goParamName(p) %} = C.GoBytes({%s cTempName(p) %}, C.int({%s argLen %}))
@@ -505,7 +501,7 @@ tmp{%= cName(p) -%}
 {% endif -%}
 {% endfunc %}
 
-{% func GoFunction(line int, f *parser.FuncDecl) -%}
+{% func GoFunction(f *parser.FuncDecl, lt *LogTag) -%}
 func {%s f.Funcname.TitleCase() %}(
 	{%- for _, p := range f.Params() -%}
 	{%- if !p.IsByteSliceLengthParam() && !p.IsSliceLengthParam() && !p.IsOutParam() -%}
@@ -514,15 +510,15 @@ func {%s f.Funcname.TitleCase() %}(
 	{%- endfor -%}
 ) {%= retTypes(f) %}{
 	{%- for _, p := range f.Params() -%}
-		{%- if exp := preConvToC(p, &line); exp != "" -%}
+		{%- if exp := preConvToC(p, lt); exp != "" -%}
 			{%-s= exp -%}
 		{%- endif -%}
 	{%- endfor %}
 	{% if f.HasReturnValue() %}cRet := {% endif %}C.{%s f.CefName() %}({% for i, p := range f.Params() -%}
-	{%- if i > 0 %}, {% endif %}{%= convToC(p) -%}
+	{%- if i > 0 %}, {% endif %}{%= convToC(p, lt) -%}
 	{%- endfor %})
 
-	{%- for _, p := range f.Params() -%}{%= postConvFromC(p, &line) %}{%endfor -%}
+	{%- for _, p := range f.Params() -%}{%= postConvFromC(p, lt) %}{%endfor -%}
 	{%= goReturnStmt(f) %}
 }
 {% endfunc %}
@@ -552,7 +548,7 @@ Generate Go func Return Types
 {% endfunc %}
 
 Generate Go method call to object method (self->method(...))
-{% func CefObjectMethod(line int, m *parser.MethodDecl) %}
+{% func CefObjectMethod(m *parser.MethodDecl, lt *LogTag) %}
 {% for _, c := range m.Comment -%}
 {%s c %}
 {% endfor -%}
@@ -567,16 +563,16 @@ func  ({%s goParamName(m.Params()[0]) %} {%s m.Params()[0].GoType() %}) {%s m.Fu
 ) {%= retTypes(m) %}{
 	{%- for i, p := range m.Params() -%}
 	{%- if !(i == 0 && p.Name() == "self") -%}
-		{%- if stmts := preConvToC(p, &line); stmts != "" -%}
+		{%- if stmts := preConvToC(p, lt); stmts != "" -%}
 			{%-s= stmts -%}
 		{%- endif -%}
 	{%- endif -%}
 	{%- endfor %}
 	{% if m.HasReturnValue() %}cRet := {% endif %}C.{%s methodCName(m) %}({% for i, p := range m.Params() -%}
-	{%- if i > 0 %}, {% endif %}{%= convToC(p) -%}
+	{%- if i > 0 %}, {% endif %}{%= convToC(p, lt) -%}
 	{%- endfor %})
 
-	{%- for _, p := range m.Params() -%}{%= postConvFromC(p, &line) %}{%endfor -%}
+	{%- for _, p := range m.Params() -%}{%= postConvFromC(p, lt) %}{%endfor -%}
 	{%-= goReturnStmt(m) %}
 }
 {% endfunc %}
@@ -629,7 +625,7 @@ extern {%s methodCSig(m) %};
 {
 	{% if retGoType != "" %}return {% endif %}self->{%s m.Funcname.Name() %}(
 		{%- for i, p := range m.Params() -%}
-		{%- if i > 0 %}, 
+		{%- if i > 0 %},
 		{%- endif -%}
 		{%s p.Name() -%}
 		{%- endfor %}
@@ -638,11 +634,10 @@ extern {%s methodCSig(m) %};
 {% endfunc %}
 
 // newCXxxxT()
-{% func GoType(d *parser.CefClassDecl, line int) %}
+{% func GoType(d *parser.CefClassDecl, lt *LogTag) %}
 {% code goName := d.GoName()
 	typeName := d.BaseName()
 	cName := d.CefName()
-	line = line + 25
 -%}
 // Go type for {%s cName %}	
 type {%s goName %} struct {
@@ -672,14 +667,14 @@ func new{%s goName %}(p *C.{%s cName %}) *{%s goName %} {
 	if p == nil {
 		return nil
 	}
-	Tracef(unsafe.Pointer(p), "T{%d line + 4 %}:")
+	Tracef(unsafe.Pointer(p), "{%s lt.NextTag() %}:")
 	{%- if d.St == parser.StRefCounted -%}
 	BaseAddRef(p)
 	{%- endif -%}
 	go_{%s typeName %} := {%s goName %}{noCopy{}, p}
 	{%- if d.St == parser.StRefCounted -%}
 	runtime.SetFinalizer(&go_{%s typeName %}, func(g *{%s goName %}) {
-		Tracef(unsafe.Pointer(g.p_{%s typeName %}), "T{%d line + 8 %}:")
+		Tracef(unsafe.Pointer(g.p_{%s typeName %}), "{%s lt.NextTag() %}:")
 		BaseRelease(g.p_{%s typeName %})
 	})
 	{%- endif -%}

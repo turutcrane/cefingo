@@ -5,6 +5,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"go/format"
@@ -23,14 +24,21 @@ var (
 	goFormat     bool = true
 	fileComments map[int][]string
 	capiDir      = flag.String("capidir", "capi", "outpu directory")
+	logTags      LogTag
 )
 
 func main() {
 	flag.Parse()
 	tus := parser.Parse()
+	logTagFile := filepath.Join(*capiDir, "logtag.txt")
+	logTags.ReadTags(logTagFile)
+	defer logTags.WriteToFile(logTagFile)
+	log.Println("T37:", logTags)
+
 	for i, tu := range tus {
 		parser.ExternalDeclaration(i, tu.ExternalDeclaration)
 	}
+
 	goTypeFile := newFileGo("cefingo_types_gen.go", false)
 	defer outFileGo(goTypeFile)
 
@@ -51,6 +59,8 @@ func main() {
 	sort.Strings(fn)
 
 	goGenFile := newFileGo("cefingo_gen.go", true)
+	defer outFileGo(goGenFile)
+
 	for _, fname := range fn {
 		log.Printf("T35: Process %s\n", fname)
 		if strings.HasSuffix(fname, "_capi.h") {
@@ -100,10 +110,10 @@ func main() {
 				log.Printf("T31: %s: %s\n", d.Common().Dk, token.Name())
 			}
 		}
-		if strings.HasSuffix(fname, "_capi.h") {
-			log.Printf("T63: %s\n", fname)
-			outFileGo(goFile)
-		}
+		// if strings.HasSuffix(fname, "_capi.h") {
+		// 	log.Printf("T63: %s\n", fname)
+		// 	outFileGo(goFile)
+		// }
 	}
 
 	log.Printf("T10: End: %d Translation Units", len(tus))
@@ -270,8 +280,10 @@ func getComments(fname string) {
 
 func outHandlerClass(gf, expf, cf, hf *Generator, d *parser.CefClassDecl) {
 	log.Printf("T226: Callback class: %s\n", d.Token())
+	logTags.ResetTag(d.Token().GoName())
+
 	outComment(gf, d.LineOfTypedef())
-	WriteGoType(gf, d, gf.Lines())
+	WriteGoType(gf, d, &logTags)
 	genGoInterface(gf, d)
 	genGoAlloc(gf, d)
 	genBindFunc(gf, d)
@@ -281,23 +293,20 @@ func outHandlerClass(gf, expf, cf, hf *Generator, d *parser.CefClassDecl) {
 }
 
 func genGoInterface(gf *Generator, st *parser.CefClassDecl) {
-	line := gf.Lines()
 	for _, m := range st.Methods {
 		if !m.IsGetFunc() {
-			WriteGoIface(gf, line, m)
+			WriteGoIface(gf, m)
 		}
 	}
-	WriteIfaceStruct(gf, line, st)
+	WriteIfaceStruct(gf, st)
 }
 
 func genGoAlloc(gf *Generator, st *parser.CefClassDecl) {
-	line := gf.Lines()
-	WriteGoAllocFunc(gf, line, st)
+	WriteGoAllocFunc(gf, st, &logTags)
 }
 
 func genBindFunc(gf *Generator, st *parser.CefClassDecl) {
-	line := gf.Lines()
-	WriteGoBindFunc(gf, line, st)
+	WriteGoBindFunc(gf, st, &logTags)
 }
 
 func genGoGetFunc(gf, expf *Generator, st *parser.CefClassDecl) {
@@ -307,10 +316,8 @@ func genGoGetFunc(gf, expf *Generator, st *parser.CefClassDecl) {
 	for c := st; c != nil; c = c.GetBase() {
 		for _, m := range c.Methods {
 			if m.IsGetFunc() {
-				line := expf.Lines()
-				WriteGoGetFunc(expf, line, m, goName, baseName, cName)
-				line = gf.Lines()
-				WriteAssocGetFunc(gf, line, m, goName, baseName, cName)
+				WriteGoGetFunc(expf, m, goName, baseName, cName, &logTags)
+				WriteAssocGetFunc(gf, m, goName, baseName, cName, &logTags)
 			}
 		}
 	}
@@ -320,8 +327,7 @@ func genGoCallbackFunc(gf *Generator, st *parser.CefClassDecl) {
 	for c := st; c != nil; c = c.GetBase() {
 		for _, m := range c.Methods {
 			if !m.IsGetFunc() {
-				line := gf.Lines()
-				WriteGoCallback(gf, line, m, st)
+				WriteGoCallback(gf, m, st, &logTags)
 			}
 		}
 	}
@@ -373,29 +379,31 @@ func ConvToGoTypeExp(t parser.Type, val string) (exp string) {
 }
 
 func genChConstructFunc(cf, hf *Generator, st *parser.CefClassDecl) {
-	line := cf.Lines()
-	WriteCConstruct(cf, line, st)
+	WriteCConstruct(cf, st, &logTags)
 
-	line = hf.Lines()
-	WriteHCallback(hf, line, st)
+	WriteHCallback(hf, st, &logTags)
 }
 
 func outCefObjectClass(gf, cf, hf *Generator, d *parser.CefClassDecl) {
 	log.Printf("T541: Cef object: %s\n", d.Token())
+	logTags.ResetTag(d.Token().GoName())
+
 	outComment(gf, d.LineOfTypedef())
-	WriteGoType(gf, d, gf.Lines())
+	WriteGoType(gf, d, &logTags)
 	outCefObjectMethod(gf, cf, hf, d)
 }
 
 func outGoFunction(gf *Generator, f *parser.FuncDecl) {
 	log.Printf("T350: Cef Functin : %s\n", f.Token())
+	logTags.ResetTag(f.Token().GoName())
+
 	outComment(gf, f.LineOfTypedef())
-	WriteGoFunction(gf, gf.Lines(), f)
+	WriteGoFunction(gf, f, &logTags)
 }
 
 func outCefObjectMethod(gf, cf, hf *Generator, d *parser.CefClassDecl) {
 	for _, m := range d.Methods {
-		WriteCefObjectMethod(gf, gf.Lines(), m)
+		WriteCefObjectMethod(gf, m, &logTags)
 		WriteCefObjectMethodC(cf, m)
 		WriteCefObjectMethodH(hf, m)
 	}
@@ -408,6 +416,7 @@ type Generator struct {
 	buf   bytes.Buffer // Accumulated output.
 }
 
+// Printf output fromated string
 func (g *Generator) Printf(format string, args ...interface{}) {
 	fmt.Fprintf(&g.buf, format, args...)
 }
@@ -416,9 +425,9 @@ func (g *Generator) Write(p []byte) (n int, err error) {
 	return g.buf.Write(p)
 }
 
-func (g *Generator) Lines() (line int) {
-	return bytes.Count(g.buf.Bytes(), []byte("\n"))
-}
+// func (g *Generator) Lines() (line int) {
+// 	return bytes.Count(g.buf.Bytes(), []byte("\n"))
+// }
 
 // format returns the gofmt-ed contents of the Generator's buffer.
 func (g *Generator) format() []byte {
@@ -431,4 +440,52 @@ func (g *Generator) format() []byte {
 		return g.buf.Bytes()
 	}
 	return src
+}
+
+// LogTag magages Tag number
+type LogTag struct {
+	TagMap map[string]int
+	MaxTag int
+	curTag int
+	subTag int
+}
+
+// NextTag returns next tag string
+func (logTag *LogTag) NextTag() string {
+	logTag.subTag++
+	return fmt.Sprintf("T%d.%d", logTag.curTag, logTag.subTag)
+}
+
+// ResetTag set curTag and reset subTag
+func (logTag *LogTag) ResetTag(key string) {
+	if t, ok := logTag.TagMap[key]; ok {
+		logTag.curTag = t
+	} else {
+		logTag.MaxTag++
+		logTag.TagMap[key] = logTag.MaxTag
+	}
+	logTag.subTag = 0
+}
+
+// ReadTags reads tag number from file
+func (logTag *LogTag) ReadTags(fname string) {
+	logTag.TagMap = map[string]int{}
+	logTag.MaxTag = 100
+	if b, err := ioutil.ReadFile(fname); err == nil {
+		if err := json.Unmarshal(b, logTag); err != nil {
+			log.Panicln("T465:", err)
+		}
+	}
+}
+
+// WriteWriteToFile writes tag number to file
+func (logTag *LogTag) WriteToFile(fname string) {
+	b, err := json.Marshal(logTag)
+	if err != nil {
+		log.Panicln("T475:", err)
+	}
+	err = ioutil.WriteFile(fname, b, 0644)
+	if err != nil {
+		log.Panicln("T475:", err)
+	}
 }
