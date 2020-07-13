@@ -258,8 +258,12 @@ func init() {
 
 var boolParameter = map[string]void{
 	"::cef_set_osmodal_loop::osModalLoop":                            setElement,
-	"cef_browser_host_t::set_focus::focus":                           setElement,
 	"cef_browser_host_t::close_browser::force_close":                 setElement,
+	"cef_browser_host_t::find::forward":                              setElement,
+	"cef_browser_host_t::find::matchCase":                            setElement,
+	"cef_browser_host_t::find::findNext":                             setElement,
+	"cef_browser_host_t::set_focus::focus":                           setElement,
+	"cef_browser_host_t::stop_finding::clearSelection":               setElement,
 	"cef_life_span_handler_t::on_before_popup::no_javascript_access": setElement,
 	"cef_load_handler_t::on_loading_state_change::isLoading":         setElement,
 	"cef_load_handler_t::on_loading_state_change::canGoBack":         setElement,

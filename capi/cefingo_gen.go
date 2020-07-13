@@ -1724,14 +1724,26 @@ func (self *CBrowserHostT) PrintToPdf(
 func (self *CBrowserHostT) Find(
 	identifier int,
 	searchText string,
-	forward int,
-	matchCase int,
-	findNext int,
+	forward bool,
+	matchCase bool,
+	findNext bool,
 ) {
 	c_searchText := create_cef_string(searchText)
 	defer clear_cef_string(c_searchText)
+	var tmpforward int
+	if forward {
+		tmpforward = 1
+	}
+	var tmpmatchCase int
+	if matchCase {
+		tmpmatchCase = 1
+	}
+	var tmpfindNext int
+	if findNext {
+		tmpfindNext = 1
+	}
 
-	C.cefingo_browser_host_find(self.p_browser_host, (C.int)(identifier), (*C.cef_string_t)(c_searchText), (C.int)(forward), (C.int)(matchCase), (C.int)(findNext))
+	C.cefingo_browser_host_find(self.p_browser_host, (C.int)(identifier), (*C.cef_string_t)(c_searchText), C.int(tmpforward), C.int(tmpmatchCase), C.int(tmpfindNext))
 
 }
 
@@ -1739,10 +1751,14 @@ func (self *CBrowserHostT) Find(
 // Cancel all searches that are currently going on.
 ///
 func (self *CBrowserHostT) StopFinding(
-	clearSelection int,
+	clearSelection bool,
 ) {
+	var tmpclearSelection int
+	if clearSelection {
+		tmpclearSelection = 1
+	}
 
-	C.cefingo_browser_host_stop_finding(self.p_browser_host, (C.int)(clearSelection))
+	C.cefingo_browser_host_stop_finding(self.p_browser_host, C.int(tmpclearSelection))
 
 }
 
