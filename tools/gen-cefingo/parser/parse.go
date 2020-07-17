@@ -111,16 +111,11 @@ var notBoolValueMethod = map[string]void{
 	"cef_browser_t::get_identifier": setElement,
 }
 
-var notGetMethod = map[string]void{
-	// "cef_resource_request_handler_t::get_cookie_access_filter":    setElement, // It has multiple parameter
-	// "cef_resource_request_handler_t::get_resource_handler":        setElement, // It has multiple parameter
-	// "cef_request_context_handler_t::get_resource_request_handler": setElement, // It has multiple parameter
-}
-
 var duplicatedHandler = map[string]void{
 	"can_set_cookie":               setElement,
 	"execute":                      setElement,
 	"get_auth_credentials":         setElement,
+	"get_load_handler":             setElement,
 	"get_resource_request_handler": setElement,
 	"may_block":                    setElement,
 	"on_browser_created":           setElement,
@@ -606,14 +601,6 @@ func (m MethodDecl) FirstLine() (line int) {
 		log.Panicf("T153: %v\n", m.sd)
 	}
 	return line
-}
-
-func (m MethodDecl) IsGetFunc() bool {
-	_, notGet := notGetMethod[m.CalleeName()]
-	if len(m.Params()) == 1 && m.Funcname.Name() == "get_"+m.ReturnType().BaseName() && !notGet {
-		return true
-	}
-	return false
 }
 
 func (m MethodDecl) IfName() (ifname string) {

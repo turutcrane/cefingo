@@ -195,17 +195,16 @@ func ({%s self %} *{%s st.GoName() %}) Bind(a interface{}) *{%s st.GoName() %} {
 	defer cefingoIfaceAccess.Unlock()
 	{%- code funcnum := 0 -%}
 	{%- for c := st; c != nil; c = c.GetBase() -%}
-	{%- for _, m := range c.Methods -%}
-	{%- if !m.IsGetFunc() %}
+	{%- for _, m := range c.Methods %}
 	{%- if funcnum == 0 -%}
 	cp := {%s self %}.p_{%s baseName %}
+	{%s baseName %}_handlers.handler[cp] = a
 
 	{%- endif -%}
 	{%- code funcnum += 1 -%}
 	if h, ok := a.({%s m.IfName() %}); ok {
 		{%s baseName %}_handlers.{%= memberName(m) %}[cp] = h
 	}
-	{%- endif -%}
 	{%- endfor -%}
 	{%- endfor %}
 	if accessor, ok := a.({%s st.GoName() %}Accessor); ok {
@@ -215,32 +214,28 @@ func ({%s self %} *{%s st.GoName() %}) Bind(a interface{}) *{%s st.GoName() %} {
 
 	return {%s self %}
 }
-{% endfunc %}
 
-{% func GoGetFunc(m *parser.MethodDecl, goName, baseName, cName string, lt *LogTag) %}
-//export cefingo_{%s baseName %}_{%s m.Funcname.Name() %}
-func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(self *C.{%s cName %}) (ch {%s m.ReturnType().GoCType() %}) {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+func ({%s self %} *{%s st.GoName() %}) UnbindAll() {
+	{%- code funcnum = 0 -%}
+	{%- for c := st; c != nil; c = c.GetBase() -%}
+	{%- for _, m := range c.Methods -%}
+	{%- if funcnum == 0 %}
+	cp := {%s self %}.p_{%s baseName %}
+	delete({%s baseName %}_handlers.handler, cp)
 
-	handler := {%s baseName %}_handlers.{%s memberName(m) %}[self]
-	if handler == nil {
-		Logf("{%s lt.NextTag() %}: {%s m.Funcname.Name() %}")
-	} else {
-		BaseAddRef(handler.p_{%s m.ReturnType().BaseName() %})
-		ch = handler.p_{%s m.ReturnType().BaseName() %}
-	}
-	return ch
+	{%- endif -%}
+	{%- code funcnum += 1 -%}
+	delete({%s baseName %}_handlers.{%= memberName(m) %}, cp)
+	{%- endfor -%}
+	{%- endfor %}
 }
-{% endfunc %}
 
-{% func AssocGetFunc(m *parser.MethodDecl, goName, baseName, cName string, lt *LogTag) %}
-func ({%s baseName %} *{%s goName %}) Assoc{%s m.ReturnType().TitleCase() %}(handler {%s m.ReturnType().GoType() %}) {
-	cp := {%s baseName %}.p_{%s baseName %}
+func ({%s self %} *{%s st.GoName() %}) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	{%s baseName %}_handlers.{%= memberName(m) %}[cp] = handler
+	cp := {%s self %}.p_{%s baseName %}
+	return {%s baseName %}_handlers.handler[cp]
 }
 {% endfunc %}
 
@@ -279,29 +274,23 @@ type {%s m.IfName() %} interface {
 {% endfunc %}
 
 {% func memberName(m *parser.MethodDecl) -%}
-{%- if m.IsGetFunc() -%}
-{%-s m.ReturnType().BaseName() -%}
-{%- else -%}
 {%-s m.Funcname.Name() %}_handler{%s "" -%}
-{%- endif -%}
 {% endfunc %}
 
 {% func memberGoType(m *parser.MethodDecl) -%}
-{%- if m.IsGetFunc() -%}
-{%-s m.ReturnType().GoType() -%}
-{%- else -%}
 {%-s m.IfName() -%}
-{%- endif -%}
 {% endfunc %}
 
 {% func IfaceStruct(st *parser.CefClassDecl) %}
 var {%s st.BaseName() %}_handlers = struct {
+	handler map[*C.{%s st.CefName() %}]interface{}
 {% for c := st; c != nil; c = c.GetBase() -%}
 	{%- for _, m := range c.Methods -%}
 	{%= memberName(m) %} map[*C.{%s st.CefName() %}]{%= memberGoType(m) %}
 	{%- endfor -%}
 {% endfor -%}
 }{
+	map[*C.{%s st.CefName() %}]interface{}{},
 {% for c := st; c != nil; c = c.GetBase() -%}
 	{%- for _, m := range c.Methods -%}
 	map[*C.{%s st.CefName() %}]{%= memberGoType(m) %}{},
@@ -323,6 +312,7 @@ func Alloc{%s st.GoName()%}() *{%s st.GoName()%} {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
+		delete({%s st.BaseName() %}_handlers.handler, cefp)
 		{%- for c := st; c != nil; c = c.GetBase() -%}
 		{%- for _, m:= range c.Methods -%}
 		delete({%s st.BaseName() %}_handlers.{%= memberName(m) %}, cefp)

@@ -287,16 +287,13 @@ func outHandlerClass(gf, expf, cf, hf *Generator, d *parser.CefClassDecl) {
 	genGoInterface(gf, d)
 	genGoAlloc(gf, d)
 	genBindFunc(gf, d)
-	genGoGetFunc(gf, expf, d)
 	genGoCallbackFunc(expf, d)
 	genChConstructFunc(cf, hf, d)
 }
 
 func genGoInterface(gf *Generator, st *parser.CefClassDecl) {
 	for _, m := range st.Methods {
-		if !m.IsGetFunc() {
-			WriteGoIface(gf, m)
-		}
+		WriteGoIface(gf, m)
 	}
 	WriteIfaceStruct(gf, st)
 }
@@ -309,26 +306,10 @@ func genBindFunc(gf *Generator, st *parser.CefClassDecl) {
 	WriteGoBindFunc(gf, st, &logTags)
 }
 
-func genGoGetFunc(gf, expf *Generator, st *parser.CefClassDecl) {
-	goName := st.GoName()
-	baseName := st.BaseName()
-	cName := st.CefName()
-	for c := st; c != nil; c = c.GetBase() {
-		for _, m := range c.Methods {
-			if m.IsGetFunc() {
-				WriteGoGetFunc(expf, m, goName, baseName, cName, &logTags)
-				WriteAssocGetFunc(gf, m, goName, baseName, cName, &logTags)
-			}
-		}
-	}
-}
-
 func genGoCallbackFunc(gf *Generator, st *parser.CefClassDecl) {
 	for c := st; c != nil; c = c.GetBase() {
 		for _, m := range c.Methods {
-			if !m.IsGetFunc() {
-				WriteGoCallback(gf, m, st, &logTags)
-			}
+			WriteGoCallback(gf, m, st, &logTags)
 		}
 	}
 }
