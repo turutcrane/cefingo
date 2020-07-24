@@ -175,8 +175,10 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 		{%- if m.IsBoolValueMethod() %}
 		if goRet {cRet = 1}
 		{%- elseif m.ReturnType().IsRefCountedClass() %}
-		cRet = ({%s retCtype %})(goRet.p_{%s m.ReturnType().BaseName() %})
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = ({%s retCtype %})(goRet.p_{%s m.ReturnType().BaseName() %})
+			BaseAddRef(cRet)
+		}
 		{%- elseif retCtype != "" %}
 		cRet = ({%s retCtype %})(goRet)
 		{%- endif -%}

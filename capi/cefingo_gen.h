@@ -1619,6 +1619,11 @@ extern cef_media_sink_icon_type_t cefingo_media_sink_get_icon_type(
 	struct _cef_media_sink_t* self
 );
 
+extern void cefingo_media_sink_get_device_info(
+	struct _cef_media_sink_t* self,
+	struct _cef_media_sink_device_info_callback_t* callback
+);
+
 extern int cefingo_media_sink_is_cast_sink(
 	struct _cef_media_sink_t* self
 );
@@ -1630,6 +1635,11 @@ extern int cefingo_media_sink_is_dial_sink(
 extern int cefingo_media_sink_is_compatible_with(
 	struct _cef_media_sink_t* self,
 	struct _cef_media_source_t* source
+);
+
+extern void cefingo_media_sink_device_info_callback_on_media_sink_device_info(
+	struct _cef_media_sink_device_info_callback_t* self,
+	const struct _cef_media_sink_device_info_t* device_info
 );
 
 extern cef_string_userfree_t cefingo_media_source_get_id(
@@ -2924,12 +2934,12 @@ extern void cefingo_textfield_apply_text_style(
 
 extern int cefingo_textfield_is_command_enabled(
 	struct _cef_textfield_t* self,
-	int command_id
+	cef_text_field_commands_t command_id
 );
 
 extern void cefingo_textfield_execute_command(
 	struct _cef_textfield_t* self,
-	int command_id
+	cef_text_field_commands_t command_id
 );
 
 extern void cefingo_textfield_clear_edit_history(

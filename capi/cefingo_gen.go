@@ -11487,7 +11487,7 @@ func (load_handler *CLoadHandlerT) Handler() interface{} {
 	return load_handler_handlers.handler[cp]
 }
 
-// cef_media_router_capi.h, include/capi/cef_media_router_capi.h:109:3,
+// cef_media_router_capi.h, include/capi/cef_media_router_capi.h:110:3,
 
 ///
 // Supports discovery of and communication with media devices on the local
@@ -12144,6 +12144,22 @@ func (self *CMediaSinkT) GetIconType() (ret CMediaSinkIconTypeT) {
 }
 
 ///
+// Asynchronously retrieves device info.
+///
+func (self *CMediaSinkT) GetDeviceInfo(
+	callback *CMediaSinkDeviceInfoCallbackT,
+) {
+	var goTmpcallback *C.cef_media_sink_device_info_callback_t
+	if callback != nil {
+		goTmpcallback = callback.p_media_sink_device_info_callback
+		BaseAddRef(goTmpcallback)
+	}
+
+	C.cefingo_media_sink_get_device_info(self.p_media_sink, goTmpcallback)
+
+}
+
+///
 // Returns true (1) if this sink accepts content via Cast.
 ///
 func (self *CMediaSinkT) IsCastSink() (ret bool) {
@@ -12181,6 +12197,70 @@ func (self *CMediaSinkT) IsCompatibleWith(
 
 	ret = cRet == 1
 	return ret
+}
+
+///
+// Callback structure for cef_media_sink_t::GetDeviceInfo. The functions of this
+// structure will be called on the browser process UI thread.
+///
+
+// Go type for cef_media_sink_device_info_callback_t
+type CMediaSinkDeviceInfoCallbackT struct {
+	noCopy                            noCopy
+	p_media_sink_device_info_callback *C.cef_media_sink_device_info_callback_t
+}
+
+type RefToCMediaSinkDeviceInfoCallbackT struct {
+	p_media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT
+}
+
+type CMediaSinkDeviceInfoCallbackTAccessor interface {
+	GetCMediaSinkDeviceInfoCallbackT() *CMediaSinkDeviceInfoCallbackT
+	SetCMediaSinkDeviceInfoCallbackT(*CMediaSinkDeviceInfoCallbackT)
+}
+
+func (r RefToCMediaSinkDeviceInfoCallbackT) GetCMediaSinkDeviceInfoCallbackT() *CMediaSinkDeviceInfoCallbackT {
+	return r.p_media_sink_device_info_callback
+}
+
+func (r *RefToCMediaSinkDeviceInfoCallbackT) SetCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) {
+	r.p_media_sink_device_info_callback = p
+}
+
+// Go type CMediaSinkDeviceInfoCallbackT wraps cef type *C.cef_media_sink_device_info_callback_t
+func newCMediaSinkDeviceInfoCallbackT(p *C.cef_media_sink_device_info_callback_t) *CMediaSinkDeviceInfoCallbackT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T338.1:")
+	BaseAddRef(p)
+	go_media_sink_device_info_callback := CMediaSinkDeviceInfoCallbackT{noCopy{}, p}
+	runtime.SetFinalizer(&go_media_sink_device_info_callback, func(g *CMediaSinkDeviceInfoCallbackT) {
+		Tracef(unsafe.Pointer(g.p_media_sink_device_info_callback), "T338.2:")
+		BaseRelease(g.p_media_sink_device_info_callback)
+	})
+	return &go_media_sink_device_info_callback
+}
+
+// *C.cef_media_sink_device_info_callback_t has refCounted interface
+func (media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT) HasOneRef() bool {
+	return BaseHasOneRef(media_sink_device_info_callback.p_media_sink_device_info_callback)
+}
+
+func (p *C.cef_media_sink_device_info_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+///
+// Method that will be executed asyncronously once device information has been
+// retrieved.
+///
+func (self *CMediaSinkDeviceInfoCallbackT) OnMediaSinkDeviceInfo(
+	device_info *CMediaSinkDeviceInfoT,
+) {
+
+	C.cefingo_media_sink_device_info_callback_on_media_sink_device_info(self.p_media_sink_device_info_callback, (*C.cef_media_sink_device_info_t)(device_info))
+
 }
 
 ///
@@ -17721,7 +17801,7 @@ type CRequestContextHandlerTGetResourceRequestHandlerHandler interface {
 		is_navigation int,
 		is_download int,
 		request_initiator string,
-	) (ret *CResourceRequestHandlerT, disable_default_handling int)
+	) (ret *CResourceRequestHandlerT, disable_default_handling bool)
 }
 
 var request_context_handler_handlers = struct {
@@ -18000,7 +18080,7 @@ type CRequestHandlerTGetResourceRequestHandlerHandler interface {
 		is_navigation int,
 		is_download int,
 		request_initiator string,
-	) (ret *CResourceRequestHandlerT, disable_default_handling int)
+	) (ret *CResourceRequestHandlerT, disable_default_handling bool)
 }
 
 ///
@@ -21646,7 +21726,7 @@ func PostDelayedTask(
 	return ret
 }
 
-// cef_textfield_capi.h, include/capi/views/cef_textfield_capi.h:264:3,
+// cef_textfield_capi.h, include/capi/views/cef_textfield_capi.h:261:3,
 
 ///
 // A Textfield supports editing of text. This control is custom rendered with no
@@ -22009,26 +22089,23 @@ func (self *CTextfieldT) ApplyTextStyle(
 // enabled. See additional comments on execute_command().
 ///
 func (self *CTextfieldT) IsCommandEnabled(
-	command_id int,
+	command_id CTextFieldCommandsT,
 ) (ret bool) {
 
-	cRet := C.cefingo_textfield_is_command_enabled(self.p_textfield, (C.int)(command_id))
+	cRet := C.cefingo_textfield_is_command_enabled(self.p_textfield, (C.cef_text_field_commands_t)(command_id))
 
 	ret = cRet == 1
 	return ret
 }
 
 ///
-// Performs the action associated with the specified command id. Valid values
-// include IDS_APP_UNDO, IDS_APP_REDO, IDS_APP_CUT, IDS_APP_COPY,
-// IDS_APP_PASTE, IDS_APP_DELETE, IDS_APP_SELECT_ALL, IDS_DELETE_* and
-// IDS_MOVE_*. See include/cef_pack_strings.h for definitions.
+// Performs the action associated with the specified command id.
 ///
 func (self *CTextfieldT) ExecuteCommand(
-	command_id int,
+	command_id CTextFieldCommandsT,
 ) {
 
-	C.cefingo_textfield_execute_command(self.p_textfield, (C.int)(command_id))
+	C.cefingo_textfield_execute_command(self.p_textfield, (C.cef_text_field_commands_t)(command_id))
 
 }
 

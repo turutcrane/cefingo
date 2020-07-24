@@ -163,8 +163,10 @@ func cefingo_app_get_resource_bundle_handler(
 
 		goRet := f.GetResourceBundleHandler(goTmpself)
 
-		cRet = (*C.cef_resource_bundle_handler_t)(goRet.p_resource_bundle_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_resource_bundle_handler_t)(goRet.p_resource_bundle_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T102.11: get_resource_bundle_handler: Noo!")
 	}
@@ -192,8 +194,10 @@ func cefingo_app_get_browser_process_handler(
 
 		goRet := f.GetBrowserProcessHandler(goTmpself)
 
-		cRet = (*C.cef_browser_process_handler_t)(goRet.p_browser_process_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_browser_process_handler_t)(goRet.p_browser_process_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T102.13: get_browser_process_handler: Noo!")
 	}
@@ -221,8 +225,10 @@ func cefingo_app_get_render_process_handler(
 
 		goRet := f.GetRenderProcessHandler(goTmpself)
 
-		cRet = (*C.cef_render_process_handler_t)(goRet.p_render_process_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_render_process_handler_t)(goRet.p_render_process_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T102.15: get_render_process_handler: Noo!")
 	}
@@ -516,8 +522,10 @@ func cefingo_browser_process_handler_get_print_handler(
 
 		goRet := f.GetPrintHandler(goTmpself)
 
-		cRet = (*C.cef_print_handler_t)(goRet.p_print_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_print_handler_t)(goRet.p_print_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T112.13: get_print_handler: Noo!")
 	}
@@ -666,8 +674,10 @@ func cefingo_browser_view_delegate_get_delegate_for_popup_browser_view(
 		BaseRelease(goTmpbrowser_view.p_browser_view)
 		BaseRelease(goTmpclient.p_client)
 
-		cRet = (*C.cef_browser_view_delegate_t)(goRet.p_browser_view_delegate)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_browser_view_delegate_t)(goRet.p_browser_view_delegate)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T114.11: get_delegate_for_popup_browser_view: Noo!")
 	}
@@ -1247,8 +1257,10 @@ func cefingo_client_get_audio_handler(
 
 		goRet := f.GetAudioHandler(goTmpself)
 
-		cRet = (*C.cef_audio_handler_t)(goRet.p_audio_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_audio_handler_t)(goRet.p_audio_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.7: get_audio_handler: Noo!")
 	}
@@ -1276,8 +1288,10 @@ func cefingo_client_get_context_menu_handler(
 
 		goRet := f.GetContextMenuHandler(goTmpself)
 
-		cRet = (*C.cef_context_menu_handler_t)(goRet.p_context_menu_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_context_menu_handler_t)(goRet.p_context_menu_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.9: get_context_menu_handler: Noo!")
 	}
@@ -1305,8 +1319,10 @@ func cefingo_client_get_dialog_handler(
 
 		goRet := f.GetDialogHandler(goTmpself)
 
-		cRet = (*C.cef_dialog_handler_t)(goRet.p_dialog_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_dialog_handler_t)(goRet.p_dialog_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.11: get_dialog_handler: Noo!")
 	}
@@ -1333,8 +1349,10 @@ func cefingo_client_get_display_handler(
 
 		goRet := f.GetDisplayHandler(goTmpself)
 
-		cRet = (*C.cef_display_handler_t)(goRet.p_display_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_display_handler_t)(goRet.p_display_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.13: get_display_handler: Noo!")
 	}
@@ -1362,8 +1380,10 @@ func cefingo_client_get_download_handler(
 
 		goRet := f.GetDownloadHandler(goTmpself)
 
-		cRet = (*C.cef_download_handler_t)(goRet.p_download_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_download_handler_t)(goRet.p_download_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.15: get_download_handler: Noo!")
 	}
@@ -1390,8 +1410,10 @@ func cefingo_client_get_drag_handler(
 
 		goRet := f.GetDragHandler(goTmpself)
 
-		cRet = (*C.cef_drag_handler_t)(goRet.p_drag_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_drag_handler_t)(goRet.p_drag_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.17: get_drag_handler: Noo!")
 	}
@@ -1418,8 +1440,10 @@ func cefingo_client_get_find_handler(
 
 		goRet := f.GetFindHandler(goTmpself)
 
-		cRet = (*C.cef_find_handler_t)(goRet.p_find_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_find_handler_t)(goRet.p_find_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.19: get_find_handler: Noo!")
 	}
@@ -1446,8 +1470,10 @@ func cefingo_client_get_focus_handler(
 
 		goRet := f.GetFocusHandler(goTmpself)
 
-		cRet = (*C.cef_focus_handler_t)(goRet.p_focus_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_focus_handler_t)(goRet.p_focus_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.21: get_focus_handler: Noo!")
 	}
@@ -1475,8 +1501,10 @@ func cefingo_client_get_jsdialog_handler(
 
 		goRet := f.GetJsdialogHandler(goTmpself)
 
-		cRet = (*C.cef_jsdialog_handler_t)(goRet.p_jsdialog_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_jsdialog_handler_t)(goRet.p_jsdialog_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.23: get_jsdialog_handler: Noo!")
 	}
@@ -1503,8 +1531,10 @@ func cefingo_client_get_keyboard_handler(
 
 		goRet := f.GetKeyboardHandler(goTmpself)
 
-		cRet = (*C.cef_keyboard_handler_t)(goRet.p_keyboard_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_keyboard_handler_t)(goRet.p_keyboard_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.25: get_keyboard_handler: Noo!")
 	}
@@ -1531,8 +1561,10 @@ func cefingo_client_get_life_span_handler(
 
 		goRet := f.GetLifeSpanHandler(goTmpself)
 
-		cRet = (*C.cef_life_span_handler_t)(goRet.p_life_span_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_life_span_handler_t)(goRet.p_life_span_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.27: get_life_span_handler: Noo!")
 	}
@@ -1559,8 +1591,10 @@ func cefingo_client_get_load_handler(
 
 		goRet := f.GetLoadHandler(goTmpself)
 
-		cRet = (*C.cef_load_handler_t)(goRet.p_load_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_load_handler_t)(goRet.p_load_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.29: get_load_handler: Noo!")
 	}
@@ -1587,8 +1621,10 @@ func cefingo_client_get_render_handler(
 
 		goRet := f.GetRenderHandler(goTmpself)
 
-		cRet = (*C.cef_render_handler_t)(goRet.p_render_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_render_handler_t)(goRet.p_render_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.31: get_render_handler: Noo!")
 	}
@@ -1615,8 +1651,10 @@ func cefingo_client_get_request_handler(
 
 		goRet := f.GetRequestHandler(goTmpself)
 
-		cRet = (*C.cef_request_handler_t)(goRet.p_request_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_request_handler_t)(goRet.p_request_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T119.33: get_request_handler: Noo!")
 	}
@@ -2746,8 +2784,10 @@ func cefingo_extension_handler_get_active_browser(
 		BaseRelease(goTmpextension.p_extension)
 		BaseRelease(goTmpbrowser.p_browser)
 
-		cRet = (*C.cef_browser_t)(goRet.p_browser)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_browser_t)(goRet.p_browser)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T144.17: get_active_browser: Noo!")
 	}
@@ -4806,8 +4846,10 @@ func cefingo_render_handler_get_accessibility_handler(
 
 		goRet := f.GetAccessibilityHandler(goTmpself)
 
-		cRet = (*C.cef_accessibility_handler_t)(goRet.p_accessibility_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_accessibility_handler_t)(goRet.p_accessibility_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T177.7: get_accessibility_handler: Noo!")
 	}
@@ -5524,8 +5566,10 @@ func cefingo_render_process_handler_get_load_handler(
 
 		goRet := f.GetLoadHandler(goTmpself)
 
-		cRet = (*C.cef_load_handler_t)(goRet.p_load_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_load_handler_t)(goRet.p_load_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T178.15: get_load_handler: Noo!")
 	}
@@ -5871,10 +5915,15 @@ func cefingo_request_context_handler_get_resource_request_handler(
 		BaseRelease(goTmpbrowser.p_browser)
 		BaseRelease(goTmpframe.p_frame)
 		BaseRelease(goTmprequest.p_request)
-		*disable_default_handling = (C.int)(goTmpdisable_default_handlingOut)
+		*disable_default_handling = 0
+		if goTmpdisable_default_handlingOut {
+			*disable_default_handling = 1
+		}
 
-		cRet = (*C.cef_resource_request_handler_t)(goRet.p_resource_request_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_resource_request_handler_t)(goRet.p_resource_request_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T185.11: get_resource_request_handler: Noo!")
 	}
@@ -6034,10 +6083,15 @@ func cefingo_request_handler_get_resource_request_handler(
 		BaseRelease(goTmpbrowser.p_browser)
 		BaseRelease(goTmpframe.p_frame)
 		BaseRelease(goTmprequest.p_request)
-		*disable_default_handling = (C.int)(goTmpdisable_default_handlingOut)
+		*disable_default_handling = 0
+		if goTmpdisable_default_handlingOut {
+			*disable_default_handling = 1
+		}
 
-		cRet = (*C.cef_resource_request_handler_t)(goRet.p_resource_request_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_resource_request_handler_t)(goRet.p_resource_request_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T187.11: get_resource_request_handler: Noo!")
 	}
@@ -6819,8 +6873,10 @@ func cefingo_resource_request_handler_get_cookie_access_filter(
 		BaseRelease(goTmpframe.p_frame)
 		BaseRelease(goTmprequest.p_request)
 
-		cRet = (*C.cef_cookie_access_filter_t)(goRet.p_cookie_access_filter)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_cookie_access_filter_t)(goRet.p_cookie_access_filter)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T192.7: get_cookie_access_filter: Noo!")
 	}
@@ -6908,8 +6964,10 @@ func cefingo_resource_request_handler_get_resource_handler(
 		BaseRelease(goTmpframe.p_frame)
 		BaseRelease(goTmprequest.p_request)
 
-		cRet = (*C.cef_resource_handler_t)(goRet.p_resource_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_resource_handler_t)(goRet.p_resource_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T192.11: get_resource_handler: Noo!")
 	}
@@ -7050,8 +7108,10 @@ func cefingo_resource_request_handler_get_resource_response_filter(
 		BaseRelease(goTmprequest.p_request)
 		BaseRelease(goTmpresponse.p_response)
 
-		cRet = (*C.cef_response_filter_t)(goRet.p_response_filter)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_response_filter_t)(goRet.p_response_filter)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T192.17: get_resource_response_filter: Noo!")
 	}
@@ -7380,8 +7440,10 @@ func cefingo_scheme_handler_factory_create(
 		BaseRelease(goTmpframe.p_frame)
 		BaseRelease(goTmprequest.p_request)
 
-		cRet = (*C.cef_resource_handler_t)(goRet.p_resource_handler)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_resource_handler_t)(goRet.p_resource_handler)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T197.7: create: Noo!")
 	}
@@ -8863,8 +8925,10 @@ func cefingo_window_delegate_get_parent_window(
 			*can_activate_menu = 1
 		}
 
-		cRet = (*C.cef_window_t)(goRet.p_window)
-		BaseAddRef(cRet)
+		if goRet != nil {
+			cRet = (*C.cef_window_t)(goRet.p_window)
+			BaseAddRef(cRet)
+		}
 	} else {
 		Logf("T232.11: get_parent_window: Noo!")
 	}

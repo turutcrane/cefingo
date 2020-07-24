@@ -4111,6 +4111,17 @@ cef_media_sink_icon_type_t cefingo_media_sink_get_icon_type(
 	);
 }
 
+void cefingo_media_sink_get_device_info(
+	struct _cef_media_sink_t* self,
+	struct _cef_media_sink_device_info_callback_t* callback
+)
+{
+	self->get_device_info(
+		self,
+		callback
+	);
+}
+
 int cefingo_media_sink_is_cast_sink(
 	struct _cef_media_sink_t* self
 )
@@ -4137,6 +4148,17 @@ int cefingo_media_sink_is_compatible_with(
 	return self->is_compatible_with(
 		self,
 		source
+	);
+}
+
+void cefingo_media_sink_device_info_callback_on_media_sink_device_info(
+	struct _cef_media_sink_device_info_callback_t* self,
+	const struct _cef_media_sink_device_info_t* device_info
+)
+{
+	self->on_media_sink_device_info(
+		self,
+		device_info
 	);
 }
 
@@ -7466,7 +7488,7 @@ void cefingo_textfield_apply_text_style(
 
 int cefingo_textfield_is_command_enabled(
 	struct _cef_textfield_t* self,
-	int command_id
+	cef_text_field_commands_t command_id
 )
 {
 	return self->is_command_enabled(
@@ -7477,7 +7499,7 @@ int cefingo_textfield_is_command_enabled(
 
 void cefingo_textfield_execute_command(
 	struct _cef_textfield_t* self,
-	int command_id
+	cef_text_field_commands_t command_id
 )
 {
 	self->execute_command(

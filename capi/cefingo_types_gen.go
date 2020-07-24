@@ -4522,6 +4522,35 @@ const (
 ///
 type CAudioParametersT C.cef_audio_parameters_t
 
+func NewCAudioParametersT() *CAudioParametersT {
+	s := &CAudioParametersT{}
+	return s
+}
+
+func (st *CAudioParametersT) ChannelLayout() CChannelLayoutT {
+	return CChannelLayoutT(st.channel_layout)
+}
+
+func (st *CAudioParametersT) SetChannelLayout(v CChannelLayoutT) {
+	st.channel_layout = (C.cef_channel_layout_t)(v)
+}
+
+func (st *CAudioParametersT) SampleRate() int {
+	return int(st.sample_rate)
+}
+
+func (st *CAudioParametersT) SetSampleRate(v int) {
+	st.sample_rate = (C.int)(v)
+}
+
+func (st *CAudioParametersT) FramesPerBuffer() int {
+	return int(st.frames_per_buffer)
+}
+
+func (st *CAudioParametersT) SetFramesPerBuffer(v int) {
+	st.frames_per_buffer = (C.int)(v)
+}
+
 ///
 // Result codes for CefMediaRouter::CreateRoute. Should be kept in sync with
 // Chromium's media_router::RouteRequestResult::ResultCode type.
@@ -4570,4 +4599,52 @@ const (
 	CefMsitWiredDisplay   CMediaSinkIconTypeT = C.CEF_MSIT_WIRED_DISPLAY
 	CefMsitGeneric        CMediaSinkIconTypeT = C.CEF_MSIT_GENERIC
 	CefMsitTotalCount     CMediaSinkIconTypeT = C.CEF_MSIT_TOTAL_COUNT
+)
+
+///
+// Device information for a MediaSink object.
+///
+type CMediaSinkDeviceInfoT C.cef_media_sink_device_info_t
+
+func NewCMediaSinkDeviceInfoT() *CMediaSinkDeviceInfoT {
+	s := &CMediaSinkDeviceInfoT{}
+	return s
+}
+
+func (st *CMediaSinkDeviceInfoT) IpAddress() string {
+	return string_from_cef_string(&st.ip_address)
+}
+
+func (st *CMediaSinkDeviceInfoT) SetIpAddress(v string) {
+	set_cef_string(&st.ip_address, v)
+}
+
+func (st *CMediaSinkDeviceInfoT) Port() int {
+	return int(st.port)
+}
+
+func (st *CMediaSinkDeviceInfoT) SetPort(v int) {
+	st.port = (C.int)(v)
+}
+
+func (st *CMediaSinkDeviceInfoT) ModelName() string {
+	return string_from_cef_string(&st.model_name)
+}
+
+func (st *CMediaSinkDeviceInfoT) SetModelName(v string) {
+	set_cef_string(&st.model_name, v)
+}
+
+///
+// Represents commands available to TextField.
+///
+type CTextFieldCommandsT C.cef_text_field_commands_t
+
+const (
+	CefTfcCut       CTextFieldCommandsT = C.CEF_TFC_CUT
+	CefTfcCopy      CTextFieldCommandsT = C.CEF_TFC_COPY
+	CefTfcPaste     CTextFieldCommandsT = C.CEF_TFC_PASTE
+	CefTfcUndo      CTextFieldCommandsT = C.CEF_TFC_UNDO
+	CefTfcDelete    CTextFieldCommandsT = C.CEF_TFC_DELETE
+	CefTfcSelectAll CTextFieldCommandsT = C.CEF_TFC_SELECT_ALL
 )

@@ -252,24 +252,26 @@ func init() {
 }
 
 var boolParameter = map[string]void{
-	"::cef_set_osmodal_loop::osModalLoop":                            setElement,
-	"cef_browser_host_t::close_browser::force_close":                 setElement,
-	"cef_browser_host_t::find::forward":                              setElement,
-	"cef_browser_host_t::find::matchCase":                            setElement,
-	"cef_browser_host_t::find::findNext":                             setElement,
-	"cef_browser_host_t::set_focus::focus":                           setElement,
-	"cef_browser_host_t::stop_finding::clearSelection":               setElement,
-	"cef_life_span_handler_t::on_before_popup::no_javascript_access": setElement,
-	"cef_load_handler_t::on_loading_state_change::isLoading":         setElement,
-	"cef_load_handler_t::on_loading_state_change::canGoBack":         setElement,
-	"cef_load_handler_t::on_loading_state_change::canGoForward":      setElement,
-	"cef_dictionary_value_t::set_bool::value":                        setElement,
-	"cef_list_value_t::set_bool::value":                              setElement,
-	"cef_v8value_t::create_bool::value":                              setElement,
-	"cef_value_t::set_bool::value":                                   setElement,
-	"cef_view_t::set_focusable::focusable":                           setElement,
-	"cef_window_delegate_t::get_parent_window::is_menu":              setElement,
-	"cef_window_delegate_t::get_parent_window::can_activate_menu":    setElement,
+	"::cef_set_osmodal_loop::osModalLoop":                                                   setElement,
+	"cef_browser_host_t::close_browser::force_close":                                        setElement,
+	"cef_browser_host_t::find::forward":                                                     setElement,
+	"cef_browser_host_t::find::matchCase":                                                   setElement,
+	"cef_browser_host_t::find::findNext":                                                    setElement,
+	"cef_browser_host_t::set_focus::focus":                                                  setElement,
+	"cef_browser_host_t::stop_finding::clearSelection":                                      setElement,
+	"cef_request_context_handler_t::get_resource_request_handler::disable_default_handling": setElement,
+	"cef_dictionary_value_t::set_bool::value":                                               setElement,
+	"cef_life_span_handler_t::on_before_popup::no_javascript_access":                        setElement,
+	"cef_load_handler_t::on_loading_state_change::isLoading":                                setElement,
+	"cef_load_handler_t::on_loading_state_change::canGoBack":                                setElement,
+	"cef_load_handler_t::on_loading_state_change::canGoForward":                             setElement,
+	"cef_list_value_t::set_bool::value":                                                     setElement,
+	"cef_request_handler_t::get_resource_request_handler::disable_default_handling":         setElement,
+	"cef_v8value_t::create_bool::value":                                                     setElement,
+	"cef_value_t::set_bool::value":                                                          setElement,
+	"cef_view_t::set_focusable::focusable":                                                  setElement,
+	"cef_window_delegate_t::get_parent_window::is_menu":                                     setElement,
+	"cef_window_delegate_t::get_parent_window::can_activate_menu":                           setElement,
 }
 
 var boolMember = map[string]void{
@@ -404,15 +406,16 @@ var structDefNames = map[string]void{
 	"cef_pdf_print_settings_t":       setElement,
 	"cef_box_layout_settings_t":      setElement,
 	"cef_composition_underline_t":    setElement,
-	"cef_color_t":                    setElement,
+	"cef_audio_parameters_t":         setElement,
+	"cef_media_sink_device_info_t":   setElement,
 }
 
 var simpleDefNames = map[string]void{
-	"cef_audio_parameters_t": setElement,
-	"cef_time_t":             setElement,
-	"cef_string_list_t":      setElement,
-	"cef_string_map_t":       setElement,
-	"cef_string_multimap_t":  setElement,
+	"cef_color_t":           setElement,
+	"cef_time_t":            setElement,
+	"cef_string_list_t":     setElement,
+	"cef_string_map_t":      setElement,
+	"cef_string_multimap_t": setElement,
 }
 
 func isSimpleDefName(s string) (b bool) {

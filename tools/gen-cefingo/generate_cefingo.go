@@ -88,10 +88,8 @@ func main() {
 			case parser.DkStruct:
 				if s, ok := d.(*parser.StructDecl); ok {
 					outStruct(goFile, s)
-				} else if s, ok := d.(*parser.SimpleDecl); ok {
-					outSimple(goFile, s)
 				} else {
-					log.Panicf("T84: Can not handle: %v\n", d)
+					log.Panicf("T84: Can not handle: %s, %v\n", d.Common().GoName(), d)
 				}
 			case parser.DkEnum:
 				e := d.(*parser.EnumDecl)
