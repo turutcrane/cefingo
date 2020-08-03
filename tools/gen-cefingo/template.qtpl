@@ -52,7 +52,11 @@ Statemens to convert from C.param to Go type.
 		slice := (*[1 << 30]({%s p.Type().Deref().GoCType() %}))(unsafe.Pointer({%s p.Name() %}))[:{%s maxLenArg %}:{%s maxLenArg %}]
 		{%= goTempName(p) %} := make({%s p.GoType() %}, {%s maxLenArg %})
 		for i, v := range slice {
+			{%- if p.Type().Deref().IsRefCountedClass() -%}
 			{%= goTempName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(v)
+			{%- else -%}
+			{%= goTempName(p) %}[i] = {%s p.Type().Deref().GoType() %}(v)
+			{%- endif -%}
 		}
 	{%- else -%}
 		{%- if p.IsBoolParam() -%}
@@ -391,6 +395,7 @@ extern {%s constructorName(st) %};
 {% elseif ok, argLen := p.IsByteSliceParam(); ok && !p.IsInOutParam() -%}
 	{%s argLen %} := len({%s goParamName(p) %})
 	{%s cTempName(p) %} := C.CBytes({%s goParamName(p) %})
+	defer C.free({%s cTempName(p) %})
 {% elseif ok, argLen := p.IsSliceParam(); ok -%}
 	{%s argLen %} := len({%s goParamName(p) %})
 	{%s cTempName(p) %} := c_calloc(C.size_t({%s argLen %}), (C.size_t)(unsafe.Sizeof({%= goParamName(p) %}[0])), "{%s lt.NextTag() %}:{%s p.CalleeName() + "::" + p.Name() %}")
@@ -488,8 +493,6 @@ tmp{%= cName(p) -%}
 	{%- else -%}
 	{%s goParamName(p) %} = ({%s p.Type().Deref().GoType() %})({%s cTempName(p) %})
 	{%- endif -%}
-{% elseif ok, _ := p.IsByteSliceParam(); ok && !p.IsInOutParam() -%}
-	C.free({%s cTempName(p) %})
 {% endif -%}
 {% endfunc %}
 

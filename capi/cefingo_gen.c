@@ -1879,77 +1879,47 @@ cef_delete_cookies_callback_t *cefingo_construct_delete_cookies_callback(cefingo
 	return (cef_delete_cookies_callback_t*)delete_cookies_callback;
 }
 
-int cefingo_dev_tools_message_observer_on_dev_tools_message(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser,
-	const void* message,
-	size_t message_size
-)
-{
-	return self->on_dev_tools_message(
-		self,
-		browser,
-		message,
-		message_size
-	);
-}
+typedef int (*T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_MESSAGE)(
+	struct _cef_dev_tools_message_observer_t*,
+	struct _cef_browser_t*,
+	const void*,
+	size_t
+);
+typedef void (*T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_METHOD_RESULT)(
+	struct _cef_dev_tools_message_observer_t*,
+	struct _cef_browser_t*,
+	int,
+	int,
+	const void*,
+	size_t
+);
+typedef void (*T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_EVENT)(
+	struct _cef_dev_tools_message_observer_t*,
+	struct _cef_browser_t*,
+	const cef_string_t*,
+	const void*,
+	size_t
+);
 
-void cefingo_dev_tools_message_observer_on_dev_tools_method_result(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser,
-	int message_id,
-	int success,
-	const void* result,
-	size_t result_size
-)
+cef_dev_tools_message_observer_t *cefingo_construct_dev_tools_message_observer(cefingo_dev_tools_message_observer_wrapper_t* dev_tools_message_observer)
 {
-	self->on_dev_tools_method_result(
-		self,
-		browser,
-		message_id,
-		success,
-		result,
-		result_size
-	);
-}
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*dev_tools_message_observer), counter),
+		(cef_base_ref_counted_t*) dev_tools_message_observer);
+	
+	// callbacks
+	dev_tools_message_observer->body.on_dev_tools_message = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_MESSAGE)
+		cefingo_dev_tools_message_observer_on_dev_tools_message;
+	dev_tools_message_observer->body.on_dev_tools_method_result = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_METHOD_RESULT)
+		cefingo_dev_tools_message_observer_on_dev_tools_method_result;
+	dev_tools_message_observer->body.on_dev_tools_event = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_EVENT)
+		cefingo_dev_tools_message_observer_on_dev_tools_event;
+	dev_tools_message_observer->body.on_dev_tools_agent_attached =
+		cefingo_dev_tools_message_observer_on_dev_tools_agent_attached;
+	dev_tools_message_observer->body.on_dev_tools_agent_detached =
+		cefingo_dev_tools_message_observer_on_dev_tools_agent_detached;
 
-void cefingo_dev_tools_message_observer_on_dev_tools_event(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser,
-	const cef_string_t* method,
-	const void* params,
-	size_t params_size
-)
-{
-	self->on_dev_tools_event(
-		self,
-		browser,
-		method,
-		params,
-		params_size
-	);
-}
-
-void cefingo_dev_tools_message_observer_on_dev_tools_agent_attached(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser
-)
-{
-	self->on_dev_tools_agent_attached(
-		self,
-		browser
-	);
-}
-
-void cefingo_dev_tools_message_observer_on_dev_tools_agent_detached(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser
-)
-{
-	self->on_dev_tools_agent_detached(
-		self,
-		browser
-	);
+	return (cef_dev_tools_message_observer_t*)dev_tools_message_observer;
 }
 
 void cefingo_file_dialog_callback_cont(

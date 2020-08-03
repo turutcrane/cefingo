@@ -108,28 +108,40 @@ func (st *CWindowInfoT) SetMenu(v WinHmenu) {
 	st.menu = (C.HMENU)(v)
 }
 
-func (st *CWindowInfoT) WindowlessRenderingEnabled() int {
-	return int(st.windowless_rendering_enabled)
+func (st *CWindowInfoT) WindowlessRenderingEnabled() bool {
+	return st.windowless_rendering_enabled != 0
 }
 
-func (st *CWindowInfoT) SetWindowlessRenderingEnabled(v int) {
-	st.windowless_rendering_enabled = (C.int)(v)
+func (st *CWindowInfoT) SetWindowlessRenderingEnabled(v bool) {
+	if v {
+		st.windowless_rendering_enabled = 1
+	} else {
+		st.windowless_rendering_enabled = 0
+	}
 }
 
-func (st *CWindowInfoT) SharedTextureEnabled() int {
-	return int(st.shared_texture_enabled)
+func (st *CWindowInfoT) SharedTextureEnabled() bool {
+	return st.shared_texture_enabled != 0
 }
 
-func (st *CWindowInfoT) SetSharedTextureEnabled(v int) {
-	st.shared_texture_enabled = (C.int)(v)
+func (st *CWindowInfoT) SetSharedTextureEnabled(v bool) {
+	if v {
+		st.shared_texture_enabled = 1
+	} else {
+		st.shared_texture_enabled = 0
+	}
 }
 
-func (st *CWindowInfoT) ExternalBeginFrameEnabled() int {
-	return int(st.external_begin_frame_enabled)
+func (st *CWindowInfoT) ExternalBeginFrameEnabled() bool {
+	return st.external_begin_frame_enabled != 0
 }
 
-func (st *CWindowInfoT) SetExternalBeginFrameEnabled(v int) {
-	st.external_begin_frame_enabled = (C.int)(v)
+func (st *CWindowInfoT) SetExternalBeginFrameEnabled(v bool) {
+	if v {
+		st.external_begin_frame_enabled = 1
+	} else {
+		st.external_begin_frame_enabled = 0
+	}
 }
 
 func (st *CWindowInfoT) Window() CWindowHandleT {

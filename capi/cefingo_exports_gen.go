@@ -668,7 +668,7 @@ func cefingo_browser_view_delegate_get_delegate_for_popup_browser_view(
 		goTmpbrowser_view := newCBrowserViewT(browser_view)
 		goTmpsettings := (*CBrowserSettingsT)(settings)
 		goTmpclient := newCClientT(client)
-		goTmpis_devtools := (int)(is_devtools)
+		goTmpis_devtools := is_devtools != 0
 
 		goRet := f.GetDelegateForPopupBrowserView(goTmpself, goTmpbrowser_view, goTmpsettings, goTmpclient, goTmpis_devtools)
 		BaseRelease(goTmpbrowser_view.p_browser_view)
@@ -712,7 +712,7 @@ func cefingo_browser_view_delegate_on_popup_browser_view_created(
 		goTmpself := newCBrowserViewDelegateT(self)
 		goTmpbrowser_view := newCBrowserViewT(browser_view)
 		goTmppopup_browser_view := newCBrowserViewT(popup_browser_view)
-		goTmpis_devtools := (int)(is_devtools)
+		goTmpis_devtools := is_devtools != 0
 
 		goRet := f.OnPopupBrowserViewCreated(goTmpself, goTmpbrowser_view, goTmppopup_browser_view, goTmpis_devtools)
 		BaseRelease(goTmpbrowser_view.p_browser_view)
@@ -1970,6 +1970,206 @@ func cefingo_delete_cookies_callback_on_complete(
 
 	} else {
 		Logf("T127.7: on_complete: Noo!")
+	}
+
+}
+
+///
+// Method that will be called on receipt of a DevTools protocol message.
+// |browser| is the originating browser instance. |message| is a UTF8-encoded
+// JSON dictionary representing either a function result or an event.
+// |message| is only valid for the scope of this callback and should be copied
+// if necessary. Return true (1) if the message was handled or false (0) if
+// the message should be further processed and passed to the
+// OnDevToolsMethodResult or OnDevToolsEvent functions as appropriate.
+//
+// Method result dictionaries include an &quot;id&quot; (int) value that identifies the
+// orginating function call sent from cef_browser_host_t::SendDevToolsMessage,
+// and optionally either a &quot;result&quot; (dictionary) or &quot;error&quot; (dictionary)
+// value. The &quot;error&quot; dictionary will contain &quot;code&quot; (int) and &quot;message&quot;
+// (string) values. Event dictionaries include a &quot;function&quot; (string) value and
+// optionally a &quot;params&quot; (dictionary) value. See the DevTools protocol
+// documentation at https://chromedevtools.github.io/devtools-protocol/ for
+// details of supported function calls and the expected &quot;result&quot; or &quot;params&quot;
+// dictionary contents. JSON dictionaries can be parsed using the CefParseJSON
+// function if desired, however be aware of performance considerations when
+// parsing large messages (some of which may exceed 1MB in size).
+///
+//export cefingo_dev_tools_message_observer_on_dev_tools_message
+func cefingo_dev_tools_message_observer_on_dev_tools_message(
+	self *C.cef_dev_tools_message_observer_t,
+	browser *C.cef_browser_t,
+	message C.VOIDP,
+	message_size C.size_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T128.6:")
+	cefingoIfaceAccess.Lock()
+	f := dev_tools_message_observer_handlers.on_dev_tools_message_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCDevToolsMessageObserverT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmpmessage := (*[1 << 30]byte)(message)[:message_size:message_size]
+
+		goRet := f.OnDevToolsMessage(goTmpself, goTmpbrowser, goTmpmessage)
+		BaseRelease(goTmpbrowser.p_browser)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T128.7: on_dev_tools_message: Noo!")
+	}
+	return cRet
+}
+
+///
+// Method that will be called after attempted execution of a DevTools protocol
+// function. |browser| is the originating browser instance. |message_id| is
+// the &quot;id&quot; value that identifies the originating function call message. If
+// the function succeeded |success| will be true (1) and |result| will be the
+// UTF8-encoded JSON &quot;result&quot; dictionary value (which may be NULL). If the
+// function failed |success| will be false (0) and |result| will be the
+// UTF8-encoded JSON &quot;error&quot; dictionary value. |result| is only valid for the
+// scope of this callback and should be copied if necessary. See the
+// OnDevToolsMessage documentation for additional details on |result|
+// contents.
+///
+//export cefingo_dev_tools_message_observer_on_dev_tools_method_result
+func cefingo_dev_tools_message_observer_on_dev_tools_method_result(
+	self *C.cef_dev_tools_message_observer_t,
+	browser *C.cef_browser_t,
+	message_id C.int,
+	success C.int,
+	result C.VOIDP,
+	result_size C.size_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T128.8:")
+	cefingoIfaceAccess.Lock()
+	f := dev_tools_message_observer_handlers.on_dev_tools_method_result_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCDevToolsMessageObserverT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmpmessage_id := (int)(message_id)
+		goTmpsuccess := (int)(success)
+		goTmpresult := (*[1 << 30]byte)(result)[:result_size:result_size]
+
+		f.OnDevToolsMethodResult(goTmpself, goTmpbrowser, goTmpmessage_id, goTmpsuccess, goTmpresult)
+		BaseRelease(goTmpbrowser.p_browser)
+
+	} else {
+		Logf("T128.9: on_dev_tools_method_result: Noo!")
+	}
+
+}
+
+///
+// Method that will be called on receipt of a DevTools protocol event.
+// |browser| is the originating browser instance. |function| is the &quot;function&quot;
+// value. |params| is the UTF8-encoded JSON &quot;params&quot; dictionary value (which
+// may be NULL). |params| is only valid for the scope of this callback and
+// should be copied if necessary. See the OnDevToolsMessage documentation for
+// additional details on |params| contents.
+///
+//export cefingo_dev_tools_message_observer_on_dev_tools_event
+func cefingo_dev_tools_message_observer_on_dev_tools_event(
+	self *C.cef_dev_tools_message_observer_t,
+	browser *C.cef_browser_t,
+	method *C.cef_string_t,
+	params C.VOIDP,
+	params_size C.size_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T128.10:")
+	cefingoIfaceAccess.Lock()
+	f := dev_tools_message_observer_handlers.on_dev_tools_event_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCDevToolsMessageObserverT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmpmethod := string_from_cef_string(method)
+		goTmpparams := (*[1 << 30]byte)(params)[:params_size:params_size]
+
+		f.OnDevToolsEvent(goTmpself, goTmpbrowser, goTmpmethod, goTmpparams)
+		BaseRelease(goTmpbrowser.p_browser)
+
+	} else {
+		Logf("T128.11: on_dev_tools_event: Noo!")
+	}
+
+}
+
+///
+// Method that will be called when the DevTools agent has attached. |browser|
+// is the originating browser instance. This will generally occur in response
+// to the first message sent while the agent is detached.
+///
+//export cefingo_dev_tools_message_observer_on_dev_tools_agent_attached
+func cefingo_dev_tools_message_observer_on_dev_tools_agent_attached(
+	self *C.cef_dev_tools_message_observer_t,
+	browser *C.cef_browser_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T128.12:")
+	cefingoIfaceAccess.Lock()
+	f := dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCDevToolsMessageObserverT(self)
+		goTmpbrowser := newCBrowserT(browser)
+
+		f.OnDevToolsAgentAttached(goTmpself, goTmpbrowser)
+		BaseRelease(goTmpbrowser.p_browser)
+
+	} else {
+		Logf("T128.13: on_dev_tools_agent_attached: Noo!")
+	}
+
+}
+
+///
+// Method that will be called when the DevTools agent has detached. |browser|
+// is the originating browser instance. Any function results that were pending
+// before the agent became detached will not be delivered, and any active
+// event subscriptions will be canceled.
+///
+//export cefingo_dev_tools_message_observer_on_dev_tools_agent_detached
+func cefingo_dev_tools_message_observer_on_dev_tools_agent_detached(
+	self *C.cef_dev_tools_message_observer_t,
+	browser *C.cef_browser_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T128.14:")
+	cefingoIfaceAccess.Lock()
+	f := dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler[self]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCDevToolsMessageObserverT(self)
+		goTmpbrowser := newCBrowserT(browser)
+
+		f.OnDevToolsAgentDetached(goTmpself, goTmpbrowser)
+		BaseRelease(goTmpbrowser.p_browser)
+
+	} else {
+		Logf("T128.15: on_dev_tools_agent_detached: Noo!")
 	}
 
 }
@@ -3835,10 +4035,9 @@ func cefingo_media_observer_on_route_message_received(
 	if f != nil {
 		goTmpself := newCMediaObserverT(self)
 		goTmproute := newCMediaRouteT(route)
-		goTmpmessage := unsafe.Pointer(message)
-		goTmpmessage_size := (int64)(message_size)
+		goTmpmessage := (*[1 << 30]byte)(message)[:message_size:message_size]
 
-		f.OnRouteMessageReceived(goTmpself, goTmproute, goTmpmessage, goTmpmessage_size)
+		f.OnRouteMessageReceived(goTmpself, goTmproute, goTmpmessage)
 		BaseRelease(goTmproute.p_media_route)
 
 	} else {
@@ -5103,13 +5302,16 @@ func cefingo_render_handler_on_paint(
 		goTmpself := newCRenderHandlerT(self)
 		goTmpbrowser := newCBrowserT(browser)
 		goTmptype := CPaintElementTypeT(ctype)
-		goTmpdirtyRectsCount := (int64)(dirtyRectsCount)
-		goTmpdirtyRects := (*CRectT)(dirtyRects)
-		goTmpbuffer := unsafe.Pointer(buffer)
+		slice := (*[1 << 30](C.cef_rect_t))(unsafe.Pointer(dirtyRects))[:dirtyRectsCount:dirtyRectsCount]
+		goTmpdirtyRects := make([]CRectT, dirtyRectsCount)
+		for i, v := range slice {
+			goTmpdirtyRects[i] = CRectT(v)
+		}
+		goTmpbuffer := (*[1 << 30]byte)(buffer)[: width*height*4 : width*height*4]
 		goTmpwidth := (int)(width)
 		goTmpheight := (int)(height)
 
-		f.OnPaint(goTmpself, goTmpbrowser, goTmptype, goTmpdirtyRectsCount, goTmpdirtyRects, goTmpbuffer, goTmpwidth, goTmpheight)
+		f.OnPaint(goTmpself, goTmpbrowser, goTmptype, goTmpdirtyRects, goTmpbuffer, goTmpwidth, goTmpheight)
 		BaseRelease(goTmpbrowser.p_browser)
 
 	} else {
@@ -6583,7 +6785,10 @@ func cefingo_resource_handler_open(
 
 		goRet, goTmphandle_requestOut := f.Open(goTmpself, goTmprequest, goTmpcallback)
 		BaseRelease(goTmprequest.p_request)
-		*handle_request = (C.int)(goTmphandle_requestOut)
+		*handle_request = 0
+		if goTmphandle_requestOut {
+			*handle_request = 1
+		}
 		BaseRelease(goTmpcallback.p_callback)
 
 		if goRet {
@@ -7470,7 +7675,7 @@ func cefingo_read_handler_read(
 
 	if f != nil {
 		goTmpself := newCReadHandlerT(self)
-		goTmpptr := unsafe.Pointer(ptr)
+		goTmpptr := (*[1 << 30]byte)(ptr)[: size*n : size*n]
 		goTmpsize := (int64)(size)
 		goTmpn := (int64)(n)
 
@@ -7624,7 +7829,7 @@ func cefingo_write_handler_write(
 
 	if f != nil {
 		goTmpself := newCWriteHandlerT(self)
-		goTmpptr := unsafe.Pointer(ptr)
+		goTmpptr := (*[1 << 30]byte)(ptr)[: size*n : size*n]
 		goTmpsize := (int64)(size)
 		goTmpn := (int64)(n)
 
@@ -8228,10 +8433,9 @@ func cefingo_urlrequest_client_on_download_data(
 	if f != nil {
 		goTmpself := newCUrlrequestClientT(self)
 		goTmprequest := newCUrlrequestT(request)
-		goTmpdata := unsafe.Pointer(data)
-		goTmpdata_length := (int64)(data_length)
+		goTmpdata := (*[1 << 30]byte)(data)[:data_length:data_length]
 
-		f.OnDownloadData(goTmpself, goTmprequest, goTmpdata, goTmpdata_length)
+		f.OnDownloadData(goTmpself, goTmprequest, goTmpdata)
 		BaseRelease(goTmprequest.p_urlrequest)
 
 	} else {

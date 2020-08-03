@@ -1346,7 +1346,7 @@ func (p *C.cef_navigation_entry_visitor_t) cast_to_p_base_ref_counted_t() *C.cef
 ///
 func (self *CNavigationEntryVisitorT) Visit(
 	entry *CNavigationEntryT,
-	current int,
+	current bool,
 	index int,
 	total int,
 ) (ret bool) {
@@ -1355,8 +1355,12 @@ func (self *CNavigationEntryVisitorT) Visit(
 		goTmpentry = entry.p_navigation_entry
 		BaseAddRef(goTmpentry)
 	}
+	var tmpcurrent int
+	if current {
+		tmpcurrent = 1
+	}
 
-	cRet := C.cefingo_navigation_entry_visitor_visit(self.p_navigation_entry_visitor, goTmpentry, (C.int)(current), (C.int)(index), (C.int)(total))
+	cRet := C.cefingo_navigation_entry_visitor_visit(self.p_navigation_entry_visitor, goTmpentry, C.int(tmpcurrent), (C.int)(index), (C.int)(total))
 
 	ret = cRet == 1
 	return ret
@@ -1421,12 +1425,16 @@ func (p *C.cef_pdf_print_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_
 ///
 func (self *CPdfPrintCallbackT) OnPdfPrintFinished(
 	path string,
-	ok int,
+	ok bool,
 ) {
 	c_path := create_cef_string(path)
 	defer clear_cef_string(c_path)
+	var tmpok int
+	if ok {
+		tmpok = 1
+	}
 
-	C.cefingo_pdf_print_callback_on_pdf_print_finished(self.p_pdf_print_callback, (*C.cef_string_t)(c_path), (C.int)(ok))
+	C.cefingo_pdf_print_callback_on_pdf_print_finished(self.p_pdf_print_callback, (*C.cef_string_t)(c_path), C.int(tmpok))
 
 }
 
@@ -1773,20 +1781,28 @@ func (self *CBrowserHostT) StartDownload(
 ///
 func (self *CBrowserHostT) DownloadImage(
 	image_url string,
-	is_favicon int,
+	is_favicon bool,
 	max_image_size uint32,
-	bypass_cache int,
+	bypass_cache bool,
 	callback *CDownloadImageCallbackT,
 ) {
 	c_image_url := create_cef_string(image_url)
 	defer clear_cef_string(c_image_url)
+	var tmpis_favicon int
+	if is_favicon {
+		tmpis_favicon = 1
+	}
+	var tmpbypass_cache int
+	if bypass_cache {
+		tmpbypass_cache = 1
+	}
 	var goTmpcallback *C.cef_download_image_callback_t
 	if callback != nil {
 		goTmpcallback = callback.p_download_image_callback
 		BaseAddRef(goTmpcallback)
 	}
 
-	C.cefingo_browser_host_download_image(self.p_browser_host, (*C.cef_string_t)(c_image_url), (C.int)(is_favicon), (C.uint32)(max_image_size), (C.int)(bypass_cache), goTmpcallback)
+	C.cefingo_browser_host_download_image(self.p_browser_host, (*C.cef_string_t)(c_image_url), C.int(tmpis_favicon), (C.uint32)(max_image_size), C.int(tmpbypass_cache), goTmpcallback)
 
 }
 
@@ -1954,11 +1970,13 @@ func (self *CBrowserHostT) HasDevTools() (ret bool) {
 // file=&lt;path&gt;` command-line flag.
 ///
 func (self *CBrowserHostT) SendDevToolsMessage(
-	message unsafe.Pointer,
-	message_size int64,
+	message []byte,
 ) (ret bool) {
+	message_size := len(message)
+	tmpmessage := C.CBytes(message)
+	defer C.free(tmpmessage)
 
-	cRet := C.cefingo_browser_host_send_dev_tools_message(self.p_browser_host, message, (C.size_t)(message_size))
+	cRet := C.cefingo_browser_host_send_dev_tools_message(self.p_browser_host, tmpmessage, (C.size_t)(message_size))
 
 	ret = cRet == 1
 	return ret
@@ -2024,15 +2042,19 @@ func (self *CBrowserHostT) AddDevToolsMessageObserver(
 ///
 func (self *CBrowserHostT) GetNavigationEntries(
 	visitor *CNavigationEntryVisitorT,
-	current_only int,
+	current_only bool,
 ) {
 	var goTmpvisitor *C.cef_navigation_entry_visitor_t
 	if visitor != nil {
 		goTmpvisitor = visitor.p_navigation_entry_visitor
 		BaseAddRef(goTmpvisitor)
 	}
+	var tmpcurrent_only int
+	if current_only {
+		tmpcurrent_only = 1
+	}
 
-	C.cefingo_browser_host_get_navigation_entries(self.p_browser_host, goTmpvisitor, (C.int)(current_only))
+	C.cefingo_browser_host_get_navigation_entries(self.p_browser_host, goTmpvisitor, C.int(tmpcurrent_only))
 
 }
 
@@ -2955,10 +2977,14 @@ func (self *CBrowserViewT) GetBrowser() (ret *CBrowserT) {
 // cef_keyboard_handler_t. The default value is false (0).
 ///
 func (self *CBrowserViewT) SetPreferAccelerators(
-	prefer_accelerators int,
+	prefer_accelerators bool,
 ) {
+	var tmpprefer_accelerators int
+	if prefer_accelerators {
+		tmpprefer_accelerators = 1
+	}
 
-	C.cefingo_browser_view_set_prefer_accelerators(self.p_browser_view, (C.int)(prefer_accelerators))
+	C.cefingo_browser_view_set_prefer_accelerators(self.p_browser_view, C.int(tmpprefer_accelerators))
 
 }
 
@@ -3125,7 +3151,7 @@ type GetDelegateForPopupBrowserViewHandler interface {
 		browser_view *CBrowserViewT,
 		settings *CBrowserSettingsT,
 		client *CClientT,
-		is_devtools int,
+		is_devtools bool,
 	) (ret *CBrowserViewDelegateT)
 }
 
@@ -3143,7 +3169,7 @@ type OnPopupBrowserViewCreatedHandler interface {
 		self *CBrowserViewDelegateT,
 		browser_view *CBrowserViewT,
 		popup_browser_view *CBrowserViewT,
-		is_devtools int,
+		is_devtools bool,
 	) (ret bool)
 }
 
@@ -5801,21 +5827,12 @@ func (p *C.cef_dev_tools_message_observer_t) cast_to_p_base_ref_counted_t() *C.c
 // function if desired, however be aware of performance considerations when
 // parsing large messages (some of which may exceed 1MB in size).
 ///
-func (self *CDevToolsMessageObserverT) OnDevToolsMessage(
-	browser *CBrowserT,
-	message unsafe.Pointer,
-	message_size int64,
-) (ret bool) {
-	var goTmpbrowser *C.cef_browser_t
-	if browser != nil {
-		goTmpbrowser = browser.p_browser
-		BaseAddRef(goTmpbrowser)
-	}
-
-	cRet := C.cefingo_dev_tools_message_observer_on_dev_tools_message(self.p_dev_tools_message_observer, goTmpbrowser, message, (C.size_t)(message_size))
-
-	ret = cRet == 1
-	return ret
+type OnDevToolsMessageHandler interface {
+	OnDevToolsMessage(
+		self *CDevToolsMessageObserverT,
+		browser *CBrowserT,
+		message []byte,
+	) (ret bool)
 }
 
 ///
@@ -5830,21 +5847,14 @@ func (self *CDevToolsMessageObserverT) OnDevToolsMessage(
 // OnDevToolsMessage documentation for additional details on |result|
 // contents.
 ///
-func (self *CDevToolsMessageObserverT) OnDevToolsMethodResult(
-	browser *CBrowserT,
-	message_id int,
-	success int,
-	result unsafe.Pointer,
-	result_size int64,
-) {
-	var goTmpbrowser *C.cef_browser_t
-	if browser != nil {
-		goTmpbrowser = browser.p_browser
-		BaseAddRef(goTmpbrowser)
-	}
-
-	C.cefingo_dev_tools_message_observer_on_dev_tools_method_result(self.p_dev_tools_message_observer, goTmpbrowser, (C.int)(message_id), (C.int)(success), result, (C.size_t)(result_size))
-
+type OnDevToolsMethodResultHandler interface {
+	OnDevToolsMethodResult(
+		self *CDevToolsMessageObserverT,
+		browser *CBrowserT,
+		message_id int,
+		success int,
+		result []byte,
+	)
 }
 
 ///
@@ -5855,22 +5865,13 @@ func (self *CDevToolsMessageObserverT) OnDevToolsMethodResult(
 // should be copied if necessary. See the OnDevToolsMessage documentation for
 // additional details on |params| contents.
 ///
-func (self *CDevToolsMessageObserverT) OnDevToolsEvent(
-	browser *CBrowserT,
-	method string,
-	params unsafe.Pointer,
-	params_size int64,
-) {
-	var goTmpbrowser *C.cef_browser_t
-	if browser != nil {
-		goTmpbrowser = browser.p_browser
-		BaseAddRef(goTmpbrowser)
-	}
-	c_method := create_cef_string(method)
-	defer clear_cef_string(c_method)
-
-	C.cefingo_dev_tools_message_observer_on_dev_tools_event(self.p_dev_tools_message_observer, goTmpbrowser, (*C.cef_string_t)(c_method), params, (C.size_t)(params_size))
-
+type OnDevToolsEventHandler interface {
+	OnDevToolsEvent(
+		self *CDevToolsMessageObserverT,
+		browser *CBrowserT,
+		method string,
+		params []byte,
+	)
 }
 
 ///
@@ -5878,17 +5879,11 @@ func (self *CDevToolsMessageObserverT) OnDevToolsEvent(
 // is the originating browser instance. This will generally occur in response
 // to the first message sent while the agent is detached.
 ///
-func (self *CDevToolsMessageObserverT) OnDevToolsAgentAttached(
-	browser *CBrowserT,
-) {
-	var goTmpbrowser *C.cef_browser_t
-	if browser != nil {
-		goTmpbrowser = browser.p_browser
-		BaseAddRef(goTmpbrowser)
-	}
-
-	C.cefingo_dev_tools_message_observer_on_dev_tools_agent_attached(self.p_dev_tools_message_observer, goTmpbrowser)
-
+type OnDevToolsAgentAttachedHandler interface {
+	OnDevToolsAgentAttached(
+		self *CDevToolsMessageObserverT,
+		browser *CBrowserT,
+	)
 }
 
 ///
@@ -5897,17 +5892,106 @@ func (self *CDevToolsMessageObserverT) OnDevToolsAgentAttached(
 // before the agent became detached will not be delivered, and any active
 // event subscriptions will be canceled.
 ///
-func (self *CDevToolsMessageObserverT) OnDevToolsAgentDetached(
-	browser *CBrowserT,
-) {
-	var goTmpbrowser *C.cef_browser_t
-	if browser != nil {
-		goTmpbrowser = browser.p_browser
-		BaseAddRef(goTmpbrowser)
+type OnDevToolsAgentDetachedHandler interface {
+	OnDevToolsAgentDetached(
+		self *CDevToolsMessageObserverT,
+		browser *CBrowserT,
+	)
+}
+
+var dev_tools_message_observer_handlers = struct {
+	handler                             map[*C.cef_dev_tools_message_observer_t]interface{}
+	on_dev_tools_message_handler        map[*C.cef_dev_tools_message_observer_t]OnDevToolsMessageHandler
+	on_dev_tools_method_result_handler  map[*C.cef_dev_tools_message_observer_t]OnDevToolsMethodResultHandler
+	on_dev_tools_event_handler          map[*C.cef_dev_tools_message_observer_t]OnDevToolsEventHandler
+	on_dev_tools_agent_attached_handler map[*C.cef_dev_tools_message_observer_t]OnDevToolsAgentAttachedHandler
+	on_dev_tools_agent_detached_handler map[*C.cef_dev_tools_message_observer_t]OnDevToolsAgentDetachedHandler
+}{
+	map[*C.cef_dev_tools_message_observer_t]interface{}{},
+	map[*C.cef_dev_tools_message_observer_t]OnDevToolsMessageHandler{},
+	map[*C.cef_dev_tools_message_observer_t]OnDevToolsMethodResultHandler{},
+	map[*C.cef_dev_tools_message_observer_t]OnDevToolsEventHandler{},
+	map[*C.cef_dev_tools_message_observer_t]OnDevToolsAgentAttachedHandler{},
+	map[*C.cef_dev_tools_message_observer_t]OnDevToolsAgentDetachedHandler{},
+}
+
+// AllocCDevToolsMessageObserverT allocates CDevToolsMessageObserverT and construct it
+func AllocCDevToolsMessageObserverT() *CDevToolsMessageObserverT {
+	up := c_calloc(1, C.sizeof_cefingo_dev_tools_message_observer_wrapper_t, "T128.3:")
+	cefp := C.cefingo_construct_dev_tools_message_observer((*C.cefingo_dev_tools_message_observer_wrapper_t)(up))
+
+	registerDeassocer(up, DeassocFunc(func() {
+		// Do not have reference to cef_dev_tools_message_observer_t itself in DeassocFunc,
+		// or cef_dev_tools_message_observer_t is never GCed.
+		Tracef(up, "T128.4:")
+
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
+		delete(dev_tools_message_observer_handlers.handler, cefp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_message_handler, cefp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_method_result_handler, cefp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_event_handler, cefp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler, cefp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler, cefp)
+	}))
+
+	return newCDevToolsMessageObserverT(cefp)
+}
+
+func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{}) *CDevToolsMessageObserverT {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
+
+	cp := dev_tools_message_observer.p_dev_tools_message_observer
+	dev_tools_message_observer_handlers.handler[cp] = a
+
+	if h, ok := a.(OnDevToolsMessageHandler); ok {
+		dev_tools_message_observer_handlers.on_dev_tools_message_handler[cp] = h
 	}
 
-	C.cefingo_dev_tools_message_observer_on_dev_tools_agent_detached(self.p_dev_tools_message_observer, goTmpbrowser)
+	if h, ok := a.(OnDevToolsMethodResultHandler); ok {
+		dev_tools_message_observer_handlers.on_dev_tools_method_result_handler[cp] = h
+	}
 
+	if h, ok := a.(OnDevToolsEventHandler); ok {
+		dev_tools_message_observer_handlers.on_dev_tools_event_handler[cp] = h
+	}
+
+	if h, ok := a.(OnDevToolsAgentAttachedHandler); ok {
+		dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler[cp] = h
+	}
+
+	if h, ok := a.(OnDevToolsAgentDetachedHandler); ok {
+		dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler[cp] = h
+	}
+
+	if accessor, ok := a.(CDevToolsMessageObserverTAccessor); ok {
+		accessor.SetCDevToolsMessageObserverT(dev_tools_message_observer)
+		Logf("T128.5:")
+	}
+
+	return dev_tools_message_observer
+}
+
+func (dev_tools_message_observer *CDevToolsMessageObserverT) UnbindAll() {
+
+	cp := dev_tools_message_observer.p_dev_tools_message_observer
+	delete(dev_tools_message_observer_handlers.handler, cp)
+
+	delete(dev_tools_message_observer_handlers.on_dev_tools_message_handler, cp)
+	delete(dev_tools_message_observer_handlers.on_dev_tools_method_result_handler, cp)
+	delete(dev_tools_message_observer_handlers.on_dev_tools_event_handler, cp)
+	delete(dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler, cp)
+	delete(dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler, cp)
+
+}
+
+func (dev_tools_message_observer *CDevToolsMessageObserverT) Handler() interface{} {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
+
+	cp := dev_tools_message_observer.p_dev_tools_message_observer
+	return dev_tools_message_observer_handlers.handler[cp]
 }
 
 // cef_dialog_handler_capi.h, include/capi/cef_dialog_handler_capi.h:74:3,
@@ -10004,11 +10088,13 @@ func (self *CImageT) AddBitmap(
 	pixel_height int,
 	color_type CColorTypeT,
 	alpha_type CAlphaTypeT,
-	pixel_data unsafe.Pointer,
-	pixel_data_size int64,
+	pixel_data []byte,
 ) (ret bool) {
+	pixel_data_size := len(pixel_data)
+	tmppixel_data := C.CBytes(pixel_data)
+	defer C.free(tmppixel_data)
 
-	cRet := C.cefingo_image_add_bitmap(self.p_image, (C.float)(scale_factor), (C.int)(pixel_width), (C.int)(pixel_height), (C.cef_color_type_t)(color_type), (C.cef_alpha_type_t)(alpha_type), pixel_data, (C.size_t)(pixel_data_size))
+	cRet := C.cefingo_image_add_bitmap(self.p_image, (C.float)(scale_factor), (C.int)(pixel_width), (C.int)(pixel_height), (C.cef_color_type_t)(color_type), (C.cef_alpha_type_t)(alpha_type), tmppixel_data, (C.size_t)(pixel_data_size))
 
 	ret = cRet == 1
 	return ret
@@ -10021,11 +10107,13 @@ func (self *CImageT) AddBitmap(
 ///
 func (self *CImageT) AddPng(
 	scale_factor float32,
-	png_data unsafe.Pointer,
-	png_data_size int64,
+	png_data []byte,
 ) (ret bool) {
+	png_data_size := len(png_data)
+	tmppng_data := C.CBytes(png_data)
+	defer C.free(tmppng_data)
 
-	cRet := C.cefingo_image_add_png(self.p_image, (C.float)(scale_factor), png_data, (C.size_t)(png_data_size))
+	cRet := C.cefingo_image_add_png(self.p_image, (C.float)(scale_factor), tmppng_data, (C.size_t)(png_data_size))
 
 	ret = cRet == 1
 	return ret
@@ -10038,11 +10126,13 @@ func (self *CImageT) AddPng(
 ///
 func (self *CImageT) AddJpeg(
 	scale_factor float32,
-	jpeg_data unsafe.Pointer,
-	jpeg_data_size int64,
+	jpeg_data []byte,
 ) (ret bool) {
+	jpeg_data_size := len(jpeg_data)
+	tmpjpeg_data := C.CBytes(jpeg_data)
+	defer C.free(tmpjpeg_data)
 
-	cRet := C.cefingo_image_add_jpeg(self.p_image, (C.float)(scale_factor), jpeg_data, (C.size_t)(jpeg_data_size))
+	cRet := C.cefingo_image_add_jpeg(self.p_image, (C.float)(scale_factor), tmpjpeg_data, (C.size_t)(jpeg_data_size))
 
 	ret = cRet == 1
 	return ret
@@ -11738,8 +11828,7 @@ type OnRouteMessageReceivedHandler interface {
 	OnRouteMessageReceived(
 		self *CMediaObserverT,
 		route *CMediaRouteT,
-		message unsafe.Pointer,
-		message_size int64,
+		message []byte,
 	)
 }
 
@@ -11927,11 +12016,13 @@ func (self *CMediaRouteT) GetSink() (ret *CMediaSinkT) {
 // Send a message over this route. |message| will be copied if necessary.
 ///
 func (self *CMediaRouteT) SendRouteMessage(
-	message unsafe.Pointer,
-	message_size int64,
+	message []byte,
 ) {
+	message_size := len(message)
+	tmpmessage := C.CBytes(message)
+	defer C.free(tmpmessage)
 
-	C.cefingo_media_route_send_route_message(self.p_media_route, message, (C.size_t)(message_size))
+	C.cefingo_media_route_send_route_message(self.p_media_route, tmpmessage, (C.size_t)(message_size))
 
 }
 
@@ -15574,9 +15665,8 @@ type OnPaintHandler interface {
 		self *CRenderHandlerT,
 		browser *CBrowserT,
 		ctype CPaintElementTypeT,
-		dirtyRectsCount int64,
-		dirtyRects *CRectT,
-		buffer unsafe.Pointer,
+		dirtyRects []CRectT,
+		buffer []byte,
 		width int,
 		height int,
 	)
@@ -16931,11 +17021,13 @@ func (self *CPostDataElementT) SetToFile(
 // copied.
 ///
 func (self *CPostDataElementT) SetToBytes(
-	size int64,
-	bytes unsafe.Pointer,
+	bytes []byte,
 ) {
+	size := len(bytes)
+	tmpbytes := C.CBytes(bytes)
+	defer C.free(tmpbytes)
 
-	C.cefingo_post_data_element_set_to_bytes(self.p_post_data_element, (C.size_t)(size), bytes)
+	C.cefingo_post_data_element_set_to_bytes(self.p_post_data_element, (C.size_t)(size), tmpbytes)
 
 }
 
@@ -18740,7 +18832,7 @@ type OpenHandler interface {
 		self *CResourceHandlerT,
 		request *CRequestT,
 		callback *CCallbackT,
-	) (ret bool, handle_request int)
+	) (ret bool, handle_request bool)
 }
 
 ///
@@ -20591,7 +20683,7 @@ func (p *C.cef_read_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 type CReadHandlerTReadHandler interface {
 	Read(
 		self *CReadHandlerT,
-		ptr unsafe.Pointer,
+		ptr []byte,
 		size int64,
 		n int64,
 	) (ret int64)
@@ -20869,11 +20961,13 @@ func StreamReaderCreateForFile(
 // Create a new cef_stream_reader_t object from data.
 ///
 func StreamReaderCreateForData(
-	data unsafe.Pointer,
-	size int64,
+	data []byte,
 ) (ret *CStreamReaderT) {
+	size := len(data)
+	tmpdata := C.CBytes(data)
+	defer C.free(tmpdata)
 
-	cRet := C.cef_stream_reader_create_for_data(data, (C.size_t)(size))
+	cRet := C.cef_stream_reader_create_for_data(tmpdata, (C.size_t)(size))
 
 	ret = newCStreamReaderT(cRet)
 	return ret
@@ -20955,7 +21049,7 @@ func (p *C.cef_write_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 type WriteHandler interface {
 	Write(
 		self *CWriteHandlerT,
-		ptr unsafe.Pointer,
+		ptr []byte,
 		size int64,
 		n int64,
 	) (ret int64)
@@ -22697,8 +22791,7 @@ type OnDownloadDataHandler interface {
 	OnDownloadData(
 		self *CUrlrequestClientT,
 		request *CUrlrequestT,
-		data unsafe.Pointer,
-		data_length int64,
+		data []byte,
 	)
 }
 
@@ -25630,10 +25723,9 @@ func BinaryValueCreate(
 ) (ret *CBinaryValueT) {
 	data_size := len(data)
 	tmpdata := C.CBytes(data)
+	defer C.free(tmpdata)
 
 	cRet := C.cef_binary_value_create(tmpdata, (C.size_t)(data_size))
-
-	C.free(tmpdata)
 
 	ret = newCBinaryValueT(cRet)
 	return ret

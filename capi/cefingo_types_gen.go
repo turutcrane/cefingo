@@ -435,12 +435,16 @@ func NewCSettingsT() *CSettingsT {
 	return s
 }
 
-func (st *CSettingsT) NoSandbox() int {
-	return int(st.no_sandbox)
+func (st *CSettingsT) NoSandbox() bool {
+	return st.no_sandbox != 0
 }
 
-func (st *CSettingsT) SetNoSandbox(v int) {
-	st.no_sandbox = (C.int)(v)
+func (st *CSettingsT) SetNoSandbox(v bool) {
+	if v {
+		st.no_sandbox = 1
+	} else {
+		st.no_sandbox = 0
+	}
 }
 
 func (st *CSettingsT) BrowserSubprocessPath() string {
@@ -467,36 +471,52 @@ func (st *CSettingsT) SetMainBundlePath(v string) {
 	set_cef_string(&st.main_bundle_path, v)
 }
 
-func (st *CSettingsT) MultiThreadedMessageLoop() int {
-	return int(st.multi_threaded_message_loop)
+func (st *CSettingsT) MultiThreadedMessageLoop() bool {
+	return st.multi_threaded_message_loop != 0
 }
 
-func (st *CSettingsT) SetMultiThreadedMessageLoop(v int) {
-	st.multi_threaded_message_loop = (C.int)(v)
+func (st *CSettingsT) SetMultiThreadedMessageLoop(v bool) {
+	if v {
+		st.multi_threaded_message_loop = 1
+	} else {
+		st.multi_threaded_message_loop = 0
+	}
 }
 
-func (st *CSettingsT) ExternalMessagePump() int {
-	return int(st.external_message_pump)
+func (st *CSettingsT) ExternalMessagePump() bool {
+	return st.external_message_pump != 0
 }
 
-func (st *CSettingsT) SetExternalMessagePump(v int) {
-	st.external_message_pump = (C.int)(v)
+func (st *CSettingsT) SetExternalMessagePump(v bool) {
+	if v {
+		st.external_message_pump = 1
+	} else {
+		st.external_message_pump = 0
+	}
 }
 
-func (st *CSettingsT) WindowlessRenderingEnabled() int {
-	return int(st.windowless_rendering_enabled)
+func (st *CSettingsT) WindowlessRenderingEnabled() bool {
+	return st.windowless_rendering_enabled != 0
 }
 
-func (st *CSettingsT) SetWindowlessRenderingEnabled(v int) {
-	st.windowless_rendering_enabled = (C.int)(v)
+func (st *CSettingsT) SetWindowlessRenderingEnabled(v bool) {
+	if v {
+		st.windowless_rendering_enabled = 1
+	} else {
+		st.windowless_rendering_enabled = 0
+	}
 }
 
-func (st *CSettingsT) CommandLineArgsDisabled() int {
-	return int(st.command_line_args_disabled)
+func (st *CSettingsT) CommandLineArgsDisabled() bool {
+	return st.command_line_args_disabled != 0
 }
 
-func (st *CSettingsT) SetCommandLineArgsDisabled(v int) {
-	st.command_line_args_disabled = (C.int)(v)
+func (st *CSettingsT) SetCommandLineArgsDisabled(v bool) {
+	if v {
+		st.command_line_args_disabled = 1
+	} else {
+		st.command_line_args_disabled = 0
+	}
 }
 
 func (st *CSettingsT) CachePath() string {
@@ -523,20 +543,28 @@ func (st *CSettingsT) SetUserDataPath(v string) {
 	set_cef_string(&st.user_data_path, v)
 }
 
-func (st *CSettingsT) PersistSessionCookies() int {
-	return int(st.persist_session_cookies)
+func (st *CSettingsT) PersistSessionCookies() bool {
+	return st.persist_session_cookies != 0
 }
 
-func (st *CSettingsT) SetPersistSessionCookies(v int) {
-	st.persist_session_cookies = (C.int)(v)
+func (st *CSettingsT) SetPersistSessionCookies(v bool) {
+	if v {
+		st.persist_session_cookies = 1
+	} else {
+		st.persist_session_cookies = 0
+	}
 }
 
-func (st *CSettingsT) PersistUserPreferences() int {
-	return int(st.persist_user_preferences)
+func (st *CSettingsT) PersistUserPreferences() bool {
+	return st.persist_user_preferences != 0
 }
 
-func (st *CSettingsT) SetPersistUserPreferences(v int) {
-	st.persist_user_preferences = (C.int)(v)
+func (st *CSettingsT) SetPersistUserPreferences(v bool) {
+	if v {
+		st.persist_user_preferences = 1
+	} else {
+		st.persist_user_preferences = 0
+	}
 }
 
 func (st *CSettingsT) UserAgent() string {
@@ -603,12 +631,16 @@ func (st *CSettingsT) SetLocalesDirPath(v string) {
 	set_cef_string(&st.locales_dir_path, v)
 }
 
-func (st *CSettingsT) PackLoadingDisabled() int {
-	return int(st.pack_loading_disabled)
+func (st *CSettingsT) PackLoadingDisabled() bool {
+	return st.pack_loading_disabled != 0
 }
 
-func (st *CSettingsT) SetPackLoadingDisabled(v int) {
-	st.pack_loading_disabled = (C.int)(v)
+func (st *CSettingsT) SetPackLoadingDisabled(v bool) {
+	if v {
+		st.pack_loading_disabled = 1
+	} else {
+		st.pack_loading_disabled = 0
+	}
 }
 
 func (st *CSettingsT) RemoteDebuggingPort() int {
@@ -627,12 +659,16 @@ func (st *CSettingsT) SetUncaughtExceptionStackSize(v int) {
 	st.uncaught_exception_stack_size = (C.int)(v)
 }
 
-func (st *CSettingsT) IgnoreCertificateErrors() int {
-	return int(st.ignore_certificate_errors)
+func (st *CSettingsT) IgnoreCertificateErrors() bool {
+	return st.ignore_certificate_errors != 0
 }
 
-func (st *CSettingsT) SetIgnoreCertificateErrors(v int) {
-	st.ignore_certificate_errors = (C.int)(v)
+func (st *CSettingsT) SetIgnoreCertificateErrors(v bool) {
+	if v {
+		st.ignore_certificate_errors = 1
+	} else {
+		st.ignore_certificate_errors = 0
+	}
 }
 
 func (st *CSettingsT) BackgroundColor() CColorT {
@@ -679,28 +715,40 @@ func (st *CRequestContextSettingsT) SetCachePath(v string) {
 	set_cef_string(&st.cache_path, v)
 }
 
-func (st *CRequestContextSettingsT) PersistSessionCookies() int {
-	return int(st.persist_session_cookies)
+func (st *CRequestContextSettingsT) PersistSessionCookies() bool {
+	return st.persist_session_cookies != 0
 }
 
-func (st *CRequestContextSettingsT) SetPersistSessionCookies(v int) {
-	st.persist_session_cookies = (C.int)(v)
+func (st *CRequestContextSettingsT) SetPersistSessionCookies(v bool) {
+	if v {
+		st.persist_session_cookies = 1
+	} else {
+		st.persist_session_cookies = 0
+	}
 }
 
-func (st *CRequestContextSettingsT) PersistUserPreferences() int {
-	return int(st.persist_user_preferences)
+func (st *CRequestContextSettingsT) PersistUserPreferences() bool {
+	return st.persist_user_preferences != 0
 }
 
-func (st *CRequestContextSettingsT) SetPersistUserPreferences(v int) {
-	st.persist_user_preferences = (C.int)(v)
+func (st *CRequestContextSettingsT) SetPersistUserPreferences(v bool) {
+	if v {
+		st.persist_user_preferences = 1
+	} else {
+		st.persist_user_preferences = 0
+	}
 }
 
-func (st *CRequestContextSettingsT) IgnoreCertificateErrors() int {
-	return int(st.ignore_certificate_errors)
+func (st *CRequestContextSettingsT) IgnoreCertificateErrors() bool {
+	return st.ignore_certificate_errors != 0
 }
 
-func (st *CRequestContextSettingsT) SetIgnoreCertificateErrors(v int) {
-	st.ignore_certificate_errors = (C.int)(v)
+func (st *CRequestContextSettingsT) SetIgnoreCertificateErrors(v bool) {
+	if v {
+		st.ignore_certificate_errors = 1
+	} else {
+		st.ignore_certificate_errors = 0
+	}
 }
 
 func (st *CRequestContextSettingsT) AcceptLanguageList() string {
@@ -2350,12 +2398,16 @@ func (st *CDraggableRegionT) SetBounds(v CRectT) {
 	st.bounds = (C.cef_rect_t)(v)
 }
 
-func (st *CDraggableRegionT) Draggable() int {
-	return int(st.draggable)
+func (st *CDraggableRegionT) Draggable() bool {
+	return st.draggable != 0
 }
 
-func (st *CDraggableRegionT) SetDraggable(v int) {
-	st.draggable = (C.int)(v)
+func (st *CDraggableRegionT) SetDraggable(v bool) {
+	if v {
+		st.draggable = 1
+	} else {
+		st.draggable = 0
+	}
 }
 
 ///
@@ -3781,36 +3833,52 @@ func (st *CPdfPrintSettingsT) SetMarginType(v CPdfPrintMarginTypeT) {
 	st.margin_type = (C.cef_pdf_print_margin_type_t)(v)
 }
 
-func (st *CPdfPrintSettingsT) HeaderFooterEnabled() int {
-	return int(st.header_footer_enabled)
+func (st *CPdfPrintSettingsT) HeaderFooterEnabled() bool {
+	return st.header_footer_enabled != 0
 }
 
-func (st *CPdfPrintSettingsT) SetHeaderFooterEnabled(v int) {
-	st.header_footer_enabled = (C.int)(v)
+func (st *CPdfPrintSettingsT) SetHeaderFooterEnabled(v bool) {
+	if v {
+		st.header_footer_enabled = 1
+	} else {
+		st.header_footer_enabled = 0
+	}
 }
 
-func (st *CPdfPrintSettingsT) SelectionOnly() int {
-	return int(st.selection_only)
+func (st *CPdfPrintSettingsT) SelectionOnly() bool {
+	return st.selection_only != 0
 }
 
-func (st *CPdfPrintSettingsT) SetSelectionOnly(v int) {
-	st.selection_only = (C.int)(v)
+func (st *CPdfPrintSettingsT) SetSelectionOnly(v bool) {
+	if v {
+		st.selection_only = 1
+	} else {
+		st.selection_only = 0
+	}
 }
 
-func (st *CPdfPrintSettingsT) Landscape() int {
-	return int(st.landscape)
+func (st *CPdfPrintSettingsT) Landscape() bool {
+	return st.landscape != 0
 }
 
-func (st *CPdfPrintSettingsT) SetLandscape(v int) {
-	st.landscape = (C.int)(v)
+func (st *CPdfPrintSettingsT) SetLandscape(v bool) {
+	if v {
+		st.landscape = 1
+	} else {
+		st.landscape = 0
+	}
 }
 
-func (st *CPdfPrintSettingsT) BackgroundsEnabled() int {
-	return int(st.backgrounds_enabled)
+func (st *CPdfPrintSettingsT) BackgroundsEnabled() bool {
+	return st.backgrounds_enabled != 0
 }
 
-func (st *CPdfPrintSettingsT) SetBackgroundsEnabled(v int) {
-	st.backgrounds_enabled = (C.int)(v)
+func (st *CPdfPrintSettingsT) SetBackgroundsEnabled(v bool) {
+	if v {
+		st.backgrounds_enabled = 1
+	} else {
+		st.backgrounds_enabled = 0
+	}
 }
 
 ///
@@ -4067,12 +4135,16 @@ func NewCBoxLayoutSettingsT() *CBoxLayoutSettingsT {
 	return s
 }
 
-func (st *CBoxLayoutSettingsT) Horizontal() int {
-	return int(st.horizontal)
+func (st *CBoxLayoutSettingsT) Horizontal() bool {
+	return st.horizontal != 0
 }
 
-func (st *CBoxLayoutSettingsT) SetHorizontal(v int) {
-	st.horizontal = (C.int)(v)
+func (st *CBoxLayoutSettingsT) SetHorizontal(v bool) {
+	if v {
+		st.horizontal = 1
+	} else {
+		st.horizontal = 0
+	}
 }
 
 func (st *CBoxLayoutSettingsT) InsideBorderHorizontalSpacing() int {
@@ -4388,12 +4460,16 @@ func (st *CCompositionUnderlineT) SetBackgroundColor(v CColorT) {
 	st.background_color = (C.cef_color_t)(v)
 }
 
-func (st *CCompositionUnderlineT) Thick() int {
-	return int(st.thick)
+func (st *CCompositionUnderlineT) Thick() bool {
+	return st.thick != 0
 }
 
-func (st *CCompositionUnderlineT) SetThick(v int) {
-	st.thick = (C.int)(v)
+func (st *CCompositionUnderlineT) SetThick(v bool) {
+	if v {
+		st.thick = 1
+	} else {
+		st.thick = 0
+	}
 }
 
 func (st *CCompositionUnderlineT) Style() CCompositionUnderlineStyleT {

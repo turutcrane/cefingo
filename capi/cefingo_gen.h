@@ -755,39 +755,8 @@ extern cef_set_cookie_callback_t *cefingo_construct_set_cookie_callback(cefingo_
 CEFINGO_REF_COUNTER_WRAPPER(cef_delete_cookies_callback_t, cefingo_delete_cookies_callback_wrapper_t);
 extern cef_delete_cookies_callback_t *cefingo_construct_delete_cookies_callback(cefingo_delete_cookies_callback_wrapper_t* delete_cookies_callback);
 
-extern int cefingo_dev_tools_message_observer_on_dev_tools_message(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser,
-	const void* message,
-	size_t message_size
-);
-
-extern void cefingo_dev_tools_message_observer_on_dev_tools_method_result(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser,
-	int message_id,
-	int success,
-	const void* result,
-	size_t result_size
-);
-
-extern void cefingo_dev_tools_message_observer_on_dev_tools_event(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser,
-	const cef_string_t* method,
-	const void* params,
-	size_t params_size
-);
-
-extern void cefingo_dev_tools_message_observer_on_dev_tools_agent_attached(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser
-);
-
-extern void cefingo_dev_tools_message_observer_on_dev_tools_agent_detached(
-	struct _cef_dev_tools_message_observer_t* self,
-	struct _cef_browser_t* browser
-);
+CEFINGO_REF_COUNTER_WRAPPER(cef_dev_tools_message_observer_t, cefingo_dev_tools_message_observer_wrapper_t);
+extern cef_dev_tools_message_observer_t *cefingo_construct_dev_tools_message_observer(cefingo_dev_tools_message_observer_wrapper_t* dev_tools_message_observer);
 
 extern void cefingo_file_dialog_callback_cont(
 	struct _cef_file_dialog_callback_t* self,

@@ -36,7 +36,7 @@ var handlerClasses = map[string]void{
 	"cef_client_t":                          setElement,
 	"cef_cookie_visitor_t":                  setElement,
 	"cef_cookie_access_filter_t":            setElement,
-	"cef_set_cookie_callback_t":             setElement,
+	"cef_dev_tools_message_observer_t":      setElement,
 	"cef_delete_cookies_callback_t":         setElement,
 	"cef_context_menu_handler_t":            setElement,
 	"cef_dialog_handler_t":                  setElement,
@@ -68,6 +68,7 @@ var handlerClasses = map[string]void{
 	"cef_run_file_dialog_callback_t":        setElement,
 	"cef_scheme_handler_factory_t":          setElement,
 	"cef_server_handler_t":                  setElement,
+	"cef_set_cookie_callback_t":             setElement,
 	"cef_string_visitor_t":                  setElement,
 	"cef_v8accessor_t":                      setElement,
 	"cef_v8handler_t":                       setElement,
@@ -213,13 +214,28 @@ var inOutParameter = map[string]void{
 }
 
 var byteSliceParameter = map[string]string{
-	"cef_response_filter_t::filter::data_in":                           "data_in_size",
-	"cef_response_filter_t::filter::data_out":                          "data_out_size",
-	"cef_resource_bundle_handler_t::get_data_resource::data":           "data_size",
-	"cef_resource_bundle_handler_t::get_data_resource_for_scale::data": "data_size",
-	"cef_resource_handler_t::read::data_out":                           "bytes_to_read",
-	"cef_resource_handler_t::read_response::data_out":                  "bytes_to_read",
-	"::cef_binary_value_create::data":                                  "data_size",
+	"cef_browser_host_t::send_dev_tools_message::message":                  "message_size",
+	"cef_image_t::add_bitmap::pixel_data":                                  "pixel_data_size",
+	"cef_image_t::add_png::png_data":                                       "png_data_size",
+	"cef_image_t::add_jpeg::jpeg_data":                                     "jpeg_data_size",
+	"cef_dev_tools_message_observer_t::on_dev_tools_message::message":      "message_size",
+	"cef_dev_tools_message_observer_t::on_dev_tools_method_result::result": "result_size",
+	"cef_dev_tools_message_observer_t::on_dev_tools_event::params":         "params_size",
+	"cef_media_observer_t::on_route_message_received::message":             "message_size",
+	"cef_media_route_t::send_route_message::message":                       "message_size",
+	"cef_post_data_element_t::set_to_bytes::bytes":                         "size",
+	"cef_read_handler_t::read::ptr":                                        "size*n",
+	"cef_render_handler_t::on_paint::buffer":                               "width*height*4",
+	"cef_response_filter_t::filter::data_in":                               "data_in_size",
+	"cef_response_filter_t::filter::data_out":                              "data_out_size",
+	"cef_resource_bundle_handler_t::get_data_resource::data":               "data_size",
+	"cef_resource_bundle_handler_t::get_data_resource_for_scale::data":     "data_size",
+	"cef_resource_handler_t::read::data_out":                               "bytes_to_read",
+	"cef_resource_handler_t::read_response::data_out":                      "bytes_to_read",
+	"cef_urlrequest_client_t::on_download_data::data":                      "data_length",
+	"cef_write_handler_t::write::ptr":                                      "size*n",
+	"::cef_binary_value_create::data":                                      "data_size",
+	"::cef_stream_reader_create_for_data::data":                            "size",
 	// "::cef_v8value_create_array_buffer::buffer":       "length", buffer parameter should be shared with cef_v8array_buffer_release_callback_t
 }
 var byteSliceLengthParameter = map[string]string{}
@@ -228,6 +244,7 @@ var sliceParameter = map[string]string{
 	"cef_media_observer_t::on_sinks::sinks":                             "sinksCount",
 	"cef_media_observer_t::on_routes::routes":                           "routesCount",
 	"cef_post_data_t::get_elements::elements":                           "elementsCount",
+	"cef_render_handler_t::on_paint::dirtyRects":                        "dirtyRectsCount",
 	"cef_request_handler_t::on_select_client_certificate::certificates": "certificatesCount",
 	"cef_v8handler_t::execute::arguments":                               "argumentsCount",
 	"cef_v8value_t::execute_function::arguments":                        "argumentsCount",
@@ -259,14 +276,23 @@ var boolParameter = map[string]void{
 	"cef_browser_host_t::find::findNext":                                                    setElement,
 	"cef_browser_host_t::set_focus::focus":                                                  setElement,
 	"cef_browser_host_t::stop_finding::clearSelection":                                      setElement,
-	"cef_request_context_handler_t::get_resource_request_handler::disable_default_handling": setElement,
+	"cef_browser_host_t::download_image::is_favicon":                                        setElement,
+	"cef_browser_host_t::download_image::bypass_cache":                                      setElement,
+	"cef_browser_host_t::get_navigation_entries::current_only":                              setElement,
+	"cef_browser_view_t::set_prefer_accelerators::prefer_accelerators":                      setElement,
+	"cef_browser_view_delegate_t::get_delegate_for_popup_browser_view::is_devtools":         setElement,
+	"cef_browser_view_delegate_t::on_popup_browser_view_created::is_devtools":               setElement,
 	"cef_dictionary_value_t::set_bool::value":                                               setElement,
 	"cef_life_span_handler_t::on_before_popup::no_javascript_access":                        setElement,
 	"cef_load_handler_t::on_loading_state_change::isLoading":                                setElement,
 	"cef_load_handler_t::on_loading_state_change::canGoBack":                                setElement,
 	"cef_load_handler_t::on_loading_state_change::canGoForward":                             setElement,
 	"cef_list_value_t::set_bool::value":                                                     setElement,
+	"cef_navigation_entry_visitor_t::visit::current":                                        setElement,
+	"cef_pdf_print_callback_t::on_pdf_print_finished::ok":                                   setElement,
 	"cef_request_handler_t::get_resource_request_handler::disable_default_handling":         setElement,
+	"cef_request_context_handler_t::get_resource_request_handler::disable_default_handling": setElement,
+	"cef_resource_handler_t::open::handle_request":                                          setElement,
 	"cef_v8value_t::create_bool::value":                                                     setElement,
 	"cef_value_t::set_bool::value":                                                          setElement,
 	"cef_view_t::set_focusable::focusable":                                                  setElement,
@@ -275,10 +301,32 @@ var boolParameter = map[string]void{
 }
 
 var boolMember = map[string]void{
-	"cef_popup_features_t::xSet":      setElement,
-	"cef_popup_features_t::ySet":      setElement,
-	"cef_popup_features_t::widthSet":  setElement,
-	"cef_popup_features_t::heightSet": setElement,
+	"cef_box_layout_settings_t::horizontal":                     setElement,
+	"cef_composition_underline_t::thick":                        setElement,
+	"cef_settings_t::no_sandbox":                                setElement,
+	"cef_settings_t::multi_threaded_message_loop":               setElement,
+	"cef_settings_t::external_message_pump":                     setElement,
+	"cef_settings_t::windowless_rendering_enabled":              setElement,
+	"cef_settings_t::command_line_args_disabled":                setElement,
+	"cef_settings_t::persist_session_cookies":                   setElement,
+	"cef_settings_t::persist_user_preferences":                  setElement,
+	"cef_settings_t::pack_loading_disabled":                     setElement,
+	"cef_settings_t::ignore_certificate_errors":                 setElement,
+	"cef_draggable_region_t::draggable":                         setElement,
+	"cef_pdf_print_settings_t::header_footer_enabled":           setElement,
+	"cef_pdf_print_settings_t::selection_only":                  setElement,
+	"cef_pdf_print_settings_t::landscape":                       setElement,
+	"cef_pdf_print_settings_t::backgrounds_enabled":             setElement,
+	"cef_request_context_settings_t::persist_session_cookies":   setElement,
+	"cef_request_context_settings_t::persist_user_preferences":  setElement,
+	"cef_request_context_settings_t::ignore_certificate_errors": setElement,
+	"cef_popup_features_t::xSet":                                setElement,
+	"cef_popup_features_t::ySet":                                setElement,
+	"cef_popup_features_t::widthSet":                            setElement,
+	"cef_popup_features_t::heightSet":                           setElement,
+	"cef_window_info_t::windowless_rendering_enabled":           setElement,
+	"cef_window_info_t::shared_texture_enabled":                 setElement,
+	"cef_window_info_t::external_begin_frame_enabled":           setElement,
 }
 
 var cefdir string
@@ -1944,7 +1992,12 @@ func (t Type) IsHandlerClass() bool {
 	return isHandlerClass(t.Name())
 }
 
-func (t Type) IsSimpleDefName() bool {
+func (t Type) IsSimple() bool {
 	n := t.Name()
 	return isSimpleDefName(n)
+}
+
+func (t Type) IsStruct() bool {
+	n := t.Name()
+	return isStructDefName(n)
 }

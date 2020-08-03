@@ -33,7 +33,7 @@ func main() {
 	logTagFile := filepath.Join(*capiDir, "logtag.txt")
 	logTags.ReadTags(logTagFile)
 	defer logTags.WriteToFile(logTagFile)
-	log.Println("T37:", logTags)
+	// log.Println("T37:", logTags)
 
 	for i, tu := range tus {
 		parser.ExternalDeclaration(i, tu.ExternalDeclaration)
