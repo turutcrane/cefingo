@@ -12,3 +12,7 @@
 *.out
 
 *.orig
+
+# editor settings
+.vscode
+

@@ -7,6 +7,11 @@ import (
 	"github.com/turutcrane/cefingo/capi"
 )
 
+type noCopy struct{}
+
+func (*noCopy) Lock()   {}
+func (*noCopy) UNlock() {}
+
 func ExecuteProcess(mainArgs *capi.CMainArgsT, app *capi.CAppT) {
 
 	var sandBoxInfo unsafe.Pointer

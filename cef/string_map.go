@@ -6,48 +6,42 @@ import (
 	"github.com/turutcrane/cefingo/capi"
 )
 
-type mStringMap struct {
+type StringMap struct {
+	noCopy noCopy
 	cef capi.CStringMapT
 }
 
-type StringMap struct {
-	m *mStringMap
-}
-
-func NewStringMap() StringMap {
+func NewStringMap() *StringMap {
 	cefObject := capi.StringMapAlloc()
-	goObject := mStringMap{cefObject}
-	runtime.SetFinalizer(&goObject, func(o *mStringMap) {
+	goObject := &StringMap{noCopy{}, cefObject}
+	runtime.SetFinalizer(goObject, func(o *StringMap) {
 		capi.Logf("L20:")
 		capi.StringMapFree(o.cef)
 	})
-	return StringMap{&goObject}
+	return goObject
 }
 
-func (o StringMap) CefObject() capi.CStringMapT {
-	return o.m.cef
-}
-
-type mStringMultimap struct {
-	cef capi.CStringMultimapT
+func (o *StringMap) CefObject() capi.CStringMapT {
+	return o.cef
 }
 
 type StringMultimap struct {
-	m *mStringMultimap
+	noCopy noCopy
+	cef capi.CStringMultimapT
 }
 
-func NewStringMultimap() StringMultimap {
+func NewStringMultimap() *StringMultimap {
 	cefObject := capi.StringMultimapAlloc()
-	goObject := mStringMultimap{cefObject}
-	runtime.SetFinalizer(&goObject, func(o *mStringMultimap) {
+	goObject := &StringMultimap{noCopy{}, cefObject}
+	runtime.SetFinalizer(goObject, func(o *StringMultimap) {
 		capi.Logf("L43:")
 		capi.StringMultimapFree(o.cef)
 	})
-	return StringMultimap{&goObject}
+	return goObject
 }
 
-func (o StringMultimap) CefObject() capi.CStringMultimapT {
-	return o.m.cef
+func (o *StringMultimap) CefObject() capi.CStringMultimapT {
+	return o.cef
 }
 
 func (o *StringMultimap) Append(key, value string) bool {

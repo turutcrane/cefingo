@@ -45,6 +45,25 @@ func StringListSize(
 }
 
 ///
+// Retrieve the value at the specified zero-based string list index. Returns
+// true (1) if the value was successfully retrieved.
+///
+func StringListValue(
+	list CStringListT,
+	index int64,
+) (ret bool, value string) {
+	tmpc_value := create_cef_string("")
+	defer clear_cef_string(tmpc_value)
+
+	cRet := C.cef_string_list_value((C.cef_string_list_t)(list), (C.size_t)(index), tmpc_value)
+
+	value = string_from_cef_string(tmpc_value)
+
+	ret = cRet == 1
+	return ret, value
+}
+
+///
 // Append a new value at the end of the string list.
 ///
 func StringListAppend(
@@ -122,6 +141,62 @@ func StringMapSize(
 
 	ret = (int64)(cRet)
 	return ret
+}
+
+///
+// Return the value assigned to the specified key.
+///
+func StringMapFind(
+	cmap CStringMapT,
+	key string,
+) (ret bool, value string) {
+	c_key := create_cef_string(key)
+	defer clear_cef_string(c_key)
+	tmpc_value := create_cef_string("")
+	defer clear_cef_string(tmpc_value)
+
+	cRet := C.cef_string_map_find((C.cef_string_map_t)(cmap), (*C.cef_string_t)(c_key), tmpc_value)
+
+	value = string_from_cef_string(tmpc_value)
+
+	ret = cRet == 1
+	return ret, value
+}
+
+///
+// Return the key at the specified zero-based string map index.
+///
+func StringMapKey(
+	cmap CStringMapT,
+	index int64,
+) (ret bool, key string) {
+	tmpc_key := create_cef_string("")
+	defer clear_cef_string(tmpc_key)
+
+	cRet := C.cef_string_map_key((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_key)
+
+	key = string_from_cef_string(tmpc_key)
+
+	ret = cRet == 1
+	return ret, key
+}
+
+///
+// Return the value at the specified zero-based string map index.
+///
+func StringMapValue(
+	cmap CStringMapT,
+	index int64,
+) (ret bool, value string) {
+	tmpc_value := create_cef_string("")
+	defer clear_cef_string(tmpc_value)
+
+	cRet := C.cef_string_map_value((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_value)
+
+	value = string_from_cef_string(tmpc_value)
+
+	ret = cRet == 1
+	return ret, value
 }
 
 ///
@@ -211,6 +286,63 @@ func StringMultimapFindCount(
 
 	ret = (int64)(cRet)
 	return ret
+}
+
+///
+// Return the value_index-th value with the specified key.
+///
+func StringMultimapEnumerate(
+	cmap CStringMultimapT,
+	key string,
+	value_index int64,
+) (ret bool, value string) {
+	c_key := create_cef_string(key)
+	defer clear_cef_string(c_key)
+	tmpc_value := create_cef_string("")
+	defer clear_cef_string(tmpc_value)
+
+	cRet := C.cef_string_multimap_enumerate((C.cef_string_multimap_t)(cmap), (*C.cef_string_t)(c_key), (C.size_t)(value_index), tmpc_value)
+
+	value = string_from_cef_string(tmpc_value)
+
+	ret = cRet == 1
+	return ret, value
+}
+
+///
+// Return the key at the specified zero-based string multimap index.
+///
+func StringMultimapKey(
+	cmap CStringMultimapT,
+	index int64,
+) (ret bool, key string) {
+	tmpc_key := create_cef_string("")
+	defer clear_cef_string(tmpc_key)
+
+	cRet := C.cef_string_multimap_key((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_key)
+
+	key = string_from_cef_string(tmpc_key)
+
+	ret = cRet == 1
+	return ret, key
+}
+
+///
+// Return the value at the specified zero-based string multimap index.
+///
+func StringMultimapValue(
+	cmap CStringMultimapT,
+	index int64,
+) (ret bool, value string) {
+	tmpc_value := create_cef_string("")
+	defer clear_cef_string(tmpc_value)
+
+	cRet := C.cef_string_multimap_value((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_value)
+
+	value = string_from_cef_string(tmpc_value)
+
+	ret = cRet == 1
+	return ret, value
 }
 
 ///
