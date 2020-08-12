@@ -8,7 +8,7 @@ import (
 
 type StringMap struct {
 	noCopy noCopy
-	cef capi.CStringMapT
+	cef    capi.CStringMapT
 }
 
 func NewStringMap() *StringMap {
@@ -27,7 +27,7 @@ func (o *StringMap) CefObject() capi.CStringMapT {
 
 type StringMultimap struct {
 	noCopy noCopy
-	cef capi.CStringMultimapT
+	cef    capi.CStringMultimapT
 }
 
 func NewStringMultimap() *StringMultimap {

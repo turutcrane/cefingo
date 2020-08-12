@@ -1,6 +1,6 @@
 package capi
 
-import(
+import (
 	"unsafe"
 )
 
