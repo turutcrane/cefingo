@@ -79,8 +79,8 @@ Set returned Go value to C.param and cleanup
 			BaseAddRef(*{%s goParamName(p) %})
 		}
 	{%- elseif isSlice, sliceLen := p.IsByteSliceParam(); isSlice -%}
-		*{%s sliceLen %} = (C.size_t)(len({%s goTempNameOut(p) %}))
-		*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})(C.calloc(1, C.size_t(len({%s goTempNameOut(p) %}))))
+		*{%s sliceLen %} = C.size_t(len({%s goTempNameOut(p) %}))
+		*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})(c_calloc(*{%s sliceLen %}, 1, "{%s lt.NextTag() %}:{%s p.CalleeName() + "::" + p.Name() %}"))
 		target := (*[1<<30]byte)(unsafe.Pointer(*{%s goParamName(p) %}))[:*{%s sliceLen %}:*{%s sliceLen %}]
 		copy(target, {%s goTempNameOut(p) %})
 	{%- elseif isSlice, _ := p.IsSliceParam(); isSlice -%}
@@ -381,7 +381,7 @@ extern {%s constructorName(st) %};
 {% if p.IsOutParam() -%}
 	{%- if ok, argLen := p.IsByteSliceParam(); ok -%}
 	{%s argLen %} := len({%s goParamName(p) %})
-	{%s cTempName(p) %} := c_calloc(1, C.size_t({%s argLen %}), "{%s lt.NextTag() %}:{%s p.CalleeName() + "::" + p.Name() %}")
+	{%s cTempName(p) %} := c_calloc(C.size_t({%s argLen %}), 1, "{%s lt.NextTag() %}:{%s p.CalleeName() + "::" + p.Name() %}")
 	{%- elseif isSlice, argLen := p.IsSliceParam(); isSlice -%}
 	var _{%s argLen %} C.size_t
 	{%s argLen %} := &_{%s argLen %}

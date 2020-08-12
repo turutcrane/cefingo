@@ -2335,12 +2335,6 @@ extern size_t cefingo_post_data_get_element_count(
 	struct _cef_post_data_t* self
 );
 
-extern void cefingo_post_data_get_elements(
-	struct _cef_post_data_t* self,
-	size_t* elementsCount,
-	struct _cef_post_data_element_t** elements
-);
-
 extern int cefingo_post_data_remove_element(
 	struct _cef_post_data_t* self,
 	struct _cef_post_data_element_t* element

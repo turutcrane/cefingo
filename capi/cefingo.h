@@ -20,6 +20,14 @@ typedef void *VOIDP;
 typedef long long LONGLONG;
 typedef unsigned long long ULONGLONG;
 
+typedef struct _cef_post_data_element_t *ptr_cef_post_data_element_t;
+
 extern void cefingo_init();
+
+extern void cefingo_post_data_get_elements(
+	struct _cef_post_data_t* self,
+	size_t* elementsCount,
+	struct _cef_post_data_element_t** elements
+);
 
 #endif // CEFINGO_H_

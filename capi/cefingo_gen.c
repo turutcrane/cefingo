@@ -5933,19 +5933,6 @@ size_t cefingo_post_data_get_element_count(
 	);
 }
 
-void cefingo_post_data_get_elements(
-	struct _cef_post_data_t* self,
-	size_t* elementsCount,
-	struct _cef_post_data_element_t** elements
-)
-{
-	self->get_elements(
-		self,
-		elementsCount,
-		elements
-	);
-}
-
 int cefingo_post_data_remove_element(
 	struct _cef_post_data_t* self,
 	struct _cef_post_data_element_t* element

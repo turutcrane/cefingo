@@ -463,7 +463,7 @@ func streampostProcess(qw422016 *qt422016.Writer, p parser.Param, lt *LogTag) {
 //line template.qtpl:82
 			qw422016.E().S(sliceLen)
 //line template.qtpl:82
-			qw422016.N().S(` = (C.size_t)(len(`)
+			qw422016.N().S(` = C.size_t(len(`)
 //line template.qtpl:82
 			qw422016.E().S(goTempNameOut(p))
 //line template.qtpl:82
@@ -476,11 +476,19 @@ func streampostProcess(qw422016 *qt422016.Writer, p parser.Param, lt *LogTag) {
 //line template.qtpl:83
 			qw422016.E().S(p.Type().Deref().GoCType())
 //line template.qtpl:83
-			qw422016.N().S(`)(C.calloc(1, C.size_t(len(`)
+			qw422016.N().S(`)(c_calloc(*`)
 //line template.qtpl:83
-			qw422016.E().S(goTempNameOut(p))
+			qw422016.E().S(sliceLen)
 //line template.qtpl:83
-			qw422016.N().S(`))))
+			qw422016.N().S(`, 1, "`)
+//line template.qtpl:83
+			qw422016.E().S(lt.NextTag())
+//line template.qtpl:83
+			qw422016.N().S(`:`)
+//line template.qtpl:83
+			qw422016.E().S(p.CalleeName() + "::" + p.Name())
+//line template.qtpl:83
+			qw422016.N().S(`"))
 		target := (*[1<<30]byte)(unsafe.Pointer(*`)
 //line template.qtpl:84
 			qw422016.E().S(goParamName(p))
@@ -2010,11 +2018,11 @@ func streampreConvToC(qw422016 *qt422016.Writer, p parser.Param, lt *LogTag) {
 //line template.qtpl:384
 			qw422016.E().S(cTempName(p))
 //line template.qtpl:384
-			qw422016.N().S(` := c_calloc(1, C.size_t(`)
+			qw422016.N().S(` := c_calloc(C.size_t(`)
 //line template.qtpl:384
 			qw422016.E().S(argLen)
 //line template.qtpl:384
-			qw422016.N().S(`), "`)
+			qw422016.N().S(`), 1, "`)
 //line template.qtpl:384
 			qw422016.E().S(lt.NextTag())
 //line template.qtpl:384

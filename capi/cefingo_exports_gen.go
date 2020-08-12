@@ -6695,8 +6695,8 @@ func cefingo_resource_bundle_handler_get_data_resource(
 		goTmpresource_id := (int)(resource_id)
 
 		goRet, goTmpdataOut := f.GetDataResource(goTmpself, goTmpresource_id)
-		*data_size = (C.size_t)(len(goTmpdataOut))
-		*data = (C.VOIDP)(C.calloc(1, C.size_t(len(goTmpdataOut))))
+		*data_size = C.size_t(len(goTmpdataOut))
+		*data = (C.VOIDP)(c_calloc(*data_size, 1, "T188.9:cef_resource_bundle_handler_t::get_data_resource::data"))
 		target := (*[1 << 30]byte)(unsafe.Pointer(*data))[:*data_size:*data_size]
 		copy(target, goTmpdataOut)
 
@@ -6704,7 +6704,7 @@ func cefingo_resource_bundle_handler_get_data_resource(
 			cRet = 1
 		}
 	} else {
-		Logf("T188.9: get_data_resource: Noo!")
+		Logf("T188.10: get_data_resource: Noo!")
 	}
 	return cRet
 }
@@ -6728,7 +6728,7 @@ func cefingo_resource_bundle_handler_get_data_resource_for_scale(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T188.10:")
+	Tracef(unsafe.Pointer(self), "T188.11:")
 	cefingoIfaceAccess.Lock()
 	f := resource_bundle_handler_handlers.get_data_resource_for_scale_handler[self]
 	cefingoIfaceAccess.Unlock()
@@ -6739,8 +6739,8 @@ func cefingo_resource_bundle_handler_get_data_resource_for_scale(
 		goTmpscale_factor := CScaleFactorT(scale_factor)
 
 		goRet, goTmpdataOut := f.GetDataResourceForScale(goTmpself, goTmpresource_id, goTmpscale_factor)
-		*data_size = (C.size_t)(len(goTmpdataOut))
-		*data = (C.VOIDP)(C.calloc(1, C.size_t(len(goTmpdataOut))))
+		*data_size = C.size_t(len(goTmpdataOut))
+		*data = (C.VOIDP)(c_calloc(*data_size, 1, "T188.12:cef_resource_bundle_handler_t::get_data_resource_for_scale::data"))
 		target := (*[1 << 30]byte)(unsafe.Pointer(*data))[:*data_size:*data_size]
 		copy(target, goTmpdataOut)
 
@@ -6748,7 +6748,7 @@ func cefingo_resource_bundle_handler_get_data_resource_for_scale(
 			cRet = 1
 		}
 	} else {
-		Logf("T188.11: get_data_resource_for_scale: Noo!")
+		Logf("T188.13: get_data_resource_for_scale: Noo!")
 	}
 	return cRet
 }

@@ -16857,24 +16857,6 @@ func (self *CPostDataT) GetElementCount() (ret int64) {
 }
 
 ///
-// Retrieve the post data elements.
-///
-func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
-	var _elementsCount C.size_t
-	elementsCount := &_elementsCount
-	var tmpelements *C.cef_post_data_element_t
-
-	C.cefingo_post_data_get_elements(self.p_post_data, (*C.size_t)(elementsCount), &tmpelements)
-
-	elements = make([]*CPostDataElementT, *elementsCount)
-	_tmpelements := (*[1 << 30](*C.cef_post_data_element_t))(unsafe.Pointer(tmpelements))[:*elementsCount:*elementsCount]
-	for i := C.size_t(0); i < *elementsCount; i++ {
-		elements[i] = newCPostDataElementT(_tmpelements[i])
-	}
-	return elements
-}
-
-///
 // Remove the specified post data element.  Returns true (1) if the removal
 // succeeds.
 ///

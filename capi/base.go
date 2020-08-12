@@ -8,13 +8,12 @@ import (
 import "C"
 
 func c_calloc(n C.size_t, s C.size_t, msg string, v ...interface{}) (p unsafe.Pointer) {
-	p = C.calloc(n, s)
+	p = C.malloc(n * s) // never returns nil
+	C.memset(p, 0, n * s)
+
 	if ref_count_log.trace {
 		ref_count_log.traceSet[p] = true
 		traceuf(1, p, msg, v...)
-	}
-	if p == nil {
-		Panicf("Can not Allocate"+msg, v...)
 	}
 	return p
 }
