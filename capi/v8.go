@@ -37,9 +37,8 @@ func CreateArrayBuffer(
 
 func V8valueCreateStringFromByteArray(b []byte) (val *CV8valueT) {
 	cef_string := create_cef_string_from_byte_array(b)
-	defer clear_cef_string(cef_string)
 
-	v := C.cef_v8value_create_string(cef_string)
+	v := C.cef_v8value_create_string(cef_string.p_cef_string_t)
 	return newCV8valueT(v)
 }
 

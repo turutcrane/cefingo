@@ -766,11 +766,9 @@ func (self *CAuthCallbackT) Cont(
 	password string,
 ) {
 	c_username := create_cef_string(username)
-	defer clear_cef_string(c_username)
 	c_password := create_cef_string(password)
-	defer clear_cef_string(c_password)
 
-	C.cefingo_auth_callback_cont(self.p_auth_callback, (*C.cef_string_t)(c_username), (*C.cef_string_t)(c_password))
+	C.cefingo_auth_callback_cont(self.p_auth_callback, c_username.p_cef_string_t, c_password.p_cef_string_t)
 
 }
 
@@ -1125,9 +1123,8 @@ func (self *CBrowserT) GetFrame(
 	name string,
 ) (ret *CFrameT) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cefingo_browser_get_frame(self.p_browser, (*C.cef_string_t)(c_name))
+	cRet := C.cefingo_browser_get_frame(self.p_browser, c_name.p_cef_string_t)
 
 	ret = newCFrameT(cRet)
 	return ret
@@ -1428,13 +1425,12 @@ func (self *CPdfPrintCallbackT) OnPdfPrintFinished(
 	ok bool,
 ) {
 	c_path := create_cef_string(path)
-	defer clear_cef_string(c_path)
 	var tmpok int
 	if ok {
 		tmpok = 1
 	}
 
-	C.cefingo_pdf_print_callback_on_pdf_print_finished(self.p_pdf_print_callback, (*C.cef_string_t)(c_path), C.int(tmpok))
+	C.cefingo_pdf_print_callback_on_pdf_print_finished(self.p_pdf_print_callback, c_path.p_cef_string_t, C.int(tmpok))
 
 }
 
@@ -1502,14 +1498,13 @@ func (self *CDownloadImageCallbackT) OnDownloadImageFinished(
 	image *CImageT,
 ) {
 	c_image_url := create_cef_string(image_url)
-	defer clear_cef_string(c_image_url)
 	var goTmpimage *C.cef_image_t
 	if image != nil {
 		goTmpimage = image.p_image
 		BaseAddRef(goTmpimage)
 	}
 
-	C.cefingo_download_image_callback_on_download_image_finished(self.p_download_image_callback, (*C.cef_string_t)(c_image_url), (C.int)(http_status_code), goTmpimage)
+	C.cefingo_download_image_callback_on_download_image_finished(self.p_download_image_callback, c_image_url.p_cef_string_t, (C.int)(http_status_code), goTmpimage)
 
 }
 
@@ -1741,16 +1736,14 @@ func (self *CBrowserHostT) RunFileDialog(
 	callback *CRunFileDialogCallbackT,
 ) {
 	c_title := create_cef_string(title)
-	defer clear_cef_string(c_title)
 	c_default_file_path := create_cef_string(default_file_path)
-	defer clear_cef_string(c_default_file_path)
 	var goTmpcallback *C.cef_run_file_dialog_callback_t
 	if callback != nil {
 		goTmpcallback = callback.p_run_file_dialog_callback
 		BaseAddRef(goTmpcallback)
 	}
 
-	C.cefingo_browser_host_run_file_dialog(self.p_browser_host, (C.cef_file_dialog_mode_t)(mode), (*C.cef_string_t)(c_title), (*C.cef_string_t)(c_default_file_path), (C.cef_string_list_t)(accept_filters), (C.int)(selected_accept_filter), goTmpcallback)
+	C.cefingo_browser_host_run_file_dialog(self.p_browser_host, (C.cef_file_dialog_mode_t)(mode), c_title.p_cef_string_t, c_default_file_path.p_cef_string_t, (C.cef_string_list_t)(accept_filters), (C.int)(selected_accept_filter), goTmpcallback)
 
 }
 
@@ -1761,9 +1754,8 @@ func (self *CBrowserHostT) StartDownload(
 	url string,
 ) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 
-	C.cefingo_browser_host_start_download(self.p_browser_host, (*C.cef_string_t)(c_url))
+	C.cefingo_browser_host_start_download(self.p_browser_host, c_url.p_cef_string_t)
 
 }
 
@@ -1787,7 +1779,6 @@ func (self *CBrowserHostT) DownloadImage(
 	callback *CDownloadImageCallbackT,
 ) {
 	c_image_url := create_cef_string(image_url)
-	defer clear_cef_string(c_image_url)
 	var tmpis_favicon int
 	if is_favicon {
 		tmpis_favicon = 1
@@ -1802,7 +1793,7 @@ func (self *CBrowserHostT) DownloadImage(
 		BaseAddRef(goTmpcallback)
 	}
 
-	C.cefingo_browser_host_download_image(self.p_browser_host, (*C.cef_string_t)(c_image_url), C.int(tmpis_favicon), (C.uint32)(max_image_size), C.int(tmpbypass_cache), goTmpcallback)
+	C.cefingo_browser_host_download_image(self.p_browser_host, c_image_url.p_cef_string_t, C.int(tmpis_favicon), (C.uint32)(max_image_size), C.int(tmpbypass_cache), goTmpcallback)
 
 }
 
@@ -1827,14 +1818,13 @@ func (self *CBrowserHostT) PrintToPdf(
 	callback *CPdfPrintCallbackT,
 ) {
 	c_path := create_cef_string(path)
-	defer clear_cef_string(c_path)
 	var goTmpcallback *C.cef_pdf_print_callback_t
 	if callback != nil {
 		goTmpcallback = callback.p_pdf_print_callback
 		BaseAddRef(goTmpcallback)
 	}
 
-	C.cefingo_browser_host_print_to_pdf(self.p_browser_host, (*C.cef_string_t)(c_path), (*C.cef_pdf_print_settings_t)(settings), goTmpcallback)
+	C.cefingo_browser_host_print_to_pdf(self.p_browser_host, c_path.p_cef_string_t, (*C.cef_pdf_print_settings_t)(settings), goTmpcallback)
 
 }
 
@@ -1857,7 +1847,6 @@ func (self *CBrowserHostT) Find(
 	findNext bool,
 ) {
 	c_searchText := create_cef_string(searchText)
-	defer clear_cef_string(c_searchText)
 	var tmpforward int
 	if forward {
 		tmpforward = 1
@@ -1871,7 +1860,7 @@ func (self *CBrowserHostT) Find(
 		tmpfindNext = 1
 	}
 
-	C.cefingo_browser_host_find(self.p_browser_host, (C.int)(identifier), (*C.cef_string_t)(c_searchText), C.int(tmpforward), C.int(tmpmatchCase), C.int(tmpfindNext))
+	C.cefingo_browser_host_find(self.p_browser_host, (C.int)(identifier), c_searchText.p_cef_string_t, C.int(tmpforward), C.int(tmpmatchCase), C.int(tmpfindNext))
 
 }
 
@@ -2000,14 +1989,13 @@ func (self *CBrowserHostT) ExecuteDevToolsMethod(
 	params *CDictionaryValueT,
 ) (ret bool) {
 	c_method := create_cef_string(method)
-	defer clear_cef_string(c_method)
 	var goTmpparams *C.cef_dictionary_value_t
 	if params != nil {
 		goTmpparams = params.p_dictionary_value
 		BaseAddRef(goTmpparams)
 	}
 
-	cRet := C.cefingo_browser_host_execute_dev_tools_method(self.p_browser_host, (C.int)(message_id), (*C.cef_string_t)(c_method), goTmpparams)
+	cRet := C.cefingo_browser_host_execute_dev_tools_method(self.p_browser_host, (C.int)(message_id), c_method.p_cef_string_t, goTmpparams)
 
 	ret = cRet == 1
 	return ret
@@ -2088,9 +2076,8 @@ func (self *CBrowserHostT) ReplaceMisspelling(
 	word string,
 ) {
 	c_word := create_cef_string(word)
-	defer clear_cef_string(c_word)
 
-	C.cefingo_browser_host_replace_misspelling(self.p_browser_host, (*C.cef_string_t)(c_word))
+	C.cefingo_browser_host_replace_misspelling(self.p_browser_host, c_word.p_cef_string_t)
 
 }
 
@@ -2101,9 +2088,8 @@ func (self *CBrowserHostT) AddWordToDictionary(
 	word string,
 ) {
 	c_word := create_cef_string(word)
-	defer clear_cef_string(c_word)
 
-	C.cefingo_browser_host_add_word_to_dictionary(self.p_browser_host, (*C.cef_string_t)(c_word))
+	C.cefingo_browser_host_add_word_to_dictionary(self.p_browser_host, c_word.p_cef_string_t)
 
 }
 
@@ -2338,9 +2324,8 @@ func (self *CBrowserHostT) ImeSetComposition(
 	selection_range *CRangeT,
 ) {
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	C.cefingo_browser_host_ime_set_composition(self.p_browser_host, (*C.cef_string_t)(c_text), (C.size_t)(underlinesCount), (*C.cef_composition_underline_t)(underlines), (*C.cef_range_t)(replacement_range), (*C.cef_range_t)(selection_range))
+	C.cefingo_browser_host_ime_set_composition(self.p_browser_host, c_text.p_cef_string_t, (C.size_t)(underlinesCount), (*C.cef_composition_underline_t)(underlines), (*C.cef_range_t)(replacement_range), (*C.cef_range_t)(selection_range))
 
 }
 
@@ -2359,9 +2344,8 @@ func (self *CBrowserHostT) ImeCommitText(
 	relative_cursor_pos int,
 ) {
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	C.cefingo_browser_host_ime_commit_text(self.p_browser_host, (*C.cef_string_t)(c_text), (*C.cef_range_t)(replacement_range), (C.int)(relative_cursor_pos))
+	C.cefingo_browser_host_ime_commit_text(self.p_browser_host, c_text.p_cef_string_t, (*C.cef_range_t)(replacement_range), (C.int)(relative_cursor_pos))
 
 }
 
@@ -2620,7 +2604,6 @@ func BrowserHostCreateBrowser(
 		BaseAddRef(goTmpclient)
 	}
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 	var goTmpextra_info *C.cef_dictionary_value_t
 	if extra_info != nil {
 		goTmpextra_info = extra_info.p_dictionary_value
@@ -2632,7 +2615,7 @@ func BrowserHostCreateBrowser(
 		BaseAddRef(goTmprequest_context)
 	}
 
-	cRet := C.cef_browser_host_create_browser((*C.cef_window_info_t)(windowInfo), goTmpclient, (*C.cef_string_t)(c_url), (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context)
+	cRet := C.cef_browser_host_create_browser((*C.cef_window_info_t)(windowInfo), goTmpclient, c_url.p_cef_string_t, (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context)
 
 	ret = cRet == 1
 	return ret
@@ -2660,7 +2643,6 @@ func BrowserHostCreateBrowserSync(
 		BaseAddRef(goTmpclient)
 	}
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 	var goTmpextra_info *C.cef_dictionary_value_t
 	if extra_info != nil {
 		goTmpextra_info = extra_info.p_dictionary_value
@@ -2672,7 +2654,7 @@ func BrowserHostCreateBrowserSync(
 		BaseAddRef(goTmprequest_context)
 	}
 
-	cRet := C.cef_browser_host_create_browser_sync((*C.cef_window_info_t)(windowInfo), goTmpclient, (*C.cef_string_t)(c_url), (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context)
+	cRet := C.cef_browser_host_create_browser_sync((*C.cef_window_info_t)(windowInfo), goTmpclient, c_url.p_cef_string_t, (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context)
 
 	ret = newCBrowserT(cRet)
 	return ret
@@ -3009,7 +2991,6 @@ func BrowserViewCreate(
 		BaseAddRef(goTmpclient)
 	}
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 	var goTmpextra_info *C.cef_dictionary_value_t
 	if extra_info != nil {
 		goTmpextra_info = extra_info.p_dictionary_value
@@ -3026,7 +3007,7 @@ func BrowserViewCreate(
 		BaseAddRef(goTmpdelegate)
 	}
 
-	cRet := C.cef_browser_view_create(goTmpclient, (*C.cef_string_t)(c_url), (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context, goTmpdelegate)
+	cRet := C.cef_browser_view_create(goTmpclient, c_url.p_cef_string_t, (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context, goTmpdelegate)
 
 	ret = newCBrowserViewT(cRet)
 	return ret
@@ -3436,9 +3417,8 @@ func (self *CButtonT) SetTooltipText(
 	tooltip_text string,
 ) {
 	c_tooltip_text := create_cef_string(tooltip_text)
-	defer clear_cef_string(c_tooltip_text)
 
-	C.cefingo_button_set_tooltip_text(self.p_button, (*C.cef_string_t)(c_tooltip_text))
+	C.cefingo_button_set_tooltip_text(self.p_button, c_tooltip_text.p_cef_string_t)
 
 }
 
@@ -3449,9 +3429,8 @@ func (self *CButtonT) SetAccessibleName(
 	name string,
 ) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	C.cefingo_button_set_accessible_name(self.p_button, (*C.cef_string_t)(c_name))
+	C.cefingo_button_set_accessible_name(self.p_button, c_name.p_cef_string_t)
 
 }
 
@@ -4277,9 +4256,8 @@ func (self *CCommandLineT) InitFromString(
 	command_line string,
 ) {
 	c_command_line := create_cef_string(command_line)
-	defer clear_cef_string(c_command_line)
 
-	C.cefingo_command_line_init_from_string(self.p_command_line, (*C.cef_string_t)(c_command_line))
+	C.cefingo_command_line_init_from_string(self.p_command_line, c_command_line.p_cef_string_t)
 
 }
 
@@ -4314,7 +4292,7 @@ func (self *CCommandLineT) GetCommandLineString() (ret string) {
 
 	cRet := C.cefingo_command_line_get_command_line_string(self.p_command_line)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -4330,7 +4308,7 @@ func (self *CCommandLineT) GetProgram() (ret string) {
 
 	cRet := C.cefingo_command_line_get_program(self.p_command_line)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -4345,9 +4323,8 @@ func (self *CCommandLineT) SetProgram(
 	program string,
 ) {
 	c_program := create_cef_string(program)
-	defer clear_cef_string(c_program)
 
-	C.cefingo_command_line_set_program(self.p_command_line, (*C.cef_string_t)(c_program))
+	C.cefingo_command_line_set_program(self.p_command_line, c_program.p_cef_string_t)
 
 }
 
@@ -4369,9 +4346,8 @@ func (self *CCommandLineT) HasSwitch(
 	name string,
 ) (ret bool) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cefingo_command_line_has_switch(self.p_command_line, (*C.cef_string_t)(c_name))
+	cRet := C.cefingo_command_line_has_switch(self.p_command_line, c_name.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -4386,11 +4362,10 @@ func (self *CCommandLineT) GetSwitchValue(
 	name string,
 ) (ret string) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cefingo_command_line_get_switch_value(self.p_command_line, (*C.cef_string_t)(c_name))
+	cRet := C.cefingo_command_line_get_switch_value(self.p_command_line, c_name.p_cef_string_t)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -4418,9 +4393,8 @@ func (self *CCommandLineT) AppendSwitch(
 	name string,
 ) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	C.cefingo_command_line_append_switch(self.p_command_line, (*C.cef_string_t)(c_name))
+	C.cefingo_command_line_append_switch(self.p_command_line, c_name.p_cef_string_t)
 
 }
 
@@ -4432,11 +4406,9 @@ func (self *CCommandLineT) AppendSwitchWithValue(
 	value string,
 ) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	C.cefingo_command_line_append_switch_with_value(self.p_command_line, (*C.cef_string_t)(c_name), (*C.cef_string_t)(c_value))
+	C.cefingo_command_line_append_switch_with_value(self.p_command_line, c_name.p_cef_string_t, c_value.p_cef_string_t)
 
 }
 
@@ -4469,9 +4441,8 @@ func (self *CCommandLineT) AppendArgument(
 	argument string,
 ) {
 	c_argument := create_cef_string(argument)
-	defer clear_cef_string(c_argument)
 
-	C.cefingo_command_line_append_argument(self.p_command_line, (*C.cef_string_t)(c_argument))
+	C.cefingo_command_line_append_argument(self.p_command_line, c_argument.p_cef_string_t)
 
 }
 
@@ -4483,9 +4454,8 @@ func (self *CCommandLineT) PrependWrapper(
 	wrapper string,
 ) {
 	c_wrapper := create_cef_string(wrapper)
-	defer clear_cef_string(c_wrapper)
 
-	C.cefingo_command_line_prepend_wrapper(self.p_command_line, (*C.cef_string_t)(c_wrapper))
+	C.cefingo_command_line_prepend_wrapper(self.p_command_line, c_wrapper.p_cef_string_t)
 
 }
 
@@ -4891,7 +4861,7 @@ func (self *CContextMenuParamsT) GetLinkUrl() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_link_url(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -4908,7 +4878,7 @@ func (self *CContextMenuParamsT) GetUnfilteredLinkUrl() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_unfiltered_link_url(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -4925,7 +4895,7 @@ func (self *CContextMenuParamsT) GetSourceUrl() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_source_url(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -4954,7 +4924,7 @@ func (self *CContextMenuParamsT) GetTitleText() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_title_text(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -4970,7 +4940,7 @@ func (self *CContextMenuParamsT) GetPageUrl() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_page_url(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -4986,7 +4956,7 @@ func (self *CContextMenuParamsT) GetFrameUrl() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_frame_url(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -5003,7 +4973,7 @@ func (self *CContextMenuParamsT) GetFrameCharset() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_frame_charset(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -5043,7 +5013,7 @@ func (self *CContextMenuParamsT) GetSelectionText() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_selection_text(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -5060,7 +5030,7 @@ func (self *CContextMenuParamsT) GetMisspelledWord() (ret string) {
 
 	cRet := C.cefingo_context_menu_params_get_misspelled_word(self.p_context_menu_params)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -5253,14 +5223,13 @@ func (self *CCookieManagerT) VisitUrlCookies(
 	visitor *CCookieVisitorT,
 ) (ret bool) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 	var goTmpvisitor *C.cef_cookie_visitor_t
 	if visitor != nil {
 		goTmpvisitor = visitor.p_cookie_visitor
 		BaseAddRef(goTmpvisitor)
 	}
 
-	cRet := C.cefingo_cookie_manager_visit_url_cookies(self.p_cookie_manager, (*C.cef_string_t)(c_url), (C.int)(includeHttpOnly), goTmpvisitor)
+	cRet := C.cefingo_cookie_manager_visit_url_cookies(self.p_cookie_manager, c_url.p_cef_string_t, (C.int)(includeHttpOnly), goTmpvisitor)
 
 	ret = cRet == 1
 	return ret
@@ -5281,14 +5250,13 @@ func (self *CCookieManagerT) SetCookie(
 	callback *CSetCookieCallbackT,
 ) (ret bool) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 	var goTmpcallback *C.cef_set_cookie_callback_t
 	if callback != nil {
 		goTmpcallback = callback.p_set_cookie_callback
 		BaseAddRef(goTmpcallback)
 	}
 
-	cRet := C.cefingo_cookie_manager_set_cookie(self.p_cookie_manager, (*C.cef_string_t)(c_url), (*C.cef_cookie_t)(cookie), goTmpcallback)
+	cRet := C.cefingo_cookie_manager_set_cookie(self.p_cookie_manager, c_url.p_cef_string_t, (*C.cef_cookie_t)(cookie), goTmpcallback)
 
 	ret = cRet == 1
 	return ret
@@ -5311,16 +5279,14 @@ func (self *CCookieManagerT) DeleteCookies(
 	callback *CDeleteCookiesCallbackT,
 ) (ret bool) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 	c_cookie_name := create_cef_string(cookie_name)
-	defer clear_cef_string(c_cookie_name)
 	var goTmpcallback *C.cef_delete_cookies_callback_t
 	if callback != nil {
 		goTmpcallback = callback.p_delete_cookies_callback
 		BaseAddRef(goTmpcallback)
 	}
 
-	cRet := C.cefingo_cookie_manager_delete_cookies(self.p_cookie_manager, (*C.cef_string_t)(c_url), (*C.cef_string_t)(c_cookie_name), goTmpcallback)
+	cRet := C.cefingo_cookie_manager_delete_cookies(self.p_cookie_manager, c_url.p_cef_string_t, c_cookie_name.p_cef_string_t, goTmpcallback)
 
 	ret = cRet == 1
 	return ret
@@ -6963,7 +6929,7 @@ func (self *CDomdocumentT) GetTitle() (ret string) {
 
 	cRet := C.cefingo_domdocument_get_title(self.p_domdocument)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -6978,9 +6944,8 @@ func (self *CDomdocumentT) GetElementById(
 	id string,
 ) (ret *CDomnodeT) {
 	c_id := create_cef_string(id)
-	defer clear_cef_string(c_id)
 
-	cRet := C.cefingo_domdocument_get_element_by_id(self.p_domdocument, (*C.cef_string_t)(c_id))
+	cRet := C.cefingo_domdocument_get_element_by_id(self.p_domdocument, c_id.p_cef_string_t)
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7038,7 +7003,7 @@ func (self *CDomdocumentT) GetSelectionAsMarkup() (ret string) {
 
 	cRet := C.cefingo_domdocument_get_selection_as_markup(self.p_domdocument)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7054,7 +7019,7 @@ func (self *CDomdocumentT) GetSelectionAsText() (ret string) {
 
 	cRet := C.cefingo_domdocument_get_selection_as_text(self.p_domdocument)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7070,7 +7035,7 @@ func (self *CDomdocumentT) GetBaseUrl() (ret string) {
 
 	cRet := C.cefingo_domdocument_get_base_url(self.p_domdocument)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7087,11 +7052,10 @@ func (self *CDomdocumentT) GetCompleteUrl(
 	partialURL string,
 ) (ret string) {
 	c_partialURL := create_cef_string(partialURL)
-	defer clear_cef_string(c_partialURL)
 
-	cRet := C.cefingo_domdocument_get_complete_url(self.p_domdocument, (*C.cef_string_t)(c_partialURL))
+	cRet := C.cefingo_domdocument_get_complete_url(self.p_domdocument, c_partialURL.p_cef_string_t)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7214,7 +7178,7 @@ func (self *CDomnodeT) GetFormControlElementType() (ret string) {
 
 	cRet := C.cefingo_domnode_get_form_control_element_type(self.p_domnode)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7249,7 +7213,7 @@ func (self *CDomnodeT) GetName() (ret string) {
 
 	cRet := C.cefingo_domnode_get_name(self.p_domnode)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7265,7 +7229,7 @@ func (self *CDomnodeT) GetValue() (ret string) {
 
 	cRet := C.cefingo_domnode_get_value(self.p_domnode)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7280,9 +7244,8 @@ func (self *CDomnodeT) SetValue(
 	value string,
 ) (ret bool) {
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	cRet := C.cefingo_domnode_set_value(self.p_domnode, (*C.cef_string_t)(c_value))
+	cRet := C.cefingo_domnode_set_value(self.p_domnode, c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -7296,7 +7259,7 @@ func (self *CDomnodeT) GetAsMarkup() (ret string) {
 
 	cRet := C.cefingo_domnode_get_as_markup(self.p_domnode)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7389,7 +7352,7 @@ func (self *CDomnodeT) GetElementTagName() (ret string) {
 
 	cRet := C.cefingo_domnode_get_element_tag_name(self.p_domnode)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7415,9 +7378,8 @@ func (self *CDomnodeT) HasElementAttribute(
 	attrName string,
 ) (ret bool) {
 	c_attrName := create_cef_string(attrName)
-	defer clear_cef_string(c_attrName)
 
-	cRet := C.cefingo_domnode_has_element_attribute(self.p_domnode, (*C.cef_string_t)(c_attrName))
+	cRet := C.cefingo_domnode_has_element_attribute(self.p_domnode, c_attrName.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -7431,11 +7393,10 @@ func (self *CDomnodeT) GetElementAttribute(
 	attrName string,
 ) (ret string) {
 	c_attrName := create_cef_string(attrName)
-	defer clear_cef_string(c_attrName)
 
-	cRet := C.cefingo_domnode_get_element_attribute(self.p_domnode, (*C.cef_string_t)(c_attrName))
+	cRet := C.cefingo_domnode_get_element_attribute(self.p_domnode, c_attrName.p_cef_string_t)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7463,11 +7424,9 @@ func (self *CDomnodeT) SetElementAttribute(
 	value string,
 ) (ret bool) {
 	c_attrName := create_cef_string(attrName)
-	defer clear_cef_string(c_attrName)
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	cRet := C.cefingo_domnode_set_element_attribute(self.p_domnode, (*C.cef_string_t)(c_attrName), (*C.cef_string_t)(c_value))
+	cRet := C.cefingo_domnode_set_element_attribute(self.p_domnode, c_attrName.p_cef_string_t, c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -7481,7 +7440,7 @@ func (self *CDomnodeT) GetElementInnerText() (ret string) {
 
 	cRet := C.cefingo_domnode_get_element_inner_text(self.p_domnode)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -7564,9 +7523,8 @@ func (self *CBeforeDownloadCallbackT) Cont(
 	show_dialog int,
 ) {
 	c_download_path := create_cef_string(download_path)
-	defer clear_cef_string(c_download_path)
 
-	C.cefingo_before_download_callback_cont(self.p_before_download_callback, (*C.cef_string_t)(c_download_path), (C.int)(show_dialog))
+	C.cefingo_before_download_callback_cont(self.p_before_download_callback, c_download_path.p_cef_string_t, (C.int)(show_dialog))
 
 }
 
@@ -7977,7 +7935,7 @@ func (self *CDownloadItemT) GetFullPath() (ret string) {
 
 	cRet := C.cefingo_download_item_get_full_path(self.p_download_item)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8004,7 +7962,7 @@ func (self *CDownloadItemT) GetUrl() (ret string) {
 
 	cRet := C.cefingo_download_item_get_url(self.p_download_item)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8020,7 +7978,7 @@ func (self *CDownloadItemT) GetOriginalUrl() (ret string) {
 
 	cRet := C.cefingo_download_item_get_original_url(self.p_download_item)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8036,7 +7994,7 @@ func (self *CDownloadItemT) GetSuggestedFileName() (ret string) {
 
 	cRet := C.cefingo_download_item_get_suggested_file_name(self.p_download_item)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8052,7 +8010,7 @@ func (self *CDownloadItemT) GetContentDisposition() (ret string) {
 
 	cRet := C.cefingo_download_item_get_content_disposition(self.p_download_item)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8068,7 +8026,7 @@ func (self *CDownloadItemT) GetMimeType() (ret string) {
 
 	cRet := C.cefingo_download_item_get_mime_type(self.p_download_item)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8193,7 +8151,7 @@ func (self *CDragDataT) GetLinkUrl() (ret string) {
 
 	cRet := C.cefingo_drag_data_get_link_url(self.p_drag_data)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8209,7 +8167,7 @@ func (self *CDragDataT) GetLinkTitle() (ret string) {
 
 	cRet := C.cefingo_drag_data_get_link_title(self.p_drag_data)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8225,7 +8183,7 @@ func (self *CDragDataT) GetLinkMetadata() (ret string) {
 
 	cRet := C.cefingo_drag_data_get_link_metadata(self.p_drag_data)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8241,7 +8199,7 @@ func (self *CDragDataT) GetFragmentText() (ret string) {
 
 	cRet := C.cefingo_drag_data_get_fragment_text(self.p_drag_data)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8257,7 +8215,7 @@ func (self *CDragDataT) GetFragmentHtml() (ret string) {
 
 	cRet := C.cefingo_drag_data_get_fragment_html(self.p_drag_data)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8274,7 +8232,7 @@ func (self *CDragDataT) GetFragmentBaseUrl() (ret string) {
 
 	cRet := C.cefingo_drag_data_get_fragment_base_url(self.p_drag_data)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8290,7 +8248,7 @@ func (self *CDragDataT) GetFileName() (ret string) {
 
 	cRet := C.cefingo_drag_data_get_file_name(self.p_drag_data)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8340,9 +8298,8 @@ func (self *CDragDataT) SetLinkUrl(
 	url string,
 ) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 
-	C.cefingo_drag_data_set_link_url(self.p_drag_data, (*C.cef_string_t)(c_url))
+	C.cefingo_drag_data_set_link_url(self.p_drag_data, c_url.p_cef_string_t)
 
 }
 
@@ -8353,9 +8310,8 @@ func (self *CDragDataT) SetLinkTitle(
 	title string,
 ) {
 	c_title := create_cef_string(title)
-	defer clear_cef_string(c_title)
 
-	C.cefingo_drag_data_set_link_title(self.p_drag_data, (*C.cef_string_t)(c_title))
+	C.cefingo_drag_data_set_link_title(self.p_drag_data, c_title.p_cef_string_t)
 
 }
 
@@ -8366,9 +8322,8 @@ func (self *CDragDataT) SetLinkMetadata(
 	data string,
 ) {
 	c_data := create_cef_string(data)
-	defer clear_cef_string(c_data)
 
-	C.cefingo_drag_data_set_link_metadata(self.p_drag_data, (*C.cef_string_t)(c_data))
+	C.cefingo_drag_data_set_link_metadata(self.p_drag_data, c_data.p_cef_string_t)
 
 }
 
@@ -8379,9 +8334,8 @@ func (self *CDragDataT) SetFragmentText(
 	text string,
 ) {
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	C.cefingo_drag_data_set_fragment_text(self.p_drag_data, (*C.cef_string_t)(c_text))
+	C.cefingo_drag_data_set_fragment_text(self.p_drag_data, c_text.p_cef_string_t)
 
 }
 
@@ -8392,9 +8346,8 @@ func (self *CDragDataT) SetFragmentHtml(
 	html string,
 ) {
 	c_html := create_cef_string(html)
-	defer clear_cef_string(c_html)
 
-	C.cefingo_drag_data_set_fragment_html(self.p_drag_data, (*C.cef_string_t)(c_html))
+	C.cefingo_drag_data_set_fragment_html(self.p_drag_data, c_html.p_cef_string_t)
 
 }
 
@@ -8405,9 +8358,8 @@ func (self *CDragDataT) SetFragmentBaseUrl(
 	base_url string,
 ) {
 	c_base_url := create_cef_string(base_url)
-	defer clear_cef_string(c_base_url)
 
-	C.cefingo_drag_data_set_fragment_base_url(self.p_drag_data, (*C.cef_string_t)(c_base_url))
+	C.cefingo_drag_data_set_fragment_base_url(self.p_drag_data, c_base_url.p_cef_string_t)
 
 }
 
@@ -8430,11 +8382,9 @@ func (self *CDragDataT) AddFile(
 	display_name string,
 ) {
 	c_path := create_cef_string(path)
-	defer clear_cef_string(c_path)
 	c_display_name := create_cef_string(display_name)
-	defer clear_cef_string(c_display_name)
 
-	C.cefingo_drag_data_add_file(self.p_drag_data, (*C.cef_string_t)(c_path), (*C.cef_string_t)(c_display_name))
+	C.cefingo_drag_data_add_file(self.p_drag_data, c_path.p_cef_string_t, c_display_name.p_cef_string_t)
 
 }
 
@@ -8704,7 +8654,7 @@ func (self *CExtensionT) GetIdentifier() (ret string) {
 
 	cRet := C.cefingo_extension_get_identifier(self.p_extension)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -8722,7 +8672,7 @@ func (self *CExtensionT) GetPath() (ret string) {
 
 	cRet := C.cefingo_extension_get_path(self.p_extension)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -9775,9 +9725,8 @@ func (self *CFrameT) LoadUrl(
 	url string,
 ) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 
-	C.cefingo_frame_load_url(self.p_frame, (*C.cef_string_t)(c_url))
+	C.cefingo_frame_load_url(self.p_frame, c_url.p_cef_string_t)
 
 }
 
@@ -9794,11 +9743,9 @@ func (self *CFrameT) ExecuteJavaScript(
 	start_line int,
 ) {
 	c_code := create_cef_string(code)
-	defer clear_cef_string(c_code)
 	c_script_url := create_cef_string(script_url)
-	defer clear_cef_string(c_script_url)
 
-	C.cefingo_frame_execute_java_script(self.p_frame, (*C.cef_string_t)(c_code), (*C.cef_string_t)(c_script_url), (C.int)(start_line))
+	C.cefingo_frame_execute_java_script(self.p_frame, c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line))
 
 }
 
@@ -9836,7 +9783,7 @@ func (self *CFrameT) GetName() (ret string) {
 
 	cRet := C.cefingo_frame_get_name(self.p_frame)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -9876,7 +9823,7 @@ func (self *CFrameT) GetUrl() (ret string) {
 
 	cRet := C.cefingo_frame_get_url(self.p_frame)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -10359,9 +10306,8 @@ func (self *CJsdialogCallbackT) Cont(
 	user_input string,
 ) {
 	c_user_input := create_cef_string(user_input)
-	defer clear_cef_string(c_user_input)
 
-	C.cefingo_jsdialog_callback_cont(self.p_jsdialog_callback, (C.int)(success), (*C.cef_string_t)(c_user_input))
+	C.cefingo_jsdialog_callback_cont(self.p_jsdialog_callback, (C.int)(success), c_user_input.p_cef_string_t)
 
 }
 
@@ -10808,9 +10754,8 @@ func (self *CLabelButtonT) SetText(
 	text string,
 ) {
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	C.cefingo_label_button_set_text(self.p_label_button, (*C.cef_string_t)(c_text))
+	C.cefingo_label_button_set_text(self.p_label_button, c_text.p_cef_string_t)
 
 }
 
@@ -10822,7 +10767,7 @@ func (self *CLabelButtonT) GetText() (ret string) {
 
 	cRet := C.cefingo_label_button_get_text(self.p_label_button)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -10900,9 +10845,8 @@ func (self *CLabelButtonT) SetFontList(
 	font_list string,
 ) {
 	c_font_list := create_cef_string(font_list)
-	defer clear_cef_string(c_font_list)
 
-	C.cefingo_label_button_set_font_list(self.p_label_button, (*C.cef_string_t)(c_font_list))
+	C.cefingo_label_button_set_font_list(self.p_label_button, c_font_list.p_cef_string_t)
 
 }
 
@@ -10955,9 +10899,8 @@ func LabelButtonCreate(
 		BaseAddRef(goTmpdelegate)
 	}
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	cRet := C.cef_label_button_create(goTmpdelegate, (*C.cef_string_t)(c_text))
+	cRet := C.cef_label_button_create(goTmpdelegate, c_text.p_cef_string_t)
 
 	ret = newCLabelButtonT(cRet)
 	return ret
@@ -11660,9 +11603,8 @@ func (self *CMediaRouterT) GetSource(
 	urn string,
 ) (ret *CMediaSourceT) {
 	c_urn := create_cef_string(urn)
-	defer clear_cef_string(c_urn)
 
-	cRet := C.cefingo_media_router_get_source(self.p_media_router, (*C.cef_string_t)(c_urn))
+	cRet := C.cefingo_media_router_get_source(self.p_media_router, c_urn.p_cef_string_t)
 
 	ret = newCMediaSourceT(cRet)
 	return ret
@@ -11982,7 +11924,7 @@ func (self *CMediaRouteT) GetId() (ret string) {
 
 	cRet := C.cefingo_media_route_get_id(self.p_media_route)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -12100,14 +12042,13 @@ func (self *CMediaRouteCreateCallbackT) OnMediaRouteCreateFinished(
 	route *CMediaRouteT,
 ) {
 	c_error := create_cef_string(error)
-	defer clear_cef_string(c_error)
 	var goTmproute *C.cef_media_route_t
 	if route != nil {
 		goTmproute = route.p_media_route
 		BaseAddRef(goTmproute)
 	}
 
-	C.cefingo_media_route_create_callback_on_media_route_create_finished(self.p_media_route_create_callback, (C.cef_media_route_create_result_t)(result), (*C.cef_string_t)(c_error), goTmproute)
+	C.cefingo_media_route_create_callback_on_media_route_create_finished(self.p_media_route_create_callback, (C.cef_media_route_create_result_t)(result), c_error.p_cef_string_t, goTmproute)
 
 }
 
@@ -12172,7 +12113,7 @@ func (self *CMediaSinkT) GetId() (ret string) {
 
 	cRet := C.cefingo_media_sink_get_id(self.p_media_sink)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -12199,7 +12140,7 @@ func (self *CMediaSinkT) GetName() (ret string) {
 
 	cRet := C.cefingo_media_sink_get_name(self.p_media_sink)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -12215,7 +12156,7 @@ func (self *CMediaSinkT) GetDescription() (ret string) {
 
 	cRet := C.cefingo_media_sink_get_description(self.p_media_sink)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -12416,7 +12357,7 @@ func (self *CMediaSourceT) GetId() (ret string) {
 
 	cRet := C.cefingo_media_source_get_id(self.p_media_source)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -12568,9 +12509,8 @@ func MenuButtonCreate(
 		BaseAddRef(goTmpdelegate)
 	}
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	cRet := C.cef_menu_button_create(goTmpdelegate, (*C.cef_string_t)(c_text))
+	cRet := C.cef_menu_button_create(goTmpdelegate, c_text.p_cef_string_t)
 
 	ret = newCMenuButtonT(cRet)
 	return ret
@@ -12953,9 +12893,8 @@ func (self *CMenuModelT) AddItem(
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_add_item(self.p_menu_model, (C.int)(command_id), (*C.cef_string_t)(c_label))
+	cRet := C.cefingo_menu_model_add_item(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -12969,9 +12908,8 @@ func (self *CMenuModelT) AddCheckItem(
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_add_check_item(self.p_menu_model, (C.int)(command_id), (*C.cef_string_t)(c_label))
+	cRet := C.cefingo_menu_model_add_check_item(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -12987,9 +12925,8 @@ func (self *CMenuModelT) AddRadioItem(
 	group_id int,
 ) (ret bool) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_add_radio_item(self.p_menu_model, (C.int)(command_id), (*C.cef_string_t)(c_label), (C.int)(group_id))
+	cRet := C.cefingo_menu_model_add_radio_item(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t, (C.int)(group_id))
 
 	ret = cRet == 1
 	return ret
@@ -13003,9 +12940,8 @@ func (self *CMenuModelT) AddSubMenu(
 	label string,
 ) (ret *CMenuModelT) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_add_sub_menu(self.p_menu_model, (C.int)(command_id), (*C.cef_string_t)(c_label))
+	cRet := C.cefingo_menu_model_add_sub_menu(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = newCMenuModelT(cRet)
 	return ret
@@ -13035,9 +12971,8 @@ func (self *CMenuModelT) InsertItemAt(
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_insert_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), (*C.cef_string_t)(c_label))
+	cRet := C.cefingo_menu_model_insert_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13053,9 +12988,8 @@ func (self *CMenuModelT) InsertCheckItemAt(
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_insert_check_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), (*C.cef_string_t)(c_label))
+	cRet := C.cefingo_menu_model_insert_check_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13073,9 +13007,8 @@ func (self *CMenuModelT) InsertRadioItemAt(
 	group_id int,
 ) (ret bool) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_insert_radio_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), (*C.cef_string_t)(c_label), (C.int)(group_id))
+	cRet := C.cefingo_menu_model_insert_radio_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t, (C.int)(group_id))
 
 	ret = cRet == 1
 	return ret
@@ -13091,9 +13024,8 @@ func (self *CMenuModelT) InsertSubMenuAt(
 	label string,
 ) (ret *CMenuModelT) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_insert_sub_menu_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), (*C.cef_string_t)(c_label))
+	cRet := C.cefingo_menu_model_insert_sub_menu_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = newCMenuModelT(cRet)
 	return ret
@@ -13178,7 +13110,7 @@ func (self *CMenuModelT) GetLabel(
 
 	cRet := C.cefingo_menu_model_get_label(self.p_menu_model, (C.int)(command_id))
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -13197,7 +13129,7 @@ func (self *CMenuModelT) GetLabelAt(
 
 	cRet := C.cefingo_menu_model_get_label_at(self.p_menu_model, (C.int)(index))
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -13213,9 +13145,8 @@ func (self *CMenuModelT) SetLabel(
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_set_label(self.p_menu_model, (C.int)(command_id), (*C.cef_string_t)(c_label))
+	cRet := C.cefingo_menu_model_set_label(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13229,9 +13160,8 @@ func (self *CMenuModelT) SetLabelAt(
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
-	defer clear_cef_string(c_label)
 
-	cRet := C.cefingo_menu_model_set_label_at(self.p_menu_model, (C.int)(index), (*C.cef_string_t)(c_label))
+	cRet := C.cefingo_menu_model_set_label_at(self.p_menu_model, (C.int)(index), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13741,9 +13671,8 @@ func (self *CMenuModelT) SetFontList(
 	font_list string,
 ) (ret bool) {
 	c_font_list := create_cef_string(font_list)
-	defer clear_cef_string(c_font_list)
 
-	cRet := C.cefingo_menu_model_set_font_list(self.p_menu_model, (C.int)(command_id), (*C.cef_string_t)(c_font_list))
+	cRet := C.cefingo_menu_model_set_font_list(self.p_menu_model, (C.int)(command_id), c_font_list.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13767,9 +13696,8 @@ func (self *CMenuModelT) SetFontListAt(
 	font_list string,
 ) (ret bool) {
 	c_font_list := create_cef_string(font_list)
-	defer clear_cef_string(c_font_list)
 
-	cRet := C.cefingo_menu_model_set_font_list_at(self.p_menu_model, (C.int)(index), (*C.cef_string_t)(c_font_list))
+	cRet := C.cefingo_menu_model_set_font_list_at(self.p_menu_model, (C.int)(index), c_font_list.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -14114,7 +14042,7 @@ func (self *CNavigationEntryT) GetUrl() (ret string) {
 
 	cRet := C.cefingo_navigation_entry_get_url(self.p_navigation_entry)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -14130,7 +14058,7 @@ func (self *CNavigationEntryT) GetDisplayUrl() (ret string) {
 
 	cRet := C.cefingo_navigation_entry_get_display_url(self.p_navigation_entry)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -14146,7 +14074,7 @@ func (self *CNavigationEntryT) GetOriginalUrl() (ret string) {
 
 	cRet := C.cefingo_navigation_entry_get_original_url(self.p_navigation_entry)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -14162,7 +14090,7 @@ func (self *CNavigationEntryT) GetTitle() (ret string) {
 
 	cRet := C.cefingo_navigation_entry_get_title(self.p_navigation_entry)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -15137,9 +15065,8 @@ func (self *CPrintSettingsT) SetDeviceName(
 	name string,
 ) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	C.cefingo_print_settings_set_device_name(self.p_print_settings, (*C.cef_string_t)(c_name))
+	C.cefingo_print_settings_set_device_name(self.p_print_settings, c_name.p_cef_string_t)
 
 }
 
@@ -15151,7 +15078,7 @@ func (self *CPrintSettingsT) GetDeviceName() (ret string) {
 
 	cRet := C.cefingo_print_settings_get_device_name(self.p_print_settings)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -15421,7 +15348,7 @@ func (self *CProcessMessageT) GetName() (ret string) {
 
 	cRet := C.cefingo_process_message_get_name(self.p_process_message)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -15447,9 +15374,8 @@ func ProcessMessageCreate(
 	name string,
 ) (ret *CProcessMessageT) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cef_process_message_create((*C.cef_string_t)(c_name))
+	cRet := C.cef_process_message_create(c_name.p_cef_string_t)
 
 	ret = newCProcessMessageT(cRet)
 	return ret
@@ -16455,7 +16381,7 @@ func (self *CRequestT) GetUrl() (ret string) {
 
 	cRet := C.cefingo_request_get_url(self.p_request)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -16470,9 +16396,8 @@ func (self *CRequestT) SetUrl(
 	url string,
 ) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 
-	C.cefingo_request_set_url(self.p_request, (*C.cef_string_t)(c_url))
+	C.cefingo_request_set_url(self.p_request, c_url.p_cef_string_t)
 
 }
 
@@ -16485,7 +16410,7 @@ func (self *CRequestT) GetMethod() (ret string) {
 
 	cRet := C.cefingo_request_get_method(self.p_request)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -16500,9 +16425,8 @@ func (self *CRequestT) SetMethod(
 	method string,
 ) {
 	c_method := create_cef_string(method)
-	defer clear_cef_string(c_method)
 
-	C.cefingo_request_set_method(self.p_request, (*C.cef_string_t)(c_method))
+	C.cefingo_request_set_method(self.p_request, c_method.p_cef_string_t)
 
 }
 
@@ -16516,9 +16440,8 @@ func (self *CRequestT) SetReferrer(
 	policy CReferrerPolicyT,
 ) {
 	c_referrer_url := create_cef_string(referrer_url)
-	defer clear_cef_string(c_referrer_url)
 
-	C.cefingo_request_set_referrer(self.p_request, (*C.cef_string_t)(c_referrer_url), (C.cef_referrer_policy_t)(policy))
+	C.cefingo_request_set_referrer(self.p_request, c_referrer_url.p_cef_string_t, (C.cef_referrer_policy_t)(policy))
 
 }
 
@@ -16530,7 +16453,7 @@ func (self *CRequestT) GetReferrerUrl() (ret string) {
 
 	cRet := C.cefingo_request_get_referrer_url(self.p_request)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -16609,11 +16532,10 @@ func (self *CRequestT) GetHeaderByName(
 	name string,
 ) (ret string) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cefingo_request_get_header_by_name(self.p_request, (*C.cef_string_t)(c_name))
+	cRet := C.cefingo_request_get_header_by_name(self.p_request, c_name.p_cef_string_t)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -16633,11 +16555,9 @@ func (self *CRequestT) SetHeaderByName(
 	overwrite int,
 ) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	C.cefingo_request_set_header_by_name(self.p_request, (*C.cef_string_t)(c_name), (*C.cef_string_t)(c_value), (C.int)(overwrite))
+	C.cefingo_request_set_header_by_name(self.p_request, c_name.p_cef_string_t, c_value.p_cef_string_t, (C.int)(overwrite))
 
 }
 
@@ -16651,16 +16571,14 @@ func (self *CRequestT) Set(
 	headerMap CStringMultimapT,
 ) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 	c_method := create_cef_string(method)
-	defer clear_cef_string(c_method)
 	var goTmppostData *C.cef_post_data_t
 	if postData != nil {
 		goTmppostData = postData.p_post_data
 		BaseAddRef(goTmppostData)
 	}
 
-	C.cefingo_request_set(self.p_request, (*C.cef_string_t)(c_url), (*C.cef_string_t)(c_method), goTmppostData, (C.cef_string_multimap_t)(headerMap))
+	C.cefingo_request_set(self.p_request, c_url.p_cef_string_t, c_method.p_cef_string_t, goTmppostData, (C.cef_string_multimap_t)(headerMap))
 
 }
 
@@ -16697,7 +16615,7 @@ func (self *CRequestT) GetFirstPartyForCookies() (ret string) {
 
 	cRet := C.cefingo_request_get_first_party_for_cookies(self.p_request)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -16713,9 +16631,8 @@ func (self *CRequestT) SetFirstPartyForCookies(
 	url string,
 ) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 
-	C.cefingo_request_set_first_party_for_cookies(self.p_request, (*C.cef_string_t)(c_url))
+	C.cefingo_request_set_first_party_for_cookies(self.p_request, c_url.p_cef_string_t)
 
 }
 
@@ -16992,9 +16909,8 @@ func (self *CPostDataElementT) SetToFile(
 	fileName string,
 ) {
 	c_fileName := create_cef_string(fileName)
-	defer clear_cef_string(c_fileName)
 
-	C.cefingo_post_data_element_set_to_file(self.p_post_data_element, (*C.cef_string_t)(c_fileName))
+	C.cefingo_post_data_element_set_to_file(self.p_post_data_element, c_fileName.p_cef_string_t)
 
 }
 
@@ -17032,7 +16948,7 @@ func (self *CPostDataElementT) GetFile() (ret string) {
 
 	cRet := C.cefingo_post_data_element_get_file(self.p_post_data_element)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -17279,7 +17195,7 @@ func (self *CRequestContextT) GetCachePath() (ret string) {
 
 	cRet := C.cefingo_request_context_get_cache_path(self.p_request_context)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -17326,16 +17242,14 @@ func (self *CRequestContextT) RegisterSchemeHandlerFactory(
 	factory *CSchemeHandlerFactoryT,
 ) (ret bool) {
 	c_scheme_name := create_cef_string(scheme_name)
-	defer clear_cef_string(c_scheme_name)
 	c_domain_name := create_cef_string(domain_name)
-	defer clear_cef_string(c_domain_name)
 	var goTmpfactory *C.cef_scheme_handler_factory_t
 	if factory != nil {
 		goTmpfactory = factory.p_scheme_handler_factory
 		BaseAddRef(goTmpfactory)
 	}
 
-	cRet := C.cefingo_request_context_register_scheme_handler_factory(self.p_request_context, (*C.cef_string_t)(c_scheme_name), (*C.cef_string_t)(c_domain_name), goTmpfactory)
+	cRet := C.cefingo_request_context_register_scheme_handler_factory(self.p_request_context, c_scheme_name.p_cef_string_t, c_domain_name.p_cef_string_t, goTmpfactory)
 
 	ret = cRet == 1
 	return ret
@@ -17376,9 +17290,8 @@ func (self *CRequestContextT) HasPreference(
 	name string,
 ) (ret bool) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cefingo_request_context_has_preference(self.p_request_context, (*C.cef_string_t)(c_name))
+	cRet := C.cefingo_request_context_has_preference(self.p_request_context, c_name.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -17395,9 +17308,8 @@ func (self *CRequestContextT) GetPreference(
 	name string,
 ) (ret *CValueT) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cefingo_request_context_get_preference(self.p_request_context, (*C.cef_string_t)(c_name))
+	cRet := C.cefingo_request_context_get_preference(self.p_request_context, c_name.p_cef_string_t)
 
 	ret = newCValueT(cRet)
 	return ret
@@ -17431,9 +17343,8 @@ func (self *CRequestContextT) CanSetPreference(
 	name string,
 ) (ret bool) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cefingo_request_context_can_set_preference(self.p_request_context, (*C.cef_string_t)(c_name))
+	cRet := C.cefingo_request_context_can_set_preference(self.p_request_context, c_name.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -17451,18 +17362,16 @@ func (self *CRequestContextT) SetPreference(
 	value *CValueT,
 ) (ret bool, error string) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 	var goTmpvalue *C.cef_value_t
 	if value != nil {
 		goTmpvalue = value.p_value
 		BaseAddRef(goTmpvalue)
 	}
 	tmpc_error := create_cef_string("")
-	defer clear_cef_string(tmpc_error)
 
-	cRet := C.cefingo_request_context_set_preference(self.p_request_context, (*C.cef_string_t)(c_name), goTmpvalue, tmpc_error)
+	cRet := C.cefingo_request_context_set_preference(self.p_request_context, c_name.p_cef_string_t, goTmpvalue, tmpc_error.p_cef_string_t)
 
-	error = string_from_cef_string(tmpc_error)
+	error = string_from_cef_string(tmpc_error.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, error
@@ -17535,14 +17444,13 @@ func (self *CRequestContextT) ResolveHost(
 	callback *CResolveCallbackT,
 ) {
 	c_origin := create_cef_string(origin)
-	defer clear_cef_string(c_origin)
 	var goTmpcallback *C.cef_resolve_callback_t
 	if callback != nil {
 		goTmpcallback = callback.p_resolve_callback
 		BaseAddRef(goTmpcallback)
 	}
 
-	C.cefingo_request_context_resolve_host(self.p_request_context, (*C.cef_string_t)(c_origin), goTmpcallback)
+	C.cefingo_request_context_resolve_host(self.p_request_context, c_origin.p_cef_string_t, goTmpcallback)
 
 }
 
@@ -17600,7 +17508,6 @@ func (self *CRequestContextT) LoadExtension(
 	handler *CExtensionHandlerT,
 ) {
 	c_root_directory := create_cef_string(root_directory)
-	defer clear_cef_string(c_root_directory)
 	var goTmpmanifest *C.cef_dictionary_value_t
 	if manifest != nil {
 		goTmpmanifest = manifest.p_dictionary_value
@@ -17612,7 +17519,7 @@ func (self *CRequestContextT) LoadExtension(
 		BaseAddRef(goTmphandler)
 	}
 
-	C.cefingo_request_context_load_extension(self.p_request_context, (*C.cef_string_t)(c_root_directory), goTmpmanifest, goTmphandler)
+	C.cefingo_request_context_load_extension(self.p_request_context, c_root_directory.p_cef_string_t, goTmpmanifest, goTmphandler)
 
 }
 
@@ -17626,9 +17533,8 @@ func (self *CRequestContextT) DidLoadExtension(
 	extension_id string,
 ) (ret bool) {
 	c_extension_id := create_cef_string(extension_id)
-	defer clear_cef_string(c_extension_id)
 
-	cRet := C.cefingo_request_context_did_load_extension(self.p_request_context, (*C.cef_string_t)(c_extension_id))
+	cRet := C.cefingo_request_context_did_load_extension(self.p_request_context, c_extension_id.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -17644,9 +17550,8 @@ func (self *CRequestContextT) HasExtension(
 	extension_id string,
 ) (ret bool) {
 	c_extension_id := create_cef_string(extension_id)
-	defer clear_cef_string(c_extension_id)
 
-	cRet := C.cefingo_request_context_has_extension(self.p_request_context, (*C.cef_string_t)(c_extension_id))
+	cRet := C.cefingo_request_context_has_extension(self.p_request_context, c_extension_id.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -17677,9 +17582,8 @@ func (self *CRequestContextT) GetExtension(
 	extension_id string,
 ) (ret *CExtensionT) {
 	c_extension_id := create_cef_string(extension_id)
-	defer clear_cef_string(c_extension_id)
 
-	cRet := C.cefingo_request_context_get_extension(self.p_request_context, (*C.cef_string_t)(c_extension_id))
+	cRet := C.cefingo_request_context_get_extension(self.p_request_context, c_extension_id.p_cef_string_t)
 
 	ret = newCExtensionT(cRet)
 	return ret
@@ -19645,7 +19549,7 @@ func (self *CResponseT) GetStatusText() (ret string) {
 
 	cRet := C.cefingo_response_get_status_text(self.p_response)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -19660,9 +19564,8 @@ func (self *CResponseT) SetStatusText(
 	statusText string,
 ) {
 	c_statusText := create_cef_string(statusText)
-	defer clear_cef_string(c_statusText)
 
-	C.cefingo_response_set_status_text(self.p_response, (*C.cef_string_t)(c_statusText))
+	C.cefingo_response_set_status_text(self.p_response, c_statusText.p_cef_string_t)
 
 }
 
@@ -19674,7 +19577,7 @@ func (self *CResponseT) GetMimeType() (ret string) {
 
 	cRet := C.cefingo_response_get_mime_type(self.p_response)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -19689,9 +19592,8 @@ func (self *CResponseT) SetMimeType(
 	mimeType string,
 ) {
 	c_mimeType := create_cef_string(mimeType)
-	defer clear_cef_string(c_mimeType)
 
-	C.cefingo_response_set_mime_type(self.p_response, (*C.cef_string_t)(c_mimeType))
+	C.cefingo_response_set_mime_type(self.p_response, c_mimeType.p_cef_string_t)
 
 }
 
@@ -19703,7 +19605,7 @@ func (self *CResponseT) GetCharset() (ret string) {
 
 	cRet := C.cefingo_response_get_charset(self.p_response)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -19718,9 +19620,8 @@ func (self *CResponseT) SetCharset(
 	charset string,
 ) {
 	c_charset := create_cef_string(charset)
-	defer clear_cef_string(c_charset)
 
-	C.cefingo_response_set_charset(self.p_response, (*C.cef_string_t)(c_charset))
+	C.cefingo_response_set_charset(self.p_response, c_charset.p_cef_string_t)
 
 }
 
@@ -19732,11 +19633,10 @@ func (self *CResponseT) GetHeaderByName(
 	name string,
 ) (ret string) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	cRet := C.cefingo_response_get_header_by_name(self.p_response, (*C.cef_string_t)(c_name))
+	cRet := C.cefingo_response_get_header_by_name(self.p_response, c_name.p_cef_string_t)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -19755,11 +19655,9 @@ func (self *CResponseT) SetHeaderByName(
 	overwrite int,
 ) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	C.cefingo_response_set_header_by_name(self.p_response, (*C.cef_string_t)(c_name), (*C.cef_string_t)(c_value), (C.int)(overwrite))
+	C.cefingo_response_set_header_by_name(self.p_response, c_name.p_cef_string_t, c_value.p_cef_string_t, (C.int)(overwrite))
 
 }
 
@@ -19793,7 +19691,7 @@ func (self *CResponseT) GetUrl() (ret string) {
 
 	cRet := C.cefingo_response_get_url(self.p_response)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -19808,9 +19706,8 @@ func (self *CResponseT) SetUrl(
 	url string,
 ) {
 	c_url := create_cef_string(url)
-	defer clear_cef_string(c_url)
 
-	C.cefingo_response_set_url(self.p_response, (*C.cef_string_t)(c_url))
+	C.cefingo_response_set_url(self.p_response, c_url.p_cef_string_t)
 
 }
 
@@ -20053,9 +19950,8 @@ func (self *CSchemeRegistrarT) AddCustomScheme(
 	options int,
 ) (ret bool) {
 	c_scheme_name := create_cef_string(scheme_name)
-	defer clear_cef_string(c_scheme_name)
 
-	cRet := C.cefingo_scheme_registrar_add_custom_scheme(self.p_scheme_registrar, (*C.cef_string_t)(c_scheme_name), (C.int)(options))
+	cRet := C.cefingo_scheme_registrar_add_custom_scheme(self.p_scheme_registrar, c_scheme_name.p_cef_string_t, (C.int)(options))
 
 	ret = cRet == 1
 	return ret
@@ -20216,16 +20112,14 @@ func RegisterSchemeHandlerFactory(
 	factory *CSchemeHandlerFactoryT,
 ) (ret bool) {
 	c_scheme_name := create_cef_string(scheme_name)
-	defer clear_cef_string(c_scheme_name)
 	c_domain_name := create_cef_string(domain_name)
-	defer clear_cef_string(c_domain_name)
 	var goTmpfactory *C.cef_scheme_handler_factory_t
 	if factory != nil {
 		goTmpfactory = factory.p_scheme_handler_factory
 		BaseAddRef(goTmpfactory)
 	}
 
-	cRet := C.cef_register_scheme_handler_factory((*C.cef_string_t)(c_scheme_name), (*C.cef_string_t)(c_domain_name), goTmpfactory)
+	cRet := C.cef_register_scheme_handler_factory(c_scheme_name.p_cef_string_t, c_domain_name.p_cef_string_t, goTmpfactory)
 
 	ret = cRet == 1
 	return ret
@@ -20931,9 +20825,8 @@ func StreamReaderCreateForFile(
 	fileName string,
 ) (ret *CStreamReaderT) {
 	c_fileName := create_cef_string(fileName)
-	defer clear_cef_string(c_fileName)
 
-	cRet := C.cef_stream_reader_create_for_file((*C.cef_string_t)(c_fileName))
+	cRet := C.cef_stream_reader_create_for_file(c_fileName.p_cef_string_t)
 
 	ret = newCStreamReaderT(cRet)
 	return ret
@@ -21297,9 +21190,8 @@ func StreamWriterCreateForFile(
 	fileName string,
 ) (ret *CStreamWriterT) {
 	c_fileName := create_cef_string(fileName)
-	defer clear_cef_string(c_fileName)
 
-	cRet := C.cef_stream_writer_create_for_file((*C.cef_string_t)(c_fileName))
+	cRet := C.cef_stream_writer_create_for_file(c_fileName.p_cef_string_t)
 
 	ret = newCStreamWriterT(cRet)
 	return ret
@@ -21914,7 +21806,7 @@ func (self *CTextfieldT) GetText() (ret string) {
 
 	cRet := C.cefingo_textfield_get_text(self.p_textfield)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -21930,9 +21822,8 @@ func (self *CTextfieldT) SetText(
 	text string,
 ) {
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	C.cefingo_textfield_set_text(self.p_textfield, (*C.cef_string_t)(c_text))
+	C.cefingo_textfield_set_text(self.p_textfield, c_text.p_cef_string_t)
 
 }
 
@@ -21943,9 +21834,8 @@ func (self *CTextfieldT) AppendText(
 	text string,
 ) {
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	C.cefingo_textfield_append_text(self.p_textfield, (*C.cef_string_t)(c_text))
+	C.cefingo_textfield_append_text(self.p_textfield, c_text.p_cef_string_t)
 
 }
 
@@ -21956,9 +21846,8 @@ func (self *CTextfieldT) InsertOrReplaceText(
 	text string,
 ) {
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	C.cefingo_textfield_insert_or_replace_text(self.p_textfield, (*C.cef_string_t)(c_text))
+	C.cefingo_textfield_insert_or_replace_text(self.p_textfield, c_text.p_cef_string_t)
 
 }
 
@@ -21981,7 +21870,7 @@ func (self *CTextfieldT) GetSelectedText() (ret string) {
 
 	cRet := C.cefingo_textfield_get_selected_text(self.p_textfield)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -22124,9 +22013,8 @@ func (self *CTextfieldT) SetFontList(
 	font_list string,
 ) {
 	c_font_list := create_cef_string(font_list)
-	defer clear_cef_string(c_font_list)
 
-	C.cefingo_textfield_set_font_list(self.p_textfield, (*C.cef_string_t)(c_font_list))
+	C.cefingo_textfield_set_font_list(self.p_textfield, c_font_list.p_cef_string_t)
 
 }
 
@@ -22202,9 +22090,8 @@ func (self *CTextfieldT) SetPlaceholderText(
 	text string,
 ) {
 	c_text := create_cef_string(text)
-	defer clear_cef_string(c_text)
 
-	C.cefingo_textfield_set_placeholder_text(self.p_textfield, (*C.cef_string_t)(c_text))
+	C.cefingo_textfield_set_placeholder_text(self.p_textfield, c_text.p_cef_string_t)
 
 }
 
@@ -22217,7 +22104,7 @@ func (self *CTextfieldT) GetPlaceholderText() (ret string) {
 
 	cRet := C.cefingo_textfield_get_placeholder_text(self.p_textfield)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -22243,9 +22130,8 @@ func (self *CTextfieldT) SetAccessibleName(
 	name string,
 ) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 
-	C.cefingo_textfield_set_accessible_name(self.p_textfield, (*C.cef_string_t)(c_name))
+	C.cefingo_textfield_set_accessible_name(self.p_textfield, c_name.p_cef_string_t)
 
 }
 
@@ -23074,13 +22960,11 @@ func (self *CV8contextT) Eval(
 	start_line int,
 ) (ret bool, retval *CV8valueT, exception *CV8exceptionT) {
 	c_code := create_cef_string(code)
-	defer clear_cef_string(c_code)
 	c_script_url := create_cef_string(script_url)
-	defer clear_cef_string(c_script_url)
 	var tmpretval *C.cef_v8value_t
 	var tmpexception *C.cef_v8exception_t
 
-	cRet := C.cefingo_v8context_eval(self.p_v8context, (*C.cef_string_t)(c_code), (*C.cef_string_t)(c_script_url), (C.int)(start_line), &tmpretval, &tmpexception)
+	cRet := C.cefingo_v8context_eval(self.p_v8context, c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line), &tmpretval, &tmpexception)
 
 	retval = newCV8valueT(tmpretval)
 	exception = newCV8exceptionT(tmpexception)
@@ -23480,7 +23364,6 @@ func (self *CV8interceptorT) GetByname(
 	object *CV8valueT,
 ) (ret bool, retval *CV8valueT, exception string) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 	var goTmpobject *C.cef_v8value_t
 	if object != nil {
 		goTmpobject = object.p_v8value
@@ -23488,12 +23371,11 @@ func (self *CV8interceptorT) GetByname(
 	}
 	var tmpretval *C.cef_v8value_t
 	tmpc_exception := create_cef_string("")
-	defer clear_cef_string(tmpc_exception)
 
-	cRet := C.cefingo_v8interceptor_get_byname(self.p_v8interceptor, (*C.cef_string_t)(c_name), goTmpobject, &tmpretval, tmpc_exception)
+	cRet := C.cefingo_v8interceptor_get_byname(self.p_v8interceptor, c_name.p_cef_string_t, goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
 
 	retval = newCV8valueT(tmpretval)
-	exception = string_from_cef_string(tmpc_exception)
+	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, retval, exception
@@ -23518,12 +23400,11 @@ func (self *CV8interceptorT) GetByindex(
 	}
 	var tmpretval *C.cef_v8value_t
 	tmpc_exception := create_cef_string("")
-	defer clear_cef_string(tmpc_exception)
 
-	cRet := C.cefingo_v8interceptor_get_byindex(self.p_v8interceptor, (C.int)(index), goTmpobject, &tmpretval, tmpc_exception)
+	cRet := C.cefingo_v8interceptor_get_byindex(self.p_v8interceptor, (C.int)(index), goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
 
 	retval = newCV8valueT(tmpretval)
-	exception = string_from_cef_string(tmpc_exception)
+	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, retval, exception
@@ -23543,7 +23424,6 @@ func (self *CV8interceptorT) SetByname(
 	value *CV8valueT,
 ) (ret bool, exception string) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 	var goTmpobject *C.cef_v8value_t
 	if object != nil {
 		goTmpobject = object.p_v8value
@@ -23555,11 +23435,10 @@ func (self *CV8interceptorT) SetByname(
 		BaseAddRef(goTmpvalue)
 	}
 	tmpc_exception := create_cef_string("")
-	defer clear_cef_string(tmpc_exception)
 
-	cRet := C.cefingo_v8interceptor_set_byname(self.p_v8interceptor, (*C.cef_string_t)(c_name), goTmpobject, goTmpvalue, tmpc_exception)
+	cRet := C.cefingo_v8interceptor_set_byname(self.p_v8interceptor, c_name.p_cef_string_t, goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t)
 
-	exception = string_from_cef_string(tmpc_exception)
+	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, exception
@@ -23588,11 +23467,10 @@ func (self *CV8interceptorT) SetByindex(
 		BaseAddRef(goTmpvalue)
 	}
 	tmpc_exception := create_cef_string("")
-	defer clear_cef_string(tmpc_exception)
 
-	cRet := C.cefingo_v8interceptor_set_byindex(self.p_v8interceptor, (C.int)(index), goTmpobject, goTmpvalue, tmpc_exception)
+	cRet := C.cefingo_v8interceptor_set_byindex(self.p_v8interceptor, (C.int)(index), goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t)
 
-	exception = string_from_cef_string(tmpc_exception)
+	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, exception
@@ -23658,7 +23536,7 @@ func (self *CV8exceptionT) GetMessage() (ret string) {
 
 	cRet := C.cefingo_v8exception_get_message(self.p_v8exception)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -23674,7 +23552,7 @@ func (self *CV8exceptionT) GetSourceLine() (ret string) {
 
 	cRet := C.cefingo_v8exception_get_source_line(self.p_v8exception)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -23691,7 +23569,7 @@ func (self *CV8exceptionT) GetScriptResourceName() (ret string) {
 
 	cRet := C.cefingo_v8exception_get_script_resource_name(self.p_v8exception)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -24167,7 +24045,7 @@ func (self *CV8valueT) GetStringValue() (ret string) {
 
 	cRet := C.cefingo_v8value_get_string_value(self.p_v8value)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -24257,9 +24135,8 @@ func (self *CV8valueT) HasValueBykey(
 	key string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_v8value_has_value_bykey(self.p_v8value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_v8value_has_value_bykey(self.p_v8value, c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -24288,9 +24165,8 @@ func (self *CV8valueT) DeleteValueBykey(
 	key string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_v8value_delete_value_bykey(self.p_v8value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_v8value_delete_value_bykey(self.p_v8value, c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -24320,9 +24196,8 @@ func (self *CV8valueT) GetValueBykey(
 	key string,
 ) (ret *CV8valueT) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_v8value_get_value_bykey(self.p_v8value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_v8value_get_value_bykey(self.p_v8value, c_key.p_cef_string_t)
 
 	ret = newCV8valueT(cRet)
 	return ret
@@ -24354,14 +24229,13 @@ func (self *CV8valueT) SetValueBykey(
 	attribute CV8PropertyattributeT,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	var goTmpvalue *C.cef_v8value_t
 	if value != nil {
 		goTmpvalue = value.p_v8value
 		BaseAddRef(goTmpvalue)
 	}
 
-	cRet := C.cefingo_v8value_set_value_bykey(self.p_v8value, (*C.cef_string_t)(c_key), goTmpvalue, (C.cef_v8_propertyattribute_t)(attribute))
+	cRet := C.cefingo_v8value_set_value_bykey(self.p_v8value, c_key.p_cef_string_t, goTmpvalue, (C.cef_v8_propertyattribute_t)(attribute))
 
 	ret = cRet == 1
 	return ret
@@ -24402,9 +24276,8 @@ func (self *CV8valueT) SetValueByaccessor(
 	attribute CV8PropertyattributeT,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_v8value_set_value_byaccessor(self.p_v8value, (*C.cef_string_t)(c_key), (C.cef_v8_accesscontrol_t)(settings), (C.cef_v8_propertyattribute_t)(attribute))
+	cRet := C.cefingo_v8value_set_value_byaccessor(self.p_v8value, c_key.p_cef_string_t, (C.cef_v8_accesscontrol_t)(settings), (C.cef_v8_propertyattribute_t)(attribute))
 
 	ret = cRet == 1
 	return ret
@@ -24503,7 +24376,7 @@ func (self *CV8valueT) GetFunctionName() (ret string) {
 
 	cRet := C.cefingo_v8value_get_function_name(self.p_v8value)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -24696,9 +24569,8 @@ func V8valueCreateString(
 	value string,
 ) (ret *CV8valueT) {
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	cRet := C.cef_v8value_create_string((*C.cef_string_t)(c_value))
+	cRet := C.cef_v8value_create_string(c_value.p_cef_string_t)
 
 	ret = newCV8valueT(cRet)
 	return ret
@@ -24788,14 +24660,13 @@ func V8valueCreateFunction(
 	handler *CV8handlerT,
 ) (ret *CV8valueT) {
 	c_name := create_cef_string(name)
-	defer clear_cef_string(c_name)
 	var goTmphandler *C.cef_v8handler_t
 	if handler != nil {
 		goTmphandler = handler.p_v8handler
 		BaseAddRef(goTmphandler)
 	}
 
-	cRet := C.cef_v8value_create_function((*C.cef_string_t)(c_name), goTmphandler)
+	cRet := C.cef_v8value_create_function(c_name.p_cef_string_t, goTmphandler)
 
 	ret = newCV8valueT(cRet)
 	return ret
@@ -24983,7 +24854,7 @@ func (self *CV8stackFrameT) GetScriptName() (ret string) {
 
 	cRet := C.cefingo_v8stack_frame_get_script_name(self.p_v8stack_frame)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -25001,7 +24872,7 @@ func (self *CV8stackFrameT) GetScriptNameOrSourceUrl() (ret string) {
 
 	cRet := C.cefingo_v8stack_frame_get_script_name_or_source_url(self.p_v8stack_frame)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -25017,7 +24888,7 @@ func (self *CV8stackFrameT) GetFunctionName() (ret string) {
 
 	cRet := C.cefingo_v8stack_frame_get_function_name(self.p_v8stack_frame)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -25132,16 +25003,14 @@ func RegisterExtension(
 	handler *CV8handlerT,
 ) (ret bool) {
 	c_extension_name := create_cef_string(extension_name)
-	defer clear_cef_string(c_extension_name)
 	c_javascript_code := create_cef_string(javascript_code)
-	defer clear_cef_string(c_javascript_code)
 	var goTmphandler *C.cef_v8handler_t
 	if handler != nil {
 		goTmphandler = handler.p_v8handler
 		BaseAddRef(goTmphandler)
 	}
 
-	cRet := C.cef_register_extension((*C.cef_string_t)(c_extension_name), (*C.cef_string_t)(c_javascript_code), goTmphandler)
+	cRet := C.cef_register_extension(c_extension_name.p_cef_string_t, c_javascript_code.p_cef_string_t, goTmphandler)
 
 	ret = cRet == 1
 	return ret
@@ -25343,7 +25212,7 @@ func (self *CValueT) GetString() (ret string) {
 
 	cRet := C.cefingo_value_get_string(self.p_value)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -25465,9 +25334,8 @@ func (self *CValueT) SetString(
 	value string,
 ) (ret bool) {
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	cRet := C.cefingo_value_set_string(self.p_value, (*C.cef_string_t)(c_value))
+	cRet := C.cefingo_value_set_string(self.p_value, c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -25884,9 +25752,8 @@ func (self *CDictionaryValueT) HasKey(
 	key string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_has_key(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_has_key(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -25913,9 +25780,8 @@ func (self *CDictionaryValueT) Remove(
 	key string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_remove(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_remove(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -25928,9 +25794,8 @@ func (self *CDictionaryValueT) GetType(
 	key string,
 ) (ret CValueTypeT) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_type(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_type(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = CValueTypeT(cRet)
 	return ret
@@ -25947,9 +25812,8 @@ func (self *CDictionaryValueT) GetValue(
 	key string,
 ) (ret *CValueT) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_value(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_value(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = newCValueT(cRet)
 	return ret
@@ -25962,9 +25826,8 @@ func (self *CDictionaryValueT) GetBool(
 	key string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_bool(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_bool(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -25977,9 +25840,8 @@ func (self *CDictionaryValueT) GetInt(
 	key string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_int(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_int(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -25992,9 +25854,8 @@ func (self *CDictionaryValueT) GetDouble(
 	key string,
 ) (ret float64) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_double(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_double(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = (float64)(cRet)
 	return ret
@@ -26008,11 +25869,10 @@ func (self *CDictionaryValueT) GetString(
 	key string,
 ) (ret string) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_string(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_string(self.p_dictionary_value, c_key.p_cef_string_t)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -26028,9 +25888,8 @@ func (self *CDictionaryValueT) GetBinary(
 	key string,
 ) (ret *CBinaryValueT) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_binary(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_binary(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = newCBinaryValueT(cRet)
 	return ret
@@ -26045,9 +25904,8 @@ func (self *CDictionaryValueT) GetDictionary(
 	key string,
 ) (ret *CDictionaryValueT) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_dictionary(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_dictionary(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = newCDictionaryValueT(cRet)
 	return ret
@@ -26062,9 +25920,8 @@ func (self *CDictionaryValueT) GetList(
 	key string,
 ) (ret *CListValueT) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_get_list(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_get_list(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = newCListValueT(cRet)
 	return ret
@@ -26083,14 +25940,13 @@ func (self *CDictionaryValueT) SetValue(
 	value *CValueT,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	var goTmpvalue *C.cef_value_t
 	if value != nil {
 		goTmpvalue = value.p_value
 		BaseAddRef(goTmpvalue)
 	}
 
-	cRet := C.cefingo_dictionary_value_set_value(self.p_dictionary_value, (*C.cef_string_t)(c_key), goTmpvalue)
+	cRet := C.cefingo_dictionary_value_set_value(self.p_dictionary_value, c_key.p_cef_string_t, goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26104,9 +25960,8 @@ func (self *CDictionaryValueT) SetNull(
 	key string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_set_null(self.p_dictionary_value, (*C.cef_string_t)(c_key))
+	cRet := C.cefingo_dictionary_value_set_null(self.p_dictionary_value, c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26121,13 +25976,12 @@ func (self *CDictionaryValueT) SetBool(
 	value bool,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	var tmpvalue int
 	if value {
 		tmpvalue = 1
 	}
 
-	cRet := C.cefingo_dictionary_value_set_bool(self.p_dictionary_value, (*C.cef_string_t)(c_key), C.int(tmpvalue))
+	cRet := C.cefingo_dictionary_value_set_bool(self.p_dictionary_value, c_key.p_cef_string_t, C.int(tmpvalue))
 
 	ret = cRet == 1
 	return ret
@@ -26142,9 +25996,8 @@ func (self *CDictionaryValueT) SetInt(
 	value int,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_set_int(self.p_dictionary_value, (*C.cef_string_t)(c_key), (C.int)(value))
+	cRet := C.cefingo_dictionary_value_set_int(self.p_dictionary_value, c_key.p_cef_string_t, (C.int)(value))
 
 	ret = cRet == 1
 	return ret
@@ -26159,9 +26012,8 @@ func (self *CDictionaryValueT) SetDouble(
 	value float64,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cefingo_dictionary_value_set_double(self.p_dictionary_value, (*C.cef_string_t)(c_key), (C.double)(value))
+	cRet := C.cefingo_dictionary_value_set_double(self.p_dictionary_value, c_key.p_cef_string_t, (C.double)(value))
 
 	ret = cRet == 1
 	return ret
@@ -26176,11 +26028,9 @@ func (self *CDictionaryValueT) SetString(
 	value string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	cRet := C.cefingo_dictionary_value_set_string(self.p_dictionary_value, (*C.cef_string_t)(c_key), (*C.cef_string_t)(c_value))
+	cRet := C.cefingo_dictionary_value_set_string(self.p_dictionary_value, c_key.p_cef_string_t, c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26198,14 +26048,13 @@ func (self *CDictionaryValueT) SetBinary(
 	value *CBinaryValueT,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	var goTmpvalue *C.cef_binary_value_t
 	if value != nil {
 		goTmpvalue = value.p_binary_value
 		BaseAddRef(goTmpvalue)
 	}
 
-	cRet := C.cefingo_dictionary_value_set_binary(self.p_dictionary_value, (*C.cef_string_t)(c_key), goTmpvalue)
+	cRet := C.cefingo_dictionary_value_set_binary(self.p_dictionary_value, c_key.p_cef_string_t, goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26223,14 +26072,13 @@ func (self *CDictionaryValueT) SetDictionary(
 	value *CDictionaryValueT,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	var goTmpvalue *C.cef_dictionary_value_t
 	if value != nil {
 		goTmpvalue = value.p_dictionary_value
 		BaseAddRef(goTmpvalue)
 	}
 
-	cRet := C.cefingo_dictionary_value_set_dictionary(self.p_dictionary_value, (*C.cef_string_t)(c_key), goTmpvalue)
+	cRet := C.cefingo_dictionary_value_set_dictionary(self.p_dictionary_value, c_key.p_cef_string_t, goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26248,14 +26096,13 @@ func (self *CDictionaryValueT) SetList(
 	value *CListValueT,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	var goTmpvalue *C.cef_list_value_t
 	if value != nil {
 		goTmpvalue = value.p_list_value
 		BaseAddRef(goTmpvalue)
 	}
 
-	cRet := C.cefingo_dictionary_value_set_list(self.p_dictionary_value, (*C.cef_string_t)(c_key), goTmpvalue)
+	cRet := C.cefingo_dictionary_value_set_list(self.p_dictionary_value, c_key.p_cef_string_t, goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26538,7 +26385,7 @@ func (self *CListValueT) GetString(
 
 	cRet := C.cefingo_list_value_get_string(self.p_list_value, (C.size_t)(index))
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -26686,9 +26533,8 @@ func (self *CListValueT) SetString(
 	value string,
 ) (ret bool) {
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	cRet := C.cefingo_list_value_set_string(self.p_list_value, (C.size_t)(index), (*C.cef_string_t)(c_value))
+	cRet := C.cefingo_list_value_set_string(self.p_list_value, (C.size_t)(index), c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26894,7 +26740,7 @@ func (self *CViewT) GetTypeString() (ret string) {
 
 	cRet := C.cefingo_view_get_type_string(self.p_view)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -26915,7 +26761,7 @@ func (self *CViewT) ToString(
 
 	cRet := C.cefingo_view_to_string(self.p_view, (C.int)(include_children))
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -27790,7 +27636,7 @@ func (self *CWebPluginInfoT) GetName() (ret string) {
 
 	cRet := C.cefingo_web_plugin_info_get_name(self.p_web_plugin_info)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -27806,7 +27652,7 @@ func (self *CWebPluginInfoT) GetPath() (ret string) {
 
 	cRet := C.cefingo_web_plugin_info_get_path(self.p_web_plugin_info)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -27822,7 +27668,7 @@ func (self *CWebPluginInfoT) GetVersion() (ret string) {
 
 	cRet := C.cefingo_web_plugin_info_get_version(self.p_web_plugin_info)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -27838,7 +27684,7 @@ func (self *CWebPluginInfoT) GetDescription() (ret string) {
 
 	cRet := C.cefingo_web_plugin_info_get_description(self.p_web_plugin_info)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -28271,9 +28117,8 @@ func UnregisterInternalWebPlugin(
 	path string,
 ) {
 	c_path := create_cef_string(path)
-	defer clear_cef_string(c_path)
 
-	C.cef_unregister_internal_web_plugin((*C.cef_string_t)(c_path))
+	C.cef_unregister_internal_web_plugin(c_path.p_cef_string_t)
 
 }
 
@@ -28285,9 +28130,8 @@ func RegisterWebPluginCrash(
 	path string,
 ) {
 	c_path := create_cef_string(path)
-	defer clear_cef_string(c_path)
 
-	C.cef_register_web_plugin_crash((*C.cef_string_t)(c_path))
+	C.cef_register_web_plugin_crash(c_path.p_cef_string_t)
 
 }
 
@@ -28300,14 +28144,13 @@ func IsWebPluginUnstable(
 	callback *CWebPluginUnstableCallbackT,
 ) {
 	c_path := create_cef_string(path)
-	defer clear_cef_string(c_path)
 	var goTmpcallback *C.cef_web_plugin_unstable_callback_t
 	if callback != nil {
 		goTmpcallback = callback.p_web_plugin_unstable_callback
 		BaseAddRef(goTmpcallback)
 	}
 
-	C.cef_is_web_plugin_unstable((*C.cef_string_t)(c_path), goTmpcallback)
+	C.cef_is_web_plugin_unstable(c_path.p_cef_string_t, goTmpcallback)
 
 }
 
@@ -28358,14 +28201,13 @@ func RegisterWidevineCdm(
 	callback *CRegisterCdmCallbackT,
 ) {
 	c_path := create_cef_string(path)
-	defer clear_cef_string(c_path)
 	var goTmpcallback *C.cef_register_cdm_callback_t
 	if callback != nil {
 		goTmpcallback = callback.p_register_cdm_callback
 		BaseAddRef(goTmpcallback)
 	}
 
-	C.cef_register_widevine_cdm((*C.cef_string_t)(c_path), goTmpcallback)
+	C.cef_register_widevine_cdm(c_path.p_cef_string_t, goTmpcallback)
 
 }
 
@@ -28620,9 +28462,8 @@ func (self *CWindowT) SetTitle(
 	title string,
 ) {
 	c_title := create_cef_string(title)
-	defer clear_cef_string(c_title)
 
-	C.cefingo_window_set_title(self.p_window, (*C.cef_string_t)(c_title))
+	C.cefingo_window_set_title(self.p_window, c_title.p_cef_string_t)
 
 }
 
@@ -28634,7 +28475,7 @@ func (self *CWindowT) GetTitle() (ret string) {
 
 	cRet := C.cefingo_window_get_title(self.p_window)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -29322,7 +29163,7 @@ func (self *CX509certPrincipalT) GetDisplayName() (ret string) {
 
 	cRet := C.cefingo_x509cert_principal_get_display_name(self.p_x509cert_principal)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -29338,7 +29179,7 @@ func (self *CX509certPrincipalT) GetCommonName() (ret string) {
 
 	cRet := C.cefingo_x509cert_principal_get_common_name(self.p_x509cert_principal)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -29354,7 +29195,7 @@ func (self *CX509certPrincipalT) GetLocalityName() (ret string) {
 
 	cRet := C.cefingo_x509cert_principal_get_locality_name(self.p_x509cert_principal)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -29370,7 +29211,7 @@ func (self *CX509certPrincipalT) GetStateOrProvinceName() (ret string) {
 
 	cRet := C.cefingo_x509cert_principal_get_state_or_province_name(self.p_x509cert_principal)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}
@@ -29386,7 +29227,7 @@ func (self *CX509certPrincipalT) GetCountryName() (ret string) {
 
 	cRet := C.cefingo_x509cert_principal_get_country_name(self.p_x509cert_principal)
 
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}

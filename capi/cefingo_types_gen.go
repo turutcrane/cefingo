@@ -53,11 +53,10 @@ func StringListValue(
 	index int64,
 ) (ret bool, value string) {
 	tmpc_value := create_cef_string("")
-	defer clear_cef_string(tmpc_value)
 
-	cRet := C.cef_string_list_value((C.cef_string_list_t)(list), (C.size_t)(index), tmpc_value)
+	cRet := C.cef_string_list_value((C.cef_string_list_t)(list), (C.size_t)(index), tmpc_value.p_cef_string_t)
 
-	value = string_from_cef_string(tmpc_value)
+	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, value
@@ -71,9 +70,8 @@ func StringListAppend(
 	value string,
 ) {
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	C.cef_string_list_append((C.cef_string_list_t)(list), (*C.cef_string_t)(c_value))
+	C.cef_string_list_append((C.cef_string_list_t)(list), c_value.p_cef_string_t)
 
 }
 
@@ -151,13 +149,11 @@ func StringMapFind(
 	key string,
 ) (ret bool, value string) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	tmpc_value := create_cef_string("")
-	defer clear_cef_string(tmpc_value)
 
-	cRet := C.cef_string_map_find((C.cef_string_map_t)(cmap), (*C.cef_string_t)(c_key), tmpc_value)
+	cRet := C.cef_string_map_find((C.cef_string_map_t)(cmap), c_key.p_cef_string_t, tmpc_value.p_cef_string_t)
 
-	value = string_from_cef_string(tmpc_value)
+	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, value
@@ -171,11 +167,10 @@ func StringMapKey(
 	index int64,
 ) (ret bool, key string) {
 	tmpc_key := create_cef_string("")
-	defer clear_cef_string(tmpc_key)
 
-	cRet := C.cef_string_map_key((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_key)
+	cRet := C.cef_string_map_key((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_key.p_cef_string_t)
 
-	key = string_from_cef_string(tmpc_key)
+	key = string_from_cef_string(tmpc_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, key
@@ -189,11 +184,10 @@ func StringMapValue(
 	index int64,
 ) (ret bool, value string) {
 	tmpc_value := create_cef_string("")
-	defer clear_cef_string(tmpc_value)
 
-	cRet := C.cef_string_map_value((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_value)
+	cRet := C.cef_string_map_value((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_value.p_cef_string_t)
 
-	value = string_from_cef_string(tmpc_value)
+	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, value
@@ -208,11 +202,9 @@ func StringMapAppend(
 	value string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	cRet := C.cef_string_map_append((C.cef_string_map_t)(cmap), (*C.cef_string_t)(c_key), (*C.cef_string_t)(c_value))
+	cRet := C.cef_string_map_append((C.cef_string_map_t)(cmap), c_key.p_cef_string_t, c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -280,9 +272,8 @@ func StringMultimapFindCount(
 	key string,
 ) (ret int64) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 
-	cRet := C.cef_string_multimap_find_count((C.cef_string_multimap_t)(cmap), (*C.cef_string_t)(c_key))
+	cRet := C.cef_string_multimap_find_count((C.cef_string_multimap_t)(cmap), c_key.p_cef_string_t)
 
 	ret = (int64)(cRet)
 	return ret
@@ -297,13 +288,11 @@ func StringMultimapEnumerate(
 	value_index int64,
 ) (ret bool, value string) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	tmpc_value := create_cef_string("")
-	defer clear_cef_string(tmpc_value)
 
-	cRet := C.cef_string_multimap_enumerate((C.cef_string_multimap_t)(cmap), (*C.cef_string_t)(c_key), (C.size_t)(value_index), tmpc_value)
+	cRet := C.cef_string_multimap_enumerate((C.cef_string_multimap_t)(cmap), c_key.p_cef_string_t, (C.size_t)(value_index), tmpc_value.p_cef_string_t)
 
-	value = string_from_cef_string(tmpc_value)
+	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, value
@@ -317,11 +306,10 @@ func StringMultimapKey(
 	index int64,
 ) (ret bool, key string) {
 	tmpc_key := create_cef_string("")
-	defer clear_cef_string(tmpc_key)
 
-	cRet := C.cef_string_multimap_key((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_key)
+	cRet := C.cef_string_multimap_key((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_key.p_cef_string_t)
 
-	key = string_from_cef_string(tmpc_key)
+	key = string_from_cef_string(tmpc_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, key
@@ -335,11 +323,10 @@ func StringMultimapValue(
 	index int64,
 ) (ret bool, value string) {
 	tmpc_value := create_cef_string("")
-	defer clear_cef_string(tmpc_value)
 
-	cRet := C.cef_string_multimap_value((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_value)
+	cRet := C.cef_string_multimap_value((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_value.p_cef_string_t)
 
-	value = string_from_cef_string(tmpc_value)
+	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret, value
@@ -354,11 +341,9 @@ func StringMultimapAppend(
 	value string,
 ) (ret bool) {
 	c_key := create_cef_string(key)
-	defer clear_cef_string(c_key)
 	c_value := create_cef_string(value)
-	defer clear_cef_string(c_value)
 
-	cRet := C.cef_string_multimap_append((C.cef_string_multimap_t)(cmap), (*C.cef_string_t)(c_key), (*C.cef_string_t)(c_value))
+	cRet := C.cef_string_multimap_append((C.cef_string_multimap_t)(cmap), c_key.p_cef_string_t, c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret

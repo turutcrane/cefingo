@@ -388,7 +388,6 @@ extern {%s constructorName(st) %};
 	var {%s cTempName(p) %} {%s p.Type().Deref().GoCType() %}
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
 	{%s cTempName(p) %} := create_cef_string("")
-	defer clear_cef_string({%s cTempName(p) %})
 	{%- else -%}
 	var {%s cTempName(p) %} {%s p.Type().Deref().GoCType() %}
 	{%- endif -%}
@@ -422,7 +421,6 @@ extern {%s constructorName(st) %};
 	}
 {% case "string" -%}
 	{%s cName(p) %} := create_cef_string({%s goParamName(p) %})
-	defer clear_cef_string({%s cName(p) %})
 {% case "time.Time" -%}
 	{%s cName(p) %} := {%s goParamName(p) %}.Unix()
 {% endswitch -%}
@@ -444,7 +442,7 @@ tmp{%= cName(p) -%}
 	{%- if ok, _ := p.IsByteSliceParam(); ok -%}
 	{%-s= cTempName(p) -%}
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
-	{%-s= cTempName(p) -%}
+	{%-s= cTempName(p) %}.{%s "p_cef_string_t" -%}
 	{%- else -%}
 	{%-s= "&" + cTempName(p) -%}
 	{%- endif -%}
@@ -467,6 +465,8 @@ tmp{%= cName(p) -%}
 		{%-s "C.time_t(" + cName(p) + ")" -%}
 	{%- case "unsafe.Pointer" -%}{% code log.Printf("T335: %s::%s\n", p.CalleeName(), p.Name()) -%}
 		{%-s cName(p) -%}
+	{%- case "string" -%}
+		{%-s cName(p) -%}.{%s "p_cef_string_t" -%}
 	{%- default -%}
 		{%-s "(" + p.GoCType() + ")(" %}{%s cName(p) %}{%s ")" -%}
 	{%- endswitch -%}
@@ -485,7 +485,7 @@ tmp{%= cName(p) -%}
 		{%s goParamName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(_{%s cTempName(p) %}[i])
 	}
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
-	{%s goParamName(p) %} = string_from_cef_string({%s cTempName(p) %})
+	{%s goParamName(p) %} = string_from_cef_string({%s cTempName(p) %}.p_cef_string_t)
 	{%- elseif p.Type().Deref().IsRefCountedClass() -%}
 	{%s goParamName(p) %} = new{%s p.Type().Deref().Deref().GoType() %}({%s cTempName(p) %})
 	{%- elseif p.Type().Ty == parser.TyTimeT %}
@@ -577,7 +577,7 @@ func  ({%s goParamName(m.Params()[0]) %} {%s m.Params()[0].GoType() %}) {%s m.Fu
 	{%- if m.IsBoolValueMethod() %}
 	ret = cRet == 1
 	{%- elseif m.ReturnType().Ty == parser.TyStringUserfreeT %}
-	s := string_from_cef_string((*C.cef_string_t)(cRet))
+	s := string_from_cef_string(cRet)
 	if cRet != nil {
 		C.cef_string_userfree_free(cRet)
 	}

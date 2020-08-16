@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"runtime"
 	"unsafe"
 )
 
@@ -65,6 +66,11 @@ type noCopy struct{}
 func (*noCopy) Lock()   {}
 func (*noCopy) UNlock() {}
 
+type cef_string_t struct {
+	noCopy         noCopy
+	p_cef_string_t *C.cef_string_t
+}
+
 func set_cef_string(cs *C.cef_string_t, s string) {
 	c_string := C.CString(s)
 	defer C.free(unsafe.Pointer(c_string))
@@ -83,16 +89,30 @@ func set_cef_string_from_byte_array(cs *C.cef_string_t, b []byte) {
 	}
 }
 
-func create_cef_string(s string) *C.cef_string_t {
-	cs := C.cef_string_t{}
-	set_cef_string(&cs, s)
-	return &cs
+func create_cef_string(s string) *cef_string_t {
+	cs := (*C.cef_string_t)(C.memset(C.malloc(C.sizeof_cef_string_t), 0, C.sizeof_cef_string_t))
+	goCs := &cef_string_t{noCopy{}, cs}
+	set_cef_string(cs, s)
+
+	runtime.SetFinalizer(goCs, func(goCs *cef_string_t) {
+		clear_cef_string(goCs.p_cef_string_t)
+		C.free(unsafe.Pointer(goCs.p_cef_string_t))
+	})
+
+	return goCs
 }
 
-func create_cef_string_from_byte_array(b []byte) *C.cef_string_t {
-	cs := C.cef_string_t{}
-	set_cef_string_from_byte_array(&cs, b)
-	return &cs
+func create_cef_string_from_byte_array(b []byte) *cef_string_t {
+	cs := (*C.cef_string_t)(C.memset(C.malloc(C.sizeof_cef_string_t), 0, C.sizeof_cef_string_t))
+	goCs := &cef_string_t{noCopy{}, cs}
+	set_cef_string_from_byte_array(cs, b)
+
+	runtime.SetFinalizer(goCs, func(goCs *cef_string_t) {
+		clear_cef_string(goCs.p_cef_string_t)
+		C.free(unsafe.Pointer(goCs.p_cef_string_t))
+	})
+
+	return goCs
 }
 
 func string_from_cef_string(s *C.cef_string_t) (str string) {

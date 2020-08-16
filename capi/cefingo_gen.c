@@ -8,7 +8,7 @@ cef_accessibility_handler_t *cefingo_construct_accessibility_handler(cefingo_acc
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*accessibility_handler), counter),
 		(cef_base_ref_counted_t*) accessibility_handler);
-
+	
 	// callbacks
 	accessibility_handler->body.on_accessibility_tree_change =
 		cefingo_accessibility_handler_on_accessibility_tree_change;
@@ -29,10 +29,10 @@ cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app)
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*app), counter),
 		(cef_base_ref_counted_t*) app);
-
+	
 	// callbacks
 	app->body.on_before_command_line_processing = (T_CEF_APP_T_ON_BEFORE_COMMAND_LINE_PROCESSING)
-			cefingo_app_on_before_command_line_processing;
+		cefingo_app_on_before_command_line_processing;
 	app->body.on_register_custom_schemes =
 		cefingo_app_on_register_custom_schemes;
 	app->body.get_resource_bundle_handler =
@@ -62,16 +62,16 @@ cef_audio_handler_t *cefingo_construct_audio_handler(cefingo_audio_handler_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*audio_handler), counter),
 		(cef_base_ref_counted_t*) audio_handler);
-
+	
 	// callbacks
 	audio_handler->body.get_audio_parameters =
 		cefingo_audio_handler_get_audio_parameters;
 	audio_handler->body.on_audio_stream_started = (T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_STARTED)
-			cefingo_audio_handler_on_audio_stream_started;
+		cefingo_audio_handler_on_audio_stream_started;
 	audio_handler->body.on_audio_stream_stopped =
 		cefingo_audio_handler_on_audio_stream_stopped;
 	audio_handler->body.on_audio_stream_error = (T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_ERROR)
-			cefingo_audio_handler_on_audio_stream_error;
+		cefingo_audio_handler_on_audio_stream_error;
 
 	return (cef_audio_handler_t*)audio_handler;
 }
@@ -127,8 +127,8 @@ struct _cef_browser_host_t* cefingo_browser_get_host(
 )
 {
 	return self->get_host(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_browser_can_go_back(
@@ -136,8 +136,8 @@ int cefingo_browser_can_go_back(
 )
 {
 	return self->can_go_back(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_go_back(
@@ -154,8 +154,8 @@ int cefingo_browser_can_go_forward(
 )
 {
 	return self->can_go_forward(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_go_forward(
@@ -172,8 +172,8 @@ int cefingo_browser_is_loading(
 )
 {
 	return self->is_loading(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_reload(
@@ -208,8 +208,8 @@ int cefingo_browser_get_identifier(
 )
 {
 	return self->get_identifier(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_browser_is_same(
@@ -218,9 +218,9 @@ int cefingo_browser_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_browser_is_popup(
@@ -228,8 +228,8 @@ int cefingo_browser_is_popup(
 )
 {
 	return self->is_popup(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_browser_has_document(
@@ -237,8 +237,8 @@ int cefingo_browser_has_document(
 )
 {
 	return self->has_document(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_frame_t* cefingo_browser_get_main_frame(
@@ -246,8 +246,8 @@ struct _cef_frame_t* cefingo_browser_get_main_frame(
 )
 {
 	return self->get_main_frame(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_frame_t* cefingo_browser_get_focused_frame(
@@ -255,8 +255,8 @@ struct _cef_frame_t* cefingo_browser_get_focused_frame(
 )
 {
 	return self->get_focused_frame(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_frame_t* cefingo_browser_get_frame_byident(
@@ -265,9 +265,9 @@ struct _cef_frame_t* cefingo_browser_get_frame_byident(
 )
 {
 	return self->get_frame_byident(
-		       self,
-		       identifier
-	       );
+		self,
+		identifier
+	);
 }
 
 struct _cef_frame_t* cefingo_browser_get_frame(
@@ -276,9 +276,9 @@ struct _cef_frame_t* cefingo_browser_get_frame(
 )
 {
 	return self->get_frame(
-		       self,
-		       name
-	       );
+		self,
+		name
+	);
 }
 
 size_t cefingo_browser_get_frame_count(
@@ -286,8 +286,8 @@ size_t cefingo_browser_get_frame_count(
 )
 {
 	return self->get_frame_count(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_get_frame_names(
@@ -307,7 +307,7 @@ cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callback(cefin
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*run_file_dialog_callback), counter),
 		(cef_base_ref_counted_t*) run_file_dialog_callback);
-
+	
 	// callbacks
 	run_file_dialog_callback->body.on_file_dialog_dismissed =
 		cefingo_run_file_dialog_callback_on_file_dialog_dismissed;
@@ -324,12 +324,12 @@ int cefingo_navigation_entry_visitor_visit(
 )
 {
 	return self->visit(
-		       self,
-		       entry,
-		       current,
-		       index,
-		       total
-	       );
+		self,
+		entry,
+		current,
+		index,
+		total
+	);
 }
 
 void cefingo_pdf_print_callback_on_pdf_print_finished(
@@ -365,8 +365,8 @@ struct _cef_browser_t* cefingo_browser_host_get_browser(
 )
 {
 	return self->get_browser(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_host_close_browser(
@@ -385,8 +385,8 @@ int cefingo_browser_host_try_close_browser(
 )
 {
 	return self->try_close_browser(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_host_set_focus(
@@ -405,8 +405,8 @@ cef_window_handle_t cefingo_browser_host_get_window_handle(
 )
 {
 	return self->get_window_handle(
-		       self
-	       );
+		self
+	);
 }
 
 cef_window_handle_t cefingo_browser_host_get_opener_window_handle(
@@ -414,8 +414,8 @@ cef_window_handle_t cefingo_browser_host_get_opener_window_handle(
 )
 {
 	return self->get_opener_window_handle(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_browser_host_has_view(
@@ -423,8 +423,8 @@ int cefingo_browser_host_has_view(
 )
 {
 	return self->has_view(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_client_t* cefingo_browser_host_get_client(
@@ -432,8 +432,8 @@ struct _cef_client_t* cefingo_browser_host_get_client(
 )
 {
 	return self->get_client(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_request_context_t* cefingo_browser_host_get_request_context(
@@ -441,8 +441,8 @@ struct _cef_request_context_t* cefingo_browser_host_get_request_context(
 )
 {
 	return self->get_request_context(
-		       self
-	       );
+		self
+	);
 }
 
 double cefingo_browser_host_get_zoom_level(
@@ -450,8 +450,8 @@ double cefingo_browser_host_get_zoom_level(
 )
 {
 	return self->get_zoom_level(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_host_set_zoom_level(
@@ -601,8 +601,8 @@ int cefingo_browser_host_has_dev_tools(
 )
 {
 	return self->has_dev_tools(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_browser_host_send_dev_tools_message(
@@ -612,10 +612,10 @@ int cefingo_browser_host_send_dev_tools_message(
 )
 {
 	return self->send_dev_tools_message(
-		       self,
-		       message,
-		       message_size
-	       );
+		self,
+		message,
+		message_size
+	);
 }
 
 int cefingo_browser_host_execute_dev_tools_method(
@@ -626,11 +626,11 @@ int cefingo_browser_host_execute_dev_tools_method(
 )
 {
 	return self->execute_dev_tools_method(
-		       self,
-		       message_id,
-		       method,
-		       params
-	       );
+		self,
+		message_id,
+		method,
+		params
+	);
 }
 
 struct _cef_registration_t* cefingo_browser_host_add_dev_tools_message_observer(
@@ -639,9 +639,9 @@ struct _cef_registration_t* cefingo_browser_host_add_dev_tools_message_observer(
 )
 {
 	return self->add_dev_tools_message_observer(
-		       self,
-		       observer
-	       );
+		self,
+		observer
+	);
 }
 
 void cefingo_browser_host_get_navigation_entries(
@@ -673,8 +673,8 @@ int cefingo_browser_host_is_mouse_cursor_change_disabled(
 )
 {
 	return self->is_mouse_cursor_change_disabled(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_host_replace_misspelling(
@@ -704,8 +704,8 @@ int cefingo_browser_host_is_window_rendering_disabled(
 )
 {
 	return self->is_window_rendering_disabled(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_host_was_resized(
@@ -858,8 +858,8 @@ int cefingo_browser_host_get_windowless_frame_rate(
 )
 {
 	return self->get_windowless_frame_rate(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_host_set_windowless_frame_rate(
@@ -1004,8 +1004,8 @@ struct _cef_navigation_entry_t* cefingo_browser_host_get_visible_navigation_entr
 )
 {
 	return self->get_visible_navigation_entry(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_host_set_accessibility_state(
@@ -1039,8 +1039,8 @@ struct _cef_extension_t* cefingo_browser_host_get_extension(
 )
 {
 	return self->get_extension(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_browser_host_is_background_host(
@@ -1048,8 +1048,8 @@ int cefingo_browser_host_is_background_host(
 )
 {
 	return self->is_background_host(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_host_set_audio_muted(
@@ -1068,8 +1068,8 @@ int cefingo_browser_host_is_audio_muted(
 )
 {
 	return self->is_audio_muted(
-		       self
-	       );
+		self
+	);
 }
 
 
@@ -1078,7 +1078,7 @@ cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*browser_process_handler), counter),
 		(cef_base_ref_counted_t*) browser_process_handler);
-
+	
 	// callbacks
 	browser_process_handler->body.on_context_initialized =
 		cefingo_browser_process_handler_on_context_initialized;
@@ -1099,8 +1099,8 @@ struct _cef_browser_t* cefingo_browser_view_get_browser(
 )
 {
 	return self->get_browser(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_browser_view_set_prefer_accelerators(
@@ -1127,14 +1127,14 @@ cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_bro
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*browser_view_delegate), counter),
 		(cef_base_ref_counted_t*) browser_view_delegate);
-
+	
 	// callbacks
 	browser_view_delegate->body.on_browser_created =
 		cefingo_browser_view_delegate_on_browser_created;
 	browser_view_delegate->body.on_browser_destroyed =
 		cefingo_browser_view_delegate_on_browser_destroyed;
 	browser_view_delegate->body.get_delegate_for_popup_browser_view = (T_CEF_BROWSER_VIEW_DELEGATE_T_GET_DELEGATE_FOR_POPUP_BROWSER_VIEW)
-			cefingo_browser_view_delegate_get_delegate_for_popup_browser_view;
+		cefingo_browser_view_delegate_get_delegate_for_popup_browser_view;
 	browser_view_delegate->body.on_popup_browser_view_created =
 		cefingo_browser_view_delegate_on_popup_browser_view_created;
 	browser_view_delegate->body.base.get_preferred_size =
@@ -1162,8 +1162,8 @@ struct _cef_label_button_t* cefingo_button_as_label_button(
 )
 {
 	return self->as_label_button(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_button_set_state(
@@ -1182,8 +1182,8 @@ cef_button_state_t cefingo_button_get_state(
 )
 {
 	return self->get_state(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_button_set_ink_drop_enabled(
@@ -1225,7 +1225,7 @@ cef_button_delegate_t *cefingo_construct_button_delegate(cefingo_button_delegate
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*button_delegate), counter),
 		(cef_base_ref_counted_t*) button_delegate);
-
+	
 	// callbacks
 	button_delegate->body.on_button_pressed =
 		cefingo_button_delegate_on_button_pressed;
@@ -1284,7 +1284,7 @@ cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*client), counter),
 		(cef_base_ref_counted_t*) client);
-
+	
 	// callbacks
 	client->body.get_audio_handler =
 		cefingo_client_get_audio_handler;
@@ -1325,8 +1325,8 @@ int cefingo_command_line_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_command_line_is_read_only(
@@ -1334,8 +1334,8 @@ int cefingo_command_line_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_command_line_t* cefingo_command_line_copy(
@@ -1343,8 +1343,8 @@ struct _cef_command_line_t* cefingo_command_line_copy(
 )
 {
 	return self->copy(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_command_line_init_from_string(
@@ -1383,8 +1383,8 @@ cef_string_userfree_t cefingo_command_line_get_command_line_string(
 )
 {
 	return self->get_command_line_string(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_command_line_get_program(
@@ -1392,8 +1392,8 @@ cef_string_userfree_t cefingo_command_line_get_program(
 )
 {
 	return self->get_program(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_command_line_set_program(
@@ -1412,8 +1412,8 @@ int cefingo_command_line_has_switches(
 )
 {
 	return self->has_switches(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_command_line_has_switch(
@@ -1422,9 +1422,9 @@ int cefingo_command_line_has_switch(
 )
 {
 	return self->has_switch(
-		       self,
-		       name
-	       );
+		self,
+		name
+	);
 }
 
 cef_string_userfree_t cefingo_command_line_get_switch_value(
@@ -1433,9 +1433,9 @@ cef_string_userfree_t cefingo_command_line_get_switch_value(
 )
 {
 	return self->get_switch_value(
-		       self,
-		       name
-	       );
+		self,
+		name
+	);
 }
 
 void cefingo_command_line_get_switches(
@@ -1478,8 +1478,8 @@ int cefingo_command_line_has_arguments(
 )
 {
 	return self->has_arguments(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_command_line_get_arguments(
@@ -1543,7 +1543,7 @@ cef_context_menu_handler_t *cefingo_construct_context_menu_handler(cefingo_conte
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*context_menu_handler), counter),
 		(cef_base_ref_counted_t*) context_menu_handler);
-
+	
 	// callbacks
 	context_menu_handler->body.on_before_context_menu =
 		cefingo_context_menu_handler_on_before_context_menu;
@@ -1562,8 +1562,8 @@ int cefingo_context_menu_params_get_xcoord(
 )
 {
 	return self->get_xcoord(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_context_menu_params_get_ycoord(
@@ -1571,8 +1571,8 @@ int cefingo_context_menu_params_get_ycoord(
 )
 {
 	return self->get_ycoord(
-		       self
-	       );
+		self
+	);
 }
 
 cef_context_menu_type_flags_t cefingo_context_menu_params_get_type_flags(
@@ -1580,8 +1580,8 @@ cef_context_menu_type_flags_t cefingo_context_menu_params_get_type_flags(
 )
 {
 	return self->get_type_flags(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_link_url(
@@ -1589,8 +1589,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_link_url(
 )
 {
 	return self->get_link_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_unfiltered_link_url(
@@ -1598,8 +1598,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_unfiltered_link_url(
 )
 {
 	return self->get_unfiltered_link_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_source_url(
@@ -1607,8 +1607,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_source_url(
 )
 {
 	return self->get_source_url(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_context_menu_params_has_image_contents(
@@ -1616,8 +1616,8 @@ int cefingo_context_menu_params_has_image_contents(
 )
 {
 	return self->has_image_contents(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_title_text(
@@ -1625,8 +1625,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_title_text(
 )
 {
 	return self->get_title_text(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_page_url(
@@ -1634,8 +1634,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_page_url(
 )
 {
 	return self->get_page_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_frame_url(
@@ -1643,8 +1643,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_frame_url(
 )
 {
 	return self->get_frame_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_frame_charset(
@@ -1652,8 +1652,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_frame_charset(
 )
 {
 	return self->get_frame_charset(
-		       self
-	       );
+		self
+	);
 }
 
 cef_context_menu_media_type_t cefingo_context_menu_params_get_media_type(
@@ -1661,8 +1661,8 @@ cef_context_menu_media_type_t cefingo_context_menu_params_get_media_type(
 )
 {
 	return self->get_media_type(
-		       self
-	       );
+		self
+	);
 }
 
 cef_context_menu_media_state_flags_t cefingo_context_menu_params_get_media_state_flags(
@@ -1670,8 +1670,8 @@ cef_context_menu_media_state_flags_t cefingo_context_menu_params_get_media_state
 )
 {
 	return self->get_media_state_flags(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_selection_text(
@@ -1679,8 +1679,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_selection_text(
 )
 {
 	return self->get_selection_text(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_misspelled_word(
@@ -1688,8 +1688,8 @@ cef_string_userfree_t cefingo_context_menu_params_get_misspelled_word(
 )
 {
 	return self->get_misspelled_word(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_context_menu_params_get_dictionary_suggestions(
@@ -1698,9 +1698,9 @@ int cefingo_context_menu_params_get_dictionary_suggestions(
 )
 {
 	return self->get_dictionary_suggestions(
-		       self,
-		       suggestions
-	       );
+		self,
+		suggestions
+	);
 }
 
 int cefingo_context_menu_params_is_editable(
@@ -1708,8 +1708,8 @@ int cefingo_context_menu_params_is_editable(
 )
 {
 	return self->is_editable(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_context_menu_params_is_spell_check_enabled(
@@ -1717,8 +1717,8 @@ int cefingo_context_menu_params_is_spell_check_enabled(
 )
 {
 	return self->is_spell_check_enabled(
-		       self
-	       );
+		self
+	);
 }
 
 cef_context_menu_edit_state_flags_t cefingo_context_menu_params_get_edit_state_flags(
@@ -1726,8 +1726,8 @@ cef_context_menu_edit_state_flags_t cefingo_context_menu_params_get_edit_state_f
 )
 {
 	return self->get_edit_state_flags(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_context_menu_params_is_custom_menu(
@@ -1735,8 +1735,8 @@ int cefingo_context_menu_params_is_custom_menu(
 )
 {
 	return self->is_custom_menu(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_context_menu_params_is_pepper_menu(
@@ -1744,8 +1744,8 @@ int cefingo_context_menu_params_is_pepper_menu(
 )
 {
 	return self->is_pepper_menu(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_cookie_manager_set_supported_schemes(
@@ -1769,9 +1769,9 @@ int cefingo_cookie_manager_visit_all_cookies(
 )
 {
 	return self->visit_all_cookies(
-		       self,
-		       visitor
-	       );
+		self,
+		visitor
+	);
 }
 
 int cefingo_cookie_manager_visit_url_cookies(
@@ -1782,11 +1782,11 @@ int cefingo_cookie_manager_visit_url_cookies(
 )
 {
 	return self->visit_url_cookies(
-		       self,
-		       url,
-		       includeHttpOnly,
-		       visitor
-	       );
+		self,
+		url,
+		includeHttpOnly,
+		visitor
+	);
 }
 
 int cefingo_cookie_manager_set_cookie(
@@ -1797,11 +1797,11 @@ int cefingo_cookie_manager_set_cookie(
 )
 {
 	return self->set_cookie(
-		       self,
-		       url,
-		       cookie,
-		       callback
-	       );
+		self,
+		url,
+		cookie,
+		callback
+	);
 }
 
 int cefingo_cookie_manager_delete_cookies(
@@ -1812,11 +1812,11 @@ int cefingo_cookie_manager_delete_cookies(
 )
 {
 	return self->delete_cookies(
-		       self,
-		       url,
-		       cookie_name,
-		       callback
-	       );
+		self,
+		url,
+		cookie_name,
+		callback
+	);
 }
 
 int cefingo_cookie_manager_flush_store(
@@ -1825,9 +1825,9 @@ int cefingo_cookie_manager_flush_store(
 )
 {
 	return self->flush_store(
-		       self,
-		       callback
-	       );
+		self,
+		callback
+	);
 }
 
 typedef int (*T_CEF_COOKIE_VISITOR_T_VISIT)(
@@ -1843,10 +1843,10 @@ cef_cookie_visitor_t *cefingo_construct_cookie_visitor(cefingo_cookie_visitor_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*cookie_visitor), counter),
 		(cef_base_ref_counted_t*) cookie_visitor);
-
+	
 	// callbacks
 	cookie_visitor->body.visit = (T_CEF_COOKIE_VISITOR_T_VISIT)
-				     cefingo_cookie_visitor_visit;
+		cefingo_cookie_visitor_visit;
 
 	return (cef_cookie_visitor_t*)cookie_visitor;
 }
@@ -1857,7 +1857,7 @@ cef_set_cookie_callback_t *cefingo_construct_set_cookie_callback(cefingo_set_coo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*set_cookie_callback), counter),
 		(cef_base_ref_counted_t*) set_cookie_callback);
-
+	
 	// callbacks
 	set_cookie_callback->body.on_complete =
 		cefingo_set_cookie_callback_on_complete;
@@ -1871,7 +1871,7 @@ cef_delete_cookies_callback_t *cefingo_construct_delete_cookies_callback(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*delete_cookies_callback), counter),
 		(cef_base_ref_counted_t*) delete_cookies_callback);
-
+	
 	// callbacks
 	delete_cookies_callback->body.on_complete =
 		cefingo_delete_cookies_callback_on_complete;
@@ -1906,14 +1906,14 @@ cef_dev_tools_message_observer_t *cefingo_construct_dev_tools_message_observer(c
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*dev_tools_message_observer), counter),
 		(cef_base_ref_counted_t*) dev_tools_message_observer);
-
+	
 	// callbacks
 	dev_tools_message_observer->body.on_dev_tools_message = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_MESSAGE)
-			cefingo_dev_tools_message_observer_on_dev_tools_message;
+		cefingo_dev_tools_message_observer_on_dev_tools_message;
 	dev_tools_message_observer->body.on_dev_tools_method_result = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_METHOD_RESULT)
-			cefingo_dev_tools_message_observer_on_dev_tools_method_result;
+		cefingo_dev_tools_message_observer_on_dev_tools_method_result;
 	dev_tools_message_observer->body.on_dev_tools_event = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_EVENT)
-			cefingo_dev_tools_message_observer_on_dev_tools_event;
+		cefingo_dev_tools_message_observer_on_dev_tools_event;
 	dev_tools_message_observer->body.on_dev_tools_agent_attached =
 		cefingo_dev_tools_message_observer_on_dev_tools_agent_attached;
 	dev_tools_message_observer->body.on_dev_tools_agent_detached =
@@ -1960,10 +1960,10 @@ cef_dialog_handler_t *cefingo_construct_dialog_handler(cefingo_dialog_handler_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*dialog_handler), counter),
 		(cef_base_ref_counted_t*) dialog_handler);
-
+	
 	// callbacks
 	dialog_handler->body.on_file_dialog = (T_CEF_DIALOG_HANDLER_T_ON_FILE_DIALOG)
-					      cefingo_dialog_handler_on_file_dialog;
+		cefingo_dialog_handler_on_file_dialog;
 
 	return (cef_dialog_handler_t*)dialog_handler;
 }
@@ -1973,8 +1973,8 @@ int64 cefingo_display_get_id(
 )
 {
 	return self->get_id(
-		       self
-	       );
+		self
+	);
 }
 
 float cefingo_display_get_device_scale_factor(
@@ -1982,8 +1982,8 @@ float cefingo_display_get_device_scale_factor(
 )
 {
 	return self->get_device_scale_factor(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_display_convert_point_to_pixels(
@@ -2013,8 +2013,8 @@ cef_rect_t cefingo_display_get_bounds(
 )
 {
 	return self->get_bounds(
-		       self
-	       );
+		self
+	);
 }
 
 cef_rect_t cefingo_display_get_work_area(
@@ -2022,8 +2022,8 @@ cef_rect_t cefingo_display_get_work_area(
 )
 {
 	return self->get_work_area(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_display_get_rotation(
@@ -2031,8 +2031,8 @@ int cefingo_display_get_rotation(
 )
 {
 	return self->get_rotation(
-		       self
-	       );
+		self
+	);
 }
 
 typedef void (*T_CEF_DISPLAY_HANDLER_T_ON_ADDRESS_CHANGE)(
@@ -2070,12 +2070,12 @@ cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*display_handler), counter),
 		(cef_base_ref_counted_t*) display_handler);
-
+	
 	// callbacks
 	display_handler->body.on_address_change = (T_CEF_DISPLAY_HANDLER_T_ON_ADDRESS_CHANGE)
-			cefingo_display_handler_on_address_change;
+		cefingo_display_handler_on_address_change;
 	display_handler->body.on_title_change = (T_CEF_DISPLAY_HANDLER_T_ON_TITLE_CHANGE)
-						cefingo_display_handler_on_title_change;
+		cefingo_display_handler_on_title_change;
 	display_handler->body.on_favicon_urlchange =
 		cefingo_display_handler_on_favicon_urlchange;
 	display_handler->body.on_fullscreen_mode_change =
@@ -2083,11 +2083,11 @@ cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler
 	display_handler->body.on_tooltip =
 		cefingo_display_handler_on_tooltip;
 	display_handler->body.on_status_message = (T_CEF_DISPLAY_HANDLER_T_ON_STATUS_MESSAGE)
-			cefingo_display_handler_on_status_message;
+		cefingo_display_handler_on_status_message;
 	display_handler->body.on_console_message = (T_CEF_DISPLAY_HANDLER_T_ON_CONSOLE_MESSAGE)
-			cefingo_display_handler_on_console_message;
+		cefingo_display_handler_on_console_message;
 	display_handler->body.on_auto_resize = (T_CEF_DISPLAY_HANDLER_T_ON_AUTO_RESIZE)
-					       cefingo_display_handler_on_auto_resize;
+		cefingo_display_handler_on_auto_resize;
 	display_handler->body.on_loading_progress_change =
 		cefingo_display_handler_on_loading_progress_change;
 
@@ -2100,7 +2100,7 @@ cef_domvisitor_t *cefingo_construct_domvisitor(cefingo_domvisitor_wrapper_t* dom
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*domvisitor), counter),
 		(cef_base_ref_counted_t*) domvisitor);
-
+	
 	// callbacks
 	domvisitor->body.visit =
 		cefingo_domvisitor_visit;
@@ -2113,8 +2113,8 @@ cef_dom_document_type_t cefingo_domdocument_get_type(
 )
 {
 	return self->get_type(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_document(
@@ -2122,8 +2122,8 @@ struct _cef_domnode_t* cefingo_domdocument_get_document(
 )
 {
 	return self->get_document(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_body(
@@ -2131,8 +2131,8 @@ struct _cef_domnode_t* cefingo_domdocument_get_body(
 )
 {
 	return self->get_body(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_head(
@@ -2140,8 +2140,8 @@ struct _cef_domnode_t* cefingo_domdocument_get_head(
 )
 {
 	return self->get_head(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_title(
@@ -2149,8 +2149,8 @@ cef_string_userfree_t cefingo_domdocument_get_title(
 )
 {
 	return self->get_title(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_element_by_id(
@@ -2159,9 +2159,9 @@ struct _cef_domnode_t* cefingo_domdocument_get_element_by_id(
 )
 {
 	return self->get_element_by_id(
-		       self,
-		       id
-	       );
+		self,
+		id
+	);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_focused_node(
@@ -2169,8 +2169,8 @@ struct _cef_domnode_t* cefingo_domdocument_get_focused_node(
 )
 {
 	return self->get_focused_node(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domdocument_has_selection(
@@ -2178,8 +2178,8 @@ int cefingo_domdocument_has_selection(
 )
 {
 	return self->has_selection(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domdocument_get_selection_start_offset(
@@ -2187,8 +2187,8 @@ int cefingo_domdocument_get_selection_start_offset(
 )
 {
 	return self->get_selection_start_offset(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domdocument_get_selection_end_offset(
@@ -2196,8 +2196,8 @@ int cefingo_domdocument_get_selection_end_offset(
 )
 {
 	return self->get_selection_end_offset(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_selection_as_markup(
@@ -2205,8 +2205,8 @@ cef_string_userfree_t cefingo_domdocument_get_selection_as_markup(
 )
 {
 	return self->get_selection_as_markup(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_selection_as_text(
@@ -2214,8 +2214,8 @@ cef_string_userfree_t cefingo_domdocument_get_selection_as_text(
 )
 {
 	return self->get_selection_as_text(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_base_url(
@@ -2223,8 +2223,8 @@ cef_string_userfree_t cefingo_domdocument_get_base_url(
 )
 {
 	return self->get_base_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_complete_url(
@@ -2233,9 +2233,9 @@ cef_string_userfree_t cefingo_domdocument_get_complete_url(
 )
 {
 	return self->get_complete_url(
-		       self,
-		       partialURL
-	       );
+		self,
+		partialURL
+	);
 }
 
 cef_dom_node_type_t cefingo_domnode_get_type(
@@ -2243,8 +2243,8 @@ cef_dom_node_type_t cefingo_domnode_get_type(
 )
 {
 	return self->get_type(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_is_text(
@@ -2252,8 +2252,8 @@ int cefingo_domnode_is_text(
 )
 {
 	return self->is_text(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_is_element(
@@ -2261,8 +2261,8 @@ int cefingo_domnode_is_element(
 )
 {
 	return self->is_element(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_is_editable(
@@ -2270,8 +2270,8 @@ int cefingo_domnode_is_editable(
 )
 {
 	return self->is_editable(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_is_form_control_element(
@@ -2279,8 +2279,8 @@ int cefingo_domnode_is_form_control_element(
 )
 {
 	return self->is_form_control_element(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_domnode_get_form_control_element_type(
@@ -2288,8 +2288,8 @@ cef_string_userfree_t cefingo_domnode_get_form_control_element_type(
 )
 {
 	return self->get_form_control_element_type(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_is_same(
@@ -2298,9 +2298,9 @@ int cefingo_domnode_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 cef_string_userfree_t cefingo_domnode_get_name(
@@ -2308,8 +2308,8 @@ cef_string_userfree_t cefingo_domnode_get_name(
 )
 {
 	return self->get_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_domnode_get_value(
@@ -2317,8 +2317,8 @@ cef_string_userfree_t cefingo_domnode_get_value(
 )
 {
 	return self->get_value(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_set_value(
@@ -2327,9 +2327,9 @@ int cefingo_domnode_set_value(
 )
 {
 	return self->set_value(
-		       self,
-		       value
-	       );
+		self,
+		value
+	);
 }
 
 cef_string_userfree_t cefingo_domnode_get_as_markup(
@@ -2337,8 +2337,8 @@ cef_string_userfree_t cefingo_domnode_get_as_markup(
 )
 {
 	return self->get_as_markup(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domdocument_t* cefingo_domnode_get_document(
@@ -2346,8 +2346,8 @@ struct _cef_domdocument_t* cefingo_domnode_get_document(
 )
 {
 	return self->get_document(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_parent(
@@ -2355,8 +2355,8 @@ struct _cef_domnode_t* cefingo_domnode_get_parent(
 )
 {
 	return self->get_parent(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_previous_sibling(
@@ -2364,8 +2364,8 @@ struct _cef_domnode_t* cefingo_domnode_get_previous_sibling(
 )
 {
 	return self->get_previous_sibling(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_next_sibling(
@@ -2373,8 +2373,8 @@ struct _cef_domnode_t* cefingo_domnode_get_next_sibling(
 )
 {
 	return self->get_next_sibling(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_has_children(
@@ -2382,8 +2382,8 @@ int cefingo_domnode_has_children(
 )
 {
 	return self->has_children(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_first_child(
@@ -2391,8 +2391,8 @@ struct _cef_domnode_t* cefingo_domnode_get_first_child(
 )
 {
 	return self->get_first_child(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_last_child(
@@ -2400,8 +2400,8 @@ struct _cef_domnode_t* cefingo_domnode_get_last_child(
 )
 {
 	return self->get_last_child(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_domnode_get_element_tag_name(
@@ -2409,8 +2409,8 @@ cef_string_userfree_t cefingo_domnode_get_element_tag_name(
 )
 {
 	return self->get_element_tag_name(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_has_element_attributes(
@@ -2418,8 +2418,8 @@ int cefingo_domnode_has_element_attributes(
 )
 {
 	return self->has_element_attributes(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_domnode_has_element_attribute(
@@ -2428,9 +2428,9 @@ int cefingo_domnode_has_element_attribute(
 )
 {
 	return self->has_element_attribute(
-		       self,
-		       attrName
-	       );
+		self,
+		attrName
+	);
 }
 
 cef_string_userfree_t cefingo_domnode_get_element_attribute(
@@ -2439,9 +2439,9 @@ cef_string_userfree_t cefingo_domnode_get_element_attribute(
 )
 {
 	return self->get_element_attribute(
-		       self,
-		       attrName
-	       );
+		self,
+		attrName
+	);
 }
 
 void cefingo_domnode_get_element_attributes(
@@ -2462,10 +2462,10 @@ int cefingo_domnode_set_element_attribute(
 )
 {
 	return self->set_element_attribute(
-		       self,
-		       attrName,
-		       value
-	       );
+		self,
+		attrName,
+		value
+	);
 }
 
 cef_string_userfree_t cefingo_domnode_get_element_inner_text(
@@ -2473,8 +2473,8 @@ cef_string_userfree_t cefingo_domnode_get_element_inner_text(
 )
 {
 	return self->get_element_inner_text(
-		       self
-	       );
+		self
+	);
 }
 
 cef_rect_t cefingo_domnode_get_element_bounds(
@@ -2482,8 +2482,8 @@ cef_rect_t cefingo_domnode_get_element_bounds(
 )
 {
 	return self->get_element_bounds(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_before_download_callback_cont(
@@ -2539,10 +2539,10 @@ cef_download_handler_t *cefingo_construct_download_handler(cefingo_download_hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*download_handler), counter),
 		(cef_base_ref_counted_t*) download_handler);
-
+	
 	// callbacks
 	download_handler->body.on_before_download = (T_CEF_DOWNLOAD_HANDLER_T_ON_BEFORE_DOWNLOAD)
-			cefingo_download_handler_on_before_download;
+		cefingo_download_handler_on_before_download;
 	download_handler->body.on_download_updated =
 		cefingo_download_handler_on_download_updated;
 
@@ -2554,8 +2554,8 @@ int cefingo_download_item_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_download_item_is_in_progress(
@@ -2563,8 +2563,8 @@ int cefingo_download_item_is_in_progress(
 )
 {
 	return self->is_in_progress(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_download_item_is_complete(
@@ -2572,8 +2572,8 @@ int cefingo_download_item_is_complete(
 )
 {
 	return self->is_complete(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_download_item_is_canceled(
@@ -2581,8 +2581,8 @@ int cefingo_download_item_is_canceled(
 )
 {
 	return self->is_canceled(
-		       self
-	       );
+		self
+	);
 }
 
 int64 cefingo_download_item_get_current_speed(
@@ -2590,8 +2590,8 @@ int64 cefingo_download_item_get_current_speed(
 )
 {
 	return self->get_current_speed(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_download_item_get_percent_complete(
@@ -2599,8 +2599,8 @@ int cefingo_download_item_get_percent_complete(
 )
 {
 	return self->get_percent_complete(
-		       self
-	       );
+		self
+	);
 }
 
 int64 cefingo_download_item_get_total_bytes(
@@ -2608,8 +2608,8 @@ int64 cefingo_download_item_get_total_bytes(
 )
 {
 	return self->get_total_bytes(
-		       self
-	       );
+		self
+	);
 }
 
 int64 cefingo_download_item_get_received_bytes(
@@ -2617,8 +2617,8 @@ int64 cefingo_download_item_get_received_bytes(
 )
 {
 	return self->get_received_bytes(
-		       self
-	       );
+		self
+	);
 }
 
 cef_time_t cefingo_download_item_get_start_time(
@@ -2626,8 +2626,8 @@ cef_time_t cefingo_download_item_get_start_time(
 )
 {
 	return self->get_start_time(
-		       self
-	       );
+		self
+	);
 }
 
 cef_time_t cefingo_download_item_get_end_time(
@@ -2635,8 +2635,8 @@ cef_time_t cefingo_download_item_get_end_time(
 )
 {
 	return self->get_end_time(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_download_item_get_full_path(
@@ -2644,8 +2644,8 @@ cef_string_userfree_t cefingo_download_item_get_full_path(
 )
 {
 	return self->get_full_path(
-		       self
-	       );
+		self
+	);
 }
 
 uint32 cefingo_download_item_get_id(
@@ -2653,8 +2653,8 @@ uint32 cefingo_download_item_get_id(
 )
 {
 	return self->get_id(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_download_item_get_url(
@@ -2662,8 +2662,8 @@ cef_string_userfree_t cefingo_download_item_get_url(
 )
 {
 	return self->get_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_download_item_get_original_url(
@@ -2671,8 +2671,8 @@ cef_string_userfree_t cefingo_download_item_get_original_url(
 )
 {
 	return self->get_original_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_download_item_get_suggested_file_name(
@@ -2680,8 +2680,8 @@ cef_string_userfree_t cefingo_download_item_get_suggested_file_name(
 )
 {
 	return self->get_suggested_file_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_download_item_get_content_disposition(
@@ -2689,8 +2689,8 @@ cef_string_userfree_t cefingo_download_item_get_content_disposition(
 )
 {
 	return self->get_content_disposition(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_download_item_get_mime_type(
@@ -2698,8 +2698,8 @@ cef_string_userfree_t cefingo_download_item_get_mime_type(
 )
 {
 	return self->get_mime_type(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_drag_data_t* cefingo_drag_data_clone(
@@ -2707,8 +2707,8 @@ struct _cef_drag_data_t* cefingo_drag_data_clone(
 )
 {
 	return self->clone(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_drag_data_is_read_only(
@@ -2716,8 +2716,8 @@ int cefingo_drag_data_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_drag_data_is_link(
@@ -2725,8 +2725,8 @@ int cefingo_drag_data_is_link(
 )
 {
 	return self->is_link(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_drag_data_is_fragment(
@@ -2734,8 +2734,8 @@ int cefingo_drag_data_is_fragment(
 )
 {
 	return self->is_fragment(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_drag_data_is_file(
@@ -2743,8 +2743,8 @@ int cefingo_drag_data_is_file(
 )
 {
 	return self->is_file(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_link_url(
@@ -2752,8 +2752,8 @@ cef_string_userfree_t cefingo_drag_data_get_link_url(
 )
 {
 	return self->get_link_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_link_title(
@@ -2761,8 +2761,8 @@ cef_string_userfree_t cefingo_drag_data_get_link_title(
 )
 {
 	return self->get_link_title(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_link_metadata(
@@ -2770,8 +2770,8 @@ cef_string_userfree_t cefingo_drag_data_get_link_metadata(
 )
 {
 	return self->get_link_metadata(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_fragment_text(
@@ -2779,8 +2779,8 @@ cef_string_userfree_t cefingo_drag_data_get_fragment_text(
 )
 {
 	return self->get_fragment_text(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_fragment_html(
@@ -2788,8 +2788,8 @@ cef_string_userfree_t cefingo_drag_data_get_fragment_html(
 )
 {
 	return self->get_fragment_html(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_fragment_base_url(
@@ -2797,8 +2797,8 @@ cef_string_userfree_t cefingo_drag_data_get_fragment_base_url(
 )
 {
 	return self->get_fragment_base_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_file_name(
@@ -2806,8 +2806,8 @@ cef_string_userfree_t cefingo_drag_data_get_file_name(
 )
 {
 	return self->get_file_name(
-		       self
-	       );
+		self
+	);
 }
 
 size_t cefingo_drag_data_get_file_contents(
@@ -2816,9 +2816,9 @@ size_t cefingo_drag_data_get_file_contents(
 )
 {
 	return self->get_file_contents(
-		       self,
-		       writer
-	       );
+		self,
+		writer
+	);
 }
 
 int cefingo_drag_data_get_file_names(
@@ -2827,9 +2827,9 @@ int cefingo_drag_data_get_file_names(
 )
 {
 	return self->get_file_names(
-		       self,
-		       names
-	       );
+		self,
+		names
+	);
 }
 
 void cefingo_drag_data_set_link_url(
@@ -2925,8 +2925,8 @@ struct _cef_image_t* cefingo_drag_data_get_image(
 )
 {
 	return self->get_image(
-		       self
-	       );
+		self
+	);
 }
 
 cef_point_t cefingo_drag_data_get_image_hotspot(
@@ -2934,8 +2934,8 @@ cef_point_t cefingo_drag_data_get_image_hotspot(
 )
 {
 	return self->get_image_hotspot(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_drag_data_has_image(
@@ -2943,8 +2943,8 @@ int cefingo_drag_data_has_image(
 )
 {
 	return self->has_image(
-		       self
-	       );
+		self
+	);
 }
 
 typedef void (*T_CEF_DRAG_HANDLER_T_ON_DRAGGABLE_REGIONS_CHANGED)(
@@ -2960,12 +2960,12 @@ cef_drag_handler_t *cefingo_construct_drag_handler(cefingo_drag_handler_wrapper_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*drag_handler), counter),
 		(cef_base_ref_counted_t*) drag_handler);
-
+	
 	// callbacks
 	drag_handler->body.on_drag_enter =
 		cefingo_drag_handler_on_drag_enter;
 	drag_handler->body.on_draggable_regions_changed = (T_CEF_DRAG_HANDLER_T_ON_DRAGGABLE_REGIONS_CHANGED)
-			cefingo_drag_handler_on_draggable_regions_changed;
+		cefingo_drag_handler_on_draggable_regions_changed;
 
 	return (cef_drag_handler_t*)drag_handler;
 }
@@ -2975,8 +2975,8 @@ cef_string_userfree_t cefingo_extension_get_identifier(
 )
 {
 	return self->get_identifier(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_extension_get_path(
@@ -2984,8 +2984,8 @@ cef_string_userfree_t cefingo_extension_get_path(
 )
 {
 	return self->get_path(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_dictionary_value_t* cefingo_extension_get_manifest(
@@ -2993,8 +2993,8 @@ struct _cef_dictionary_value_t* cefingo_extension_get_manifest(
 )
 {
 	return self->get_manifest(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_extension_is_same(
@@ -3003,9 +3003,9 @@ int cefingo_extension_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 struct _cef_extension_handler_t* cefingo_extension_get_handler(
@@ -3013,8 +3013,8 @@ struct _cef_extension_handler_t* cefingo_extension_get_handler(
 )
 {
 	return self->get_handler(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_request_context_t* cefingo_extension_get_loader_context(
@@ -3022,8 +3022,8 @@ struct _cef_request_context_t* cefingo_extension_get_loader_context(
 )
 {
 	return self->get_loader_context(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_extension_is_loaded(
@@ -3031,8 +3031,8 @@ int cefingo_extension_is_loaded(
 )
 {
 	return self->is_loaded(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_extension_unload(
@@ -3096,7 +3096,7 @@ cef_extension_handler_t *cefingo_construct_extension_handler(cefingo_extension_h
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*extension_handler), counter),
 		(cef_base_ref_counted_t*) extension_handler);
-
+	
 	// callbacks
 	extension_handler->body.on_extension_load_failed =
 		cefingo_extension_handler_on_extension_load_failed;
@@ -3105,15 +3105,15 @@ cef_extension_handler_t *cefingo_construct_extension_handler(cefingo_extension_h
 	extension_handler->body.on_extension_unloaded =
 		cefingo_extension_handler_on_extension_unloaded;
 	extension_handler->body.on_before_background_browser = (T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BACKGROUND_BROWSER)
-			cefingo_extension_handler_on_before_background_browser;
+		cefingo_extension_handler_on_before_background_browser;
 	extension_handler->body.on_before_browser = (T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BROWSER)
-			cefingo_extension_handler_on_before_browser;
+		cefingo_extension_handler_on_before_browser;
 	extension_handler->body.get_active_browser =
 		cefingo_extension_handler_get_active_browser;
 	extension_handler->body.can_access_browser =
 		cefingo_extension_handler_can_access_browser;
 	extension_handler->body.get_extension_resource = (T_CEF_EXTENSION_HANDLER_T_GET_EXTENSION_RESOURCE)
-			cefingo_extension_handler_get_extension_resource;
+		cefingo_extension_handler_get_extension_resource;
 
 	return (cef_extension_handler_t*)extension_handler;
 }
@@ -3133,10 +3133,10 @@ cef_find_handler_t *cefingo_construct_find_handler(cefingo_find_handler_wrapper_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*find_handler), counter),
 		(cef_base_ref_counted_t*) find_handler);
-
+	
 	// callbacks
 	find_handler->body.on_find_result = (T_CEF_FIND_HANDLER_T_ON_FIND_RESULT)
-					    cefingo_find_handler_on_find_result;
+		cefingo_find_handler_on_find_result;
 
 	return (cef_find_handler_t*)find_handler;
 }
@@ -3147,7 +3147,7 @@ cef_focus_handler_t *cefingo_construct_focus_handler(cefingo_focus_handler_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*focus_handler), counter),
 		(cef_base_ref_counted_t*) focus_handler);
-
+	
 	// callbacks
 	focus_handler->body.on_take_focus =
 		cefingo_focus_handler_on_take_focus;
@@ -3164,8 +3164,8 @@ int cefingo_frame_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_frame_undo(
@@ -3304,8 +3304,8 @@ int cefingo_frame_is_main(
 )
 {
 	return self->is_main(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_frame_is_focused(
@@ -3313,8 +3313,8 @@ int cefingo_frame_is_focused(
 )
 {
 	return self->is_focused(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_frame_get_name(
@@ -3322,8 +3322,8 @@ cef_string_userfree_t cefingo_frame_get_name(
 )
 {
 	return self->get_name(
-		       self
-	       );
+		self
+	);
 }
 
 int64 cefingo_frame_get_identifier(
@@ -3331,8 +3331,8 @@ int64 cefingo_frame_get_identifier(
 )
 {
 	return self->get_identifier(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_frame_t* cefingo_frame_get_parent(
@@ -3340,8 +3340,8 @@ struct _cef_frame_t* cefingo_frame_get_parent(
 )
 {
 	return self->get_parent(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_frame_get_url(
@@ -3349,8 +3349,8 @@ cef_string_userfree_t cefingo_frame_get_url(
 )
 {
 	return self->get_url(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_browser_t* cefingo_frame_get_browser(
@@ -3358,8 +3358,8 @@ struct _cef_browser_t* cefingo_frame_get_browser(
 )
 {
 	return self->get_browser(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_v8context_t* cefingo_frame_get_v8context(
@@ -3367,8 +3367,8 @@ struct _cef_v8context_t* cefingo_frame_get_v8context(
 )
 {
 	return self->get_v8context(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_frame_visit_dom(
@@ -3389,10 +3389,10 @@ struct _cef_urlrequest_t* cefingo_frame_create_urlrequest(
 )
 {
 	return self->create_urlrequest(
-		       self,
-		       request,
-		       client
-	       );
+		self,
+		request,
+		client
+	);
 }
 
 void cefingo_frame_send_process_message(
@@ -3413,8 +3413,8 @@ int cefingo_image_is_empty(
 )
 {
 	return self->is_empty(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_image_is_same(
@@ -3423,9 +3423,9 @@ int cefingo_image_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_image_add_bitmap(
@@ -3440,15 +3440,15 @@ int cefingo_image_add_bitmap(
 )
 {
 	return self->add_bitmap(
-		       self,
-		       scale_factor,
-		       pixel_width,
-		       pixel_height,
-		       color_type,
-		       alpha_type,
-		       pixel_data,
-		       pixel_data_size
-	       );
+		self,
+		scale_factor,
+		pixel_width,
+		pixel_height,
+		color_type,
+		alpha_type,
+		pixel_data,
+		pixel_data_size
+	);
 }
 
 int cefingo_image_add_png(
@@ -3459,11 +3459,11 @@ int cefingo_image_add_png(
 )
 {
 	return self->add_png(
-		       self,
-		       scale_factor,
-		       png_data,
-		       png_data_size
-	       );
+		self,
+		scale_factor,
+		png_data,
+		png_data_size
+	);
 }
 
 int cefingo_image_add_jpeg(
@@ -3474,11 +3474,11 @@ int cefingo_image_add_jpeg(
 )
 {
 	return self->add_jpeg(
-		       self,
-		       scale_factor,
-		       jpeg_data,
-		       jpeg_data_size
-	       );
+		self,
+		scale_factor,
+		jpeg_data,
+		jpeg_data_size
+	);
 }
 
 size_t cefingo_image_get_width(
@@ -3486,8 +3486,8 @@ size_t cefingo_image_get_width(
 )
 {
 	return self->get_width(
-		       self
-	       );
+		self
+	);
 }
 
 size_t cefingo_image_get_height(
@@ -3495,8 +3495,8 @@ size_t cefingo_image_get_height(
 )
 {
 	return self->get_height(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_image_has_representation(
@@ -3505,9 +3505,9 @@ int cefingo_image_has_representation(
 )
 {
 	return self->has_representation(
-		       self,
-		       scale_factor
-	       );
+		self,
+		scale_factor
+	);
 }
 
 int cefingo_image_remove_representation(
@@ -3516,9 +3516,9 @@ int cefingo_image_remove_representation(
 )
 {
 	return self->remove_representation(
-		       self,
-		       scale_factor
-	       );
+		self,
+		scale_factor
+	);
 }
 
 int cefingo_image_get_representation_info(
@@ -3530,12 +3530,12 @@ int cefingo_image_get_representation_info(
 )
 {
 	return self->get_representation_info(
-		       self,
-		       scale_factor,
-		       actual_scale_factor,
-		       pixel_width,
-		       pixel_height
-	       );
+		self,
+		scale_factor,
+		actual_scale_factor,
+		pixel_width,
+		pixel_height
+	);
 }
 
 struct _cef_binary_value_t* cefingo_image_get_as_bitmap(
@@ -3548,13 +3548,13 @@ struct _cef_binary_value_t* cefingo_image_get_as_bitmap(
 )
 {
 	return self->get_as_bitmap(
-		       self,
-		       scale_factor,
-		       color_type,
-		       alpha_type,
-		       pixel_width,
-		       pixel_height
-	       );
+		self,
+		scale_factor,
+		color_type,
+		alpha_type,
+		pixel_width,
+		pixel_height
+	);
 }
 
 struct _cef_binary_value_t* cefingo_image_get_as_png(
@@ -3566,12 +3566,12 @@ struct _cef_binary_value_t* cefingo_image_get_as_png(
 )
 {
 	return self->get_as_png(
-		       self,
-		       scale_factor,
-		       with_transparency,
-		       pixel_width,
-		       pixel_height
-	       );
+		self,
+		scale_factor,
+		with_transparency,
+		pixel_width,
+		pixel_height
+	);
 }
 
 struct _cef_binary_value_t* cefingo_image_get_as_jpeg(
@@ -3583,12 +3583,12 @@ struct _cef_binary_value_t* cefingo_image_get_as_jpeg(
 )
 {
 	return self->get_as_jpeg(
-		       self,
-		       scale_factor,
-		       quality,
-		       pixel_width,
-		       pixel_height
-	       );
+		self,
+		scale_factor,
+		quality,
+		pixel_width,
+		pixel_height
+	);
 }
 
 void cefingo_jsdialog_callback_cont(
@@ -3627,12 +3627,12 @@ cef_jsdialog_handler_t *cefingo_construct_jsdialog_handler(cefingo_jsdialog_hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*jsdialog_handler), counter),
 		(cef_base_ref_counted_t*) jsdialog_handler);
-
+	
 	// callbacks
 	jsdialog_handler->body.on_jsdialog = (T_CEF_JSDIALOG_HANDLER_T_ON_JSDIALOG)
-					     cefingo_jsdialog_handler_on_jsdialog;
+		cefingo_jsdialog_handler_on_jsdialog;
 	jsdialog_handler->body.on_before_unload_dialog = (T_CEF_JSDIALOG_HANDLER_T_ON_BEFORE_UNLOAD_DIALOG)
-			cefingo_jsdialog_handler_on_before_unload_dialog;
+		cefingo_jsdialog_handler_on_before_unload_dialog;
 	jsdialog_handler->body.on_reset_dialog_state =
 		cefingo_jsdialog_handler_on_reset_dialog_state;
 	jsdialog_handler->body.on_dialog_closed =
@@ -3660,12 +3660,12 @@ cef_keyboard_handler_t *cefingo_construct_keyboard_handler(cefingo_keyboard_hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*keyboard_handler), counter),
 		(cef_base_ref_counted_t*) keyboard_handler);
-
+	
 	// callbacks
 	keyboard_handler->body.on_pre_key_event = (T_CEF_KEYBOARD_HANDLER_T_ON_PRE_KEY_EVENT)
-			cefingo_keyboard_handler_on_pre_key_event;
+		cefingo_keyboard_handler_on_pre_key_event;
 	keyboard_handler->body.on_key_event = (T_CEF_KEYBOARD_HANDLER_T_ON_KEY_EVENT)
-					      cefingo_keyboard_handler_on_key_event;
+		cefingo_keyboard_handler_on_key_event;
 
 	return (cef_keyboard_handler_t*)keyboard_handler;
 }
@@ -3675,8 +3675,8 @@ struct _cef_menu_button_t* cefingo_label_button_as_menu_button(
 )
 {
 	return self->as_menu_button(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_label_button_set_text(
@@ -3695,8 +3695,8 @@ cef_string_userfree_t cefingo_label_button_get_text(
 )
 {
 	return self->get_text(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_label_button_set_image(
@@ -3718,9 +3718,9 @@ struct _cef_image_t* cefingo_label_button_get_image(
 )
 {
 	return self->get_image(
-		       self,
-		       button_state
-	       );
+		self,
+		button_state
+	);
 }
 
 void cefingo_label_button_set_text_color(
@@ -3796,8 +3796,8 @@ struct _cef_box_layout_t* cefingo_layout_as_box_layout(
 )
 {
 	return self->as_box_layout(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_fill_layout_t* cefingo_layout_as_fill_layout(
@@ -3805,8 +3805,8 @@ struct _cef_fill_layout_t* cefingo_layout_as_fill_layout(
 )
 {
 	return self->as_fill_layout(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_layout_is_valid(
@@ -3814,8 +3814,8 @@ int cefingo_layout_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 typedef int (*T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)(
@@ -3839,10 +3839,10 @@ cef_life_span_handler_t *cefingo_construct_life_span_handler(cefingo_life_span_h
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*life_span_handler), counter),
 		(cef_base_ref_counted_t*) life_span_handler);
-
+	
 	// callbacks
 	life_span_handler->body.on_before_popup = (T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)
-			cefingo_life_span_handler_on_before_popup;
+		cefingo_life_span_handler_on_before_popup;
 	life_span_handler->body.on_after_created =
 		cefingo_life_span_handler_on_after_created;
 	life_span_handler->body.do_close =
@@ -3867,7 +3867,7 @@ cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*load_handler), counter),
 		(cef_base_ref_counted_t*) load_handler);
-
+	
 	// callbacks
 	load_handler->body.on_loading_state_change =
 		cefingo_load_handler_on_loading_state_change;
@@ -3876,7 +3876,7 @@ cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_
 	load_handler->body.on_load_end =
 		cefingo_load_handler_on_load_end;
 	load_handler->body.on_load_error = (T_CEF_LOAD_HANDLER_T_ON_LOAD_ERROR)
-					   cefingo_load_handler_on_load_error;
+		cefingo_load_handler_on_load_error;
 
 	return (cef_load_handler_t*)load_handler;
 }
@@ -3887,9 +3887,9 @@ struct _cef_registration_t* cefingo_media_router_add_observer(
 )
 {
 	return self->add_observer(
-		       self,
-		       observer
-	       );
+		self,
+		observer
+	);
 }
 
 struct _cef_media_source_t* cefingo_media_router_get_source(
@@ -3898,9 +3898,9 @@ struct _cef_media_source_t* cefingo_media_router_get_source(
 )
 {
 	return self->get_source(
-		       self,
-		       urn
-	       );
+		self,
+		urn
+	);
 }
 
 void cefingo_media_router_notify_current_sinks(
@@ -3958,16 +3958,16 @@ cef_media_observer_t *cefingo_construct_media_observer(cefingo_media_observer_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*media_observer), counter),
 		(cef_base_ref_counted_t*) media_observer);
-
+	
 	// callbacks
 	media_observer->body.on_sinks = (T_CEF_MEDIA_OBSERVER_T_ON_SINKS)
-					cefingo_media_observer_on_sinks;
+		cefingo_media_observer_on_sinks;
 	media_observer->body.on_routes = (T_CEF_MEDIA_OBSERVER_T_ON_ROUTES)
-					 cefingo_media_observer_on_routes;
+		cefingo_media_observer_on_routes;
 	media_observer->body.on_route_state_changed =
 		cefingo_media_observer_on_route_state_changed;
 	media_observer->body.on_route_message_received = (T_CEF_MEDIA_OBSERVER_T_ON_ROUTE_MESSAGE_RECEIVED)
-			cefingo_media_observer_on_route_message_received;
+		cefingo_media_observer_on_route_message_received;
 
 	return (cef_media_observer_t*)media_observer;
 }
@@ -3977,8 +3977,8 @@ cef_string_userfree_t cefingo_media_route_get_id(
 )
 {
 	return self->get_id(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_media_source_t* cefingo_media_route_get_source(
@@ -3986,8 +3986,8 @@ struct _cef_media_source_t* cefingo_media_route_get_source(
 )
 {
 	return self->get_source(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_media_sink_t* cefingo_media_route_get_sink(
@@ -3995,8 +3995,8 @@ struct _cef_media_sink_t* cefingo_media_route_get_sink(
 )
 {
 	return self->get_sink(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_media_route_send_route_message(
@@ -4041,8 +4041,8 @@ cef_string_userfree_t cefingo_media_sink_get_id(
 )
 {
 	return self->get_id(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_media_sink_is_valid(
@@ -4050,8 +4050,8 @@ int cefingo_media_sink_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_media_sink_get_name(
@@ -4059,8 +4059,8 @@ cef_string_userfree_t cefingo_media_sink_get_name(
 )
 {
 	return self->get_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_media_sink_get_description(
@@ -4068,8 +4068,8 @@ cef_string_userfree_t cefingo_media_sink_get_description(
 )
 {
 	return self->get_description(
-		       self
-	       );
+		self
+	);
 }
 
 cef_media_sink_icon_type_t cefingo_media_sink_get_icon_type(
@@ -4077,8 +4077,8 @@ cef_media_sink_icon_type_t cefingo_media_sink_get_icon_type(
 )
 {
 	return self->get_icon_type(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_media_sink_get_device_info(
@@ -4097,8 +4097,8 @@ int cefingo_media_sink_is_cast_sink(
 )
 {
 	return self->is_cast_sink(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_media_sink_is_dial_sink(
@@ -4106,8 +4106,8 @@ int cefingo_media_sink_is_dial_sink(
 )
 {
 	return self->is_dial_sink(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_media_sink_is_compatible_with(
@@ -4116,9 +4116,9 @@ int cefingo_media_sink_is_compatible_with(
 )
 {
 	return self->is_compatible_with(
-		       self,
-		       source
-	       );
+		self,
+		source
+	);
 }
 
 void cefingo_media_sink_device_info_callback_on_media_sink_device_info(
@@ -4137,8 +4137,8 @@ cef_string_userfree_t cefingo_media_source_get_id(
 )
 {
 	return self->get_id(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_media_source_is_valid(
@@ -4146,8 +4146,8 @@ int cefingo_media_source_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_media_source_is_cast_source(
@@ -4155,8 +4155,8 @@ int cefingo_media_source_is_cast_source(
 )
 {
 	return self->is_cast_source(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_media_source_is_dial_source(
@@ -4164,8 +4164,8 @@ int cefingo_media_source_is_dial_source(
 )
 {
 	return self->is_dial_source(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_menu_button_show_menu(
@@ -4204,10 +4204,10 @@ cef_menu_button_delegate_t *cefingo_construct_menu_button_delegate(cefingo_menu_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*menu_button_delegate), counter),
 		(cef_base_ref_counted_t*) menu_button_delegate);
-
+	
 	// callbacks
 	menu_button_delegate->body.on_menu_button_pressed = (T_CEF_MENU_BUTTON_DELEGATE_T_ON_MENU_BUTTON_PRESSED)
-			cefingo_menu_button_delegate_on_menu_button_pressed;
+		cefingo_menu_button_delegate_on_menu_button_pressed;
 	menu_button_delegate->body.base.on_button_pressed =
 		cefingo_menu_button_delegate_on_button_pressed;
 	menu_button_delegate->body.base.on_button_state_changed =
@@ -4237,8 +4237,8 @@ int cefingo_menu_model_is_sub_menu(
 )
 {
 	return self->is_sub_menu(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_menu_model_clear(
@@ -4246,8 +4246,8 @@ int cefingo_menu_model_clear(
 )
 {
 	return self->clear(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_menu_model_get_count(
@@ -4255,8 +4255,8 @@ int cefingo_menu_model_get_count(
 )
 {
 	return self->get_count(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_menu_model_add_separator(
@@ -4264,8 +4264,8 @@ int cefingo_menu_model_add_separator(
 )
 {
 	return self->add_separator(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_menu_model_add_item(
@@ -4275,10 +4275,10 @@ int cefingo_menu_model_add_item(
 )
 {
 	return self->add_item(
-		       self,
-		       command_id,
-		       label
-	       );
+		self,
+		command_id,
+		label
+	);
 }
 
 int cefingo_menu_model_add_check_item(
@@ -4288,10 +4288,10 @@ int cefingo_menu_model_add_check_item(
 )
 {
 	return self->add_check_item(
-		       self,
-		       command_id,
-		       label
-	       );
+		self,
+		command_id,
+		label
+	);
 }
 
 int cefingo_menu_model_add_radio_item(
@@ -4302,11 +4302,11 @@ int cefingo_menu_model_add_radio_item(
 )
 {
 	return self->add_radio_item(
-		       self,
-		       command_id,
-		       label,
-		       group_id
-	       );
+		self,
+		command_id,
+		label,
+		group_id
+	);
 }
 
 struct _cef_menu_model_t* cefingo_menu_model_add_sub_menu(
@@ -4316,10 +4316,10 @@ struct _cef_menu_model_t* cefingo_menu_model_add_sub_menu(
 )
 {
 	return self->add_sub_menu(
-		       self,
-		       command_id,
-		       label
-	       );
+		self,
+		command_id,
+		label
+	);
 }
 
 int cefingo_menu_model_insert_separator_at(
@@ -4328,9 +4328,9 @@ int cefingo_menu_model_insert_separator_at(
 )
 {
 	return self->insert_separator_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_insert_item_at(
@@ -4341,11 +4341,11 @@ int cefingo_menu_model_insert_item_at(
 )
 {
 	return self->insert_item_at(
-		       self,
-		       index,
-		       command_id,
-		       label
-	       );
+		self,
+		index,
+		command_id,
+		label
+	);
 }
 
 int cefingo_menu_model_insert_check_item_at(
@@ -4356,11 +4356,11 @@ int cefingo_menu_model_insert_check_item_at(
 )
 {
 	return self->insert_check_item_at(
-		       self,
-		       index,
-		       command_id,
-		       label
-	       );
+		self,
+		index,
+		command_id,
+		label
+	);
 }
 
 int cefingo_menu_model_insert_radio_item_at(
@@ -4372,12 +4372,12 @@ int cefingo_menu_model_insert_radio_item_at(
 )
 {
 	return self->insert_radio_item_at(
-		       self,
-		       index,
-		       command_id,
-		       label,
-		       group_id
-	       );
+		self,
+		index,
+		command_id,
+		label,
+		group_id
+	);
 }
 
 struct _cef_menu_model_t* cefingo_menu_model_insert_sub_menu_at(
@@ -4388,11 +4388,11 @@ struct _cef_menu_model_t* cefingo_menu_model_insert_sub_menu_at(
 )
 {
 	return self->insert_sub_menu_at(
-		       self,
-		       index,
-		       command_id,
-		       label
-	       );
+		self,
+		index,
+		command_id,
+		label
+	);
 }
 
 int cefingo_menu_model_remove(
@@ -4401,9 +4401,9 @@ int cefingo_menu_model_remove(
 )
 {
 	return self->remove(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 int cefingo_menu_model_remove_at(
@@ -4412,9 +4412,9 @@ int cefingo_menu_model_remove_at(
 )
 {
 	return self->remove_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_get_index_of(
@@ -4423,9 +4423,9 @@ int cefingo_menu_model_get_index_of(
 )
 {
 	return self->get_index_of(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 int cefingo_menu_model_get_command_id_at(
@@ -4434,9 +4434,9 @@ int cefingo_menu_model_get_command_id_at(
 )
 {
 	return self->get_command_id_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_set_command_id_at(
@@ -4446,10 +4446,10 @@ int cefingo_menu_model_set_command_id_at(
 )
 {
 	return self->set_command_id_at(
-		       self,
-		       index,
-		       command_id
-	       );
+		self,
+		index,
+		command_id
+	);
 }
 
 cef_string_userfree_t cefingo_menu_model_get_label(
@@ -4458,9 +4458,9 @@ cef_string_userfree_t cefingo_menu_model_get_label(
 )
 {
 	return self->get_label(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 cef_string_userfree_t cefingo_menu_model_get_label_at(
@@ -4469,9 +4469,9 @@ cef_string_userfree_t cefingo_menu_model_get_label_at(
 )
 {
 	return self->get_label_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_set_label(
@@ -4481,10 +4481,10 @@ int cefingo_menu_model_set_label(
 )
 {
 	return self->set_label(
-		       self,
-		       command_id,
-		       label
-	       );
+		self,
+		command_id,
+		label
+	);
 }
 
 int cefingo_menu_model_set_label_at(
@@ -4494,10 +4494,10 @@ int cefingo_menu_model_set_label_at(
 )
 {
 	return self->set_label_at(
-		       self,
-		       index,
-		       label
-	       );
+		self,
+		index,
+		label
+	);
 }
 
 cef_menu_item_type_t cefingo_menu_model_get_type(
@@ -4506,9 +4506,9 @@ cef_menu_item_type_t cefingo_menu_model_get_type(
 )
 {
 	return self->get_type(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 cef_menu_item_type_t cefingo_menu_model_get_type_at(
@@ -4517,9 +4517,9 @@ cef_menu_item_type_t cefingo_menu_model_get_type_at(
 )
 {
 	return self->get_type_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_get_group_id(
@@ -4528,9 +4528,9 @@ int cefingo_menu_model_get_group_id(
 )
 {
 	return self->get_group_id(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 int cefingo_menu_model_get_group_id_at(
@@ -4539,9 +4539,9 @@ int cefingo_menu_model_get_group_id_at(
 )
 {
 	return self->get_group_id_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_set_group_id(
@@ -4551,10 +4551,10 @@ int cefingo_menu_model_set_group_id(
 )
 {
 	return self->set_group_id(
-		       self,
-		       command_id,
-		       group_id
-	       );
+		self,
+		command_id,
+		group_id
+	);
 }
 
 int cefingo_menu_model_set_group_id_at(
@@ -4564,10 +4564,10 @@ int cefingo_menu_model_set_group_id_at(
 )
 {
 	return self->set_group_id_at(
-		       self,
-		       index,
-		       group_id
-	       );
+		self,
+		index,
+		group_id
+	);
 }
 
 struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu(
@@ -4576,9 +4576,9 @@ struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu(
 )
 {
 	return self->get_sub_menu(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu_at(
@@ -4587,9 +4587,9 @@ struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu_at(
 )
 {
 	return self->get_sub_menu_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_is_visible(
@@ -4598,9 +4598,9 @@ int cefingo_menu_model_is_visible(
 )
 {
 	return self->is_visible(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 int cefingo_menu_model_is_visible_at(
@@ -4609,9 +4609,9 @@ int cefingo_menu_model_is_visible_at(
 )
 {
 	return self->is_visible_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_set_visible(
@@ -4621,10 +4621,10 @@ int cefingo_menu_model_set_visible(
 )
 {
 	return self->set_visible(
-		       self,
-		       command_id,
-		       visible
-	       );
+		self,
+		command_id,
+		visible
+	);
 }
 
 int cefingo_menu_model_set_visible_at(
@@ -4634,10 +4634,10 @@ int cefingo_menu_model_set_visible_at(
 )
 {
 	return self->set_visible_at(
-		       self,
-		       index,
-		       visible
-	       );
+		self,
+		index,
+		visible
+	);
 }
 
 int cefingo_menu_model_is_enabled(
@@ -4646,9 +4646,9 @@ int cefingo_menu_model_is_enabled(
 )
 {
 	return self->is_enabled(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 int cefingo_menu_model_is_enabled_at(
@@ -4657,9 +4657,9 @@ int cefingo_menu_model_is_enabled_at(
 )
 {
 	return self->is_enabled_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_set_enabled(
@@ -4669,10 +4669,10 @@ int cefingo_menu_model_set_enabled(
 )
 {
 	return self->set_enabled(
-		       self,
-		       command_id,
-		       enabled
-	       );
+		self,
+		command_id,
+		enabled
+	);
 }
 
 int cefingo_menu_model_set_enabled_at(
@@ -4682,10 +4682,10 @@ int cefingo_menu_model_set_enabled_at(
 )
 {
 	return self->set_enabled_at(
-		       self,
-		       index,
-		       enabled
-	       );
+		self,
+		index,
+		enabled
+	);
 }
 
 int cefingo_menu_model_is_checked(
@@ -4694,9 +4694,9 @@ int cefingo_menu_model_is_checked(
 )
 {
 	return self->is_checked(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 int cefingo_menu_model_is_checked_at(
@@ -4705,9 +4705,9 @@ int cefingo_menu_model_is_checked_at(
 )
 {
 	return self->is_checked_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_set_checked(
@@ -4717,10 +4717,10 @@ int cefingo_menu_model_set_checked(
 )
 {
 	return self->set_checked(
-		       self,
-		       command_id,
-		       checked
-	       );
+		self,
+		command_id,
+		checked
+	);
 }
 
 int cefingo_menu_model_set_checked_at(
@@ -4730,10 +4730,10 @@ int cefingo_menu_model_set_checked_at(
 )
 {
 	return self->set_checked_at(
-		       self,
-		       index,
-		       checked
-	       );
+		self,
+		index,
+		checked
+	);
 }
 
 int cefingo_menu_model_has_accelerator(
@@ -4742,9 +4742,9 @@ int cefingo_menu_model_has_accelerator(
 )
 {
 	return self->has_accelerator(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 int cefingo_menu_model_has_accelerator_at(
@@ -4753,9 +4753,9 @@ int cefingo_menu_model_has_accelerator_at(
 )
 {
 	return self->has_accelerator_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_set_accelerator(
@@ -4768,13 +4768,13 @@ int cefingo_menu_model_set_accelerator(
 )
 {
 	return self->set_accelerator(
-		       self,
-		       command_id,
-		       key_code,
-		       shift_pressed,
-		       ctrl_pressed,
-		       alt_pressed
-	       );
+		self,
+		command_id,
+		key_code,
+		shift_pressed,
+		ctrl_pressed,
+		alt_pressed
+	);
 }
 
 int cefingo_menu_model_set_accelerator_at(
@@ -4787,13 +4787,13 @@ int cefingo_menu_model_set_accelerator_at(
 )
 {
 	return self->set_accelerator_at(
-		       self,
-		       index,
-		       key_code,
-		       shift_pressed,
-		       ctrl_pressed,
-		       alt_pressed
-	       );
+		self,
+		index,
+		key_code,
+		shift_pressed,
+		ctrl_pressed,
+		alt_pressed
+	);
 }
 
 int cefingo_menu_model_remove_accelerator(
@@ -4802,9 +4802,9 @@ int cefingo_menu_model_remove_accelerator(
 )
 {
 	return self->remove_accelerator(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 int cefingo_menu_model_remove_accelerator_at(
@@ -4813,9 +4813,9 @@ int cefingo_menu_model_remove_accelerator_at(
 )
 {
 	return self->remove_accelerator_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_menu_model_get_accelerator(
@@ -4828,13 +4828,13 @@ int cefingo_menu_model_get_accelerator(
 )
 {
 	return self->get_accelerator(
-		       self,
-		       command_id,
-		       key_code,
-		       shift_pressed,
-		       ctrl_pressed,
-		       alt_pressed
-	       );
+		self,
+		command_id,
+		key_code,
+		shift_pressed,
+		ctrl_pressed,
+		alt_pressed
+	);
 }
 
 int cefingo_menu_model_get_accelerator_at(
@@ -4847,13 +4847,13 @@ int cefingo_menu_model_get_accelerator_at(
 )
 {
 	return self->get_accelerator_at(
-		       self,
-		       index,
-		       key_code,
-		       shift_pressed,
-		       ctrl_pressed,
-		       alt_pressed
-	       );
+		self,
+		index,
+		key_code,
+		shift_pressed,
+		ctrl_pressed,
+		alt_pressed
+	);
 }
 
 int cefingo_menu_model_set_color(
@@ -4864,11 +4864,11 @@ int cefingo_menu_model_set_color(
 )
 {
 	return self->set_color(
-		       self,
-		       command_id,
-		       color_type,
-		       color
-	       );
+		self,
+		command_id,
+		color_type,
+		color
+	);
 }
 
 int cefingo_menu_model_set_color_at(
@@ -4879,11 +4879,11 @@ int cefingo_menu_model_set_color_at(
 )
 {
 	return self->set_color_at(
-		       self,
-		       index,
-		       color_type,
-		       color
-	       );
+		self,
+		index,
+		color_type,
+		color
+	);
 }
 
 int cefingo_menu_model_get_color(
@@ -4894,11 +4894,11 @@ int cefingo_menu_model_get_color(
 )
 {
 	return self->get_color(
-		       self,
-		       command_id,
-		       color_type,
-		       color
-	       );
+		self,
+		command_id,
+		color_type,
+		color
+	);
 }
 
 int cefingo_menu_model_get_color_at(
@@ -4909,11 +4909,11 @@ int cefingo_menu_model_get_color_at(
 )
 {
 	return self->get_color_at(
-		       self,
-		       index,
-		       color_type,
-		       color
-	       );
+		self,
+		index,
+		color_type,
+		color
+	);
 }
 
 int cefingo_menu_model_set_font_list(
@@ -4923,10 +4923,10 @@ int cefingo_menu_model_set_font_list(
 )
 {
 	return self->set_font_list(
-		       self,
-		       command_id,
-		       font_list
-	       );
+		self,
+		command_id,
+		font_list
+	);
 }
 
 int cefingo_menu_model_set_font_list_at(
@@ -4936,10 +4936,10 @@ int cefingo_menu_model_set_font_list_at(
 )
 {
 	return self->set_font_list_at(
-		       self,
-		       index,
-		       font_list
-	       );
+		self,
+		index,
+		font_list
+	);
 }
 
 typedef void (*T_CEF_MENU_MODEL_DELEGATE_T_MOUSE_OUTSIDE_MENU)(
@@ -4953,12 +4953,12 @@ cef_menu_model_delegate_t *cefingo_construct_menu_model_delegate(cefingo_menu_mo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*menu_model_delegate), counter),
 		(cef_base_ref_counted_t*) menu_model_delegate);
-
+	
 	// callbacks
 	menu_model_delegate->body.execute_command =
 		cefingo_menu_model_delegate_execute_command;
 	menu_model_delegate->body.mouse_outside_menu = (T_CEF_MENU_MODEL_DELEGATE_T_MOUSE_OUTSIDE_MENU)
-			cefingo_menu_model_delegate_mouse_outside_menu;
+		cefingo_menu_model_delegate_mouse_outside_menu;
 	menu_model_delegate->body.unhandled_open_submenu =
 		cefingo_menu_model_delegate_unhandled_open_submenu;
 	menu_model_delegate->body.unhandled_close_submenu =
@@ -4978,8 +4978,8 @@ int cefingo_navigation_entry_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_navigation_entry_get_url(
@@ -4987,8 +4987,8 @@ cef_string_userfree_t cefingo_navigation_entry_get_url(
 )
 {
 	return self->get_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_navigation_entry_get_display_url(
@@ -4996,8 +4996,8 @@ cef_string_userfree_t cefingo_navigation_entry_get_display_url(
 )
 {
 	return self->get_display_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_navigation_entry_get_original_url(
@@ -5005,8 +5005,8 @@ cef_string_userfree_t cefingo_navigation_entry_get_original_url(
 )
 {
 	return self->get_original_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_navigation_entry_get_title(
@@ -5014,8 +5014,8 @@ cef_string_userfree_t cefingo_navigation_entry_get_title(
 )
 {
 	return self->get_title(
-		       self
-	       );
+		self
+	);
 }
 
 cef_transition_type_t cefingo_navigation_entry_get_transition_type(
@@ -5023,8 +5023,8 @@ cef_transition_type_t cefingo_navigation_entry_get_transition_type(
 )
 {
 	return self->get_transition_type(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_navigation_entry_has_post_data(
@@ -5032,8 +5032,8 @@ int cefingo_navigation_entry_has_post_data(
 )
 {
 	return self->has_post_data(
-		       self
-	       );
+		self
+	);
 }
 
 cef_time_t cefingo_navigation_entry_get_completion_time(
@@ -5041,8 +5041,8 @@ cef_time_t cefingo_navigation_entry_get_completion_time(
 )
 {
 	return self->get_completion_time(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_navigation_entry_get_http_status_code(
@@ -5050,8 +5050,8 @@ int cefingo_navigation_entry_get_http_status_code(
 )
 {
 	return self->get_http_status_code(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_sslstatus_t* cefingo_navigation_entry_get_sslstatus(
@@ -5059,8 +5059,8 @@ struct _cef_sslstatus_t* cefingo_navigation_entry_get_sslstatus(
 )
 {
 	return self->get_sslstatus(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_window_t* cefingo_panel_as_window(
@@ -5068,8 +5068,8 @@ struct _cef_window_t* cefingo_panel_as_window(
 )
 {
 	return self->as_window(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_fill_layout_t* cefingo_panel_set_to_fill_layout(
@@ -5077,8 +5077,8 @@ struct _cef_fill_layout_t* cefingo_panel_set_to_fill_layout(
 )
 {
 	return self->set_to_fill_layout(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_box_layout_t* cefingo_panel_set_to_box_layout(
@@ -5087,9 +5087,9 @@ struct _cef_box_layout_t* cefingo_panel_set_to_box_layout(
 )
 {
 	return self->set_to_box_layout(
-		       self,
-		       settings
-	       );
+		self,
+		settings
+	);
 }
 
 struct _cef_layout_t* cefingo_panel_get_layout(
@@ -5097,8 +5097,8 @@ struct _cef_layout_t* cefingo_panel_get_layout(
 )
 {
 	return self->get_layout(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_panel_layout(
@@ -5172,8 +5172,8 @@ size_t cefingo_panel_get_child_view_count(
 )
 {
 	return self->get_child_view_count(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_view_t* cefingo_panel_get_child_view_at(
@@ -5182,9 +5182,9 @@ struct _cef_view_t* cefingo_panel_get_child_view_at(
 )
 {
 	return self->get_child_view_at(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 
@@ -5193,7 +5193,7 @@ cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*panel_delegate), counter),
 		(cef_base_ref_counted_t*) panel_delegate);
-
+	
 	// callbacks
 	panel_delegate->body.base.get_preferred_size =
 		cefingo_panel_delegate_get_preferred_size;
@@ -5257,7 +5257,7 @@ cef_print_handler_t *cefingo_construct_print_handler(cefingo_print_handler_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*print_handler), counter),
 		(cef_base_ref_counted_t*) print_handler);
-
+	
 	// callbacks
 	print_handler->body.on_print_start =
 		cefingo_print_handler_on_print_start;
@@ -5266,7 +5266,7 @@ cef_print_handler_t *cefingo_construct_print_handler(cefingo_print_handler_wrapp
 	print_handler->body.on_print_dialog =
 		cefingo_print_handler_on_print_dialog;
 	print_handler->body.on_print_job = (T_CEF_PRINT_HANDLER_T_ON_PRINT_JOB)
-					   cefingo_print_handler_on_print_job;
+		cefingo_print_handler_on_print_job;
 	print_handler->body.on_print_reset =
 		cefingo_print_handler_on_print_reset;
 	print_handler->body.get_pdf_paper_size =
@@ -5280,8 +5280,8 @@ int cefingo_print_settings_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_print_settings_is_read_only(
@@ -5289,8 +5289,8 @@ int cefingo_print_settings_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_orientation(
@@ -5309,8 +5309,8 @@ int cefingo_print_settings_is_landscape(
 )
 {
 	return self->is_landscape(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_printer_printable_area(
@@ -5344,8 +5344,8 @@ cef_string_userfree_t cefingo_print_settings_get_device_name(
 )
 {
 	return self->get_device_name(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_dpi(
@@ -5364,8 +5364,8 @@ int cefingo_print_settings_get_dpi(
 )
 {
 	return self->get_dpi(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_page_ranges(
@@ -5386,8 +5386,8 @@ size_t cefingo_print_settings_get_page_ranges_count(
 )
 {
 	return self->get_page_ranges_count(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_selection_only(
@@ -5406,8 +5406,8 @@ int cefingo_print_settings_is_selection_only(
 )
 {
 	return self->is_selection_only(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_collate(
@@ -5426,8 +5426,8 @@ int cefingo_print_settings_will_collate(
 )
 {
 	return self->will_collate(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_color_model(
@@ -5446,8 +5446,8 @@ cef_color_model_t cefingo_print_settings_get_color_model(
 )
 {
 	return self->get_color_model(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_copies(
@@ -5466,8 +5466,8 @@ int cefingo_print_settings_get_copies(
 )
 {
 	return self->get_copies(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_print_settings_set_duplex_mode(
@@ -5486,8 +5486,8 @@ cef_duplex_mode_t cefingo_print_settings_get_duplex_mode(
 )
 {
 	return self->get_duplex_mode(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_process_message_is_valid(
@@ -5495,8 +5495,8 @@ int cefingo_process_message_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_process_message_is_read_only(
@@ -5504,8 +5504,8 @@ int cefingo_process_message_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_process_message_t* cefingo_process_message_copy(
@@ -5513,8 +5513,8 @@ struct _cef_process_message_t* cefingo_process_message_copy(
 )
 {
 	return self->copy(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_process_message_get_name(
@@ -5522,8 +5522,8 @@ cef_string_userfree_t cefingo_process_message_get_name(
 )
 {
 	return self->get_name(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_list_value_t* cefingo_process_message_get_argument_list(
@@ -5531,8 +5531,8 @@ struct _cef_list_value_t* cefingo_process_message_get_argument_list(
 )
 {
 	return self->get_argument_list(
-		       self
-	       );
+		self
+	);
 }
 
 typedef void (*T_CEF_RENDER_HANDLER_T_ON_POPUP_SIZE)(
@@ -5584,7 +5584,7 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*render_handler), counter),
 		(cef_base_ref_counted_t*) render_handler);
-
+	
 	// callbacks
 	render_handler->body.get_accessibility_handler =
 		cefingo_render_handler_get_accessibility_handler;
@@ -5599,13 +5599,13 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 	render_handler->body.on_popup_show =
 		cefingo_render_handler_on_popup_show;
 	render_handler->body.on_popup_size = (T_CEF_RENDER_HANDLER_T_ON_POPUP_SIZE)
-					     cefingo_render_handler_on_popup_size;
+		cefingo_render_handler_on_popup_size;
 	render_handler->body.on_paint = (T_CEF_RENDER_HANDLER_T_ON_PAINT)
-					cefingo_render_handler_on_paint;
+		cefingo_render_handler_on_paint;
 	render_handler->body.on_accelerated_paint = (T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT)
-			cefingo_render_handler_on_accelerated_paint;
+		cefingo_render_handler_on_accelerated_paint;
 	render_handler->body.on_cursor_change = (T_CEF_RENDER_HANDLER_T_ON_CURSOR_CHANGE)
-						cefingo_render_handler_on_cursor_change;
+		cefingo_render_handler_on_cursor_change;
 	render_handler->body.start_dragging =
 		cefingo_render_handler_start_dragging;
 	render_handler->body.update_drag_cursor =
@@ -5613,9 +5613,9 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 	render_handler->body.on_scroll_offset_changed =
 		cefingo_render_handler_on_scroll_offset_changed;
 	render_handler->body.on_ime_composition_range_changed = (T_CEF_RENDER_HANDLER_T_ON_IME_COMPOSITION_RANGE_CHANGED)
-			cefingo_render_handler_on_ime_composition_range_changed;
+		cefingo_render_handler_on_ime_composition_range_changed;
 	render_handler->body.on_text_selection_changed = (T_CEF_RENDER_HANDLER_T_ON_TEXT_SELECTION_CHANGED)
-			cefingo_render_handler_on_text_selection_changed;
+		cefingo_render_handler_on_text_selection_changed;
 	render_handler->body.on_virtual_keyboard_requested =
 		cefingo_render_handler_on_virtual_keyboard_requested;
 
@@ -5628,7 +5628,7 @@ cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_r
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*render_process_handler), counter),
 		(cef_base_ref_counted_t*) render_process_handler);
-
+	
 	// callbacks
 	render_process_handler->body.on_render_thread_created =
 		cefingo_render_process_handler_on_render_thread_created;
@@ -5679,8 +5679,8 @@ int cefingo_request_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_request_get_url(
@@ -5688,8 +5688,8 @@ cef_string_userfree_t cefingo_request_get_url(
 )
 {
 	return self->get_url(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_request_set_url(
@@ -5708,8 +5708,8 @@ cef_string_userfree_t cefingo_request_get_method(
 )
 {
 	return self->get_method(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_request_set_method(
@@ -5741,8 +5741,8 @@ cef_string_userfree_t cefingo_request_get_referrer_url(
 )
 {
 	return self->get_referrer_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_referrer_policy_t cefingo_request_get_referrer_policy(
@@ -5750,8 +5750,8 @@ cef_referrer_policy_t cefingo_request_get_referrer_policy(
 )
 {
 	return self->get_referrer_policy(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_post_data_t* cefingo_request_get_post_data(
@@ -5759,8 +5759,8 @@ struct _cef_post_data_t* cefingo_request_get_post_data(
 )
 {
 	return self->get_post_data(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_request_set_post_data(
@@ -5802,9 +5802,9 @@ cef_string_userfree_t cefingo_request_get_header_by_name(
 )
 {
 	return self->get_header_by_name(
-		       self,
-		       name
-	       );
+		self,
+		name
+	);
 }
 
 void cefingo_request_set_header_by_name(
@@ -5844,8 +5844,8 @@ int cefingo_request_get_flags(
 )
 {
 	return self->get_flags(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_request_set_flags(
@@ -5864,8 +5864,8 @@ cef_string_userfree_t cefingo_request_get_first_party_for_cookies(
 )
 {
 	return self->get_first_party_for_cookies(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_request_set_first_party_for_cookies(
@@ -5884,8 +5884,8 @@ cef_resource_type_t cefingo_request_get_resource_type(
 )
 {
 	return self->get_resource_type(
-		       self
-	       );
+		self
+	);
 }
 
 cef_transition_type_t cefingo_request_get_transition_type(
@@ -5893,8 +5893,8 @@ cef_transition_type_t cefingo_request_get_transition_type(
 )
 {
 	return self->get_transition_type(
-		       self
-	       );
+		self
+	);
 }
 
 uint64 cefingo_request_get_identifier(
@@ -5902,8 +5902,8 @@ uint64 cefingo_request_get_identifier(
 )
 {
 	return self->get_identifier(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_post_data_is_read_only(
@@ -5911,8 +5911,8 @@ int cefingo_post_data_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_post_data_has_excluded_elements(
@@ -5920,8 +5920,8 @@ int cefingo_post_data_has_excluded_elements(
 )
 {
 	return self->has_excluded_elements(
-		       self
-	       );
+		self
+	);
 }
 
 size_t cefingo_post_data_get_element_count(
@@ -5929,8 +5929,8 @@ size_t cefingo_post_data_get_element_count(
 )
 {
 	return self->get_element_count(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_post_data_remove_element(
@@ -5939,9 +5939,9 @@ int cefingo_post_data_remove_element(
 )
 {
 	return self->remove_element(
-		       self,
-		       element
-	       );
+		self,
+		element
+	);
 }
 
 int cefingo_post_data_add_element(
@@ -5950,9 +5950,9 @@ int cefingo_post_data_add_element(
 )
 {
 	return self->add_element(
-		       self,
-		       element
-	       );
+		self,
+		element
+	);
 }
 
 void cefingo_post_data_remove_elements(
@@ -5969,8 +5969,8 @@ int cefingo_post_data_element_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_post_data_element_set_to_empty(
@@ -6011,8 +6011,8 @@ cef_postdataelement_type_t cefingo_post_data_element_get_type(
 )
 {
 	return self->get_type(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_post_data_element_get_file(
@@ -6020,8 +6020,8 @@ cef_string_userfree_t cefingo_post_data_element_get_file(
 )
 {
 	return self->get_file(
-		       self
-	       );
+		self
+	);
 }
 
 size_t cefingo_post_data_element_get_bytes_count(
@@ -6029,8 +6029,8 @@ size_t cefingo_post_data_element_get_bytes_count(
 )
 {
 	return self->get_bytes_count(
-		       self
-	       );
+		self
+	);
 }
 
 size_t cefingo_post_data_element_get_bytes(
@@ -6040,10 +6040,10 @@ size_t cefingo_post_data_element_get_bytes(
 )
 {
 	return self->get_bytes(
-		       self,
-		       size,
-		       bytes
-	       );
+		self,
+		size,
+		bytes
+	);
 }
 
 void cefingo_resolve_callback_on_resolve_completed(
@@ -6065,9 +6065,9 @@ int cefingo_request_context_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       other
-	       );
+		self,
+		other
+	);
 }
 
 int cefingo_request_context_is_sharing_with(
@@ -6076,9 +6076,9 @@ int cefingo_request_context_is_sharing_with(
 )
 {
 	return self->is_sharing_with(
-		       self,
-		       other
-	       );
+		self,
+		other
+	);
 }
 
 int cefingo_request_context_is_global(
@@ -6086,8 +6086,8 @@ int cefingo_request_context_is_global(
 )
 {
 	return self->is_global(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_request_context_handler_t* cefingo_request_context_get_handler(
@@ -6095,8 +6095,8 @@ struct _cef_request_context_handler_t* cefingo_request_context_get_handler(
 )
 {
 	return self->get_handler(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_request_context_get_cache_path(
@@ -6104,8 +6104,8 @@ cef_string_userfree_t cefingo_request_context_get_cache_path(
 )
 {
 	return self->get_cache_path(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_cookie_manager_t* cefingo_request_context_get_cookie_manager(
@@ -6114,9 +6114,9 @@ struct _cef_cookie_manager_t* cefingo_request_context_get_cookie_manager(
 )
 {
 	return self->get_cookie_manager(
-		       self,
-		       callback
-	       );
+		self,
+		callback
+	);
 }
 
 int cefingo_request_context_register_scheme_handler_factory(
@@ -6127,11 +6127,11 @@ int cefingo_request_context_register_scheme_handler_factory(
 )
 {
 	return self->register_scheme_handler_factory(
-		       self,
-		       scheme_name,
-		       domain_name,
-		       factory
-	       );
+		self,
+		scheme_name,
+		domain_name,
+		factory
+	);
 }
 
 int cefingo_request_context_clear_scheme_handler_factories(
@@ -6139,8 +6139,8 @@ int cefingo_request_context_clear_scheme_handler_factories(
 )
 {
 	return self->clear_scheme_handler_factories(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_request_context_purge_plugin_list_cache(
@@ -6160,9 +6160,9 @@ int cefingo_request_context_has_preference(
 )
 {
 	return self->has_preference(
-		       self,
-		       name
-	       );
+		self,
+		name
+	);
 }
 
 struct _cef_value_t* cefingo_request_context_get_preference(
@@ -6171,9 +6171,9 @@ struct _cef_value_t* cefingo_request_context_get_preference(
 )
 {
 	return self->get_preference(
-		       self,
-		       name
-	       );
+		self,
+		name
+	);
 }
 
 struct _cef_dictionary_value_t* cefingo_request_context_get_all_preferences(
@@ -6182,9 +6182,9 @@ struct _cef_dictionary_value_t* cefingo_request_context_get_all_preferences(
 )
 {
 	return self->get_all_preferences(
-		       self,
-		       include_defaults
-	       );
+		self,
+		include_defaults
+	);
 }
 
 int cefingo_request_context_can_set_preference(
@@ -6193,9 +6193,9 @@ int cefingo_request_context_can_set_preference(
 )
 {
 	return self->can_set_preference(
-		       self,
-		       name
-	       );
+		self,
+		name
+	);
 }
 
 int cefingo_request_context_set_preference(
@@ -6206,11 +6206,11 @@ int cefingo_request_context_set_preference(
 )
 {
 	return self->set_preference(
-		       self,
-		       name,
-		       value,
-		       error
-	       );
+		self,
+		name,
+		value,
+		error
+	);
 }
 
 void cefingo_request_context_clear_certificate_exceptions(
@@ -6280,9 +6280,9 @@ int cefingo_request_context_did_load_extension(
 )
 {
 	return self->did_load_extension(
-		       self,
-		       extension_id
-	       );
+		self,
+		extension_id
+	);
 }
 
 int cefingo_request_context_has_extension(
@@ -6291,9 +6291,9 @@ int cefingo_request_context_has_extension(
 )
 {
 	return self->has_extension(
-		       self,
-		       extension_id
-	       );
+		self,
+		extension_id
+	);
 }
 
 int cefingo_request_context_get_extensions(
@@ -6302,9 +6302,9 @@ int cefingo_request_context_get_extensions(
 )
 {
 	return self->get_extensions(
-		       self,
-		       extension_ids
-	       );
+		self,
+		extension_ids
+	);
 }
 
 struct _cef_extension_t* cefingo_request_context_get_extension(
@@ -6313,9 +6313,9 @@ struct _cef_extension_t* cefingo_request_context_get_extension(
 )
 {
 	return self->get_extension(
-		       self,
-		       extension_id
-	       );
+		self,
+		extension_id
+	);
 }
 
 struct _cef_media_router_t* cefingo_request_context_get_media_router(
@@ -6323,8 +6323,8 @@ struct _cef_media_router_t* cefingo_request_context_get_media_router(
 )
 {
 	return self->get_media_router(
-		       self
-	       );
+		self
+	);
 }
 
 typedef int (*T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)(
@@ -6352,14 +6352,14 @@ cef_request_context_handler_t *cefingo_construct_request_context_handler(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*request_context_handler), counter),
 		(cef_base_ref_counted_t*) request_context_handler);
-
+	
 	// callbacks
 	request_context_handler->body.on_request_context_initialized =
 		cefingo_request_context_handler_on_request_context_initialized;
 	request_context_handler->body.on_before_plugin_load = (T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)
-			cefingo_request_context_handler_on_before_plugin_load;
+		cefingo_request_context_handler_on_before_plugin_load;
 	request_context_handler->body.get_resource_request_handler = (T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)
-			cefingo_request_context_handler_get_resource_request_handler;
+		cefingo_request_context_handler_get_resource_request_handler;
 
 	return (cef_request_context_handler_t*)request_context_handler;
 }
@@ -6440,24 +6440,24 @@ cef_request_handler_t *cefingo_construct_request_handler(cefingo_request_handler
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*request_handler), counter),
 		(cef_base_ref_counted_t*) request_handler);
-
+	
 	// callbacks
 	request_handler->body.on_before_browse =
 		cefingo_request_handler_on_before_browse;
 	request_handler->body.on_open_urlfrom_tab = (T_CEF_REQUEST_HANDLER_T_ON_OPEN_URLFROM_TAB)
-			cefingo_request_handler_on_open_urlfrom_tab;
+		cefingo_request_handler_on_open_urlfrom_tab;
 	request_handler->body.get_resource_request_handler = (T_CEF_REQUEST_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)
-			cefingo_request_handler_get_resource_request_handler;
+		cefingo_request_handler_get_resource_request_handler;
 	request_handler->body.get_auth_credentials = (T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)
-			cefingo_request_handler_get_auth_credentials;
+		cefingo_request_handler_get_auth_credentials;
 	request_handler->body.on_quota_request = (T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST)
-			cefingo_request_handler_on_quota_request;
+		cefingo_request_handler_on_quota_request;
 	request_handler->body.on_certificate_error = (T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)
-			cefingo_request_handler_on_certificate_error;
+		cefingo_request_handler_on_certificate_error;
 	request_handler->body.on_select_client_certificate = (T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE)
-			cefingo_request_handler_on_select_client_certificate;
+		cefingo_request_handler_on_select_client_certificate;
 	request_handler->body.on_plugin_crashed = (T_CEF_REQUEST_HANDLER_T_ON_PLUGIN_CRASHED)
-			cefingo_request_handler_on_plugin_crashed;
+		cefingo_request_handler_on_plugin_crashed;
 	request_handler->body.on_render_view_ready =
 		cefingo_request_handler_on_render_view_ready;
 	request_handler->body.on_render_process_terminated =
@@ -6474,7 +6474,7 @@ cef_resource_bundle_handler_t *cefingo_construct_resource_bundle_handler(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*resource_bundle_handler), counter),
 		(cef_base_ref_counted_t*) resource_bundle_handler);
-
+	
 	// callbacks
 	resource_bundle_handler->body.get_localized_string =
 		cefingo_resource_bundle_handler_get_localized_string;
@@ -6514,7 +6514,7 @@ cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*resource_handler), counter),
 		(cef_base_ref_counted_t*) resource_handler);
-
+	
 	// callbacks
 	resource_handler->body.open =
 		cefingo_resource_handler_open;
@@ -6540,7 +6540,7 @@ cef_resource_request_handler_t *cefingo_construct_resource_request_handler(cefin
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*resource_request_handler), counter),
 		(cef_base_ref_counted_t*) resource_request_handler);
-
+	
 	// callbacks
 	resource_request_handler->body.get_cookie_access_filter =
 		cefingo_resource_request_handler_get_cookie_access_filter;
@@ -6583,12 +6583,12 @@ cef_cookie_access_filter_t *cefingo_construct_cookie_access_filter(cefingo_cooki
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*cookie_access_filter), counter),
 		(cef_base_ref_counted_t*) cookie_access_filter);
-
+	
 	// callbacks
 	cookie_access_filter->body.can_send_cookie = (T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SEND_COOKIE)
-			cefingo_cookie_access_filter_can_send_cookie;
+		cefingo_cookie_access_filter_can_send_cookie;
 	cookie_access_filter->body.can_save_cookie = (T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SAVE_COOKIE)
-			cefingo_cookie_access_filter_can_save_cookie;
+		cefingo_cookie_access_filter_can_save_cookie;
 
 	return (cef_cookie_access_filter_t*)cookie_access_filter;
 }
@@ -6598,8 +6598,8 @@ int cefingo_response_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 cef_errorcode_t cefingo_response_get_error(
@@ -6607,8 +6607,8 @@ cef_errorcode_t cefingo_response_get_error(
 )
 {
 	return self->get_error(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_response_set_error(
@@ -6627,8 +6627,8 @@ int cefingo_response_get_status(
 )
 {
 	return self->get_status(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_response_set_status(
@@ -6647,8 +6647,8 @@ cef_string_userfree_t cefingo_response_get_status_text(
 )
 {
 	return self->get_status_text(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_response_set_status_text(
@@ -6667,8 +6667,8 @@ cef_string_userfree_t cefingo_response_get_mime_type(
 )
 {
 	return self->get_mime_type(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_response_set_mime_type(
@@ -6687,8 +6687,8 @@ cef_string_userfree_t cefingo_response_get_charset(
 )
 {
 	return self->get_charset(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_response_set_charset(
@@ -6708,9 +6708,9 @@ cef_string_userfree_t cefingo_response_get_header_by_name(
 )
 {
 	return self->get_header_by_name(
-		       self,
-		       name
-	       );
+		self,
+		name
+	);
 }
 
 void cefingo_response_set_header_by_name(
@@ -6755,8 +6755,8 @@ cef_string_userfree_t cefingo_response_get_url(
 )
 {
 	return self->get_url(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_response_set_url(
@@ -6776,7 +6776,7 @@ cef_response_filter_t *cefingo_construct_response_filter(cefingo_response_filter
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*response_filter), counter),
 		(cef_base_ref_counted_t*) response_filter);
-
+	
 	// callbacks
 	response_filter->body.init_filter =
 		cefingo_response_filter_init_filter;
@@ -6793,10 +6793,10 @@ int cefingo_scheme_registrar_add_custom_scheme(
 )
 {
 	return self->add_custom_scheme(
-		       self,
-		       scheme_name,
-		       options
-	       );
+		self,
+		scheme_name,
+		options
+	);
 }
 
 typedef struct _cef_resource_handler_t* (*T_CEF_SCHEME_HANDLER_FACTORY_T_CREATE)(
@@ -6812,10 +6812,10 @@ cef_scheme_handler_factory_t *cefingo_construct_scheme_handler_factory(cefingo_s
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*scheme_handler_factory), counter),
 		(cef_base_ref_counted_t*) scheme_handler_factory);
-
+	
 	// callbacks
 	scheme_handler_factory->body.create = (T_CEF_SCHEME_HANDLER_FACTORY_T_CREATE)
-					      cefingo_scheme_handler_factory_create;
+		cefingo_scheme_handler_factory_create;
 
 	return (cef_scheme_handler_factory_t*)scheme_handler_factory;
 }
@@ -6836,8 +6836,8 @@ struct _cef_view_t* cefingo_scroll_view_get_content_view(
 )
 {
 	return self->get_content_view(
-		       self
-	       );
+		self
+	);
 }
 
 cef_rect_t cefingo_scroll_view_get_visible_content_rect(
@@ -6845,8 +6845,8 @@ cef_rect_t cefingo_scroll_view_get_visible_content_rect(
 )
 {
 	return self->get_visible_content_rect(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_scroll_view_has_horizontal_scrollbar(
@@ -6854,8 +6854,8 @@ int cefingo_scroll_view_has_horizontal_scrollbar(
 )
 {
 	return self->has_horizontal_scrollbar(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_scroll_view_get_horizontal_scrollbar_height(
@@ -6863,8 +6863,8 @@ int cefingo_scroll_view_get_horizontal_scrollbar_height(
 )
 {
 	return self->get_horizontal_scrollbar_height(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_scroll_view_has_vertical_scrollbar(
@@ -6872,8 +6872,8 @@ int cefingo_scroll_view_has_vertical_scrollbar(
 )
 {
 	return self->has_vertical_scrollbar(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_scroll_view_get_vertical_scrollbar_width(
@@ -6881,8 +6881,8 @@ int cefingo_scroll_view_get_vertical_scrollbar_width(
 )
 {
 	return self->get_vertical_scrollbar_width(
-		       self
-	       );
+		self
+	);
 }
 
 cef_cert_status_t cefingo_sslinfo_get_cert_status(
@@ -6890,8 +6890,8 @@ cef_cert_status_t cefingo_sslinfo_get_cert_status(
 )
 {
 	return self->get_cert_status(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_x509certificate_t* cefingo_sslinfo_get_x509certificate(
@@ -6899,8 +6899,8 @@ struct _cef_x509certificate_t* cefingo_sslinfo_get_x509certificate(
 )
 {
 	return self->get_x509certificate(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_sslstatus_is_secure_connection(
@@ -6908,8 +6908,8 @@ int cefingo_sslstatus_is_secure_connection(
 )
 {
 	return self->is_secure_connection(
-		       self
-	       );
+		self
+	);
 }
 
 cef_cert_status_t cefingo_sslstatus_get_cert_status(
@@ -6917,8 +6917,8 @@ cef_cert_status_t cefingo_sslstatus_get_cert_status(
 )
 {
 	return self->get_cert_status(
-		       self
-	       );
+		self
+	);
 }
 
 cef_ssl_version_t cefingo_sslstatus_get_sslversion(
@@ -6926,8 +6926,8 @@ cef_ssl_version_t cefingo_sslstatus_get_sslversion(
 )
 {
 	return self->get_sslversion(
-		       self
-	       );
+		self
+	);
 }
 
 cef_ssl_content_status_t cefingo_sslstatus_get_content_status(
@@ -6935,8 +6935,8 @@ cef_ssl_content_status_t cefingo_sslstatus_get_content_status(
 )
 {
 	return self->get_content_status(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_x509certificate_t* cefingo_sslstatus_get_x509certificate(
@@ -6944,8 +6944,8 @@ struct _cef_x509certificate_t* cefingo_sslstatus_get_x509certificate(
 )
 {
 	return self->get_x509certificate(
-		       self
-	       );
+		self
+	);
 }
 
 
@@ -6954,7 +6954,7 @@ cef_read_handler_t *cefingo_construct_read_handler(cefingo_read_handler_wrapper_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*read_handler), counter),
 		(cef_base_ref_counted_t*) read_handler);
-
+	
 	// callbacks
 	read_handler->body.read =
 		cefingo_read_handler_read;
@@ -6978,11 +6978,11 @@ size_t cefingo_stream_reader_read(
 )
 {
 	return self->read(
-		       self,
-		       ptr,
-		       size,
-		       n
-	       );
+		self,
+		ptr,
+		size,
+		n
+	);
 }
 
 int cefingo_stream_reader_seek(
@@ -6992,10 +6992,10 @@ int cefingo_stream_reader_seek(
 )
 {
 	return self->seek(
-		       self,
-		       offset,
-		       whence
-	       );
+		self,
+		offset,
+		whence
+	);
 }
 
 int64 cefingo_stream_reader_tell(
@@ -7003,8 +7003,8 @@ int64 cefingo_stream_reader_tell(
 )
 {
 	return self->tell(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_stream_reader_eof(
@@ -7012,8 +7012,8 @@ int cefingo_stream_reader_eof(
 )
 {
 	return self->eof(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_stream_reader_may_block(
@@ -7021,8 +7021,8 @@ int cefingo_stream_reader_may_block(
 )
 {
 	return self->may_block(
-		       self
-	       );
+		self
+	);
 }
 
 typedef size_t (*T_CEF_WRITE_HANDLER_T_WRITE)(
@@ -7037,10 +7037,10 @@ cef_write_handler_t *cefingo_construct_write_handler(cefingo_write_handler_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*write_handler), counter),
 		(cef_base_ref_counted_t*) write_handler);
-
+	
 	// callbacks
 	write_handler->body.write = (T_CEF_WRITE_HANDLER_T_WRITE)
-				    cefingo_write_handler_write;
+		cefingo_write_handler_write;
 	write_handler->body.seek =
 		cefingo_write_handler_seek;
 	write_handler->body.tell =
@@ -7061,11 +7061,11 @@ size_t cefingo_stream_writer_write(
 )
 {
 	return self->write(
-		       self,
-		       ptr,
-		       size,
-		       n
-	       );
+		self,
+		ptr,
+		size,
+		n
+	);
 }
 
 int cefingo_stream_writer_seek(
@@ -7075,10 +7075,10 @@ int cefingo_stream_writer_seek(
 )
 {
 	return self->seek(
-		       self,
-		       offset,
-		       whence
-	       );
+		self,
+		offset,
+		whence
+	);
 }
 
 int64 cefingo_stream_writer_tell(
@@ -7086,8 +7086,8 @@ int64 cefingo_stream_writer_tell(
 )
 {
 	return self->tell(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_stream_writer_flush(
@@ -7095,8 +7095,8 @@ int cefingo_stream_writer_flush(
 )
 {
 	return self->flush(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_stream_writer_may_block(
@@ -7104,8 +7104,8 @@ int cefingo_stream_writer_may_block(
 )
 {
 	return self->may_block(
-		       self
-	       );
+		self
+	);
 }
 
 typedef void (*T_CEF_STRING_VISITOR_T_VISIT)(
@@ -7118,10 +7118,10 @@ cef_string_visitor_t *cefingo_construct_string_visitor(cefingo_string_visitor_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*string_visitor), counter),
 		(cef_base_ref_counted_t*) string_visitor);
-
+	
 	// callbacks
 	string_visitor->body.visit = (T_CEF_STRING_VISITOR_T_VISIT)
-				     cefingo_string_visitor_visit;
+		cefingo_string_visitor_visit;
 
 	return (cef_string_visitor_t*)string_visitor;
 }
@@ -7132,7 +7132,7 @@ cef_task_t *cefingo_construct_task(cefingo_task_wrapper_t* task)
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*task), counter),
 		(cef_base_ref_counted_t*) task);
-
+	
 	// callbacks
 	task->body.execute =
 		cefingo_task_execute;
@@ -7146,9 +7146,9 @@ int cefingo_task_runner_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_task_runner_belongs_to_current_thread(
@@ -7156,8 +7156,8 @@ int cefingo_task_runner_belongs_to_current_thread(
 )
 {
 	return self->belongs_to_current_thread(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_task_runner_belongs_to_thread(
@@ -7166,9 +7166,9 @@ int cefingo_task_runner_belongs_to_thread(
 )
 {
 	return self->belongs_to_thread(
-		       self,
-		       threadId
-	       );
+		self,
+		threadId
+	);
 }
 
 int cefingo_task_runner_post_task(
@@ -7177,9 +7177,9 @@ int cefingo_task_runner_post_task(
 )
 {
 	return self->post_task(
-		       self,
-		       task
-	       );
+		self,
+		task
+	);
 }
 
 int cefingo_task_runner_post_delayed_task(
@@ -7189,10 +7189,10 @@ int cefingo_task_runner_post_delayed_task(
 )
 {
 	return self->post_delayed_task(
-		       self,
-		       task,
-		       delay_ms
-	       );
+		self,
+		task,
+		delay_ms
+	);
 }
 
 void cefingo_textfield_set_password_input(
@@ -7211,8 +7211,8 @@ int cefingo_textfield_is_password_input(
 )
 {
 	return self->is_password_input(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_set_read_only(
@@ -7231,8 +7231,8 @@ int cefingo_textfield_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_textfield_get_text(
@@ -7240,8 +7240,8 @@ cef_string_userfree_t cefingo_textfield_get_text(
 )
 {
 	return self->get_text(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_set_text(
@@ -7282,8 +7282,8 @@ int cefingo_textfield_has_selection(
 )
 {
 	return self->has_selection(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_textfield_get_selected_text(
@@ -7291,8 +7291,8 @@ cef_string_userfree_t cefingo_textfield_get_selected_text(
 )
 {
 	return self->get_selected_text(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_select_all(
@@ -7320,8 +7320,8 @@ cef_range_t cefingo_textfield_get_selected_range(
 )
 {
 	return self->get_selected_range(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_select_range(
@@ -7340,8 +7340,8 @@ size_t cefingo_textfield_get_cursor_position(
 )
 {
 	return self->get_cursor_position(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_set_text_color(
@@ -7360,8 +7360,8 @@ cef_color_t cefingo_textfield_get_text_color(
 )
 {
 	return self->get_text_color(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_set_selection_text_color(
@@ -7380,8 +7380,8 @@ cef_color_t cefingo_textfield_get_selection_text_color(
 )
 {
 	return self->get_selection_text_color(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_set_selection_background_color(
@@ -7400,8 +7400,8 @@ cef_color_t cefingo_textfield_get_selection_background_color(
 )
 {
 	return self->get_selection_background_color(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_set_font_list(
@@ -7449,9 +7449,9 @@ int cefingo_textfield_is_command_enabled(
 )
 {
 	return self->is_command_enabled(
-		       self,
-		       command_id
-	       );
+		self,
+		command_id
+	);
 }
 
 void cefingo_textfield_execute_command(
@@ -7490,8 +7490,8 @@ cef_string_userfree_t cefingo_textfield_get_placeholder_text(
 )
 {
 	return self->get_placeholder_text(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_textfield_set_placeholder_text_color(
@@ -7527,10 +7527,10 @@ cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*textfield_delegate), counter),
 		(cef_base_ref_counted_t*) textfield_delegate);
-
+	
 	// callbacks
 	textfield_delegate->body.on_key_event = (T_CEF_TEXTFIELD_DELEGATE_T_ON_KEY_EVENT)
-						cefingo_textfield_delegate_on_key_event;
+		cefingo_textfield_delegate_on_key_event;
 	textfield_delegate->body.on_after_user_action =
 		cefingo_textfield_delegate_on_after_user_action;
 	textfield_delegate->body.base.get_preferred_size =
@@ -7558,8 +7558,8 @@ struct _cef_request_t* cefingo_urlrequest_get_request(
 )
 {
 	return self->get_request(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_urlrequest_client_t* cefingo_urlrequest_get_client(
@@ -7567,8 +7567,8 @@ struct _cef_urlrequest_client_t* cefingo_urlrequest_get_client(
 )
 {
 	return self->get_client(
-		       self
-	       );
+		self
+	);
 }
 
 cef_urlrequest_status_t cefingo_urlrequest_get_request_status(
@@ -7576,8 +7576,8 @@ cef_urlrequest_status_t cefingo_urlrequest_get_request_status(
 )
 {
 	return self->get_request_status(
-		       self
-	       );
+		self
+	);
 }
 
 cef_errorcode_t cefingo_urlrequest_get_request_error(
@@ -7585,8 +7585,8 @@ cef_errorcode_t cefingo_urlrequest_get_request_error(
 )
 {
 	return self->get_request_error(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_response_t* cefingo_urlrequest_get_response(
@@ -7594,8 +7594,8 @@ struct _cef_response_t* cefingo_urlrequest_get_response(
 )
 {
 	return self->get_response(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_urlrequest_response_was_cached(
@@ -7603,8 +7603,8 @@ int cefingo_urlrequest_response_was_cached(
 )
 {
 	return self->response_was_cached(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_urlrequest_cancel(
@@ -7637,7 +7637,7 @@ cef_urlrequest_client_t *cefingo_construct_urlrequest_client(cefingo_urlrequest_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*urlrequest_client), counter),
 		(cef_base_ref_counted_t*) urlrequest_client);
-
+	
 	// callbacks
 	urlrequest_client->body.on_request_complete =
 		cefingo_urlrequest_client_on_request_complete;
@@ -7646,9 +7646,9 @@ cef_urlrequest_client_t *cefingo_construct_urlrequest_client(cefingo_urlrequest_
 	urlrequest_client->body.on_download_progress =
 		cefingo_urlrequest_client_on_download_progress;
 	urlrequest_client->body.on_download_data = (T_CEF_URLREQUEST_CLIENT_T_ON_DOWNLOAD_DATA)
-			cefingo_urlrequest_client_on_download_data;
+		cefingo_urlrequest_client_on_download_data;
 	urlrequest_client->body.get_auth_credentials = (T_CEF_URLREQUEST_CLIENT_T_GET_AUTH_CREDENTIALS)
-			cefingo_urlrequest_client_get_auth_credentials;
+		cefingo_urlrequest_client_get_auth_credentials;
 
 	return (cef_urlrequest_client_t*)urlrequest_client;
 }
@@ -7658,8 +7658,8 @@ struct _cef_task_runner_t* cefingo_v8context_get_task_runner(
 )
 {
 	return self->get_task_runner(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8context_is_valid(
@@ -7667,8 +7667,8 @@ int cefingo_v8context_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_browser_t* cefingo_v8context_get_browser(
@@ -7676,8 +7676,8 @@ struct _cef_browser_t* cefingo_v8context_get_browser(
 )
 {
 	return self->get_browser(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_frame_t* cefingo_v8context_get_frame(
@@ -7685,8 +7685,8 @@ struct _cef_frame_t* cefingo_v8context_get_frame(
 )
 {
 	return self->get_frame(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_v8value_t* cefingo_v8context_get_global(
@@ -7694,8 +7694,8 @@ struct _cef_v8value_t* cefingo_v8context_get_global(
 )
 {
 	return self->get_global(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8context_enter(
@@ -7703,8 +7703,8 @@ int cefingo_v8context_enter(
 )
 {
 	return self->enter(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8context_exit(
@@ -7712,8 +7712,8 @@ int cefingo_v8context_exit(
 )
 {
 	return self->exit(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8context_is_same(
@@ -7722,9 +7722,9 @@ int cefingo_v8context_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_v8context_eval(
@@ -7737,13 +7737,13 @@ int cefingo_v8context_eval(
 )
 {
 	return self->eval(
-		       self,
-		       code,
-		       script_url,
-		       start_line,
-		       retval,
-		       exception
-	       );
+		self,
+		code,
+		script_url,
+		start_line,
+		retval,
+		exception
+	);
 }
 
 typedef int (*T_CEF_V8HANDLER_T_EXECUTE)(
@@ -7761,10 +7761,10 @@ cef_v8handler_t *cefingo_construct_v8handler(cefingo_v8handler_wrapper_t* v8hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*v8handler), counter),
 		(cef_base_ref_counted_t*) v8handler);
-
+	
 	// callbacks
 	v8handler->body.execute = (T_CEF_V8HANDLER_T_EXECUTE)
-				  cefingo_v8handler_execute;
+		cefingo_v8handler_execute;
 
 	return (cef_v8handler_t*)v8handler;
 }
@@ -7789,12 +7789,12 @@ cef_v8accessor_t *cefingo_construct_v8accessor(cefingo_v8accessor_wrapper_t* v8a
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*v8accessor), counter),
 		(cef_base_ref_counted_t*) v8accessor);
-
+	
 	// callbacks
 	v8accessor->body.get = (T_CEF_V8ACCESSOR_T_GET)
-			       cefingo_v8accessor_get;
+		cefingo_v8accessor_get;
 	v8accessor->body.set = (T_CEF_V8ACCESSOR_T_SET)
-			       cefingo_v8accessor_set;
+		cefingo_v8accessor_set;
 
 	return (cef_v8accessor_t*)v8accessor;
 }
@@ -7808,12 +7808,12 @@ int cefingo_v8interceptor_get_byname(
 )
 {
 	return self->get_byname(
-		       self,
-		       name,
-		       object,
-		       retval,
-		       exception
-	       );
+		self,
+		name,
+		object,
+		retval,
+		exception
+	);
 }
 
 int cefingo_v8interceptor_get_byindex(
@@ -7825,12 +7825,12 @@ int cefingo_v8interceptor_get_byindex(
 )
 {
 	return self->get_byindex(
-		       self,
-		       index,
-		       object,
-		       retval,
-		       exception
-	       );
+		self,
+		index,
+		object,
+		retval,
+		exception
+	);
 }
 
 int cefingo_v8interceptor_set_byname(
@@ -7842,12 +7842,12 @@ int cefingo_v8interceptor_set_byname(
 )
 {
 	return self->set_byname(
-		       self,
-		       name,
-		       object,
-		       value,
-		       exception
-	       );
+		self,
+		name,
+		object,
+		value,
+		exception
+	);
 }
 
 int cefingo_v8interceptor_set_byindex(
@@ -7859,12 +7859,12 @@ int cefingo_v8interceptor_set_byindex(
 )
 {
 	return self->set_byindex(
-		       self,
-		       index,
-		       object,
-		       value,
-		       exception
-	       );
+		self,
+		index,
+		object,
+		value,
+		exception
+	);
 }
 
 cef_string_userfree_t cefingo_v8exception_get_message(
@@ -7872,8 +7872,8 @@ cef_string_userfree_t cefingo_v8exception_get_message(
 )
 {
 	return self->get_message(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_v8exception_get_source_line(
@@ -7881,8 +7881,8 @@ cef_string_userfree_t cefingo_v8exception_get_source_line(
 )
 {
 	return self->get_source_line(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_v8exception_get_script_resource_name(
@@ -7890,8 +7890,8 @@ cef_string_userfree_t cefingo_v8exception_get_script_resource_name(
 )
 {
 	return self->get_script_resource_name(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8exception_get_line_number(
@@ -7899,8 +7899,8 @@ int cefingo_v8exception_get_line_number(
 )
 {
 	return self->get_line_number(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8exception_get_start_position(
@@ -7908,8 +7908,8 @@ int cefingo_v8exception_get_start_position(
 )
 {
 	return self->get_start_position(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8exception_get_end_position(
@@ -7917,8 +7917,8 @@ int cefingo_v8exception_get_end_position(
 )
 {
 	return self->get_end_position(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8exception_get_start_column(
@@ -7926,8 +7926,8 @@ int cefingo_v8exception_get_start_column(
 )
 {
 	return self->get_start_column(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8exception_get_end_column(
@@ -7935,8 +7935,8 @@ int cefingo_v8exception_get_end_column(
 )
 {
 	return self->get_end_column(
-		       self
-	       );
+		self
+	);
 }
 
 
@@ -7945,7 +7945,7 @@ cef_v8array_buffer_release_callback_t *cefingo_construct_v8array_buffer_release_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*v8array_buffer_release_callback), counter),
 		(cef_base_ref_counted_t*) v8array_buffer_release_callback);
-
+	
 	// callbacks
 	v8array_buffer_release_callback->body.release_buffer =
 		cefingo_v8array_buffer_release_callback_release_buffer;
@@ -7958,8 +7958,8 @@ int cefingo_v8value_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_undefined(
@@ -7967,8 +7967,8 @@ int cefingo_v8value_is_undefined(
 )
 {
 	return self->is_undefined(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_null(
@@ -7976,8 +7976,8 @@ int cefingo_v8value_is_null(
 )
 {
 	return self->is_null(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_bool(
@@ -7985,8 +7985,8 @@ int cefingo_v8value_is_bool(
 )
 {
 	return self->is_bool(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_int(
@@ -7994,8 +7994,8 @@ int cefingo_v8value_is_int(
 )
 {
 	return self->is_int(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_uint(
@@ -8003,8 +8003,8 @@ int cefingo_v8value_is_uint(
 )
 {
 	return self->is_uint(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_double(
@@ -8012,8 +8012,8 @@ int cefingo_v8value_is_double(
 )
 {
 	return self->is_double(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_date(
@@ -8021,8 +8021,8 @@ int cefingo_v8value_is_date(
 )
 {
 	return self->is_date(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_string(
@@ -8030,8 +8030,8 @@ int cefingo_v8value_is_string(
 )
 {
 	return self->is_string(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_object(
@@ -8039,8 +8039,8 @@ int cefingo_v8value_is_object(
 )
 {
 	return self->is_object(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_array(
@@ -8048,8 +8048,8 @@ int cefingo_v8value_is_array(
 )
 {
 	return self->is_array(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_array_buffer(
@@ -8057,8 +8057,8 @@ int cefingo_v8value_is_array_buffer(
 )
 {
 	return self->is_array_buffer(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_function(
@@ -8066,8 +8066,8 @@ int cefingo_v8value_is_function(
 )
 {
 	return self->is_function(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_same(
@@ -8076,9 +8076,9 @@ int cefingo_v8value_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_v8value_get_bool_value(
@@ -8086,8 +8086,8 @@ int cefingo_v8value_get_bool_value(
 )
 {
 	return self->get_bool_value(
-		       self
-	       );
+		self
+	);
 }
 
 int32 cefingo_v8value_get_int_value(
@@ -8095,8 +8095,8 @@ int32 cefingo_v8value_get_int_value(
 )
 {
 	return self->get_int_value(
-		       self
-	       );
+		self
+	);
 }
 
 uint32 cefingo_v8value_get_uint_value(
@@ -8104,8 +8104,8 @@ uint32 cefingo_v8value_get_uint_value(
 )
 {
 	return self->get_uint_value(
-		       self
-	       );
+		self
+	);
 }
 
 double cefingo_v8value_get_double_value(
@@ -8113,8 +8113,8 @@ double cefingo_v8value_get_double_value(
 )
 {
 	return self->get_double_value(
-		       self
-	       );
+		self
+	);
 }
 
 cef_time_t cefingo_v8value_get_date_value(
@@ -8122,8 +8122,8 @@ cef_time_t cefingo_v8value_get_date_value(
 )
 {
 	return self->get_date_value(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_v8value_get_string_value(
@@ -8131,8 +8131,8 @@ cef_string_userfree_t cefingo_v8value_get_string_value(
 )
 {
 	return self->get_string_value(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_is_user_created(
@@ -8140,8 +8140,8 @@ int cefingo_v8value_is_user_created(
 )
 {
 	return self->is_user_created(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_has_exception(
@@ -8149,8 +8149,8 @@ int cefingo_v8value_has_exception(
 )
 {
 	return self->has_exception(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_v8exception_t* cefingo_v8value_get_exception(
@@ -8158,8 +8158,8 @@ struct _cef_v8exception_t* cefingo_v8value_get_exception(
 )
 {
 	return self->get_exception(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_clear_exception(
@@ -8167,8 +8167,8 @@ int cefingo_v8value_clear_exception(
 )
 {
 	return self->clear_exception(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_will_rethrow_exceptions(
@@ -8176,8 +8176,8 @@ int cefingo_v8value_will_rethrow_exceptions(
 )
 {
 	return self->will_rethrow_exceptions(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_set_rethrow_exceptions(
@@ -8186,9 +8186,9 @@ int cefingo_v8value_set_rethrow_exceptions(
 )
 {
 	return self->set_rethrow_exceptions(
-		       self,
-		       rethrow
-	       );
+		self,
+		rethrow
+	);
 }
 
 int cefingo_v8value_has_value_bykey(
@@ -8197,9 +8197,9 @@ int cefingo_v8value_has_value_bykey(
 )
 {
 	return self->has_value_bykey(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 int cefingo_v8value_has_value_byindex(
@@ -8208,9 +8208,9 @@ int cefingo_v8value_has_value_byindex(
 )
 {
 	return self->has_value_byindex(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_v8value_delete_value_bykey(
@@ -8219,9 +8219,9 @@ int cefingo_v8value_delete_value_bykey(
 )
 {
 	return self->delete_value_bykey(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 int cefingo_v8value_delete_value_byindex(
@@ -8230,9 +8230,9 @@ int cefingo_v8value_delete_value_byindex(
 )
 {
 	return self->delete_value_byindex(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 struct _cef_v8value_t* cefingo_v8value_get_value_bykey(
@@ -8241,9 +8241,9 @@ struct _cef_v8value_t* cefingo_v8value_get_value_bykey(
 )
 {
 	return self->get_value_bykey(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 struct _cef_v8value_t* cefingo_v8value_get_value_byindex(
@@ -8252,9 +8252,9 @@ struct _cef_v8value_t* cefingo_v8value_get_value_byindex(
 )
 {
 	return self->get_value_byindex(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_v8value_set_value_bykey(
@@ -8265,11 +8265,11 @@ int cefingo_v8value_set_value_bykey(
 )
 {
 	return self->set_value_bykey(
-		       self,
-		       key,
-		       value,
-		       attribute
-	       );
+		self,
+		key,
+		value,
+		attribute
+	);
 }
 
 int cefingo_v8value_set_value_byindex(
@@ -8279,10 +8279,10 @@ int cefingo_v8value_set_value_byindex(
 )
 {
 	return self->set_value_byindex(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 int cefingo_v8value_set_value_byaccessor(
@@ -8293,11 +8293,11 @@ int cefingo_v8value_set_value_byaccessor(
 )
 {
 	return self->set_value_byaccessor(
-		       self,
-		       key,
-		       settings,
-		       attribute
-	       );
+		self,
+		key,
+		settings,
+		attribute
+	);
 }
 
 int cefingo_v8value_get_keys(
@@ -8306,9 +8306,9 @@ int cefingo_v8value_get_keys(
 )
 {
 	return self->get_keys(
-		       self,
-		       keys
-	       );
+		self,
+		keys
+	);
 }
 
 int cefingo_v8value_get_externally_allocated_memory(
@@ -8316,8 +8316,8 @@ int cefingo_v8value_get_externally_allocated_memory(
 )
 {
 	return self->get_externally_allocated_memory(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_adjust_externally_allocated_memory(
@@ -8326,9 +8326,9 @@ int cefingo_v8value_adjust_externally_allocated_memory(
 )
 {
 	return self->adjust_externally_allocated_memory(
-		       self,
-		       change_in_bytes
-	       );
+		self,
+		change_in_bytes
+	);
 }
 
 int cefingo_v8value_get_array_length(
@@ -8336,8 +8336,8 @@ int cefingo_v8value_get_array_length(
 )
 {
 	return self->get_array_length(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_v8array_buffer_release_callback_t* cefingo_v8value_get_array_buffer_release_callback(
@@ -8345,8 +8345,8 @@ struct _cef_v8array_buffer_release_callback_t* cefingo_v8value_get_array_buffer_
 )
 {
 	return self->get_array_buffer_release_callback(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8value_neuter_array_buffer(
@@ -8354,8 +8354,8 @@ int cefingo_v8value_neuter_array_buffer(
 )
 {
 	return self->neuter_array_buffer(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_v8value_get_function_name(
@@ -8363,8 +8363,8 @@ cef_string_userfree_t cefingo_v8value_get_function_name(
 )
 {
 	return self->get_function_name(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_v8handler_t* cefingo_v8value_get_function_handler(
@@ -8372,8 +8372,8 @@ struct _cef_v8handler_t* cefingo_v8value_get_function_handler(
 )
 {
 	return self->get_function_handler(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_v8value_t* cefingo_v8value_execute_function(
@@ -8384,11 +8384,11 @@ struct _cef_v8value_t* cefingo_v8value_execute_function(
 )
 {
 	return self->execute_function(
-		       self,
-		       object,
-		       argumentsCount,
-		       arguments
-	       );
+		self,
+		object,
+		argumentsCount,
+		arguments
+	);
 }
 
 struct _cef_v8value_t* cefingo_v8value_execute_function_with_context(
@@ -8400,12 +8400,12 @@ struct _cef_v8value_t* cefingo_v8value_execute_function_with_context(
 )
 {
 	return self->execute_function_with_context(
-		       self,
-		       context,
-		       object,
-		       argumentsCount,
-		       arguments
-	       );
+		self,
+		context,
+		object,
+		argumentsCount,
+		arguments
+	);
 }
 
 int cefingo_v8stack_trace_is_valid(
@@ -8413,8 +8413,8 @@ int cefingo_v8stack_trace_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8stack_trace_get_frame_count(
@@ -8422,8 +8422,8 @@ int cefingo_v8stack_trace_get_frame_count(
 )
 {
 	return self->get_frame_count(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_v8stack_frame_t* cefingo_v8stack_trace_get_frame(
@@ -8432,9 +8432,9 @@ struct _cef_v8stack_frame_t* cefingo_v8stack_trace_get_frame(
 )
 {
 	return self->get_frame(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_v8stack_frame_is_valid(
@@ -8442,8 +8442,8 @@ int cefingo_v8stack_frame_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_v8stack_frame_get_script_name(
@@ -8451,8 +8451,8 @@ cef_string_userfree_t cefingo_v8stack_frame_get_script_name(
 )
 {
 	return self->get_script_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_v8stack_frame_get_script_name_or_source_url(
@@ -8460,8 +8460,8 @@ cef_string_userfree_t cefingo_v8stack_frame_get_script_name_or_source_url(
 )
 {
 	return self->get_script_name_or_source_url(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_v8stack_frame_get_function_name(
@@ -8469,8 +8469,8 @@ cef_string_userfree_t cefingo_v8stack_frame_get_function_name(
 )
 {
 	return self->get_function_name(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8stack_frame_get_line_number(
@@ -8478,8 +8478,8 @@ int cefingo_v8stack_frame_get_line_number(
 )
 {
 	return self->get_line_number(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8stack_frame_get_column(
@@ -8487,8 +8487,8 @@ int cefingo_v8stack_frame_get_column(
 )
 {
 	return self->get_column(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8stack_frame_is_eval(
@@ -8496,8 +8496,8 @@ int cefingo_v8stack_frame_is_eval(
 )
 {
 	return self->is_eval(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_v8stack_frame_is_constructor(
@@ -8505,8 +8505,8 @@ int cefingo_v8stack_frame_is_constructor(
 )
 {
 	return self->is_constructor(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_value_is_valid(
@@ -8514,8 +8514,8 @@ int cefingo_value_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_value_is_owned(
@@ -8523,8 +8523,8 @@ int cefingo_value_is_owned(
 )
 {
 	return self->is_owned(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_value_is_read_only(
@@ -8532,8 +8532,8 @@ int cefingo_value_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_value_is_same(
@@ -8542,9 +8542,9 @@ int cefingo_value_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_value_is_equal(
@@ -8553,9 +8553,9 @@ int cefingo_value_is_equal(
 )
 {
 	return self->is_equal(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 struct _cef_value_t* cefingo_value_copy(
@@ -8563,8 +8563,8 @@ struct _cef_value_t* cefingo_value_copy(
 )
 {
 	return self->copy(
-		       self
-	       );
+		self
+	);
 }
 
 cef_value_type_t cefingo_value_get_type(
@@ -8572,8 +8572,8 @@ cef_value_type_t cefingo_value_get_type(
 )
 {
 	return self->get_type(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_value_get_bool(
@@ -8581,8 +8581,8 @@ int cefingo_value_get_bool(
 )
 {
 	return self->get_bool(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_value_get_int(
@@ -8590,8 +8590,8 @@ int cefingo_value_get_int(
 )
 {
 	return self->get_int(
-		       self
-	       );
+		self
+	);
 }
 
 double cefingo_value_get_double(
@@ -8599,8 +8599,8 @@ double cefingo_value_get_double(
 )
 {
 	return self->get_double(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_value_get_string(
@@ -8608,8 +8608,8 @@ cef_string_userfree_t cefingo_value_get_string(
 )
 {
 	return self->get_string(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_binary_value_t* cefingo_value_get_binary(
@@ -8617,8 +8617,8 @@ struct _cef_binary_value_t* cefingo_value_get_binary(
 )
 {
 	return self->get_binary(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_dictionary_value_t* cefingo_value_get_dictionary(
@@ -8626,8 +8626,8 @@ struct _cef_dictionary_value_t* cefingo_value_get_dictionary(
 )
 {
 	return self->get_dictionary(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_list_value_t* cefingo_value_get_list(
@@ -8635,8 +8635,8 @@ struct _cef_list_value_t* cefingo_value_get_list(
 )
 {
 	return self->get_list(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_value_set_null(
@@ -8644,8 +8644,8 @@ int cefingo_value_set_null(
 )
 {
 	return self->set_null(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_value_set_bool(
@@ -8654,9 +8654,9 @@ int cefingo_value_set_bool(
 )
 {
 	return self->set_bool(
-		       self,
-		       value
-	       );
+		self,
+		value
+	);
 }
 
 int cefingo_value_set_int(
@@ -8665,9 +8665,9 @@ int cefingo_value_set_int(
 )
 {
 	return self->set_int(
-		       self,
-		       value
-	       );
+		self,
+		value
+	);
 }
 
 int cefingo_value_set_double(
@@ -8676,9 +8676,9 @@ int cefingo_value_set_double(
 )
 {
 	return self->set_double(
-		       self,
-		       value
-	       );
+		self,
+		value
+	);
 }
 
 int cefingo_value_set_string(
@@ -8687,9 +8687,9 @@ int cefingo_value_set_string(
 )
 {
 	return self->set_string(
-		       self,
-		       value
-	       );
+		self,
+		value
+	);
 }
 
 int cefingo_value_set_binary(
@@ -8698,9 +8698,9 @@ int cefingo_value_set_binary(
 )
 {
 	return self->set_binary(
-		       self,
-		       value
-	       );
+		self,
+		value
+	);
 }
 
 int cefingo_value_set_dictionary(
@@ -8709,9 +8709,9 @@ int cefingo_value_set_dictionary(
 )
 {
 	return self->set_dictionary(
-		       self,
-		       value
-	       );
+		self,
+		value
+	);
 }
 
 int cefingo_value_set_list(
@@ -8720,9 +8720,9 @@ int cefingo_value_set_list(
 )
 {
 	return self->set_list(
-		       self,
-		       value
-	       );
+		self,
+		value
+	);
 }
 
 int cefingo_binary_value_is_valid(
@@ -8730,8 +8730,8 @@ int cefingo_binary_value_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_binary_value_is_owned(
@@ -8739,8 +8739,8 @@ int cefingo_binary_value_is_owned(
 )
 {
 	return self->is_owned(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_binary_value_is_same(
@@ -8749,9 +8749,9 @@ int cefingo_binary_value_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_binary_value_is_equal(
@@ -8760,9 +8760,9 @@ int cefingo_binary_value_is_equal(
 )
 {
 	return self->is_equal(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 struct _cef_binary_value_t* cefingo_binary_value_copy(
@@ -8770,8 +8770,8 @@ struct _cef_binary_value_t* cefingo_binary_value_copy(
 )
 {
 	return self->copy(
-		       self
-	       );
+		self
+	);
 }
 
 size_t cefingo_binary_value_get_size(
@@ -8779,8 +8779,8 @@ size_t cefingo_binary_value_get_size(
 )
 {
 	return self->get_size(
-		       self
-	       );
+		self
+	);
 }
 
 size_t cefingo_binary_value_get_data(
@@ -8791,11 +8791,11 @@ size_t cefingo_binary_value_get_data(
 )
 {
 	return self->get_data(
-		       self,
-		       buffer,
-		       buffer_size,
-		       data_offset
-	       );
+		self,
+		buffer,
+		buffer_size,
+		data_offset
+	);
 }
 
 int cefingo_dictionary_value_is_valid(
@@ -8803,8 +8803,8 @@ int cefingo_dictionary_value_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_dictionary_value_is_owned(
@@ -8812,8 +8812,8 @@ int cefingo_dictionary_value_is_owned(
 )
 {
 	return self->is_owned(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_dictionary_value_is_read_only(
@@ -8821,8 +8821,8 @@ int cefingo_dictionary_value_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_dictionary_value_is_same(
@@ -8831,9 +8831,9 @@ int cefingo_dictionary_value_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_dictionary_value_is_equal(
@@ -8842,9 +8842,9 @@ int cefingo_dictionary_value_is_equal(
 )
 {
 	return self->is_equal(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 struct _cef_dictionary_value_t* cefingo_dictionary_value_copy(
@@ -8853,9 +8853,9 @@ struct _cef_dictionary_value_t* cefingo_dictionary_value_copy(
 )
 {
 	return self->copy(
-		       self,
-		       exclude_empty_children
-	       );
+		self,
+		exclude_empty_children
+	);
 }
 
 size_t cefingo_dictionary_value_get_size(
@@ -8863,8 +8863,8 @@ size_t cefingo_dictionary_value_get_size(
 )
 {
 	return self->get_size(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_dictionary_value_clear(
@@ -8872,8 +8872,8 @@ int cefingo_dictionary_value_clear(
 )
 {
 	return self->clear(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_dictionary_value_has_key(
@@ -8882,9 +8882,9 @@ int cefingo_dictionary_value_has_key(
 )
 {
 	return self->has_key(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 int cefingo_dictionary_value_get_keys(
@@ -8893,9 +8893,9 @@ int cefingo_dictionary_value_get_keys(
 )
 {
 	return self->get_keys(
-		       self,
-		       keys
-	       );
+		self,
+		keys
+	);
 }
 
 int cefingo_dictionary_value_remove(
@@ -8904,9 +8904,9 @@ int cefingo_dictionary_value_remove(
 )
 {
 	return self->remove(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 cef_value_type_t cefingo_dictionary_value_get_type(
@@ -8915,9 +8915,9 @@ cef_value_type_t cefingo_dictionary_value_get_type(
 )
 {
 	return self->get_type(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 struct _cef_value_t* cefingo_dictionary_value_get_value(
@@ -8926,9 +8926,9 @@ struct _cef_value_t* cefingo_dictionary_value_get_value(
 )
 {
 	return self->get_value(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 int cefingo_dictionary_value_get_bool(
@@ -8937,9 +8937,9 @@ int cefingo_dictionary_value_get_bool(
 )
 {
 	return self->get_bool(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 int cefingo_dictionary_value_get_int(
@@ -8948,9 +8948,9 @@ int cefingo_dictionary_value_get_int(
 )
 {
 	return self->get_int(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 double cefingo_dictionary_value_get_double(
@@ -8959,9 +8959,9 @@ double cefingo_dictionary_value_get_double(
 )
 {
 	return self->get_double(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 cef_string_userfree_t cefingo_dictionary_value_get_string(
@@ -8970,9 +8970,9 @@ cef_string_userfree_t cefingo_dictionary_value_get_string(
 )
 {
 	return self->get_string(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 struct _cef_binary_value_t* cefingo_dictionary_value_get_binary(
@@ -8981,9 +8981,9 @@ struct _cef_binary_value_t* cefingo_dictionary_value_get_binary(
 )
 {
 	return self->get_binary(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 struct _cef_dictionary_value_t* cefingo_dictionary_value_get_dictionary(
@@ -8992,9 +8992,9 @@ struct _cef_dictionary_value_t* cefingo_dictionary_value_get_dictionary(
 )
 {
 	return self->get_dictionary(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 struct _cef_list_value_t* cefingo_dictionary_value_get_list(
@@ -9003,9 +9003,9 @@ struct _cef_list_value_t* cefingo_dictionary_value_get_list(
 )
 {
 	return self->get_list(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 int cefingo_dictionary_value_set_value(
@@ -9015,10 +9015,10 @@ int cefingo_dictionary_value_set_value(
 )
 {
 	return self->set_value(
-		       self,
-		       key,
-		       value
-	       );
+		self,
+		key,
+		value
+	);
 }
 
 int cefingo_dictionary_value_set_null(
@@ -9027,9 +9027,9 @@ int cefingo_dictionary_value_set_null(
 )
 {
 	return self->set_null(
-		       self,
-		       key
-	       );
+		self,
+		key
+	);
 }
 
 int cefingo_dictionary_value_set_bool(
@@ -9039,10 +9039,10 @@ int cefingo_dictionary_value_set_bool(
 )
 {
 	return self->set_bool(
-		       self,
-		       key,
-		       value
-	       );
+		self,
+		key,
+		value
+	);
 }
 
 int cefingo_dictionary_value_set_int(
@@ -9052,10 +9052,10 @@ int cefingo_dictionary_value_set_int(
 )
 {
 	return self->set_int(
-		       self,
-		       key,
-		       value
-	       );
+		self,
+		key,
+		value
+	);
 }
 
 int cefingo_dictionary_value_set_double(
@@ -9065,10 +9065,10 @@ int cefingo_dictionary_value_set_double(
 )
 {
 	return self->set_double(
-		       self,
-		       key,
-		       value
-	       );
+		self,
+		key,
+		value
+	);
 }
 
 int cefingo_dictionary_value_set_string(
@@ -9078,10 +9078,10 @@ int cefingo_dictionary_value_set_string(
 )
 {
 	return self->set_string(
-		       self,
-		       key,
-		       value
-	       );
+		self,
+		key,
+		value
+	);
 }
 
 int cefingo_dictionary_value_set_binary(
@@ -9091,10 +9091,10 @@ int cefingo_dictionary_value_set_binary(
 )
 {
 	return self->set_binary(
-		       self,
-		       key,
-		       value
-	       );
+		self,
+		key,
+		value
+	);
 }
 
 int cefingo_dictionary_value_set_dictionary(
@@ -9104,10 +9104,10 @@ int cefingo_dictionary_value_set_dictionary(
 )
 {
 	return self->set_dictionary(
-		       self,
-		       key,
-		       value
-	       );
+		self,
+		key,
+		value
+	);
 }
 
 int cefingo_dictionary_value_set_list(
@@ -9117,10 +9117,10 @@ int cefingo_dictionary_value_set_list(
 )
 {
 	return self->set_list(
-		       self,
-		       key,
-		       value
-	       );
+		self,
+		key,
+		value
+	);
 }
 
 int cefingo_list_value_is_valid(
@@ -9128,8 +9128,8 @@ int cefingo_list_value_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_list_value_is_owned(
@@ -9137,8 +9137,8 @@ int cefingo_list_value_is_owned(
 )
 {
 	return self->is_owned(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_list_value_is_read_only(
@@ -9146,8 +9146,8 @@ int cefingo_list_value_is_read_only(
 )
 {
 	return self->is_read_only(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_list_value_is_same(
@@ -9156,9 +9156,9 @@ int cefingo_list_value_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 int cefingo_list_value_is_equal(
@@ -9167,9 +9167,9 @@ int cefingo_list_value_is_equal(
 )
 {
 	return self->is_equal(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 struct _cef_list_value_t* cefingo_list_value_copy(
@@ -9177,8 +9177,8 @@ struct _cef_list_value_t* cefingo_list_value_copy(
 )
 {
 	return self->copy(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_list_value_set_size(
@@ -9187,9 +9187,9 @@ int cefingo_list_value_set_size(
 )
 {
 	return self->set_size(
-		       self,
-		       size
-	       );
+		self,
+		size
+	);
 }
 
 size_t cefingo_list_value_get_size(
@@ -9197,8 +9197,8 @@ size_t cefingo_list_value_get_size(
 )
 {
 	return self->get_size(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_list_value_clear(
@@ -9206,8 +9206,8 @@ int cefingo_list_value_clear(
 )
 {
 	return self->clear(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_list_value_remove(
@@ -9216,9 +9216,9 @@ int cefingo_list_value_remove(
 )
 {
 	return self->remove(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 cef_value_type_t cefingo_list_value_get_type(
@@ -9227,9 +9227,9 @@ cef_value_type_t cefingo_list_value_get_type(
 )
 {
 	return self->get_type(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 struct _cef_value_t* cefingo_list_value_get_value(
@@ -9238,9 +9238,9 @@ struct _cef_value_t* cefingo_list_value_get_value(
 )
 {
 	return self->get_value(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_list_value_get_bool(
@@ -9249,9 +9249,9 @@ int cefingo_list_value_get_bool(
 )
 {
 	return self->get_bool(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_list_value_get_int(
@@ -9260,9 +9260,9 @@ int cefingo_list_value_get_int(
 )
 {
 	return self->get_int(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 double cefingo_list_value_get_double(
@@ -9271,9 +9271,9 @@ double cefingo_list_value_get_double(
 )
 {
 	return self->get_double(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 cef_string_userfree_t cefingo_list_value_get_string(
@@ -9282,9 +9282,9 @@ cef_string_userfree_t cefingo_list_value_get_string(
 )
 {
 	return self->get_string(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 struct _cef_binary_value_t* cefingo_list_value_get_binary(
@@ -9293,9 +9293,9 @@ struct _cef_binary_value_t* cefingo_list_value_get_binary(
 )
 {
 	return self->get_binary(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 struct _cef_dictionary_value_t* cefingo_list_value_get_dictionary(
@@ -9304,9 +9304,9 @@ struct _cef_dictionary_value_t* cefingo_list_value_get_dictionary(
 )
 {
 	return self->get_dictionary(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 struct _cef_list_value_t* cefingo_list_value_get_list(
@@ -9315,9 +9315,9 @@ struct _cef_list_value_t* cefingo_list_value_get_list(
 )
 {
 	return self->get_list(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_list_value_set_value(
@@ -9327,10 +9327,10 @@ int cefingo_list_value_set_value(
 )
 {
 	return self->set_value(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 int cefingo_list_value_set_null(
@@ -9339,9 +9339,9 @@ int cefingo_list_value_set_null(
 )
 {
 	return self->set_null(
-		       self,
-		       index
-	       );
+		self,
+		index
+	);
 }
 
 int cefingo_list_value_set_bool(
@@ -9351,10 +9351,10 @@ int cefingo_list_value_set_bool(
 )
 {
 	return self->set_bool(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 int cefingo_list_value_set_int(
@@ -9364,10 +9364,10 @@ int cefingo_list_value_set_int(
 )
 {
 	return self->set_int(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 int cefingo_list_value_set_double(
@@ -9377,10 +9377,10 @@ int cefingo_list_value_set_double(
 )
 {
 	return self->set_double(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 int cefingo_list_value_set_string(
@@ -9390,10 +9390,10 @@ int cefingo_list_value_set_string(
 )
 {
 	return self->set_string(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 int cefingo_list_value_set_binary(
@@ -9403,10 +9403,10 @@ int cefingo_list_value_set_binary(
 )
 {
 	return self->set_binary(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 int cefingo_list_value_set_dictionary(
@@ -9416,10 +9416,10 @@ int cefingo_list_value_set_dictionary(
 )
 {
 	return self->set_dictionary(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 int cefingo_list_value_set_list(
@@ -9429,10 +9429,10 @@ int cefingo_list_value_set_list(
 )
 {
 	return self->set_list(
-		       self,
-		       index,
-		       value
-	       );
+		self,
+		index,
+		value
+	);
 }
 
 struct _cef_browser_view_t* cefingo_view_as_browser_view(
@@ -9440,8 +9440,8 @@ struct _cef_browser_view_t* cefingo_view_as_browser_view(
 )
 {
 	return self->as_browser_view(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_button_t* cefingo_view_as_button(
@@ -9449,8 +9449,8 @@ struct _cef_button_t* cefingo_view_as_button(
 )
 {
 	return self->as_button(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_panel_t* cefingo_view_as_panel(
@@ -9458,8 +9458,8 @@ struct _cef_panel_t* cefingo_view_as_panel(
 )
 {
 	return self->as_panel(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_scroll_view_t* cefingo_view_as_scroll_view(
@@ -9467,8 +9467,8 @@ struct _cef_scroll_view_t* cefingo_view_as_scroll_view(
 )
 {
 	return self->as_scroll_view(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_textfield_t* cefingo_view_as_textfield(
@@ -9476,8 +9476,8 @@ struct _cef_textfield_t* cefingo_view_as_textfield(
 )
 {
 	return self->as_textfield(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_view_get_type_string(
@@ -9485,8 +9485,8 @@ cef_string_userfree_t cefingo_view_get_type_string(
 )
 {
 	return self->get_type_string(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_view_to_string(
@@ -9495,9 +9495,9 @@ cef_string_userfree_t cefingo_view_to_string(
 )
 {
 	return self->to_string(
-		       self,
-		       include_children
-	       );
+		self,
+		include_children
+	);
 }
 
 int cefingo_view_is_valid(
@@ -9505,8 +9505,8 @@ int cefingo_view_is_valid(
 )
 {
 	return self->is_valid(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_view_is_attached(
@@ -9514,8 +9514,8 @@ int cefingo_view_is_attached(
 )
 {
 	return self->is_attached(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_view_is_same(
@@ -9524,9 +9524,9 @@ int cefingo_view_is_same(
 )
 {
 	return self->is_same(
-		       self,
-		       that
-	       );
+		self,
+		that
+	);
 }
 
 struct _cef_view_delegate_t* cefingo_view_get_delegate(
@@ -9534,8 +9534,8 @@ struct _cef_view_delegate_t* cefingo_view_get_delegate(
 )
 {
 	return self->get_delegate(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_window_t* cefingo_view_get_window(
@@ -9543,8 +9543,8 @@ struct _cef_window_t* cefingo_view_get_window(
 )
 {
 	return self->get_window(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_view_get_id(
@@ -9552,8 +9552,8 @@ int cefingo_view_get_id(
 )
 {
 	return self->get_id(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_view_set_id(
@@ -9572,8 +9572,8 @@ int cefingo_view_get_group_id(
 )
 {
 	return self->get_group_id(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_view_set_group_id(
@@ -9592,8 +9592,8 @@ struct _cef_view_t* cefingo_view_get_parent_view(
 )
 {
 	return self->get_parent_view(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_view_t* cefingo_view_get_view_for_id(
@@ -9602,9 +9602,9 @@ struct _cef_view_t* cefingo_view_get_view_for_id(
 )
 {
 	return self->get_view_for_id(
-		       self,
-		       id
-	       );
+		self,
+		id
+	);
 }
 
 void cefingo_view_set_bounds(
@@ -9623,8 +9623,8 @@ cef_rect_t cefingo_view_get_bounds(
 )
 {
 	return self->get_bounds(
-		       self
-	       );
+		self
+	);
 }
 
 cef_rect_t cefingo_view_get_bounds_in_screen(
@@ -9632,8 +9632,8 @@ cef_rect_t cefingo_view_get_bounds_in_screen(
 )
 {
 	return self->get_bounds_in_screen(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_view_set_size(
@@ -9652,8 +9652,8 @@ cef_size_t cefingo_view_get_size(
 )
 {
 	return self->get_size(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_view_set_position(
@@ -9672,8 +9672,8 @@ cef_point_t cefingo_view_get_position(
 )
 {
 	return self->get_position(
-		       self
-	       );
+		self
+	);
 }
 
 cef_size_t cefingo_view_get_preferred_size(
@@ -9681,8 +9681,8 @@ cef_size_t cefingo_view_get_preferred_size(
 )
 {
 	return self->get_preferred_size(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_view_size_to_preferred_size(
@@ -9699,8 +9699,8 @@ cef_size_t cefingo_view_get_minimum_size(
 )
 {
 	return self->get_minimum_size(
-		       self
-	       );
+		self
+	);
 }
 
 cef_size_t cefingo_view_get_maximum_size(
@@ -9708,8 +9708,8 @@ cef_size_t cefingo_view_get_maximum_size(
 )
 {
 	return self->get_maximum_size(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_view_get_height_for_width(
@@ -9718,9 +9718,9 @@ int cefingo_view_get_height_for_width(
 )
 {
 	return self->get_height_for_width(
-		       self,
-		       width
-	       );
+		self,
+		width
+	);
 }
 
 void cefingo_view_invalidate_layout(
@@ -9748,8 +9748,8 @@ int cefingo_view_is_visible(
 )
 {
 	return self->is_visible(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_view_is_drawn(
@@ -9757,8 +9757,8 @@ int cefingo_view_is_drawn(
 )
 {
 	return self->is_drawn(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_view_set_enabled(
@@ -9777,8 +9777,8 @@ int cefingo_view_is_enabled(
 )
 {
 	return self->is_enabled(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_view_set_focusable(
@@ -9797,8 +9797,8 @@ int cefingo_view_is_focusable(
 )
 {
 	return self->is_focusable(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_view_is_accessibility_focusable(
@@ -9806,8 +9806,8 @@ int cefingo_view_is_accessibility_focusable(
 )
 {
 	return self->is_accessibility_focusable(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_view_request_focus(
@@ -9835,8 +9835,8 @@ cef_color_t cefingo_view_get_background_color(
 )
 {
 	return self->get_background_color(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_view_convert_point_to_screen(
@@ -9845,9 +9845,9 @@ int cefingo_view_convert_point_to_screen(
 )
 {
 	return self->convert_point_to_screen(
-		       self,
-		       point
-	       );
+		self,
+		point
+	);
 }
 
 int cefingo_view_convert_point_from_screen(
@@ -9856,9 +9856,9 @@ int cefingo_view_convert_point_from_screen(
 )
 {
 	return self->convert_point_from_screen(
-		       self,
-		       point
-	       );
+		self,
+		point
+	);
 }
 
 int cefingo_view_convert_point_to_window(
@@ -9867,9 +9867,9 @@ int cefingo_view_convert_point_to_window(
 )
 {
 	return self->convert_point_to_window(
-		       self,
-		       point
-	       );
+		self,
+		point
+	);
 }
 
 int cefingo_view_convert_point_from_window(
@@ -9878,9 +9878,9 @@ int cefingo_view_convert_point_from_window(
 )
 {
 	return self->convert_point_from_window(
-		       self,
-		       point
-	       );
+		self,
+		point
+	);
 }
 
 int cefingo_view_convert_point_to_view(
@@ -9890,10 +9890,10 @@ int cefingo_view_convert_point_to_view(
 )
 {
 	return self->convert_point_to_view(
-		       self,
-		       view,
-		       point
-	       );
+		self,
+		view,
+		point
+	);
 }
 
 int cefingo_view_convert_point_from_view(
@@ -9903,10 +9903,10 @@ int cefingo_view_convert_point_from_view(
 )
 {
 	return self->convert_point_from_view(
-		       self,
-		       view,
-		       point
-	       );
+		self,
+		view,
+		point
+	);
 }
 
 
@@ -9915,7 +9915,7 @@ cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*view_delegate), counter),
 		(cef_base_ref_counted_t*) view_delegate);
-
+	
 	// callbacks
 	view_delegate->body.get_preferred_size =
 		cefingo_view_delegate_get_preferred_size;
@@ -9942,8 +9942,8 @@ cef_string_userfree_t cefingo_web_plugin_info_get_name(
 )
 {
 	return self->get_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_web_plugin_info_get_path(
@@ -9951,8 +9951,8 @@ cef_string_userfree_t cefingo_web_plugin_info_get_path(
 )
 {
 	return self->get_path(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_web_plugin_info_get_version(
@@ -9960,8 +9960,8 @@ cef_string_userfree_t cefingo_web_plugin_info_get_version(
 )
 {
 	return self->get_version(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_web_plugin_info_get_description(
@@ -9969,8 +9969,8 @@ cef_string_userfree_t cefingo_web_plugin_info_get_description(
 )
 {
 	return self->get_description(
-		       self
-	       );
+		self
+	);
 }
 
 
@@ -9979,7 +9979,7 @@ cef_web_plugin_info_visitor_t *cefingo_construct_web_plugin_info_visitor(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*web_plugin_info_visitor), counter),
 		(cef_base_ref_counted_t*) web_plugin_info_visitor);
-
+	
 	// callbacks
 	web_plugin_info_visitor->body.visit =
 		cefingo_web_plugin_info_visitor_visit;
@@ -9998,10 +9998,10 @@ cef_web_plugin_unstable_callback_t *cefingo_construct_web_plugin_unstable_callba
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*web_plugin_unstable_callback), counter),
 		(cef_base_ref_counted_t*) web_plugin_unstable_callback);
-
+	
 	// callbacks
 	web_plugin_unstable_callback->body.is_unstable = (T_CEF_WEB_PLUGIN_UNSTABLE_CALLBACK_T_IS_UNSTABLE)
-			cefingo_web_plugin_unstable_callback_is_unstable;
+		cefingo_web_plugin_unstable_callback_is_unstable;
 
 	return (cef_web_plugin_unstable_callback_t*)web_plugin_unstable_callback;
 }
@@ -10017,10 +10017,10 @@ cef_register_cdm_callback_t *cefingo_construct_register_cdm_callback(cefingo_reg
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*register_cdm_callback), counter),
 		(cef_base_ref_counted_t*) register_cdm_callback);
-
+	
 	// callbacks
 	register_cdm_callback->body.on_cdm_registration_complete = (T_CEF_REGISTER_CDM_CALLBACK_T_ON_CDM_REGISTRATION_COMPLETE)
-			cefingo_register_cdm_callback_on_cdm_registration_complete;
+		cefingo_register_cdm_callback_on_cdm_registration_complete;
 
 	return (cef_register_cdm_callback_t*)register_cdm_callback;
 }
@@ -10068,8 +10068,8 @@ int cefingo_window_is_closed(
 )
 {
 	return self->is_closed(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_activate(
@@ -10095,8 +10095,8 @@ int cefingo_window_is_active(
 )
 {
 	return self->is_active(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_bring_to_top(
@@ -10124,8 +10124,8 @@ int cefingo_window_is_always_on_top(
 )
 {
 	return self->is_always_on_top(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_maximize(
@@ -10171,8 +10171,8 @@ int cefingo_window_is_maximized(
 )
 {
 	return self->is_maximized(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_window_is_minimized(
@@ -10180,8 +10180,8 @@ int cefingo_window_is_minimized(
 )
 {
 	return self->is_minimized(
-		       self
-	       );
+		self
+	);
 }
 
 int cefingo_window_is_fullscreen(
@@ -10189,8 +10189,8 @@ int cefingo_window_is_fullscreen(
 )
 {
 	return self->is_fullscreen(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_set_title(
@@ -10209,8 +10209,8 @@ cef_string_userfree_t cefingo_window_get_title(
 )
 {
 	return self->get_title(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_set_window_icon(
@@ -10229,8 +10229,8 @@ struct _cef_image_t* cefingo_window_get_window_icon(
 )
 {
 	return self->get_window_icon(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_set_window_app_icon(
@@ -10249,8 +10249,8 @@ struct _cef_image_t* cefingo_window_get_window_app_icon(
 )
 {
 	return self->get_window_app_icon(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_show_menu(
@@ -10282,8 +10282,8 @@ struct _cef_display_t* cefingo_window_get_display(
 )
 {
 	return self->get_display(
-		       self
-	       );
+		self
+	);
 }
 
 cef_rect_t cefingo_window_get_client_area_bounds_in_screen(
@@ -10291,8 +10291,8 @@ cef_rect_t cefingo_window_get_client_area_bounds_in_screen(
 )
 {
 	return self->get_client_area_bounds_in_screen(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_set_draggable_regions(
@@ -10313,8 +10313,8 @@ cef_window_handle_t cefingo_window_get_window_handle(
 )
 {
 	return self->get_window_handle(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_window_send_key_press(
@@ -10408,7 +10408,7 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*window_delegate), counter),
 		(cef_base_ref_counted_t*) window_delegate);
-
+	
 	// callbacks
 	window_delegate->body.on_window_created =
 		cefingo_window_delegate_on_window_created;
@@ -10429,7 +10429,7 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 	window_delegate->body.on_accelerator =
 		cefingo_window_delegate_on_accelerator;
 	window_delegate->body.on_key_event = (T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT)
-					     cefingo_window_delegate_on_key_event;
+		cefingo_window_delegate_on_key_event;
 	window_delegate->body.base.base.get_preferred_size =
 		cefingo_window_delegate_get_preferred_size;
 	window_delegate->body.base.base.get_minimum_size =
@@ -10455,8 +10455,8 @@ cef_string_userfree_t cefingo_x509cert_principal_get_display_name(
 )
 {
 	return self->get_display_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_common_name(
@@ -10464,8 +10464,8 @@ cef_string_userfree_t cefingo_x509cert_principal_get_common_name(
 )
 {
 	return self->get_common_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_locality_name(
@@ -10473,8 +10473,8 @@ cef_string_userfree_t cefingo_x509cert_principal_get_locality_name(
 )
 {
 	return self->get_locality_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_state_or_province_name(
@@ -10482,8 +10482,8 @@ cef_string_userfree_t cefingo_x509cert_principal_get_state_or_province_name(
 )
 {
 	return self->get_state_or_province_name(
-		       self
-	       );
+		self
+	);
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_country_name(
@@ -10491,8 +10491,8 @@ cef_string_userfree_t cefingo_x509cert_principal_get_country_name(
 )
 {
 	return self->get_country_name(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_x509cert_principal_get_street_addresses(
@@ -10544,8 +10544,8 @@ struct _cef_x509cert_principal_t* cefingo_x509certificate_get_subject(
 )
 {
 	return self->get_subject(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_x509cert_principal_t* cefingo_x509certificate_get_issuer(
@@ -10553,8 +10553,8 @@ struct _cef_x509cert_principal_t* cefingo_x509certificate_get_issuer(
 )
 {
 	return self->get_issuer(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_binary_value_t* cefingo_x509certificate_get_serial_number(
@@ -10562,8 +10562,8 @@ struct _cef_binary_value_t* cefingo_x509certificate_get_serial_number(
 )
 {
 	return self->get_serial_number(
-		       self
-	       );
+		self
+	);
 }
 
 cef_time_t cefingo_x509certificate_get_valid_start(
@@ -10571,8 +10571,8 @@ cef_time_t cefingo_x509certificate_get_valid_start(
 )
 {
 	return self->get_valid_start(
-		       self
-	       );
+		self
+	);
 }
 
 cef_time_t cefingo_x509certificate_get_valid_expiry(
@@ -10580,8 +10580,8 @@ cef_time_t cefingo_x509certificate_get_valid_expiry(
 )
 {
 	return self->get_valid_expiry(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_binary_value_t* cefingo_x509certificate_get_derencoded(
@@ -10589,8 +10589,8 @@ struct _cef_binary_value_t* cefingo_x509certificate_get_derencoded(
 )
 {
 	return self->get_derencoded(
-		       self
-	       );
+		self
+	);
 }
 
 struct _cef_binary_value_t* cefingo_x509certificate_get_pemencoded(
@@ -10598,8 +10598,8 @@ struct _cef_binary_value_t* cefingo_x509certificate_get_pemencoded(
 )
 {
 	return self->get_pemencoded(
-		       self
-	       );
+		self
+	);
 }
 
 size_t cefingo_x509certificate_get_issuer_chain_size(
@@ -10607,8 +10607,8 @@ size_t cefingo_x509certificate_get_issuer_chain_size(
 )
 {
 	return self->get_issuer_chain_size(
-		       self
-	       );
+		self
+	);
 }
 
 void cefingo_x509certificate_get_derencoded_issuer_chain(
