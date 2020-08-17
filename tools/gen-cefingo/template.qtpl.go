@@ -1855,7 +1855,7 @@ func StreamCConstruct(qw422016 *qt422016.Writer, st *parser.CefClassDecl, lt *Lo
 	qw422016.E().S(st.BaseName())
 //line template.qtpl:359
 	qw422016.N().S(`);
-	
+
 	// callbacks
 `)
 //line template.qtpl:362
@@ -1878,20 +1878,20 @@ func StreamCConstruct(qw422016 *qt422016.Writer, st *parser.CefClassDecl, lt *Lo
 //line template.qtpl:365
 			qw422016.E().S(m.Funcname.Name())
 //line template.qtpl:365
-			qw422016.N().S(` =`)
-//line template.qtpl:365
+			qw422016.N().S(` =
+		`)
+//line template.qtpl:366
 			if m.HasConstParams() {
-//line template.qtpl:365
-				qw422016.N().S(` (`)
-//line template.qtpl:365
+//line template.qtpl:366
+				qw422016.N().S(`(`)
+//line template.qtpl:366
 				qw422016.E().S(methodCTypeName(m))
-//line template.qtpl:365
+//line template.qtpl:366
 				qw422016.N().S(`)`)
-//line template.qtpl:365
+//line template.qtpl:366
 			}
-//line template.qtpl:365
-			qw422016.N().S(`
-		cefingo_`)
+//line template.qtpl:366
+			qw422016.N().S(`cefingo_`)
 //line template.qtpl:366
 			qw422016.E().S(st.BaseName())
 //line template.qtpl:366
@@ -3282,7 +3282,7 @@ func StreamCefObjectMethodC(qw422016 *qt422016.Writer, m *parser.MethodDecl) {
 	qw422016.N().S(`
 `)
 //line template.qtpl:618
-	retGoType := m.ReturnGoType()
+	withRet := m.ReturnGoType() != ""
 
 //line template.qtpl:619
 	qw422016.E().S(methodCSig(m))
@@ -3291,9 +3291,9 @@ func StreamCefObjectMethodC(qw422016 *qt422016.Writer, m *parser.MethodDecl) {
 {
 	`)
 //line template.qtpl:621
-	if retGoType != "" {
+	if withRet {
 //line template.qtpl:621
-		qw422016.N().S(`return `)
+		qw422016.N().S(`return	`)
 //line template.qtpl:621
 	}
 //line template.qtpl:621
@@ -3313,14 +3313,30 @@ func StreamCefObjectMethodC(qw422016 *qt422016.Writer, m *parser.MethodDecl) {
 //line template.qtpl:624
 		}
 //line template.qtpl:624
-		qw422016.N().S(`		`)
+		qw422016.N().S(`	`)
+//line template.qtpl:625
+		if withRet {
+//line template.qtpl:625
+			qw422016.N().S(`	`)
+//line template.qtpl:625
+		}
+//line template.qtpl:625
+		qw422016.N().S(`	`)
 //line template.qtpl:625
 		qw422016.E().S(p.Name())
 //line template.qtpl:626
 	}
 //line template.qtpl:626
 	qw422016.N().S(`
-	);
+	`)
+//line template.qtpl:627
+	if withRet {
+//line template.qtpl:627
+		qw422016.N().S(`	`)
+//line template.qtpl:627
+	}
+//line template.qtpl:627
+	qw422016.N().S(`);
 }
 `)
 //line template.qtpl:629

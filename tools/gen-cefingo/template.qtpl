@@ -357,13 +357,13 @@ typedef {%s m.ReturnType().CType() -%}
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*{%s st.BaseName() %}), counter),
 		(cef_base_ref_counted_t*) {%s st.BaseName() %});
-	
+
 	// callbacks
 	{%- code base := "" -%}
 	{%- for c := st; c != nil; c = c.GetBase() -%}
 	{%- for _, m := range c.Methods -%}
-	{%s st.BaseName() %}->body{%s base %}.{%s m.Funcname.Name() %} ={% if m.HasConstParams() %} ({%s methodCTypeName(m) %}){% endif %}
-		cefingo_{%s st.BaseName() %}_{%s m.Funcname.Name() %};
+	{%s st.BaseName() %}->body{%s base %}.{%s m.Funcname.Name() %} =
+		{% if m.HasConstParams() %}({%s methodCTypeName(m) %}){% endif %}cefingo_{%s st.BaseName() %}_{%s m.Funcname.Name() %};
 	{%- endfor -%}
 	{%- code base = base + ".base"-%}
 	{%- endfor -%}
@@ -615,16 +615,16 @@ extern {%s methodCSig(m) %};
 {% endfunc %}
 
 {% func CefObjectMethodC(m *parser.MethodDecl) %}
-{% code retGoType := m.ReturnGoType() -%}
+{% code withRet := m.ReturnGoType() != "" -%}
 {%s methodCSig(m) %}
 {
-	{% if retGoType != "" %}return {% endif %}self->{%s m.Funcname.Name() %}(
+	{% if withRet %}return	{% endif %}self->{%s m.Funcname.Name() %}(
 		{%- for i, p := range m.Params() -%}
 		{%- if i > 0 %},
 		{%- endif -%}
-		{%s p.Name() -%}
+	{% if withRet %}	{% endif %}	{%s p.Name() -%}
 		{%- endfor %}
-	);
+	{% if withRet %}	{% endif %});
 }
 {% endfunc %}
 

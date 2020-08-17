@@ -8,7 +8,7 @@ cef_accessibility_handler_t *cefingo_construct_accessibility_handler(cefingo_acc
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*accessibility_handler), counter),
 		(cef_base_ref_counted_t*) accessibility_handler);
-	
+
 	// callbacks
 	accessibility_handler->body.on_accessibility_tree_change =
 		cefingo_accessibility_handler_on_accessibility_tree_change;
@@ -29,10 +29,10 @@ cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app)
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*app), counter),
 		(cef_base_ref_counted_t*) app);
-	
+
 	// callbacks
-	app->body.on_before_command_line_processing = (T_CEF_APP_T_ON_BEFORE_COMMAND_LINE_PROCESSING)
-		cefingo_app_on_before_command_line_processing;
+	app->body.on_before_command_line_processing =
+		(T_CEF_APP_T_ON_BEFORE_COMMAND_LINE_PROCESSING)cefingo_app_on_before_command_line_processing;
 	app->body.on_register_custom_schemes =
 		cefingo_app_on_register_custom_schemes;
 	app->body.get_resource_bundle_handler =
@@ -62,16 +62,16 @@ cef_audio_handler_t *cefingo_construct_audio_handler(cefingo_audio_handler_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*audio_handler), counter),
 		(cef_base_ref_counted_t*) audio_handler);
-	
+
 	// callbacks
 	audio_handler->body.get_audio_parameters =
 		cefingo_audio_handler_get_audio_parameters;
-	audio_handler->body.on_audio_stream_started = (T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_STARTED)
-		cefingo_audio_handler_on_audio_stream_started;
+	audio_handler->body.on_audio_stream_started =
+		(T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_STARTED)cefingo_audio_handler_on_audio_stream_started;
 	audio_handler->body.on_audio_stream_stopped =
 		cefingo_audio_handler_on_audio_stream_stopped;
-	audio_handler->body.on_audio_stream_error = (T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_ERROR)
-		cefingo_audio_handler_on_audio_stream_error;
+	audio_handler->body.on_audio_stream_error =
+		(T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_ERROR)cefingo_audio_handler_on_audio_stream_error;
 
 	return (cef_audio_handler_t*)audio_handler;
 }
@@ -126,18 +126,18 @@ struct _cef_browser_host_t* cefingo_browser_get_host(
 	struct _cef_browser_t* self
 )
 {
-	return self->get_host(
-		self
-	);
+	return	self->get_host(
+			self
+		);
 }
 
 int cefingo_browser_can_go_back(
 	struct _cef_browser_t* self
 )
 {
-	return self->can_go_back(
-		self
-	);
+	return	self->can_go_back(
+			self
+		);
 }
 
 void cefingo_browser_go_back(
@@ -153,9 +153,9 @@ int cefingo_browser_can_go_forward(
 	struct _cef_browser_t* self
 )
 {
-	return self->can_go_forward(
-		self
-	);
+	return	self->can_go_forward(
+			self
+		);
 }
 
 void cefingo_browser_go_forward(
@@ -171,9 +171,9 @@ int cefingo_browser_is_loading(
 	struct _cef_browser_t* self
 )
 {
-	return self->is_loading(
-		self
-	);
+	return	self->is_loading(
+			self
+		);
 }
 
 void cefingo_browser_reload(
@@ -207,9 +207,9 @@ int cefingo_browser_get_identifier(
 	struct _cef_browser_t* self
 )
 {
-	return self->get_identifier(
-		self
-	);
+	return	self->get_identifier(
+			self
+		);
 }
 
 int cefingo_browser_is_same(
@@ -217,46 +217,46 @@ int cefingo_browser_is_same(
 	struct _cef_browser_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_browser_is_popup(
 	struct _cef_browser_t* self
 )
 {
-	return self->is_popup(
-		self
-	);
+	return	self->is_popup(
+			self
+		);
 }
 
 int cefingo_browser_has_document(
 	struct _cef_browser_t* self
 )
 {
-	return self->has_document(
-		self
-	);
+	return	self->has_document(
+			self
+		);
 }
 
 struct _cef_frame_t* cefingo_browser_get_main_frame(
 	struct _cef_browser_t* self
 )
 {
-	return self->get_main_frame(
-		self
-	);
+	return	self->get_main_frame(
+			self
+		);
 }
 
 struct _cef_frame_t* cefingo_browser_get_focused_frame(
 	struct _cef_browser_t* self
 )
 {
-	return self->get_focused_frame(
-		self
-	);
+	return	self->get_focused_frame(
+			self
+		);
 }
 
 struct _cef_frame_t* cefingo_browser_get_frame_byident(
@@ -264,10 +264,10 @@ struct _cef_frame_t* cefingo_browser_get_frame_byident(
 	int64 identifier
 )
 {
-	return self->get_frame_byident(
-		self,
-		identifier
-	);
+	return	self->get_frame_byident(
+			self,
+			identifier
+		);
 }
 
 struct _cef_frame_t* cefingo_browser_get_frame(
@@ -275,19 +275,19 @@ struct _cef_frame_t* cefingo_browser_get_frame(
 	const cef_string_t* name
 )
 {
-	return self->get_frame(
-		self,
-		name
-	);
+	return	self->get_frame(
+			self,
+			name
+		);
 }
 
 size_t cefingo_browser_get_frame_count(
 	struct _cef_browser_t* self
 )
 {
-	return self->get_frame_count(
-		self
-	);
+	return	self->get_frame_count(
+			self
+		);
 }
 
 void cefingo_browser_get_frame_names(
@@ -307,7 +307,7 @@ cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callback(cefin
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*run_file_dialog_callback), counter),
 		(cef_base_ref_counted_t*) run_file_dialog_callback);
-	
+
 	// callbacks
 	run_file_dialog_callback->body.on_file_dialog_dismissed =
 		cefingo_run_file_dialog_callback_on_file_dialog_dismissed;
@@ -323,13 +323,13 @@ int cefingo_navigation_entry_visitor_visit(
 	int total
 )
 {
-	return self->visit(
-		self,
-		entry,
-		current,
-		index,
-		total
-	);
+	return	self->visit(
+			self,
+			entry,
+			current,
+			index,
+			total
+		);
 }
 
 void cefingo_pdf_print_callback_on_pdf_print_finished(
@@ -364,9 +364,9 @@ struct _cef_browser_t* cefingo_browser_host_get_browser(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_browser(
-		self
-	);
+	return	self->get_browser(
+			self
+		);
 }
 
 void cefingo_browser_host_close_browser(
@@ -384,9 +384,9 @@ int cefingo_browser_host_try_close_browser(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->try_close_browser(
-		self
-	);
+	return	self->try_close_browser(
+			self
+		);
 }
 
 void cefingo_browser_host_set_focus(
@@ -404,54 +404,54 @@ cef_window_handle_t cefingo_browser_host_get_window_handle(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_window_handle(
-		self
-	);
+	return	self->get_window_handle(
+			self
+		);
 }
 
 cef_window_handle_t cefingo_browser_host_get_opener_window_handle(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_opener_window_handle(
-		self
-	);
+	return	self->get_opener_window_handle(
+			self
+		);
 }
 
 int cefingo_browser_host_has_view(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->has_view(
-		self
-	);
+	return	self->has_view(
+			self
+		);
 }
 
 struct _cef_client_t* cefingo_browser_host_get_client(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_client(
-		self
-	);
+	return	self->get_client(
+			self
+		);
 }
 
 struct _cef_request_context_t* cefingo_browser_host_get_request_context(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_request_context(
-		self
-	);
+	return	self->get_request_context(
+			self
+		);
 }
 
 double cefingo_browser_host_get_zoom_level(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_zoom_level(
-		self
-	);
+	return	self->get_zoom_level(
+			self
+		);
 }
 
 void cefingo_browser_host_set_zoom_level(
@@ -600,9 +600,9 @@ int cefingo_browser_host_has_dev_tools(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->has_dev_tools(
-		self
-	);
+	return	self->has_dev_tools(
+			self
+		);
 }
 
 int cefingo_browser_host_send_dev_tools_message(
@@ -611,11 +611,11 @@ int cefingo_browser_host_send_dev_tools_message(
 	size_t message_size
 )
 {
-	return self->send_dev_tools_message(
-		self,
-		message,
-		message_size
-	);
+	return	self->send_dev_tools_message(
+			self,
+			message,
+			message_size
+		);
 }
 
 int cefingo_browser_host_execute_dev_tools_method(
@@ -625,12 +625,12 @@ int cefingo_browser_host_execute_dev_tools_method(
 	struct _cef_dictionary_value_t* params
 )
 {
-	return self->execute_dev_tools_method(
-		self,
-		message_id,
-		method,
-		params
-	);
+	return	self->execute_dev_tools_method(
+			self,
+			message_id,
+			method,
+			params
+		);
 }
 
 struct _cef_registration_t* cefingo_browser_host_add_dev_tools_message_observer(
@@ -638,10 +638,10 @@ struct _cef_registration_t* cefingo_browser_host_add_dev_tools_message_observer(
 	struct _cef_dev_tools_message_observer_t* observer
 )
 {
-	return self->add_dev_tools_message_observer(
-		self,
-		observer
-	);
+	return	self->add_dev_tools_message_observer(
+			self,
+			observer
+		);
 }
 
 void cefingo_browser_host_get_navigation_entries(
@@ -672,9 +672,9 @@ int cefingo_browser_host_is_mouse_cursor_change_disabled(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->is_mouse_cursor_change_disabled(
-		self
-	);
+	return	self->is_mouse_cursor_change_disabled(
+			self
+		);
 }
 
 void cefingo_browser_host_replace_misspelling(
@@ -703,9 +703,9 @@ int cefingo_browser_host_is_window_rendering_disabled(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->is_window_rendering_disabled(
-		self
-	);
+	return	self->is_window_rendering_disabled(
+			self
+		);
 }
 
 void cefingo_browser_host_was_resized(
@@ -857,9 +857,9 @@ int cefingo_browser_host_get_windowless_frame_rate(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_windowless_frame_rate(
-		self
-	);
+	return	self->get_windowless_frame_rate(
+			self
+		);
 }
 
 void cefingo_browser_host_set_windowless_frame_rate(
@@ -1003,9 +1003,9 @@ struct _cef_navigation_entry_t* cefingo_browser_host_get_visible_navigation_entr
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_visible_navigation_entry(
-		self
-	);
+	return	self->get_visible_navigation_entry(
+			self
+		);
 }
 
 void cefingo_browser_host_set_accessibility_state(
@@ -1038,18 +1038,18 @@ struct _cef_extension_t* cefingo_browser_host_get_extension(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->get_extension(
-		self
-	);
+	return	self->get_extension(
+			self
+		);
 }
 
 int cefingo_browser_host_is_background_host(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->is_background_host(
-		self
-	);
+	return	self->is_background_host(
+			self
+		);
 }
 
 void cefingo_browser_host_set_audio_muted(
@@ -1067,9 +1067,9 @@ int cefingo_browser_host_is_audio_muted(
 	struct _cef_browser_host_t* self
 )
 {
-	return self->is_audio_muted(
-		self
-	);
+	return	self->is_audio_muted(
+			self
+		);
 }
 
 
@@ -1078,7 +1078,7 @@ cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*browser_process_handler), counter),
 		(cef_base_ref_counted_t*) browser_process_handler);
-	
+
 	// callbacks
 	browser_process_handler->body.on_context_initialized =
 		cefingo_browser_process_handler_on_context_initialized;
@@ -1098,9 +1098,9 @@ struct _cef_browser_t* cefingo_browser_view_get_browser(
 	struct _cef_browser_view_t* self
 )
 {
-	return self->get_browser(
-		self
-	);
+	return	self->get_browser(
+			self
+		);
 }
 
 void cefingo_browser_view_set_prefer_accelerators(
@@ -1127,14 +1127,14 @@ cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_bro
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*browser_view_delegate), counter),
 		(cef_base_ref_counted_t*) browser_view_delegate);
-	
+
 	// callbacks
 	browser_view_delegate->body.on_browser_created =
 		cefingo_browser_view_delegate_on_browser_created;
 	browser_view_delegate->body.on_browser_destroyed =
 		cefingo_browser_view_delegate_on_browser_destroyed;
-	browser_view_delegate->body.get_delegate_for_popup_browser_view = (T_CEF_BROWSER_VIEW_DELEGATE_T_GET_DELEGATE_FOR_POPUP_BROWSER_VIEW)
-		cefingo_browser_view_delegate_get_delegate_for_popup_browser_view;
+	browser_view_delegate->body.get_delegate_for_popup_browser_view =
+		(T_CEF_BROWSER_VIEW_DELEGATE_T_GET_DELEGATE_FOR_POPUP_BROWSER_VIEW)cefingo_browser_view_delegate_get_delegate_for_popup_browser_view;
 	browser_view_delegate->body.on_popup_browser_view_created =
 		cefingo_browser_view_delegate_on_popup_browser_view_created;
 	browser_view_delegate->body.base.get_preferred_size =
@@ -1161,9 +1161,9 @@ struct _cef_label_button_t* cefingo_button_as_label_button(
 	struct _cef_button_t* self
 )
 {
-	return self->as_label_button(
-		self
-	);
+	return	self->as_label_button(
+			self
+		);
 }
 
 void cefingo_button_set_state(
@@ -1181,9 +1181,9 @@ cef_button_state_t cefingo_button_get_state(
 	struct _cef_button_t* self
 )
 {
-	return self->get_state(
-		self
-	);
+	return	self->get_state(
+			self
+		);
 }
 
 void cefingo_button_set_ink_drop_enabled(
@@ -1225,7 +1225,7 @@ cef_button_delegate_t *cefingo_construct_button_delegate(cefingo_button_delegate
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*button_delegate), counter),
 		(cef_base_ref_counted_t*) button_delegate);
-	
+
 	// callbacks
 	button_delegate->body.on_button_pressed =
 		cefingo_button_delegate_on_button_pressed;
@@ -1284,7 +1284,7 @@ cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*client), counter),
 		(cef_base_ref_counted_t*) client);
-	
+
 	// callbacks
 	client->body.get_audio_handler =
 		cefingo_client_get_audio_handler;
@@ -1324,27 +1324,27 @@ int cefingo_command_line_is_valid(
 	struct _cef_command_line_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_command_line_is_read_only(
 	struct _cef_command_line_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 struct _cef_command_line_t* cefingo_command_line_copy(
 	struct _cef_command_line_t* self
 )
 {
-	return self->copy(
-		self
-	);
+	return	self->copy(
+			self
+		);
 }
 
 void cefingo_command_line_init_from_string(
@@ -1382,18 +1382,18 @@ cef_string_userfree_t cefingo_command_line_get_command_line_string(
 	struct _cef_command_line_t* self
 )
 {
-	return self->get_command_line_string(
-		self
-	);
+	return	self->get_command_line_string(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_command_line_get_program(
 	struct _cef_command_line_t* self
 )
 {
-	return self->get_program(
-		self
-	);
+	return	self->get_program(
+			self
+		);
 }
 
 void cefingo_command_line_set_program(
@@ -1411,9 +1411,9 @@ int cefingo_command_line_has_switches(
 	struct _cef_command_line_t* self
 )
 {
-	return self->has_switches(
-		self
-	);
+	return	self->has_switches(
+			self
+		);
 }
 
 int cefingo_command_line_has_switch(
@@ -1421,10 +1421,10 @@ int cefingo_command_line_has_switch(
 	const cef_string_t* name
 )
 {
-	return self->has_switch(
-		self,
-		name
-	);
+	return	self->has_switch(
+			self,
+			name
+		);
 }
 
 cef_string_userfree_t cefingo_command_line_get_switch_value(
@@ -1432,10 +1432,10 @@ cef_string_userfree_t cefingo_command_line_get_switch_value(
 	const cef_string_t* name
 )
 {
-	return self->get_switch_value(
-		self,
-		name
-	);
+	return	self->get_switch_value(
+			self,
+			name
+		);
 }
 
 void cefingo_command_line_get_switches(
@@ -1477,9 +1477,9 @@ int cefingo_command_line_has_arguments(
 	struct _cef_command_line_t* self
 )
 {
-	return self->has_arguments(
-		self
-	);
+	return	self->has_arguments(
+			self
+		);
 }
 
 void cefingo_command_line_get_arguments(
@@ -1543,7 +1543,7 @@ cef_context_menu_handler_t *cefingo_construct_context_menu_handler(cefingo_conte
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*context_menu_handler), counter),
 		(cef_base_ref_counted_t*) context_menu_handler);
-	
+
 	// callbacks
 	context_menu_handler->body.on_before_context_menu =
 		cefingo_context_menu_handler_on_before_context_menu;
@@ -1561,135 +1561,135 @@ int cefingo_context_menu_params_get_xcoord(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_xcoord(
-		self
-	);
+	return	self->get_xcoord(
+			self
+		);
 }
 
 int cefingo_context_menu_params_get_ycoord(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_ycoord(
-		self
-	);
+	return	self->get_ycoord(
+			self
+		);
 }
 
 cef_context_menu_type_flags_t cefingo_context_menu_params_get_type_flags(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_type_flags(
-		self
-	);
+	return	self->get_type_flags(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_link_url(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_link_url(
-		self
-	);
+	return	self->get_link_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_unfiltered_link_url(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_unfiltered_link_url(
-		self
-	);
+	return	self->get_unfiltered_link_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_source_url(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_source_url(
-		self
-	);
+	return	self->get_source_url(
+			self
+		);
 }
 
 int cefingo_context_menu_params_has_image_contents(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->has_image_contents(
-		self
-	);
+	return	self->has_image_contents(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_title_text(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_title_text(
-		self
-	);
+	return	self->get_title_text(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_page_url(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_page_url(
-		self
-	);
+	return	self->get_page_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_frame_url(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_frame_url(
-		self
-	);
+	return	self->get_frame_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_frame_charset(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_frame_charset(
-		self
-	);
+	return	self->get_frame_charset(
+			self
+		);
 }
 
 cef_context_menu_media_type_t cefingo_context_menu_params_get_media_type(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_media_type(
-		self
-	);
+	return	self->get_media_type(
+			self
+		);
 }
 
 cef_context_menu_media_state_flags_t cefingo_context_menu_params_get_media_state_flags(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_media_state_flags(
-		self
-	);
+	return	self->get_media_state_flags(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_selection_text(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_selection_text(
-		self
-	);
+	return	self->get_selection_text(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_context_menu_params_get_misspelled_word(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_misspelled_word(
-		self
-	);
+	return	self->get_misspelled_word(
+			self
+		);
 }
 
 int cefingo_context_menu_params_get_dictionary_suggestions(
@@ -1697,55 +1697,55 @@ int cefingo_context_menu_params_get_dictionary_suggestions(
 	cef_string_list_t suggestions
 )
 {
-	return self->get_dictionary_suggestions(
-		self,
-		suggestions
-	);
+	return	self->get_dictionary_suggestions(
+			self,
+			suggestions
+		);
 }
 
 int cefingo_context_menu_params_is_editable(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->is_editable(
-		self
-	);
+	return	self->is_editable(
+			self
+		);
 }
 
 int cefingo_context_menu_params_is_spell_check_enabled(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->is_spell_check_enabled(
-		self
-	);
+	return	self->is_spell_check_enabled(
+			self
+		);
 }
 
 cef_context_menu_edit_state_flags_t cefingo_context_menu_params_get_edit_state_flags(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->get_edit_state_flags(
-		self
-	);
+	return	self->get_edit_state_flags(
+			self
+		);
 }
 
 int cefingo_context_menu_params_is_custom_menu(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->is_custom_menu(
-		self
-	);
+	return	self->is_custom_menu(
+			self
+		);
 }
 
 int cefingo_context_menu_params_is_pepper_menu(
 	struct _cef_context_menu_params_t* self
 )
 {
-	return self->is_pepper_menu(
-		self
-	);
+	return	self->is_pepper_menu(
+			self
+		);
 }
 
 void cefingo_cookie_manager_set_supported_schemes(
@@ -1768,10 +1768,10 @@ int cefingo_cookie_manager_visit_all_cookies(
 	struct _cef_cookie_visitor_t* visitor
 )
 {
-	return self->visit_all_cookies(
-		self,
-		visitor
-	);
+	return	self->visit_all_cookies(
+			self,
+			visitor
+		);
 }
 
 int cefingo_cookie_manager_visit_url_cookies(
@@ -1781,12 +1781,12 @@ int cefingo_cookie_manager_visit_url_cookies(
 	struct _cef_cookie_visitor_t* visitor
 )
 {
-	return self->visit_url_cookies(
-		self,
-		url,
-		includeHttpOnly,
-		visitor
-	);
+	return	self->visit_url_cookies(
+			self,
+			url,
+			includeHttpOnly,
+			visitor
+		);
 }
 
 int cefingo_cookie_manager_set_cookie(
@@ -1796,12 +1796,12 @@ int cefingo_cookie_manager_set_cookie(
 	struct _cef_set_cookie_callback_t* callback
 )
 {
-	return self->set_cookie(
-		self,
-		url,
-		cookie,
-		callback
-	);
+	return	self->set_cookie(
+			self,
+			url,
+			cookie,
+			callback
+		);
 }
 
 int cefingo_cookie_manager_delete_cookies(
@@ -1811,12 +1811,12 @@ int cefingo_cookie_manager_delete_cookies(
 	struct _cef_delete_cookies_callback_t* callback
 )
 {
-	return self->delete_cookies(
-		self,
-		url,
-		cookie_name,
-		callback
-	);
+	return	self->delete_cookies(
+			self,
+			url,
+			cookie_name,
+			callback
+		);
 }
 
 int cefingo_cookie_manager_flush_store(
@@ -1824,10 +1824,10 @@ int cefingo_cookie_manager_flush_store(
 	struct _cef_completion_callback_t* callback
 )
 {
-	return self->flush_store(
-		self,
-		callback
-	);
+	return	self->flush_store(
+			self,
+			callback
+		);
 }
 
 typedef int (*T_CEF_COOKIE_VISITOR_T_VISIT)(
@@ -1843,10 +1843,10 @@ cef_cookie_visitor_t *cefingo_construct_cookie_visitor(cefingo_cookie_visitor_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*cookie_visitor), counter),
 		(cef_base_ref_counted_t*) cookie_visitor);
-	
+
 	// callbacks
-	cookie_visitor->body.visit = (T_CEF_COOKIE_VISITOR_T_VISIT)
-		cefingo_cookie_visitor_visit;
+	cookie_visitor->body.visit =
+		(T_CEF_COOKIE_VISITOR_T_VISIT)cefingo_cookie_visitor_visit;
 
 	return (cef_cookie_visitor_t*)cookie_visitor;
 }
@@ -1857,7 +1857,7 @@ cef_set_cookie_callback_t *cefingo_construct_set_cookie_callback(cefingo_set_coo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*set_cookie_callback), counter),
 		(cef_base_ref_counted_t*) set_cookie_callback);
-	
+
 	// callbacks
 	set_cookie_callback->body.on_complete =
 		cefingo_set_cookie_callback_on_complete;
@@ -1871,7 +1871,7 @@ cef_delete_cookies_callback_t *cefingo_construct_delete_cookies_callback(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*delete_cookies_callback), counter),
 		(cef_base_ref_counted_t*) delete_cookies_callback);
-	
+
 	// callbacks
 	delete_cookies_callback->body.on_complete =
 		cefingo_delete_cookies_callback_on_complete;
@@ -1906,14 +1906,14 @@ cef_dev_tools_message_observer_t *cefingo_construct_dev_tools_message_observer(c
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*dev_tools_message_observer), counter),
 		(cef_base_ref_counted_t*) dev_tools_message_observer);
-	
+
 	// callbacks
-	dev_tools_message_observer->body.on_dev_tools_message = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_MESSAGE)
-		cefingo_dev_tools_message_observer_on_dev_tools_message;
-	dev_tools_message_observer->body.on_dev_tools_method_result = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_METHOD_RESULT)
-		cefingo_dev_tools_message_observer_on_dev_tools_method_result;
-	dev_tools_message_observer->body.on_dev_tools_event = (T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_EVENT)
-		cefingo_dev_tools_message_observer_on_dev_tools_event;
+	dev_tools_message_observer->body.on_dev_tools_message =
+		(T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_MESSAGE)cefingo_dev_tools_message_observer_on_dev_tools_message;
+	dev_tools_message_observer->body.on_dev_tools_method_result =
+		(T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_METHOD_RESULT)cefingo_dev_tools_message_observer_on_dev_tools_method_result;
+	dev_tools_message_observer->body.on_dev_tools_event =
+		(T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_EVENT)cefingo_dev_tools_message_observer_on_dev_tools_event;
 	dev_tools_message_observer->body.on_dev_tools_agent_attached =
 		cefingo_dev_tools_message_observer_on_dev_tools_agent_attached;
 	dev_tools_message_observer->body.on_dev_tools_agent_detached =
@@ -1960,10 +1960,10 @@ cef_dialog_handler_t *cefingo_construct_dialog_handler(cefingo_dialog_handler_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*dialog_handler), counter),
 		(cef_base_ref_counted_t*) dialog_handler);
-	
+
 	// callbacks
-	dialog_handler->body.on_file_dialog = (T_CEF_DIALOG_HANDLER_T_ON_FILE_DIALOG)
-		cefingo_dialog_handler_on_file_dialog;
+	dialog_handler->body.on_file_dialog =
+		(T_CEF_DIALOG_HANDLER_T_ON_FILE_DIALOG)cefingo_dialog_handler_on_file_dialog;
 
 	return (cef_dialog_handler_t*)dialog_handler;
 }
@@ -1972,18 +1972,18 @@ int64 cefingo_display_get_id(
 	struct _cef_display_t* self
 )
 {
-	return self->get_id(
-		self
-	);
+	return	self->get_id(
+			self
+		);
 }
 
 float cefingo_display_get_device_scale_factor(
 	struct _cef_display_t* self
 )
 {
-	return self->get_device_scale_factor(
-		self
-	);
+	return	self->get_device_scale_factor(
+			self
+		);
 }
 
 void cefingo_display_convert_point_to_pixels(
@@ -2012,27 +2012,27 @@ cef_rect_t cefingo_display_get_bounds(
 	struct _cef_display_t* self
 )
 {
-	return self->get_bounds(
-		self
-	);
+	return	self->get_bounds(
+			self
+		);
 }
 
 cef_rect_t cefingo_display_get_work_area(
 	struct _cef_display_t* self
 )
 {
-	return self->get_work_area(
-		self
-	);
+	return	self->get_work_area(
+			self
+		);
 }
 
 int cefingo_display_get_rotation(
 	struct _cef_display_t* self
 )
 {
-	return self->get_rotation(
-		self
-	);
+	return	self->get_rotation(
+			self
+		);
 }
 
 typedef void (*T_CEF_DISPLAY_HANDLER_T_ON_ADDRESS_CHANGE)(
@@ -2070,24 +2070,24 @@ cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*display_handler), counter),
 		(cef_base_ref_counted_t*) display_handler);
-	
+
 	// callbacks
-	display_handler->body.on_address_change = (T_CEF_DISPLAY_HANDLER_T_ON_ADDRESS_CHANGE)
-		cefingo_display_handler_on_address_change;
-	display_handler->body.on_title_change = (T_CEF_DISPLAY_HANDLER_T_ON_TITLE_CHANGE)
-		cefingo_display_handler_on_title_change;
+	display_handler->body.on_address_change =
+		(T_CEF_DISPLAY_HANDLER_T_ON_ADDRESS_CHANGE)cefingo_display_handler_on_address_change;
+	display_handler->body.on_title_change =
+		(T_CEF_DISPLAY_HANDLER_T_ON_TITLE_CHANGE)cefingo_display_handler_on_title_change;
 	display_handler->body.on_favicon_urlchange =
 		cefingo_display_handler_on_favicon_urlchange;
 	display_handler->body.on_fullscreen_mode_change =
 		cefingo_display_handler_on_fullscreen_mode_change;
 	display_handler->body.on_tooltip =
 		cefingo_display_handler_on_tooltip;
-	display_handler->body.on_status_message = (T_CEF_DISPLAY_HANDLER_T_ON_STATUS_MESSAGE)
-		cefingo_display_handler_on_status_message;
-	display_handler->body.on_console_message = (T_CEF_DISPLAY_HANDLER_T_ON_CONSOLE_MESSAGE)
-		cefingo_display_handler_on_console_message;
-	display_handler->body.on_auto_resize = (T_CEF_DISPLAY_HANDLER_T_ON_AUTO_RESIZE)
-		cefingo_display_handler_on_auto_resize;
+	display_handler->body.on_status_message =
+		(T_CEF_DISPLAY_HANDLER_T_ON_STATUS_MESSAGE)cefingo_display_handler_on_status_message;
+	display_handler->body.on_console_message =
+		(T_CEF_DISPLAY_HANDLER_T_ON_CONSOLE_MESSAGE)cefingo_display_handler_on_console_message;
+	display_handler->body.on_auto_resize =
+		(T_CEF_DISPLAY_HANDLER_T_ON_AUTO_RESIZE)cefingo_display_handler_on_auto_resize;
 	display_handler->body.on_loading_progress_change =
 		cefingo_display_handler_on_loading_progress_change;
 
@@ -2100,7 +2100,7 @@ cef_domvisitor_t *cefingo_construct_domvisitor(cefingo_domvisitor_wrapper_t* dom
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*domvisitor), counter),
 		(cef_base_ref_counted_t*) domvisitor);
-	
+
 	// callbacks
 	domvisitor->body.visit =
 		cefingo_domvisitor_visit;
@@ -2112,45 +2112,45 @@ cef_dom_document_type_t cefingo_domdocument_get_type(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_type(
-		self
-	);
+	return	self->get_type(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_document(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_document(
-		self
-	);
+	return	self->get_document(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_body(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_body(
-		self
-	);
+	return	self->get_body(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_head(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_head(
-		self
-	);
+	return	self->get_head(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_title(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_title(
-		self
-	);
+	return	self->get_title(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_element_by_id(
@@ -2158,73 +2158,73 @@ struct _cef_domnode_t* cefingo_domdocument_get_element_by_id(
 	const cef_string_t* id
 )
 {
-	return self->get_element_by_id(
-		self,
-		id
-	);
+	return	self->get_element_by_id(
+			self,
+			id
+		);
 }
 
 struct _cef_domnode_t* cefingo_domdocument_get_focused_node(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_focused_node(
-		self
-	);
+	return	self->get_focused_node(
+			self
+		);
 }
 
 int cefingo_domdocument_has_selection(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->has_selection(
-		self
-	);
+	return	self->has_selection(
+			self
+		);
 }
 
 int cefingo_domdocument_get_selection_start_offset(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_selection_start_offset(
-		self
-	);
+	return	self->get_selection_start_offset(
+			self
+		);
 }
 
 int cefingo_domdocument_get_selection_end_offset(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_selection_end_offset(
-		self
-	);
+	return	self->get_selection_end_offset(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_selection_as_markup(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_selection_as_markup(
-		self
-	);
+	return	self->get_selection_as_markup(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_selection_as_text(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_selection_as_text(
-		self
-	);
+	return	self->get_selection_as_text(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_base_url(
 	struct _cef_domdocument_t* self
 )
 {
-	return self->get_base_url(
-		self
-	);
+	return	self->get_base_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_domdocument_get_complete_url(
@@ -2232,64 +2232,64 @@ cef_string_userfree_t cefingo_domdocument_get_complete_url(
 	const cef_string_t* partialURL
 )
 {
-	return self->get_complete_url(
-		self,
-		partialURL
-	);
+	return	self->get_complete_url(
+			self,
+			partialURL
+		);
 }
 
 cef_dom_node_type_t cefingo_domnode_get_type(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_type(
-		self
-	);
+	return	self->get_type(
+			self
+		);
 }
 
 int cefingo_domnode_is_text(
 	struct _cef_domnode_t* self
 )
 {
-	return self->is_text(
-		self
-	);
+	return	self->is_text(
+			self
+		);
 }
 
 int cefingo_domnode_is_element(
 	struct _cef_domnode_t* self
 )
 {
-	return self->is_element(
-		self
-	);
+	return	self->is_element(
+			self
+		);
 }
 
 int cefingo_domnode_is_editable(
 	struct _cef_domnode_t* self
 )
 {
-	return self->is_editable(
-		self
-	);
+	return	self->is_editable(
+			self
+		);
 }
 
 int cefingo_domnode_is_form_control_element(
 	struct _cef_domnode_t* self
 )
 {
-	return self->is_form_control_element(
-		self
-	);
+	return	self->is_form_control_element(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_domnode_get_form_control_element_type(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_form_control_element_type(
-		self
-	);
+	return	self->get_form_control_element_type(
+			self
+		);
 }
 
 int cefingo_domnode_is_same(
@@ -2297,28 +2297,28 @@ int cefingo_domnode_is_same(
 	struct _cef_domnode_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 cef_string_userfree_t cefingo_domnode_get_name(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_name(
-		self
-	);
+	return	self->get_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_domnode_get_value(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_value(
-		self
-	);
+	return	self->get_value(
+			self
+		);
 }
 
 int cefingo_domnode_set_value(
@@ -2326,100 +2326,100 @@ int cefingo_domnode_set_value(
 	const cef_string_t* value
 )
 {
-	return self->set_value(
-		self,
-		value
-	);
+	return	self->set_value(
+			self,
+			value
+		);
 }
 
 cef_string_userfree_t cefingo_domnode_get_as_markup(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_as_markup(
-		self
-	);
+	return	self->get_as_markup(
+			self
+		);
 }
 
 struct _cef_domdocument_t* cefingo_domnode_get_document(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_document(
-		self
-	);
+	return	self->get_document(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_parent(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_parent(
-		self
-	);
+	return	self->get_parent(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_previous_sibling(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_previous_sibling(
-		self
-	);
+	return	self->get_previous_sibling(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_next_sibling(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_next_sibling(
-		self
-	);
+	return	self->get_next_sibling(
+			self
+		);
 }
 
 int cefingo_domnode_has_children(
 	struct _cef_domnode_t* self
 )
 {
-	return self->has_children(
-		self
-	);
+	return	self->has_children(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_first_child(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_first_child(
-		self
-	);
+	return	self->get_first_child(
+			self
+		);
 }
 
 struct _cef_domnode_t* cefingo_domnode_get_last_child(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_last_child(
-		self
-	);
+	return	self->get_last_child(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_domnode_get_element_tag_name(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_element_tag_name(
-		self
-	);
+	return	self->get_element_tag_name(
+			self
+		);
 }
 
 int cefingo_domnode_has_element_attributes(
 	struct _cef_domnode_t* self
 )
 {
-	return self->has_element_attributes(
-		self
-	);
+	return	self->has_element_attributes(
+			self
+		);
 }
 
 int cefingo_domnode_has_element_attribute(
@@ -2427,10 +2427,10 @@ int cefingo_domnode_has_element_attribute(
 	const cef_string_t* attrName
 )
 {
-	return self->has_element_attribute(
-		self,
-		attrName
-	);
+	return	self->has_element_attribute(
+			self,
+			attrName
+		);
 }
 
 cef_string_userfree_t cefingo_domnode_get_element_attribute(
@@ -2438,10 +2438,10 @@ cef_string_userfree_t cefingo_domnode_get_element_attribute(
 	const cef_string_t* attrName
 )
 {
-	return self->get_element_attribute(
-		self,
-		attrName
-	);
+	return	self->get_element_attribute(
+			self,
+			attrName
+		);
 }
 
 void cefingo_domnode_get_element_attributes(
@@ -2461,29 +2461,29 @@ int cefingo_domnode_set_element_attribute(
 	const cef_string_t* value
 )
 {
-	return self->set_element_attribute(
-		self,
-		attrName,
-		value
-	);
+	return	self->set_element_attribute(
+			self,
+			attrName,
+			value
+		);
 }
 
 cef_string_userfree_t cefingo_domnode_get_element_inner_text(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_element_inner_text(
-		self
-	);
+	return	self->get_element_inner_text(
+			self
+		);
 }
 
 cef_rect_t cefingo_domnode_get_element_bounds(
 	struct _cef_domnode_t* self
 )
 {
-	return self->get_element_bounds(
-		self
-	);
+	return	self->get_element_bounds(
+			self
+		);
 }
 
 void cefingo_before_download_callback_cont(
@@ -2539,10 +2539,10 @@ cef_download_handler_t *cefingo_construct_download_handler(cefingo_download_hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*download_handler), counter),
 		(cef_base_ref_counted_t*) download_handler);
-	
+
 	// callbacks
-	download_handler->body.on_before_download = (T_CEF_DOWNLOAD_HANDLER_T_ON_BEFORE_DOWNLOAD)
-		cefingo_download_handler_on_before_download;
+	download_handler->body.on_before_download =
+		(T_CEF_DOWNLOAD_HANDLER_T_ON_BEFORE_DOWNLOAD)cefingo_download_handler_on_before_download;
 	download_handler->body.on_download_updated =
 		cefingo_download_handler_on_download_updated;
 
@@ -2553,261 +2553,261 @@ int cefingo_download_item_is_valid(
 	struct _cef_download_item_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_download_item_is_in_progress(
 	struct _cef_download_item_t* self
 )
 {
-	return self->is_in_progress(
-		self
-	);
+	return	self->is_in_progress(
+			self
+		);
 }
 
 int cefingo_download_item_is_complete(
 	struct _cef_download_item_t* self
 )
 {
-	return self->is_complete(
-		self
-	);
+	return	self->is_complete(
+			self
+		);
 }
 
 int cefingo_download_item_is_canceled(
 	struct _cef_download_item_t* self
 )
 {
-	return self->is_canceled(
-		self
-	);
+	return	self->is_canceled(
+			self
+		);
 }
 
 int64 cefingo_download_item_get_current_speed(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_current_speed(
-		self
-	);
+	return	self->get_current_speed(
+			self
+		);
 }
 
 int cefingo_download_item_get_percent_complete(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_percent_complete(
-		self
-	);
+	return	self->get_percent_complete(
+			self
+		);
 }
 
 int64 cefingo_download_item_get_total_bytes(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_total_bytes(
-		self
-	);
+	return	self->get_total_bytes(
+			self
+		);
 }
 
 int64 cefingo_download_item_get_received_bytes(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_received_bytes(
-		self
-	);
+	return	self->get_received_bytes(
+			self
+		);
 }
 
 cef_time_t cefingo_download_item_get_start_time(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_start_time(
-		self
-	);
+	return	self->get_start_time(
+			self
+		);
 }
 
 cef_time_t cefingo_download_item_get_end_time(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_end_time(
-		self
-	);
+	return	self->get_end_time(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_download_item_get_full_path(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_full_path(
-		self
-	);
+	return	self->get_full_path(
+			self
+		);
 }
 
 uint32 cefingo_download_item_get_id(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_id(
-		self
-	);
+	return	self->get_id(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_download_item_get_url(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_url(
-		self
-	);
+	return	self->get_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_download_item_get_original_url(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_original_url(
-		self
-	);
+	return	self->get_original_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_download_item_get_suggested_file_name(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_suggested_file_name(
-		self
-	);
+	return	self->get_suggested_file_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_download_item_get_content_disposition(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_content_disposition(
-		self
-	);
+	return	self->get_content_disposition(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_download_item_get_mime_type(
 	struct _cef_download_item_t* self
 )
 {
-	return self->get_mime_type(
-		self
-	);
+	return	self->get_mime_type(
+			self
+		);
 }
 
 struct _cef_drag_data_t* cefingo_drag_data_clone(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->clone(
-		self
-	);
+	return	self->clone(
+			self
+		);
 }
 
 int cefingo_drag_data_is_read_only(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 int cefingo_drag_data_is_link(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->is_link(
-		self
-	);
+	return	self->is_link(
+			self
+		);
 }
 
 int cefingo_drag_data_is_fragment(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->is_fragment(
-		self
-	);
+	return	self->is_fragment(
+			self
+		);
 }
 
 int cefingo_drag_data_is_file(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->is_file(
-		self
-	);
+	return	self->is_file(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_link_url(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_link_url(
-		self
-	);
+	return	self->get_link_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_link_title(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_link_title(
-		self
-	);
+	return	self->get_link_title(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_link_metadata(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_link_metadata(
-		self
-	);
+	return	self->get_link_metadata(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_fragment_text(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_fragment_text(
-		self
-	);
+	return	self->get_fragment_text(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_fragment_html(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_fragment_html(
-		self
-	);
+	return	self->get_fragment_html(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_fragment_base_url(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_fragment_base_url(
-		self
-	);
+	return	self->get_fragment_base_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_drag_data_get_file_name(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_file_name(
-		self
-	);
+	return	self->get_file_name(
+			self
+		);
 }
 
 size_t cefingo_drag_data_get_file_contents(
@@ -2815,10 +2815,10 @@ size_t cefingo_drag_data_get_file_contents(
 	struct _cef_stream_writer_t* writer
 )
 {
-	return self->get_file_contents(
-		self,
-		writer
-	);
+	return	self->get_file_contents(
+			self,
+			writer
+		);
 }
 
 int cefingo_drag_data_get_file_names(
@@ -2826,10 +2826,10 @@ int cefingo_drag_data_get_file_names(
 	cef_string_list_t names
 )
 {
-	return self->get_file_names(
-		self,
-		names
-	);
+	return	self->get_file_names(
+			self,
+			names
+		);
 }
 
 void cefingo_drag_data_set_link_url(
@@ -2924,27 +2924,27 @@ struct _cef_image_t* cefingo_drag_data_get_image(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_image(
-		self
-	);
+	return	self->get_image(
+			self
+		);
 }
 
 cef_point_t cefingo_drag_data_get_image_hotspot(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->get_image_hotspot(
-		self
-	);
+	return	self->get_image_hotspot(
+			self
+		);
 }
 
 int cefingo_drag_data_has_image(
 	struct _cef_drag_data_t* self
 )
 {
-	return self->has_image(
-		self
-	);
+	return	self->has_image(
+			self
+		);
 }
 
 typedef void (*T_CEF_DRAG_HANDLER_T_ON_DRAGGABLE_REGIONS_CHANGED)(
@@ -2960,12 +2960,12 @@ cef_drag_handler_t *cefingo_construct_drag_handler(cefingo_drag_handler_wrapper_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*drag_handler), counter),
 		(cef_base_ref_counted_t*) drag_handler);
-	
+
 	// callbacks
 	drag_handler->body.on_drag_enter =
 		cefingo_drag_handler_on_drag_enter;
-	drag_handler->body.on_draggable_regions_changed = (T_CEF_DRAG_HANDLER_T_ON_DRAGGABLE_REGIONS_CHANGED)
-		cefingo_drag_handler_on_draggable_regions_changed;
+	drag_handler->body.on_draggable_regions_changed =
+		(T_CEF_DRAG_HANDLER_T_ON_DRAGGABLE_REGIONS_CHANGED)cefingo_drag_handler_on_draggable_regions_changed;
 
 	return (cef_drag_handler_t*)drag_handler;
 }
@@ -2974,27 +2974,27 @@ cef_string_userfree_t cefingo_extension_get_identifier(
 	struct _cef_extension_t* self
 )
 {
-	return self->get_identifier(
-		self
-	);
+	return	self->get_identifier(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_extension_get_path(
 	struct _cef_extension_t* self
 )
 {
-	return self->get_path(
-		self
-	);
+	return	self->get_path(
+			self
+		);
 }
 
 struct _cef_dictionary_value_t* cefingo_extension_get_manifest(
 	struct _cef_extension_t* self
 )
 {
-	return self->get_manifest(
-		self
-	);
+	return	self->get_manifest(
+			self
+		);
 }
 
 int cefingo_extension_is_same(
@@ -3002,37 +3002,37 @@ int cefingo_extension_is_same(
 	struct _cef_extension_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 struct _cef_extension_handler_t* cefingo_extension_get_handler(
 	struct _cef_extension_t* self
 )
 {
-	return self->get_handler(
-		self
-	);
+	return	self->get_handler(
+			self
+		);
 }
 
 struct _cef_request_context_t* cefingo_extension_get_loader_context(
 	struct _cef_extension_t* self
 )
 {
-	return self->get_loader_context(
-		self
-	);
+	return	self->get_loader_context(
+			self
+		);
 }
 
 int cefingo_extension_is_loaded(
 	struct _cef_extension_t* self
 )
 {
-	return self->is_loaded(
-		self
-	);
+	return	self->is_loaded(
+			self
+		);
 }
 
 void cefingo_extension_unload(
@@ -3096,7 +3096,7 @@ cef_extension_handler_t *cefingo_construct_extension_handler(cefingo_extension_h
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*extension_handler), counter),
 		(cef_base_ref_counted_t*) extension_handler);
-	
+
 	// callbacks
 	extension_handler->body.on_extension_load_failed =
 		cefingo_extension_handler_on_extension_load_failed;
@@ -3104,16 +3104,16 @@ cef_extension_handler_t *cefingo_construct_extension_handler(cefingo_extension_h
 		cefingo_extension_handler_on_extension_loaded;
 	extension_handler->body.on_extension_unloaded =
 		cefingo_extension_handler_on_extension_unloaded;
-	extension_handler->body.on_before_background_browser = (T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BACKGROUND_BROWSER)
-		cefingo_extension_handler_on_before_background_browser;
-	extension_handler->body.on_before_browser = (T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BROWSER)
-		cefingo_extension_handler_on_before_browser;
+	extension_handler->body.on_before_background_browser =
+		(T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BACKGROUND_BROWSER)cefingo_extension_handler_on_before_background_browser;
+	extension_handler->body.on_before_browser =
+		(T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BROWSER)cefingo_extension_handler_on_before_browser;
 	extension_handler->body.get_active_browser =
 		cefingo_extension_handler_get_active_browser;
 	extension_handler->body.can_access_browser =
 		cefingo_extension_handler_can_access_browser;
-	extension_handler->body.get_extension_resource = (T_CEF_EXTENSION_HANDLER_T_GET_EXTENSION_RESOURCE)
-		cefingo_extension_handler_get_extension_resource;
+	extension_handler->body.get_extension_resource =
+		(T_CEF_EXTENSION_HANDLER_T_GET_EXTENSION_RESOURCE)cefingo_extension_handler_get_extension_resource;
 
 	return (cef_extension_handler_t*)extension_handler;
 }
@@ -3133,10 +3133,10 @@ cef_find_handler_t *cefingo_construct_find_handler(cefingo_find_handler_wrapper_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*find_handler), counter),
 		(cef_base_ref_counted_t*) find_handler);
-	
+
 	// callbacks
-	find_handler->body.on_find_result = (T_CEF_FIND_HANDLER_T_ON_FIND_RESULT)
-		cefingo_find_handler_on_find_result;
+	find_handler->body.on_find_result =
+		(T_CEF_FIND_HANDLER_T_ON_FIND_RESULT)cefingo_find_handler_on_find_result;
 
 	return (cef_find_handler_t*)find_handler;
 }
@@ -3147,7 +3147,7 @@ cef_focus_handler_t *cefingo_construct_focus_handler(cefingo_focus_handler_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*focus_handler), counter),
 		(cef_base_ref_counted_t*) focus_handler);
-	
+
 	// callbacks
 	focus_handler->body.on_take_focus =
 		cefingo_focus_handler_on_take_focus;
@@ -3163,9 +3163,9 @@ int cefingo_frame_is_valid(
 	struct _cef_frame_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 void cefingo_frame_undo(
@@ -3303,72 +3303,72 @@ int cefingo_frame_is_main(
 	struct _cef_frame_t* self
 )
 {
-	return self->is_main(
-		self
-	);
+	return	self->is_main(
+			self
+		);
 }
 
 int cefingo_frame_is_focused(
 	struct _cef_frame_t* self
 )
 {
-	return self->is_focused(
-		self
-	);
+	return	self->is_focused(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_frame_get_name(
 	struct _cef_frame_t* self
 )
 {
-	return self->get_name(
-		self
-	);
+	return	self->get_name(
+			self
+		);
 }
 
 int64 cefingo_frame_get_identifier(
 	struct _cef_frame_t* self
 )
 {
-	return self->get_identifier(
-		self
-	);
+	return	self->get_identifier(
+			self
+		);
 }
 
 struct _cef_frame_t* cefingo_frame_get_parent(
 	struct _cef_frame_t* self
 )
 {
-	return self->get_parent(
-		self
-	);
+	return	self->get_parent(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_frame_get_url(
 	struct _cef_frame_t* self
 )
 {
-	return self->get_url(
-		self
-	);
+	return	self->get_url(
+			self
+		);
 }
 
 struct _cef_browser_t* cefingo_frame_get_browser(
 	struct _cef_frame_t* self
 )
 {
-	return self->get_browser(
-		self
-	);
+	return	self->get_browser(
+			self
+		);
 }
 
 struct _cef_v8context_t* cefingo_frame_get_v8context(
 	struct _cef_frame_t* self
 )
 {
-	return self->get_v8context(
-		self
-	);
+	return	self->get_v8context(
+			self
+		);
 }
 
 void cefingo_frame_visit_dom(
@@ -3388,11 +3388,11 @@ struct _cef_urlrequest_t* cefingo_frame_create_urlrequest(
 	struct _cef_urlrequest_client_t* client
 )
 {
-	return self->create_urlrequest(
-		self,
-		request,
-		client
-	);
+	return	self->create_urlrequest(
+			self,
+			request,
+			client
+		);
 }
 
 void cefingo_frame_send_process_message(
@@ -3412,9 +3412,9 @@ int cefingo_image_is_empty(
 	struct _cef_image_t* self
 )
 {
-	return self->is_empty(
-		self
-	);
+	return	self->is_empty(
+			self
+		);
 }
 
 int cefingo_image_is_same(
@@ -3422,10 +3422,10 @@ int cefingo_image_is_same(
 	struct _cef_image_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_image_add_bitmap(
@@ -3439,16 +3439,16 @@ int cefingo_image_add_bitmap(
 	size_t pixel_data_size
 )
 {
-	return self->add_bitmap(
-		self,
-		scale_factor,
-		pixel_width,
-		pixel_height,
-		color_type,
-		alpha_type,
-		pixel_data,
-		pixel_data_size
-	);
+	return	self->add_bitmap(
+			self,
+			scale_factor,
+			pixel_width,
+			pixel_height,
+			color_type,
+			alpha_type,
+			pixel_data,
+			pixel_data_size
+		);
 }
 
 int cefingo_image_add_png(
@@ -3458,12 +3458,12 @@ int cefingo_image_add_png(
 	size_t png_data_size
 )
 {
-	return self->add_png(
-		self,
-		scale_factor,
-		png_data,
-		png_data_size
-	);
+	return	self->add_png(
+			self,
+			scale_factor,
+			png_data,
+			png_data_size
+		);
 }
 
 int cefingo_image_add_jpeg(
@@ -3473,30 +3473,30 @@ int cefingo_image_add_jpeg(
 	size_t jpeg_data_size
 )
 {
-	return self->add_jpeg(
-		self,
-		scale_factor,
-		jpeg_data,
-		jpeg_data_size
-	);
+	return	self->add_jpeg(
+			self,
+			scale_factor,
+			jpeg_data,
+			jpeg_data_size
+		);
 }
 
 size_t cefingo_image_get_width(
 	struct _cef_image_t* self
 )
 {
-	return self->get_width(
-		self
-	);
+	return	self->get_width(
+			self
+		);
 }
 
 size_t cefingo_image_get_height(
 	struct _cef_image_t* self
 )
 {
-	return self->get_height(
-		self
-	);
+	return	self->get_height(
+			self
+		);
 }
 
 int cefingo_image_has_representation(
@@ -3504,10 +3504,10 @@ int cefingo_image_has_representation(
 	float scale_factor
 )
 {
-	return self->has_representation(
-		self,
-		scale_factor
-	);
+	return	self->has_representation(
+			self,
+			scale_factor
+		);
 }
 
 int cefingo_image_remove_representation(
@@ -3515,10 +3515,10 @@ int cefingo_image_remove_representation(
 	float scale_factor
 )
 {
-	return self->remove_representation(
-		self,
-		scale_factor
-	);
+	return	self->remove_representation(
+			self,
+			scale_factor
+		);
 }
 
 int cefingo_image_get_representation_info(
@@ -3529,13 +3529,13 @@ int cefingo_image_get_representation_info(
 	int* pixel_height
 )
 {
-	return self->get_representation_info(
-		self,
-		scale_factor,
-		actual_scale_factor,
-		pixel_width,
-		pixel_height
-	);
+	return	self->get_representation_info(
+			self,
+			scale_factor,
+			actual_scale_factor,
+			pixel_width,
+			pixel_height
+		);
 }
 
 struct _cef_binary_value_t* cefingo_image_get_as_bitmap(
@@ -3547,14 +3547,14 @@ struct _cef_binary_value_t* cefingo_image_get_as_bitmap(
 	int* pixel_height
 )
 {
-	return self->get_as_bitmap(
-		self,
-		scale_factor,
-		color_type,
-		alpha_type,
-		pixel_width,
-		pixel_height
-	);
+	return	self->get_as_bitmap(
+			self,
+			scale_factor,
+			color_type,
+			alpha_type,
+			pixel_width,
+			pixel_height
+		);
 }
 
 struct _cef_binary_value_t* cefingo_image_get_as_png(
@@ -3565,13 +3565,13 @@ struct _cef_binary_value_t* cefingo_image_get_as_png(
 	int* pixel_height
 )
 {
-	return self->get_as_png(
-		self,
-		scale_factor,
-		with_transparency,
-		pixel_width,
-		pixel_height
-	);
+	return	self->get_as_png(
+			self,
+			scale_factor,
+			with_transparency,
+			pixel_width,
+			pixel_height
+		);
 }
 
 struct _cef_binary_value_t* cefingo_image_get_as_jpeg(
@@ -3582,13 +3582,13 @@ struct _cef_binary_value_t* cefingo_image_get_as_jpeg(
 	int* pixel_height
 )
 {
-	return self->get_as_jpeg(
-		self,
-		scale_factor,
-		quality,
-		pixel_width,
-		pixel_height
-	);
+	return	self->get_as_jpeg(
+			self,
+			scale_factor,
+			quality,
+			pixel_width,
+			pixel_height
+		);
 }
 
 void cefingo_jsdialog_callback_cont(
@@ -3627,12 +3627,12 @@ cef_jsdialog_handler_t *cefingo_construct_jsdialog_handler(cefingo_jsdialog_hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*jsdialog_handler), counter),
 		(cef_base_ref_counted_t*) jsdialog_handler);
-	
+
 	// callbacks
-	jsdialog_handler->body.on_jsdialog = (T_CEF_JSDIALOG_HANDLER_T_ON_JSDIALOG)
-		cefingo_jsdialog_handler_on_jsdialog;
-	jsdialog_handler->body.on_before_unload_dialog = (T_CEF_JSDIALOG_HANDLER_T_ON_BEFORE_UNLOAD_DIALOG)
-		cefingo_jsdialog_handler_on_before_unload_dialog;
+	jsdialog_handler->body.on_jsdialog =
+		(T_CEF_JSDIALOG_HANDLER_T_ON_JSDIALOG)cefingo_jsdialog_handler_on_jsdialog;
+	jsdialog_handler->body.on_before_unload_dialog =
+		(T_CEF_JSDIALOG_HANDLER_T_ON_BEFORE_UNLOAD_DIALOG)cefingo_jsdialog_handler_on_before_unload_dialog;
 	jsdialog_handler->body.on_reset_dialog_state =
 		cefingo_jsdialog_handler_on_reset_dialog_state;
 	jsdialog_handler->body.on_dialog_closed =
@@ -3660,12 +3660,12 @@ cef_keyboard_handler_t *cefingo_construct_keyboard_handler(cefingo_keyboard_hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*keyboard_handler), counter),
 		(cef_base_ref_counted_t*) keyboard_handler);
-	
+
 	// callbacks
-	keyboard_handler->body.on_pre_key_event = (T_CEF_KEYBOARD_HANDLER_T_ON_PRE_KEY_EVENT)
-		cefingo_keyboard_handler_on_pre_key_event;
-	keyboard_handler->body.on_key_event = (T_CEF_KEYBOARD_HANDLER_T_ON_KEY_EVENT)
-		cefingo_keyboard_handler_on_key_event;
+	keyboard_handler->body.on_pre_key_event =
+		(T_CEF_KEYBOARD_HANDLER_T_ON_PRE_KEY_EVENT)cefingo_keyboard_handler_on_pre_key_event;
+	keyboard_handler->body.on_key_event =
+		(T_CEF_KEYBOARD_HANDLER_T_ON_KEY_EVENT)cefingo_keyboard_handler_on_key_event;
 
 	return (cef_keyboard_handler_t*)keyboard_handler;
 }
@@ -3674,9 +3674,9 @@ struct _cef_menu_button_t* cefingo_label_button_as_menu_button(
 	struct _cef_label_button_t* self
 )
 {
-	return self->as_menu_button(
-		self
-	);
+	return	self->as_menu_button(
+			self
+		);
 }
 
 void cefingo_label_button_set_text(
@@ -3694,9 +3694,9 @@ cef_string_userfree_t cefingo_label_button_get_text(
 	struct _cef_label_button_t* self
 )
 {
-	return self->get_text(
-		self
-	);
+	return	self->get_text(
+			self
+		);
 }
 
 void cefingo_label_button_set_image(
@@ -3717,10 +3717,10 @@ struct _cef_image_t* cefingo_label_button_get_image(
 	cef_button_state_t button_state
 )
 {
-	return self->get_image(
-		self,
-		button_state
-	);
+	return	self->get_image(
+			self,
+			button_state
+		);
 }
 
 void cefingo_label_button_set_text_color(
@@ -3795,27 +3795,27 @@ struct _cef_box_layout_t* cefingo_layout_as_box_layout(
 	struct _cef_layout_t* self
 )
 {
-	return self->as_box_layout(
-		self
-	);
+	return	self->as_box_layout(
+			self
+		);
 }
 
 struct _cef_fill_layout_t* cefingo_layout_as_fill_layout(
 	struct _cef_layout_t* self
 )
 {
-	return self->as_fill_layout(
-		self
-	);
+	return	self->as_fill_layout(
+			self
+		);
 }
 
 int cefingo_layout_is_valid(
 	struct _cef_layout_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 typedef int (*T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)(
@@ -3839,10 +3839,10 @@ cef_life_span_handler_t *cefingo_construct_life_span_handler(cefingo_life_span_h
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*life_span_handler), counter),
 		(cef_base_ref_counted_t*) life_span_handler);
-	
+
 	// callbacks
-	life_span_handler->body.on_before_popup = (T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)
-		cefingo_life_span_handler_on_before_popup;
+	life_span_handler->body.on_before_popup =
+		(T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)cefingo_life_span_handler_on_before_popup;
 	life_span_handler->body.on_after_created =
 		cefingo_life_span_handler_on_after_created;
 	life_span_handler->body.do_close =
@@ -3867,7 +3867,7 @@ cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*load_handler), counter),
 		(cef_base_ref_counted_t*) load_handler);
-	
+
 	// callbacks
 	load_handler->body.on_loading_state_change =
 		cefingo_load_handler_on_loading_state_change;
@@ -3875,8 +3875,8 @@ cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_
 		cefingo_load_handler_on_load_start;
 	load_handler->body.on_load_end =
 		cefingo_load_handler_on_load_end;
-	load_handler->body.on_load_error = (T_CEF_LOAD_HANDLER_T_ON_LOAD_ERROR)
-		cefingo_load_handler_on_load_error;
+	load_handler->body.on_load_error =
+		(T_CEF_LOAD_HANDLER_T_ON_LOAD_ERROR)cefingo_load_handler_on_load_error;
 
 	return (cef_load_handler_t*)load_handler;
 }
@@ -3886,10 +3886,10 @@ struct _cef_registration_t* cefingo_media_router_add_observer(
 	struct _cef_media_observer_t* observer
 )
 {
-	return self->add_observer(
-		self,
-		observer
-	);
+	return	self->add_observer(
+			self,
+			observer
+		);
 }
 
 struct _cef_media_source_t* cefingo_media_router_get_source(
@@ -3897,10 +3897,10 @@ struct _cef_media_source_t* cefingo_media_router_get_source(
 	const cef_string_t* urn
 )
 {
-	return self->get_source(
-		self,
-		urn
-	);
+	return	self->get_source(
+			self,
+			urn
+		);
 }
 
 void cefingo_media_router_notify_current_sinks(
@@ -3958,16 +3958,16 @@ cef_media_observer_t *cefingo_construct_media_observer(cefingo_media_observer_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*media_observer), counter),
 		(cef_base_ref_counted_t*) media_observer);
-	
+
 	// callbacks
-	media_observer->body.on_sinks = (T_CEF_MEDIA_OBSERVER_T_ON_SINKS)
-		cefingo_media_observer_on_sinks;
-	media_observer->body.on_routes = (T_CEF_MEDIA_OBSERVER_T_ON_ROUTES)
-		cefingo_media_observer_on_routes;
+	media_observer->body.on_sinks =
+		(T_CEF_MEDIA_OBSERVER_T_ON_SINKS)cefingo_media_observer_on_sinks;
+	media_observer->body.on_routes =
+		(T_CEF_MEDIA_OBSERVER_T_ON_ROUTES)cefingo_media_observer_on_routes;
 	media_observer->body.on_route_state_changed =
 		cefingo_media_observer_on_route_state_changed;
-	media_observer->body.on_route_message_received = (T_CEF_MEDIA_OBSERVER_T_ON_ROUTE_MESSAGE_RECEIVED)
-		cefingo_media_observer_on_route_message_received;
+	media_observer->body.on_route_message_received =
+		(T_CEF_MEDIA_OBSERVER_T_ON_ROUTE_MESSAGE_RECEIVED)cefingo_media_observer_on_route_message_received;
 
 	return (cef_media_observer_t*)media_observer;
 }
@@ -3976,27 +3976,27 @@ cef_string_userfree_t cefingo_media_route_get_id(
 	struct _cef_media_route_t* self
 )
 {
-	return self->get_id(
-		self
-	);
+	return	self->get_id(
+			self
+		);
 }
 
 struct _cef_media_source_t* cefingo_media_route_get_source(
 	struct _cef_media_route_t* self
 )
 {
-	return self->get_source(
-		self
-	);
+	return	self->get_source(
+			self
+		);
 }
 
 struct _cef_media_sink_t* cefingo_media_route_get_sink(
 	struct _cef_media_route_t* self
 )
 {
-	return self->get_sink(
-		self
-	);
+	return	self->get_sink(
+			self
+		);
 }
 
 void cefingo_media_route_send_route_message(
@@ -4040,45 +4040,45 @@ cef_string_userfree_t cefingo_media_sink_get_id(
 	struct _cef_media_sink_t* self
 )
 {
-	return self->get_id(
-		self
-	);
+	return	self->get_id(
+			self
+		);
 }
 
 int cefingo_media_sink_is_valid(
 	struct _cef_media_sink_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_media_sink_get_name(
 	struct _cef_media_sink_t* self
 )
 {
-	return self->get_name(
-		self
-	);
+	return	self->get_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_media_sink_get_description(
 	struct _cef_media_sink_t* self
 )
 {
-	return self->get_description(
-		self
-	);
+	return	self->get_description(
+			self
+		);
 }
 
 cef_media_sink_icon_type_t cefingo_media_sink_get_icon_type(
 	struct _cef_media_sink_t* self
 )
 {
-	return self->get_icon_type(
-		self
-	);
+	return	self->get_icon_type(
+			self
+		);
 }
 
 void cefingo_media_sink_get_device_info(
@@ -4096,18 +4096,18 @@ int cefingo_media_sink_is_cast_sink(
 	struct _cef_media_sink_t* self
 )
 {
-	return self->is_cast_sink(
-		self
-	);
+	return	self->is_cast_sink(
+			self
+		);
 }
 
 int cefingo_media_sink_is_dial_sink(
 	struct _cef_media_sink_t* self
 )
 {
-	return self->is_dial_sink(
-		self
-	);
+	return	self->is_dial_sink(
+			self
+		);
 }
 
 int cefingo_media_sink_is_compatible_with(
@@ -4115,10 +4115,10 @@ int cefingo_media_sink_is_compatible_with(
 	struct _cef_media_source_t* source
 )
 {
-	return self->is_compatible_with(
-		self,
-		source
-	);
+	return	self->is_compatible_with(
+			self,
+			source
+		);
 }
 
 void cefingo_media_sink_device_info_callback_on_media_sink_device_info(
@@ -4136,36 +4136,36 @@ cef_string_userfree_t cefingo_media_source_get_id(
 	struct _cef_media_source_t* self
 )
 {
-	return self->get_id(
-		self
-	);
+	return	self->get_id(
+			self
+		);
 }
 
 int cefingo_media_source_is_valid(
 	struct _cef_media_source_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_media_source_is_cast_source(
 	struct _cef_media_source_t* self
 )
 {
-	return self->is_cast_source(
-		self
-	);
+	return	self->is_cast_source(
+			self
+		);
 }
 
 int cefingo_media_source_is_dial_source(
 	struct _cef_media_source_t* self
 )
 {
-	return self->is_dial_source(
-		self
-	);
+	return	self->is_dial_source(
+			self
+		);
 }
 
 void cefingo_menu_button_show_menu(
@@ -4204,10 +4204,10 @@ cef_menu_button_delegate_t *cefingo_construct_menu_button_delegate(cefingo_menu_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*menu_button_delegate), counter),
 		(cef_base_ref_counted_t*) menu_button_delegate);
-	
+
 	// callbacks
-	menu_button_delegate->body.on_menu_button_pressed = (T_CEF_MENU_BUTTON_DELEGATE_T_ON_MENU_BUTTON_PRESSED)
-		cefingo_menu_button_delegate_on_menu_button_pressed;
+	menu_button_delegate->body.on_menu_button_pressed =
+		(T_CEF_MENU_BUTTON_DELEGATE_T_ON_MENU_BUTTON_PRESSED)cefingo_menu_button_delegate_on_menu_button_pressed;
 	menu_button_delegate->body.base.on_button_pressed =
 		cefingo_menu_button_delegate_on_button_pressed;
 	menu_button_delegate->body.base.on_button_state_changed =
@@ -4236,36 +4236,36 @@ int cefingo_menu_model_is_sub_menu(
 	struct _cef_menu_model_t* self
 )
 {
-	return self->is_sub_menu(
-		self
-	);
+	return	self->is_sub_menu(
+			self
+		);
 }
 
 int cefingo_menu_model_clear(
 	struct _cef_menu_model_t* self
 )
 {
-	return self->clear(
-		self
-	);
+	return	self->clear(
+			self
+		);
 }
 
 int cefingo_menu_model_get_count(
 	struct _cef_menu_model_t* self
 )
 {
-	return self->get_count(
-		self
-	);
+	return	self->get_count(
+			self
+		);
 }
 
 int cefingo_menu_model_add_separator(
 	struct _cef_menu_model_t* self
 )
 {
-	return self->add_separator(
-		self
-	);
+	return	self->add_separator(
+			self
+		);
 }
 
 int cefingo_menu_model_add_item(
@@ -4274,11 +4274,11 @@ int cefingo_menu_model_add_item(
 	const cef_string_t* label
 )
 {
-	return self->add_item(
-		self,
-		command_id,
-		label
-	);
+	return	self->add_item(
+			self,
+			command_id,
+			label
+		);
 }
 
 int cefingo_menu_model_add_check_item(
@@ -4287,11 +4287,11 @@ int cefingo_menu_model_add_check_item(
 	const cef_string_t* label
 )
 {
-	return self->add_check_item(
-		self,
-		command_id,
-		label
-	);
+	return	self->add_check_item(
+			self,
+			command_id,
+			label
+		);
 }
 
 int cefingo_menu_model_add_radio_item(
@@ -4301,12 +4301,12 @@ int cefingo_menu_model_add_radio_item(
 	int group_id
 )
 {
-	return self->add_radio_item(
-		self,
-		command_id,
-		label,
-		group_id
-	);
+	return	self->add_radio_item(
+			self,
+			command_id,
+			label,
+			group_id
+		);
 }
 
 struct _cef_menu_model_t* cefingo_menu_model_add_sub_menu(
@@ -4315,11 +4315,11 @@ struct _cef_menu_model_t* cefingo_menu_model_add_sub_menu(
 	const cef_string_t* label
 )
 {
-	return self->add_sub_menu(
-		self,
-		command_id,
-		label
-	);
+	return	self->add_sub_menu(
+			self,
+			command_id,
+			label
+		);
 }
 
 int cefingo_menu_model_insert_separator_at(
@@ -4327,10 +4327,10 @@ int cefingo_menu_model_insert_separator_at(
 	int index
 )
 {
-	return self->insert_separator_at(
-		self,
-		index
-	);
+	return	self->insert_separator_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_insert_item_at(
@@ -4340,12 +4340,12 @@ int cefingo_menu_model_insert_item_at(
 	const cef_string_t* label
 )
 {
-	return self->insert_item_at(
-		self,
-		index,
-		command_id,
-		label
-	);
+	return	self->insert_item_at(
+			self,
+			index,
+			command_id,
+			label
+		);
 }
 
 int cefingo_menu_model_insert_check_item_at(
@@ -4355,12 +4355,12 @@ int cefingo_menu_model_insert_check_item_at(
 	const cef_string_t* label
 )
 {
-	return self->insert_check_item_at(
-		self,
-		index,
-		command_id,
-		label
-	);
+	return	self->insert_check_item_at(
+			self,
+			index,
+			command_id,
+			label
+		);
 }
 
 int cefingo_menu_model_insert_radio_item_at(
@@ -4371,13 +4371,13 @@ int cefingo_menu_model_insert_radio_item_at(
 	int group_id
 )
 {
-	return self->insert_radio_item_at(
-		self,
-		index,
-		command_id,
-		label,
-		group_id
-	);
+	return	self->insert_radio_item_at(
+			self,
+			index,
+			command_id,
+			label,
+			group_id
+		);
 }
 
 struct _cef_menu_model_t* cefingo_menu_model_insert_sub_menu_at(
@@ -4387,12 +4387,12 @@ struct _cef_menu_model_t* cefingo_menu_model_insert_sub_menu_at(
 	const cef_string_t* label
 )
 {
-	return self->insert_sub_menu_at(
-		self,
-		index,
-		command_id,
-		label
-	);
+	return	self->insert_sub_menu_at(
+			self,
+			index,
+			command_id,
+			label
+		);
 }
 
 int cefingo_menu_model_remove(
@@ -4400,10 +4400,10 @@ int cefingo_menu_model_remove(
 	int command_id
 )
 {
-	return self->remove(
-		self,
-		command_id
-	);
+	return	self->remove(
+			self,
+			command_id
+		);
 }
 
 int cefingo_menu_model_remove_at(
@@ -4411,10 +4411,10 @@ int cefingo_menu_model_remove_at(
 	int index
 )
 {
-	return self->remove_at(
-		self,
-		index
-	);
+	return	self->remove_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_get_index_of(
@@ -4422,10 +4422,10 @@ int cefingo_menu_model_get_index_of(
 	int command_id
 )
 {
-	return self->get_index_of(
-		self,
-		command_id
-	);
+	return	self->get_index_of(
+			self,
+			command_id
+		);
 }
 
 int cefingo_menu_model_get_command_id_at(
@@ -4433,10 +4433,10 @@ int cefingo_menu_model_get_command_id_at(
 	int index
 )
 {
-	return self->get_command_id_at(
-		self,
-		index
-	);
+	return	self->get_command_id_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_set_command_id_at(
@@ -4445,11 +4445,11 @@ int cefingo_menu_model_set_command_id_at(
 	int command_id
 )
 {
-	return self->set_command_id_at(
-		self,
-		index,
-		command_id
-	);
+	return	self->set_command_id_at(
+			self,
+			index,
+			command_id
+		);
 }
 
 cef_string_userfree_t cefingo_menu_model_get_label(
@@ -4457,10 +4457,10 @@ cef_string_userfree_t cefingo_menu_model_get_label(
 	int command_id
 )
 {
-	return self->get_label(
-		self,
-		command_id
-	);
+	return	self->get_label(
+			self,
+			command_id
+		);
 }
 
 cef_string_userfree_t cefingo_menu_model_get_label_at(
@@ -4468,10 +4468,10 @@ cef_string_userfree_t cefingo_menu_model_get_label_at(
 	int index
 )
 {
-	return self->get_label_at(
-		self,
-		index
-	);
+	return	self->get_label_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_set_label(
@@ -4480,11 +4480,11 @@ int cefingo_menu_model_set_label(
 	const cef_string_t* label
 )
 {
-	return self->set_label(
-		self,
-		command_id,
-		label
-	);
+	return	self->set_label(
+			self,
+			command_id,
+			label
+		);
 }
 
 int cefingo_menu_model_set_label_at(
@@ -4493,11 +4493,11 @@ int cefingo_menu_model_set_label_at(
 	const cef_string_t* label
 )
 {
-	return self->set_label_at(
-		self,
-		index,
-		label
-	);
+	return	self->set_label_at(
+			self,
+			index,
+			label
+		);
 }
 
 cef_menu_item_type_t cefingo_menu_model_get_type(
@@ -4505,10 +4505,10 @@ cef_menu_item_type_t cefingo_menu_model_get_type(
 	int command_id
 )
 {
-	return self->get_type(
-		self,
-		command_id
-	);
+	return	self->get_type(
+			self,
+			command_id
+		);
 }
 
 cef_menu_item_type_t cefingo_menu_model_get_type_at(
@@ -4516,10 +4516,10 @@ cef_menu_item_type_t cefingo_menu_model_get_type_at(
 	int index
 )
 {
-	return self->get_type_at(
-		self,
-		index
-	);
+	return	self->get_type_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_get_group_id(
@@ -4527,10 +4527,10 @@ int cefingo_menu_model_get_group_id(
 	int command_id
 )
 {
-	return self->get_group_id(
-		self,
-		command_id
-	);
+	return	self->get_group_id(
+			self,
+			command_id
+		);
 }
 
 int cefingo_menu_model_get_group_id_at(
@@ -4538,10 +4538,10 @@ int cefingo_menu_model_get_group_id_at(
 	int index
 )
 {
-	return self->get_group_id_at(
-		self,
-		index
-	);
+	return	self->get_group_id_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_set_group_id(
@@ -4550,11 +4550,11 @@ int cefingo_menu_model_set_group_id(
 	int group_id
 )
 {
-	return self->set_group_id(
-		self,
-		command_id,
-		group_id
-	);
+	return	self->set_group_id(
+			self,
+			command_id,
+			group_id
+		);
 }
 
 int cefingo_menu_model_set_group_id_at(
@@ -4563,11 +4563,11 @@ int cefingo_menu_model_set_group_id_at(
 	int group_id
 )
 {
-	return self->set_group_id_at(
-		self,
-		index,
-		group_id
-	);
+	return	self->set_group_id_at(
+			self,
+			index,
+			group_id
+		);
 }
 
 struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu(
@@ -4575,10 +4575,10 @@ struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu(
 	int command_id
 )
 {
-	return self->get_sub_menu(
-		self,
-		command_id
-	);
+	return	self->get_sub_menu(
+			self,
+			command_id
+		);
 }
 
 struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu_at(
@@ -4586,10 +4586,10 @@ struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu_at(
 	int index
 )
 {
-	return self->get_sub_menu_at(
-		self,
-		index
-	);
+	return	self->get_sub_menu_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_is_visible(
@@ -4597,10 +4597,10 @@ int cefingo_menu_model_is_visible(
 	int command_id
 )
 {
-	return self->is_visible(
-		self,
-		command_id
-	);
+	return	self->is_visible(
+			self,
+			command_id
+		);
 }
 
 int cefingo_menu_model_is_visible_at(
@@ -4608,10 +4608,10 @@ int cefingo_menu_model_is_visible_at(
 	int index
 )
 {
-	return self->is_visible_at(
-		self,
-		index
-	);
+	return	self->is_visible_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_set_visible(
@@ -4620,11 +4620,11 @@ int cefingo_menu_model_set_visible(
 	int visible
 )
 {
-	return self->set_visible(
-		self,
-		command_id,
-		visible
-	);
+	return	self->set_visible(
+			self,
+			command_id,
+			visible
+		);
 }
 
 int cefingo_menu_model_set_visible_at(
@@ -4633,11 +4633,11 @@ int cefingo_menu_model_set_visible_at(
 	int visible
 )
 {
-	return self->set_visible_at(
-		self,
-		index,
-		visible
-	);
+	return	self->set_visible_at(
+			self,
+			index,
+			visible
+		);
 }
 
 int cefingo_menu_model_is_enabled(
@@ -4645,10 +4645,10 @@ int cefingo_menu_model_is_enabled(
 	int command_id
 )
 {
-	return self->is_enabled(
-		self,
-		command_id
-	);
+	return	self->is_enabled(
+			self,
+			command_id
+		);
 }
 
 int cefingo_menu_model_is_enabled_at(
@@ -4656,10 +4656,10 @@ int cefingo_menu_model_is_enabled_at(
 	int index
 )
 {
-	return self->is_enabled_at(
-		self,
-		index
-	);
+	return	self->is_enabled_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_set_enabled(
@@ -4668,11 +4668,11 @@ int cefingo_menu_model_set_enabled(
 	int enabled
 )
 {
-	return self->set_enabled(
-		self,
-		command_id,
-		enabled
-	);
+	return	self->set_enabled(
+			self,
+			command_id,
+			enabled
+		);
 }
 
 int cefingo_menu_model_set_enabled_at(
@@ -4681,11 +4681,11 @@ int cefingo_menu_model_set_enabled_at(
 	int enabled
 )
 {
-	return self->set_enabled_at(
-		self,
-		index,
-		enabled
-	);
+	return	self->set_enabled_at(
+			self,
+			index,
+			enabled
+		);
 }
 
 int cefingo_menu_model_is_checked(
@@ -4693,10 +4693,10 @@ int cefingo_menu_model_is_checked(
 	int command_id
 )
 {
-	return self->is_checked(
-		self,
-		command_id
-	);
+	return	self->is_checked(
+			self,
+			command_id
+		);
 }
 
 int cefingo_menu_model_is_checked_at(
@@ -4704,10 +4704,10 @@ int cefingo_menu_model_is_checked_at(
 	int index
 )
 {
-	return self->is_checked_at(
-		self,
-		index
-	);
+	return	self->is_checked_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_set_checked(
@@ -4716,11 +4716,11 @@ int cefingo_menu_model_set_checked(
 	int checked
 )
 {
-	return self->set_checked(
-		self,
-		command_id,
-		checked
-	);
+	return	self->set_checked(
+			self,
+			command_id,
+			checked
+		);
 }
 
 int cefingo_menu_model_set_checked_at(
@@ -4729,11 +4729,11 @@ int cefingo_menu_model_set_checked_at(
 	int checked
 )
 {
-	return self->set_checked_at(
-		self,
-		index,
-		checked
-	);
+	return	self->set_checked_at(
+			self,
+			index,
+			checked
+		);
 }
 
 int cefingo_menu_model_has_accelerator(
@@ -4741,10 +4741,10 @@ int cefingo_menu_model_has_accelerator(
 	int command_id
 )
 {
-	return self->has_accelerator(
-		self,
-		command_id
-	);
+	return	self->has_accelerator(
+			self,
+			command_id
+		);
 }
 
 int cefingo_menu_model_has_accelerator_at(
@@ -4752,10 +4752,10 @@ int cefingo_menu_model_has_accelerator_at(
 	int index
 )
 {
-	return self->has_accelerator_at(
-		self,
-		index
-	);
+	return	self->has_accelerator_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_set_accelerator(
@@ -4767,14 +4767,14 @@ int cefingo_menu_model_set_accelerator(
 	int alt_pressed
 )
 {
-	return self->set_accelerator(
-		self,
-		command_id,
-		key_code,
-		shift_pressed,
-		ctrl_pressed,
-		alt_pressed
-	);
+	return	self->set_accelerator(
+			self,
+			command_id,
+			key_code,
+			shift_pressed,
+			ctrl_pressed,
+			alt_pressed
+		);
 }
 
 int cefingo_menu_model_set_accelerator_at(
@@ -4786,14 +4786,14 @@ int cefingo_menu_model_set_accelerator_at(
 	int alt_pressed
 )
 {
-	return self->set_accelerator_at(
-		self,
-		index,
-		key_code,
-		shift_pressed,
-		ctrl_pressed,
-		alt_pressed
-	);
+	return	self->set_accelerator_at(
+			self,
+			index,
+			key_code,
+			shift_pressed,
+			ctrl_pressed,
+			alt_pressed
+		);
 }
 
 int cefingo_menu_model_remove_accelerator(
@@ -4801,10 +4801,10 @@ int cefingo_menu_model_remove_accelerator(
 	int command_id
 )
 {
-	return self->remove_accelerator(
-		self,
-		command_id
-	);
+	return	self->remove_accelerator(
+			self,
+			command_id
+		);
 }
 
 int cefingo_menu_model_remove_accelerator_at(
@@ -4812,10 +4812,10 @@ int cefingo_menu_model_remove_accelerator_at(
 	int index
 )
 {
-	return self->remove_accelerator_at(
-		self,
-		index
-	);
+	return	self->remove_accelerator_at(
+			self,
+			index
+		);
 }
 
 int cefingo_menu_model_get_accelerator(
@@ -4827,14 +4827,14 @@ int cefingo_menu_model_get_accelerator(
 	int* alt_pressed
 )
 {
-	return self->get_accelerator(
-		self,
-		command_id,
-		key_code,
-		shift_pressed,
-		ctrl_pressed,
-		alt_pressed
-	);
+	return	self->get_accelerator(
+			self,
+			command_id,
+			key_code,
+			shift_pressed,
+			ctrl_pressed,
+			alt_pressed
+		);
 }
 
 int cefingo_menu_model_get_accelerator_at(
@@ -4846,14 +4846,14 @@ int cefingo_menu_model_get_accelerator_at(
 	int* alt_pressed
 )
 {
-	return self->get_accelerator_at(
-		self,
-		index,
-		key_code,
-		shift_pressed,
-		ctrl_pressed,
-		alt_pressed
-	);
+	return	self->get_accelerator_at(
+			self,
+			index,
+			key_code,
+			shift_pressed,
+			ctrl_pressed,
+			alt_pressed
+		);
 }
 
 int cefingo_menu_model_set_color(
@@ -4863,12 +4863,12 @@ int cefingo_menu_model_set_color(
 	cef_color_t color
 )
 {
-	return self->set_color(
-		self,
-		command_id,
-		color_type,
-		color
-	);
+	return	self->set_color(
+			self,
+			command_id,
+			color_type,
+			color
+		);
 }
 
 int cefingo_menu_model_set_color_at(
@@ -4878,12 +4878,12 @@ int cefingo_menu_model_set_color_at(
 	cef_color_t color
 )
 {
-	return self->set_color_at(
-		self,
-		index,
-		color_type,
-		color
-	);
+	return	self->set_color_at(
+			self,
+			index,
+			color_type,
+			color
+		);
 }
 
 int cefingo_menu_model_get_color(
@@ -4893,12 +4893,12 @@ int cefingo_menu_model_get_color(
 	cef_color_t* color
 )
 {
-	return self->get_color(
-		self,
-		command_id,
-		color_type,
-		color
-	);
+	return	self->get_color(
+			self,
+			command_id,
+			color_type,
+			color
+		);
 }
 
 int cefingo_menu_model_get_color_at(
@@ -4908,12 +4908,12 @@ int cefingo_menu_model_get_color_at(
 	cef_color_t* color
 )
 {
-	return self->get_color_at(
-		self,
-		index,
-		color_type,
-		color
-	);
+	return	self->get_color_at(
+			self,
+			index,
+			color_type,
+			color
+		);
 }
 
 int cefingo_menu_model_set_font_list(
@@ -4922,11 +4922,11 @@ int cefingo_menu_model_set_font_list(
 	const cef_string_t* font_list
 )
 {
-	return self->set_font_list(
-		self,
-		command_id,
-		font_list
-	);
+	return	self->set_font_list(
+			self,
+			command_id,
+			font_list
+		);
 }
 
 int cefingo_menu_model_set_font_list_at(
@@ -4935,11 +4935,11 @@ int cefingo_menu_model_set_font_list_at(
 	const cef_string_t* font_list
 )
 {
-	return self->set_font_list_at(
-		self,
-		index,
-		font_list
-	);
+	return	self->set_font_list_at(
+			self,
+			index,
+			font_list
+		);
 }
 
 typedef void (*T_CEF_MENU_MODEL_DELEGATE_T_MOUSE_OUTSIDE_MENU)(
@@ -4953,12 +4953,12 @@ cef_menu_model_delegate_t *cefingo_construct_menu_model_delegate(cefingo_menu_mo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*menu_model_delegate), counter),
 		(cef_base_ref_counted_t*) menu_model_delegate);
-	
+
 	// callbacks
 	menu_model_delegate->body.execute_command =
 		cefingo_menu_model_delegate_execute_command;
-	menu_model_delegate->body.mouse_outside_menu = (T_CEF_MENU_MODEL_DELEGATE_T_MOUSE_OUTSIDE_MENU)
-		cefingo_menu_model_delegate_mouse_outside_menu;
+	menu_model_delegate->body.mouse_outside_menu =
+		(T_CEF_MENU_MODEL_DELEGATE_T_MOUSE_OUTSIDE_MENU)cefingo_menu_model_delegate_mouse_outside_menu;
 	menu_model_delegate->body.unhandled_open_submenu =
 		cefingo_menu_model_delegate_unhandled_open_submenu;
 	menu_model_delegate->body.unhandled_close_submenu =
@@ -4977,108 +4977,108 @@ int cefingo_navigation_entry_is_valid(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_navigation_entry_get_url(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->get_url(
-		self
-	);
+	return	self->get_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_navigation_entry_get_display_url(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->get_display_url(
-		self
-	);
+	return	self->get_display_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_navigation_entry_get_original_url(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->get_original_url(
-		self
-	);
+	return	self->get_original_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_navigation_entry_get_title(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->get_title(
-		self
-	);
+	return	self->get_title(
+			self
+		);
 }
 
 cef_transition_type_t cefingo_navigation_entry_get_transition_type(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->get_transition_type(
-		self
-	);
+	return	self->get_transition_type(
+			self
+		);
 }
 
 int cefingo_navigation_entry_has_post_data(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->has_post_data(
-		self
-	);
+	return	self->has_post_data(
+			self
+		);
 }
 
 cef_time_t cefingo_navigation_entry_get_completion_time(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->get_completion_time(
-		self
-	);
+	return	self->get_completion_time(
+			self
+		);
 }
 
 int cefingo_navigation_entry_get_http_status_code(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->get_http_status_code(
-		self
-	);
+	return	self->get_http_status_code(
+			self
+		);
 }
 
 struct _cef_sslstatus_t* cefingo_navigation_entry_get_sslstatus(
 	struct _cef_navigation_entry_t* self
 )
 {
-	return self->get_sslstatus(
-		self
-	);
+	return	self->get_sslstatus(
+			self
+		);
 }
 
 struct _cef_window_t* cefingo_panel_as_window(
 	struct _cef_panel_t* self
 )
 {
-	return self->as_window(
-		self
-	);
+	return	self->as_window(
+			self
+		);
 }
 
 struct _cef_fill_layout_t* cefingo_panel_set_to_fill_layout(
 	struct _cef_panel_t* self
 )
 {
-	return self->set_to_fill_layout(
-		self
-	);
+	return	self->set_to_fill_layout(
+			self
+		);
 }
 
 struct _cef_box_layout_t* cefingo_panel_set_to_box_layout(
@@ -5086,19 +5086,19 @@ struct _cef_box_layout_t* cefingo_panel_set_to_box_layout(
 	const struct _cef_box_layout_settings_t* settings
 )
 {
-	return self->set_to_box_layout(
-		self,
-		settings
-	);
+	return	self->set_to_box_layout(
+			self,
+			settings
+		);
 }
 
 struct _cef_layout_t* cefingo_panel_get_layout(
 	struct _cef_panel_t* self
 )
 {
-	return self->get_layout(
-		self
-	);
+	return	self->get_layout(
+			self
+		);
 }
 
 void cefingo_panel_layout(
@@ -5171,9 +5171,9 @@ size_t cefingo_panel_get_child_view_count(
 	struct _cef_panel_t* self
 )
 {
-	return self->get_child_view_count(
-		self
-	);
+	return	self->get_child_view_count(
+			self
+		);
 }
 
 struct _cef_view_t* cefingo_panel_get_child_view_at(
@@ -5181,10 +5181,10 @@ struct _cef_view_t* cefingo_panel_get_child_view_at(
 	int index
 )
 {
-	return self->get_child_view_at(
-		self,
-		index
-	);
+	return	self->get_child_view_at(
+			self,
+			index
+		);
 }
 
 
@@ -5193,7 +5193,7 @@ cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*panel_delegate), counter),
 		(cef_base_ref_counted_t*) panel_delegate);
-	
+
 	// callbacks
 	panel_delegate->body.base.get_preferred_size =
 		cefingo_panel_delegate_get_preferred_size;
@@ -5257,7 +5257,7 @@ cef_print_handler_t *cefingo_construct_print_handler(cefingo_print_handler_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*print_handler), counter),
 		(cef_base_ref_counted_t*) print_handler);
-	
+
 	// callbacks
 	print_handler->body.on_print_start =
 		cefingo_print_handler_on_print_start;
@@ -5265,8 +5265,8 @@ cef_print_handler_t *cefingo_construct_print_handler(cefingo_print_handler_wrapp
 		cefingo_print_handler_on_print_settings;
 	print_handler->body.on_print_dialog =
 		cefingo_print_handler_on_print_dialog;
-	print_handler->body.on_print_job = (T_CEF_PRINT_HANDLER_T_ON_PRINT_JOB)
-		cefingo_print_handler_on_print_job;
+	print_handler->body.on_print_job =
+		(T_CEF_PRINT_HANDLER_T_ON_PRINT_JOB)cefingo_print_handler_on_print_job;
 	print_handler->body.on_print_reset =
 		cefingo_print_handler_on_print_reset;
 	print_handler->body.get_pdf_paper_size =
@@ -5279,18 +5279,18 @@ int cefingo_print_settings_is_valid(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_print_settings_is_read_only(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 void cefingo_print_settings_set_orientation(
@@ -5308,9 +5308,9 @@ int cefingo_print_settings_is_landscape(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->is_landscape(
-		self
-	);
+	return	self->is_landscape(
+			self
+		);
 }
 
 void cefingo_print_settings_set_printer_printable_area(
@@ -5343,9 +5343,9 @@ cef_string_userfree_t cefingo_print_settings_get_device_name(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->get_device_name(
-		self
-	);
+	return	self->get_device_name(
+			self
+		);
 }
 
 void cefingo_print_settings_set_dpi(
@@ -5363,9 +5363,9 @@ int cefingo_print_settings_get_dpi(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->get_dpi(
-		self
-	);
+	return	self->get_dpi(
+			self
+		);
 }
 
 void cefingo_print_settings_set_page_ranges(
@@ -5385,9 +5385,9 @@ size_t cefingo_print_settings_get_page_ranges_count(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->get_page_ranges_count(
-		self
-	);
+	return	self->get_page_ranges_count(
+			self
+		);
 }
 
 void cefingo_print_settings_set_selection_only(
@@ -5405,9 +5405,9 @@ int cefingo_print_settings_is_selection_only(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->is_selection_only(
-		self
-	);
+	return	self->is_selection_only(
+			self
+		);
 }
 
 void cefingo_print_settings_set_collate(
@@ -5425,9 +5425,9 @@ int cefingo_print_settings_will_collate(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->will_collate(
-		self
-	);
+	return	self->will_collate(
+			self
+		);
 }
 
 void cefingo_print_settings_set_color_model(
@@ -5445,9 +5445,9 @@ cef_color_model_t cefingo_print_settings_get_color_model(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->get_color_model(
-		self
-	);
+	return	self->get_color_model(
+			self
+		);
 }
 
 void cefingo_print_settings_set_copies(
@@ -5465,9 +5465,9 @@ int cefingo_print_settings_get_copies(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->get_copies(
-		self
-	);
+	return	self->get_copies(
+			self
+		);
 }
 
 void cefingo_print_settings_set_duplex_mode(
@@ -5485,54 +5485,54 @@ cef_duplex_mode_t cefingo_print_settings_get_duplex_mode(
 	struct _cef_print_settings_t* self
 )
 {
-	return self->get_duplex_mode(
-		self
-	);
+	return	self->get_duplex_mode(
+			self
+		);
 }
 
 int cefingo_process_message_is_valid(
 	struct _cef_process_message_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_process_message_is_read_only(
 	struct _cef_process_message_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 struct _cef_process_message_t* cefingo_process_message_copy(
 	struct _cef_process_message_t* self
 )
 {
-	return self->copy(
-		self
-	);
+	return	self->copy(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_process_message_get_name(
 	struct _cef_process_message_t* self
 )
 {
-	return self->get_name(
-		self
-	);
+	return	self->get_name(
+			self
+		);
 }
 
 struct _cef_list_value_t* cefingo_process_message_get_argument_list(
 	struct _cef_process_message_t* self
 )
 {
-	return self->get_argument_list(
-		self
-	);
+	return	self->get_argument_list(
+			self
+		);
 }
 
 typedef void (*T_CEF_RENDER_HANDLER_T_ON_POPUP_SIZE)(
@@ -5584,7 +5584,7 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*render_handler), counter),
 		(cef_base_ref_counted_t*) render_handler);
-	
+
 	// callbacks
 	render_handler->body.get_accessibility_handler =
 		cefingo_render_handler_get_accessibility_handler;
@@ -5598,24 +5598,24 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 		cefingo_render_handler_get_screen_info;
 	render_handler->body.on_popup_show =
 		cefingo_render_handler_on_popup_show;
-	render_handler->body.on_popup_size = (T_CEF_RENDER_HANDLER_T_ON_POPUP_SIZE)
-		cefingo_render_handler_on_popup_size;
-	render_handler->body.on_paint = (T_CEF_RENDER_HANDLER_T_ON_PAINT)
-		cefingo_render_handler_on_paint;
-	render_handler->body.on_accelerated_paint = (T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT)
-		cefingo_render_handler_on_accelerated_paint;
-	render_handler->body.on_cursor_change = (T_CEF_RENDER_HANDLER_T_ON_CURSOR_CHANGE)
-		cefingo_render_handler_on_cursor_change;
+	render_handler->body.on_popup_size =
+		(T_CEF_RENDER_HANDLER_T_ON_POPUP_SIZE)cefingo_render_handler_on_popup_size;
+	render_handler->body.on_paint =
+		(T_CEF_RENDER_HANDLER_T_ON_PAINT)cefingo_render_handler_on_paint;
+	render_handler->body.on_accelerated_paint =
+		(T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT)cefingo_render_handler_on_accelerated_paint;
+	render_handler->body.on_cursor_change =
+		(T_CEF_RENDER_HANDLER_T_ON_CURSOR_CHANGE)cefingo_render_handler_on_cursor_change;
 	render_handler->body.start_dragging =
 		cefingo_render_handler_start_dragging;
 	render_handler->body.update_drag_cursor =
 		cefingo_render_handler_update_drag_cursor;
 	render_handler->body.on_scroll_offset_changed =
 		cefingo_render_handler_on_scroll_offset_changed;
-	render_handler->body.on_ime_composition_range_changed = (T_CEF_RENDER_HANDLER_T_ON_IME_COMPOSITION_RANGE_CHANGED)
-		cefingo_render_handler_on_ime_composition_range_changed;
-	render_handler->body.on_text_selection_changed = (T_CEF_RENDER_HANDLER_T_ON_TEXT_SELECTION_CHANGED)
-		cefingo_render_handler_on_text_selection_changed;
+	render_handler->body.on_ime_composition_range_changed =
+		(T_CEF_RENDER_HANDLER_T_ON_IME_COMPOSITION_RANGE_CHANGED)cefingo_render_handler_on_ime_composition_range_changed;
+	render_handler->body.on_text_selection_changed =
+		(T_CEF_RENDER_HANDLER_T_ON_TEXT_SELECTION_CHANGED)cefingo_render_handler_on_text_selection_changed;
 	render_handler->body.on_virtual_keyboard_requested =
 		cefingo_render_handler_on_virtual_keyboard_requested;
 
@@ -5628,7 +5628,7 @@ cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_r
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*render_process_handler), counter),
 		(cef_base_ref_counted_t*) render_process_handler);
-	
+
 	// callbacks
 	render_process_handler->body.on_render_thread_created =
 		cefingo_render_process_handler_on_render_thread_created;
@@ -5678,18 +5678,18 @@ int cefingo_request_is_read_only(
 	struct _cef_request_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_request_get_url(
 	struct _cef_request_t* self
 )
 {
-	return self->get_url(
-		self
-	);
+	return	self->get_url(
+			self
+		);
 }
 
 void cefingo_request_set_url(
@@ -5707,9 +5707,9 @@ cef_string_userfree_t cefingo_request_get_method(
 	struct _cef_request_t* self
 )
 {
-	return self->get_method(
-		self
-	);
+	return	self->get_method(
+			self
+		);
 }
 
 void cefingo_request_set_method(
@@ -5740,27 +5740,27 @@ cef_string_userfree_t cefingo_request_get_referrer_url(
 	struct _cef_request_t* self
 )
 {
-	return self->get_referrer_url(
-		self
-	);
+	return	self->get_referrer_url(
+			self
+		);
 }
 
 cef_referrer_policy_t cefingo_request_get_referrer_policy(
 	struct _cef_request_t* self
 )
 {
-	return self->get_referrer_policy(
-		self
-	);
+	return	self->get_referrer_policy(
+			self
+		);
 }
 
 struct _cef_post_data_t* cefingo_request_get_post_data(
 	struct _cef_request_t* self
 )
 {
-	return self->get_post_data(
-		self
-	);
+	return	self->get_post_data(
+			self
+		);
 }
 
 void cefingo_request_set_post_data(
@@ -5801,10 +5801,10 @@ cef_string_userfree_t cefingo_request_get_header_by_name(
 	const cef_string_t* name
 )
 {
-	return self->get_header_by_name(
-		self,
-		name
-	);
+	return	self->get_header_by_name(
+			self,
+			name
+		);
 }
 
 void cefingo_request_set_header_by_name(
@@ -5843,9 +5843,9 @@ int cefingo_request_get_flags(
 	struct _cef_request_t* self
 )
 {
-	return self->get_flags(
-		self
-	);
+	return	self->get_flags(
+			self
+		);
 }
 
 void cefingo_request_set_flags(
@@ -5863,9 +5863,9 @@ cef_string_userfree_t cefingo_request_get_first_party_for_cookies(
 	struct _cef_request_t* self
 )
 {
-	return self->get_first_party_for_cookies(
-		self
-	);
+	return	self->get_first_party_for_cookies(
+			self
+		);
 }
 
 void cefingo_request_set_first_party_for_cookies(
@@ -5883,54 +5883,54 @@ cef_resource_type_t cefingo_request_get_resource_type(
 	struct _cef_request_t* self
 )
 {
-	return self->get_resource_type(
-		self
-	);
+	return	self->get_resource_type(
+			self
+		);
 }
 
 cef_transition_type_t cefingo_request_get_transition_type(
 	struct _cef_request_t* self
 )
 {
-	return self->get_transition_type(
-		self
-	);
+	return	self->get_transition_type(
+			self
+		);
 }
 
 uint64 cefingo_request_get_identifier(
 	struct _cef_request_t* self
 )
 {
-	return self->get_identifier(
-		self
-	);
+	return	self->get_identifier(
+			self
+		);
 }
 
 int cefingo_post_data_is_read_only(
 	struct _cef_post_data_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 int cefingo_post_data_has_excluded_elements(
 	struct _cef_post_data_t* self
 )
 {
-	return self->has_excluded_elements(
-		self
-	);
+	return	self->has_excluded_elements(
+			self
+		);
 }
 
 size_t cefingo_post_data_get_element_count(
 	struct _cef_post_data_t* self
 )
 {
-	return self->get_element_count(
-		self
-	);
+	return	self->get_element_count(
+			self
+		);
 }
 
 int cefingo_post_data_remove_element(
@@ -5938,10 +5938,10 @@ int cefingo_post_data_remove_element(
 	struct _cef_post_data_element_t* element
 )
 {
-	return self->remove_element(
-		self,
-		element
-	);
+	return	self->remove_element(
+			self,
+			element
+		);
 }
 
 int cefingo_post_data_add_element(
@@ -5949,10 +5949,10 @@ int cefingo_post_data_add_element(
 	struct _cef_post_data_element_t* element
 )
 {
-	return self->add_element(
-		self,
-		element
-	);
+	return	self->add_element(
+			self,
+			element
+		);
 }
 
 void cefingo_post_data_remove_elements(
@@ -5968,9 +5968,9 @@ int cefingo_post_data_element_is_read_only(
 	struct _cef_post_data_element_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 void cefingo_post_data_element_set_to_empty(
@@ -6010,27 +6010,27 @@ cef_postdataelement_type_t cefingo_post_data_element_get_type(
 	struct _cef_post_data_element_t* self
 )
 {
-	return self->get_type(
-		self
-	);
+	return	self->get_type(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_post_data_element_get_file(
 	struct _cef_post_data_element_t* self
 )
 {
-	return self->get_file(
-		self
-	);
+	return	self->get_file(
+			self
+		);
 }
 
 size_t cefingo_post_data_element_get_bytes_count(
 	struct _cef_post_data_element_t* self
 )
 {
-	return self->get_bytes_count(
-		self
-	);
+	return	self->get_bytes_count(
+			self
+		);
 }
 
 size_t cefingo_post_data_element_get_bytes(
@@ -6039,11 +6039,11 @@ size_t cefingo_post_data_element_get_bytes(
 	void* bytes
 )
 {
-	return self->get_bytes(
-		self,
-		size,
-		bytes
-	);
+	return	self->get_bytes(
+			self,
+			size,
+			bytes
+		);
 }
 
 void cefingo_resolve_callback_on_resolve_completed(
@@ -6064,10 +6064,10 @@ int cefingo_request_context_is_same(
 	struct _cef_request_context_t* other
 )
 {
-	return self->is_same(
-		self,
-		other
-	);
+	return	self->is_same(
+			self,
+			other
+		);
 }
 
 int cefingo_request_context_is_sharing_with(
@@ -6075,37 +6075,37 @@ int cefingo_request_context_is_sharing_with(
 	struct _cef_request_context_t* other
 )
 {
-	return self->is_sharing_with(
-		self,
-		other
-	);
+	return	self->is_sharing_with(
+			self,
+			other
+		);
 }
 
 int cefingo_request_context_is_global(
 	struct _cef_request_context_t* self
 )
 {
-	return self->is_global(
-		self
-	);
+	return	self->is_global(
+			self
+		);
 }
 
 struct _cef_request_context_handler_t* cefingo_request_context_get_handler(
 	struct _cef_request_context_t* self
 )
 {
-	return self->get_handler(
-		self
-	);
+	return	self->get_handler(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_request_context_get_cache_path(
 	struct _cef_request_context_t* self
 )
 {
-	return self->get_cache_path(
-		self
-	);
+	return	self->get_cache_path(
+			self
+		);
 }
 
 struct _cef_cookie_manager_t* cefingo_request_context_get_cookie_manager(
@@ -6113,10 +6113,10 @@ struct _cef_cookie_manager_t* cefingo_request_context_get_cookie_manager(
 	struct _cef_completion_callback_t* callback
 )
 {
-	return self->get_cookie_manager(
-		self,
-		callback
-	);
+	return	self->get_cookie_manager(
+			self,
+			callback
+		);
 }
 
 int cefingo_request_context_register_scheme_handler_factory(
@@ -6126,21 +6126,21 @@ int cefingo_request_context_register_scheme_handler_factory(
 	struct _cef_scheme_handler_factory_t* factory
 )
 {
-	return self->register_scheme_handler_factory(
-		self,
-		scheme_name,
-		domain_name,
-		factory
-	);
+	return	self->register_scheme_handler_factory(
+			self,
+			scheme_name,
+			domain_name,
+			factory
+		);
 }
 
 int cefingo_request_context_clear_scheme_handler_factories(
 	struct _cef_request_context_t* self
 )
 {
-	return self->clear_scheme_handler_factories(
-		self
-	);
+	return	self->clear_scheme_handler_factories(
+			self
+		);
 }
 
 void cefingo_request_context_purge_plugin_list_cache(
@@ -6159,10 +6159,10 @@ int cefingo_request_context_has_preference(
 	const cef_string_t* name
 )
 {
-	return self->has_preference(
-		self,
-		name
-	);
+	return	self->has_preference(
+			self,
+			name
+		);
 }
 
 struct _cef_value_t* cefingo_request_context_get_preference(
@@ -6170,10 +6170,10 @@ struct _cef_value_t* cefingo_request_context_get_preference(
 	const cef_string_t* name
 )
 {
-	return self->get_preference(
-		self,
-		name
-	);
+	return	self->get_preference(
+			self,
+			name
+		);
 }
 
 struct _cef_dictionary_value_t* cefingo_request_context_get_all_preferences(
@@ -6181,10 +6181,10 @@ struct _cef_dictionary_value_t* cefingo_request_context_get_all_preferences(
 	int include_defaults
 )
 {
-	return self->get_all_preferences(
-		self,
-		include_defaults
-	);
+	return	self->get_all_preferences(
+			self,
+			include_defaults
+		);
 }
 
 int cefingo_request_context_can_set_preference(
@@ -6192,10 +6192,10 @@ int cefingo_request_context_can_set_preference(
 	const cef_string_t* name
 )
 {
-	return self->can_set_preference(
-		self,
-		name
-	);
+	return	self->can_set_preference(
+			self,
+			name
+		);
 }
 
 int cefingo_request_context_set_preference(
@@ -6205,12 +6205,12 @@ int cefingo_request_context_set_preference(
 	cef_string_t* error
 )
 {
-	return self->set_preference(
-		self,
-		name,
-		value,
-		error
-	);
+	return	self->set_preference(
+			self,
+			name,
+			value,
+			error
+		);
 }
 
 void cefingo_request_context_clear_certificate_exceptions(
@@ -6279,10 +6279,10 @@ int cefingo_request_context_did_load_extension(
 	const cef_string_t* extension_id
 )
 {
-	return self->did_load_extension(
-		self,
-		extension_id
-	);
+	return	self->did_load_extension(
+			self,
+			extension_id
+		);
 }
 
 int cefingo_request_context_has_extension(
@@ -6290,10 +6290,10 @@ int cefingo_request_context_has_extension(
 	const cef_string_t* extension_id
 )
 {
-	return self->has_extension(
-		self,
-		extension_id
-	);
+	return	self->has_extension(
+			self,
+			extension_id
+		);
 }
 
 int cefingo_request_context_get_extensions(
@@ -6301,10 +6301,10 @@ int cefingo_request_context_get_extensions(
 	cef_string_list_t extension_ids
 )
 {
-	return self->get_extensions(
-		self,
-		extension_ids
-	);
+	return	self->get_extensions(
+			self,
+			extension_ids
+		);
 }
 
 struct _cef_extension_t* cefingo_request_context_get_extension(
@@ -6312,19 +6312,19 @@ struct _cef_extension_t* cefingo_request_context_get_extension(
 	const cef_string_t* extension_id
 )
 {
-	return self->get_extension(
-		self,
-		extension_id
-	);
+	return	self->get_extension(
+			self,
+			extension_id
+		);
 }
 
 struct _cef_media_router_t* cefingo_request_context_get_media_router(
 	struct _cef_request_context_t* self
 )
 {
-	return self->get_media_router(
-		self
-	);
+	return	self->get_media_router(
+			self
+		);
 }
 
 typedef int (*T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)(
@@ -6352,14 +6352,14 @@ cef_request_context_handler_t *cefingo_construct_request_context_handler(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*request_context_handler), counter),
 		(cef_base_ref_counted_t*) request_context_handler);
-	
+
 	// callbacks
 	request_context_handler->body.on_request_context_initialized =
 		cefingo_request_context_handler_on_request_context_initialized;
-	request_context_handler->body.on_before_plugin_load = (T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)
-		cefingo_request_context_handler_on_before_plugin_load;
-	request_context_handler->body.get_resource_request_handler = (T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)
-		cefingo_request_context_handler_get_resource_request_handler;
+	request_context_handler->body.on_before_plugin_load =
+		(T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)cefingo_request_context_handler_on_before_plugin_load;
+	request_context_handler->body.get_resource_request_handler =
+		(T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)cefingo_request_context_handler_get_resource_request_handler;
 
 	return (cef_request_context_handler_t*)request_context_handler;
 }
@@ -6440,24 +6440,24 @@ cef_request_handler_t *cefingo_construct_request_handler(cefingo_request_handler
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*request_handler), counter),
 		(cef_base_ref_counted_t*) request_handler);
-	
+
 	// callbacks
 	request_handler->body.on_before_browse =
 		cefingo_request_handler_on_before_browse;
-	request_handler->body.on_open_urlfrom_tab = (T_CEF_REQUEST_HANDLER_T_ON_OPEN_URLFROM_TAB)
-		cefingo_request_handler_on_open_urlfrom_tab;
-	request_handler->body.get_resource_request_handler = (T_CEF_REQUEST_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)
-		cefingo_request_handler_get_resource_request_handler;
-	request_handler->body.get_auth_credentials = (T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)
-		cefingo_request_handler_get_auth_credentials;
-	request_handler->body.on_quota_request = (T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST)
-		cefingo_request_handler_on_quota_request;
-	request_handler->body.on_certificate_error = (T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)
-		cefingo_request_handler_on_certificate_error;
-	request_handler->body.on_select_client_certificate = (T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE)
-		cefingo_request_handler_on_select_client_certificate;
-	request_handler->body.on_plugin_crashed = (T_CEF_REQUEST_HANDLER_T_ON_PLUGIN_CRASHED)
-		cefingo_request_handler_on_plugin_crashed;
+	request_handler->body.on_open_urlfrom_tab =
+		(T_CEF_REQUEST_HANDLER_T_ON_OPEN_URLFROM_TAB)cefingo_request_handler_on_open_urlfrom_tab;
+	request_handler->body.get_resource_request_handler =
+		(T_CEF_REQUEST_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)cefingo_request_handler_get_resource_request_handler;
+	request_handler->body.get_auth_credentials =
+		(T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)cefingo_request_handler_get_auth_credentials;
+	request_handler->body.on_quota_request =
+		(T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST)cefingo_request_handler_on_quota_request;
+	request_handler->body.on_certificate_error =
+		(T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)cefingo_request_handler_on_certificate_error;
+	request_handler->body.on_select_client_certificate =
+		(T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE)cefingo_request_handler_on_select_client_certificate;
+	request_handler->body.on_plugin_crashed =
+		(T_CEF_REQUEST_HANDLER_T_ON_PLUGIN_CRASHED)cefingo_request_handler_on_plugin_crashed;
 	request_handler->body.on_render_view_ready =
 		cefingo_request_handler_on_render_view_ready;
 	request_handler->body.on_render_process_terminated =
@@ -6474,7 +6474,7 @@ cef_resource_bundle_handler_t *cefingo_construct_resource_bundle_handler(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*resource_bundle_handler), counter),
 		(cef_base_ref_counted_t*) resource_bundle_handler);
-	
+
 	// callbacks
 	resource_bundle_handler->body.get_localized_string =
 		cefingo_resource_bundle_handler_get_localized_string;
@@ -6514,7 +6514,7 @@ cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*resource_handler), counter),
 		(cef_base_ref_counted_t*) resource_handler);
-	
+
 	// callbacks
 	resource_handler->body.open =
 		cefingo_resource_handler_open;
@@ -6540,7 +6540,7 @@ cef_resource_request_handler_t *cefingo_construct_resource_request_handler(cefin
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*resource_request_handler), counter),
 		(cef_base_ref_counted_t*) resource_request_handler);
-	
+
 	// callbacks
 	resource_request_handler->body.get_cookie_access_filter =
 		cefingo_resource_request_handler_get_cookie_access_filter;
@@ -6583,12 +6583,12 @@ cef_cookie_access_filter_t *cefingo_construct_cookie_access_filter(cefingo_cooki
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*cookie_access_filter), counter),
 		(cef_base_ref_counted_t*) cookie_access_filter);
-	
+
 	// callbacks
-	cookie_access_filter->body.can_send_cookie = (T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SEND_COOKIE)
-		cefingo_cookie_access_filter_can_send_cookie;
-	cookie_access_filter->body.can_save_cookie = (T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SAVE_COOKIE)
-		cefingo_cookie_access_filter_can_save_cookie;
+	cookie_access_filter->body.can_send_cookie =
+		(T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SEND_COOKIE)cefingo_cookie_access_filter_can_send_cookie;
+	cookie_access_filter->body.can_save_cookie =
+		(T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SAVE_COOKIE)cefingo_cookie_access_filter_can_save_cookie;
 
 	return (cef_cookie_access_filter_t*)cookie_access_filter;
 }
@@ -6597,18 +6597,18 @@ int cefingo_response_is_read_only(
 	struct _cef_response_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 cef_errorcode_t cefingo_response_get_error(
 	struct _cef_response_t* self
 )
 {
-	return self->get_error(
-		self
-	);
+	return	self->get_error(
+			self
+		);
 }
 
 void cefingo_response_set_error(
@@ -6626,9 +6626,9 @@ int cefingo_response_get_status(
 	struct _cef_response_t* self
 )
 {
-	return self->get_status(
-		self
-	);
+	return	self->get_status(
+			self
+		);
 }
 
 void cefingo_response_set_status(
@@ -6646,9 +6646,9 @@ cef_string_userfree_t cefingo_response_get_status_text(
 	struct _cef_response_t* self
 )
 {
-	return self->get_status_text(
-		self
-	);
+	return	self->get_status_text(
+			self
+		);
 }
 
 void cefingo_response_set_status_text(
@@ -6666,9 +6666,9 @@ cef_string_userfree_t cefingo_response_get_mime_type(
 	struct _cef_response_t* self
 )
 {
-	return self->get_mime_type(
-		self
-	);
+	return	self->get_mime_type(
+			self
+		);
 }
 
 void cefingo_response_set_mime_type(
@@ -6686,9 +6686,9 @@ cef_string_userfree_t cefingo_response_get_charset(
 	struct _cef_response_t* self
 )
 {
-	return self->get_charset(
-		self
-	);
+	return	self->get_charset(
+			self
+		);
 }
 
 void cefingo_response_set_charset(
@@ -6707,10 +6707,10 @@ cef_string_userfree_t cefingo_response_get_header_by_name(
 	const cef_string_t* name
 )
 {
-	return self->get_header_by_name(
-		self,
-		name
-	);
+	return	self->get_header_by_name(
+			self,
+			name
+		);
 }
 
 void cefingo_response_set_header_by_name(
@@ -6754,9 +6754,9 @@ cef_string_userfree_t cefingo_response_get_url(
 	struct _cef_response_t* self
 )
 {
-	return self->get_url(
-		self
-	);
+	return	self->get_url(
+			self
+		);
 }
 
 void cefingo_response_set_url(
@@ -6776,7 +6776,7 @@ cef_response_filter_t *cefingo_construct_response_filter(cefingo_response_filter
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*response_filter), counter),
 		(cef_base_ref_counted_t*) response_filter);
-	
+
 	// callbacks
 	response_filter->body.init_filter =
 		cefingo_response_filter_init_filter;
@@ -6792,11 +6792,11 @@ int cefingo_scheme_registrar_add_custom_scheme(
 	int options
 )
 {
-	return self->add_custom_scheme(
-		self,
-		scheme_name,
-		options
-	);
+	return	self->add_custom_scheme(
+			self,
+			scheme_name,
+			options
+		);
 }
 
 typedef struct _cef_resource_handler_t* (*T_CEF_SCHEME_HANDLER_FACTORY_T_CREATE)(
@@ -6812,10 +6812,10 @@ cef_scheme_handler_factory_t *cefingo_construct_scheme_handler_factory(cefingo_s
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*scheme_handler_factory), counter),
 		(cef_base_ref_counted_t*) scheme_handler_factory);
-	
+
 	// callbacks
-	scheme_handler_factory->body.create = (T_CEF_SCHEME_HANDLER_FACTORY_T_CREATE)
-		cefingo_scheme_handler_factory_create;
+	scheme_handler_factory->body.create =
+		(T_CEF_SCHEME_HANDLER_FACTORY_T_CREATE)cefingo_scheme_handler_factory_create;
 
 	return (cef_scheme_handler_factory_t*)scheme_handler_factory;
 }
@@ -6835,117 +6835,117 @@ struct _cef_view_t* cefingo_scroll_view_get_content_view(
 	struct _cef_scroll_view_t* self
 )
 {
-	return self->get_content_view(
-		self
-	);
+	return	self->get_content_view(
+			self
+		);
 }
 
 cef_rect_t cefingo_scroll_view_get_visible_content_rect(
 	struct _cef_scroll_view_t* self
 )
 {
-	return self->get_visible_content_rect(
-		self
-	);
+	return	self->get_visible_content_rect(
+			self
+		);
 }
 
 int cefingo_scroll_view_has_horizontal_scrollbar(
 	struct _cef_scroll_view_t* self
 )
 {
-	return self->has_horizontal_scrollbar(
-		self
-	);
+	return	self->has_horizontal_scrollbar(
+			self
+		);
 }
 
 int cefingo_scroll_view_get_horizontal_scrollbar_height(
 	struct _cef_scroll_view_t* self
 )
 {
-	return self->get_horizontal_scrollbar_height(
-		self
-	);
+	return	self->get_horizontal_scrollbar_height(
+			self
+		);
 }
 
 int cefingo_scroll_view_has_vertical_scrollbar(
 	struct _cef_scroll_view_t* self
 )
 {
-	return self->has_vertical_scrollbar(
-		self
-	);
+	return	self->has_vertical_scrollbar(
+			self
+		);
 }
 
 int cefingo_scroll_view_get_vertical_scrollbar_width(
 	struct _cef_scroll_view_t* self
 )
 {
-	return self->get_vertical_scrollbar_width(
-		self
-	);
+	return	self->get_vertical_scrollbar_width(
+			self
+		);
 }
 
 cef_cert_status_t cefingo_sslinfo_get_cert_status(
 	struct _cef_sslinfo_t* self
 )
 {
-	return self->get_cert_status(
-		self
-	);
+	return	self->get_cert_status(
+			self
+		);
 }
 
 struct _cef_x509certificate_t* cefingo_sslinfo_get_x509certificate(
 	struct _cef_sslinfo_t* self
 )
 {
-	return self->get_x509certificate(
-		self
-	);
+	return	self->get_x509certificate(
+			self
+		);
 }
 
 int cefingo_sslstatus_is_secure_connection(
 	struct _cef_sslstatus_t* self
 )
 {
-	return self->is_secure_connection(
-		self
-	);
+	return	self->is_secure_connection(
+			self
+		);
 }
 
 cef_cert_status_t cefingo_sslstatus_get_cert_status(
 	struct _cef_sslstatus_t* self
 )
 {
-	return self->get_cert_status(
-		self
-	);
+	return	self->get_cert_status(
+			self
+		);
 }
 
 cef_ssl_version_t cefingo_sslstatus_get_sslversion(
 	struct _cef_sslstatus_t* self
 )
 {
-	return self->get_sslversion(
-		self
-	);
+	return	self->get_sslversion(
+			self
+		);
 }
 
 cef_ssl_content_status_t cefingo_sslstatus_get_content_status(
 	struct _cef_sslstatus_t* self
 )
 {
-	return self->get_content_status(
-		self
-	);
+	return	self->get_content_status(
+			self
+		);
 }
 
 struct _cef_x509certificate_t* cefingo_sslstatus_get_x509certificate(
 	struct _cef_sslstatus_t* self
 )
 {
-	return self->get_x509certificate(
-		self
-	);
+	return	self->get_x509certificate(
+			self
+		);
 }
 
 
@@ -6954,7 +6954,7 @@ cef_read_handler_t *cefingo_construct_read_handler(cefingo_read_handler_wrapper_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*read_handler), counter),
 		(cef_base_ref_counted_t*) read_handler);
-	
+
 	// callbacks
 	read_handler->body.read =
 		cefingo_read_handler_read;
@@ -6977,12 +6977,12 @@ size_t cefingo_stream_reader_read(
 	size_t n
 )
 {
-	return self->read(
-		self,
-		ptr,
-		size,
-		n
-	);
+	return	self->read(
+			self,
+			ptr,
+			size,
+			n
+		);
 }
 
 int cefingo_stream_reader_seek(
@@ -6991,38 +6991,38 @@ int cefingo_stream_reader_seek(
 	int whence
 )
 {
-	return self->seek(
-		self,
-		offset,
-		whence
-	);
+	return	self->seek(
+			self,
+			offset,
+			whence
+		);
 }
 
 int64 cefingo_stream_reader_tell(
 	struct _cef_stream_reader_t* self
 )
 {
-	return self->tell(
-		self
-	);
+	return	self->tell(
+			self
+		);
 }
 
 int cefingo_stream_reader_eof(
 	struct _cef_stream_reader_t* self
 )
 {
-	return self->eof(
-		self
-	);
+	return	self->eof(
+			self
+		);
 }
 
 int cefingo_stream_reader_may_block(
 	struct _cef_stream_reader_t* self
 )
 {
-	return self->may_block(
-		self
-	);
+	return	self->may_block(
+			self
+		);
 }
 
 typedef size_t (*T_CEF_WRITE_HANDLER_T_WRITE)(
@@ -7037,10 +7037,10 @@ cef_write_handler_t *cefingo_construct_write_handler(cefingo_write_handler_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*write_handler), counter),
 		(cef_base_ref_counted_t*) write_handler);
-	
+
 	// callbacks
-	write_handler->body.write = (T_CEF_WRITE_HANDLER_T_WRITE)
-		cefingo_write_handler_write;
+	write_handler->body.write =
+		(T_CEF_WRITE_HANDLER_T_WRITE)cefingo_write_handler_write;
 	write_handler->body.seek =
 		cefingo_write_handler_seek;
 	write_handler->body.tell =
@@ -7060,12 +7060,12 @@ size_t cefingo_stream_writer_write(
 	size_t n
 )
 {
-	return self->write(
-		self,
-		ptr,
-		size,
-		n
-	);
+	return	self->write(
+			self,
+			ptr,
+			size,
+			n
+		);
 }
 
 int cefingo_stream_writer_seek(
@@ -7074,38 +7074,38 @@ int cefingo_stream_writer_seek(
 	int whence
 )
 {
-	return self->seek(
-		self,
-		offset,
-		whence
-	);
+	return	self->seek(
+			self,
+			offset,
+			whence
+		);
 }
 
 int64 cefingo_stream_writer_tell(
 	struct _cef_stream_writer_t* self
 )
 {
-	return self->tell(
-		self
-	);
+	return	self->tell(
+			self
+		);
 }
 
 int cefingo_stream_writer_flush(
 	struct _cef_stream_writer_t* self
 )
 {
-	return self->flush(
-		self
-	);
+	return	self->flush(
+			self
+		);
 }
 
 int cefingo_stream_writer_may_block(
 	struct _cef_stream_writer_t* self
 )
 {
-	return self->may_block(
-		self
-	);
+	return	self->may_block(
+			self
+		);
 }
 
 typedef void (*T_CEF_STRING_VISITOR_T_VISIT)(
@@ -7118,10 +7118,10 @@ cef_string_visitor_t *cefingo_construct_string_visitor(cefingo_string_visitor_wr
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*string_visitor), counter),
 		(cef_base_ref_counted_t*) string_visitor);
-	
+
 	// callbacks
-	string_visitor->body.visit = (T_CEF_STRING_VISITOR_T_VISIT)
-		cefingo_string_visitor_visit;
+	string_visitor->body.visit =
+		(T_CEF_STRING_VISITOR_T_VISIT)cefingo_string_visitor_visit;
 
 	return (cef_string_visitor_t*)string_visitor;
 }
@@ -7132,7 +7132,7 @@ cef_task_t *cefingo_construct_task(cefingo_task_wrapper_t* task)
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*task), counter),
 		(cef_base_ref_counted_t*) task);
-	
+
 	// callbacks
 	task->body.execute =
 		cefingo_task_execute;
@@ -7145,19 +7145,19 @@ int cefingo_task_runner_is_same(
 	struct _cef_task_runner_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_task_runner_belongs_to_current_thread(
 	struct _cef_task_runner_t* self
 )
 {
-	return self->belongs_to_current_thread(
-		self
-	);
+	return	self->belongs_to_current_thread(
+			self
+		);
 }
 
 int cefingo_task_runner_belongs_to_thread(
@@ -7165,10 +7165,10 @@ int cefingo_task_runner_belongs_to_thread(
 	cef_thread_id_t threadId
 )
 {
-	return self->belongs_to_thread(
-		self,
-		threadId
-	);
+	return	self->belongs_to_thread(
+			self,
+			threadId
+		);
 }
 
 int cefingo_task_runner_post_task(
@@ -7176,10 +7176,10 @@ int cefingo_task_runner_post_task(
 	struct _cef_task_t* task
 )
 {
-	return self->post_task(
-		self,
-		task
-	);
+	return	self->post_task(
+			self,
+			task
+		);
 }
 
 int cefingo_task_runner_post_delayed_task(
@@ -7188,11 +7188,11 @@ int cefingo_task_runner_post_delayed_task(
 	int64 delay_ms
 )
 {
-	return self->post_delayed_task(
-		self,
-		task,
-		delay_ms
-	);
+	return	self->post_delayed_task(
+			self,
+			task,
+			delay_ms
+		);
 }
 
 void cefingo_textfield_set_password_input(
@@ -7210,9 +7210,9 @@ int cefingo_textfield_is_password_input(
 	struct _cef_textfield_t* self
 )
 {
-	return self->is_password_input(
-		self
-	);
+	return	self->is_password_input(
+			self
+		);
 }
 
 void cefingo_textfield_set_read_only(
@@ -7230,18 +7230,18 @@ int cefingo_textfield_is_read_only(
 	struct _cef_textfield_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_textfield_get_text(
 	struct _cef_textfield_t* self
 )
 {
-	return self->get_text(
-		self
-	);
+	return	self->get_text(
+			self
+		);
 }
 
 void cefingo_textfield_set_text(
@@ -7281,18 +7281,18 @@ int cefingo_textfield_has_selection(
 	struct _cef_textfield_t* self
 )
 {
-	return self->has_selection(
-		self
-	);
+	return	self->has_selection(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_textfield_get_selected_text(
 	struct _cef_textfield_t* self
 )
 {
-	return self->get_selected_text(
-		self
-	);
+	return	self->get_selected_text(
+			self
+		);
 }
 
 void cefingo_textfield_select_all(
@@ -7319,9 +7319,9 @@ cef_range_t cefingo_textfield_get_selected_range(
 	struct _cef_textfield_t* self
 )
 {
-	return self->get_selected_range(
-		self
-	);
+	return	self->get_selected_range(
+			self
+		);
 }
 
 void cefingo_textfield_select_range(
@@ -7339,9 +7339,9 @@ size_t cefingo_textfield_get_cursor_position(
 	struct _cef_textfield_t* self
 )
 {
-	return self->get_cursor_position(
-		self
-	);
+	return	self->get_cursor_position(
+			self
+		);
 }
 
 void cefingo_textfield_set_text_color(
@@ -7359,9 +7359,9 @@ cef_color_t cefingo_textfield_get_text_color(
 	struct _cef_textfield_t* self
 )
 {
-	return self->get_text_color(
-		self
-	);
+	return	self->get_text_color(
+			self
+		);
 }
 
 void cefingo_textfield_set_selection_text_color(
@@ -7379,9 +7379,9 @@ cef_color_t cefingo_textfield_get_selection_text_color(
 	struct _cef_textfield_t* self
 )
 {
-	return self->get_selection_text_color(
-		self
-	);
+	return	self->get_selection_text_color(
+			self
+		);
 }
 
 void cefingo_textfield_set_selection_background_color(
@@ -7399,9 +7399,9 @@ cef_color_t cefingo_textfield_get_selection_background_color(
 	struct _cef_textfield_t* self
 )
 {
-	return self->get_selection_background_color(
-		self
-	);
+	return	self->get_selection_background_color(
+			self
+		);
 }
 
 void cefingo_textfield_set_font_list(
@@ -7448,10 +7448,10 @@ int cefingo_textfield_is_command_enabled(
 	cef_text_field_commands_t command_id
 )
 {
-	return self->is_command_enabled(
-		self,
-		command_id
-	);
+	return	self->is_command_enabled(
+			self,
+			command_id
+		);
 }
 
 void cefingo_textfield_execute_command(
@@ -7489,9 +7489,9 @@ cef_string_userfree_t cefingo_textfield_get_placeholder_text(
 	struct _cef_textfield_t* self
 )
 {
-	return self->get_placeholder_text(
-		self
-	);
+	return	self->get_placeholder_text(
+			self
+		);
 }
 
 void cefingo_textfield_set_placeholder_text_color(
@@ -7527,10 +7527,10 @@ cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*textfield_delegate), counter),
 		(cef_base_ref_counted_t*) textfield_delegate);
-	
+
 	// callbacks
-	textfield_delegate->body.on_key_event = (T_CEF_TEXTFIELD_DELEGATE_T_ON_KEY_EVENT)
-		cefingo_textfield_delegate_on_key_event;
+	textfield_delegate->body.on_key_event =
+		(T_CEF_TEXTFIELD_DELEGATE_T_ON_KEY_EVENT)cefingo_textfield_delegate_on_key_event;
 	textfield_delegate->body.on_after_user_action =
 		cefingo_textfield_delegate_on_after_user_action;
 	textfield_delegate->body.base.get_preferred_size =
@@ -7557,54 +7557,54 @@ struct _cef_request_t* cefingo_urlrequest_get_request(
 	struct _cef_urlrequest_t* self
 )
 {
-	return self->get_request(
-		self
-	);
+	return	self->get_request(
+			self
+		);
 }
 
 struct _cef_urlrequest_client_t* cefingo_urlrequest_get_client(
 	struct _cef_urlrequest_t* self
 )
 {
-	return self->get_client(
-		self
-	);
+	return	self->get_client(
+			self
+		);
 }
 
 cef_urlrequest_status_t cefingo_urlrequest_get_request_status(
 	struct _cef_urlrequest_t* self
 )
 {
-	return self->get_request_status(
-		self
-	);
+	return	self->get_request_status(
+			self
+		);
 }
 
 cef_errorcode_t cefingo_urlrequest_get_request_error(
 	struct _cef_urlrequest_t* self
 )
 {
-	return self->get_request_error(
-		self
-	);
+	return	self->get_request_error(
+			self
+		);
 }
 
 struct _cef_response_t* cefingo_urlrequest_get_response(
 	struct _cef_urlrequest_t* self
 )
 {
-	return self->get_response(
-		self
-	);
+	return	self->get_response(
+			self
+		);
 }
 
 int cefingo_urlrequest_response_was_cached(
 	struct _cef_urlrequest_t* self
 )
 {
-	return self->response_was_cached(
-		self
-	);
+	return	self->response_was_cached(
+			self
+		);
 }
 
 void cefingo_urlrequest_cancel(
@@ -7637,7 +7637,7 @@ cef_urlrequest_client_t *cefingo_construct_urlrequest_client(cefingo_urlrequest_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*urlrequest_client), counter),
 		(cef_base_ref_counted_t*) urlrequest_client);
-	
+
 	// callbacks
 	urlrequest_client->body.on_request_complete =
 		cefingo_urlrequest_client_on_request_complete;
@@ -7645,10 +7645,10 @@ cef_urlrequest_client_t *cefingo_construct_urlrequest_client(cefingo_urlrequest_
 		cefingo_urlrequest_client_on_upload_progress;
 	urlrequest_client->body.on_download_progress =
 		cefingo_urlrequest_client_on_download_progress;
-	urlrequest_client->body.on_download_data = (T_CEF_URLREQUEST_CLIENT_T_ON_DOWNLOAD_DATA)
-		cefingo_urlrequest_client_on_download_data;
-	urlrequest_client->body.get_auth_credentials = (T_CEF_URLREQUEST_CLIENT_T_GET_AUTH_CREDENTIALS)
-		cefingo_urlrequest_client_get_auth_credentials;
+	urlrequest_client->body.on_download_data =
+		(T_CEF_URLREQUEST_CLIENT_T_ON_DOWNLOAD_DATA)cefingo_urlrequest_client_on_download_data;
+	urlrequest_client->body.get_auth_credentials =
+		(T_CEF_URLREQUEST_CLIENT_T_GET_AUTH_CREDENTIALS)cefingo_urlrequest_client_get_auth_credentials;
 
 	return (cef_urlrequest_client_t*)urlrequest_client;
 }
@@ -7657,63 +7657,63 @@ struct _cef_task_runner_t* cefingo_v8context_get_task_runner(
 	struct _cef_v8context_t* self
 )
 {
-	return self->get_task_runner(
-		self
-	);
+	return	self->get_task_runner(
+			self
+		);
 }
 
 int cefingo_v8context_is_valid(
 	struct _cef_v8context_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 struct _cef_browser_t* cefingo_v8context_get_browser(
 	struct _cef_v8context_t* self
 )
 {
-	return self->get_browser(
-		self
-	);
+	return	self->get_browser(
+			self
+		);
 }
 
 struct _cef_frame_t* cefingo_v8context_get_frame(
 	struct _cef_v8context_t* self
 )
 {
-	return self->get_frame(
-		self
-	);
+	return	self->get_frame(
+			self
+		);
 }
 
 struct _cef_v8value_t* cefingo_v8context_get_global(
 	struct _cef_v8context_t* self
 )
 {
-	return self->get_global(
-		self
-	);
+	return	self->get_global(
+			self
+		);
 }
 
 int cefingo_v8context_enter(
 	struct _cef_v8context_t* self
 )
 {
-	return self->enter(
-		self
-	);
+	return	self->enter(
+			self
+		);
 }
 
 int cefingo_v8context_exit(
 	struct _cef_v8context_t* self
 )
 {
-	return self->exit(
-		self
-	);
+	return	self->exit(
+			self
+		);
 }
 
 int cefingo_v8context_is_same(
@@ -7721,10 +7721,10 @@ int cefingo_v8context_is_same(
 	struct _cef_v8context_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_v8context_eval(
@@ -7736,14 +7736,14 @@ int cefingo_v8context_eval(
 	struct _cef_v8exception_t** exception
 )
 {
-	return self->eval(
-		self,
-		code,
-		script_url,
-		start_line,
-		retval,
-		exception
-	);
+	return	self->eval(
+			self,
+			code,
+			script_url,
+			start_line,
+			retval,
+			exception
+		);
 }
 
 typedef int (*T_CEF_V8HANDLER_T_EXECUTE)(
@@ -7761,10 +7761,10 @@ cef_v8handler_t *cefingo_construct_v8handler(cefingo_v8handler_wrapper_t* v8hand
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*v8handler), counter),
 		(cef_base_ref_counted_t*) v8handler);
-	
+
 	// callbacks
-	v8handler->body.execute = (T_CEF_V8HANDLER_T_EXECUTE)
-		cefingo_v8handler_execute;
+	v8handler->body.execute =
+		(T_CEF_V8HANDLER_T_EXECUTE)cefingo_v8handler_execute;
 
 	return (cef_v8handler_t*)v8handler;
 }
@@ -7789,12 +7789,12 @@ cef_v8accessor_t *cefingo_construct_v8accessor(cefingo_v8accessor_wrapper_t* v8a
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*v8accessor), counter),
 		(cef_base_ref_counted_t*) v8accessor);
-	
+
 	// callbacks
-	v8accessor->body.get = (T_CEF_V8ACCESSOR_T_GET)
-		cefingo_v8accessor_get;
-	v8accessor->body.set = (T_CEF_V8ACCESSOR_T_SET)
-		cefingo_v8accessor_set;
+	v8accessor->body.get =
+		(T_CEF_V8ACCESSOR_T_GET)cefingo_v8accessor_get;
+	v8accessor->body.set =
+		(T_CEF_V8ACCESSOR_T_SET)cefingo_v8accessor_set;
 
 	return (cef_v8accessor_t*)v8accessor;
 }
@@ -7807,13 +7807,13 @@ int cefingo_v8interceptor_get_byname(
 	cef_string_t* exception
 )
 {
-	return self->get_byname(
-		self,
-		name,
-		object,
-		retval,
-		exception
-	);
+	return	self->get_byname(
+			self,
+			name,
+			object,
+			retval,
+			exception
+		);
 }
 
 int cefingo_v8interceptor_get_byindex(
@@ -7824,13 +7824,13 @@ int cefingo_v8interceptor_get_byindex(
 	cef_string_t* exception
 )
 {
-	return self->get_byindex(
-		self,
-		index,
-		object,
-		retval,
-		exception
-	);
+	return	self->get_byindex(
+			self,
+			index,
+			object,
+			retval,
+			exception
+		);
 }
 
 int cefingo_v8interceptor_set_byname(
@@ -7841,13 +7841,13 @@ int cefingo_v8interceptor_set_byname(
 	cef_string_t* exception
 )
 {
-	return self->set_byname(
-		self,
-		name,
-		object,
-		value,
-		exception
-	);
+	return	self->set_byname(
+			self,
+			name,
+			object,
+			value,
+			exception
+		);
 }
 
 int cefingo_v8interceptor_set_byindex(
@@ -7858,85 +7858,85 @@ int cefingo_v8interceptor_set_byindex(
 	cef_string_t* exception
 )
 {
-	return self->set_byindex(
-		self,
-		index,
-		object,
-		value,
-		exception
-	);
+	return	self->set_byindex(
+			self,
+			index,
+			object,
+			value,
+			exception
+		);
 }
 
 cef_string_userfree_t cefingo_v8exception_get_message(
 	struct _cef_v8exception_t* self
 )
 {
-	return self->get_message(
-		self
-	);
+	return	self->get_message(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_v8exception_get_source_line(
 	struct _cef_v8exception_t* self
 )
 {
-	return self->get_source_line(
-		self
-	);
+	return	self->get_source_line(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_v8exception_get_script_resource_name(
 	struct _cef_v8exception_t* self
 )
 {
-	return self->get_script_resource_name(
-		self
-	);
+	return	self->get_script_resource_name(
+			self
+		);
 }
 
 int cefingo_v8exception_get_line_number(
 	struct _cef_v8exception_t* self
 )
 {
-	return self->get_line_number(
-		self
-	);
+	return	self->get_line_number(
+			self
+		);
 }
 
 int cefingo_v8exception_get_start_position(
 	struct _cef_v8exception_t* self
 )
 {
-	return self->get_start_position(
-		self
-	);
+	return	self->get_start_position(
+			self
+		);
 }
 
 int cefingo_v8exception_get_end_position(
 	struct _cef_v8exception_t* self
 )
 {
-	return self->get_end_position(
-		self
-	);
+	return	self->get_end_position(
+			self
+		);
 }
 
 int cefingo_v8exception_get_start_column(
 	struct _cef_v8exception_t* self
 )
 {
-	return self->get_start_column(
-		self
-	);
+	return	self->get_start_column(
+			self
+		);
 }
 
 int cefingo_v8exception_get_end_column(
 	struct _cef_v8exception_t* self
 )
 {
-	return self->get_end_column(
-		self
-	);
+	return	self->get_end_column(
+			self
+		);
 }
 
 
@@ -7945,7 +7945,7 @@ cef_v8array_buffer_release_callback_t *cefingo_construct_v8array_buffer_release_
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*v8array_buffer_release_callback), counter),
 		(cef_base_ref_counted_t*) v8array_buffer_release_callback);
-	
+
 	// callbacks
 	v8array_buffer_release_callback->body.release_buffer =
 		cefingo_v8array_buffer_release_callback_release_buffer;
@@ -7957,117 +7957,117 @@ int cefingo_v8value_is_valid(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_v8value_is_undefined(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_undefined(
-		self
-	);
+	return	self->is_undefined(
+			self
+		);
 }
 
 int cefingo_v8value_is_null(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_null(
-		self
-	);
+	return	self->is_null(
+			self
+		);
 }
 
 int cefingo_v8value_is_bool(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_bool(
-		self
-	);
+	return	self->is_bool(
+			self
+		);
 }
 
 int cefingo_v8value_is_int(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_int(
-		self
-	);
+	return	self->is_int(
+			self
+		);
 }
 
 int cefingo_v8value_is_uint(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_uint(
-		self
-	);
+	return	self->is_uint(
+			self
+		);
 }
 
 int cefingo_v8value_is_double(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_double(
-		self
-	);
+	return	self->is_double(
+			self
+		);
 }
 
 int cefingo_v8value_is_date(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_date(
-		self
-	);
+	return	self->is_date(
+			self
+		);
 }
 
 int cefingo_v8value_is_string(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_string(
-		self
-	);
+	return	self->is_string(
+			self
+		);
 }
 
 int cefingo_v8value_is_object(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_object(
-		self
-	);
+	return	self->is_object(
+			self
+		);
 }
 
 int cefingo_v8value_is_array(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_array(
-		self
-	);
+	return	self->is_array(
+			self
+		);
 }
 
 int cefingo_v8value_is_array_buffer(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_array_buffer(
-		self
-	);
+	return	self->is_array_buffer(
+			self
+		);
 }
 
 int cefingo_v8value_is_function(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_function(
-		self
-	);
+	return	self->is_function(
+			self
+		);
 }
 
 int cefingo_v8value_is_same(
@@ -8075,109 +8075,109 @@ int cefingo_v8value_is_same(
 	struct _cef_v8value_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_v8value_get_bool_value(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_bool_value(
-		self
-	);
+	return	self->get_bool_value(
+			self
+		);
 }
 
 int32 cefingo_v8value_get_int_value(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_int_value(
-		self
-	);
+	return	self->get_int_value(
+			self
+		);
 }
 
 uint32 cefingo_v8value_get_uint_value(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_uint_value(
-		self
-	);
+	return	self->get_uint_value(
+			self
+		);
 }
 
 double cefingo_v8value_get_double_value(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_double_value(
-		self
-	);
+	return	self->get_double_value(
+			self
+		);
 }
 
 cef_time_t cefingo_v8value_get_date_value(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_date_value(
-		self
-	);
+	return	self->get_date_value(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_v8value_get_string_value(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_string_value(
-		self
-	);
+	return	self->get_string_value(
+			self
+		);
 }
 
 int cefingo_v8value_is_user_created(
 	struct _cef_v8value_t* self
 )
 {
-	return self->is_user_created(
-		self
-	);
+	return	self->is_user_created(
+			self
+		);
 }
 
 int cefingo_v8value_has_exception(
 	struct _cef_v8value_t* self
 )
 {
-	return self->has_exception(
-		self
-	);
+	return	self->has_exception(
+			self
+		);
 }
 
 struct _cef_v8exception_t* cefingo_v8value_get_exception(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_exception(
-		self
-	);
+	return	self->get_exception(
+			self
+		);
 }
 
 int cefingo_v8value_clear_exception(
 	struct _cef_v8value_t* self
 )
 {
-	return self->clear_exception(
-		self
-	);
+	return	self->clear_exception(
+			self
+		);
 }
 
 int cefingo_v8value_will_rethrow_exceptions(
 	struct _cef_v8value_t* self
 )
 {
-	return self->will_rethrow_exceptions(
-		self
-	);
+	return	self->will_rethrow_exceptions(
+			self
+		);
 }
 
 int cefingo_v8value_set_rethrow_exceptions(
@@ -8185,10 +8185,10 @@ int cefingo_v8value_set_rethrow_exceptions(
 	int rethrow
 )
 {
-	return self->set_rethrow_exceptions(
-		self,
-		rethrow
-	);
+	return	self->set_rethrow_exceptions(
+			self,
+			rethrow
+		);
 }
 
 int cefingo_v8value_has_value_bykey(
@@ -8196,10 +8196,10 @@ int cefingo_v8value_has_value_bykey(
 	const cef_string_t* key
 )
 {
-	return self->has_value_bykey(
-		self,
-		key
-	);
+	return	self->has_value_bykey(
+			self,
+			key
+		);
 }
 
 int cefingo_v8value_has_value_byindex(
@@ -8207,10 +8207,10 @@ int cefingo_v8value_has_value_byindex(
 	int index
 )
 {
-	return self->has_value_byindex(
-		self,
-		index
-	);
+	return	self->has_value_byindex(
+			self,
+			index
+		);
 }
 
 int cefingo_v8value_delete_value_bykey(
@@ -8218,10 +8218,10 @@ int cefingo_v8value_delete_value_bykey(
 	const cef_string_t* key
 )
 {
-	return self->delete_value_bykey(
-		self,
-		key
-	);
+	return	self->delete_value_bykey(
+			self,
+			key
+		);
 }
 
 int cefingo_v8value_delete_value_byindex(
@@ -8229,10 +8229,10 @@ int cefingo_v8value_delete_value_byindex(
 	int index
 )
 {
-	return self->delete_value_byindex(
-		self,
-		index
-	);
+	return	self->delete_value_byindex(
+			self,
+			index
+		);
 }
 
 struct _cef_v8value_t* cefingo_v8value_get_value_bykey(
@@ -8240,10 +8240,10 @@ struct _cef_v8value_t* cefingo_v8value_get_value_bykey(
 	const cef_string_t* key
 )
 {
-	return self->get_value_bykey(
-		self,
-		key
-	);
+	return	self->get_value_bykey(
+			self,
+			key
+		);
 }
 
 struct _cef_v8value_t* cefingo_v8value_get_value_byindex(
@@ -8251,10 +8251,10 @@ struct _cef_v8value_t* cefingo_v8value_get_value_byindex(
 	int index
 )
 {
-	return self->get_value_byindex(
-		self,
-		index
-	);
+	return	self->get_value_byindex(
+			self,
+			index
+		);
 }
 
 int cefingo_v8value_set_value_bykey(
@@ -8264,12 +8264,12 @@ int cefingo_v8value_set_value_bykey(
 	cef_v8_propertyattribute_t attribute
 )
 {
-	return self->set_value_bykey(
-		self,
-		key,
-		value,
-		attribute
-	);
+	return	self->set_value_bykey(
+			self,
+			key,
+			value,
+			attribute
+		);
 }
 
 int cefingo_v8value_set_value_byindex(
@@ -8278,11 +8278,11 @@ int cefingo_v8value_set_value_byindex(
 	struct _cef_v8value_t* value
 )
 {
-	return self->set_value_byindex(
-		self,
-		index,
-		value
-	);
+	return	self->set_value_byindex(
+			self,
+			index,
+			value
+		);
 }
 
 int cefingo_v8value_set_value_byaccessor(
@@ -8292,12 +8292,12 @@ int cefingo_v8value_set_value_byaccessor(
 	cef_v8_propertyattribute_t attribute
 )
 {
-	return self->set_value_byaccessor(
-		self,
-		key,
-		settings,
-		attribute
-	);
+	return	self->set_value_byaccessor(
+			self,
+			key,
+			settings,
+			attribute
+		);
 }
 
 int cefingo_v8value_get_keys(
@@ -8305,19 +8305,19 @@ int cefingo_v8value_get_keys(
 	cef_string_list_t keys
 )
 {
-	return self->get_keys(
-		self,
-		keys
-	);
+	return	self->get_keys(
+			self,
+			keys
+		);
 }
 
 int cefingo_v8value_get_externally_allocated_memory(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_externally_allocated_memory(
-		self
-	);
+	return	self->get_externally_allocated_memory(
+			self
+		);
 }
 
 int cefingo_v8value_adjust_externally_allocated_memory(
@@ -8325,55 +8325,55 @@ int cefingo_v8value_adjust_externally_allocated_memory(
 	int change_in_bytes
 )
 {
-	return self->adjust_externally_allocated_memory(
-		self,
-		change_in_bytes
-	);
+	return	self->adjust_externally_allocated_memory(
+			self,
+			change_in_bytes
+		);
 }
 
 int cefingo_v8value_get_array_length(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_array_length(
-		self
-	);
+	return	self->get_array_length(
+			self
+		);
 }
 
 struct _cef_v8array_buffer_release_callback_t* cefingo_v8value_get_array_buffer_release_callback(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_array_buffer_release_callback(
-		self
-	);
+	return	self->get_array_buffer_release_callback(
+			self
+		);
 }
 
 int cefingo_v8value_neuter_array_buffer(
 	struct _cef_v8value_t* self
 )
 {
-	return self->neuter_array_buffer(
-		self
-	);
+	return	self->neuter_array_buffer(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_v8value_get_function_name(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_function_name(
-		self
-	);
+	return	self->get_function_name(
+			self
+		);
 }
 
 struct _cef_v8handler_t* cefingo_v8value_get_function_handler(
 	struct _cef_v8value_t* self
 )
 {
-	return self->get_function_handler(
-		self
-	);
+	return	self->get_function_handler(
+			self
+		);
 }
 
 struct _cef_v8value_t* cefingo_v8value_execute_function(
@@ -8383,12 +8383,12 @@ struct _cef_v8value_t* cefingo_v8value_execute_function(
 	struct _cef_v8value_t* const * arguments
 )
 {
-	return self->execute_function(
-		self,
-		object,
-		argumentsCount,
-		arguments
-	);
+	return	self->execute_function(
+			self,
+			object,
+			argumentsCount,
+			arguments
+		);
 }
 
 struct _cef_v8value_t* cefingo_v8value_execute_function_with_context(
@@ -8399,31 +8399,31 @@ struct _cef_v8value_t* cefingo_v8value_execute_function_with_context(
 	struct _cef_v8value_t* const * arguments
 )
 {
-	return self->execute_function_with_context(
-		self,
-		context,
-		object,
-		argumentsCount,
-		arguments
-	);
+	return	self->execute_function_with_context(
+			self,
+			context,
+			object,
+			argumentsCount,
+			arguments
+		);
 }
 
 int cefingo_v8stack_trace_is_valid(
 	struct _cef_v8stack_trace_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_v8stack_trace_get_frame_count(
 	struct _cef_v8stack_trace_t* self
 )
 {
-	return self->get_frame_count(
-		self
-	);
+	return	self->get_frame_count(
+			self
+		);
 }
 
 struct _cef_v8stack_frame_t* cefingo_v8stack_trace_get_frame(
@@ -8431,109 +8431,109 @@ struct _cef_v8stack_frame_t* cefingo_v8stack_trace_get_frame(
 	int index
 )
 {
-	return self->get_frame(
-		self,
-		index
-	);
+	return	self->get_frame(
+			self,
+			index
+		);
 }
 
 int cefingo_v8stack_frame_is_valid(
 	struct _cef_v8stack_frame_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_v8stack_frame_get_script_name(
 	struct _cef_v8stack_frame_t* self
 )
 {
-	return self->get_script_name(
-		self
-	);
+	return	self->get_script_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_v8stack_frame_get_script_name_or_source_url(
 	struct _cef_v8stack_frame_t* self
 )
 {
-	return self->get_script_name_or_source_url(
-		self
-	);
+	return	self->get_script_name_or_source_url(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_v8stack_frame_get_function_name(
 	struct _cef_v8stack_frame_t* self
 )
 {
-	return self->get_function_name(
-		self
-	);
+	return	self->get_function_name(
+			self
+		);
 }
 
 int cefingo_v8stack_frame_get_line_number(
 	struct _cef_v8stack_frame_t* self
 )
 {
-	return self->get_line_number(
-		self
-	);
+	return	self->get_line_number(
+			self
+		);
 }
 
 int cefingo_v8stack_frame_get_column(
 	struct _cef_v8stack_frame_t* self
 )
 {
-	return self->get_column(
-		self
-	);
+	return	self->get_column(
+			self
+		);
 }
 
 int cefingo_v8stack_frame_is_eval(
 	struct _cef_v8stack_frame_t* self
 )
 {
-	return self->is_eval(
-		self
-	);
+	return	self->is_eval(
+			self
+		);
 }
 
 int cefingo_v8stack_frame_is_constructor(
 	struct _cef_v8stack_frame_t* self
 )
 {
-	return self->is_constructor(
-		self
-	);
+	return	self->is_constructor(
+			self
+		);
 }
 
 int cefingo_value_is_valid(
 	struct _cef_value_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_value_is_owned(
 	struct _cef_value_t* self
 )
 {
-	return self->is_owned(
-		self
-	);
+	return	self->is_owned(
+			self
+		);
 }
 
 int cefingo_value_is_read_only(
 	struct _cef_value_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 int cefingo_value_is_same(
@@ -8541,10 +8541,10 @@ int cefingo_value_is_same(
 	struct _cef_value_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_value_is_equal(
@@ -8552,100 +8552,100 @@ int cefingo_value_is_equal(
 	struct _cef_value_t* that
 )
 {
-	return self->is_equal(
-		self,
-		that
-	);
+	return	self->is_equal(
+			self,
+			that
+		);
 }
 
 struct _cef_value_t* cefingo_value_copy(
 	struct _cef_value_t* self
 )
 {
-	return self->copy(
-		self
-	);
+	return	self->copy(
+			self
+		);
 }
 
 cef_value_type_t cefingo_value_get_type(
 	struct _cef_value_t* self
 )
 {
-	return self->get_type(
-		self
-	);
+	return	self->get_type(
+			self
+		);
 }
 
 int cefingo_value_get_bool(
 	struct _cef_value_t* self
 )
 {
-	return self->get_bool(
-		self
-	);
+	return	self->get_bool(
+			self
+		);
 }
 
 int cefingo_value_get_int(
 	struct _cef_value_t* self
 )
 {
-	return self->get_int(
-		self
-	);
+	return	self->get_int(
+			self
+		);
 }
 
 double cefingo_value_get_double(
 	struct _cef_value_t* self
 )
 {
-	return self->get_double(
-		self
-	);
+	return	self->get_double(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_value_get_string(
 	struct _cef_value_t* self
 )
 {
-	return self->get_string(
-		self
-	);
+	return	self->get_string(
+			self
+		);
 }
 
 struct _cef_binary_value_t* cefingo_value_get_binary(
 	struct _cef_value_t* self
 )
 {
-	return self->get_binary(
-		self
-	);
+	return	self->get_binary(
+			self
+		);
 }
 
 struct _cef_dictionary_value_t* cefingo_value_get_dictionary(
 	struct _cef_value_t* self
 )
 {
-	return self->get_dictionary(
-		self
-	);
+	return	self->get_dictionary(
+			self
+		);
 }
 
 struct _cef_list_value_t* cefingo_value_get_list(
 	struct _cef_value_t* self
 )
 {
-	return self->get_list(
-		self
-	);
+	return	self->get_list(
+			self
+		);
 }
 
 int cefingo_value_set_null(
 	struct _cef_value_t* self
 )
 {
-	return self->set_null(
-		self
-	);
+	return	self->set_null(
+			self
+		);
 }
 
 int cefingo_value_set_bool(
@@ -8653,10 +8653,10 @@ int cefingo_value_set_bool(
 	int value
 )
 {
-	return self->set_bool(
-		self,
-		value
-	);
+	return	self->set_bool(
+			self,
+			value
+		);
 }
 
 int cefingo_value_set_int(
@@ -8664,10 +8664,10 @@ int cefingo_value_set_int(
 	int value
 )
 {
-	return self->set_int(
-		self,
-		value
-	);
+	return	self->set_int(
+			self,
+			value
+		);
 }
 
 int cefingo_value_set_double(
@@ -8675,10 +8675,10 @@ int cefingo_value_set_double(
 	double value
 )
 {
-	return self->set_double(
-		self,
-		value
-	);
+	return	self->set_double(
+			self,
+			value
+		);
 }
 
 int cefingo_value_set_string(
@@ -8686,10 +8686,10 @@ int cefingo_value_set_string(
 	const cef_string_t* value
 )
 {
-	return self->set_string(
-		self,
-		value
-	);
+	return	self->set_string(
+			self,
+			value
+		);
 }
 
 int cefingo_value_set_binary(
@@ -8697,10 +8697,10 @@ int cefingo_value_set_binary(
 	struct _cef_binary_value_t* value
 )
 {
-	return self->set_binary(
-		self,
-		value
-	);
+	return	self->set_binary(
+			self,
+			value
+		);
 }
 
 int cefingo_value_set_dictionary(
@@ -8708,10 +8708,10 @@ int cefingo_value_set_dictionary(
 	struct _cef_dictionary_value_t* value
 )
 {
-	return self->set_dictionary(
-		self,
-		value
-	);
+	return	self->set_dictionary(
+			self,
+			value
+		);
 }
 
 int cefingo_value_set_list(
@@ -8719,28 +8719,28 @@ int cefingo_value_set_list(
 	struct _cef_list_value_t* value
 )
 {
-	return self->set_list(
-		self,
-		value
-	);
+	return	self->set_list(
+			self,
+			value
+		);
 }
 
 int cefingo_binary_value_is_valid(
 	struct _cef_binary_value_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_binary_value_is_owned(
 	struct _cef_binary_value_t* self
 )
 {
-	return self->is_owned(
-		self
-	);
+	return	self->is_owned(
+			self
+		);
 }
 
 int cefingo_binary_value_is_same(
@@ -8748,10 +8748,10 @@ int cefingo_binary_value_is_same(
 	struct _cef_binary_value_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_binary_value_is_equal(
@@ -8759,28 +8759,28 @@ int cefingo_binary_value_is_equal(
 	struct _cef_binary_value_t* that
 )
 {
-	return self->is_equal(
-		self,
-		that
-	);
+	return	self->is_equal(
+			self,
+			that
+		);
 }
 
 struct _cef_binary_value_t* cefingo_binary_value_copy(
 	struct _cef_binary_value_t* self
 )
 {
-	return self->copy(
-		self
-	);
+	return	self->copy(
+			self
+		);
 }
 
 size_t cefingo_binary_value_get_size(
 	struct _cef_binary_value_t* self
 )
 {
-	return self->get_size(
-		self
-	);
+	return	self->get_size(
+			self
+		);
 }
 
 size_t cefingo_binary_value_get_data(
@@ -8790,39 +8790,39 @@ size_t cefingo_binary_value_get_data(
 	size_t data_offset
 )
 {
-	return self->get_data(
-		self,
-		buffer,
-		buffer_size,
-		data_offset
-	);
+	return	self->get_data(
+			self,
+			buffer,
+			buffer_size,
+			data_offset
+		);
 }
 
 int cefingo_dictionary_value_is_valid(
 	struct _cef_dictionary_value_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_dictionary_value_is_owned(
 	struct _cef_dictionary_value_t* self
 )
 {
-	return self->is_owned(
-		self
-	);
+	return	self->is_owned(
+			self
+		);
 }
 
 int cefingo_dictionary_value_is_read_only(
 	struct _cef_dictionary_value_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 int cefingo_dictionary_value_is_same(
@@ -8830,10 +8830,10 @@ int cefingo_dictionary_value_is_same(
 	struct _cef_dictionary_value_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_dictionary_value_is_equal(
@@ -8841,10 +8841,10 @@ int cefingo_dictionary_value_is_equal(
 	struct _cef_dictionary_value_t* that
 )
 {
-	return self->is_equal(
-		self,
-		that
-	);
+	return	self->is_equal(
+			self,
+			that
+		);
 }
 
 struct _cef_dictionary_value_t* cefingo_dictionary_value_copy(
@@ -8852,28 +8852,28 @@ struct _cef_dictionary_value_t* cefingo_dictionary_value_copy(
 	int exclude_empty_children
 )
 {
-	return self->copy(
-		self,
-		exclude_empty_children
-	);
+	return	self->copy(
+			self,
+			exclude_empty_children
+		);
 }
 
 size_t cefingo_dictionary_value_get_size(
 	struct _cef_dictionary_value_t* self
 )
 {
-	return self->get_size(
-		self
-	);
+	return	self->get_size(
+			self
+		);
 }
 
 int cefingo_dictionary_value_clear(
 	struct _cef_dictionary_value_t* self
 )
 {
-	return self->clear(
-		self
-	);
+	return	self->clear(
+			self
+		);
 }
 
 int cefingo_dictionary_value_has_key(
@@ -8881,10 +8881,10 @@ int cefingo_dictionary_value_has_key(
 	const cef_string_t* key
 )
 {
-	return self->has_key(
-		self,
-		key
-	);
+	return	self->has_key(
+			self,
+			key
+		);
 }
 
 int cefingo_dictionary_value_get_keys(
@@ -8892,10 +8892,10 @@ int cefingo_dictionary_value_get_keys(
 	cef_string_list_t keys
 )
 {
-	return self->get_keys(
-		self,
-		keys
-	);
+	return	self->get_keys(
+			self,
+			keys
+		);
 }
 
 int cefingo_dictionary_value_remove(
@@ -8903,10 +8903,10 @@ int cefingo_dictionary_value_remove(
 	const cef_string_t* key
 )
 {
-	return self->remove(
-		self,
-		key
-	);
+	return	self->remove(
+			self,
+			key
+		);
 }
 
 cef_value_type_t cefingo_dictionary_value_get_type(
@@ -8914,10 +8914,10 @@ cef_value_type_t cefingo_dictionary_value_get_type(
 	const cef_string_t* key
 )
 {
-	return self->get_type(
-		self,
-		key
-	);
+	return	self->get_type(
+			self,
+			key
+		);
 }
 
 struct _cef_value_t* cefingo_dictionary_value_get_value(
@@ -8925,10 +8925,10 @@ struct _cef_value_t* cefingo_dictionary_value_get_value(
 	const cef_string_t* key
 )
 {
-	return self->get_value(
-		self,
-		key
-	);
+	return	self->get_value(
+			self,
+			key
+		);
 }
 
 int cefingo_dictionary_value_get_bool(
@@ -8936,10 +8936,10 @@ int cefingo_dictionary_value_get_bool(
 	const cef_string_t* key
 )
 {
-	return self->get_bool(
-		self,
-		key
-	);
+	return	self->get_bool(
+			self,
+			key
+		);
 }
 
 int cefingo_dictionary_value_get_int(
@@ -8947,10 +8947,10 @@ int cefingo_dictionary_value_get_int(
 	const cef_string_t* key
 )
 {
-	return self->get_int(
-		self,
-		key
-	);
+	return	self->get_int(
+			self,
+			key
+		);
 }
 
 double cefingo_dictionary_value_get_double(
@@ -8958,10 +8958,10 @@ double cefingo_dictionary_value_get_double(
 	const cef_string_t* key
 )
 {
-	return self->get_double(
-		self,
-		key
-	);
+	return	self->get_double(
+			self,
+			key
+		);
 }
 
 cef_string_userfree_t cefingo_dictionary_value_get_string(
@@ -8969,10 +8969,10 @@ cef_string_userfree_t cefingo_dictionary_value_get_string(
 	const cef_string_t* key
 )
 {
-	return self->get_string(
-		self,
-		key
-	);
+	return	self->get_string(
+			self,
+			key
+		);
 }
 
 struct _cef_binary_value_t* cefingo_dictionary_value_get_binary(
@@ -8980,10 +8980,10 @@ struct _cef_binary_value_t* cefingo_dictionary_value_get_binary(
 	const cef_string_t* key
 )
 {
-	return self->get_binary(
-		self,
-		key
-	);
+	return	self->get_binary(
+			self,
+			key
+		);
 }
 
 struct _cef_dictionary_value_t* cefingo_dictionary_value_get_dictionary(
@@ -8991,10 +8991,10 @@ struct _cef_dictionary_value_t* cefingo_dictionary_value_get_dictionary(
 	const cef_string_t* key
 )
 {
-	return self->get_dictionary(
-		self,
-		key
-	);
+	return	self->get_dictionary(
+			self,
+			key
+		);
 }
 
 struct _cef_list_value_t* cefingo_dictionary_value_get_list(
@@ -9002,10 +9002,10 @@ struct _cef_list_value_t* cefingo_dictionary_value_get_list(
 	const cef_string_t* key
 )
 {
-	return self->get_list(
-		self,
-		key
-	);
+	return	self->get_list(
+			self,
+			key
+		);
 }
 
 int cefingo_dictionary_value_set_value(
@@ -9014,11 +9014,11 @@ int cefingo_dictionary_value_set_value(
 	struct _cef_value_t* value
 )
 {
-	return self->set_value(
-		self,
-		key,
-		value
-	);
+	return	self->set_value(
+			self,
+			key,
+			value
+		);
 }
 
 int cefingo_dictionary_value_set_null(
@@ -9026,10 +9026,10 @@ int cefingo_dictionary_value_set_null(
 	const cef_string_t* key
 )
 {
-	return self->set_null(
-		self,
-		key
-	);
+	return	self->set_null(
+			self,
+			key
+		);
 }
 
 int cefingo_dictionary_value_set_bool(
@@ -9038,11 +9038,11 @@ int cefingo_dictionary_value_set_bool(
 	int value
 )
 {
-	return self->set_bool(
-		self,
-		key,
-		value
-	);
+	return	self->set_bool(
+			self,
+			key,
+			value
+		);
 }
 
 int cefingo_dictionary_value_set_int(
@@ -9051,11 +9051,11 @@ int cefingo_dictionary_value_set_int(
 	int value
 )
 {
-	return self->set_int(
-		self,
-		key,
-		value
-	);
+	return	self->set_int(
+			self,
+			key,
+			value
+		);
 }
 
 int cefingo_dictionary_value_set_double(
@@ -9064,11 +9064,11 @@ int cefingo_dictionary_value_set_double(
 	double value
 )
 {
-	return self->set_double(
-		self,
-		key,
-		value
-	);
+	return	self->set_double(
+			self,
+			key,
+			value
+		);
 }
 
 int cefingo_dictionary_value_set_string(
@@ -9077,11 +9077,11 @@ int cefingo_dictionary_value_set_string(
 	const cef_string_t* value
 )
 {
-	return self->set_string(
-		self,
-		key,
-		value
-	);
+	return	self->set_string(
+			self,
+			key,
+			value
+		);
 }
 
 int cefingo_dictionary_value_set_binary(
@@ -9090,11 +9090,11 @@ int cefingo_dictionary_value_set_binary(
 	struct _cef_binary_value_t* value
 )
 {
-	return self->set_binary(
-		self,
-		key,
-		value
-	);
+	return	self->set_binary(
+			self,
+			key,
+			value
+		);
 }
 
 int cefingo_dictionary_value_set_dictionary(
@@ -9103,11 +9103,11 @@ int cefingo_dictionary_value_set_dictionary(
 	struct _cef_dictionary_value_t* value
 )
 {
-	return self->set_dictionary(
-		self,
-		key,
-		value
-	);
+	return	self->set_dictionary(
+			self,
+			key,
+			value
+		);
 }
 
 int cefingo_dictionary_value_set_list(
@@ -9116,38 +9116,38 @@ int cefingo_dictionary_value_set_list(
 	struct _cef_list_value_t* value
 )
 {
-	return self->set_list(
-		self,
-		key,
-		value
-	);
+	return	self->set_list(
+			self,
+			key,
+			value
+		);
 }
 
 int cefingo_list_value_is_valid(
 	struct _cef_list_value_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_list_value_is_owned(
 	struct _cef_list_value_t* self
 )
 {
-	return self->is_owned(
-		self
-	);
+	return	self->is_owned(
+			self
+		);
 }
 
 int cefingo_list_value_is_read_only(
 	struct _cef_list_value_t* self
 )
 {
-	return self->is_read_only(
-		self
-	);
+	return	self->is_read_only(
+			self
+		);
 }
 
 int cefingo_list_value_is_same(
@@ -9155,10 +9155,10 @@ int cefingo_list_value_is_same(
 	struct _cef_list_value_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 int cefingo_list_value_is_equal(
@@ -9166,19 +9166,19 @@ int cefingo_list_value_is_equal(
 	struct _cef_list_value_t* that
 )
 {
-	return self->is_equal(
-		self,
-		that
-	);
+	return	self->is_equal(
+			self,
+			that
+		);
 }
 
 struct _cef_list_value_t* cefingo_list_value_copy(
 	struct _cef_list_value_t* self
 )
 {
-	return self->copy(
-		self
-	);
+	return	self->copy(
+			self
+		);
 }
 
 int cefingo_list_value_set_size(
@@ -9186,28 +9186,28 @@ int cefingo_list_value_set_size(
 	size_t size
 )
 {
-	return self->set_size(
-		self,
-		size
-	);
+	return	self->set_size(
+			self,
+			size
+		);
 }
 
 size_t cefingo_list_value_get_size(
 	struct _cef_list_value_t* self
 )
 {
-	return self->get_size(
-		self
-	);
+	return	self->get_size(
+			self
+		);
 }
 
 int cefingo_list_value_clear(
 	struct _cef_list_value_t* self
 )
 {
-	return self->clear(
-		self
-	);
+	return	self->clear(
+			self
+		);
 }
 
 int cefingo_list_value_remove(
@@ -9215,10 +9215,10 @@ int cefingo_list_value_remove(
 	size_t index
 )
 {
-	return self->remove(
-		self,
-		index
-	);
+	return	self->remove(
+			self,
+			index
+		);
 }
 
 cef_value_type_t cefingo_list_value_get_type(
@@ -9226,10 +9226,10 @@ cef_value_type_t cefingo_list_value_get_type(
 	size_t index
 )
 {
-	return self->get_type(
-		self,
-		index
-	);
+	return	self->get_type(
+			self,
+			index
+		);
 }
 
 struct _cef_value_t* cefingo_list_value_get_value(
@@ -9237,10 +9237,10 @@ struct _cef_value_t* cefingo_list_value_get_value(
 	size_t index
 )
 {
-	return self->get_value(
-		self,
-		index
-	);
+	return	self->get_value(
+			self,
+			index
+		);
 }
 
 int cefingo_list_value_get_bool(
@@ -9248,10 +9248,10 @@ int cefingo_list_value_get_bool(
 	size_t index
 )
 {
-	return self->get_bool(
-		self,
-		index
-	);
+	return	self->get_bool(
+			self,
+			index
+		);
 }
 
 int cefingo_list_value_get_int(
@@ -9259,10 +9259,10 @@ int cefingo_list_value_get_int(
 	size_t index
 )
 {
-	return self->get_int(
-		self,
-		index
-	);
+	return	self->get_int(
+			self,
+			index
+		);
 }
 
 double cefingo_list_value_get_double(
@@ -9270,10 +9270,10 @@ double cefingo_list_value_get_double(
 	size_t index
 )
 {
-	return self->get_double(
-		self,
-		index
-	);
+	return	self->get_double(
+			self,
+			index
+		);
 }
 
 cef_string_userfree_t cefingo_list_value_get_string(
@@ -9281,10 +9281,10 @@ cef_string_userfree_t cefingo_list_value_get_string(
 	size_t index
 )
 {
-	return self->get_string(
-		self,
-		index
-	);
+	return	self->get_string(
+			self,
+			index
+		);
 }
 
 struct _cef_binary_value_t* cefingo_list_value_get_binary(
@@ -9292,10 +9292,10 @@ struct _cef_binary_value_t* cefingo_list_value_get_binary(
 	size_t index
 )
 {
-	return self->get_binary(
-		self,
-		index
-	);
+	return	self->get_binary(
+			self,
+			index
+		);
 }
 
 struct _cef_dictionary_value_t* cefingo_list_value_get_dictionary(
@@ -9303,10 +9303,10 @@ struct _cef_dictionary_value_t* cefingo_list_value_get_dictionary(
 	size_t index
 )
 {
-	return self->get_dictionary(
-		self,
-		index
-	);
+	return	self->get_dictionary(
+			self,
+			index
+		);
 }
 
 struct _cef_list_value_t* cefingo_list_value_get_list(
@@ -9314,10 +9314,10 @@ struct _cef_list_value_t* cefingo_list_value_get_list(
 	size_t index
 )
 {
-	return self->get_list(
-		self,
-		index
-	);
+	return	self->get_list(
+			self,
+			index
+		);
 }
 
 int cefingo_list_value_set_value(
@@ -9326,11 +9326,11 @@ int cefingo_list_value_set_value(
 	struct _cef_value_t* value
 )
 {
-	return self->set_value(
-		self,
-		index,
-		value
-	);
+	return	self->set_value(
+			self,
+			index,
+			value
+		);
 }
 
 int cefingo_list_value_set_null(
@@ -9338,10 +9338,10 @@ int cefingo_list_value_set_null(
 	size_t index
 )
 {
-	return self->set_null(
-		self,
-		index
-	);
+	return	self->set_null(
+			self,
+			index
+		);
 }
 
 int cefingo_list_value_set_bool(
@@ -9350,11 +9350,11 @@ int cefingo_list_value_set_bool(
 	int value
 )
 {
-	return self->set_bool(
-		self,
-		index,
-		value
-	);
+	return	self->set_bool(
+			self,
+			index,
+			value
+		);
 }
 
 int cefingo_list_value_set_int(
@@ -9363,11 +9363,11 @@ int cefingo_list_value_set_int(
 	int value
 )
 {
-	return self->set_int(
-		self,
-		index,
-		value
-	);
+	return	self->set_int(
+			self,
+			index,
+			value
+		);
 }
 
 int cefingo_list_value_set_double(
@@ -9376,11 +9376,11 @@ int cefingo_list_value_set_double(
 	double value
 )
 {
-	return self->set_double(
-		self,
-		index,
-		value
-	);
+	return	self->set_double(
+			self,
+			index,
+			value
+		);
 }
 
 int cefingo_list_value_set_string(
@@ -9389,11 +9389,11 @@ int cefingo_list_value_set_string(
 	const cef_string_t* value
 )
 {
-	return self->set_string(
-		self,
-		index,
-		value
-	);
+	return	self->set_string(
+			self,
+			index,
+			value
+		);
 }
 
 int cefingo_list_value_set_binary(
@@ -9402,11 +9402,11 @@ int cefingo_list_value_set_binary(
 	struct _cef_binary_value_t* value
 )
 {
-	return self->set_binary(
-		self,
-		index,
-		value
-	);
+	return	self->set_binary(
+			self,
+			index,
+			value
+		);
 }
 
 int cefingo_list_value_set_dictionary(
@@ -9415,11 +9415,11 @@ int cefingo_list_value_set_dictionary(
 	struct _cef_dictionary_value_t* value
 )
 {
-	return self->set_dictionary(
-		self,
-		index,
-		value
-	);
+	return	self->set_dictionary(
+			self,
+			index,
+			value
+		);
 }
 
 int cefingo_list_value_set_list(
@@ -9428,65 +9428,65 @@ int cefingo_list_value_set_list(
 	struct _cef_list_value_t* value
 )
 {
-	return self->set_list(
-		self,
-		index,
-		value
-	);
+	return	self->set_list(
+			self,
+			index,
+			value
+		);
 }
 
 struct _cef_browser_view_t* cefingo_view_as_browser_view(
 	struct _cef_view_t* self
 )
 {
-	return self->as_browser_view(
-		self
-	);
+	return	self->as_browser_view(
+			self
+		);
 }
 
 struct _cef_button_t* cefingo_view_as_button(
 	struct _cef_view_t* self
 )
 {
-	return self->as_button(
-		self
-	);
+	return	self->as_button(
+			self
+		);
 }
 
 struct _cef_panel_t* cefingo_view_as_panel(
 	struct _cef_view_t* self
 )
 {
-	return self->as_panel(
-		self
-	);
+	return	self->as_panel(
+			self
+		);
 }
 
 struct _cef_scroll_view_t* cefingo_view_as_scroll_view(
 	struct _cef_view_t* self
 )
 {
-	return self->as_scroll_view(
-		self
-	);
+	return	self->as_scroll_view(
+			self
+		);
 }
 
 struct _cef_textfield_t* cefingo_view_as_textfield(
 	struct _cef_view_t* self
 )
 {
-	return self->as_textfield(
-		self
-	);
+	return	self->as_textfield(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_view_get_type_string(
 	struct _cef_view_t* self
 )
 {
-	return self->get_type_string(
-		self
-	);
+	return	self->get_type_string(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_view_to_string(
@@ -9494,28 +9494,28 @@ cef_string_userfree_t cefingo_view_to_string(
 	int include_children
 )
 {
-	return self->to_string(
-		self,
-		include_children
-	);
+	return	self->to_string(
+			self,
+			include_children
+		);
 }
 
 int cefingo_view_is_valid(
 	struct _cef_view_t* self
 )
 {
-	return self->is_valid(
-		self
-	);
+	return	self->is_valid(
+			self
+		);
 }
 
 int cefingo_view_is_attached(
 	struct _cef_view_t* self
 )
 {
-	return self->is_attached(
-		self
-	);
+	return	self->is_attached(
+			self
+		);
 }
 
 int cefingo_view_is_same(
@@ -9523,37 +9523,37 @@ int cefingo_view_is_same(
 	struct _cef_view_t* that
 )
 {
-	return self->is_same(
-		self,
-		that
-	);
+	return	self->is_same(
+			self,
+			that
+		);
 }
 
 struct _cef_view_delegate_t* cefingo_view_get_delegate(
 	struct _cef_view_t* self
 )
 {
-	return self->get_delegate(
-		self
-	);
+	return	self->get_delegate(
+			self
+		);
 }
 
 struct _cef_window_t* cefingo_view_get_window(
 	struct _cef_view_t* self
 )
 {
-	return self->get_window(
-		self
-	);
+	return	self->get_window(
+			self
+		);
 }
 
 int cefingo_view_get_id(
 	struct _cef_view_t* self
 )
 {
-	return self->get_id(
-		self
-	);
+	return	self->get_id(
+			self
+		);
 }
 
 void cefingo_view_set_id(
@@ -9571,9 +9571,9 @@ int cefingo_view_get_group_id(
 	struct _cef_view_t* self
 )
 {
-	return self->get_group_id(
-		self
-	);
+	return	self->get_group_id(
+			self
+		);
 }
 
 void cefingo_view_set_group_id(
@@ -9591,9 +9591,9 @@ struct _cef_view_t* cefingo_view_get_parent_view(
 	struct _cef_view_t* self
 )
 {
-	return self->get_parent_view(
-		self
-	);
+	return	self->get_parent_view(
+			self
+		);
 }
 
 struct _cef_view_t* cefingo_view_get_view_for_id(
@@ -9601,10 +9601,10 @@ struct _cef_view_t* cefingo_view_get_view_for_id(
 	int id
 )
 {
-	return self->get_view_for_id(
-		self,
-		id
-	);
+	return	self->get_view_for_id(
+			self,
+			id
+		);
 }
 
 void cefingo_view_set_bounds(
@@ -9622,18 +9622,18 @@ cef_rect_t cefingo_view_get_bounds(
 	struct _cef_view_t* self
 )
 {
-	return self->get_bounds(
-		self
-	);
+	return	self->get_bounds(
+			self
+		);
 }
 
 cef_rect_t cefingo_view_get_bounds_in_screen(
 	struct _cef_view_t* self
 )
 {
-	return self->get_bounds_in_screen(
-		self
-	);
+	return	self->get_bounds_in_screen(
+			self
+		);
 }
 
 void cefingo_view_set_size(
@@ -9651,9 +9651,9 @@ cef_size_t cefingo_view_get_size(
 	struct _cef_view_t* self
 )
 {
-	return self->get_size(
-		self
-	);
+	return	self->get_size(
+			self
+		);
 }
 
 void cefingo_view_set_position(
@@ -9671,18 +9671,18 @@ cef_point_t cefingo_view_get_position(
 	struct _cef_view_t* self
 )
 {
-	return self->get_position(
-		self
-	);
+	return	self->get_position(
+			self
+		);
 }
 
 cef_size_t cefingo_view_get_preferred_size(
 	struct _cef_view_t* self
 )
 {
-	return self->get_preferred_size(
-		self
-	);
+	return	self->get_preferred_size(
+			self
+		);
 }
 
 void cefingo_view_size_to_preferred_size(
@@ -9698,18 +9698,18 @@ cef_size_t cefingo_view_get_minimum_size(
 	struct _cef_view_t* self
 )
 {
-	return self->get_minimum_size(
-		self
-	);
+	return	self->get_minimum_size(
+			self
+		);
 }
 
 cef_size_t cefingo_view_get_maximum_size(
 	struct _cef_view_t* self
 )
 {
-	return self->get_maximum_size(
-		self
-	);
+	return	self->get_maximum_size(
+			self
+		);
 }
 
 int cefingo_view_get_height_for_width(
@@ -9717,10 +9717,10 @@ int cefingo_view_get_height_for_width(
 	int width
 )
 {
-	return self->get_height_for_width(
-		self,
-		width
-	);
+	return	self->get_height_for_width(
+			self,
+			width
+		);
 }
 
 void cefingo_view_invalidate_layout(
@@ -9747,18 +9747,18 @@ int cefingo_view_is_visible(
 	struct _cef_view_t* self
 )
 {
-	return self->is_visible(
-		self
-	);
+	return	self->is_visible(
+			self
+		);
 }
 
 int cefingo_view_is_drawn(
 	struct _cef_view_t* self
 )
 {
-	return self->is_drawn(
-		self
-	);
+	return	self->is_drawn(
+			self
+		);
 }
 
 void cefingo_view_set_enabled(
@@ -9776,9 +9776,9 @@ int cefingo_view_is_enabled(
 	struct _cef_view_t* self
 )
 {
-	return self->is_enabled(
-		self
-	);
+	return	self->is_enabled(
+			self
+		);
 }
 
 void cefingo_view_set_focusable(
@@ -9796,18 +9796,18 @@ int cefingo_view_is_focusable(
 	struct _cef_view_t* self
 )
 {
-	return self->is_focusable(
-		self
-	);
+	return	self->is_focusable(
+			self
+		);
 }
 
 int cefingo_view_is_accessibility_focusable(
 	struct _cef_view_t* self
 )
 {
-	return self->is_accessibility_focusable(
-		self
-	);
+	return	self->is_accessibility_focusable(
+			self
+		);
 }
 
 void cefingo_view_request_focus(
@@ -9834,9 +9834,9 @@ cef_color_t cefingo_view_get_background_color(
 	struct _cef_view_t* self
 )
 {
-	return self->get_background_color(
-		self
-	);
+	return	self->get_background_color(
+			self
+		);
 }
 
 int cefingo_view_convert_point_to_screen(
@@ -9844,10 +9844,10 @@ int cefingo_view_convert_point_to_screen(
 	cef_point_t* point
 )
 {
-	return self->convert_point_to_screen(
-		self,
-		point
-	);
+	return	self->convert_point_to_screen(
+			self,
+			point
+		);
 }
 
 int cefingo_view_convert_point_from_screen(
@@ -9855,10 +9855,10 @@ int cefingo_view_convert_point_from_screen(
 	cef_point_t* point
 )
 {
-	return self->convert_point_from_screen(
-		self,
-		point
-	);
+	return	self->convert_point_from_screen(
+			self,
+			point
+		);
 }
 
 int cefingo_view_convert_point_to_window(
@@ -9866,10 +9866,10 @@ int cefingo_view_convert_point_to_window(
 	cef_point_t* point
 )
 {
-	return self->convert_point_to_window(
-		self,
-		point
-	);
+	return	self->convert_point_to_window(
+			self,
+			point
+		);
 }
 
 int cefingo_view_convert_point_from_window(
@@ -9877,10 +9877,10 @@ int cefingo_view_convert_point_from_window(
 	cef_point_t* point
 )
 {
-	return self->convert_point_from_window(
-		self,
-		point
-	);
+	return	self->convert_point_from_window(
+			self,
+			point
+		);
 }
 
 int cefingo_view_convert_point_to_view(
@@ -9889,11 +9889,11 @@ int cefingo_view_convert_point_to_view(
 	cef_point_t* point
 )
 {
-	return self->convert_point_to_view(
-		self,
-		view,
-		point
-	);
+	return	self->convert_point_to_view(
+			self,
+			view,
+			point
+		);
 }
 
 int cefingo_view_convert_point_from_view(
@@ -9902,11 +9902,11 @@ int cefingo_view_convert_point_from_view(
 	cef_point_t* point
 )
 {
-	return self->convert_point_from_view(
-		self,
-		view,
-		point
-	);
+	return	self->convert_point_from_view(
+			self,
+			view,
+			point
+		);
 }
 
 
@@ -9915,7 +9915,7 @@ cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapp
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*view_delegate), counter),
 		(cef_base_ref_counted_t*) view_delegate);
-	
+
 	// callbacks
 	view_delegate->body.get_preferred_size =
 		cefingo_view_delegate_get_preferred_size;
@@ -9941,36 +9941,36 @@ cef_string_userfree_t cefingo_web_plugin_info_get_name(
 	struct _cef_web_plugin_info_t* self
 )
 {
-	return self->get_name(
-		self
-	);
+	return	self->get_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_web_plugin_info_get_path(
 	struct _cef_web_plugin_info_t* self
 )
 {
-	return self->get_path(
-		self
-	);
+	return	self->get_path(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_web_plugin_info_get_version(
 	struct _cef_web_plugin_info_t* self
 )
 {
-	return self->get_version(
-		self
-	);
+	return	self->get_version(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_web_plugin_info_get_description(
 	struct _cef_web_plugin_info_t* self
 )
 {
-	return self->get_description(
-		self
-	);
+	return	self->get_description(
+			self
+		);
 }
 
 
@@ -9979,7 +9979,7 @@ cef_web_plugin_info_visitor_t *cefingo_construct_web_plugin_info_visitor(cefingo
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*web_plugin_info_visitor), counter),
 		(cef_base_ref_counted_t*) web_plugin_info_visitor);
-	
+
 	// callbacks
 	web_plugin_info_visitor->body.visit =
 		cefingo_web_plugin_info_visitor_visit;
@@ -9998,10 +9998,10 @@ cef_web_plugin_unstable_callback_t *cefingo_construct_web_plugin_unstable_callba
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*web_plugin_unstable_callback), counter),
 		(cef_base_ref_counted_t*) web_plugin_unstable_callback);
-	
+
 	// callbacks
-	web_plugin_unstable_callback->body.is_unstable = (T_CEF_WEB_PLUGIN_UNSTABLE_CALLBACK_T_IS_UNSTABLE)
-		cefingo_web_plugin_unstable_callback_is_unstable;
+	web_plugin_unstable_callback->body.is_unstable =
+		(T_CEF_WEB_PLUGIN_UNSTABLE_CALLBACK_T_IS_UNSTABLE)cefingo_web_plugin_unstable_callback_is_unstable;
 
 	return (cef_web_plugin_unstable_callback_t*)web_plugin_unstable_callback;
 }
@@ -10017,10 +10017,10 @@ cef_register_cdm_callback_t *cefingo_construct_register_cdm_callback(cefingo_reg
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*register_cdm_callback), counter),
 		(cef_base_ref_counted_t*) register_cdm_callback);
-	
+
 	// callbacks
-	register_cdm_callback->body.on_cdm_registration_complete = (T_CEF_REGISTER_CDM_CALLBACK_T_ON_CDM_REGISTRATION_COMPLETE)
-		cefingo_register_cdm_callback_on_cdm_registration_complete;
+	register_cdm_callback->body.on_cdm_registration_complete =
+		(T_CEF_REGISTER_CDM_CALLBACK_T_ON_CDM_REGISTRATION_COMPLETE)cefingo_register_cdm_callback_on_cdm_registration_complete;
 
 	return (cef_register_cdm_callback_t*)register_cdm_callback;
 }
@@ -10067,9 +10067,9 @@ int cefingo_window_is_closed(
 	struct _cef_window_t* self
 )
 {
-	return self->is_closed(
-		self
-	);
+	return	self->is_closed(
+			self
+		);
 }
 
 void cefingo_window_activate(
@@ -10094,9 +10094,9 @@ int cefingo_window_is_active(
 	struct _cef_window_t* self
 )
 {
-	return self->is_active(
-		self
-	);
+	return	self->is_active(
+			self
+		);
 }
 
 void cefingo_window_bring_to_top(
@@ -10123,9 +10123,9 @@ int cefingo_window_is_always_on_top(
 	struct _cef_window_t* self
 )
 {
-	return self->is_always_on_top(
-		self
-	);
+	return	self->is_always_on_top(
+			self
+		);
 }
 
 void cefingo_window_maximize(
@@ -10170,27 +10170,27 @@ int cefingo_window_is_maximized(
 	struct _cef_window_t* self
 )
 {
-	return self->is_maximized(
-		self
-	);
+	return	self->is_maximized(
+			self
+		);
 }
 
 int cefingo_window_is_minimized(
 	struct _cef_window_t* self
 )
 {
-	return self->is_minimized(
-		self
-	);
+	return	self->is_minimized(
+			self
+		);
 }
 
 int cefingo_window_is_fullscreen(
 	struct _cef_window_t* self
 )
 {
-	return self->is_fullscreen(
-		self
-	);
+	return	self->is_fullscreen(
+			self
+		);
 }
 
 void cefingo_window_set_title(
@@ -10208,9 +10208,9 @@ cef_string_userfree_t cefingo_window_get_title(
 	struct _cef_window_t* self
 )
 {
-	return self->get_title(
-		self
-	);
+	return	self->get_title(
+			self
+		);
 }
 
 void cefingo_window_set_window_icon(
@@ -10228,9 +10228,9 @@ struct _cef_image_t* cefingo_window_get_window_icon(
 	struct _cef_window_t* self
 )
 {
-	return self->get_window_icon(
-		self
-	);
+	return	self->get_window_icon(
+			self
+		);
 }
 
 void cefingo_window_set_window_app_icon(
@@ -10248,9 +10248,9 @@ struct _cef_image_t* cefingo_window_get_window_app_icon(
 	struct _cef_window_t* self
 )
 {
-	return self->get_window_app_icon(
-		self
-	);
+	return	self->get_window_app_icon(
+			self
+		);
 }
 
 void cefingo_window_show_menu(
@@ -10281,18 +10281,18 @@ struct _cef_display_t* cefingo_window_get_display(
 	struct _cef_window_t* self
 )
 {
-	return self->get_display(
-		self
-	);
+	return	self->get_display(
+			self
+		);
 }
 
 cef_rect_t cefingo_window_get_client_area_bounds_in_screen(
 	struct _cef_window_t* self
 )
 {
-	return self->get_client_area_bounds_in_screen(
-		self
-	);
+	return	self->get_client_area_bounds_in_screen(
+			self
+		);
 }
 
 void cefingo_window_set_draggable_regions(
@@ -10312,9 +10312,9 @@ cef_window_handle_t cefingo_window_get_window_handle(
 	struct _cef_window_t* self
 )
 {
-	return self->get_window_handle(
-		self
-	);
+	return	self->get_window_handle(
+			self
+		);
 }
 
 void cefingo_window_send_key_press(
@@ -10408,7 +10408,7 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 	initialize_cefingo_base_ref_counted(
 		offsetof(__typeof__(*window_delegate), counter),
 		(cef_base_ref_counted_t*) window_delegate);
-	
+
 	// callbacks
 	window_delegate->body.on_window_created =
 		cefingo_window_delegate_on_window_created;
@@ -10428,8 +10428,8 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 		cefingo_window_delegate_can_close;
 	window_delegate->body.on_accelerator =
 		cefingo_window_delegate_on_accelerator;
-	window_delegate->body.on_key_event = (T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT)
-		cefingo_window_delegate_on_key_event;
+	window_delegate->body.on_key_event =
+		(T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT)cefingo_window_delegate_on_key_event;
 	window_delegate->body.base.base.get_preferred_size =
 		cefingo_window_delegate_get_preferred_size;
 	window_delegate->body.base.base.get_minimum_size =
@@ -10454,45 +10454,45 @@ cef_string_userfree_t cefingo_x509cert_principal_get_display_name(
 	struct _cef_x509cert_principal_t* self
 )
 {
-	return self->get_display_name(
-		self
-	);
+	return	self->get_display_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_common_name(
 	struct _cef_x509cert_principal_t* self
 )
 {
-	return self->get_common_name(
-		self
-	);
+	return	self->get_common_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_locality_name(
 	struct _cef_x509cert_principal_t* self
 )
 {
-	return self->get_locality_name(
-		self
-	);
+	return	self->get_locality_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_state_or_province_name(
 	struct _cef_x509cert_principal_t* self
 )
 {
-	return self->get_state_or_province_name(
-		self
-	);
+	return	self->get_state_or_province_name(
+			self
+		);
 }
 
 cef_string_userfree_t cefingo_x509cert_principal_get_country_name(
 	struct _cef_x509cert_principal_t* self
 )
 {
-	return self->get_country_name(
-		self
-	);
+	return	self->get_country_name(
+			self
+		);
 }
 
 void cefingo_x509cert_principal_get_street_addresses(
@@ -10543,72 +10543,72 @@ struct _cef_x509cert_principal_t* cefingo_x509certificate_get_subject(
 	struct _cef_x509certificate_t* self
 )
 {
-	return self->get_subject(
-		self
-	);
+	return	self->get_subject(
+			self
+		);
 }
 
 struct _cef_x509cert_principal_t* cefingo_x509certificate_get_issuer(
 	struct _cef_x509certificate_t* self
 )
 {
-	return self->get_issuer(
-		self
-	);
+	return	self->get_issuer(
+			self
+		);
 }
 
 struct _cef_binary_value_t* cefingo_x509certificate_get_serial_number(
 	struct _cef_x509certificate_t* self
 )
 {
-	return self->get_serial_number(
-		self
-	);
+	return	self->get_serial_number(
+			self
+		);
 }
 
 cef_time_t cefingo_x509certificate_get_valid_start(
 	struct _cef_x509certificate_t* self
 )
 {
-	return self->get_valid_start(
-		self
-	);
+	return	self->get_valid_start(
+			self
+		);
 }
 
 cef_time_t cefingo_x509certificate_get_valid_expiry(
 	struct _cef_x509certificate_t* self
 )
 {
-	return self->get_valid_expiry(
-		self
-	);
+	return	self->get_valid_expiry(
+			self
+		);
 }
 
 struct _cef_binary_value_t* cefingo_x509certificate_get_derencoded(
 	struct _cef_x509certificate_t* self
 )
 {
-	return self->get_derencoded(
-		self
-	);
+	return	self->get_derencoded(
+			self
+		);
 }
 
 struct _cef_binary_value_t* cefingo_x509certificate_get_pemencoded(
 	struct _cef_x509certificate_t* self
 )
 {
-	return self->get_pemencoded(
-		self
-	);
+	return	self->get_pemencoded(
+			self
+		);
 }
 
 size_t cefingo_x509certificate_get_issuer_chain_size(
 	struct _cef_x509certificate_t* self
 )
 {
-	return self->get_issuer_chain_size(
-		self
-	);
+	return	self->get_issuer_chain_size(
+			self
+		);
 }
 
 void cefingo_x509certificate_get_derencoded_issuer_chain(
