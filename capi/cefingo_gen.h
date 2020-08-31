@@ -1572,10 +1572,6 @@ extern cef_string_userfree_t cefingo_media_sink_get_id(
 	struct _cef_media_sink_t* self
 );
 
-extern int cefingo_media_sink_is_valid(
-	struct _cef_media_sink_t* self
-);
-
 extern cef_string_userfree_t cefingo_media_sink_get_name(
 	struct _cef_media_sink_t* self
 );
@@ -1612,10 +1608,6 @@ extern void cefingo_media_sink_device_info_callback_on_media_sink_device_info(
 );
 
 extern cef_string_userfree_t cefingo_media_source_get_id(
-	struct _cef_media_source_t* self
-);
-
-extern int cefingo_media_source_is_valid(
 	struct _cef_media_source_t* self
 );
 

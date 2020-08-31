@@ -17,3 +17,7 @@ type WinHmenu C.HMENU
 func ToCWindowHandleT(hwnd syscall.Handle) CWindowHandleT {
 	return CWindowHandleT(unsafe.Pointer(uintptr(hwnd)))
 }
+
+func ToHandle(h CWindowHandleT) syscall.Handle {
+	return syscall.Handle(uintptr(unsafe.Pointer(h)))
+}

@@ -1084,8 +1084,6 @@ cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo
 		cefingo_browser_process_handler_on_context_initialized;
 	browser_process_handler->body.on_before_child_process_launch =
 		cefingo_browser_process_handler_on_before_child_process_launch;
-	browser_process_handler->body.on_render_process_thread_created =
-		cefingo_browser_process_handler_on_render_process_thread_created;
 	browser_process_handler->body.get_print_handler =
 		cefingo_browser_process_handler_get_print_handler;
 	browser_process_handler->body.on_schedule_message_pump_work =
@@ -4045,15 +4043,6 @@ cef_string_userfree_t cefingo_media_sink_get_id(
 		);
 }
 
-int cefingo_media_sink_is_valid(
-	struct _cef_media_sink_t* self
-)
-{
-	return	self->is_valid(
-			self
-		);
-}
-
 cef_string_userfree_t cefingo_media_sink_get_name(
 	struct _cef_media_sink_t* self
 )
@@ -4137,15 +4126,6 @@ cef_string_userfree_t cefingo_media_source_get_id(
 )
 {
 	return	self->get_id(
-			self
-		);
-}
-
-int cefingo_media_source_is_valid(
-	struct _cef_media_source_t* self
-)
-{
-	return	self->is_valid(
 			self
 		);
 }
@@ -5630,8 +5610,6 @@ cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_r
 		(cef_base_ref_counted_t*) render_process_handler);
 
 	// callbacks
-	render_process_handler->body.on_render_thread_created =
-		cefingo_render_process_handler_on_render_thread_created;
 	render_process_handler->body.on_web_kit_initialized =
 		cefingo_render_process_handler_on_web_kit_initialized;
 	render_process_handler->body.on_browser_created =

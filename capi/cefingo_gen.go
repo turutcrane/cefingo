@@ -2660,7 +2660,7 @@ func BrowserHostCreateBrowserSync(
 	return ret
 }
 
-// cef_browser_process_handler_capi.h, include/capi/cef_browser_process_handler_capi.h:115:3,
+// cef_browser_process_handler_capi.h, include/capi/cef_browser_process_handler_capi.h:104:3,
 
 ///
 // Structure used to implement browser process callbacks. The functions of this
@@ -2740,20 +2740,6 @@ type OnBeforeChildProcessLaunchHandler interface {
 }
 
 ///
-// Called on the browser process IO thread after the main thread has been
-// created for a new render process. Provides an opportunity to specify extra
-// information that will be passed to
-// cef_render_process_handler_t::on_render_thread_created() in the render
-// process. Do not keep a reference to |extra_info| outside of this function.
-///
-type OnRenderProcessThreadCreatedHandler interface {
-	OnRenderProcessThreadCreated(
-		self *CBrowserProcessHandlerT,
-		extra_info *CListValueT,
-	)
-}
-
-///
 // Return the handler for printing on Linux. If a print handler is not
 // provided then printing will not be supported on the Linux platform.
 ///
@@ -2784,17 +2770,15 @@ type OnScheduleMessagePumpWorkHandler interface {
 }
 
 var browser_process_handler_handlers = struct {
-	handler                                  map[*C.cef_browser_process_handler_t]interface{}
-	on_context_initialized_handler           map[*C.cef_browser_process_handler_t]OnContextInitializedHandler
-	on_before_child_process_launch_handler   map[*C.cef_browser_process_handler_t]OnBeforeChildProcessLaunchHandler
-	on_render_process_thread_created_handler map[*C.cef_browser_process_handler_t]OnRenderProcessThreadCreatedHandler
-	get_print_handler_handler                map[*C.cef_browser_process_handler_t]GetPrintHandlerHandler
-	on_schedule_message_pump_work_handler    map[*C.cef_browser_process_handler_t]OnScheduleMessagePumpWorkHandler
+	handler                                map[*C.cef_browser_process_handler_t]interface{}
+	on_context_initialized_handler         map[*C.cef_browser_process_handler_t]OnContextInitializedHandler
+	on_before_child_process_launch_handler map[*C.cef_browser_process_handler_t]OnBeforeChildProcessLaunchHandler
+	get_print_handler_handler              map[*C.cef_browser_process_handler_t]GetPrintHandlerHandler
+	on_schedule_message_pump_work_handler  map[*C.cef_browser_process_handler_t]OnScheduleMessagePumpWorkHandler
 }{
 	map[*C.cef_browser_process_handler_t]interface{}{},
 	map[*C.cef_browser_process_handler_t]OnContextInitializedHandler{},
 	map[*C.cef_browser_process_handler_t]OnBeforeChildProcessLaunchHandler{},
-	map[*C.cef_browser_process_handler_t]OnRenderProcessThreadCreatedHandler{},
 	map[*C.cef_browser_process_handler_t]GetPrintHandlerHandler{},
 	map[*C.cef_browser_process_handler_t]OnScheduleMessagePumpWorkHandler{},
 }
@@ -2814,7 +2798,6 @@ func AllocCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
 		delete(browser_process_handler_handlers.handler, cefp)
 		delete(browser_process_handler_handlers.on_context_initialized_handler, cefp)
 		delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cefp)
-		delete(browser_process_handler_handlers.on_render_process_thread_created_handler, cefp)
 		delete(browser_process_handler_handlers.get_print_handler_handler, cefp)
 		delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cefp)
 	}))
@@ -2835,10 +2818,6 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 
 	if h, ok := a.(OnBeforeChildProcessLaunchHandler); ok {
 		browser_process_handler_handlers.on_before_child_process_launch_handler[cp] = h
-	}
-
-	if h, ok := a.(OnRenderProcessThreadCreatedHandler); ok {
-		browser_process_handler_handlers.on_render_process_thread_created_handler[cp] = h
 	}
 
 	if h, ok := a.(GetPrintHandlerHandler); ok {
@@ -2864,7 +2843,6 @@ func (browser_process_handler *CBrowserProcessHandlerT) UnbindAll() {
 
 	delete(browser_process_handler_handlers.on_context_initialized_handler, cp)
 	delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cp)
-	delete(browser_process_handler_handlers.on_render_process_thread_created_handler, cp)
 	delete(browser_process_handler_handlers.get_print_handler_handler, cp)
 	delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cp)
 
@@ -12122,17 +12100,6 @@ func (self *CMediaSinkT) GetId() (ret string) {
 }
 
 ///
-// Returns true (1) if this sink is valid.
-///
-func (self *CMediaSinkT) IsValid() (ret bool) {
-
-	cRet := C.cefingo_media_sink_is_valid(self.p_media_sink)
-
-	ret = cRet == 1
-	return ret
-}
-
-///
 // Returns the name of this sink.
 ///
 // The resulting string must be freed by calling cef_string_userfree_free().
@@ -12362,17 +12329,6 @@ func (self *CMediaSourceT) GetId() (ret string) {
 		C.cef_string_userfree_free(cRet)
 	}
 	ret = s
-	return ret
-}
-
-///
-// Returns true (1) if this source is valid.
-///
-func (self *CMediaSourceT) IsValid() (ret bool) {
-
-	cRet := C.cefingo_media_source_is_valid(self.p_media_source)
-
-	ret = cRet == 1
 	return ret
 }
 
@@ -15908,7 +15864,7 @@ func (render_handler *CRenderHandlerT) Handler() interface{} {
 	return render_handler_handlers.handler[cp]
 }
 
-// cef_render_process_handler_capi.h, include/capi/cef_render_process_handler_capi.h:172:3,
+// cef_render_process_handler_capi.h, include/capi/cef_render_process_handler_capi.h:162:3,
 
 ///
 // Structure used to implement render process callbacks. The functions of this
@@ -15961,19 +15917,6 @@ func (render_process_handler *CRenderProcessHandlerT) HasOneRef() bool {
 
 func (p *C.cef_render_process_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
-}
-
-///
-// Called after the render process main thread has been created. |extra_info|
-// is a read-only value originating from
-// cef_browser_process_handler_t::on_render_process_thread_created(). Do not
-// keep a reference to |extra_info| outside of this function.
-///
-type OnRenderThreadCreatedHandler interface {
-	OnRenderThreadCreated(
-		self *CRenderProcessHandlerT,
-		extra_info *CListValueT,
-	)
 }
 
 ///
@@ -16101,7 +16044,6 @@ type CRenderProcessHandlerTOnProcessMessageReceivedHandler interface {
 
 var render_process_handler_handlers = struct {
 	handler                             map[*C.cef_render_process_handler_t]interface{}
-	on_render_thread_created_handler    map[*C.cef_render_process_handler_t]OnRenderThreadCreatedHandler
 	on_web_kit_initialized_handler      map[*C.cef_render_process_handler_t]OnWebKitInitializedHandler
 	on_browser_created_handler          map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnBrowserCreatedHandler
 	on_browser_destroyed_handler        map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnBrowserDestroyedHandler
@@ -16113,7 +16055,6 @@ var render_process_handler_handlers = struct {
 	on_process_message_received_handler map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnProcessMessageReceivedHandler
 }{
 	map[*C.cef_render_process_handler_t]interface{}{},
-	map[*C.cef_render_process_handler_t]OnRenderThreadCreatedHandler{},
 	map[*C.cef_render_process_handler_t]OnWebKitInitializedHandler{},
 	map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnBrowserCreatedHandler{},
 	map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnBrowserDestroyedHandler{},
@@ -16138,7 +16079,6 @@ func AllocCRenderProcessHandlerT() *CRenderProcessHandlerT {
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
 		delete(render_process_handler_handlers.handler, cefp)
-		delete(render_process_handler_handlers.on_render_thread_created_handler, cefp)
 		delete(render_process_handler_handlers.on_web_kit_initialized_handler, cefp)
 		delete(render_process_handler_handlers.on_browser_created_handler, cefp)
 		delete(render_process_handler_handlers.on_browser_destroyed_handler, cefp)
@@ -16159,10 +16099,6 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 
 	cp := render_process_handler.p_render_process_handler
 	render_process_handler_handlers.handler[cp] = a
-
-	if h, ok := a.(OnRenderThreadCreatedHandler); ok {
-		render_process_handler_handlers.on_render_thread_created_handler[cp] = h
-	}
 
 	if h, ok := a.(OnWebKitInitializedHandler); ok {
 		render_process_handler_handlers.on_web_kit_initialized_handler[cp] = h
@@ -16213,7 +16149,6 @@ func (render_process_handler *CRenderProcessHandlerT) UnbindAll() {
 	cp := render_process_handler.p_render_process_handler
 	delete(render_process_handler_handlers.handler, cp)
 
-	delete(render_process_handler_handlers.on_render_thread_created_handler, cp)
 	delete(render_process_handler_handlers.on_web_kit_initialized_handler, cp)
 	delete(render_process_handler_handlers.on_browser_created_handler, cp)
 	delete(render_process_handler_handlers.on_browser_destroyed_handler, cp)
@@ -18029,7 +17964,7 @@ type OnOpenUrlfromTabHandler interface {
 		frame *CFrameT,
 		target_url string,
 		target_disposition CWindowOpenDispositionT,
-		user_gesture int,
+		user_gesture bool,
 	) (ret bool)
 }
 

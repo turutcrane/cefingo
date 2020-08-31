@@ -289,6 +289,7 @@ var boolParameter = map[string]void{
 	"cef_navigation_entry_visitor_t::visit::current":                                        setElement,
 	"cef_pdf_print_callback_t::on_pdf_print_finished::ok":                                   setElement,
 	"cef_request_handler_t::get_resource_request_handler::disable_default_handling":         setElement,
+	"cef_request_handler_t::on_open_urlfrom_tab::user_gesture":                              setElement,
 	"cef_request_context_handler_t::get_resource_request_handler::disable_default_handling": setElement,
 	"cef_resource_handler_t::open::handle_request":                                          setElement,
 	"cef_v8value_t::create_bool::value":                                                     setElement,
