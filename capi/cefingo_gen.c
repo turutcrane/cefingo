@@ -315,21 +315,18 @@ cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callback(cefin
 	return (cef_run_file_dialog_callback_t*)run_file_dialog_callback;
 }
 
-int cefingo_navigation_entry_visitor_visit(
-	struct _cef_navigation_entry_visitor_t* self,
-	struct _cef_navigation_entry_t* entry,
-	int current,
-	int index,
-	int total
-)
+
+cef_navigation_entry_visitor_t *cefingo_construct_navigation_entry_visitor(cefingo_navigation_entry_visitor_wrapper_t* navigation_entry_visitor)
 {
-	return	self->visit(
-			self,
-			entry,
-			current,
-			index,
-			total
-		);
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*navigation_entry_visitor), counter),
+		(cef_base_ref_counted_t*) navigation_entry_visitor);
+
+	// callbacks
+	navigation_entry_visitor->body.visit =
+		cefingo_navigation_entry_visitor_visit;
+
+	return (cef_navigation_entry_visitor_t*)navigation_entry_visitor;
 }
 
 void cefingo_pdf_print_callback_on_pdf_print_finished(
@@ -10394,6 +10391,8 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 		cefingo_window_delegate_on_window_destroyed;
 	window_delegate->body.get_parent_window =
 		cefingo_window_delegate_get_parent_window;
+	window_delegate->body.get_initial_bounds =
+		cefingo_window_delegate_get_initial_bounds;
 	window_delegate->body.is_frameless =
 		cefingo_window_delegate_is_frameless;
 	window_delegate->body.can_resize =

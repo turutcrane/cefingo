@@ -41,3 +41,16 @@ func PostElementGetBytes(e *capi.CPostDataElementT) (bytes []byte) {
 	bSize := e.GetBytes(n, cb)
 	return C.GoBytes(cb, C.int(bSize))
 }
+
+type TaskFunc func()
+
+var _ capi.CTaskTExecuteHandler = TaskFunc(func() {})
+
+func (f TaskFunc) Execute(self *capi.CTaskT) {
+	f()
+}
+
+func NewTask(f TaskFunc) *capi.CTaskT {
+	task := capi.AllocCTaskT().Bind(f)
+	return task
+}

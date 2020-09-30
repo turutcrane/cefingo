@@ -1341,26 +1341,77 @@ func (p *C.cef_navigation_entry_visitor_t) cast_to_p_base_ref_counted_t() *C.cef
 // navigation entry. |index| is the 0-based index of this entry and |total| is
 // the total number of entries.
 ///
-func (self *CNavigationEntryVisitorT) Visit(
-	entry *CNavigationEntryT,
-	current bool,
-	index int,
-	total int,
-) (ret bool) {
-	var goTmpentry *C.cef_navigation_entry_t
-	if entry != nil {
-		goTmpentry = entry.p_navigation_entry
-		BaseAddRef(goTmpentry)
-	}
-	var tmpcurrent int
-	if current {
-		tmpcurrent = 1
+type CNavigationEntryVisitorTVisitHandler interface {
+	Visit(
+		self *CNavigationEntryVisitorT,
+		entry *CNavigationEntryT,
+		current bool,
+		index int,
+		total int,
+	) (ret bool)
+}
+
+var navigation_entry_visitor_handlers = struct {
+	handler       map[*C.cef_navigation_entry_visitor_t]interface{}
+	visit_handler map[*C.cef_navigation_entry_visitor_t]CNavigationEntryVisitorTVisitHandler
+}{
+	map[*C.cef_navigation_entry_visitor_t]interface{}{},
+	map[*C.cef_navigation_entry_visitor_t]CNavigationEntryVisitorTVisitHandler{},
+}
+
+// AllocCNavigationEntryVisitorT allocates CNavigationEntryVisitorT and construct it
+func AllocCNavigationEntryVisitorT() *CNavigationEntryVisitorT {
+	up := c_calloc(1, C.sizeof_cefingo_navigation_entry_visitor_wrapper_t, "T108.3:")
+	cefp := C.cefingo_construct_navigation_entry_visitor((*C.cefingo_navigation_entry_visitor_wrapper_t)(up))
+
+	registerDeassocer(up, DeassocFunc(func() {
+		// Do not have reference to cef_navigation_entry_visitor_t itself in DeassocFunc,
+		// or cef_navigation_entry_visitor_t is never GCed.
+		Tracef(up, "T108.4:")
+
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
+		delete(navigation_entry_visitor_handlers.handler, cefp)
+		delete(navigation_entry_visitor_handlers.visit_handler, cefp)
+	}))
+
+	return newCNavigationEntryVisitorT(cefp)
+}
+
+func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *CNavigationEntryVisitorT {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
+
+	cp := navigation_entry_visitor.p_navigation_entry_visitor
+	navigation_entry_visitor_handlers.handler[cp] = a
+
+	if h, ok := a.(CNavigationEntryVisitorTVisitHandler); ok {
+		navigation_entry_visitor_handlers.visit_handler[cp] = h
 	}
 
-	cRet := C.cefingo_navigation_entry_visitor_visit(self.p_navigation_entry_visitor, goTmpentry, C.int(tmpcurrent), (C.int)(index), (C.int)(total))
+	if accessor, ok := a.(CNavigationEntryVisitorTAccessor); ok {
+		accessor.SetCNavigationEntryVisitorT(navigation_entry_visitor)
+		Logf("T108.5:")
+	}
 
-	ret = cRet == 1
-	return ret
+	return navigation_entry_visitor
+}
+
+func (navigation_entry_visitor *CNavigationEntryVisitorT) UnbindAll() {
+
+	cp := navigation_entry_visitor.p_navigation_entry_visitor
+	delete(navigation_entry_visitor_handlers.handler, cp)
+
+	delete(navigation_entry_visitor_handlers.visit_handler, cp)
+
+}
+
+func (navigation_entry_visitor *CNavigationEntryVisitorT) Handler() interface{} {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
+
+	cp := navigation_entry_visitor.p_navigation_entry_visitor
+	return navigation_entry_visitor_handlers.handler[cp]
 }
 
 ///
@@ -2050,10 +2101,14 @@ func (self *CBrowserHostT) GetNavigationEntries(
 // Set whether mouse cursor change is disabled.
 ///
 func (self *CBrowserHostT) SetMouseCursorChangeDisabled(
-	disabled int,
+	disabled bool,
 ) {
+	var tmpdisabled int
+	if disabled {
+		tmpdisabled = 1
+	}
 
-	C.cefingo_browser_host_set_mouse_cursor_change_disabled(self.p_browser_host, (C.int)(disabled))
+	C.cefingo_browser_host_set_mouse_cursor_change_disabled(self.p_browser_host, C.int(tmpdisabled))
 
 }
 
@@ -2122,10 +2177,14 @@ func (self *CBrowserHostT) WasResized() {
 // hidden. This function is only used when window rendering is disabled.
 ///
 func (self *CBrowserHostT) WasHidden(
-	hidden int,
+	hidden bool,
 ) {
+	var tmphidden int
+	if hidden {
+		tmphidden = 1
+	}
 
-	C.cefingo_browser_host_was_hidden(self.p_browser_host, (C.int)(hidden))
+	C.cefingo_browser_host_was_hidden(self.p_browser_host, C.int(tmphidden))
 
 }
 
@@ -2184,11 +2243,15 @@ func (self *CBrowserHostT) SendKeyEvent(
 func (self *CBrowserHostT) SendMouseClickEvent(
 	event *CMouseEventT,
 	ctype CMouseButtonTypeT,
-	mouseUp int,
+	mouseUp bool,
 	clickCount int,
 ) {
+	var tmpmouseUp int
+	if mouseUp {
+		tmpmouseUp = 1
+	}
 
-	C.cefingo_browser_host_send_mouse_click_event(self.p_browser_host, (*C.cef_mouse_event_t)(event), (C.cef_mouse_button_type_t)(ctype), (C.int)(mouseUp), (C.int)(clickCount))
+	C.cefingo_browser_host_send_mouse_click_event(self.p_browser_host, (*C.cef_mouse_event_t)(event), (C.cef_mouse_button_type_t)(ctype), C.int(tmpmouseUp), (C.int)(clickCount))
 
 }
 
@@ -2198,10 +2261,14 @@ func (self *CBrowserHostT) SendMouseClickEvent(
 ///
 func (self *CBrowserHostT) SendMouseMoveEvent(
 	event *CMouseEventT,
-	mouseLeave int,
+	mouseLeave bool,
 ) {
+	var tmpmouseLeave int
+	if mouseLeave {
+		tmpmouseLeave = 1
+	}
 
-	C.cefingo_browser_host_send_mouse_move_event(self.p_browser_host, (*C.cef_mouse_event_t)(event), (C.int)(mouseLeave))
+	C.cefingo_browser_host_send_mouse_move_event(self.p_browser_host, (*C.cef_mouse_event_t)(event), C.int(tmpmouseLeave))
 
 }
 
@@ -2237,10 +2304,14 @@ func (self *CBrowserHostT) SendTouchEvent(
 // Send a focus event to the browser.
 ///
 func (self *CBrowserHostT) SendFocusEvent(
-	setFocus int,
+	setFocus bool,
 ) {
+	var tmpsetFocus int
+	if setFocus {
+		tmpsetFocus = 1
+	}
 
-	C.cefingo_browser_host_send_focus_event(self.p_browser_host, (C.int)(setFocus))
+	C.cefingo_browser_host_send_focus_event(self.p_browser_host, C.int(tmpsetFocus))
 
 }
 
@@ -2356,10 +2427,14 @@ func (self *CBrowserHostT) ImeCommitText(
 // function is only used when window rendering is disabled.
 ///
 func (self *CBrowserHostT) ImeFinishComposingText(
-	keep_selection int,
+	keep_selection bool,
 ) {
+	var tmpkeep_selection int
+	if keep_selection {
+		tmpkeep_selection = 1
+	}
 
-	C.cefingo_browser_host_ime_finish_composing_text(self.p_browser_host, (C.int)(keep_selection))
+	C.cefingo_browser_host_ime_finish_composing_text(self.p_browser_host, C.int(tmpkeep_selection))
 
 }
 
@@ -2523,12 +2598,16 @@ func (self *CBrowserHostT) SetAccessibilityState(
 // |min_size| and |max_size| define the range of allowed sizes.
 ///
 func (self *CBrowserHostT) SetAutoResizeEnabled(
-	enabled int,
+	enabled bool,
 	min_size *CSizeT,
 	max_size *CSizeT,
 ) {
+	var tmpenabled int
+	if enabled {
+		tmpenabled = 1
+	}
 
-	C.cefingo_browser_host_set_auto_resize_enabled(self.p_browser_host, (C.int)(enabled), (*C.cef_size_t)(min_size), (*C.cef_size_t)(max_size))
+	C.cefingo_browser_host_set_auto_resize_enabled(self.p_browser_host, C.int(tmpenabled), (*C.cef_size_t)(min_size), (*C.cef_size_t)(max_size))
 
 }
 
@@ -2561,10 +2640,14 @@ func (self *CBrowserHostT) IsBackgroundHost() (ret bool) {
 //  Set whether the browser&#39;s audio is muted.
 ///
 func (self *CBrowserHostT) SetAudioMuted(
-	mute int,
+	mute bool,
 ) {
+	var tmpmute int
+	if mute {
+		tmpmute = 1
+	}
 
-	C.cefingo_browser_host_set_audio_muted(self.p_browser_host, (C.int)(mute))
+	C.cefingo_browser_host_set_audio_muted(self.p_browser_host, C.int(tmpmute))
 
 }
 
@@ -15503,8 +15586,8 @@ type GetScreenInfoHandler interface {
 	GetScreenInfo(
 		self *CRenderHandlerT,
 		browser *CBrowserT,
-		screen_info *CScreenInfoT,
-	) (ret bool)
+		screen_info CScreenInfoT,
+	) (ret bool, screen_infoOut CScreenInfoT)
 }
 
 ///
@@ -15548,7 +15631,7 @@ type OnPaintHandler interface {
 		browser *CBrowserT,
 		ctype CPaintElementTypeT,
 		dirtyRects []CRectT,
-		buffer []byte,
+		buffer unsafe.Pointer,
 		width int,
 		height int,
 	)
@@ -28660,7 +28743,7 @@ func WindowCreateTopLevel(
 	return ret
 }
 
-// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:140:3,
+// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:150:3,
 
 ///
 // Implement this structure to handle window events. The functions of this
@@ -28758,6 +28841,19 @@ type GetParentWindowHandler interface {
 }
 
 ///
+// Return the initial bounds for |window| in screen coordinates. If this
+// function returns an NULL CefRect then get_preferred_size() will be called
+// to retrieve the size, and the window will be placed on the default screen
+// with origin (0,0).
+///
+type GetInitialBoundsHandler interface {
+	GetInitialBounds(
+		self *CWindowDelegateT,
+		window *CWindowT,
+	) (ret CRectT)
+}
+
+///
 // Return true (1) if |window| should be created without a frame or title bar.
 // The window will be resizable if can_resize() returns true (1). Use
 // cef_window_t::set_draggable_regions() to specify draggable regions.
@@ -28841,6 +28937,7 @@ var window_delegate_handlers = struct {
 	on_window_created_handler      map[*C.cef_window_delegate_t]OnWindowCreatedHandler
 	on_window_destroyed_handler    map[*C.cef_window_delegate_t]OnWindowDestroyedHandler
 	get_parent_window_handler      map[*C.cef_window_delegate_t]GetParentWindowHandler
+	get_initial_bounds_handler     map[*C.cef_window_delegate_t]GetInitialBoundsHandler
 	is_frameless_handler           map[*C.cef_window_delegate_t]IsFramelessHandler
 	can_resize_handler             map[*C.cef_window_delegate_t]CanResizeHandler
 	can_maximize_handler           map[*C.cef_window_delegate_t]CanMaximizeHandler
@@ -28861,6 +28958,7 @@ var window_delegate_handlers = struct {
 	map[*C.cef_window_delegate_t]OnWindowCreatedHandler{},
 	map[*C.cef_window_delegate_t]OnWindowDestroyedHandler{},
 	map[*C.cef_window_delegate_t]GetParentWindowHandler{},
+	map[*C.cef_window_delegate_t]GetInitialBoundsHandler{},
 	map[*C.cef_window_delegate_t]IsFramelessHandler{},
 	map[*C.cef_window_delegate_t]CanResizeHandler{},
 	map[*C.cef_window_delegate_t]CanMaximizeHandler{},
@@ -28894,6 +28992,7 @@ func AllocCWindowDelegateT() *CWindowDelegateT {
 		delete(window_delegate_handlers.on_window_created_handler, cefp)
 		delete(window_delegate_handlers.on_window_destroyed_handler, cefp)
 		delete(window_delegate_handlers.get_parent_window_handler, cefp)
+		delete(window_delegate_handlers.get_initial_bounds_handler, cefp)
 		delete(window_delegate_handlers.is_frameless_handler, cefp)
 		delete(window_delegate_handlers.can_resize_handler, cefp)
 		delete(window_delegate_handlers.can_maximize_handler, cefp)
@@ -28931,6 +29030,10 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 
 	if h, ok := a.(GetParentWindowHandler); ok {
 		window_delegate_handlers.get_parent_window_handler[cp] = h
+	}
+
+	if h, ok := a.(GetInitialBoundsHandler); ok {
+		window_delegate_handlers.get_initial_bounds_handler[cp] = h
 	}
 
 	if h, ok := a.(IsFramelessHandler); ok {
@@ -29009,6 +29112,7 @@ func (window_delegate *CWindowDelegateT) UnbindAll() {
 	delete(window_delegate_handlers.on_window_created_handler, cp)
 	delete(window_delegate_handlers.on_window_destroyed_handler, cp)
 	delete(window_delegate_handlers.get_parent_window_handler, cp)
+	delete(window_delegate_handlers.get_initial_bounds_handler, cp)
 	delete(window_delegate_handlers.is_frameless_handler, cp)
 	delete(window_delegate_handlers.can_resize_handler, cp)
 	delete(window_delegate_handlers.can_maximize_handler, cp)

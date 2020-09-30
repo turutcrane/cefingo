@@ -128,3 +128,27 @@ func string_from_cef_string(s *C.cef_string_t) (str string) {
 func clear_cef_string(s *C.cef_string_t) {
 	C.cef_string_clear(s)
 }
+
+func ColorSetARGB(a, r, g, b int) CColorT {
+	return CColorT(a<<24 | r<<16 | g<<8 | b)
+}
+
+func ColorGetA(c CColorT) uint32 {
+	return (uint32(c) >> 24) & 0xff
+}
+
+func ColorGetR(c CColorT) uint32 {
+	return (uint32(c) >> 16) & 0xff
+}
+
+func ColorGetG(c CColorT) uint32 {
+	return (uint32(c) >> 8) & 0xff
+}
+
+func ColorGetB(c CColorT) uint32 {
+	return uint32(c) & 0xff
+}
+
+func (rect *CRectT) IsEmpty() bool {
+	return rect.width <= 0 || rect.height <= 0
+}

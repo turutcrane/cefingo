@@ -54,6 +54,7 @@ var handlerClasses = map[string]void{
 	"cef_load_handler_t":                    setElement,
 	"cef_menu_model_delegate_t":             setElement,
 	"cef_media_observer_t":                  setElement,
+	"cef_navigation_entry_visitor_t":        setElement,
 	"cef_print_handler_t":                   setElement,
 	"cef_read_handler_t":                    setElement,
 	"cef_register_cdm_callback_t":           setElement,
@@ -210,6 +211,7 @@ var inOutParameter = map[string]void{
 	"cef_life_span_handler_t::on_before_popup::settings":              setElement,
 	"cef_life_span_handler_t::on_before_popup::no_javascript_access":  setElement,
 	"cef_menu_model_delegate_t::format_label::label":                  setElement,
+	"cef_render_handler_t::get_screen_info::screen_info":              setElement,
 }
 
 var byteSliceParameter = map[string]string{
@@ -224,7 +226,6 @@ var byteSliceParameter = map[string]string{
 	"cef_media_route_t::send_route_message::message":                       "message_size",
 	"cef_post_data_element_t::set_to_bytes::bytes":                         "size",
 	"cef_read_handler_t::read::ptr":                                        "size*n",
-	"cef_render_handler_t::on_paint::buffer":                               "width*height*4",
 	"cef_response_filter_t::filter::data_in":                               "data_in_size",
 	"cef_response_filter_t::filter::data_out":                              "data_out_size",
 	"cef_resource_bundle_handler_t::get_data_resource::data":               "data_size",
@@ -277,6 +278,14 @@ var boolParameter = map[string]void{
 	"cef_browser_host_t::download_image::is_favicon":                                        setElement,
 	"cef_browser_host_t::download_image::bypass_cache":                                      setElement,
 	"cef_browser_host_t::get_navigation_entries::current_only":                              setElement,
+	"cef_browser_host_t::ime_finish_composing_text::keep_selection":                         setElement,
+	"cef_browser_host_t::send_focus_event::setFocus":                                        setElement,
+	"cef_browser_host_t::set_audio_muted::mute":                                             setElement,
+	"cef_browser_host_t::set_auto_resize_enabled::enabled":                                  setElement,
+	"cef_browser_host_t::set_mouse_cursor_change_disabled::disabled":                        setElement,
+	"cef_browser_host_t::was_hidden::hidden":                                                setElement,
+	"cef_browser_host_t::send_mouse_click_event::mouseUp":                                   setElement,
+	"cef_browser_host_t::send_mouse_move_event::mouseLeave":                                 setElement,
 	"cef_browser_view_t::set_prefer_accelerators::prefer_accelerators":                      setElement,
 	"cef_browser_view_delegate_t::get_delegate_for_popup_browser_view::is_devtools":         setElement,
 	"cef_browser_view_delegate_t::on_popup_browser_view_created::is_devtools":               setElement,

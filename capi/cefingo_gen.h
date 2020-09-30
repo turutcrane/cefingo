@@ -115,13 +115,8 @@ extern void cefingo_browser_get_frame_names(
 CEFINGO_REF_COUNTER_WRAPPER(cef_run_file_dialog_callback_t, cefingo_run_file_dialog_callback_wrapper_t);
 extern cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callback(cefingo_run_file_dialog_callback_wrapper_t* run_file_dialog_callback);
 
-extern int cefingo_navigation_entry_visitor_visit(
-	struct _cef_navigation_entry_visitor_t* self,
-	struct _cef_navigation_entry_t* entry,
-	int current,
-	int index,
-	int total
-);
+CEFINGO_REF_COUNTER_WRAPPER(cef_navigation_entry_visitor_t, cefingo_navigation_entry_visitor_wrapper_t);
+extern cef_navigation_entry_visitor_t *cefingo_construct_navigation_entry_visitor(cefingo_navigation_entry_visitor_wrapper_t* navigation_entry_visitor);
 
 extern void cefingo_pdf_print_callback_on_pdf_print_finished(
 	struct _cef_pdf_print_callback_t* self,
