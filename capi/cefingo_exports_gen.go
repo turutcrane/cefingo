@@ -9118,10 +9118,12 @@ func cefingo_window_delegate_get_parent_window(
 }
 
 ///
-// Return the initial bounds for |window| in screen coordinates. If this
-// function returns an NULL CefRect then get_preferred_size() will be called
-// to retrieve the size, and the window will be placed on the default screen
-// with origin (0,0).
+// Return the initial bounds for |window| in density independent pixel (DIP)
+// coordinates. If this function returns an NULL CefRect then
+// get_preferred_size() will be called to retrieve the size, and the window
+// will be placed on the screen with origin (0,0). This function can be used
+// in combination with cef_view_t::get_bounds_in_screen() to restore the
+// previous window bounds.
 ///
 //export cefingo_window_delegate_get_initial_bounds
 func cefingo_window_delegate_get_initial_bounds(

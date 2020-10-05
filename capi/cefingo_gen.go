@@ -6242,15 +6242,15 @@ func (dialog_handler *CDialogHandlerT) Handler() interface{} {
 	return dialog_handler_handlers.handler[cp]
 }
 
-// cef_display_capi.h, include/capi/views/cef_display_capi.h:105:3,
+// cef_display_capi.h, include/capi/views/cef_display_capi.h:106:3,
 
 ///
 // This structure typically, but not always, corresponds to a physical display
 // connected to the system. A fake Display may exist on a headless system, or a
 // Display may correspond to a remote, virtual display. All size and position
-// values are in density independent pixels (DIP) unless otherwise indicated.
-// Methods must be called on the browser process UI thread unless otherwise
-// indicated.
+// values are in density independent pixel (DIP) coordinates unless otherwise
+// indicated. Methods must be called on the browser process UI thread unless
+// otherwise indicated.
 ///
 
 // Go type for cef_display_t
@@ -6326,8 +6326,8 @@ func (self *CDisplayT) GetDeviceScaleFactor() (ret float32) {
 }
 
 ///
-// Convert |point| from density independent pixels (DIP) to pixel coordinates
-// using this Display&#39;s device scale factor.
+// Convert |point| from DIP coordinates to pixel coordinates using this
+// Display&#39;s device scale factor.
 ///
 func (self *CDisplayT) ConvertPointToPixels(
 	point *CPointT,
@@ -6338,8 +6338,8 @@ func (self *CDisplayT) ConvertPointToPixels(
 }
 
 ///
-// Convert |point| from pixel coordinates to density independent pixels (DIP)
-// using this Display&#39;s device scale factor.
+// Convert |point| from pixel coordinates to DIP coordinates using this
+// Display&#39;s device scale factor.
 ///
 func (self *CDisplayT) ConvertPointFromPixels(
 	point *CPointT,
@@ -6350,7 +6350,8 @@ func (self *CDisplayT) ConvertPointFromPixels(
 }
 
 ///
-// Returns this Display&#39;s bounds. This is the full size of the display.
+// Returns this Display&#39;s bounds in DIP screen coordinates. This is the full
+// size of the display.
 ///
 func (self *CDisplayT) GetBounds() (ret CRectT) {
 
@@ -6361,8 +6362,8 @@ func (self *CDisplayT) GetBounds() (ret CRectT) {
 }
 
 ///
-// Returns this Display&#39;s work area. This excludes areas of the display that
-// are occupied for window manager toolbars, etc.
+// Returns this Display&#39;s work area in DIP screen coordinates. This excludes
+// areas of the display that are occupied with window manager toolbars, etc.
 ///
 func (self *CDisplayT) GetWorkArea() (ret CRectT) {
 
@@ -6396,7 +6397,7 @@ func DisplayGetPrimary() (ret *CDisplayT) {
 
 ///
 // Returns the Display nearest |point|. Set |input_pixel_coords| to true (1) if
-// |point| is in pixel coordinates instead of density independent pixels (DIP).
+// |point| is in pixel screen coordinates instead of DIP screen coordinates.
 ///
 func DisplayGetNearestPoint(
 	point *CPointT,
@@ -6411,8 +6412,8 @@ func DisplayGetNearestPoint(
 
 ///
 // Returns the Display that most closely intersects |bounds|.  Set
-// |input_pixel_coords| to true (1) if |bounds| is in pixel coordinates instead
-// of density independent pixels (DIP).
+// |input_pixel_coords| to true (1) if |bounds| is in pixel screen coordinates
+// instead of DIP screen coordinates.
 ///
 func DisplayGetMatchingBounds(
 	bounds *CRectT,
@@ -26638,7 +26639,7 @@ func ListValueCreate() (ret *CListValueT) {
 	return ret
 }
 
-// cef_view_capi.h, include/capi/views/cef_view_capi.h:383:3,
+// cef_view_capi.h, include/capi/views/cef_view_capi.h:391:3,
 
 ///
 // A View is a rectangle within the views View hierarchy. It is the base
@@ -26924,8 +26925,8 @@ func (self *CViewT) GetViewForId(
 }
 
 ///
-// Sets the bounds (size and position) of this View. Position is in parent
-// coordinates.
+// Sets the bounds (size and position) of this View. |bounds| is in parent
+// coordinates, or DIP screen coordinates if there is no parent.
 ///
 func (self *CViewT) SetBounds(
 	bounds *CRectT,
@@ -26936,8 +26937,8 @@ func (self *CViewT) SetBounds(
 }
 
 ///
-// Returns the bounds (size and position) of this View. Position is in parent
-// coordinates.
+// Returns the bounds (size and position) of this View in parent coordinates,
+// or DIP screen coordinates if there is no parent.
 ///
 func (self *CViewT) GetBounds() (ret CRectT) {
 
@@ -26948,7 +26949,7 @@ func (self *CViewT) GetBounds() (ret CRectT) {
 }
 
 ///
-// Returns the bounds (size and position) of this View. Position is in screen
+// Returns the bounds (size and position) of this View in DIP screen
 // coordinates.
 ///
 func (self *CViewT) GetBoundsInScreen() (ret CRectT) {
@@ -26960,7 +26961,8 @@ func (self *CViewT) GetBoundsInScreen() (ret CRectT) {
 }
 
 ///
-// Sets the size of this View without changing the position.
+// Sets the size of this View without changing the position. |size| in parent
+// coordinates, or DIP screen coordinates if there is no parent.
 ///
 func (self *CViewT) SetSize(
 	size *CSizeT,
@@ -26971,7 +26973,8 @@ func (self *CViewT) SetSize(
 }
 
 ///
-// Returns the size of this View.
+// Returns the size of this View in parent coordinates, or DIP screen
+// coordinates if there is no parent.
 ///
 func (self *CViewT) GetSize() (ret CSizeT) {
 
@@ -26983,7 +26986,7 @@ func (self *CViewT) GetSize() (ret CSizeT) {
 
 ///
 // Sets the position of this View without changing the size. |position| is in
-// parent coordinates.
+// parent coordinates, or DIP screen coordinates if there is no parent.
 ///
 func (self *CViewT) SetPosition(
 	position *CPointT,
@@ -26994,7 +26997,8 @@ func (self *CViewT) SetPosition(
 }
 
 ///
-// Returns the position of this View. Position is in parent coordinates.
+// Returns the position of this View. Position is in parent coordinates, or
+// DIP screen coordinates if there is no parent.
 ///
 func (self *CViewT) GetPosition() (ret CPointT) {
 
@@ -27006,6 +27010,8 @@ func (self *CViewT) GetPosition() (ret CPointT) {
 
 ///
 // Returns the size this View would like to be if enough space is available.
+// Size is in parent coordinates, or DIP screen coordinates if there is no
+// parent.
 ///
 func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 
@@ -27016,7 +27022,8 @@ func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 }
 
 ///
-// Size this View to its preferred size.
+// Size this View to its preferred size. Size is in parent coordinates, or DIP
+// screen coordinates if there is no parent.
 ///
 func (self *CViewT) SizeToPreferredSize() {
 
@@ -27025,7 +27032,8 @@ func (self *CViewT) SizeToPreferredSize() {
 }
 
 ///
-// Returns the minimum size for this View.
+// Returns the minimum size for this View. Size is in parent coordinates, or
+// DIP screen coordinates if there is no parent.
 ///
 func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 
@@ -27036,7 +27044,8 @@ func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 }
 
 ///
-// Returns the maximum size for this View.
+// Returns the maximum size for this View. Size is in parent coordinates, or
+// DIP screen coordinates if there is no parent.
 ///
 func (self *CViewT) GetMaximumSize() (ret CSizeT) {
 
@@ -27215,10 +27224,10 @@ func (self *CViewT) GetBackgroundColor() (ret CColorT) {
 }
 
 ///
-// Convert |point| from this View&#39;s coordinate system to that of the screen.
-// This View must belong to a Window when calling this function. Returns true
-// (1) if the conversion is successful or false (0) otherwise. Use
-// cef_display_t::convert_point_to_pixels() after calling this function if
+// Convert |point| from this View&#39;s coordinate system to DIP screen
+// coordinates. This View must belong to a Window when calling this function.
+// Returns true (1) if the conversion is successful or false (0) otherwise.
+// Use cef_display_t::convert_point_to_pixels() after calling this function if
 // further conversion to display-specific pixel coordinates is desired.
 ///
 func (self *CViewT) ConvertPointToScreen(
@@ -27232,11 +27241,11 @@ func (self *CViewT) ConvertPointToScreen(
 }
 
 ///
-// Convert |point| to this View&#39;s coordinate system from that of the screen.
-// This View must belong to a Window when calling this function. Returns true
-// (1) if the conversion is successful or false (0) otherwise. Use
-// cef_display_t::convert_point_from_pixels() before calling this function if
-// conversion from display-specific pixel coordinates is necessary.
+// Convert |point| to this View&#39;s coordinate system from DIP screen
+// coordinates. This View must belong to a Window when calling this function.
+// Returns true (1) if the conversion is successful or false (0) otherwise.
+// Use cef_display_t::convert_point_from_pixels() before calling this function
+// if conversion from display-specific pixel coordinates is necessary.
 ///
 func (self *CViewT) ConvertPointFromScreen(
 	point *CPointT,
@@ -28743,7 +28752,7 @@ func WindowCreateTopLevel(
 	return ret
 }
 
-// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:150:3,
+// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:152:3,
 
 ///
 // Implement this structure to handle window events. The functions of this
@@ -28841,10 +28850,12 @@ type GetParentWindowHandler interface {
 }
 
 ///
-// Return the initial bounds for |window| in screen coordinates. If this
-// function returns an NULL CefRect then get_preferred_size() will be called
-// to retrieve the size, and the window will be placed on the default screen
-// with origin (0,0).
+// Return the initial bounds for |window| in density independent pixel (DIP)
+// coordinates. If this function returns an NULL CefRect then
+// get_preferred_size() will be called to retrieve the size, and the window
+// will be placed on the screen with origin (0,0). This function can be used
+// in combination with cef_view_t::get_bounds_in_screen() to restore the
+// previous window bounds.
 ///
 type GetInitialBoundsHandler interface {
 	GetInitialBounds(
