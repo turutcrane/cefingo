@@ -50,7 +50,17 @@ func (f TaskFunc) Execute(self *capi.CTaskT) {
 	f()
 }
 
-func NewTask(f TaskFunc) *capi.CTaskT {
-	task := capi.AllocCTaskT().Bind(f)
+func NewTask(h capi.CTaskTExecuteHandler) *capi.CTaskT {
+	task := capi.AllocCTaskT().Bind(h)
 	return task
+}
+
+func PostTask(threadId capi.CThreadIdT, h capi.CTaskTExecuteHandler) bool {
+	task := NewTask(h)
+	return capi.PostTask(threadId, task)
+}
+
+func PostDelayedTask(threadId capi.CThreadIdT, h capi.CTaskTExecuteHandler, delay_ms int64) bool {
+	task := NewTask(h)
+	return capi.PostDelayedTask(threadId, task, delay_ms)
 }

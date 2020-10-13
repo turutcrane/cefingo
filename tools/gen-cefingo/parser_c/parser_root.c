@@ -38,3 +38,18 @@ typedef struct tagMSG {
 #include "include/capi/views/cef_box_layout_capi.h"
 #include "include/capi/views/cef_scroll_view_capi.h"
 #include "include/capi/views/cef_textfield_capi.h"
+
+/*
+#include "include/capi/cef_crash_util_capi.h"
+#include "include/capi/cef_file_util_capi.h"
+#include "include/capi/cef_origin_whitelist_capi.h"
+#include "include/capi/cef_parser_capi.h"
+#include "include/capi/cef_path_util_capi.h"
+#include "include/capi/cef_process_util_capi.h"
+#include "include/capi/cef_server_capi.h"
+#include "include/capi/cef_thread_capi.h"
+#include "include/capi/cef_trace_capi.h"
+#include "include/capi/cef_waitable_event_capi.h"
+#include "include/capi/cef_xml_reader_capi.h"
+#include "include/capi/cef_zip_reader_capi.h"
+*/

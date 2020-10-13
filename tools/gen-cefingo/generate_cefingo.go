@@ -459,7 +459,7 @@ func (logTag *LogTag) ReadTags(fname string) {
 
 // WriteWriteToFile writes tag number to file
 func (logTag *LogTag) WriteToFile(fname string) {
-	b, err := json.Marshal(logTag)
+	b, err := json.MarshalIndent(logTag, "", "\t")
 	if err != nil {
 		log.Panicln("T475:", err)
 	}

@@ -2341,11 +2341,11 @@ func (self *CBrowserHostT) NotifyMoveOrResizeStarted() {
 // requested rate. The minimum value is 1 and the maximum value is 60 (default
 // 30). This function can only be called on the UI thread.
 ///
-func (self *CBrowserHostT) GetWindowlessFrameRate() (ret bool) {
+func (self *CBrowserHostT) GetWindowlessFrameRate() (ret int) {
 
 	cRet := C.cefingo_browser_host_get_windowless_frame_rate(self.p_browser_host)
 
-	ret = cRet == 1
+	ret = (int)(cRet)
 	return ret
 }
 

@@ -26,6 +26,7 @@ var targetFileList = map[string]void{
 	"cef_time.h":            setElement,
 	"cef_types.h":           setElement,
 	"cef_types_win.h":       setElement,
+	"cef_thread_internal.h": setElement,
 }
 
 var handlerClasses = map[string]void{
@@ -100,10 +101,11 @@ var unGenerateMethod = map[string]void{
 }
 
 var notBoolValueMethod = map[string]void{
-	"::cef_execute_process":         setElement,
-	"::cef_string_list_size":        setElement,
-	"cef_list_value_t::get_int":     setElement,
-	"cef_browser_t::get_identifier": setElement,
+	"::cef_execute_process":                         setElement,
+	"::cef_string_list_size":                        setElement,
+	"cef_list_value_t::get_int":                     setElement,
+	"cef_browser_t::get_identifier":                 setElement,
+	"cef_browser_host_t::get_windowless_frame_rate": setElement,
 }
 
 var duplicatedHandler = map[string]void{
@@ -467,11 +469,13 @@ var structDefNames = map[string]void{
 }
 
 var simpleDefNames = map[string]void{
-	"cef_color_t":           setElement,
-	"cef_time_t":            setElement,
-	"cef_string_list_t":     setElement,
-	"cef_string_map_t":      setElement,
-	"cef_string_multimap_t": setElement,
+	"cef_color_t":                  setElement,
+	"cef_time_t":                   setElement,
+	"cef_string_list_t":            setElement,
+	"cef_string_map_t":             setElement,
+	"cef_string_multimap_t":        setElement,
+	"cef_platform_thread_id_t":     setElement,
+	"cef_platform_thread_handle_t": setElement,
 }
 
 func isSimpleDefName(s string) (b bool) {
