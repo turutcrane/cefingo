@@ -373,7 +373,7 @@ func outCefObjectClass(gf, cf, hf *Generator, d *parser.CefClassDecl) {
 }
 
 func outGoFunction(gf *Generator, f *parser.FuncDecl) {
-	log.Printf("T350: Cef Functin : %s\n", f.Token())
+	log.Printf("T350: Cef Function : %s\n", f.Token())
 	logTags.ResetTag(f.Token().GoName())
 
 	outComment(gf, f.LineOfTypedef())

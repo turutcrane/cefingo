@@ -39,8 +39,8 @@ typedef struct tagMSG {
 #include "include/capi/views/cef_scroll_view_capi.h"
 #include "include/capi/views/cef_textfield_capi.h"
 
-/*
 #include "include/capi/cef_crash_util_capi.h"
+/*
 #include "include/capi/cef_file_util_capi.h"
 #include "include/capi/cef_origin_whitelist_capi.h"
 #include "include/capi/cef_parser_capi.h"
