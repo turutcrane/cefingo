@@ -9332,6 +9332,160 @@ func (extension_handler *CExtensionHandlerT) Handler() interface{} {
 	return extension_handler_handlers.handler[cp]
 }
 
+// cef_file_util_capi.h, include/capi/cef_file_util_capi.h:55:16,
+
+///
+// Creates a directory and all parent directories if they don't already exist.
+// Returns true (1) on successful creation or if the directory already exists.
+// The directory is only readable by the current user. Calling this function on
+// the browser process UI or IO threads is not allowed.
+///
+func CreateDirectory(
+	full_path string,
+) (ret bool) {
+	c_full_path := create_cef_string(full_path)
+
+	cRet := C.cef_create_directory(c_full_path.p_cef_string_t)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Get the temporary directory provided by the system.
+//
+// WARNING: In general, you should use the temp directory variants below instead
+// of this function. Those variants will ensure that the proper permissions are
+// set so that other users on the system can't edit them while they're open
+// (which could lead to security issues).
+///
+func GetTempDirectory(
+	temp_dir string,
+) (ret bool) {
+	c_temp_dir := create_cef_string(temp_dir)
+
+	cRet := C.cef_get_temp_directory(c_temp_dir.p_cef_string_t)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Creates a new directory. On Windows if |prefix| is provided the new directory
+// name is in the format of "prefixyyyy". Returns true (1) on success and sets
+// |new_temp_path| to the full path of the directory that was created. The
+// directory is only readable by the current user. Calling this function on the
+// browser process UI or IO threads is not allowed.
+///
+func CreateNewTempDirectory(
+	prefix string,
+	new_temp_path string,
+) (ret bool) {
+	c_prefix := create_cef_string(prefix)
+	c_new_temp_path := create_cef_string(new_temp_path)
+
+	cRet := C.cef_create_new_temp_directory(c_prefix.p_cef_string_t, c_new_temp_path.p_cef_string_t)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Creates a directory within another directory. Extra characters will be
+// appended to |prefix| to ensure that the new directory does not have the same
+// name as an existing directory. Returns true (1) on success and sets |new_dir|
+// to the full path of the directory that was created. The directory is only
+// readable by the current user. Calling this function on the browser process UI
+// or IO threads is not allowed.
+///
+func CreateTempDirectoryInDirectory(
+	base_dir string,
+	prefix string,
+	new_dir string,
+) (ret bool) {
+	c_base_dir := create_cef_string(base_dir)
+	c_prefix := create_cef_string(prefix)
+	c_new_dir := create_cef_string(new_dir)
+
+	cRet := C.cef_create_temp_directory_in_directory(c_base_dir.p_cef_string_t, c_prefix.p_cef_string_t, c_new_dir.p_cef_string_t)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Returns true (1) if the given path exists and is a directory. Calling this
+// function on the browser process UI or IO threads is not allowed.
+///
+func DirectoryExists(
+	path string,
+) (ret bool) {
+	c_path := create_cef_string(path)
+
+	cRet := C.cef_directory_exists(c_path.p_cef_string_t)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Deletes the given path whether it's a file or a directory. If |path| is a
+// directory all contents will be deleted.  If |recursive| is true (1) any sub-
+// directories and their contents will also be deleted (equivalent to executing
+// "rm -rf", so use with caution). On POSIX environments if |path| is a symbolic
+// link then only the symlink will be deleted. Returns true (1) on successful
+// deletion or if |path| does not exist. Calling this function on the browser
+// process UI or IO threads is not allowed.
+///
+func DeleteFile(
+	path string,
+	recursive int,
+) (ret bool) {
+	c_path := create_cef_string(path)
+
+	cRet := C.cef_delete_file(c_path.p_cef_string_t, (C.int)(recursive))
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Writes the contents of |src_dir| into a zip archive at |dest_file|. If
+// |include_hidden_files| is true (1) files starting with "." will be included.
+// Returns true (1) on success.  Calling this function on the browser process UI
+// or IO threads is not allowed.
+///
+func ZipDirectory(
+	src_dir string,
+	dest_file string,
+	include_hidden_files int,
+) (ret bool) {
+	c_src_dir := create_cef_string(src_dir)
+	c_dest_file := create_cef_string(dest_file)
+
+	cRet := C.cef_zip_directory(c_src_dir.p_cef_string_t, c_dest_file.p_cef_string_t, (C.int)(include_hidden_files))
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Loads the existing "Certificate Revocation Lists" file that is managed by
+// Google Chrome. This file can generally be found in Chrome's User Data
+// directory (e.g. "C:\Users\[User]\AppData\Local\Google\Chrome\User Data\" on
+// Windows) and is updated periodically by Chrome's component updater service.
+// Must be called in the browser process after the context has been initialized.
+// See https://dev.chromium.org/Home/chromium-security/crlsets for background.
+///
+func LoadCrlsetsFile(
+	path string,
+) {
+	c_path := create_cef_string(path)
+
+	C.cef_load_crlsets_file(c_path.p_cef_string_t)
+
+}
+
 // cef_fill_layout_capi.h, include/capi/views/cef_fill_layout_capi.h:59:3,
 
 ///
@@ -14309,6 +14463,92 @@ func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 	cRet := C.cefingo_navigation_entry_get_sslstatus(self.p_navigation_entry)
 
 	ret = newCSslstatusT(cRet)
+	return ret
+}
+
+// cef_origin_whitelist_capi.h, include/capi/cef_origin_whitelist_capi.h:85:16,
+
+///
+// Add an entry to the cross-origin access whitelist.
+//
+// The same-origin policy restricts how scripts hosted from different origins
+// (scheme + domain + port) can communicate. By default, scripts can only access
+// resources with the same origin. Scripts hosted on the HTTP and HTTPS schemes
+// (but no other schemes) can use the "Access-Control-Allow-Origin" header to
+// allow cross-origin requests. For example, https://source.example.com can make
+// XMLHttpRequest requests on http://target.example.com if the
+// http://target.example.com request returns an "Access-Control-Allow-Origin:
+// https://source.example.com" response header.
+//
+// Scripts in separate frames or iframes and hosted from the same protocol and
+// domain suffix can execute cross-origin JavaScript if both pages set the
+// document.domain value to the same domain suffix. For example,
+// scheme://foo.example.com and scheme://bar.example.com can communicate using
+// JavaScript if both domains set document.domain="example.com".
+//
+// This function is used to allow access to origins that would otherwise violate
+// the same-origin policy. Scripts hosted underneath the fully qualified
+// |source_origin| URL (like http://www.example.com) will be allowed access to
+// all resources hosted on the specified |target_protocol| and |target_domain|.
+// If |target_domain| is non-NULL and |allow_target_subdomains| if false (0)
+// only exact domain matches will be allowed. If |target_domain| contains a top-
+// level domain component (like "example.com") and |allow_target_subdomains| is
+// true (1) sub-domain matches will be allowed. If |target_domain| is NULL and
+// |allow_target_subdomains| if true (1) all domains and IP addresses will be
+// allowed.
+//
+// This function cannot be used to bypass the restrictions on local or display
+// isolated schemes. See the comments on CefRegisterCustomScheme for more
+// information.
+//
+// This function may be called on any thread. Returns false (0) if
+// |source_origin| is invalid or the whitelist cannot be accessed.
+///
+func AddCrossOriginWhitelistEntry(
+	source_origin string,
+	target_protocol string,
+	target_domain string,
+	allow_target_subdomains int,
+) (ret bool) {
+	c_source_origin := create_cef_string(source_origin)
+	c_target_protocol := create_cef_string(target_protocol)
+	c_target_domain := create_cef_string(target_domain)
+
+	cRet := C.cef_add_cross_origin_whitelist_entry(c_source_origin.p_cef_string_t, c_target_protocol.p_cef_string_t, c_target_domain.p_cef_string_t, (C.int)(allow_target_subdomains))
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Remove an entry from the cross-origin access whitelist. Returns false (0) if
+// |source_origin| is invalid or the whitelist cannot be accessed.
+///
+func RemoveCrossOriginWhitelistEntry(
+	source_origin string,
+	target_protocol string,
+	target_domain string,
+	allow_target_subdomains int,
+) (ret bool) {
+	c_source_origin := create_cef_string(source_origin)
+	c_target_protocol := create_cef_string(target_protocol)
+	c_target_domain := create_cef_string(target_domain)
+
+	cRet := C.cef_remove_cross_origin_whitelist_entry(c_source_origin.p_cef_string_t, c_target_protocol.p_cef_string_t, c_target_domain.p_cef_string_t, (C.int)(allow_target_subdomains))
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Remove all entries from the cross-origin access whitelist. Returns false (0)
+// if the whitelist cannot be accessed.
+///
+func ClearCrossOriginWhitelist() (ret bool) {
+
+	cRet := C.cef_clear_cross_origin_whitelist()
+
+	ret = cRet == 1
 	return ret
 }
 
@@ -22645,20 +22885,13 @@ func (self *CUrlrequestT) Cancel() {
 // Create a new URL request that is not associated with a specific browser or
 // frame. Use cef_frame_t::CreateURLRequest instead if you want the request to
 // have this association, in which case it may be handled differently (see
-// documentation on that function). Requests may originate from the both browser
-// process and the render process.
-//
-// For requests originating from the browser process:
+// documentation on that function). A request created with this function may
+// only originate from the browser process, and will behave as follows:
 //   - It may be intercepted by the client via CefResourceRequestHandler or
 //     CefSchemeHandlerFactory.
 //   - POST data may only contain only a single element of type PDE_TYPE_FILE
 //     or PDE_TYPE_BYTES.
 //   - If |request_context| is empty the global request context will be used.
-// For requests originating from the render process:
-//   - It cannot be intercepted by the client so only http(s) and blob schemes
-//     are supported.
-//   - POST data may only contain a single element of type PDE_TYPE_BYTES.
-//   - The |request_context| parameter must be NULL.
 //
 // The |request| object will be marked as read-only after calling this function.
 ///

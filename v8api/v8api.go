@@ -36,6 +36,10 @@ func NewValue(v8v *capi.CV8valueT) Value {
 	return Value{v8v: v8v}
 }
 
+func (v Value) CapiValue() *capi.CV8valueT {
+	return v.v8v
+}
+
 func NewObject() Value {
 	o := capi.V8valueCreateObject(nil, nil)
 	return NewValue(o)
@@ -262,6 +266,8 @@ func (f HandlerFunction) Execute(
 	thisObject *capi.CV8valueT,
 	arguments []*capi.CV8valueT,
 ) (sts bool, retval *capi.CV8valueT, exception string) {
+	sts = true // this function is handled
+
 	args := []Value{}
 	for _, a := range arguments {
 		args = append(args, NewValue(a))
@@ -269,7 +275,6 @@ func (f HandlerFunction) Execute(
 	v, err := f(Value{thisObject}, args)
 	if err == nil {
 		retval = v.v8v
-		sts = true
 	} else {
 		capi.Logf("L134: %s Not Handled %v", name, err)
 		exception = err.Error()
@@ -419,6 +424,13 @@ func (v Value) GetValueByindex(index int) (rv Value, err error) {
 
 func (v Value) SetValueBykey(key string, value Value) (err error) {
 	if !v.v8v.SetValueBykey(key, value.v8v, capi.V8PropertyAttributeNone) {
+		err = errors.Errorf("Set value Error key:%s", key)
+	}
+	return err
+}
+
+func (v Value) SetValueBykeyWithAttribute(key string, value Value, attribute capi.CV8PropertyattributeT) (err error) {
+	if !v.v8v.SetValueBykey(key, value.v8v, attribute) {
 		err = errors.Errorf("Set value Error key:%s", key)
 	}
 	return err
