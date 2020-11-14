@@ -1430,12 +1430,28 @@ func (decl DeclCommon) GoName() string {
 	return decl.Token().GoName()
 }
 
+func (decl DeclCommon) CgoName() string {
+	return decl.Token().CgoName()
+}
+
 func (decl DeclCommon) BaseName() string {
 	return decl.Token().BaseName()
 }
 
 func (decl DeclCommon) CefName() string {
 	return decl.Token().Name()
+}
+
+func (decl DeclCommon) GoType() string {
+	return "*" + decl.GoName()
+}
+
+func (decl DeclCommon) GoCType() string {
+	return "*C." + decl.CefName()
+}
+
+func (decl DeclCommon) CgoType() string {
+	return "*" + decl.CgoName()
 }
 
 func (decl DeclCommon) RetStr() (str string) {
@@ -1497,6 +1513,10 @@ func (p Param) GoType() (t string) {
 	pType := p.Type()
 
 	return pType.GoType()
+}
+
+func (p Param) CgoType() string {
+	return p.Type().CgoType()
 }
 
 func (p Param) CType() (t string) {
@@ -1928,6 +1948,13 @@ func (t Type) GoType() (ret string) {
 	}
 
 	return ret
+}
+
+func (t Type) CgoType() string {
+	if (t.Ty != TyStructRefCounted) {
+		log.Panicln("T1945:", t.Ty, t.Token)
+	}
+	return "*" + t.Token.CgoName()
 }
 
 func (t Type) Deref() (t0 Type) {

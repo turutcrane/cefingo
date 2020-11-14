@@ -18,7 +18,7 @@ func (self *CPostDataT) GetElements() []*CPostDataElementT {
 	slice := (*[1 << 30]*C.cef_post_data_element_t)(tmpelements)[:n:n]
 
 	np := unsafe.Pointer(&n)
-	C.cefingo_post_data_get_elements(self.p_post_data, (*C.size_t)(np), (**C.cef_post_data_element_t)(tmpelements))
+	C.cefingo_post_data_get_elements((*C.cef_post_data_t)(self.pc_post_data), (*C.size_t)(np), (**C.cef_post_data_element_t)(tmpelements))
 
 	ret := []*CPostDataElementT{}
 	for _, e := range slice {

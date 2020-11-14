@@ -18,10 +18,12 @@ import "C"
 // will be called on the UI thread.
 ///
 
+type cCAccessibilityHandlerT C.cef_accessibility_handler_t
+
 // Go type for cef_accessibility_handler_t
 type CAccessibilityHandlerT struct {
-	noCopy                  noCopy
-	p_accessibility_handler *C.cef_accessibility_handler_t
+	noCopy                   noCopy
+	pc_accessibility_handler *cCAccessibilityHandlerT
 }
 
 type RefToCAccessibilityHandlerT struct {
@@ -47,21 +49,22 @@ func newCAccessibilityHandlerT(p *C.cef_accessibility_handler_t) *CAccessibility
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T101.1:")
-	BaseAddRef(p)
-	go_accessibility_handler := CAccessibilityHandlerT{noCopy{}, p}
+	pc := (*cCAccessibilityHandlerT)(p)
+	BaseAddRef(pc)
+	go_accessibility_handler := CAccessibilityHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_accessibility_handler, func(g *CAccessibilityHandlerT) {
-		Tracef(unsafe.Pointer(g.p_accessibility_handler), "T101.2:")
-		BaseRelease(g.p_accessibility_handler)
+		Tracef(unsafe.Pointer(g.pc_accessibility_handler), "T101.2:")
+		BaseRelease(g.pc_accessibility_handler)
 	})
 	return &go_accessibility_handler
 }
 
 // *C.cef_accessibility_handler_t has refCounted interface
 func (accessibility_handler *CAccessibilityHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(accessibility_handler.p_accessibility_handler)
+	return BaseHasOneRef(accessibility_handler.pc_accessibility_handler)
 }
 
-func (p *C.cef_accessibility_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCAccessibilityHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -88,19 +91,20 @@ type OnAccessibilityLocationChangeHandler interface {
 }
 
 var accessibility_handler_handlers = struct {
-	handler                                  map[*C.cef_accessibility_handler_t]interface{}
-	on_accessibility_tree_change_handler     map[*C.cef_accessibility_handler_t]OnAccessibilityTreeChangeHandler
-	on_accessibility_location_change_handler map[*C.cef_accessibility_handler_t]OnAccessibilityLocationChangeHandler
+	handler                                  map[*cCAccessibilityHandlerT]interface{}
+	on_accessibility_tree_change_handler     map[*cCAccessibilityHandlerT]OnAccessibilityTreeChangeHandler
+	on_accessibility_location_change_handler map[*cCAccessibilityHandlerT]OnAccessibilityLocationChangeHandler
 }{
-	map[*C.cef_accessibility_handler_t]interface{}{},
-	map[*C.cef_accessibility_handler_t]OnAccessibilityTreeChangeHandler{},
-	map[*C.cef_accessibility_handler_t]OnAccessibilityLocationChangeHandler{},
+	map[*cCAccessibilityHandlerT]interface{}{},
+	map[*cCAccessibilityHandlerT]OnAccessibilityTreeChangeHandler{},
+	map[*cCAccessibilityHandlerT]OnAccessibilityLocationChangeHandler{},
 }
 
 // AllocCAccessibilityHandlerT allocates CAccessibilityHandlerT and construct it
 func AllocCAccessibilityHandlerT() *CAccessibilityHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_accessibility_handler_wrapper_t, "T101.3:")
 	cefp := C.cefingo_construct_accessibility_handler((*C.cefingo_accessibility_handler_wrapper_t)(up))
+	cgop := (*cCAccessibilityHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_accessibility_handler_t itself in DeassocFunc,
@@ -109,9 +113,9 @@ func AllocCAccessibilityHandlerT() *CAccessibilityHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(accessibility_handler_handlers.handler, cefp)
-		delete(accessibility_handler_handlers.on_accessibility_tree_change_handler, cefp)
-		delete(accessibility_handler_handlers.on_accessibility_location_change_handler, cefp)
+		delete(accessibility_handler_handlers.handler, cgop)
+		delete(accessibility_handler_handlers.on_accessibility_tree_change_handler, cgop)
+		delete(accessibility_handler_handlers.on_accessibility_location_change_handler, cgop)
 	}))
 
 	return newCAccessibilityHandlerT(cefp)
@@ -121,7 +125,7 @@ func (accessibility_handler *CAccessibilityHandlerT) Bind(a interface{}) *CAcces
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := accessibility_handler.p_accessibility_handler
+	cp := accessibility_handler.pc_accessibility_handler
 	accessibility_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnAccessibilityTreeChangeHandler); ok {
@@ -142,7 +146,7 @@ func (accessibility_handler *CAccessibilityHandlerT) Bind(a interface{}) *CAcces
 
 func (accessibility_handler *CAccessibilityHandlerT) UnbindAll() {
 
-	cp := accessibility_handler.p_accessibility_handler
+	cp := accessibility_handler.pc_accessibility_handler
 	delete(accessibility_handler_handlers.handler, cp)
 
 	delete(accessibility_handler_handlers.on_accessibility_tree_change_handler, cp)
@@ -154,7 +158,7 @@ func (accessibility_handler *CAccessibilityHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := accessibility_handler.p_accessibility_handler
+	cp := accessibility_handler.pc_accessibility_handler
 	return accessibility_handler_handlers.handler[cp]
 }
 
@@ -165,10 +169,12 @@ func (accessibility_handler *CAccessibilityHandlerT) Handler() interface{} {
 // called by the process and/or thread indicated.
 ///
 
+type cCAppT C.cef_app_t
+
 // Go type for cef_app_t
 type CAppT struct {
 	noCopy noCopy
-	p_app  *C.cef_app_t
+	pc_app *cCAppT
 }
 
 type RefToCAppT struct {
@@ -194,21 +200,22 @@ func newCAppT(p *C.cef_app_t) *CAppT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T102.1:")
-	BaseAddRef(p)
-	go_app := CAppT{noCopy{}, p}
+	pc := (*cCAppT)(p)
+	BaseAddRef(pc)
+	go_app := CAppT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_app, func(g *CAppT) {
-		Tracef(unsafe.Pointer(g.p_app), "T102.2:")
-		BaseRelease(g.p_app)
+		Tracef(unsafe.Pointer(g.pc_app), "T102.2:")
+		BaseRelease(g.pc_app)
 	})
 	return &go_app
 }
 
 // *C.cef_app_t has refCounted interface
 func (app *CAppT) HasOneRef() bool {
-	return BaseHasOneRef(app.p_app)
+	return BaseHasOneRef(app.pc_app)
 }
 
-func (p *C.cef_app_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCAppT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -277,25 +284,26 @@ type GetRenderProcessHandlerHandler interface {
 }
 
 var app_handlers = struct {
-	handler                                   map[*C.cef_app_t]interface{}
-	on_before_command_line_processing_handler map[*C.cef_app_t]OnBeforeCommandLineProcessingHandler
-	on_register_custom_schemes_handler        map[*C.cef_app_t]OnRegisterCustomSchemesHandler
-	get_resource_bundle_handler_handler       map[*C.cef_app_t]GetResourceBundleHandlerHandler
-	get_browser_process_handler_handler       map[*C.cef_app_t]GetBrowserProcessHandlerHandler
-	get_render_process_handler_handler        map[*C.cef_app_t]GetRenderProcessHandlerHandler
+	handler                                   map[*cCAppT]interface{}
+	on_before_command_line_processing_handler map[*cCAppT]OnBeforeCommandLineProcessingHandler
+	on_register_custom_schemes_handler        map[*cCAppT]OnRegisterCustomSchemesHandler
+	get_resource_bundle_handler_handler       map[*cCAppT]GetResourceBundleHandlerHandler
+	get_browser_process_handler_handler       map[*cCAppT]GetBrowserProcessHandlerHandler
+	get_render_process_handler_handler        map[*cCAppT]GetRenderProcessHandlerHandler
 }{
-	map[*C.cef_app_t]interface{}{},
-	map[*C.cef_app_t]OnBeforeCommandLineProcessingHandler{},
-	map[*C.cef_app_t]OnRegisterCustomSchemesHandler{},
-	map[*C.cef_app_t]GetResourceBundleHandlerHandler{},
-	map[*C.cef_app_t]GetBrowserProcessHandlerHandler{},
-	map[*C.cef_app_t]GetRenderProcessHandlerHandler{},
+	map[*cCAppT]interface{}{},
+	map[*cCAppT]OnBeforeCommandLineProcessingHandler{},
+	map[*cCAppT]OnRegisterCustomSchemesHandler{},
+	map[*cCAppT]GetResourceBundleHandlerHandler{},
+	map[*cCAppT]GetBrowserProcessHandlerHandler{},
+	map[*cCAppT]GetRenderProcessHandlerHandler{},
 }
 
 // AllocCAppT allocates CAppT and construct it
 func AllocCAppT() *CAppT {
 	up := c_calloc(1, C.sizeof_cefingo_app_wrapper_t, "T102.3:")
 	cefp := C.cefingo_construct_app((*C.cefingo_app_wrapper_t)(up))
+	cgop := (*cCAppT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_app_t itself in DeassocFunc,
@@ -304,12 +312,12 @@ func AllocCAppT() *CAppT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(app_handlers.handler, cefp)
-		delete(app_handlers.on_before_command_line_processing_handler, cefp)
-		delete(app_handlers.on_register_custom_schemes_handler, cefp)
-		delete(app_handlers.get_resource_bundle_handler_handler, cefp)
-		delete(app_handlers.get_browser_process_handler_handler, cefp)
-		delete(app_handlers.get_render_process_handler_handler, cefp)
+		delete(app_handlers.handler, cgop)
+		delete(app_handlers.on_before_command_line_processing_handler, cgop)
+		delete(app_handlers.on_register_custom_schemes_handler, cgop)
+		delete(app_handlers.get_resource_bundle_handler_handler, cgop)
+		delete(app_handlers.get_browser_process_handler_handler, cgop)
+		delete(app_handlers.get_render_process_handler_handler, cgop)
 	}))
 
 	return newCAppT(cefp)
@@ -319,7 +327,7 @@ func (app *CAppT) Bind(a interface{}) *CAppT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := app.p_app
+	cp := app.pc_app
 	app_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforeCommandLineProcessingHandler); ok {
@@ -352,7 +360,7 @@ func (app *CAppT) Bind(a interface{}) *CAppT {
 
 func (app *CAppT) UnbindAll() {
 
-	cp := app.p_app
+	cp := app.pc_app
 	delete(app_handlers.handler, cp)
 
 	delete(app_handlers.on_before_command_line_processing_handler, cp)
@@ -367,7 +375,7 @@ func (app *CAppT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := app.p_app
+	cp := app.pc_app
 	return app_handlers.handler[cp]
 }
 
@@ -390,8 +398,8 @@ func ExecuteProcess(
 ) (ret int) {
 	var goTmpapplication *C.cef_app_t
 	if application != nil {
-		goTmpapplication = application.p_app
-		BaseAddRef(goTmpapplication)
+		BaseAddRef(application.pc_app)
+		goTmpapplication = (*C.cef_app_t)(application.pc_app)
 	}
 
 	cRet := C.cef_execute_process((*C.cef_main_args_t)(args), goTmpapplication, windows_sandbox_info)
@@ -415,8 +423,8 @@ func Initialize(
 ) (ret bool) {
 	var goTmpapplication *C.cef_app_t
 	if application != nil {
-		goTmpapplication = application.p_app
-		BaseAddRef(goTmpapplication)
+		BaseAddRef(application.pc_app)
+		goTmpapplication = (*C.cef_app_t)(application.pc_app)
 	}
 
 	cRet := C.cef_initialize((*C.cef_main_args_t)(args), (*C.cef_settings_t)(settings), goTmpapplication, windows_sandbox_info)
@@ -514,10 +522,12 @@ func EnableHighdpiSupport() {
 // Implement this structure to handle audio events.
 ///
 
+type cCAudioHandlerT C.cef_audio_handler_t
+
 // Go type for cef_audio_handler_t
 type CAudioHandlerT struct {
-	noCopy          noCopy
-	p_audio_handler *C.cef_audio_handler_t
+	noCopy           noCopy
+	pc_audio_handler *cCAudioHandlerT
 }
 
 type RefToCAudioHandlerT struct {
@@ -543,21 +553,22 @@ func newCAudioHandlerT(p *C.cef_audio_handler_t) *CAudioHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T103.1:")
-	BaseAddRef(p)
-	go_audio_handler := CAudioHandlerT{noCopy{}, p}
+	pc := (*cCAudioHandlerT)(p)
+	BaseAddRef(pc)
+	go_audio_handler := CAudioHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_audio_handler, func(g *CAudioHandlerT) {
-		Tracef(unsafe.Pointer(g.p_audio_handler), "T103.2:")
-		BaseRelease(g.p_audio_handler)
+		Tracef(unsafe.Pointer(g.pc_audio_handler), "T103.2:")
+		BaseRelease(g.pc_audio_handler)
 	})
 	return &go_audio_handler
 }
 
 // *C.cef_audio_handler_t has refCounted interface
 func (audio_handler *CAudioHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(audio_handler.p_audio_handler)
+	return BaseHasOneRef(audio_handler.pc_audio_handler)
 }
 
-func (p *C.cef_audio_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCAudioHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -618,23 +629,24 @@ type OnAudioStreamErrorHandler interface {
 }
 
 var audio_handler_handlers = struct {
-	handler                         map[*C.cef_audio_handler_t]interface{}
-	get_audio_parameters_handler    map[*C.cef_audio_handler_t]GetAudioParametersHandler
-	on_audio_stream_started_handler map[*C.cef_audio_handler_t]OnAudioStreamStartedHandler
-	on_audio_stream_stopped_handler map[*C.cef_audio_handler_t]OnAudioStreamStoppedHandler
-	on_audio_stream_error_handler   map[*C.cef_audio_handler_t]OnAudioStreamErrorHandler
+	handler                         map[*cCAudioHandlerT]interface{}
+	get_audio_parameters_handler    map[*cCAudioHandlerT]GetAudioParametersHandler
+	on_audio_stream_started_handler map[*cCAudioHandlerT]OnAudioStreamStartedHandler
+	on_audio_stream_stopped_handler map[*cCAudioHandlerT]OnAudioStreamStoppedHandler
+	on_audio_stream_error_handler   map[*cCAudioHandlerT]OnAudioStreamErrorHandler
 }{
-	map[*C.cef_audio_handler_t]interface{}{},
-	map[*C.cef_audio_handler_t]GetAudioParametersHandler{},
-	map[*C.cef_audio_handler_t]OnAudioStreamStartedHandler{},
-	map[*C.cef_audio_handler_t]OnAudioStreamStoppedHandler{},
-	map[*C.cef_audio_handler_t]OnAudioStreamErrorHandler{},
+	map[*cCAudioHandlerT]interface{}{},
+	map[*cCAudioHandlerT]GetAudioParametersHandler{},
+	map[*cCAudioHandlerT]OnAudioStreamStartedHandler{},
+	map[*cCAudioHandlerT]OnAudioStreamStoppedHandler{},
+	map[*cCAudioHandlerT]OnAudioStreamErrorHandler{},
 }
 
 // AllocCAudioHandlerT allocates CAudioHandlerT and construct it
 func AllocCAudioHandlerT() *CAudioHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_audio_handler_wrapper_t, "T103.3:")
 	cefp := C.cefingo_construct_audio_handler((*C.cefingo_audio_handler_wrapper_t)(up))
+	cgop := (*cCAudioHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_audio_handler_t itself in DeassocFunc,
@@ -643,11 +655,11 @@ func AllocCAudioHandlerT() *CAudioHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(audio_handler_handlers.handler, cefp)
-		delete(audio_handler_handlers.get_audio_parameters_handler, cefp)
-		delete(audio_handler_handlers.on_audio_stream_started_handler, cefp)
-		delete(audio_handler_handlers.on_audio_stream_stopped_handler, cefp)
-		delete(audio_handler_handlers.on_audio_stream_error_handler, cefp)
+		delete(audio_handler_handlers.handler, cgop)
+		delete(audio_handler_handlers.get_audio_parameters_handler, cgop)
+		delete(audio_handler_handlers.on_audio_stream_started_handler, cgop)
+		delete(audio_handler_handlers.on_audio_stream_stopped_handler, cgop)
+		delete(audio_handler_handlers.on_audio_stream_error_handler, cgop)
 	}))
 
 	return newCAudioHandlerT(cefp)
@@ -657,7 +669,7 @@ func (audio_handler *CAudioHandlerT) Bind(a interface{}) *CAudioHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := audio_handler.p_audio_handler
+	cp := audio_handler.pc_audio_handler
 	audio_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(GetAudioParametersHandler); ok {
@@ -686,7 +698,7 @@ func (audio_handler *CAudioHandlerT) Bind(a interface{}) *CAudioHandlerT {
 
 func (audio_handler *CAudioHandlerT) UnbindAll() {
 
-	cp := audio_handler.p_audio_handler
+	cp := audio_handler.pc_audio_handler
 	delete(audio_handler_handlers.handler, cp)
 
 	delete(audio_handler_handlers.get_audio_parameters_handler, cp)
@@ -700,7 +712,7 @@ func (audio_handler *CAudioHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := audio_handler.p_audio_handler
+	cp := audio_handler.pc_audio_handler
 	return audio_handler_handlers.handler[cp]
 }
 
@@ -711,10 +723,12 @@ func (audio_handler *CAudioHandlerT) Handler() interface{} {
 // requests.
 ///
 
+type cCAuthCallbackT C.cef_auth_callback_t
+
 // Go type for cef_auth_callback_t
 type CAuthCallbackT struct {
-	noCopy          noCopy
-	p_auth_callback *C.cef_auth_callback_t
+	noCopy           noCopy
+	pc_auth_callback *cCAuthCallbackT
 }
 
 type RefToCAuthCallbackT struct {
@@ -740,21 +754,22 @@ func newCAuthCallbackT(p *C.cef_auth_callback_t) *CAuthCallbackT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T104.1:")
-	BaseAddRef(p)
-	go_auth_callback := CAuthCallbackT{noCopy{}, p}
+	pc := (*cCAuthCallbackT)(p)
+	BaseAddRef(pc)
+	go_auth_callback := CAuthCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_auth_callback, func(g *CAuthCallbackT) {
-		Tracef(unsafe.Pointer(g.p_auth_callback), "T104.2:")
-		BaseRelease(g.p_auth_callback)
+		Tracef(unsafe.Pointer(g.pc_auth_callback), "T104.2:")
+		BaseRelease(g.pc_auth_callback)
 	})
 	return &go_auth_callback
 }
 
 // *C.cef_auth_callback_t has refCounted interface
 func (auth_callback *CAuthCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(auth_callback.p_auth_callback)
+	return BaseHasOneRef(auth_callback.pc_auth_callback)
 }
 
-func (p *C.cef_auth_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCAuthCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -768,7 +783,7 @@ func (self *CAuthCallbackT) Cont(
 	c_username := create_cef_string(username)
 	c_password := create_cef_string(password)
 
-	C.cefingo_auth_callback_cont(self.p_auth_callback, c_username.p_cef_string_t, c_password.p_cef_string_t)
+	C.cefingo_auth_callback_cont((*C.cef_auth_callback_t)(self.pc_auth_callback), c_username.p_cef_string_t, c_password.p_cef_string_t)
 
 }
 
@@ -777,7 +792,7 @@ func (self *CAuthCallbackT) Cont(
 ///
 func (self *CAuthCallbackT) Cancel() {
 
-	C.cefingo_auth_callback_cancel(self.p_auth_callback)
+	C.cefingo_auth_callback_cancel((*C.cef_auth_callback_t)(self.pc_auth_callback))
 
 }
 
@@ -792,10 +807,12 @@ func (self *CAuthCallbackT) Cancel() {
 // thread unless otherwise indicated.
 ///
 
+type cCBoxLayoutT C.cef_box_layout_t
+
 // Go type for cef_box_layout_t
 type CBoxLayoutT struct {
-	noCopy       noCopy
-	p_box_layout *C.cef_box_layout_t
+	noCopy        noCopy
+	pc_box_layout *cCBoxLayoutT
 }
 
 type RefToCBoxLayoutT struct {
@@ -821,26 +838,28 @@ func newCBoxLayoutT(p *C.cef_box_layout_t) *CBoxLayoutT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T105.1:")
-	BaseAddRef(p)
-	go_box_layout := CBoxLayoutT{noCopy{}, p}
+	pc := (*cCBoxLayoutT)(p)
+	BaseAddRef(pc)
+	go_box_layout := CBoxLayoutT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_box_layout, func(g *CBoxLayoutT) {
-		Tracef(unsafe.Pointer(g.p_box_layout), "T105.2:")
-		BaseRelease(g.p_box_layout)
+		Tracef(unsafe.Pointer(g.pc_box_layout), "T105.2:")
+		BaseRelease(g.pc_box_layout)
 	})
 	return &go_box_layout
 }
 
 // *C.cef_box_layout_t has refCounted interface
 func (box_layout *CBoxLayoutT) HasOneRef() bool {
-	return BaseHasOneRef(box_layout.p_box_layout)
+	return BaseHasOneRef(box_layout.pc_box_layout)
 }
 
-func (p *C.cef_box_layout_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCBoxLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CLayoutT
 func (box_layout *CBoxLayoutT) ToCLayoutT() *CLayoutT {
-	p := (*C.cef_layout_t)(unsafe.Pointer(box_layout.p_box_layout))
+	p := (*C.cef_layout_t)(unsafe.Pointer(box_layout.pc_box_layout))
 	return newCLayoutT(p)
 }
 
@@ -857,11 +876,11 @@ func (self *CBoxLayoutT) SetFlexForView(
 ) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	C.cefingo_box_layout_set_flex_for_view(self.p_box_layout, goTmpview, (C.int)(flex))
+	C.cefingo_box_layout_set_flex_for_view((*C.cef_box_layout_t)(self.pc_box_layout), goTmpview, (C.int)(flex))
 
 }
 
@@ -874,11 +893,11 @@ func (self *CBoxLayoutT) ClearFlexForView(
 ) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	C.cefingo_box_layout_clear_flex_for_view(self.p_box_layout, goTmpview)
+	C.cefingo_box_layout_clear_flex_for_view((*C.cef_box_layout_t)(self.pc_box_layout), goTmpview)
 
 }
 
@@ -891,10 +910,12 @@ func (self *CBoxLayoutT) ClearFlexForView(
 // functions of this structure may only be called on the main thread.
 ///
 
+type cCBrowserT C.cef_browser_t
+
 // Go type for cef_browser_t
 type CBrowserT struct {
-	noCopy    noCopy
-	p_browser *C.cef_browser_t
+	noCopy     noCopy
+	pc_browser *cCBrowserT
 }
 
 type RefToCBrowserT struct {
@@ -920,21 +941,22 @@ func newCBrowserT(p *C.cef_browser_t) *CBrowserT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T106.1:")
-	BaseAddRef(p)
-	go_browser := CBrowserT{noCopy{}, p}
+	pc := (*cCBrowserT)(p)
+	BaseAddRef(pc)
+	go_browser := CBrowserT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_browser, func(g *CBrowserT) {
-		Tracef(unsafe.Pointer(g.p_browser), "T106.2:")
-		BaseRelease(g.p_browser)
+		Tracef(unsafe.Pointer(g.pc_browser), "T106.2:")
+		BaseRelease(g.pc_browser)
 	})
 	return &go_browser
 }
 
 // *C.cef_browser_t has refCounted interface
 func (browser *CBrowserT) HasOneRef() bool {
-	return BaseHasOneRef(browser.p_browser)
+	return BaseHasOneRef(browser.pc_browser)
 }
 
-func (p *C.cef_browser_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCBrowserT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -944,7 +966,7 @@ func (p *C.cef_browser_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 ///
 func (self *CBrowserT) GetHost() (ret *CBrowserHostT) {
 
-	cRet := C.cefingo_browser_get_host(self.p_browser)
+	cRet := C.cefingo_browser_get_host((*C.cef_browser_t)(self.pc_browser))
 
 	ret = newCBrowserHostT(cRet)
 	return ret
@@ -955,7 +977,7 @@ func (self *CBrowserT) GetHost() (ret *CBrowserHostT) {
 ///
 func (self *CBrowserT) CanGoBack() (ret bool) {
 
-	cRet := C.cefingo_browser_can_go_back(self.p_browser)
+	cRet := C.cefingo_browser_can_go_back((*C.cef_browser_t)(self.pc_browser))
 
 	ret = cRet == 1
 	return ret
@@ -966,7 +988,7 @@ func (self *CBrowserT) CanGoBack() (ret bool) {
 ///
 func (self *CBrowserT) GoBack() {
 
-	C.cefingo_browser_go_back(self.p_browser)
+	C.cefingo_browser_go_back((*C.cef_browser_t)(self.pc_browser))
 
 }
 
@@ -975,7 +997,7 @@ func (self *CBrowserT) GoBack() {
 ///
 func (self *CBrowserT) CanGoForward() (ret bool) {
 
-	cRet := C.cefingo_browser_can_go_forward(self.p_browser)
+	cRet := C.cefingo_browser_can_go_forward((*C.cef_browser_t)(self.pc_browser))
 
 	ret = cRet == 1
 	return ret
@@ -986,7 +1008,7 @@ func (self *CBrowserT) CanGoForward() (ret bool) {
 ///
 func (self *CBrowserT) GoForward() {
 
-	C.cefingo_browser_go_forward(self.p_browser)
+	C.cefingo_browser_go_forward((*C.cef_browser_t)(self.pc_browser))
 
 }
 
@@ -995,7 +1017,7 @@ func (self *CBrowserT) GoForward() {
 ///
 func (self *CBrowserT) IsLoading() (ret bool) {
 
-	cRet := C.cefingo_browser_is_loading(self.p_browser)
+	cRet := C.cefingo_browser_is_loading((*C.cef_browser_t)(self.pc_browser))
 
 	ret = cRet == 1
 	return ret
@@ -1006,7 +1028,7 @@ func (self *CBrowserT) IsLoading() (ret bool) {
 ///
 func (self *CBrowserT) Reload() {
 
-	C.cefingo_browser_reload(self.p_browser)
+	C.cefingo_browser_reload((*C.cef_browser_t)(self.pc_browser))
 
 }
 
@@ -1015,7 +1037,7 @@ func (self *CBrowserT) Reload() {
 ///
 func (self *CBrowserT) ReloadIgnoreCache() {
 
-	C.cefingo_browser_reload_ignore_cache(self.p_browser)
+	C.cefingo_browser_reload_ignore_cache((*C.cef_browser_t)(self.pc_browser))
 
 }
 
@@ -1024,7 +1046,7 @@ func (self *CBrowserT) ReloadIgnoreCache() {
 ///
 func (self *CBrowserT) StopLoad() {
 
-	C.cefingo_browser_stop_load(self.p_browser)
+	C.cefingo_browser_stop_load((*C.cef_browser_t)(self.pc_browser))
 
 }
 
@@ -1034,7 +1056,7 @@ func (self *CBrowserT) StopLoad() {
 ///
 func (self *CBrowserT) GetIdentifier() (ret int) {
 
-	cRet := C.cefingo_browser_get_identifier(self.p_browser)
+	cRet := C.cefingo_browser_get_identifier((*C.cef_browser_t)(self.pc_browser))
 
 	ret = (int)(cRet)
 	return ret
@@ -1049,11 +1071,11 @@ func (self *CBrowserT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_browser_t
 	if that != nil {
-		goTmpthat = that.p_browser
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_browser)
+		goTmpthat = (*C.cef_browser_t)(that.pc_browser)
 	}
 
-	cRet := C.cefingo_browser_is_same(self.p_browser, goTmpthat)
+	cRet := C.cefingo_browser_is_same((*C.cef_browser_t)(self.pc_browser), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -1064,7 +1086,7 @@ func (self *CBrowserT) IsSame(
 ///
 func (self *CBrowserT) IsPopup() (ret bool) {
 
-	cRet := C.cefingo_browser_is_popup(self.p_browser)
+	cRet := C.cefingo_browser_is_popup((*C.cef_browser_t)(self.pc_browser))
 
 	ret = cRet == 1
 	return ret
@@ -1075,7 +1097,7 @@ func (self *CBrowserT) IsPopup() (ret bool) {
 ///
 func (self *CBrowserT) HasDocument() (ret bool) {
 
-	cRet := C.cefingo_browser_has_document(self.p_browser)
+	cRet := C.cefingo_browser_has_document((*C.cef_browser_t)(self.pc_browser))
 
 	ret = cRet == 1
 	return ret
@@ -1086,7 +1108,7 @@ func (self *CBrowserT) HasDocument() (ret bool) {
 ///
 func (self *CBrowserT) GetMainFrame() (ret *CFrameT) {
 
-	cRet := C.cefingo_browser_get_main_frame(self.p_browser)
+	cRet := C.cefingo_browser_get_main_frame((*C.cef_browser_t)(self.pc_browser))
 
 	ret = newCFrameT(cRet)
 	return ret
@@ -1097,7 +1119,7 @@ func (self *CBrowserT) GetMainFrame() (ret *CFrameT) {
 ///
 func (self *CBrowserT) GetFocusedFrame() (ret *CFrameT) {
 
-	cRet := C.cefingo_browser_get_focused_frame(self.p_browser)
+	cRet := C.cefingo_browser_get_focused_frame((*C.cef_browser_t)(self.pc_browser))
 
 	ret = newCFrameT(cRet)
 	return ret
@@ -1110,7 +1132,7 @@ func (self *CBrowserT) GetFrameByident(
 	identifier int64,
 ) (ret *CFrameT) {
 
-	cRet := C.cefingo_browser_get_frame_byident(self.p_browser, (C.int64)(identifier))
+	cRet := C.cefingo_browser_get_frame_byident((*C.cef_browser_t)(self.pc_browser), (C.int64)(identifier))
 
 	ret = newCFrameT(cRet)
 	return ret
@@ -1124,7 +1146,7 @@ func (self *CBrowserT) GetFrame(
 ) (ret *CFrameT) {
 	c_name := create_cef_string(name)
 
-	cRet := C.cefingo_browser_get_frame(self.p_browser, c_name.p_cef_string_t)
+	cRet := C.cefingo_browser_get_frame((*C.cef_browser_t)(self.pc_browser), c_name.p_cef_string_t)
 
 	ret = newCFrameT(cRet)
 	return ret
@@ -1135,7 +1157,7 @@ func (self *CBrowserT) GetFrame(
 ///
 func (self *CBrowserT) GetFrameCount() (ret int64) {
 
-	cRet := C.cefingo_browser_get_frame_count(self.p_browser)
+	cRet := C.cefingo_browser_get_frame_count((*C.cef_browser_t)(self.pc_browser))
 
 	ret = (int64)(cRet)
 	return ret
@@ -1148,7 +1170,7 @@ func (self *CBrowserT) GetFrameNames(
 	names CStringListT,
 ) {
 
-	C.cefingo_browser_get_frame_names(self.p_browser, (C.cef_string_list_t)(names))
+	C.cefingo_browser_get_frame_names((*C.cef_browser_t)(self.pc_browser), (C.cef_string_list_t)(names))
 
 }
 
@@ -1157,10 +1179,12 @@ func (self *CBrowserT) GetFrameNames(
 // this structure will be called on the browser process UI thread.
 ///
 
+type cCRunFileDialogCallbackT C.cef_run_file_dialog_callback_t
+
 // Go type for cef_run_file_dialog_callback_t
 type CRunFileDialogCallbackT struct {
-	noCopy                     noCopy
-	p_run_file_dialog_callback *C.cef_run_file_dialog_callback_t
+	noCopy                      noCopy
+	pc_run_file_dialog_callback *cCRunFileDialogCallbackT
 }
 
 type RefToCRunFileDialogCallbackT struct {
@@ -1186,21 +1210,22 @@ func newCRunFileDialogCallbackT(p *C.cef_run_file_dialog_callback_t) *CRunFileDi
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T107.1:")
-	BaseAddRef(p)
-	go_run_file_dialog_callback := CRunFileDialogCallbackT{noCopy{}, p}
+	pc := (*cCRunFileDialogCallbackT)(p)
+	BaseAddRef(pc)
+	go_run_file_dialog_callback := CRunFileDialogCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_run_file_dialog_callback, func(g *CRunFileDialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_run_file_dialog_callback), "T107.2:")
-		BaseRelease(g.p_run_file_dialog_callback)
+		Tracef(unsafe.Pointer(g.pc_run_file_dialog_callback), "T107.2:")
+		BaseRelease(g.pc_run_file_dialog_callback)
 	})
 	return &go_run_file_dialog_callback
 }
 
 // *C.cef_run_file_dialog_callback_t has refCounted interface
 func (run_file_dialog_callback *CRunFileDialogCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(run_file_dialog_callback.p_run_file_dialog_callback)
+	return BaseHasOneRef(run_file_dialog_callback.pc_run_file_dialog_callback)
 }
 
-func (p *C.cef_run_file_dialog_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRunFileDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -1220,17 +1245,18 @@ type OnFileDialogDismissedHandler interface {
 }
 
 var run_file_dialog_callback_handlers = struct {
-	handler                          map[*C.cef_run_file_dialog_callback_t]interface{}
-	on_file_dialog_dismissed_handler map[*C.cef_run_file_dialog_callback_t]OnFileDialogDismissedHandler
+	handler                          map[*cCRunFileDialogCallbackT]interface{}
+	on_file_dialog_dismissed_handler map[*cCRunFileDialogCallbackT]OnFileDialogDismissedHandler
 }{
-	map[*C.cef_run_file_dialog_callback_t]interface{}{},
-	map[*C.cef_run_file_dialog_callback_t]OnFileDialogDismissedHandler{},
+	map[*cCRunFileDialogCallbackT]interface{}{},
+	map[*cCRunFileDialogCallbackT]OnFileDialogDismissedHandler{},
 }
 
 // AllocCRunFileDialogCallbackT allocates CRunFileDialogCallbackT and construct it
 func AllocCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
 	up := c_calloc(1, C.sizeof_cefingo_run_file_dialog_callback_wrapper_t, "T107.3:")
 	cefp := C.cefingo_construct_run_file_dialog_callback((*C.cefingo_run_file_dialog_callback_wrapper_t)(up))
+	cgop := (*cCRunFileDialogCallbackT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_run_file_dialog_callback_t itself in DeassocFunc,
@@ -1239,8 +1265,8 @@ func AllocCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(run_file_dialog_callback_handlers.handler, cefp)
-		delete(run_file_dialog_callback_handlers.on_file_dialog_dismissed_handler, cefp)
+		delete(run_file_dialog_callback_handlers.handler, cgop)
+		delete(run_file_dialog_callback_handlers.on_file_dialog_dismissed_handler, cgop)
 	}))
 
 	return newCRunFileDialogCallbackT(cefp)
@@ -1250,7 +1276,7 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CR
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := run_file_dialog_callback.p_run_file_dialog_callback
+	cp := run_file_dialog_callback.pc_run_file_dialog_callback
 	run_file_dialog_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(OnFileDialogDismissedHandler); ok {
@@ -1267,7 +1293,7 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CR
 
 func (run_file_dialog_callback *CRunFileDialogCallbackT) UnbindAll() {
 
-	cp := run_file_dialog_callback.p_run_file_dialog_callback
+	cp := run_file_dialog_callback.pc_run_file_dialog_callback
 	delete(run_file_dialog_callback_handlers.handler, cp)
 
 	delete(run_file_dialog_callback_handlers.on_file_dialog_dismissed_handler, cp)
@@ -1278,7 +1304,7 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := run_file_dialog_callback.p_run_file_dialog_callback
+	cp := run_file_dialog_callback.pc_run_file_dialog_callback
 	return run_file_dialog_callback_handlers.handler[cp]
 }
 
@@ -1287,10 +1313,12 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Handler() interface{} {
 // functions of this structure will be called on the browser process UI thread.
 ///
 
+type cCNavigationEntryVisitorT C.cef_navigation_entry_visitor_t
+
 // Go type for cef_navigation_entry_visitor_t
 type CNavigationEntryVisitorT struct {
-	noCopy                     noCopy
-	p_navigation_entry_visitor *C.cef_navigation_entry_visitor_t
+	noCopy                      noCopy
+	pc_navigation_entry_visitor *cCNavigationEntryVisitorT
 }
 
 type RefToCNavigationEntryVisitorT struct {
@@ -1316,21 +1344,22 @@ func newCNavigationEntryVisitorT(p *C.cef_navigation_entry_visitor_t) *CNavigati
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T108.1:")
-	BaseAddRef(p)
-	go_navigation_entry_visitor := CNavigationEntryVisitorT{noCopy{}, p}
+	pc := (*cCNavigationEntryVisitorT)(p)
+	BaseAddRef(pc)
+	go_navigation_entry_visitor := CNavigationEntryVisitorT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_navigation_entry_visitor, func(g *CNavigationEntryVisitorT) {
-		Tracef(unsafe.Pointer(g.p_navigation_entry_visitor), "T108.2:")
-		BaseRelease(g.p_navigation_entry_visitor)
+		Tracef(unsafe.Pointer(g.pc_navigation_entry_visitor), "T108.2:")
+		BaseRelease(g.pc_navigation_entry_visitor)
 	})
 	return &go_navigation_entry_visitor
 }
 
 // *C.cef_navigation_entry_visitor_t has refCounted interface
 func (navigation_entry_visitor *CNavigationEntryVisitorT) HasOneRef() bool {
-	return BaseHasOneRef(navigation_entry_visitor.p_navigation_entry_visitor)
+	return BaseHasOneRef(navigation_entry_visitor.pc_navigation_entry_visitor)
 }
 
-func (p *C.cef_navigation_entry_visitor_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCNavigationEntryVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -1352,17 +1381,18 @@ type CNavigationEntryVisitorTVisitHandler interface {
 }
 
 var navigation_entry_visitor_handlers = struct {
-	handler       map[*C.cef_navigation_entry_visitor_t]interface{}
-	visit_handler map[*C.cef_navigation_entry_visitor_t]CNavigationEntryVisitorTVisitHandler
+	handler       map[*cCNavigationEntryVisitorT]interface{}
+	visit_handler map[*cCNavigationEntryVisitorT]CNavigationEntryVisitorTVisitHandler
 }{
-	map[*C.cef_navigation_entry_visitor_t]interface{}{},
-	map[*C.cef_navigation_entry_visitor_t]CNavigationEntryVisitorTVisitHandler{},
+	map[*cCNavigationEntryVisitorT]interface{}{},
+	map[*cCNavigationEntryVisitorT]CNavigationEntryVisitorTVisitHandler{},
 }
 
 // AllocCNavigationEntryVisitorT allocates CNavigationEntryVisitorT and construct it
 func AllocCNavigationEntryVisitorT() *CNavigationEntryVisitorT {
 	up := c_calloc(1, C.sizeof_cefingo_navigation_entry_visitor_wrapper_t, "T108.3:")
 	cefp := C.cefingo_construct_navigation_entry_visitor((*C.cefingo_navigation_entry_visitor_wrapper_t)(up))
+	cgop := (*cCNavigationEntryVisitorT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_navigation_entry_visitor_t itself in DeassocFunc,
@@ -1371,8 +1401,8 @@ func AllocCNavigationEntryVisitorT() *CNavigationEntryVisitorT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(navigation_entry_visitor_handlers.handler, cefp)
-		delete(navigation_entry_visitor_handlers.visit_handler, cefp)
+		delete(navigation_entry_visitor_handlers.handler, cgop)
+		delete(navigation_entry_visitor_handlers.visit_handler, cgop)
 	}))
 
 	return newCNavigationEntryVisitorT(cefp)
@@ -1382,7 +1412,7 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *C
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := navigation_entry_visitor.p_navigation_entry_visitor
+	cp := navigation_entry_visitor.pc_navigation_entry_visitor
 	navigation_entry_visitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CNavigationEntryVisitorTVisitHandler); ok {
@@ -1399,7 +1429,7 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *C
 
 func (navigation_entry_visitor *CNavigationEntryVisitorT) UnbindAll() {
 
-	cp := navigation_entry_visitor.p_navigation_entry_visitor
+	cp := navigation_entry_visitor.pc_navigation_entry_visitor
 	delete(navigation_entry_visitor_handlers.handler, cp)
 
 	delete(navigation_entry_visitor_handlers.visit_handler, cp)
@@ -1410,7 +1440,7 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Handler() interface{} 
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := navigation_entry_visitor.p_navigation_entry_visitor
+	cp := navigation_entry_visitor.pc_navigation_entry_visitor
 	return navigation_entry_visitor_handlers.handler[cp]
 }
 
@@ -1419,10 +1449,12 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Handler() interface{} 
 // structure will be called on the browser process UI thread.
 ///
 
+type cCPdfPrintCallbackT C.cef_pdf_print_callback_t
+
 // Go type for cef_pdf_print_callback_t
 type CPdfPrintCallbackT struct {
-	noCopy               noCopy
-	p_pdf_print_callback *C.cef_pdf_print_callback_t
+	noCopy                noCopy
+	pc_pdf_print_callback *cCPdfPrintCallbackT
 }
 
 type RefToCPdfPrintCallbackT struct {
@@ -1448,21 +1480,22 @@ func newCPdfPrintCallbackT(p *C.cef_pdf_print_callback_t) *CPdfPrintCallbackT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T109.1:")
-	BaseAddRef(p)
-	go_pdf_print_callback := CPdfPrintCallbackT{noCopy{}, p}
+	pc := (*cCPdfPrintCallbackT)(p)
+	BaseAddRef(pc)
+	go_pdf_print_callback := CPdfPrintCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_pdf_print_callback, func(g *CPdfPrintCallbackT) {
-		Tracef(unsafe.Pointer(g.p_pdf_print_callback), "T109.2:")
-		BaseRelease(g.p_pdf_print_callback)
+		Tracef(unsafe.Pointer(g.pc_pdf_print_callback), "T109.2:")
+		BaseRelease(g.pc_pdf_print_callback)
 	})
 	return &go_pdf_print_callback
 }
 
 // *C.cef_pdf_print_callback_t has refCounted interface
 func (pdf_print_callback *CPdfPrintCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(pdf_print_callback.p_pdf_print_callback)
+	return BaseHasOneRef(pdf_print_callback.pc_pdf_print_callback)
 }
 
-func (p *C.cef_pdf_print_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPdfPrintCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -1481,7 +1514,7 @@ func (self *CPdfPrintCallbackT) OnPdfPrintFinished(
 		tmpok = 1
 	}
 
-	C.cefingo_pdf_print_callback_on_pdf_print_finished(self.p_pdf_print_callback, c_path.p_cef_string_t, C.int(tmpok))
+	C.cefingo_pdf_print_callback_on_pdf_print_finished((*C.cef_pdf_print_callback_t)(self.pc_pdf_print_callback), c_path.p_cef_string_t, C.int(tmpok))
 
 }
 
@@ -1490,10 +1523,12 @@ func (self *CPdfPrintCallbackT) OnPdfPrintFinished(
 // this structure will be called on the browser process UI thread.
 ///
 
+type cCDownloadImageCallbackT C.cef_download_image_callback_t
+
 // Go type for cef_download_image_callback_t
 type CDownloadImageCallbackT struct {
-	noCopy                    noCopy
-	p_download_image_callback *C.cef_download_image_callback_t
+	noCopy                     noCopy
+	pc_download_image_callback *cCDownloadImageCallbackT
 }
 
 type RefToCDownloadImageCallbackT struct {
@@ -1519,21 +1554,22 @@ func newCDownloadImageCallbackT(p *C.cef_download_image_callback_t) *CDownloadIm
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T110.1:")
-	BaseAddRef(p)
-	go_download_image_callback := CDownloadImageCallbackT{noCopy{}, p}
+	pc := (*cCDownloadImageCallbackT)(p)
+	BaseAddRef(pc)
+	go_download_image_callback := CDownloadImageCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_download_image_callback, func(g *CDownloadImageCallbackT) {
-		Tracef(unsafe.Pointer(g.p_download_image_callback), "T110.2:")
-		BaseRelease(g.p_download_image_callback)
+		Tracef(unsafe.Pointer(g.pc_download_image_callback), "T110.2:")
+		BaseRelease(g.pc_download_image_callback)
 	})
 	return &go_download_image_callback
 }
 
 // *C.cef_download_image_callback_t has refCounted interface
 func (download_image_callback *CDownloadImageCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(download_image_callback.p_download_image_callback)
+	return BaseHasOneRef(download_image_callback.pc_download_image_callback)
 }
 
-func (p *C.cef_download_image_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDownloadImageCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -1551,11 +1587,11 @@ func (self *CDownloadImageCallbackT) OnDownloadImageFinished(
 	c_image_url := create_cef_string(image_url)
 	var goTmpimage *C.cef_image_t
 	if image != nil {
-		goTmpimage = image.p_image
-		BaseAddRef(goTmpimage)
+		BaseAddRef(image.pc_image)
+		goTmpimage = (*C.cef_image_t)(image.pc_image)
 	}
 
-	C.cefingo_download_image_callback_on_download_image_finished(self.p_download_image_callback, c_image_url.p_cef_string_t, (C.int)(http_status_code), goTmpimage)
+	C.cefingo_download_image_callback_on_download_image_finished((*C.cef_download_image_callback_t)(self.pc_download_image_callback), c_image_url.p_cef_string_t, (C.int)(http_status_code), goTmpimage)
 
 }
 
@@ -1566,10 +1602,12 @@ func (self *CDownloadImageCallbackT) OnDownloadImageFinished(
 // in the comments.
 ///
 
+type cCBrowserHostT C.cef_browser_host_t
+
 // Go type for cef_browser_host_t
 type CBrowserHostT struct {
-	noCopy         noCopy
-	p_browser_host *C.cef_browser_host_t
+	noCopy          noCopy
+	pc_browser_host *cCBrowserHostT
 }
 
 type RefToCBrowserHostT struct {
@@ -1595,21 +1633,22 @@ func newCBrowserHostT(p *C.cef_browser_host_t) *CBrowserHostT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T111.1:")
-	BaseAddRef(p)
-	go_browser_host := CBrowserHostT{noCopy{}, p}
+	pc := (*cCBrowserHostT)(p)
+	BaseAddRef(pc)
+	go_browser_host := CBrowserHostT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_browser_host, func(g *CBrowserHostT) {
-		Tracef(unsafe.Pointer(g.p_browser_host), "T111.2:")
-		BaseRelease(g.p_browser_host)
+		Tracef(unsafe.Pointer(g.pc_browser_host), "T111.2:")
+		BaseRelease(g.pc_browser_host)
 	})
 	return &go_browser_host
 }
 
 // *C.cef_browser_host_t has refCounted interface
 func (browser_host *CBrowserHostT) HasOneRef() bool {
-	return BaseHasOneRef(browser_host.p_browser_host)
+	return BaseHasOneRef(browser_host.pc_browser_host)
 }
 
-func (p *C.cef_browser_host_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCBrowserHostT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -1618,7 +1657,7 @@ func (p *C.cef_browser_host_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 ///
 func (self *CBrowserHostT) GetBrowser() (ret *CBrowserT) {
 
-	cRet := C.cefingo_browser_host_get_browser(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_browser((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = newCBrowserT(cRet)
 	return ret
@@ -1642,7 +1681,7 @@ func (self *CBrowserHostT) CloseBrowser(
 		tmpforce_close = 1
 	}
 
-	C.cefingo_browser_host_close_browser(self.p_browser_host, C.int(tmpforce_close))
+	C.cefingo_browser_host_close_browser((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpforce_close))
 
 }
 
@@ -1656,7 +1695,7 @@ func (self *CBrowserHostT) CloseBrowser(
 ///
 func (self *CBrowserHostT) TryCloseBrowser() (ret bool) {
 
-	cRet := C.cefingo_browser_host_try_close_browser(self.p_browser_host)
+	cRet := C.cefingo_browser_host_try_close_browser((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = cRet == 1
 	return ret
@@ -1673,7 +1712,7 @@ func (self *CBrowserHostT) SetFocus(
 		tmpfocus = 1
 	}
 
-	C.cefingo_browser_host_set_focus(self.p_browser_host, C.int(tmpfocus))
+	C.cefingo_browser_host_set_focus((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpfocus))
 
 }
 
@@ -1684,7 +1723,7 @@ func (self *CBrowserHostT) SetFocus(
 ///
 func (self *CBrowserHostT) GetWindowHandle() (ret CWindowHandleT) {
 
-	cRet := C.cefingo_browser_host_get_window_handle(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_window_handle((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = (CWindowHandleT)(cRet)
 	return ret
@@ -1698,7 +1737,7 @@ func (self *CBrowserHostT) GetWindowHandle() (ret CWindowHandleT) {
 ///
 func (self *CBrowserHostT) GetOpenerWindowHandle() (ret CWindowHandleT) {
 
-	cRet := C.cefingo_browser_host_get_opener_window_handle(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_opener_window_handle((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = (CWindowHandleT)(cRet)
 	return ret
@@ -1709,7 +1748,7 @@ func (self *CBrowserHostT) GetOpenerWindowHandle() (ret CWindowHandleT) {
 ///
 func (self *CBrowserHostT) HasView() (ret bool) {
 
-	cRet := C.cefingo_browser_host_has_view(self.p_browser_host)
+	cRet := C.cefingo_browser_host_has_view((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = cRet == 1
 	return ret
@@ -1720,7 +1759,7 @@ func (self *CBrowserHostT) HasView() (ret bool) {
 ///
 func (self *CBrowserHostT) GetClient() (ret *CClientT) {
 
-	cRet := C.cefingo_browser_host_get_client(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_client((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = newCClientT(cRet)
 	return ret
@@ -1731,7 +1770,7 @@ func (self *CBrowserHostT) GetClient() (ret *CClientT) {
 ///
 func (self *CBrowserHostT) GetRequestContext() (ret *CRequestContextT) {
 
-	cRet := C.cefingo_browser_host_get_request_context(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_request_context((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = newCRequestContextT(cRet)
 	return ret
@@ -1743,7 +1782,7 @@ func (self *CBrowserHostT) GetRequestContext() (ret *CRequestContextT) {
 ///
 func (self *CBrowserHostT) GetZoomLevel() (ret float64) {
 
-	cRet := C.cefingo_browser_host_get_zoom_level(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_zoom_level((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = (float64)(cRet)
 	return ret
@@ -1758,7 +1797,7 @@ func (self *CBrowserHostT) SetZoomLevel(
 	zoomLevel float64,
 ) {
 
-	C.cefingo_browser_host_set_zoom_level(self.p_browser_host, (C.double)(zoomLevel))
+	C.cefingo_browser_host_set_zoom_level((*C.cef_browser_host_t)(self.pc_browser_host), (C.double)(zoomLevel))
 
 }
 
@@ -1790,11 +1829,11 @@ func (self *CBrowserHostT) RunFileDialog(
 	c_default_file_path := create_cef_string(default_file_path)
 	var goTmpcallback *C.cef_run_file_dialog_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_run_file_dialog_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_run_file_dialog_callback)
+		goTmpcallback = (*C.cef_run_file_dialog_callback_t)(callback.pc_run_file_dialog_callback)
 	}
 
-	C.cefingo_browser_host_run_file_dialog(self.p_browser_host, (C.cef_file_dialog_mode_t)(mode), c_title.p_cef_string_t, c_default_file_path.p_cef_string_t, (C.cef_string_list_t)(accept_filters), (C.int)(selected_accept_filter), goTmpcallback)
+	C.cefingo_browser_host_run_file_dialog((*C.cef_browser_host_t)(self.pc_browser_host), (C.cef_file_dialog_mode_t)(mode), c_title.p_cef_string_t, c_default_file_path.p_cef_string_t, (C.cef_string_list_t)(accept_filters), (C.int)(selected_accept_filter), goTmpcallback)
 
 }
 
@@ -1806,7 +1845,7 @@ func (self *CBrowserHostT) StartDownload(
 ) {
 	c_url := create_cef_string(url)
 
-	C.cefingo_browser_host_start_download(self.p_browser_host, c_url.p_cef_string_t)
+	C.cefingo_browser_host_start_download((*C.cef_browser_host_t)(self.pc_browser_host), c_url.p_cef_string_t)
 
 }
 
@@ -1840,11 +1879,11 @@ func (self *CBrowserHostT) DownloadImage(
 	}
 	var goTmpcallback *C.cef_download_image_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_download_image_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_download_image_callback)
+		goTmpcallback = (*C.cef_download_image_callback_t)(callback.pc_download_image_callback)
 	}
 
-	C.cefingo_browser_host_download_image(self.p_browser_host, c_image_url.p_cef_string_t, C.int(tmpis_favicon), (C.uint32)(max_image_size), C.int(tmpbypass_cache), goTmpcallback)
+	C.cefingo_browser_host_download_image((*C.cef_browser_host_t)(self.pc_browser_host), c_image_url.p_cef_string_t, C.int(tmpis_favicon), (C.uint32)(max_image_size), C.int(tmpbypass_cache), goTmpcallback)
 
 }
 
@@ -1853,7 +1892,7 @@ func (self *CBrowserHostT) DownloadImage(
 ///
 func (self *CBrowserHostT) Print() {
 
-	C.cefingo_browser_host_print(self.p_browser_host)
+	C.cefingo_browser_host_print((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -1871,11 +1910,11 @@ func (self *CBrowserHostT) PrintToPdf(
 	c_path := create_cef_string(path)
 	var goTmpcallback *C.cef_pdf_print_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_pdf_print_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_pdf_print_callback)
+		goTmpcallback = (*C.cef_pdf_print_callback_t)(callback.pc_pdf_print_callback)
 	}
 
-	C.cefingo_browser_host_print_to_pdf(self.p_browser_host, c_path.p_cef_string_t, (*C.cef_pdf_print_settings_t)(settings), goTmpcallback)
+	C.cefingo_browser_host_print_to_pdf((*C.cef_browser_host_t)(self.pc_browser_host), c_path.p_cef_string_t, (*C.cef_pdf_print_settings_t)(settings), goTmpcallback)
 
 }
 
@@ -1911,7 +1950,7 @@ func (self *CBrowserHostT) Find(
 		tmpfindNext = 1
 	}
 
-	C.cefingo_browser_host_find(self.p_browser_host, (C.int)(identifier), c_searchText.p_cef_string_t, C.int(tmpforward), C.int(tmpmatchCase), C.int(tmpfindNext))
+	C.cefingo_browser_host_find((*C.cef_browser_host_t)(self.pc_browser_host), (C.int)(identifier), c_searchText.p_cef_string_t, C.int(tmpforward), C.int(tmpmatchCase), C.int(tmpfindNext))
 
 }
 
@@ -1926,7 +1965,7 @@ func (self *CBrowserHostT) StopFinding(
 		tmpclearSelection = 1
 	}
 
-	C.cefingo_browser_host_stop_finding(self.p_browser_host, C.int(tmpclearSelection))
+	C.cefingo_browser_host_stop_finding((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpclearSelection))
 
 }
 
@@ -1947,11 +1986,11 @@ func (self *CBrowserHostT) ShowDevTools(
 ) {
 	var goTmpclient *C.cef_client_t
 	if client != nil {
-		goTmpclient = client.p_client
-		BaseAddRef(goTmpclient)
+		BaseAddRef(client.pc_client)
+		goTmpclient = (*C.cef_client_t)(client.pc_client)
 	}
 
-	C.cefingo_browser_host_show_dev_tools(self.p_browser_host, (*C.cef_window_info_t)(windowInfo), goTmpclient, (*C.cef_browser_settings_t)(settings), (*C.cef_point_t)(inspect_element_at))
+	C.cefingo_browser_host_show_dev_tools((*C.cef_browser_host_t)(self.pc_browser_host), (*C.cef_window_info_t)(windowInfo), goTmpclient, (*C.cef_browser_settings_t)(settings), (*C.cef_point_t)(inspect_element_at))
 
 }
 
@@ -1960,7 +1999,7 @@ func (self *CBrowserHostT) ShowDevTools(
 ///
 func (self *CBrowserHostT) CloseDevTools() {
 
-	C.cefingo_browser_host_close_dev_tools(self.p_browser_host)
+	C.cefingo_browser_host_close_dev_tools((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -1970,7 +2009,7 @@ func (self *CBrowserHostT) CloseDevTools() {
 ///
 func (self *CBrowserHostT) HasDevTools() (ret bool) {
 
-	cRet := C.cefingo_browser_host_has_dev_tools(self.p_browser_host)
+	cRet := C.cefingo_browser_host_has_dev_tools((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = cRet == 1
 	return ret
@@ -2016,7 +2055,7 @@ func (self *CBrowserHostT) SendDevToolsMessage(
 	tmpmessage := C.CBytes(message)
 	defer C.free(tmpmessage)
 
-	cRet := C.cefingo_browser_host_send_dev_tools_message(self.p_browser_host, tmpmessage, (C.size_t)(message_size))
+	cRet := C.cefingo_browser_host_send_dev_tools_message((*C.cef_browser_host_t)(self.pc_browser_host), tmpmessage, (C.size_t)(message_size))
 
 	ret = cRet == 1
 	return ret
@@ -2042,11 +2081,11 @@ func (self *CBrowserHostT) ExecuteDevToolsMethod(
 	c_method := create_cef_string(method)
 	var goTmpparams *C.cef_dictionary_value_t
 	if params != nil {
-		goTmpparams = params.p_dictionary_value
-		BaseAddRef(goTmpparams)
+		BaseAddRef(params.pc_dictionary_value)
+		goTmpparams = (*C.cef_dictionary_value_t)(params.pc_dictionary_value)
 	}
 
-	cRet := C.cefingo_browser_host_execute_dev_tools_method(self.p_browser_host, (C.int)(message_id), c_method.p_cef_string_t, goTmpparams)
+	cRet := C.cefingo_browser_host_execute_dev_tools_method((*C.cef_browser_host_t)(self.pc_browser_host), (C.int)(message_id), c_method.p_cef_string_t, goTmpparams)
 
 	ret = cRet == 1
 	return ret
@@ -2063,11 +2102,11 @@ func (self *CBrowserHostT) AddDevToolsMessageObserver(
 ) (ret *CRegistrationT) {
 	var goTmpobserver *C.cef_dev_tools_message_observer_t
 	if observer != nil {
-		goTmpobserver = observer.p_dev_tools_message_observer
-		BaseAddRef(goTmpobserver)
+		BaseAddRef(observer.pc_dev_tools_message_observer)
+		goTmpobserver = (*C.cef_dev_tools_message_observer_t)(observer.pc_dev_tools_message_observer)
 	}
 
-	cRet := C.cefingo_browser_host_add_dev_tools_message_observer(self.p_browser_host, goTmpobserver)
+	cRet := C.cefingo_browser_host_add_dev_tools_message_observer((*C.cef_browser_host_t)(self.pc_browser_host), goTmpobserver)
 
 	ret = newCRegistrationT(cRet)
 	return ret
@@ -2085,15 +2124,15 @@ func (self *CBrowserHostT) GetNavigationEntries(
 ) {
 	var goTmpvisitor *C.cef_navigation_entry_visitor_t
 	if visitor != nil {
-		goTmpvisitor = visitor.p_navigation_entry_visitor
-		BaseAddRef(goTmpvisitor)
+		BaseAddRef(visitor.pc_navigation_entry_visitor)
+		goTmpvisitor = (*C.cef_navigation_entry_visitor_t)(visitor.pc_navigation_entry_visitor)
 	}
 	var tmpcurrent_only int
 	if current_only {
 		tmpcurrent_only = 1
 	}
 
-	C.cefingo_browser_host_get_navigation_entries(self.p_browser_host, goTmpvisitor, C.int(tmpcurrent_only))
+	C.cefingo_browser_host_get_navigation_entries((*C.cef_browser_host_t)(self.pc_browser_host), goTmpvisitor, C.int(tmpcurrent_only))
 
 }
 
@@ -2108,7 +2147,7 @@ func (self *CBrowserHostT) SetMouseCursorChangeDisabled(
 		tmpdisabled = 1
 	}
 
-	C.cefingo_browser_host_set_mouse_cursor_change_disabled(self.p_browser_host, C.int(tmpdisabled))
+	C.cefingo_browser_host_set_mouse_cursor_change_disabled((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpdisabled))
 
 }
 
@@ -2117,7 +2156,7 @@ func (self *CBrowserHostT) SetMouseCursorChangeDisabled(
 ///
 func (self *CBrowserHostT) IsMouseCursorChangeDisabled() (ret bool) {
 
-	cRet := C.cefingo_browser_host_is_mouse_cursor_change_disabled(self.p_browser_host)
+	cRet := C.cefingo_browser_host_is_mouse_cursor_change_disabled((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = cRet == 1
 	return ret
@@ -2132,7 +2171,7 @@ func (self *CBrowserHostT) ReplaceMisspelling(
 ) {
 	c_word := create_cef_string(word)
 
-	C.cefingo_browser_host_replace_misspelling(self.p_browser_host, c_word.p_cef_string_t)
+	C.cefingo_browser_host_replace_misspelling((*C.cef_browser_host_t)(self.pc_browser_host), c_word.p_cef_string_t)
 
 }
 
@@ -2144,7 +2183,7 @@ func (self *CBrowserHostT) AddWordToDictionary(
 ) {
 	c_word := create_cef_string(word)
 
-	C.cefingo_browser_host_add_word_to_dictionary(self.p_browser_host, c_word.p_cef_string_t)
+	C.cefingo_browser_host_add_word_to_dictionary((*C.cef_browser_host_t)(self.pc_browser_host), c_word.p_cef_string_t)
 
 }
 
@@ -2153,7 +2192,7 @@ func (self *CBrowserHostT) AddWordToDictionary(
 ///
 func (self *CBrowserHostT) IsWindowRenderingDisabled() (ret bool) {
 
-	cRet := C.cefingo_browser_host_is_window_rendering_disabled(self.p_browser_host)
+	cRet := C.cefingo_browser_host_is_window_rendering_disabled((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = cRet == 1
 	return ret
@@ -2167,7 +2206,7 @@ func (self *CBrowserHostT) IsWindowRenderingDisabled() (ret bool) {
 ///
 func (self *CBrowserHostT) WasResized() {
 
-	C.cefingo_browser_host_was_resized(self.p_browser_host)
+	C.cefingo_browser_host_was_resized((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -2184,7 +2223,7 @@ func (self *CBrowserHostT) WasHidden(
 		tmphidden = 1
 	}
 
-	C.cefingo_browser_host_was_hidden(self.p_browser_host, C.int(tmphidden))
+	C.cefingo_browser_host_was_hidden((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmphidden))
 
 }
 
@@ -2198,7 +2237,7 @@ func (self *CBrowserHostT) WasHidden(
 ///
 func (self *CBrowserHostT) NotifyScreenInfoChanged() {
 
-	C.cefingo_browser_host_notify_screen_info_changed(self.p_browser_host)
+	C.cefingo_browser_host_notify_screen_info_changed((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -2211,7 +2250,7 @@ func (self *CBrowserHostT) Invalidate(
 	ctype CPaintElementTypeT,
 ) {
 
-	C.cefingo_browser_host_invalidate(self.p_browser_host, (C.cef_paint_element_type_t)(ctype))
+	C.cefingo_browser_host_invalidate((*C.cef_browser_host_t)(self.pc_browser_host), (C.cef_paint_element_type_t)(ctype))
 
 }
 
@@ -2221,7 +2260,7 @@ func (self *CBrowserHostT) Invalidate(
 ///
 func (self *CBrowserHostT) SendExternalBeginFrame() {
 
-	C.cefingo_browser_host_send_external_begin_frame(self.p_browser_host)
+	C.cefingo_browser_host_send_external_begin_frame((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -2232,7 +2271,7 @@ func (self *CBrowserHostT) SendKeyEvent(
 	event *CKeyEventT,
 ) {
 
-	C.cefingo_browser_host_send_key_event(self.p_browser_host, (*C.cef_key_event_t)(event))
+	C.cefingo_browser_host_send_key_event((*C.cef_browser_host_t)(self.pc_browser_host), (*C.cef_key_event_t)(event))
 
 }
 
@@ -2251,7 +2290,7 @@ func (self *CBrowserHostT) SendMouseClickEvent(
 		tmpmouseUp = 1
 	}
 
-	C.cefingo_browser_host_send_mouse_click_event(self.p_browser_host, (*C.cef_mouse_event_t)(event), (C.cef_mouse_button_type_t)(ctype), C.int(tmpmouseUp), (C.int)(clickCount))
+	C.cefingo_browser_host_send_mouse_click_event((*C.cef_browser_host_t)(self.pc_browser_host), (*C.cef_mouse_event_t)(event), (C.cef_mouse_button_type_t)(ctype), C.int(tmpmouseUp), (C.int)(clickCount))
 
 }
 
@@ -2268,7 +2307,7 @@ func (self *CBrowserHostT) SendMouseMoveEvent(
 		tmpmouseLeave = 1
 	}
 
-	C.cefingo_browser_host_send_mouse_move_event(self.p_browser_host, (*C.cef_mouse_event_t)(event), C.int(tmpmouseLeave))
+	C.cefingo_browser_host_send_mouse_move_event((*C.cef_browser_host_t)(self.pc_browser_host), (*C.cef_mouse_event_t)(event), C.int(tmpmouseLeave))
 
 }
 
@@ -2285,7 +2324,7 @@ func (self *CBrowserHostT) SendMouseWheelEvent(
 	deltaY int,
 ) {
 
-	C.cefingo_browser_host_send_mouse_wheel_event(self.p_browser_host, (*C.cef_mouse_event_t)(event), (C.int)(deltaX), (C.int)(deltaY))
+	C.cefingo_browser_host_send_mouse_wheel_event((*C.cef_browser_host_t)(self.pc_browser_host), (*C.cef_mouse_event_t)(event), (C.int)(deltaX), (C.int)(deltaY))
 
 }
 
@@ -2296,7 +2335,7 @@ func (self *CBrowserHostT) SendTouchEvent(
 	event *CTouchEventT,
 ) {
 
-	C.cefingo_browser_host_send_touch_event(self.p_browser_host, (*C.cef_touch_event_t)(event))
+	C.cefingo_browser_host_send_touch_event((*C.cef_browser_host_t)(self.pc_browser_host), (*C.cef_touch_event_t)(event))
 
 }
 
@@ -2311,7 +2350,7 @@ func (self *CBrowserHostT) SendFocusEvent(
 		tmpsetFocus = 1
 	}
 
-	C.cefingo_browser_host_send_focus_event(self.p_browser_host, C.int(tmpsetFocus))
+	C.cefingo_browser_host_send_focus_event((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpsetFocus))
 
 }
 
@@ -2320,7 +2359,7 @@ func (self *CBrowserHostT) SendFocusEvent(
 ///
 func (self *CBrowserHostT) SendCaptureLostEvent() {
 
-	C.cefingo_browser_host_send_capture_lost_event(self.p_browser_host)
+	C.cefingo_browser_host_send_capture_lost_event((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -2330,7 +2369,7 @@ func (self *CBrowserHostT) SendCaptureLostEvent() {
 ///
 func (self *CBrowserHostT) NotifyMoveOrResizeStarted() {
 
-	C.cefingo_browser_host_notify_move_or_resize_started(self.p_browser_host)
+	C.cefingo_browser_host_notify_move_or_resize_started((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -2343,7 +2382,7 @@ func (self *CBrowserHostT) NotifyMoveOrResizeStarted() {
 ///
 func (self *CBrowserHostT) GetWindowlessFrameRate() (ret int) {
 
-	cRet := C.cefingo_browser_host_get_windowless_frame_rate(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_windowless_frame_rate((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = (int)(cRet)
 	return ret
@@ -2360,7 +2399,7 @@ func (self *CBrowserHostT) SetWindowlessFrameRate(
 	frame_rate int,
 ) {
 
-	C.cefingo_browser_host_set_windowless_frame_rate(self.p_browser_host, (C.int)(frame_rate))
+	C.cefingo_browser_host_set_windowless_frame_rate((*C.cef_browser_host_t)(self.pc_browser_host), (C.int)(frame_rate))
 
 }
 
@@ -2396,7 +2435,7 @@ func (self *CBrowserHostT) ImeSetComposition(
 ) {
 	c_text := create_cef_string(text)
 
-	C.cefingo_browser_host_ime_set_composition(self.p_browser_host, c_text.p_cef_string_t, (C.size_t)(underlinesCount), (*C.cef_composition_underline_t)(underlines), (*C.cef_range_t)(replacement_range), (*C.cef_range_t)(selection_range))
+	C.cefingo_browser_host_ime_set_composition((*C.cef_browser_host_t)(self.pc_browser_host), c_text.p_cef_string_t, (C.size_t)(underlinesCount), (*C.cef_composition_underline_t)(underlines), (*C.cef_range_t)(replacement_range), (*C.cef_range_t)(selection_range))
 
 }
 
@@ -2416,7 +2455,7 @@ func (self *CBrowserHostT) ImeCommitText(
 ) {
 	c_text := create_cef_string(text)
 
-	C.cefingo_browser_host_ime_commit_text(self.p_browser_host, c_text.p_cef_string_t, (*C.cef_range_t)(replacement_range), (C.int)(relative_cursor_pos))
+	C.cefingo_browser_host_ime_commit_text((*C.cef_browser_host_t)(self.pc_browser_host), c_text.p_cef_string_t, (*C.cef_range_t)(replacement_range), (C.int)(relative_cursor_pos))
 
 }
 
@@ -2434,7 +2473,7 @@ func (self *CBrowserHostT) ImeFinishComposingText(
 		tmpkeep_selection = 1
 	}
 
-	C.cefingo_browser_host_ime_finish_composing_text(self.p_browser_host, C.int(tmpkeep_selection))
+	C.cefingo_browser_host_ime_finish_composing_text((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpkeep_selection))
 
 }
 
@@ -2445,7 +2484,7 @@ func (self *CBrowserHostT) ImeFinishComposingText(
 ///
 func (self *CBrowserHostT) ImeCancelComposition() {
 
-	C.cefingo_browser_host_ime_cancel_composition(self.p_browser_host)
+	C.cefingo_browser_host_ime_cancel_composition((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -2465,11 +2504,11 @@ func (self *CBrowserHostT) DragTargetDragEnter(
 ) {
 	var goTmpdrag_data *C.cef_drag_data_t
 	if drag_data != nil {
-		goTmpdrag_data = drag_data.p_drag_data
-		BaseAddRef(goTmpdrag_data)
+		BaseAddRef(drag_data.pc_drag_data)
+		goTmpdrag_data = (*C.cef_drag_data_t)(drag_data.pc_drag_data)
 	}
 
-	C.cefingo_browser_host_drag_target_drag_enter(self.p_browser_host, goTmpdrag_data, (*C.cef_mouse_event_t)(event), (C.cef_drag_operations_mask_t)(allowed_ops))
+	C.cefingo_browser_host_drag_target_drag_enter((*C.cef_browser_host_t)(self.pc_browser_host), goTmpdrag_data, (*C.cef_mouse_event_t)(event), (C.cef_drag_operations_mask_t)(allowed_ops))
 
 }
 
@@ -2484,7 +2523,7 @@ func (self *CBrowserHostT) DragTargetDragOver(
 	allowed_ops CDragOperationsMaskT,
 ) {
 
-	C.cefingo_browser_host_drag_target_drag_over(self.p_browser_host, (*C.cef_mouse_event_t)(event), (C.cef_drag_operations_mask_t)(allowed_ops))
+	C.cefingo_browser_host_drag_target_drag_over((*C.cef_browser_host_t)(self.pc_browser_host), (*C.cef_mouse_event_t)(event), (C.cef_drag_operations_mask_t)(allowed_ops))
 
 }
 
@@ -2495,7 +2534,7 @@ func (self *CBrowserHostT) DragTargetDragOver(
 ///
 func (self *CBrowserHostT) DragTargetDragLeave() {
 
-	C.cefingo_browser_host_drag_target_drag_leave(self.p_browser_host)
+	C.cefingo_browser_host_drag_target_drag_leave((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -2510,7 +2549,7 @@ func (self *CBrowserHostT) DragTargetDrop(
 	event *CMouseEventT,
 ) {
 
-	C.cefingo_browser_host_drag_target_drop(self.p_browser_host, (*C.cef_mouse_event_t)(event))
+	C.cefingo_browser_host_drag_target_drop((*C.cef_browser_host_t)(self.pc_browser_host), (*C.cef_mouse_event_t)(event))
 
 }
 
@@ -2529,7 +2568,7 @@ func (self *CBrowserHostT) DragSourceEndedAt(
 	op CDragOperationsMaskT,
 ) {
 
-	C.cefingo_browser_host_drag_source_ended_at(self.p_browser_host, (C.int)(x), (C.int)(y), (C.cef_drag_operations_mask_t)(op))
+	C.cefingo_browser_host_drag_source_ended_at((*C.cef_browser_host_t)(self.pc_browser_host), (C.int)(x), (C.int)(y), (C.cef_drag_operations_mask_t)(op))
 
 }
 
@@ -2543,7 +2582,7 @@ func (self *CBrowserHostT) DragSourceEndedAt(
 ///
 func (self *CBrowserHostT) DragSourceSystemDragEnded() {
 
-	C.cefingo_browser_host_drag_source_system_drag_ended(self.p_browser_host)
+	C.cefingo_browser_host_drag_source_system_drag_ended((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
@@ -2553,7 +2592,7 @@ func (self *CBrowserHostT) DragSourceSystemDragEnded() {
 ///
 func (self *CBrowserHostT) GetVisibleNavigationEntry() (ret *CNavigationEntryT) {
 
-	cRet := C.cefingo_browser_host_get_visible_navigation_entry(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_visible_navigation_entry((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = newCNavigationEntryT(cRet)
 	return ret
@@ -2588,7 +2627,7 @@ func (self *CBrowserHostT) SetAccessibilityState(
 	accessibility_state CStateT,
 ) {
 
-	C.cefingo_browser_host_set_accessibility_state(self.p_browser_host, (C.cef_state_t)(accessibility_state))
+	C.cefingo_browser_host_set_accessibility_state((*C.cef_browser_host_t)(self.pc_browser_host), (C.cef_state_t)(accessibility_state))
 
 }
 
@@ -2607,7 +2646,7 @@ func (self *CBrowserHostT) SetAutoResizeEnabled(
 		tmpenabled = 1
 	}
 
-	C.cefingo_browser_host_set_auto_resize_enabled(self.p_browser_host, C.int(tmpenabled), (*C.cef_size_t)(min_size), (*C.cef_size_t)(max_size))
+	C.cefingo_browser_host_set_auto_resize_enabled((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpenabled), (*C.cef_size_t)(min_size), (*C.cef_size_t)(max_size))
 
 }
 
@@ -2617,7 +2656,7 @@ func (self *CBrowserHostT) SetAutoResizeEnabled(
 ///
 func (self *CBrowserHostT) GetExtension() (ret *CExtensionT) {
 
-	cRet := C.cefingo_browser_host_get_extension(self.p_browser_host)
+	cRet := C.cefingo_browser_host_get_extension((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = newCExtensionT(cRet)
 	return ret
@@ -2630,7 +2669,7 @@ func (self *CBrowserHostT) GetExtension() (ret *CExtensionT) {
 ///
 func (self *CBrowserHostT) IsBackgroundHost() (ret bool) {
 
-	cRet := C.cefingo_browser_host_is_background_host(self.p_browser_host)
+	cRet := C.cefingo_browser_host_is_background_host((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = cRet == 1
 	return ret
@@ -2647,7 +2686,7 @@ func (self *CBrowserHostT) SetAudioMuted(
 		tmpmute = 1
 	}
 
-	C.cefingo_browser_host_set_audio_muted(self.p_browser_host, C.int(tmpmute))
+	C.cefingo_browser_host_set_audio_muted((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpmute))
 
 }
 
@@ -2657,7 +2696,7 @@ func (self *CBrowserHostT) SetAudioMuted(
 ///
 func (self *CBrowserHostT) IsAudioMuted() (ret bool) {
 
-	cRet := C.cefingo_browser_host_is_audio_muted(self.p_browser_host)
+	cRet := C.cefingo_browser_host_is_audio_muted((*C.cef_browser_host_t)(self.pc_browser_host))
 
 	ret = cRet == 1
 	return ret
@@ -2683,19 +2722,19 @@ func BrowserHostCreateBrowser(
 ) (ret bool) {
 	var goTmpclient *C.cef_client_t
 	if client != nil {
-		goTmpclient = client.p_client
-		BaseAddRef(goTmpclient)
+		BaseAddRef(client.pc_client)
+		goTmpclient = (*C.cef_client_t)(client.pc_client)
 	}
 	c_url := create_cef_string(url)
 	var goTmpextra_info *C.cef_dictionary_value_t
 	if extra_info != nil {
-		goTmpextra_info = extra_info.p_dictionary_value
-		BaseAddRef(goTmpextra_info)
+		BaseAddRef(extra_info.pc_dictionary_value)
+		goTmpextra_info = (*C.cef_dictionary_value_t)(extra_info.pc_dictionary_value)
 	}
 	var goTmprequest_context *C.cef_request_context_t
 	if request_context != nil {
-		goTmprequest_context = request_context.p_request_context
-		BaseAddRef(goTmprequest_context)
+		BaseAddRef(request_context.pc_request_context)
+		goTmprequest_context = (*C.cef_request_context_t)(request_context.pc_request_context)
 	}
 
 	cRet := C.cef_browser_host_create_browser((*C.cef_window_info_t)(windowInfo), goTmpclient, c_url.p_cef_string_t, (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context)
@@ -2722,19 +2761,19 @@ func BrowserHostCreateBrowserSync(
 ) (ret *CBrowserT) {
 	var goTmpclient *C.cef_client_t
 	if client != nil {
-		goTmpclient = client.p_client
-		BaseAddRef(goTmpclient)
+		BaseAddRef(client.pc_client)
+		goTmpclient = (*C.cef_client_t)(client.pc_client)
 	}
 	c_url := create_cef_string(url)
 	var goTmpextra_info *C.cef_dictionary_value_t
 	if extra_info != nil {
-		goTmpextra_info = extra_info.p_dictionary_value
-		BaseAddRef(goTmpextra_info)
+		BaseAddRef(extra_info.pc_dictionary_value)
+		goTmpextra_info = (*C.cef_dictionary_value_t)(extra_info.pc_dictionary_value)
 	}
 	var goTmprequest_context *C.cef_request_context_t
 	if request_context != nil {
-		goTmprequest_context = request_context.p_request_context
-		BaseAddRef(goTmprequest_context)
+		BaseAddRef(request_context.pc_request_context)
+		goTmprequest_context = (*C.cef_request_context_t)(request_context.pc_request_context)
 	}
 
 	cRet := C.cef_browser_host_create_browser_sync((*C.cef_window_info_t)(windowInfo), goTmpclient, c_url.p_cef_string_t, (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context)
@@ -2751,10 +2790,12 @@ func BrowserHostCreateBrowserSync(
 // indicated.
 ///
 
+type cCBrowserProcessHandlerT C.cef_browser_process_handler_t
+
 // Go type for cef_browser_process_handler_t
 type CBrowserProcessHandlerT struct {
-	noCopy                    noCopy
-	p_browser_process_handler *C.cef_browser_process_handler_t
+	noCopy                     noCopy
+	pc_browser_process_handler *cCBrowserProcessHandlerT
 }
 
 type RefToCBrowserProcessHandlerT struct {
@@ -2780,21 +2821,22 @@ func newCBrowserProcessHandlerT(p *C.cef_browser_process_handler_t) *CBrowserPro
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T112.1:")
-	BaseAddRef(p)
-	go_browser_process_handler := CBrowserProcessHandlerT{noCopy{}, p}
+	pc := (*cCBrowserProcessHandlerT)(p)
+	BaseAddRef(pc)
+	go_browser_process_handler := CBrowserProcessHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_browser_process_handler, func(g *CBrowserProcessHandlerT) {
-		Tracef(unsafe.Pointer(g.p_browser_process_handler), "T112.2:")
-		BaseRelease(g.p_browser_process_handler)
+		Tracef(unsafe.Pointer(g.pc_browser_process_handler), "T112.2:")
+		BaseRelease(g.pc_browser_process_handler)
 	})
 	return &go_browser_process_handler
 }
 
 // *C.cef_browser_process_handler_t has refCounted interface
 func (browser_process_handler *CBrowserProcessHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(browser_process_handler.p_browser_process_handler)
+	return BaseHasOneRef(browser_process_handler.pc_browser_process_handler)
 }
 
-func (p *C.cef_browser_process_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCBrowserProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -2853,23 +2895,24 @@ type OnScheduleMessagePumpWorkHandler interface {
 }
 
 var browser_process_handler_handlers = struct {
-	handler                                map[*C.cef_browser_process_handler_t]interface{}
-	on_context_initialized_handler         map[*C.cef_browser_process_handler_t]OnContextInitializedHandler
-	on_before_child_process_launch_handler map[*C.cef_browser_process_handler_t]OnBeforeChildProcessLaunchHandler
-	get_print_handler_handler              map[*C.cef_browser_process_handler_t]GetPrintHandlerHandler
-	on_schedule_message_pump_work_handler  map[*C.cef_browser_process_handler_t]OnScheduleMessagePumpWorkHandler
+	handler                                map[*cCBrowserProcessHandlerT]interface{}
+	on_context_initialized_handler         map[*cCBrowserProcessHandlerT]OnContextInitializedHandler
+	on_before_child_process_launch_handler map[*cCBrowserProcessHandlerT]OnBeforeChildProcessLaunchHandler
+	get_print_handler_handler              map[*cCBrowserProcessHandlerT]GetPrintHandlerHandler
+	on_schedule_message_pump_work_handler  map[*cCBrowserProcessHandlerT]OnScheduleMessagePumpWorkHandler
 }{
-	map[*C.cef_browser_process_handler_t]interface{}{},
-	map[*C.cef_browser_process_handler_t]OnContextInitializedHandler{},
-	map[*C.cef_browser_process_handler_t]OnBeforeChildProcessLaunchHandler{},
-	map[*C.cef_browser_process_handler_t]GetPrintHandlerHandler{},
-	map[*C.cef_browser_process_handler_t]OnScheduleMessagePumpWorkHandler{},
+	map[*cCBrowserProcessHandlerT]interface{}{},
+	map[*cCBrowserProcessHandlerT]OnContextInitializedHandler{},
+	map[*cCBrowserProcessHandlerT]OnBeforeChildProcessLaunchHandler{},
+	map[*cCBrowserProcessHandlerT]GetPrintHandlerHandler{},
+	map[*cCBrowserProcessHandlerT]OnScheduleMessagePumpWorkHandler{},
 }
 
 // AllocCBrowserProcessHandlerT allocates CBrowserProcessHandlerT and construct it
 func AllocCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_browser_process_handler_wrapper_t, "T112.3:")
 	cefp := C.cefingo_construct_browser_process_handler((*C.cefingo_browser_process_handler_wrapper_t)(up))
+	cgop := (*cCBrowserProcessHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_browser_process_handler_t itself in DeassocFunc,
@@ -2878,11 +2921,11 @@ func AllocCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(browser_process_handler_handlers.handler, cefp)
-		delete(browser_process_handler_handlers.on_context_initialized_handler, cefp)
-		delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cefp)
-		delete(browser_process_handler_handlers.get_print_handler_handler, cefp)
-		delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cefp)
+		delete(browser_process_handler_handlers.handler, cgop)
+		delete(browser_process_handler_handlers.on_context_initialized_handler, cgop)
+		delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cgop)
+		delete(browser_process_handler_handlers.get_print_handler_handler, cgop)
+		delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cgop)
 	}))
 
 	return newCBrowserProcessHandlerT(cefp)
@@ -2892,7 +2935,7 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := browser_process_handler.p_browser_process_handler
+	cp := browser_process_handler.pc_browser_process_handler
 	browser_process_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnContextInitializedHandler); ok {
@@ -2921,7 +2964,7 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 
 func (browser_process_handler *CBrowserProcessHandlerT) UnbindAll() {
 
-	cp := browser_process_handler.p_browser_process_handler
+	cp := browser_process_handler.pc_browser_process_handler
 	delete(browser_process_handler_handlers.handler, cp)
 
 	delete(browser_process_handler_handlers.on_context_initialized_handler, cp)
@@ -2935,7 +2978,7 @@ func (browser_process_handler *CBrowserProcessHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := browser_process_handler.p_browser_process_handler
+	cp := browser_process_handler.pc_browser_process_handler
 	return browser_process_handler_handlers.handler[cp]
 }
 
@@ -2946,10 +2989,12 @@ func (browser_process_handler *CBrowserProcessHandlerT) Handler() interface{} {
 // browser process UI thread unless otherwise indicated.
 ///
 
+type cCBrowserViewT C.cef_browser_view_t
+
 // Go type for cef_browser_view_t
 type CBrowserViewT struct {
-	noCopy         noCopy
-	p_browser_view *C.cef_browser_view_t
+	noCopy          noCopy
+	pc_browser_view *cCBrowserViewT
 }
 
 type RefToCBrowserViewT struct {
@@ -2975,26 +3020,28 @@ func newCBrowserViewT(p *C.cef_browser_view_t) *CBrowserViewT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T113.1:")
-	BaseAddRef(p)
-	go_browser_view := CBrowserViewT{noCopy{}, p}
+	pc := (*cCBrowserViewT)(p)
+	BaseAddRef(pc)
+	go_browser_view := CBrowserViewT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_browser_view, func(g *CBrowserViewT) {
-		Tracef(unsafe.Pointer(g.p_browser_view), "T113.2:")
-		BaseRelease(g.p_browser_view)
+		Tracef(unsafe.Pointer(g.pc_browser_view), "T113.2:")
+		BaseRelease(g.pc_browser_view)
 	})
 	return &go_browser_view
 }
 
 // *C.cef_browser_view_t has refCounted interface
 func (browser_view *CBrowserViewT) HasOneRef() bool {
-	return BaseHasOneRef(browser_view.p_browser_view)
+	return BaseHasOneRef(browser_view.pc_browser_view)
 }
 
-func (p *C.cef_browser_view_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCBrowserViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewT
 func (browser_view *CBrowserViewT) ToCViewT() *CViewT {
-	p := (*C.cef_view_t)(unsafe.Pointer(browser_view.p_browser_view))
+	p := (*C.cef_view_t)(unsafe.Pointer(browser_view.pc_browser_view))
 	return newCViewT(p)
 }
 
@@ -3004,7 +3051,7 @@ func (browser_view *CBrowserViewT) ToCViewT() *CViewT {
 ///
 func (self *CBrowserViewT) GetBrowser() (ret *CBrowserT) {
 
-	cRet := C.cefingo_browser_view_get_browser(self.p_browser_view)
+	cRet := C.cefingo_browser_view_get_browser((*C.cef_browser_view_t)(self.pc_browser_view))
 
 	ret = newCBrowserT(cRet)
 	return ret
@@ -3027,7 +3074,7 @@ func (self *CBrowserViewT) SetPreferAccelerators(
 		tmpprefer_accelerators = 1
 	}
 
-	C.cefingo_browser_view_set_prefer_accelerators(self.p_browser_view, C.int(tmpprefer_accelerators))
+	C.cefingo_browser_view_set_prefer_accelerators((*C.cef_browser_view_t)(self.pc_browser_view), C.int(tmpprefer_accelerators))
 
 }
 
@@ -3048,24 +3095,24 @@ func BrowserViewCreate(
 ) (ret *CBrowserViewT) {
 	var goTmpclient *C.cef_client_t
 	if client != nil {
-		goTmpclient = client.p_client
-		BaseAddRef(goTmpclient)
+		BaseAddRef(client.pc_client)
+		goTmpclient = (*C.cef_client_t)(client.pc_client)
 	}
 	c_url := create_cef_string(url)
 	var goTmpextra_info *C.cef_dictionary_value_t
 	if extra_info != nil {
-		goTmpextra_info = extra_info.p_dictionary_value
-		BaseAddRef(goTmpextra_info)
+		BaseAddRef(extra_info.pc_dictionary_value)
+		goTmpextra_info = (*C.cef_dictionary_value_t)(extra_info.pc_dictionary_value)
 	}
 	var goTmprequest_context *C.cef_request_context_t
 	if request_context != nil {
-		goTmprequest_context = request_context.p_request_context
-		BaseAddRef(goTmprequest_context)
+		BaseAddRef(request_context.pc_request_context)
+		goTmprequest_context = (*C.cef_request_context_t)(request_context.pc_request_context)
 	}
 	var goTmpdelegate *C.cef_browser_view_delegate_t
 	if delegate != nil {
-		goTmpdelegate = delegate.p_browser_view_delegate
-		BaseAddRef(goTmpdelegate)
+		BaseAddRef(delegate.pc_browser_view_delegate)
+		goTmpdelegate = (*C.cef_browser_view_delegate_t)(delegate.pc_browser_view_delegate)
 	}
 
 	cRet := C.cef_browser_view_create(goTmpclient, c_url.p_cef_string_t, (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context, goTmpdelegate)
@@ -3082,8 +3129,8 @@ func BrowserViewGetForBrowser(
 ) (ret *CBrowserViewT) {
 	var goTmpbrowser *C.cef_browser_t
 	if browser != nil {
-		goTmpbrowser = browser.p_browser
-		BaseAddRef(goTmpbrowser)
+		BaseAddRef(browser.pc_browser)
+		goTmpbrowser = (*C.cef_browser_t)(browser.pc_browser)
 	}
 
 	cRet := C.cef_browser_view_get_for_browser(goTmpbrowser)
@@ -3100,10 +3147,12 @@ func BrowserViewGetForBrowser(
 // indicated.
 ///
 
+type cCBrowserViewDelegateT C.cef_browser_view_delegate_t
+
 // Go type for cef_browser_view_delegate_t
 type CBrowserViewDelegateT struct {
-	noCopy                  noCopy
-	p_browser_view_delegate *C.cef_browser_view_delegate_t
+	noCopy                   noCopy
+	pc_browser_view_delegate *cCBrowserViewDelegateT
 }
 
 type RefToCBrowserViewDelegateT struct {
@@ -3129,26 +3178,28 @@ func newCBrowserViewDelegateT(p *C.cef_browser_view_delegate_t) *CBrowserViewDel
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T114.1:")
-	BaseAddRef(p)
-	go_browser_view_delegate := CBrowserViewDelegateT{noCopy{}, p}
+	pc := (*cCBrowserViewDelegateT)(p)
+	BaseAddRef(pc)
+	go_browser_view_delegate := CBrowserViewDelegateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_browser_view_delegate, func(g *CBrowserViewDelegateT) {
-		Tracef(unsafe.Pointer(g.p_browser_view_delegate), "T114.2:")
-		BaseRelease(g.p_browser_view_delegate)
+		Tracef(unsafe.Pointer(g.pc_browser_view_delegate), "T114.2:")
+		BaseRelease(g.pc_browser_view_delegate)
 	})
 	return &go_browser_view_delegate
 }
 
 // *C.cef_browser_view_delegate_t has refCounted interface
 func (browser_view_delegate *CBrowserViewDelegateT) HasOneRef() bool {
-	return BaseHasOneRef(browser_view_delegate.p_browser_view_delegate)
+	return BaseHasOneRef(browser_view_delegate.pc_browser_view_delegate)
 }
 
-func (p *C.cef_browser_view_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCBrowserViewDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewDelegateT
 func (browser_view_delegate *CBrowserViewDelegateT) ToCViewDelegateT() *CViewDelegateT {
-	p := (*C.cef_view_delegate_t)(unsafe.Pointer(browser_view_delegate.p_browser_view_delegate))
+	p := (*C.cef_view_delegate_t)(unsafe.Pointer(browser_view_delegate.pc_browser_view_delegate))
 	return newCViewDelegateT(p)
 }
 
@@ -3216,39 +3267,40 @@ type OnPopupBrowserViewCreatedHandler interface {
 }
 
 var browser_view_delegate_handlers = struct {
-	handler                                     map[*C.cef_browser_view_delegate_t]interface{}
-	on_browser_created_handler                  map[*C.cef_browser_view_delegate_t]CBrowserViewDelegateTOnBrowserCreatedHandler
-	on_browser_destroyed_handler                map[*C.cef_browser_view_delegate_t]CBrowserViewDelegateTOnBrowserDestroyedHandler
-	get_delegate_for_popup_browser_view_handler map[*C.cef_browser_view_delegate_t]GetDelegateForPopupBrowserViewHandler
-	on_popup_browser_view_created_handler       map[*C.cef_browser_view_delegate_t]OnPopupBrowserViewCreatedHandler
-	get_preferred_size_handler                  map[*C.cef_browser_view_delegate_t]GetPreferredSizeHandler
-	get_minimum_size_handler                    map[*C.cef_browser_view_delegate_t]GetMinimumSizeHandler
-	get_maximum_size_handler                    map[*C.cef_browser_view_delegate_t]GetMaximumSizeHandler
-	get_height_for_width_handler                map[*C.cef_browser_view_delegate_t]GetHeightForWidthHandler
-	on_parent_view_changed_handler              map[*C.cef_browser_view_delegate_t]OnParentViewChangedHandler
-	on_child_view_changed_handler               map[*C.cef_browser_view_delegate_t]OnChildViewChangedHandler
-	on_focus_handler                            map[*C.cef_browser_view_delegate_t]OnFocusHandler
-	on_blur_handler                             map[*C.cef_browser_view_delegate_t]OnBlurHandler
+	handler                                     map[*cCBrowserViewDelegateT]interface{}
+	on_browser_created_handler                  map[*cCBrowserViewDelegateT]CBrowserViewDelegateTOnBrowserCreatedHandler
+	on_browser_destroyed_handler                map[*cCBrowserViewDelegateT]CBrowserViewDelegateTOnBrowserDestroyedHandler
+	get_delegate_for_popup_browser_view_handler map[*cCBrowserViewDelegateT]GetDelegateForPopupBrowserViewHandler
+	on_popup_browser_view_created_handler       map[*cCBrowserViewDelegateT]OnPopupBrowserViewCreatedHandler
+	get_preferred_size_handler                  map[*cCBrowserViewDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler                    map[*cCBrowserViewDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler                    map[*cCBrowserViewDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler                map[*cCBrowserViewDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler              map[*cCBrowserViewDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler               map[*cCBrowserViewDelegateT]OnChildViewChangedHandler
+	on_focus_handler                            map[*cCBrowserViewDelegateT]OnFocusHandler
+	on_blur_handler                             map[*cCBrowserViewDelegateT]OnBlurHandler
 }{
-	map[*C.cef_browser_view_delegate_t]interface{}{},
-	map[*C.cef_browser_view_delegate_t]CBrowserViewDelegateTOnBrowserCreatedHandler{},
-	map[*C.cef_browser_view_delegate_t]CBrowserViewDelegateTOnBrowserDestroyedHandler{},
-	map[*C.cef_browser_view_delegate_t]GetDelegateForPopupBrowserViewHandler{},
-	map[*C.cef_browser_view_delegate_t]OnPopupBrowserViewCreatedHandler{},
-	map[*C.cef_browser_view_delegate_t]GetPreferredSizeHandler{},
-	map[*C.cef_browser_view_delegate_t]GetMinimumSizeHandler{},
-	map[*C.cef_browser_view_delegate_t]GetMaximumSizeHandler{},
-	map[*C.cef_browser_view_delegate_t]GetHeightForWidthHandler{},
-	map[*C.cef_browser_view_delegate_t]OnParentViewChangedHandler{},
-	map[*C.cef_browser_view_delegate_t]OnChildViewChangedHandler{},
-	map[*C.cef_browser_view_delegate_t]OnFocusHandler{},
-	map[*C.cef_browser_view_delegate_t]OnBlurHandler{},
+	map[*cCBrowserViewDelegateT]interface{}{},
+	map[*cCBrowserViewDelegateT]CBrowserViewDelegateTOnBrowserCreatedHandler{},
+	map[*cCBrowserViewDelegateT]CBrowserViewDelegateTOnBrowserDestroyedHandler{},
+	map[*cCBrowserViewDelegateT]GetDelegateForPopupBrowserViewHandler{},
+	map[*cCBrowserViewDelegateT]OnPopupBrowserViewCreatedHandler{},
+	map[*cCBrowserViewDelegateT]GetPreferredSizeHandler{},
+	map[*cCBrowserViewDelegateT]GetMinimumSizeHandler{},
+	map[*cCBrowserViewDelegateT]GetMaximumSizeHandler{},
+	map[*cCBrowserViewDelegateT]GetHeightForWidthHandler{},
+	map[*cCBrowserViewDelegateT]OnParentViewChangedHandler{},
+	map[*cCBrowserViewDelegateT]OnChildViewChangedHandler{},
+	map[*cCBrowserViewDelegateT]OnFocusHandler{},
+	map[*cCBrowserViewDelegateT]OnBlurHandler{},
 }
 
 // AllocCBrowserViewDelegateT allocates CBrowserViewDelegateT and construct it
 func AllocCBrowserViewDelegateT() *CBrowserViewDelegateT {
 	up := c_calloc(1, C.sizeof_cefingo_browser_view_delegate_wrapper_t, "T114.3:")
 	cefp := C.cefingo_construct_browser_view_delegate((*C.cefingo_browser_view_delegate_wrapper_t)(up))
+	cgop := (*cCBrowserViewDelegateT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_browser_view_delegate_t itself in DeassocFunc,
@@ -3257,19 +3309,19 @@ func AllocCBrowserViewDelegateT() *CBrowserViewDelegateT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(browser_view_delegate_handlers.handler, cefp)
-		delete(browser_view_delegate_handlers.on_browser_created_handler, cefp)
-		delete(browser_view_delegate_handlers.on_browser_destroyed_handler, cefp)
-		delete(browser_view_delegate_handlers.get_delegate_for_popup_browser_view_handler, cefp)
-		delete(browser_view_delegate_handlers.on_popup_browser_view_created_handler, cefp)
-		delete(browser_view_delegate_handlers.get_preferred_size_handler, cefp)
-		delete(browser_view_delegate_handlers.get_minimum_size_handler, cefp)
-		delete(browser_view_delegate_handlers.get_maximum_size_handler, cefp)
-		delete(browser_view_delegate_handlers.get_height_for_width_handler, cefp)
-		delete(browser_view_delegate_handlers.on_parent_view_changed_handler, cefp)
-		delete(browser_view_delegate_handlers.on_child_view_changed_handler, cefp)
-		delete(browser_view_delegate_handlers.on_focus_handler, cefp)
-		delete(browser_view_delegate_handlers.on_blur_handler, cefp)
+		delete(browser_view_delegate_handlers.handler, cgop)
+		delete(browser_view_delegate_handlers.on_browser_created_handler, cgop)
+		delete(browser_view_delegate_handlers.on_browser_destroyed_handler, cgop)
+		delete(browser_view_delegate_handlers.get_delegate_for_popup_browser_view_handler, cgop)
+		delete(browser_view_delegate_handlers.on_popup_browser_view_created_handler, cgop)
+		delete(browser_view_delegate_handlers.get_preferred_size_handler, cgop)
+		delete(browser_view_delegate_handlers.get_minimum_size_handler, cgop)
+		delete(browser_view_delegate_handlers.get_maximum_size_handler, cgop)
+		delete(browser_view_delegate_handlers.get_height_for_width_handler, cgop)
+		delete(browser_view_delegate_handlers.on_parent_view_changed_handler, cgop)
+		delete(browser_view_delegate_handlers.on_child_view_changed_handler, cgop)
+		delete(browser_view_delegate_handlers.on_focus_handler, cgop)
+		delete(browser_view_delegate_handlers.on_blur_handler, cgop)
 	}))
 
 	return newCBrowserViewDelegateT(cefp)
@@ -3279,7 +3331,7 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := browser_view_delegate.p_browser_view_delegate
+	cp := browser_view_delegate.pc_browser_view_delegate
 	browser_view_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(CBrowserViewDelegateTOnBrowserCreatedHandler); ok {
@@ -3340,7 +3392,7 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 
 func (browser_view_delegate *CBrowserViewDelegateT) UnbindAll() {
 
-	cp := browser_view_delegate.p_browser_view_delegate
+	cp := browser_view_delegate.pc_browser_view_delegate
 	delete(browser_view_delegate_handlers.handler, cp)
 
 	delete(browser_view_delegate_handlers.on_browser_created_handler, cp)
@@ -3362,7 +3414,7 @@ func (browser_view_delegate *CBrowserViewDelegateT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := browser_view_delegate.p_browser_view_delegate
+	cp := browser_view_delegate.pc_browser_view_delegate
 	return browser_view_delegate_handlers.handler[cp]
 }
 
@@ -3374,10 +3426,12 @@ func (browser_view_delegate *CBrowserViewDelegateT) Handler() interface{} {
 // called on the browser process UI thread unless otherwise indicated.
 ///
 
+type cCButtonT C.cef_button_t
+
 // Go type for cef_button_t
 type CButtonT struct {
-	noCopy   noCopy
-	p_button *C.cef_button_t
+	noCopy    noCopy
+	pc_button *cCButtonT
 }
 
 type RefToCButtonT struct {
@@ -3403,26 +3457,28 @@ func newCButtonT(p *C.cef_button_t) *CButtonT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T115.1:")
-	BaseAddRef(p)
-	go_button := CButtonT{noCopy{}, p}
+	pc := (*cCButtonT)(p)
+	BaseAddRef(pc)
+	go_button := CButtonT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_button, func(g *CButtonT) {
-		Tracef(unsafe.Pointer(g.p_button), "T115.2:")
-		BaseRelease(g.p_button)
+		Tracef(unsafe.Pointer(g.pc_button), "T115.2:")
+		BaseRelease(g.pc_button)
 	})
 	return &go_button
 }
 
 // *C.cef_button_t has refCounted interface
 func (button *CButtonT) HasOneRef() bool {
-	return BaseHasOneRef(button.p_button)
+	return BaseHasOneRef(button.pc_button)
 }
 
-func (p *C.cef_button_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewT
 func (button *CButtonT) ToCViewT() *CViewT {
-	p := (*C.cef_view_t)(unsafe.Pointer(button.p_button))
+	p := (*C.cef_view_t)(unsafe.Pointer(button.pc_button))
 	return newCViewT(p)
 }
 
@@ -3431,7 +3487,7 @@ func (button *CButtonT) ToCViewT() *CViewT {
 ///
 func (self *CButtonT) AsLabelButton() (ret *CLabelButtonT) {
 
-	cRet := C.cefingo_button_as_label_button(self.p_button)
+	cRet := C.cefingo_button_as_label_button((*C.cef_button_t)(self.pc_button))
 
 	ret = newCLabelButtonT(cRet)
 	return ret
@@ -3444,7 +3500,7 @@ func (self *CButtonT) SetState(
 	state CButtonStateT,
 ) {
 
-	C.cefingo_button_set_state(self.p_button, (C.cef_button_state_t)(state))
+	C.cefingo_button_set_state((*C.cef_button_t)(self.pc_button), (C.cef_button_state_t)(state))
 
 }
 
@@ -3453,7 +3509,7 @@ func (self *CButtonT) SetState(
 ///
 func (self *CButtonT) GetState() (ret CButtonStateT) {
 
-	cRet := C.cefingo_button_get_state(self.p_button)
+	cRet := C.cefingo_button_get_state((*C.cef_button_t)(self.pc_button))
 
 	ret = CButtonStateT(cRet)
 	return ret
@@ -3466,7 +3522,7 @@ func (self *CButtonT) SetInkDropEnabled(
 	enabled int,
 ) {
 
-	C.cefingo_button_set_ink_drop_enabled(self.p_button, (C.int)(enabled))
+	C.cefingo_button_set_ink_drop_enabled((*C.cef_button_t)(self.pc_button), (C.int)(enabled))
 
 }
 
@@ -3479,7 +3535,7 @@ func (self *CButtonT) SetTooltipText(
 ) {
 	c_tooltip_text := create_cef_string(tooltip_text)
 
-	C.cefingo_button_set_tooltip_text(self.p_button, c_tooltip_text.p_cef_string_t)
+	C.cefingo_button_set_tooltip_text((*C.cef_button_t)(self.pc_button), c_tooltip_text.p_cef_string_t)
 
 }
 
@@ -3491,7 +3547,7 @@ func (self *CButtonT) SetAccessibleName(
 ) {
 	c_name := create_cef_string(name)
 
-	C.cefingo_button_set_accessible_name(self.p_button, c_name.p_cef_string_t)
+	C.cefingo_button_set_accessible_name((*C.cef_button_t)(self.pc_button), c_name.p_cef_string_t)
 
 }
 
@@ -3503,10 +3559,12 @@ func (self *CButtonT) SetAccessibleName(
 // indicated.
 ///
 
+type cCButtonDelegateT C.cef_button_delegate_t
+
 // Go type for cef_button_delegate_t
 type CButtonDelegateT struct {
-	noCopy            noCopy
-	p_button_delegate *C.cef_button_delegate_t
+	noCopy             noCopy
+	pc_button_delegate *cCButtonDelegateT
 }
 
 type RefToCButtonDelegateT struct {
@@ -3532,26 +3590,28 @@ func newCButtonDelegateT(p *C.cef_button_delegate_t) *CButtonDelegateT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T116.1:")
-	BaseAddRef(p)
-	go_button_delegate := CButtonDelegateT{noCopy{}, p}
+	pc := (*cCButtonDelegateT)(p)
+	BaseAddRef(pc)
+	go_button_delegate := CButtonDelegateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_button_delegate, func(g *CButtonDelegateT) {
-		Tracef(unsafe.Pointer(g.p_button_delegate), "T116.2:")
-		BaseRelease(g.p_button_delegate)
+		Tracef(unsafe.Pointer(g.pc_button_delegate), "T116.2:")
+		BaseRelease(g.pc_button_delegate)
 	})
 	return &go_button_delegate
 }
 
 // *C.cef_button_delegate_t has refCounted interface
 func (button_delegate *CButtonDelegateT) HasOneRef() bool {
-	return BaseHasOneRef(button_delegate.p_button_delegate)
+	return BaseHasOneRef(button_delegate.pc_button_delegate)
 }
 
-func (p *C.cef_button_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCButtonDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewDelegateT
 func (button_delegate *CButtonDelegateT) ToCViewDelegateT() *CViewDelegateT {
-	p := (*C.cef_view_delegate_t)(unsafe.Pointer(button_delegate.p_button_delegate))
+	p := (*C.cef_view_delegate_t)(unsafe.Pointer(button_delegate.pc_button_delegate))
 	return newCViewDelegateT(p)
 }
 
@@ -3576,35 +3636,36 @@ type OnButtonStateChangedHandler interface {
 }
 
 var button_delegate_handlers = struct {
-	handler                         map[*C.cef_button_delegate_t]interface{}
-	on_button_pressed_handler       map[*C.cef_button_delegate_t]OnButtonPressedHandler
-	on_button_state_changed_handler map[*C.cef_button_delegate_t]OnButtonStateChangedHandler
-	get_preferred_size_handler      map[*C.cef_button_delegate_t]GetPreferredSizeHandler
-	get_minimum_size_handler        map[*C.cef_button_delegate_t]GetMinimumSizeHandler
-	get_maximum_size_handler        map[*C.cef_button_delegate_t]GetMaximumSizeHandler
-	get_height_for_width_handler    map[*C.cef_button_delegate_t]GetHeightForWidthHandler
-	on_parent_view_changed_handler  map[*C.cef_button_delegate_t]OnParentViewChangedHandler
-	on_child_view_changed_handler   map[*C.cef_button_delegate_t]OnChildViewChangedHandler
-	on_focus_handler                map[*C.cef_button_delegate_t]OnFocusHandler
-	on_blur_handler                 map[*C.cef_button_delegate_t]OnBlurHandler
+	handler                         map[*cCButtonDelegateT]interface{}
+	on_button_pressed_handler       map[*cCButtonDelegateT]OnButtonPressedHandler
+	on_button_state_changed_handler map[*cCButtonDelegateT]OnButtonStateChangedHandler
+	get_preferred_size_handler      map[*cCButtonDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler        map[*cCButtonDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler        map[*cCButtonDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler    map[*cCButtonDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler  map[*cCButtonDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler   map[*cCButtonDelegateT]OnChildViewChangedHandler
+	on_focus_handler                map[*cCButtonDelegateT]OnFocusHandler
+	on_blur_handler                 map[*cCButtonDelegateT]OnBlurHandler
 }{
-	map[*C.cef_button_delegate_t]interface{}{},
-	map[*C.cef_button_delegate_t]OnButtonPressedHandler{},
-	map[*C.cef_button_delegate_t]OnButtonStateChangedHandler{},
-	map[*C.cef_button_delegate_t]GetPreferredSizeHandler{},
-	map[*C.cef_button_delegate_t]GetMinimumSizeHandler{},
-	map[*C.cef_button_delegate_t]GetMaximumSizeHandler{},
-	map[*C.cef_button_delegate_t]GetHeightForWidthHandler{},
-	map[*C.cef_button_delegate_t]OnParentViewChangedHandler{},
-	map[*C.cef_button_delegate_t]OnChildViewChangedHandler{},
-	map[*C.cef_button_delegate_t]OnFocusHandler{},
-	map[*C.cef_button_delegate_t]OnBlurHandler{},
+	map[*cCButtonDelegateT]interface{}{},
+	map[*cCButtonDelegateT]OnButtonPressedHandler{},
+	map[*cCButtonDelegateT]OnButtonStateChangedHandler{},
+	map[*cCButtonDelegateT]GetPreferredSizeHandler{},
+	map[*cCButtonDelegateT]GetMinimumSizeHandler{},
+	map[*cCButtonDelegateT]GetMaximumSizeHandler{},
+	map[*cCButtonDelegateT]GetHeightForWidthHandler{},
+	map[*cCButtonDelegateT]OnParentViewChangedHandler{},
+	map[*cCButtonDelegateT]OnChildViewChangedHandler{},
+	map[*cCButtonDelegateT]OnFocusHandler{},
+	map[*cCButtonDelegateT]OnBlurHandler{},
 }
 
 // AllocCButtonDelegateT allocates CButtonDelegateT and construct it
 func AllocCButtonDelegateT() *CButtonDelegateT {
 	up := c_calloc(1, C.sizeof_cefingo_button_delegate_wrapper_t, "T116.3:")
 	cefp := C.cefingo_construct_button_delegate((*C.cefingo_button_delegate_wrapper_t)(up))
+	cgop := (*cCButtonDelegateT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_button_delegate_t itself in DeassocFunc,
@@ -3613,17 +3674,17 @@ func AllocCButtonDelegateT() *CButtonDelegateT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(button_delegate_handlers.handler, cefp)
-		delete(button_delegate_handlers.on_button_pressed_handler, cefp)
-		delete(button_delegate_handlers.on_button_state_changed_handler, cefp)
-		delete(button_delegate_handlers.get_preferred_size_handler, cefp)
-		delete(button_delegate_handlers.get_minimum_size_handler, cefp)
-		delete(button_delegate_handlers.get_maximum_size_handler, cefp)
-		delete(button_delegate_handlers.get_height_for_width_handler, cefp)
-		delete(button_delegate_handlers.on_parent_view_changed_handler, cefp)
-		delete(button_delegate_handlers.on_child_view_changed_handler, cefp)
-		delete(button_delegate_handlers.on_focus_handler, cefp)
-		delete(button_delegate_handlers.on_blur_handler, cefp)
+		delete(button_delegate_handlers.handler, cgop)
+		delete(button_delegate_handlers.on_button_pressed_handler, cgop)
+		delete(button_delegate_handlers.on_button_state_changed_handler, cgop)
+		delete(button_delegate_handlers.get_preferred_size_handler, cgop)
+		delete(button_delegate_handlers.get_minimum_size_handler, cgop)
+		delete(button_delegate_handlers.get_maximum_size_handler, cgop)
+		delete(button_delegate_handlers.get_height_for_width_handler, cgop)
+		delete(button_delegate_handlers.on_parent_view_changed_handler, cgop)
+		delete(button_delegate_handlers.on_child_view_changed_handler, cgop)
+		delete(button_delegate_handlers.on_focus_handler, cgop)
+		delete(button_delegate_handlers.on_blur_handler, cgop)
 	}))
 
 	return newCButtonDelegateT(cefp)
@@ -3633,7 +3694,7 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := button_delegate.p_button_delegate
+	cp := button_delegate.pc_button_delegate
 	button_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(OnButtonPressedHandler); ok {
@@ -3686,7 +3747,7 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 
 func (button_delegate *CButtonDelegateT) UnbindAll() {
 
-	cp := button_delegate.p_button_delegate
+	cp := button_delegate.pc_button_delegate
 	delete(button_delegate_handlers.handler, cp)
 
 	delete(button_delegate_handlers.on_button_pressed_handler, cp)
@@ -3706,7 +3767,7 @@ func (button_delegate *CButtonDelegateT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := button_delegate.p_button_delegate
+	cp := button_delegate.pc_button_delegate
 	return button_delegate_handlers.handler[cp]
 }
 
@@ -3716,10 +3777,12 @@ func (button_delegate *CButtonDelegateT) Handler() interface{} {
 // Generic callback structure used for asynchronous continuation.
 ///
 
+type cCCallbackT C.cef_callback_t
+
 // Go type for cef_callback_t
 type CCallbackT struct {
-	noCopy     noCopy
-	p_callback *C.cef_callback_t
+	noCopy      noCopy
+	pc_callback *cCCallbackT
 }
 
 type RefToCCallbackT struct {
@@ -3745,21 +3808,22 @@ func newCCallbackT(p *C.cef_callback_t) *CCallbackT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T117.1:")
-	BaseAddRef(p)
-	go_callback := CCallbackT{noCopy{}, p}
+	pc := (*cCCallbackT)(p)
+	BaseAddRef(pc)
+	go_callback := CCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_callback, func(g *CCallbackT) {
-		Tracef(unsafe.Pointer(g.p_callback), "T117.2:")
-		BaseRelease(g.p_callback)
+		Tracef(unsafe.Pointer(g.pc_callback), "T117.2:")
+		BaseRelease(g.pc_callback)
 	})
 	return &go_callback
 }
 
 // *C.cef_callback_t has refCounted interface
 func (callback *CCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(callback.p_callback)
+	return BaseHasOneRef(callback.pc_callback)
 }
 
-func (p *C.cef_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -3768,7 +3832,7 @@ func (p *C.cef_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 ///
 func (self *CCallbackT) Cont() {
 
-	C.cefingo_callback_cont(self.p_callback)
+	C.cefingo_callback_cont((*C.cef_callback_t)(self.pc_callback))
 
 }
 
@@ -3777,7 +3841,7 @@ func (self *CCallbackT) Cont() {
 ///
 func (self *CCallbackT) Cancel() {
 
-	C.cefingo_callback_cancel(self.p_callback)
+	C.cefingo_callback_cancel((*C.cef_callback_t)(self.pc_callback))
 
 }
 
@@ -3785,10 +3849,12 @@ func (self *CCallbackT) Cancel() {
 // Generic callback structure used for asynchronous completion.
 ///
 
+type cCCompletionCallbackT C.cef_completion_callback_t
+
 // Go type for cef_completion_callback_t
 type CCompletionCallbackT struct {
-	noCopy                noCopy
-	p_completion_callback *C.cef_completion_callback_t
+	noCopy                 noCopy
+	pc_completion_callback *cCCompletionCallbackT
 }
 
 type RefToCCompletionCallbackT struct {
@@ -3814,21 +3880,22 @@ func newCCompletionCallbackT(p *C.cef_completion_callback_t) *CCompletionCallbac
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T118.1:")
-	BaseAddRef(p)
-	go_completion_callback := CCompletionCallbackT{noCopy{}, p}
+	pc := (*cCCompletionCallbackT)(p)
+	BaseAddRef(pc)
+	go_completion_callback := CCompletionCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_completion_callback, func(g *CCompletionCallbackT) {
-		Tracef(unsafe.Pointer(g.p_completion_callback), "T118.2:")
-		BaseRelease(g.p_completion_callback)
+		Tracef(unsafe.Pointer(g.pc_completion_callback), "T118.2:")
+		BaseRelease(g.pc_completion_callback)
 	})
 	return &go_completion_callback
 }
 
 // *C.cef_completion_callback_t has refCounted interface
 func (completion_callback *CCompletionCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(completion_callback.p_completion_callback)
+	return BaseHasOneRef(completion_callback.pc_completion_callback)
 }
 
-func (p *C.cef_completion_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCCompletionCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -3837,7 +3904,7 @@ func (p *C.cef_completion_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base
 ///
 func (self *CCompletionCallbackT) OnComplete() {
 
-	C.cefingo_completion_callback_on_complete(self.p_completion_callback)
+	C.cefingo_completion_callback_on_complete((*C.cef_completion_callback_t)(self.pc_completion_callback))
 
 }
 
@@ -3847,10 +3914,12 @@ func (self *CCompletionCallbackT) OnComplete() {
 // Implement this structure to provide handler implementations.
 ///
 
+type cCClientT C.cef_client_t
+
 // Go type for cef_client_t
 type CClientT struct {
-	noCopy   noCopy
-	p_client *C.cef_client_t
+	noCopy    noCopy
+	pc_client *cCClientT
 }
 
 type RefToCClientT struct {
@@ -3876,21 +3945,22 @@ func newCClientT(p *C.cef_client_t) *CClientT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T119.1:")
-	BaseAddRef(p)
-	go_client := CClientT{noCopy{}, p}
+	pc := (*cCClientT)(p)
+	BaseAddRef(pc)
+	go_client := CClientT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_client, func(g *CClientT) {
-		Tracef(unsafe.Pointer(g.p_client), "T119.2:")
-		BaseRelease(g.p_client)
+		Tracef(unsafe.Pointer(g.pc_client), "T119.2:")
+		BaseRelease(g.pc_client)
 	})
 	return &go_client
 }
 
 // *C.cef_client_t has refCounted interface
 func (client *CClientT) HasOneRef() bool {
-	return BaseHasOneRef(client.p_client)
+	return BaseHasOneRef(client.pc_client)
 }
 
-func (p *C.cef_client_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -4040,45 +4110,46 @@ type CClientTOnProcessMessageReceivedHandler interface {
 }
 
 var client_handlers = struct {
-	handler                             map[*C.cef_client_t]interface{}
-	get_audio_handler_handler           map[*C.cef_client_t]GetAudioHandlerHandler
-	get_context_menu_handler_handler    map[*C.cef_client_t]GetContextMenuHandlerHandler
-	get_dialog_handler_handler          map[*C.cef_client_t]GetDialogHandlerHandler
-	get_display_handler_handler         map[*C.cef_client_t]GetDisplayHandlerHandler
-	get_download_handler_handler        map[*C.cef_client_t]GetDownloadHandlerHandler
-	get_drag_handler_handler            map[*C.cef_client_t]GetDragHandlerHandler
-	get_find_handler_handler            map[*C.cef_client_t]GetFindHandlerHandler
-	get_focus_handler_handler           map[*C.cef_client_t]GetFocusHandlerHandler
-	get_jsdialog_handler_handler        map[*C.cef_client_t]GetJsdialogHandlerHandler
-	get_keyboard_handler_handler        map[*C.cef_client_t]GetKeyboardHandlerHandler
-	get_life_span_handler_handler       map[*C.cef_client_t]GetLifeSpanHandlerHandler
-	get_load_handler_handler            map[*C.cef_client_t]CClientTGetLoadHandlerHandler
-	get_render_handler_handler          map[*C.cef_client_t]GetRenderHandlerHandler
-	get_request_handler_handler         map[*C.cef_client_t]GetRequestHandlerHandler
-	on_process_message_received_handler map[*C.cef_client_t]CClientTOnProcessMessageReceivedHandler
+	handler                             map[*cCClientT]interface{}
+	get_audio_handler_handler           map[*cCClientT]GetAudioHandlerHandler
+	get_context_menu_handler_handler    map[*cCClientT]GetContextMenuHandlerHandler
+	get_dialog_handler_handler          map[*cCClientT]GetDialogHandlerHandler
+	get_display_handler_handler         map[*cCClientT]GetDisplayHandlerHandler
+	get_download_handler_handler        map[*cCClientT]GetDownloadHandlerHandler
+	get_drag_handler_handler            map[*cCClientT]GetDragHandlerHandler
+	get_find_handler_handler            map[*cCClientT]GetFindHandlerHandler
+	get_focus_handler_handler           map[*cCClientT]GetFocusHandlerHandler
+	get_jsdialog_handler_handler        map[*cCClientT]GetJsdialogHandlerHandler
+	get_keyboard_handler_handler        map[*cCClientT]GetKeyboardHandlerHandler
+	get_life_span_handler_handler       map[*cCClientT]GetLifeSpanHandlerHandler
+	get_load_handler_handler            map[*cCClientT]CClientTGetLoadHandlerHandler
+	get_render_handler_handler          map[*cCClientT]GetRenderHandlerHandler
+	get_request_handler_handler         map[*cCClientT]GetRequestHandlerHandler
+	on_process_message_received_handler map[*cCClientT]CClientTOnProcessMessageReceivedHandler
 }{
-	map[*C.cef_client_t]interface{}{},
-	map[*C.cef_client_t]GetAudioHandlerHandler{},
-	map[*C.cef_client_t]GetContextMenuHandlerHandler{},
-	map[*C.cef_client_t]GetDialogHandlerHandler{},
-	map[*C.cef_client_t]GetDisplayHandlerHandler{},
-	map[*C.cef_client_t]GetDownloadHandlerHandler{},
-	map[*C.cef_client_t]GetDragHandlerHandler{},
-	map[*C.cef_client_t]GetFindHandlerHandler{},
-	map[*C.cef_client_t]GetFocusHandlerHandler{},
-	map[*C.cef_client_t]GetJsdialogHandlerHandler{},
-	map[*C.cef_client_t]GetKeyboardHandlerHandler{},
-	map[*C.cef_client_t]GetLifeSpanHandlerHandler{},
-	map[*C.cef_client_t]CClientTGetLoadHandlerHandler{},
-	map[*C.cef_client_t]GetRenderHandlerHandler{},
-	map[*C.cef_client_t]GetRequestHandlerHandler{},
-	map[*C.cef_client_t]CClientTOnProcessMessageReceivedHandler{},
+	map[*cCClientT]interface{}{},
+	map[*cCClientT]GetAudioHandlerHandler{},
+	map[*cCClientT]GetContextMenuHandlerHandler{},
+	map[*cCClientT]GetDialogHandlerHandler{},
+	map[*cCClientT]GetDisplayHandlerHandler{},
+	map[*cCClientT]GetDownloadHandlerHandler{},
+	map[*cCClientT]GetDragHandlerHandler{},
+	map[*cCClientT]GetFindHandlerHandler{},
+	map[*cCClientT]GetFocusHandlerHandler{},
+	map[*cCClientT]GetJsdialogHandlerHandler{},
+	map[*cCClientT]GetKeyboardHandlerHandler{},
+	map[*cCClientT]GetLifeSpanHandlerHandler{},
+	map[*cCClientT]CClientTGetLoadHandlerHandler{},
+	map[*cCClientT]GetRenderHandlerHandler{},
+	map[*cCClientT]GetRequestHandlerHandler{},
+	map[*cCClientT]CClientTOnProcessMessageReceivedHandler{},
 }
 
 // AllocCClientT allocates CClientT and construct it
 func AllocCClientT() *CClientT {
 	up := c_calloc(1, C.sizeof_cefingo_client_wrapper_t, "T119.3:")
 	cefp := C.cefingo_construct_client((*C.cefingo_client_wrapper_t)(up))
+	cgop := (*cCClientT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_client_t itself in DeassocFunc,
@@ -4087,22 +4158,22 @@ func AllocCClientT() *CClientT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(client_handlers.handler, cefp)
-		delete(client_handlers.get_audio_handler_handler, cefp)
-		delete(client_handlers.get_context_menu_handler_handler, cefp)
-		delete(client_handlers.get_dialog_handler_handler, cefp)
-		delete(client_handlers.get_display_handler_handler, cefp)
-		delete(client_handlers.get_download_handler_handler, cefp)
-		delete(client_handlers.get_drag_handler_handler, cefp)
-		delete(client_handlers.get_find_handler_handler, cefp)
-		delete(client_handlers.get_focus_handler_handler, cefp)
-		delete(client_handlers.get_jsdialog_handler_handler, cefp)
-		delete(client_handlers.get_keyboard_handler_handler, cefp)
-		delete(client_handlers.get_life_span_handler_handler, cefp)
-		delete(client_handlers.get_load_handler_handler, cefp)
-		delete(client_handlers.get_render_handler_handler, cefp)
-		delete(client_handlers.get_request_handler_handler, cefp)
-		delete(client_handlers.on_process_message_received_handler, cefp)
+		delete(client_handlers.handler, cgop)
+		delete(client_handlers.get_audio_handler_handler, cgop)
+		delete(client_handlers.get_context_menu_handler_handler, cgop)
+		delete(client_handlers.get_dialog_handler_handler, cgop)
+		delete(client_handlers.get_display_handler_handler, cgop)
+		delete(client_handlers.get_download_handler_handler, cgop)
+		delete(client_handlers.get_drag_handler_handler, cgop)
+		delete(client_handlers.get_find_handler_handler, cgop)
+		delete(client_handlers.get_focus_handler_handler, cgop)
+		delete(client_handlers.get_jsdialog_handler_handler, cgop)
+		delete(client_handlers.get_keyboard_handler_handler, cgop)
+		delete(client_handlers.get_life_span_handler_handler, cgop)
+		delete(client_handlers.get_load_handler_handler, cgop)
+		delete(client_handlers.get_render_handler_handler, cgop)
+		delete(client_handlers.get_request_handler_handler, cgop)
+		delete(client_handlers.on_process_message_received_handler, cgop)
 	}))
 
 	return newCClientT(cefp)
@@ -4112,7 +4183,7 @@ func (client *CClientT) Bind(a interface{}) *CClientT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := client.p_client
+	cp := client.pc_client
 	client_handlers.handler[cp] = a
 
 	if h, ok := a.(GetAudioHandlerHandler); ok {
@@ -4185,7 +4256,7 @@ func (client *CClientT) Bind(a interface{}) *CClientT {
 
 func (client *CClientT) UnbindAll() {
 
-	cp := client.p_client
+	cp := client.pc_client
 	delete(client_handlers.handler, cp)
 
 	delete(client_handlers.get_audio_handler_handler, cp)
@@ -4210,7 +4281,7 @@ func (client *CClientT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := client.p_client
+	cp := client.pc_client
 	return client_handlers.handler[cp]
 }
 
@@ -4227,10 +4298,12 @@ func (client *CClientT) Handler() interface{} {
 // be used before cef_initialize() is called.
 ///
 
+type cCCommandLineT C.cef_command_line_t
+
 // Go type for cef_command_line_t
 type CCommandLineT struct {
-	noCopy         noCopy
-	p_command_line *C.cef_command_line_t
+	noCopy          noCopy
+	pc_command_line *cCCommandLineT
 }
 
 type RefToCCommandLineT struct {
@@ -4256,21 +4329,22 @@ func newCCommandLineT(p *C.cef_command_line_t) *CCommandLineT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T120.1:")
-	BaseAddRef(p)
-	go_command_line := CCommandLineT{noCopy{}, p}
+	pc := (*cCCommandLineT)(p)
+	BaseAddRef(pc)
+	go_command_line := CCommandLineT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_command_line, func(g *CCommandLineT) {
-		Tracef(unsafe.Pointer(g.p_command_line), "T120.2:")
-		BaseRelease(g.p_command_line)
+		Tracef(unsafe.Pointer(g.pc_command_line), "T120.2:")
+		BaseRelease(g.pc_command_line)
 	})
 	return &go_command_line
 }
 
 // *C.cef_command_line_t has refCounted interface
 func (command_line *CCommandLineT) HasOneRef() bool {
-	return BaseHasOneRef(command_line.p_command_line)
+	return BaseHasOneRef(command_line.pc_command_line)
 }
 
-func (p *C.cef_command_line_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCCommandLineT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -4280,7 +4354,7 @@ func (p *C.cef_command_line_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 ///
 func (self *CCommandLineT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_command_line_is_valid(self.p_command_line)
+	cRet := C.cefingo_command_line_is_valid((*C.cef_command_line_t)(self.pc_command_line))
 
 	ret = cRet == 1
 	return ret
@@ -4292,7 +4366,7 @@ func (self *CCommandLineT) IsValid() (ret bool) {
 ///
 func (self *CCommandLineT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_command_line_is_read_only(self.p_command_line)
+	cRet := C.cefingo_command_line_is_read_only((*C.cef_command_line_t)(self.pc_command_line))
 
 	ret = cRet == 1
 	return ret
@@ -4303,7 +4377,7 @@ func (self *CCommandLineT) IsReadOnly() (ret bool) {
 ///
 func (self *CCommandLineT) Copy() (ret *CCommandLineT) {
 
-	cRet := C.cefingo_command_line_copy(self.p_command_line)
+	cRet := C.cefingo_command_line_copy((*C.cef_command_line_t)(self.pc_command_line))
 
 	ret = newCCommandLineT(cRet)
 	return ret
@@ -4318,7 +4392,7 @@ func (self *CCommandLineT) InitFromString(
 ) {
 	c_command_line := create_cef_string(command_line)
 
-	C.cefingo_command_line_init_from_string(self.p_command_line, c_command_line.p_cef_string_t)
+	C.cefingo_command_line_init_from_string((*C.cef_command_line_t)(self.pc_command_line), c_command_line.p_cef_string_t)
 
 }
 
@@ -4328,7 +4402,7 @@ func (self *CCommandLineT) InitFromString(
 ///
 func (self *CCommandLineT) Reset() {
 
-	C.cefingo_command_line_reset(self.p_command_line)
+	C.cefingo_command_line_reset((*C.cef_command_line_t)(self.pc_command_line))
 
 }
 
@@ -4340,7 +4414,7 @@ func (self *CCommandLineT) GetArgv(
 	argv CStringListT,
 ) {
 
-	C.cefingo_command_line_get_argv(self.p_command_line, (C.cef_string_list_t)(argv))
+	C.cefingo_command_line_get_argv((*C.cef_command_line_t)(self.pc_command_line), (C.cef_string_list_t)(argv))
 
 }
 
@@ -4351,7 +4425,7 @@ func (self *CCommandLineT) GetArgv(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CCommandLineT) GetCommandLineString() (ret string) {
 
-	cRet := C.cefingo_command_line_get_command_line_string(self.p_command_line)
+	cRet := C.cefingo_command_line_get_command_line_string((*C.cef_command_line_t)(self.pc_command_line))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -4367,7 +4441,7 @@ func (self *CCommandLineT) GetCommandLineString() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CCommandLineT) GetProgram() (ret string) {
 
-	cRet := C.cefingo_command_line_get_program(self.p_command_line)
+	cRet := C.cefingo_command_line_get_program((*C.cef_command_line_t)(self.pc_command_line))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -4385,7 +4459,7 @@ func (self *CCommandLineT) SetProgram(
 ) {
 	c_program := create_cef_string(program)
 
-	C.cefingo_command_line_set_program(self.p_command_line, c_program.p_cef_string_t)
+	C.cefingo_command_line_set_program((*C.cef_command_line_t)(self.pc_command_line), c_program.p_cef_string_t)
 
 }
 
@@ -4394,7 +4468,7 @@ func (self *CCommandLineT) SetProgram(
 ///
 func (self *CCommandLineT) HasSwitches() (ret bool) {
 
-	cRet := C.cefingo_command_line_has_switches(self.p_command_line)
+	cRet := C.cefingo_command_line_has_switches((*C.cef_command_line_t)(self.pc_command_line))
 
 	ret = cRet == 1
 	return ret
@@ -4408,7 +4482,7 @@ func (self *CCommandLineT) HasSwitch(
 ) (ret bool) {
 	c_name := create_cef_string(name)
 
-	cRet := C.cefingo_command_line_has_switch(self.p_command_line, c_name.p_cef_string_t)
+	cRet := C.cefingo_command_line_has_switch((*C.cef_command_line_t)(self.pc_command_line), c_name.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -4424,7 +4498,7 @@ func (self *CCommandLineT) GetSwitchValue(
 ) (ret string) {
 	c_name := create_cef_string(name)
 
-	cRet := C.cefingo_command_line_get_switch_value(self.p_command_line, c_name.p_cef_string_t)
+	cRet := C.cefingo_command_line_get_switch_value((*C.cef_command_line_t)(self.pc_command_line), c_name.p_cef_string_t)
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -4442,7 +4516,7 @@ func (self *CCommandLineT) GetSwitches(
 	switches CStringMapT,
 ) {
 
-	C.cefingo_command_line_get_switches(self.p_command_line, (C.cef_string_map_t)(switches))
+	C.cefingo_command_line_get_switches((*C.cef_command_line_t)(self.pc_command_line), (C.cef_string_map_t)(switches))
 
 }
 
@@ -4455,7 +4529,7 @@ func (self *CCommandLineT) AppendSwitch(
 ) {
 	c_name := create_cef_string(name)
 
-	C.cefingo_command_line_append_switch(self.p_command_line, c_name.p_cef_string_t)
+	C.cefingo_command_line_append_switch((*C.cef_command_line_t)(self.pc_command_line), c_name.p_cef_string_t)
 
 }
 
@@ -4469,7 +4543,7 @@ func (self *CCommandLineT) AppendSwitchWithValue(
 	c_name := create_cef_string(name)
 	c_value := create_cef_string(value)
 
-	C.cefingo_command_line_append_switch_with_value(self.p_command_line, c_name.p_cef_string_t, c_value.p_cef_string_t)
+	C.cefingo_command_line_append_switch_with_value((*C.cef_command_line_t)(self.pc_command_line), c_name.p_cef_string_t, c_value.p_cef_string_t)
 
 }
 
@@ -4478,7 +4552,7 @@ func (self *CCommandLineT) AppendSwitchWithValue(
 ///
 func (self *CCommandLineT) HasArguments() (ret bool) {
 
-	cRet := C.cefingo_command_line_has_arguments(self.p_command_line)
+	cRet := C.cefingo_command_line_has_arguments((*C.cef_command_line_t)(self.pc_command_line))
 
 	ret = cRet == 1
 	return ret
@@ -4491,7 +4565,7 @@ func (self *CCommandLineT) GetArguments(
 	arguments CStringListT,
 ) {
 
-	C.cefingo_command_line_get_arguments(self.p_command_line, (C.cef_string_list_t)(arguments))
+	C.cefingo_command_line_get_arguments((*C.cef_command_line_t)(self.pc_command_line), (C.cef_string_list_t)(arguments))
 
 }
 
@@ -4503,7 +4577,7 @@ func (self *CCommandLineT) AppendArgument(
 ) {
 	c_argument := create_cef_string(argument)
 
-	C.cefingo_command_line_append_argument(self.p_command_line, c_argument.p_cef_string_t)
+	C.cefingo_command_line_append_argument((*C.cef_command_line_t)(self.pc_command_line), c_argument.p_cef_string_t)
 
 }
 
@@ -4516,7 +4590,7 @@ func (self *CCommandLineT) PrependWrapper(
 ) {
 	c_wrapper := create_cef_string(wrapper)
 
-	C.cefingo_command_line_prepend_wrapper(self.p_command_line, c_wrapper.p_cef_string_t)
+	C.cefingo_command_line_prepend_wrapper((*C.cef_command_line_t)(self.pc_command_line), c_wrapper.p_cef_string_t)
 
 }
 
@@ -4549,10 +4623,12 @@ func CommandLineGetGlobal() (ret *CCommandLineT) {
 // Callback structure used for continuation of custom context menu display.
 ///
 
+type cCRunContextMenuCallbackT C.cef_run_context_menu_callback_t
+
 // Go type for cef_run_context_menu_callback_t
 type CRunContextMenuCallbackT struct {
-	noCopy                      noCopy
-	p_run_context_menu_callback *C.cef_run_context_menu_callback_t
+	noCopy                       noCopy
+	pc_run_context_menu_callback *cCRunContextMenuCallbackT
 }
 
 type RefToCRunContextMenuCallbackT struct {
@@ -4578,21 +4654,22 @@ func newCRunContextMenuCallbackT(p *C.cef_run_context_menu_callback_t) *CRunCont
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T121.1:")
-	BaseAddRef(p)
-	go_run_context_menu_callback := CRunContextMenuCallbackT{noCopy{}, p}
+	pc := (*cCRunContextMenuCallbackT)(p)
+	BaseAddRef(pc)
+	go_run_context_menu_callback := CRunContextMenuCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_run_context_menu_callback, func(g *CRunContextMenuCallbackT) {
-		Tracef(unsafe.Pointer(g.p_run_context_menu_callback), "T121.2:")
-		BaseRelease(g.p_run_context_menu_callback)
+		Tracef(unsafe.Pointer(g.pc_run_context_menu_callback), "T121.2:")
+		BaseRelease(g.pc_run_context_menu_callback)
 	})
 	return &go_run_context_menu_callback
 }
 
 // *C.cef_run_context_menu_callback_t has refCounted interface
 func (run_context_menu_callback *CRunContextMenuCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(run_context_menu_callback.p_run_context_menu_callback)
+	return BaseHasOneRef(run_context_menu_callback.pc_run_context_menu_callback)
 }
 
-func (p *C.cef_run_context_menu_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRunContextMenuCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -4605,7 +4682,7 @@ func (self *CRunContextMenuCallbackT) Cont(
 	event_flags CEventFlagsT,
 ) {
 
-	C.cefingo_run_context_menu_callback_cont(self.p_run_context_menu_callback, (C.int)(command_id), (C.cef_event_flags_t)(event_flags))
+	C.cefingo_run_context_menu_callback_cont((*C.cef_run_context_menu_callback_t)(self.pc_run_context_menu_callback), (C.int)(command_id), (C.cef_event_flags_t)(event_flags))
 
 }
 
@@ -4614,7 +4691,7 @@ func (self *CRunContextMenuCallbackT) Cont(
 ///
 func (self *CRunContextMenuCallbackT) Cancel() {
 
-	C.cefingo_run_context_menu_callback_cancel(self.p_run_context_menu_callback)
+	C.cefingo_run_context_menu_callback_cancel((*C.cef_run_context_menu_callback_t)(self.pc_run_context_menu_callback))
 
 }
 
@@ -4623,10 +4700,12 @@ func (self *CRunContextMenuCallbackT) Cancel() {
 // structure will be called on the UI thread.
 ///
 
+type cCContextMenuHandlerT C.cef_context_menu_handler_t
+
 // Go type for cef_context_menu_handler_t
 type CContextMenuHandlerT struct {
-	noCopy                 noCopy
-	p_context_menu_handler *C.cef_context_menu_handler_t
+	noCopy                  noCopy
+	pc_context_menu_handler *cCContextMenuHandlerT
 }
 
 type RefToCContextMenuHandlerT struct {
@@ -4652,21 +4731,22 @@ func newCContextMenuHandlerT(p *C.cef_context_menu_handler_t) *CContextMenuHandl
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T122.1:")
-	BaseAddRef(p)
-	go_context_menu_handler := CContextMenuHandlerT{noCopy{}, p}
+	pc := (*cCContextMenuHandlerT)(p)
+	BaseAddRef(pc)
+	go_context_menu_handler := CContextMenuHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_context_menu_handler, func(g *CContextMenuHandlerT) {
-		Tracef(unsafe.Pointer(g.p_context_menu_handler), "T122.2:")
-		BaseRelease(g.p_context_menu_handler)
+		Tracef(unsafe.Pointer(g.pc_context_menu_handler), "T122.2:")
+		BaseRelease(g.pc_context_menu_handler)
 	})
 	return &go_context_menu_handler
 }
 
 // *C.cef_context_menu_handler_t has refCounted interface
 func (context_menu_handler *CContextMenuHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(context_menu_handler.p_context_menu_handler)
+	return BaseHasOneRef(context_menu_handler.pc_context_menu_handler)
 }
 
-func (p *C.cef_context_menu_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCContextMenuHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -4739,23 +4819,24 @@ type OnContextMenuDismissedHandler interface {
 }
 
 var context_menu_handler_handlers = struct {
-	handler                           map[*C.cef_context_menu_handler_t]interface{}
-	on_before_context_menu_handler    map[*C.cef_context_menu_handler_t]OnBeforeContextMenuHandler
-	run_context_menu_handler          map[*C.cef_context_menu_handler_t]RunContextMenuHandler
-	on_context_menu_command_handler   map[*C.cef_context_menu_handler_t]OnContextMenuCommandHandler
-	on_context_menu_dismissed_handler map[*C.cef_context_menu_handler_t]OnContextMenuDismissedHandler
+	handler                           map[*cCContextMenuHandlerT]interface{}
+	on_before_context_menu_handler    map[*cCContextMenuHandlerT]OnBeforeContextMenuHandler
+	run_context_menu_handler          map[*cCContextMenuHandlerT]RunContextMenuHandler
+	on_context_menu_command_handler   map[*cCContextMenuHandlerT]OnContextMenuCommandHandler
+	on_context_menu_dismissed_handler map[*cCContextMenuHandlerT]OnContextMenuDismissedHandler
 }{
-	map[*C.cef_context_menu_handler_t]interface{}{},
-	map[*C.cef_context_menu_handler_t]OnBeforeContextMenuHandler{},
-	map[*C.cef_context_menu_handler_t]RunContextMenuHandler{},
-	map[*C.cef_context_menu_handler_t]OnContextMenuCommandHandler{},
-	map[*C.cef_context_menu_handler_t]OnContextMenuDismissedHandler{},
+	map[*cCContextMenuHandlerT]interface{}{},
+	map[*cCContextMenuHandlerT]OnBeforeContextMenuHandler{},
+	map[*cCContextMenuHandlerT]RunContextMenuHandler{},
+	map[*cCContextMenuHandlerT]OnContextMenuCommandHandler{},
+	map[*cCContextMenuHandlerT]OnContextMenuDismissedHandler{},
 }
 
 // AllocCContextMenuHandlerT allocates CContextMenuHandlerT and construct it
 func AllocCContextMenuHandlerT() *CContextMenuHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_context_menu_handler_wrapper_t, "T122.3:")
 	cefp := C.cefingo_construct_context_menu_handler((*C.cefingo_context_menu_handler_wrapper_t)(up))
+	cgop := (*cCContextMenuHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_context_menu_handler_t itself in DeassocFunc,
@@ -4764,11 +4845,11 @@ func AllocCContextMenuHandlerT() *CContextMenuHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(context_menu_handler_handlers.handler, cefp)
-		delete(context_menu_handler_handlers.on_before_context_menu_handler, cefp)
-		delete(context_menu_handler_handlers.run_context_menu_handler, cefp)
-		delete(context_menu_handler_handlers.on_context_menu_command_handler, cefp)
-		delete(context_menu_handler_handlers.on_context_menu_dismissed_handler, cefp)
+		delete(context_menu_handler_handlers.handler, cgop)
+		delete(context_menu_handler_handlers.on_before_context_menu_handler, cgop)
+		delete(context_menu_handler_handlers.run_context_menu_handler, cgop)
+		delete(context_menu_handler_handlers.on_context_menu_command_handler, cgop)
+		delete(context_menu_handler_handlers.on_context_menu_dismissed_handler, cgop)
 	}))
 
 	return newCContextMenuHandlerT(cefp)
@@ -4778,7 +4859,7 @@ func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextM
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := context_menu_handler.p_context_menu_handler
+	cp := context_menu_handler.pc_context_menu_handler
 	context_menu_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforeContextMenuHandler); ok {
@@ -4807,7 +4888,7 @@ func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextM
 
 func (context_menu_handler *CContextMenuHandlerT) UnbindAll() {
 
-	cp := context_menu_handler.p_context_menu_handler
+	cp := context_menu_handler.pc_context_menu_handler
 	delete(context_menu_handler_handlers.handler, cp)
 
 	delete(context_menu_handler_handlers.on_before_context_menu_handler, cp)
@@ -4821,7 +4902,7 @@ func (context_menu_handler *CContextMenuHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := context_menu_handler.p_context_menu_handler
+	cp := context_menu_handler.pc_context_menu_handler
 	return context_menu_handler_handlers.handler[cp]
 }
 
@@ -4830,10 +4911,12 @@ func (context_menu_handler *CContextMenuHandlerT) Handler() interface{} {
 // structure can only be accessed on browser process the UI thread.
 ///
 
+type cCContextMenuParamsT C.cef_context_menu_params_t
+
 // Go type for cef_context_menu_params_t
 type CContextMenuParamsT struct {
-	noCopy                noCopy
-	p_context_menu_params *C.cef_context_menu_params_t
+	noCopy                 noCopy
+	pc_context_menu_params *cCContextMenuParamsT
 }
 
 type RefToCContextMenuParamsT struct {
@@ -4859,21 +4942,22 @@ func newCContextMenuParamsT(p *C.cef_context_menu_params_t) *CContextMenuParamsT
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T123.1:")
-	BaseAddRef(p)
-	go_context_menu_params := CContextMenuParamsT{noCopy{}, p}
+	pc := (*cCContextMenuParamsT)(p)
+	BaseAddRef(pc)
+	go_context_menu_params := CContextMenuParamsT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_context_menu_params, func(g *CContextMenuParamsT) {
-		Tracef(unsafe.Pointer(g.p_context_menu_params), "T123.2:")
-		BaseRelease(g.p_context_menu_params)
+		Tracef(unsafe.Pointer(g.pc_context_menu_params), "T123.2:")
+		BaseRelease(g.pc_context_menu_params)
 	})
 	return &go_context_menu_params
 }
 
 // *C.cef_context_menu_params_t has refCounted interface
 func (context_menu_params *CContextMenuParamsT) HasOneRef() bool {
-	return BaseHasOneRef(context_menu_params.p_context_menu_params)
+	return BaseHasOneRef(context_menu_params.pc_context_menu_params)
 }
 
-func (p *C.cef_context_menu_params_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCContextMenuParamsT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -4883,7 +4967,7 @@ func (p *C.cef_context_menu_params_t) cast_to_p_base_ref_counted_t() *C.cef_base
 ///
 func (self *CContextMenuParamsT) GetXcoord() (ret bool) {
 
-	cRet := C.cefingo_context_menu_params_get_xcoord(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_xcoord((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = cRet == 1
 	return ret
@@ -4895,7 +4979,7 @@ func (self *CContextMenuParamsT) GetXcoord() (ret bool) {
 ///
 func (self *CContextMenuParamsT) GetYcoord() (ret bool) {
 
-	cRet := C.cefingo_context_menu_params_get_ycoord(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_ycoord((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = cRet == 1
 	return ret
@@ -4907,7 +4991,7 @@ func (self *CContextMenuParamsT) GetYcoord() (ret bool) {
 ///
 func (self *CContextMenuParamsT) GetTypeFlags() (ret CContextMenuTypeFlagsT) {
 
-	cRet := C.cefingo_context_menu_params_get_type_flags(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_type_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = CContextMenuTypeFlagsT(cRet)
 	return ret
@@ -4920,7 +5004,7 @@ func (self *CContextMenuParamsT) GetTypeFlags() (ret CContextMenuTypeFlagsT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetLinkUrl() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_link_url(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_link_url((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -4937,7 +5021,7 @@ func (self *CContextMenuParamsT) GetLinkUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetUnfilteredLinkUrl() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_unfiltered_link_url(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_unfiltered_link_url((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -4954,7 +5038,7 @@ func (self *CContextMenuParamsT) GetUnfilteredLinkUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetSourceUrl() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_source_url(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_source_url((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -4970,7 +5054,7 @@ func (self *CContextMenuParamsT) GetSourceUrl() (ret string) {
 ///
 func (self *CContextMenuParamsT) HasImageContents() (ret bool) {
 
-	cRet := C.cefingo_context_menu_params_has_image_contents(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_has_image_contents((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = cRet == 1
 	return ret
@@ -4983,7 +5067,7 @@ func (self *CContextMenuParamsT) HasImageContents() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetTitleText() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_title_text(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_title_text((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -4999,7 +5083,7 @@ func (self *CContextMenuParamsT) GetTitleText() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetPageUrl() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_page_url(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_page_url((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -5015,7 +5099,7 @@ func (self *CContextMenuParamsT) GetPageUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetFrameUrl() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_frame_url(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_frame_url((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -5032,7 +5116,7 @@ func (self *CContextMenuParamsT) GetFrameUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetFrameCharset() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_frame_charset(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_frame_charset((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -5047,7 +5131,7 @@ func (self *CContextMenuParamsT) GetFrameCharset() (ret string) {
 ///
 func (self *CContextMenuParamsT) GetMediaType() (ret CContextMenuMediaTypeT) {
 
-	cRet := C.cefingo_context_menu_params_get_media_type(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_media_type((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = CContextMenuMediaTypeT(cRet)
 	return ret
@@ -5059,7 +5143,7 @@ func (self *CContextMenuParamsT) GetMediaType() (ret CContextMenuMediaTypeT) {
 ///
 func (self *CContextMenuParamsT) GetMediaStateFlags() (ret CContextMenuMediaStateFlagsT) {
 
-	cRet := C.cefingo_context_menu_params_get_media_state_flags(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_media_state_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = CContextMenuMediaStateFlagsT(cRet)
 	return ret
@@ -5072,7 +5156,7 @@ func (self *CContextMenuParamsT) GetMediaStateFlags() (ret CContextMenuMediaStat
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetSelectionText() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_selection_text(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_selection_text((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -5089,7 +5173,7 @@ func (self *CContextMenuParamsT) GetSelectionText() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetMisspelledWord() (ret string) {
 
-	cRet := C.cefingo_context_menu_params_get_misspelled_word(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_misspelled_word((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -5108,7 +5192,7 @@ func (self *CContextMenuParamsT) GetDictionarySuggestions(
 	suggestions CStringListT,
 ) (ret bool) {
 
-	cRet := C.cefingo_context_menu_params_get_dictionary_suggestions(self.p_context_menu_params, (C.cef_string_list_t)(suggestions))
+	cRet := C.cefingo_context_menu_params_get_dictionary_suggestions((*C.cef_context_menu_params_t)(self.pc_context_menu_params), (C.cef_string_list_t)(suggestions))
 
 	ret = cRet == 1
 	return ret
@@ -5119,7 +5203,7 @@ func (self *CContextMenuParamsT) GetDictionarySuggestions(
 ///
 func (self *CContextMenuParamsT) IsEditable() (ret bool) {
 
-	cRet := C.cefingo_context_menu_params_is_editable(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_is_editable((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = cRet == 1
 	return ret
@@ -5131,7 +5215,7 @@ func (self *CContextMenuParamsT) IsEditable() (ret bool) {
 ///
 func (self *CContextMenuParamsT) IsSpellCheckEnabled() (ret bool) {
 
-	cRet := C.cefingo_context_menu_params_is_spell_check_enabled(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_is_spell_check_enabled((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = cRet == 1
 	return ret
@@ -5143,7 +5227,7 @@ func (self *CContextMenuParamsT) IsSpellCheckEnabled() (ret bool) {
 ///
 func (self *CContextMenuParamsT) GetEditStateFlags() (ret CContextMenuEditStateFlagsT) {
 
-	cRet := C.cefingo_context_menu_params_get_edit_state_flags(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_get_edit_state_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = CContextMenuEditStateFlagsT(cRet)
 	return ret
@@ -5156,7 +5240,7 @@ func (self *CContextMenuParamsT) GetEditStateFlags() (ret CContextMenuEditStateF
 ///
 func (self *CContextMenuParamsT) IsCustomMenu() (ret bool) {
 
-	cRet := C.cefingo_context_menu_params_is_custom_menu(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_is_custom_menu((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = cRet == 1
 	return ret
@@ -5167,7 +5251,7 @@ func (self *CContextMenuParamsT) IsCustomMenu() (ret bool) {
 ///
 func (self *CContextMenuParamsT) IsPepperMenu() (ret bool) {
 
-	cRet := C.cefingo_context_menu_params_is_pepper_menu(self.p_context_menu_params)
+	cRet := C.cefingo_context_menu_params_is_pepper_menu((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
 	ret = cRet == 1
 	return ret
@@ -5180,10 +5264,12 @@ func (self *CContextMenuParamsT) IsPepperMenu() (ret bool) {
 // called on any thread unless otherwise indicated.
 ///
 
+type cCCookieManagerT C.cef_cookie_manager_t
+
 // Go type for cef_cookie_manager_t
 type CCookieManagerT struct {
-	noCopy           noCopy
-	p_cookie_manager *C.cef_cookie_manager_t
+	noCopy            noCopy
+	pc_cookie_manager *cCCookieManagerT
 }
 
 type RefToCCookieManagerT struct {
@@ -5209,21 +5295,22 @@ func newCCookieManagerT(p *C.cef_cookie_manager_t) *CCookieManagerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T124.1:")
-	BaseAddRef(p)
-	go_cookie_manager := CCookieManagerT{noCopy{}, p}
+	pc := (*cCCookieManagerT)(p)
+	BaseAddRef(pc)
+	go_cookie_manager := CCookieManagerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_cookie_manager, func(g *CCookieManagerT) {
-		Tracef(unsafe.Pointer(g.p_cookie_manager), "T124.2:")
-		BaseRelease(g.p_cookie_manager)
+		Tracef(unsafe.Pointer(g.pc_cookie_manager), "T124.2:")
+		BaseRelease(g.pc_cookie_manager)
 	})
 	return &go_cookie_manager
 }
 
 // *C.cef_cookie_manager_t has refCounted interface
 func (cookie_manager *CCookieManagerT) HasOneRef() bool {
-	return BaseHasOneRef(cookie_manager.p_cookie_manager)
+	return BaseHasOneRef(cookie_manager.pc_cookie_manager)
 }
 
-func (p *C.cef_cookie_manager_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCCookieManagerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -5243,11 +5330,11 @@ func (self *CCookieManagerT) SetSupportedSchemes(
 ) {
 	var goTmpcallback *C.cef_completion_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_completion_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_completion_callback)
+		goTmpcallback = (*C.cef_completion_callback_t)(callback.pc_completion_callback)
 	}
 
-	C.cefingo_cookie_manager_set_supported_schemes(self.p_cookie_manager, (C.cef_string_list_t)(schemes), (C.int)(include_defaults), goTmpcallback)
+	C.cefingo_cookie_manager_set_supported_schemes((*C.cef_cookie_manager_t)(self.pc_cookie_manager), (C.cef_string_list_t)(schemes), (C.int)(include_defaults), goTmpcallback)
 
 }
 
@@ -5261,11 +5348,11 @@ func (self *CCookieManagerT) VisitAllCookies(
 ) (ret bool) {
 	var goTmpvisitor *C.cef_cookie_visitor_t
 	if visitor != nil {
-		goTmpvisitor = visitor.p_cookie_visitor
-		BaseAddRef(goTmpvisitor)
+		BaseAddRef(visitor.pc_cookie_visitor)
+		goTmpvisitor = (*C.cef_cookie_visitor_t)(visitor.pc_cookie_visitor)
 	}
 
-	cRet := C.cefingo_cookie_manager_visit_all_cookies(self.p_cookie_manager, goTmpvisitor)
+	cRet := C.cefingo_cookie_manager_visit_all_cookies((*C.cef_cookie_manager_t)(self.pc_cookie_manager), goTmpvisitor)
 
 	ret = cRet == 1
 	return ret
@@ -5286,11 +5373,11 @@ func (self *CCookieManagerT) VisitUrlCookies(
 	c_url := create_cef_string(url)
 	var goTmpvisitor *C.cef_cookie_visitor_t
 	if visitor != nil {
-		goTmpvisitor = visitor.p_cookie_visitor
-		BaseAddRef(goTmpvisitor)
+		BaseAddRef(visitor.pc_cookie_visitor)
+		goTmpvisitor = (*C.cef_cookie_visitor_t)(visitor.pc_cookie_visitor)
 	}
 
-	cRet := C.cefingo_cookie_manager_visit_url_cookies(self.p_cookie_manager, c_url.p_cef_string_t, (C.int)(includeHttpOnly), goTmpvisitor)
+	cRet := C.cefingo_cookie_manager_visit_url_cookies((*C.cef_cookie_manager_t)(self.pc_cookie_manager), c_url.p_cef_string_t, (C.int)(includeHttpOnly), goTmpvisitor)
 
 	ret = cRet == 1
 	return ret
@@ -5313,11 +5400,11 @@ func (self *CCookieManagerT) SetCookie(
 	c_url := create_cef_string(url)
 	var goTmpcallback *C.cef_set_cookie_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_set_cookie_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_set_cookie_callback)
+		goTmpcallback = (*C.cef_set_cookie_callback_t)(callback.pc_set_cookie_callback)
 	}
 
-	cRet := C.cefingo_cookie_manager_set_cookie(self.p_cookie_manager, c_url.p_cef_string_t, (*C.cef_cookie_t)(cookie), goTmpcallback)
+	cRet := C.cefingo_cookie_manager_set_cookie((*C.cef_cookie_manager_t)(self.pc_cookie_manager), c_url.p_cef_string_t, (*C.cef_cookie_t)(cookie), goTmpcallback)
 
 	ret = cRet == 1
 	return ret
@@ -5343,11 +5430,11 @@ func (self *CCookieManagerT) DeleteCookies(
 	c_cookie_name := create_cef_string(cookie_name)
 	var goTmpcallback *C.cef_delete_cookies_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_delete_cookies_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_delete_cookies_callback)
+		goTmpcallback = (*C.cef_delete_cookies_callback_t)(callback.pc_delete_cookies_callback)
 	}
 
-	cRet := C.cefingo_cookie_manager_delete_cookies(self.p_cookie_manager, c_url.p_cef_string_t, c_cookie_name.p_cef_string_t, goTmpcallback)
+	cRet := C.cefingo_cookie_manager_delete_cookies((*C.cef_cookie_manager_t)(self.pc_cookie_manager), c_url.p_cef_string_t, c_cookie_name.p_cef_string_t, goTmpcallback)
 
 	ret = cRet == 1
 	return ret
@@ -5363,11 +5450,11 @@ func (self *CCookieManagerT) FlushStore(
 ) (ret bool) {
 	var goTmpcallback *C.cef_completion_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_completion_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_completion_callback)
+		goTmpcallback = (*C.cef_completion_callback_t)(callback.pc_completion_callback)
 	}
 
-	cRet := C.cefingo_cookie_manager_flush_store(self.p_cookie_manager, goTmpcallback)
+	cRet := C.cefingo_cookie_manager_flush_store((*C.cef_cookie_manager_t)(self.pc_cookie_manager), goTmpcallback)
 
 	ret = cRet == 1
 	return ret
@@ -5386,8 +5473,8 @@ func CookieManagerGetGlobalManager(
 ) (ret *CCookieManagerT) {
 	var goTmpcallback *C.cef_completion_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_completion_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_completion_callback)
+		goTmpcallback = (*C.cef_completion_callback_t)(callback.pc_completion_callback)
 	}
 
 	cRet := C.cef_cookie_manager_get_global_manager(goTmpcallback)
@@ -5401,10 +5488,12 @@ func CookieManagerGetGlobalManager(
 // structure will always be called on the UI thread.
 ///
 
+type cCCookieVisitorT C.cef_cookie_visitor_t
+
 // Go type for cef_cookie_visitor_t
 type CCookieVisitorT struct {
-	noCopy           noCopy
-	p_cookie_visitor *C.cef_cookie_visitor_t
+	noCopy            noCopy
+	pc_cookie_visitor *cCCookieVisitorT
 }
 
 type RefToCCookieVisitorT struct {
@@ -5430,21 +5519,22 @@ func newCCookieVisitorT(p *C.cef_cookie_visitor_t) *CCookieVisitorT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T125.1:")
-	BaseAddRef(p)
-	go_cookie_visitor := CCookieVisitorT{noCopy{}, p}
+	pc := (*cCCookieVisitorT)(p)
+	BaseAddRef(pc)
+	go_cookie_visitor := CCookieVisitorT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_cookie_visitor, func(g *CCookieVisitorT) {
-		Tracef(unsafe.Pointer(g.p_cookie_visitor), "T125.2:")
-		BaseRelease(g.p_cookie_visitor)
+		Tracef(unsafe.Pointer(g.pc_cookie_visitor), "T125.2:")
+		BaseRelease(g.pc_cookie_visitor)
 	})
 	return &go_cookie_visitor
 }
 
 // *C.cef_cookie_visitor_t has refCounted interface
 func (cookie_visitor *CCookieVisitorT) HasOneRef() bool {
-	return BaseHasOneRef(cookie_visitor.p_cookie_visitor)
+	return BaseHasOneRef(cookie_visitor.pc_cookie_visitor)
 }
 
-func (p *C.cef_cookie_visitor_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCCookieVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -5465,17 +5555,18 @@ type CCookieVisitorTVisitHandler interface {
 }
 
 var cookie_visitor_handlers = struct {
-	handler       map[*C.cef_cookie_visitor_t]interface{}
-	visit_handler map[*C.cef_cookie_visitor_t]CCookieVisitorTVisitHandler
+	handler       map[*cCCookieVisitorT]interface{}
+	visit_handler map[*cCCookieVisitorT]CCookieVisitorTVisitHandler
 }{
-	map[*C.cef_cookie_visitor_t]interface{}{},
-	map[*C.cef_cookie_visitor_t]CCookieVisitorTVisitHandler{},
+	map[*cCCookieVisitorT]interface{}{},
+	map[*cCCookieVisitorT]CCookieVisitorTVisitHandler{},
 }
 
 // AllocCCookieVisitorT allocates CCookieVisitorT and construct it
 func AllocCCookieVisitorT() *CCookieVisitorT {
 	up := c_calloc(1, C.sizeof_cefingo_cookie_visitor_wrapper_t, "T125.3:")
 	cefp := C.cefingo_construct_cookie_visitor((*C.cefingo_cookie_visitor_wrapper_t)(up))
+	cgop := (*cCCookieVisitorT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_cookie_visitor_t itself in DeassocFunc,
@@ -5484,8 +5575,8 @@ func AllocCCookieVisitorT() *CCookieVisitorT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(cookie_visitor_handlers.handler, cefp)
-		delete(cookie_visitor_handlers.visit_handler, cefp)
+		delete(cookie_visitor_handlers.handler, cgop)
+		delete(cookie_visitor_handlers.visit_handler, cgop)
 	}))
 
 	return newCCookieVisitorT(cefp)
@@ -5495,7 +5586,7 @@ func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := cookie_visitor.p_cookie_visitor
+	cp := cookie_visitor.pc_cookie_visitor
 	cookie_visitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CCookieVisitorTVisitHandler); ok {
@@ -5512,7 +5603,7 @@ func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
 
 func (cookie_visitor *CCookieVisitorT) UnbindAll() {
 
-	cp := cookie_visitor.p_cookie_visitor
+	cp := cookie_visitor.pc_cookie_visitor
 	delete(cookie_visitor_handlers.handler, cp)
 
 	delete(cookie_visitor_handlers.visit_handler, cp)
@@ -5523,7 +5614,7 @@ func (cookie_visitor *CCookieVisitorT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := cookie_visitor.p_cookie_visitor
+	cp := cookie_visitor.pc_cookie_visitor
 	return cookie_visitor_handlers.handler[cp]
 }
 
@@ -5532,10 +5623,12 @@ func (cookie_visitor *CCookieVisitorT) Handler() interface{} {
 // cef_cookie_manager_t::set_cookie().
 ///
 
+type cCSetCookieCallbackT C.cef_set_cookie_callback_t
+
 // Go type for cef_set_cookie_callback_t
 type CSetCookieCallbackT struct {
-	noCopy                noCopy
-	p_set_cookie_callback *C.cef_set_cookie_callback_t
+	noCopy                 noCopy
+	pc_set_cookie_callback *cCSetCookieCallbackT
 }
 
 type RefToCSetCookieCallbackT struct {
@@ -5561,21 +5654,22 @@ func newCSetCookieCallbackT(p *C.cef_set_cookie_callback_t) *CSetCookieCallbackT
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T126.1:")
-	BaseAddRef(p)
-	go_set_cookie_callback := CSetCookieCallbackT{noCopy{}, p}
+	pc := (*cCSetCookieCallbackT)(p)
+	BaseAddRef(pc)
+	go_set_cookie_callback := CSetCookieCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_set_cookie_callback, func(g *CSetCookieCallbackT) {
-		Tracef(unsafe.Pointer(g.p_set_cookie_callback), "T126.2:")
-		BaseRelease(g.p_set_cookie_callback)
+		Tracef(unsafe.Pointer(g.pc_set_cookie_callback), "T126.2:")
+		BaseRelease(g.pc_set_cookie_callback)
 	})
 	return &go_set_cookie_callback
 }
 
 // *C.cef_set_cookie_callback_t has refCounted interface
 func (set_cookie_callback *CSetCookieCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(set_cookie_callback.p_set_cookie_callback)
+	return BaseHasOneRef(set_cookie_callback.pc_set_cookie_callback)
 }
 
-func (p *C.cef_set_cookie_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCSetCookieCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -5591,17 +5685,18 @@ type CSetCookieCallbackTOnCompleteHandler interface {
 }
 
 var set_cookie_callback_handlers = struct {
-	handler             map[*C.cef_set_cookie_callback_t]interface{}
-	on_complete_handler map[*C.cef_set_cookie_callback_t]CSetCookieCallbackTOnCompleteHandler
+	handler             map[*cCSetCookieCallbackT]interface{}
+	on_complete_handler map[*cCSetCookieCallbackT]CSetCookieCallbackTOnCompleteHandler
 }{
-	map[*C.cef_set_cookie_callback_t]interface{}{},
-	map[*C.cef_set_cookie_callback_t]CSetCookieCallbackTOnCompleteHandler{},
+	map[*cCSetCookieCallbackT]interface{}{},
+	map[*cCSetCookieCallbackT]CSetCookieCallbackTOnCompleteHandler{},
 }
 
 // AllocCSetCookieCallbackT allocates CSetCookieCallbackT and construct it
 func AllocCSetCookieCallbackT() *CSetCookieCallbackT {
 	up := c_calloc(1, C.sizeof_cefingo_set_cookie_callback_wrapper_t, "T126.3:")
 	cefp := C.cefingo_construct_set_cookie_callback((*C.cefingo_set_cookie_callback_wrapper_t)(up))
+	cgop := (*cCSetCookieCallbackT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_set_cookie_callback_t itself in DeassocFunc,
@@ -5610,8 +5705,8 @@ func AllocCSetCookieCallbackT() *CSetCookieCallbackT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(set_cookie_callback_handlers.handler, cefp)
-		delete(set_cookie_callback_handlers.on_complete_handler, cefp)
+		delete(set_cookie_callback_handlers.handler, cgop)
+		delete(set_cookie_callback_handlers.on_complete_handler, cgop)
 	}))
 
 	return newCSetCookieCallbackT(cefp)
@@ -5621,7 +5716,7 @@ func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieC
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := set_cookie_callback.p_set_cookie_callback
+	cp := set_cookie_callback.pc_set_cookie_callback
 	set_cookie_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(CSetCookieCallbackTOnCompleteHandler); ok {
@@ -5638,7 +5733,7 @@ func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieC
 
 func (set_cookie_callback *CSetCookieCallbackT) UnbindAll() {
 
-	cp := set_cookie_callback.p_set_cookie_callback
+	cp := set_cookie_callback.pc_set_cookie_callback
 	delete(set_cookie_callback_handlers.handler, cp)
 
 	delete(set_cookie_callback_handlers.on_complete_handler, cp)
@@ -5649,7 +5744,7 @@ func (set_cookie_callback *CSetCookieCallbackT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := set_cookie_callback.p_set_cookie_callback
+	cp := set_cookie_callback.pc_set_cookie_callback
 	return set_cookie_callback_handlers.handler[cp]
 }
 
@@ -5658,10 +5753,12 @@ func (set_cookie_callback *CSetCookieCallbackT) Handler() interface{} {
 // cef_cookie_manager_t::delete_cookies().
 ///
 
+type cCDeleteCookiesCallbackT C.cef_delete_cookies_callback_t
+
 // Go type for cef_delete_cookies_callback_t
 type CDeleteCookiesCallbackT struct {
-	noCopy                    noCopy
-	p_delete_cookies_callback *C.cef_delete_cookies_callback_t
+	noCopy                     noCopy
+	pc_delete_cookies_callback *cCDeleteCookiesCallbackT
 }
 
 type RefToCDeleteCookiesCallbackT struct {
@@ -5687,21 +5784,22 @@ func newCDeleteCookiesCallbackT(p *C.cef_delete_cookies_callback_t) *CDeleteCook
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T127.1:")
-	BaseAddRef(p)
-	go_delete_cookies_callback := CDeleteCookiesCallbackT{noCopy{}, p}
+	pc := (*cCDeleteCookiesCallbackT)(p)
+	BaseAddRef(pc)
+	go_delete_cookies_callback := CDeleteCookiesCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_delete_cookies_callback, func(g *CDeleteCookiesCallbackT) {
-		Tracef(unsafe.Pointer(g.p_delete_cookies_callback), "T127.2:")
-		BaseRelease(g.p_delete_cookies_callback)
+		Tracef(unsafe.Pointer(g.pc_delete_cookies_callback), "T127.2:")
+		BaseRelease(g.pc_delete_cookies_callback)
 	})
 	return &go_delete_cookies_callback
 }
 
 // *C.cef_delete_cookies_callback_t has refCounted interface
 func (delete_cookies_callback *CDeleteCookiesCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(delete_cookies_callback.p_delete_cookies_callback)
+	return BaseHasOneRef(delete_cookies_callback.pc_delete_cookies_callback)
 }
 
-func (p *C.cef_delete_cookies_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDeleteCookiesCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -5717,17 +5815,18 @@ type CDeleteCookiesCallbackTOnCompleteHandler interface {
 }
 
 var delete_cookies_callback_handlers = struct {
-	handler             map[*C.cef_delete_cookies_callback_t]interface{}
-	on_complete_handler map[*C.cef_delete_cookies_callback_t]CDeleteCookiesCallbackTOnCompleteHandler
+	handler             map[*cCDeleteCookiesCallbackT]interface{}
+	on_complete_handler map[*cCDeleteCookiesCallbackT]CDeleteCookiesCallbackTOnCompleteHandler
 }{
-	map[*C.cef_delete_cookies_callback_t]interface{}{},
-	map[*C.cef_delete_cookies_callback_t]CDeleteCookiesCallbackTOnCompleteHandler{},
+	map[*cCDeleteCookiesCallbackT]interface{}{},
+	map[*cCDeleteCookiesCallbackT]CDeleteCookiesCallbackTOnCompleteHandler{},
 }
 
 // AllocCDeleteCookiesCallbackT allocates CDeleteCookiesCallbackT and construct it
 func AllocCDeleteCookiesCallbackT() *CDeleteCookiesCallbackT {
 	up := c_calloc(1, C.sizeof_cefingo_delete_cookies_callback_wrapper_t, "T127.3:")
 	cefp := C.cefingo_construct_delete_cookies_callback((*C.cefingo_delete_cookies_callback_wrapper_t)(up))
+	cgop := (*cCDeleteCookiesCallbackT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_delete_cookies_callback_t itself in DeassocFunc,
@@ -5736,8 +5835,8 @@ func AllocCDeleteCookiesCallbackT() *CDeleteCookiesCallbackT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(delete_cookies_callback_handlers.handler, cefp)
-		delete(delete_cookies_callback_handlers.on_complete_handler, cefp)
+		delete(delete_cookies_callback_handlers.handler, cgop)
+		delete(delete_cookies_callback_handlers.on_complete_handler, cgop)
 	}))
 
 	return newCDeleteCookiesCallbackT(cefp)
@@ -5747,7 +5846,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDe
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := delete_cookies_callback.p_delete_cookies_callback
+	cp := delete_cookies_callback.pc_delete_cookies_callback
 	delete_cookies_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(CDeleteCookiesCallbackTOnCompleteHandler); ok {
@@ -5764,7 +5863,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDe
 
 func (delete_cookies_callback *CDeleteCookiesCallbackT) UnbindAll() {
 
-	cp := delete_cookies_callback.p_delete_cookies_callback
+	cp := delete_cookies_callback.pc_delete_cookies_callback
 	delete(delete_cookies_callback_handlers.handler, cp)
 
 	delete(delete_cookies_callback_handlers.on_complete_handler, cp)
@@ -5775,7 +5874,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := delete_cookies_callback.p_delete_cookies_callback
+	cp := delete_cookies_callback.pc_delete_cookies_callback
 	return delete_cookies_callback_handlers.handler[cp]
 }
 
@@ -5900,10 +5999,12 @@ func SetCrashKeyValue(
 // functions of this structure will be called on the browser process UI thread.
 ///
 
+type cCDevToolsMessageObserverT C.cef_dev_tools_message_observer_t
+
 // Go type for cef_dev_tools_message_observer_t
 type CDevToolsMessageObserverT struct {
-	noCopy                       noCopy
-	p_dev_tools_message_observer *C.cef_dev_tools_message_observer_t
+	noCopy                        noCopy
+	pc_dev_tools_message_observer *cCDevToolsMessageObserverT
 }
 
 type RefToCDevToolsMessageObserverT struct {
@@ -5929,21 +6030,22 @@ func newCDevToolsMessageObserverT(p *C.cef_dev_tools_message_observer_t) *CDevTo
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T128.1:")
-	BaseAddRef(p)
-	go_dev_tools_message_observer := CDevToolsMessageObserverT{noCopy{}, p}
+	pc := (*cCDevToolsMessageObserverT)(p)
+	BaseAddRef(pc)
+	go_dev_tools_message_observer := CDevToolsMessageObserverT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_dev_tools_message_observer, func(g *CDevToolsMessageObserverT) {
-		Tracef(unsafe.Pointer(g.p_dev_tools_message_observer), "T128.2:")
-		BaseRelease(g.p_dev_tools_message_observer)
+		Tracef(unsafe.Pointer(g.pc_dev_tools_message_observer), "T128.2:")
+		BaseRelease(g.pc_dev_tools_message_observer)
 	})
 	return &go_dev_tools_message_observer
 }
 
 // *C.cef_dev_tools_message_observer_t has refCounted interface
 func (dev_tools_message_observer *CDevToolsMessageObserverT) HasOneRef() bool {
-	return BaseHasOneRef(dev_tools_message_observer.p_dev_tools_message_observer)
+	return BaseHasOneRef(dev_tools_message_observer.pc_dev_tools_message_observer)
 }
 
-func (p *C.cef_dev_tools_message_observer_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDevToolsMessageObserverT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -6041,25 +6143,26 @@ type OnDevToolsAgentDetachedHandler interface {
 }
 
 var dev_tools_message_observer_handlers = struct {
-	handler                             map[*C.cef_dev_tools_message_observer_t]interface{}
-	on_dev_tools_message_handler        map[*C.cef_dev_tools_message_observer_t]OnDevToolsMessageHandler
-	on_dev_tools_method_result_handler  map[*C.cef_dev_tools_message_observer_t]OnDevToolsMethodResultHandler
-	on_dev_tools_event_handler          map[*C.cef_dev_tools_message_observer_t]OnDevToolsEventHandler
-	on_dev_tools_agent_attached_handler map[*C.cef_dev_tools_message_observer_t]OnDevToolsAgentAttachedHandler
-	on_dev_tools_agent_detached_handler map[*C.cef_dev_tools_message_observer_t]OnDevToolsAgentDetachedHandler
+	handler                             map[*cCDevToolsMessageObserverT]interface{}
+	on_dev_tools_message_handler        map[*cCDevToolsMessageObserverT]OnDevToolsMessageHandler
+	on_dev_tools_method_result_handler  map[*cCDevToolsMessageObserverT]OnDevToolsMethodResultHandler
+	on_dev_tools_event_handler          map[*cCDevToolsMessageObserverT]OnDevToolsEventHandler
+	on_dev_tools_agent_attached_handler map[*cCDevToolsMessageObserverT]OnDevToolsAgentAttachedHandler
+	on_dev_tools_agent_detached_handler map[*cCDevToolsMessageObserverT]OnDevToolsAgentDetachedHandler
 }{
-	map[*C.cef_dev_tools_message_observer_t]interface{}{},
-	map[*C.cef_dev_tools_message_observer_t]OnDevToolsMessageHandler{},
-	map[*C.cef_dev_tools_message_observer_t]OnDevToolsMethodResultHandler{},
-	map[*C.cef_dev_tools_message_observer_t]OnDevToolsEventHandler{},
-	map[*C.cef_dev_tools_message_observer_t]OnDevToolsAgentAttachedHandler{},
-	map[*C.cef_dev_tools_message_observer_t]OnDevToolsAgentDetachedHandler{},
+	map[*cCDevToolsMessageObserverT]interface{}{},
+	map[*cCDevToolsMessageObserverT]OnDevToolsMessageHandler{},
+	map[*cCDevToolsMessageObserverT]OnDevToolsMethodResultHandler{},
+	map[*cCDevToolsMessageObserverT]OnDevToolsEventHandler{},
+	map[*cCDevToolsMessageObserverT]OnDevToolsAgentAttachedHandler{},
+	map[*cCDevToolsMessageObserverT]OnDevToolsAgentDetachedHandler{},
 }
 
 // AllocCDevToolsMessageObserverT allocates CDevToolsMessageObserverT and construct it
 func AllocCDevToolsMessageObserverT() *CDevToolsMessageObserverT {
 	up := c_calloc(1, C.sizeof_cefingo_dev_tools_message_observer_wrapper_t, "T128.3:")
 	cefp := C.cefingo_construct_dev_tools_message_observer((*C.cefingo_dev_tools_message_observer_wrapper_t)(up))
+	cgop := (*cCDevToolsMessageObserverT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_dev_tools_message_observer_t itself in DeassocFunc,
@@ -6068,12 +6171,12 @@ func AllocCDevToolsMessageObserverT() *CDevToolsMessageObserverT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(dev_tools_message_observer_handlers.handler, cefp)
-		delete(dev_tools_message_observer_handlers.on_dev_tools_message_handler, cefp)
-		delete(dev_tools_message_observer_handlers.on_dev_tools_method_result_handler, cefp)
-		delete(dev_tools_message_observer_handlers.on_dev_tools_event_handler, cefp)
-		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler, cefp)
-		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler, cefp)
+		delete(dev_tools_message_observer_handlers.handler, cgop)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_message_handler, cgop)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_method_result_handler, cgop)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_event_handler, cgop)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler, cgop)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler, cgop)
 	}))
 
 	return newCDevToolsMessageObserverT(cefp)
@@ -6083,7 +6186,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{})
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := dev_tools_message_observer.p_dev_tools_message_observer
+	cp := dev_tools_message_observer.pc_dev_tools_message_observer
 	dev_tools_message_observer_handlers.handler[cp] = a
 
 	if h, ok := a.(OnDevToolsMessageHandler); ok {
@@ -6116,7 +6219,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{})
 
 func (dev_tools_message_observer *CDevToolsMessageObserverT) UnbindAll() {
 
-	cp := dev_tools_message_observer.p_dev_tools_message_observer
+	cp := dev_tools_message_observer.pc_dev_tools_message_observer
 	delete(dev_tools_message_observer_handlers.handler, cp)
 
 	delete(dev_tools_message_observer_handlers.on_dev_tools_message_handler, cp)
@@ -6131,7 +6234,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Handler() interface
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := dev_tools_message_observer.p_dev_tools_message_observer
+	cp := dev_tools_message_observer.pc_dev_tools_message_observer
 	return dev_tools_message_observer_handlers.handler[cp]
 }
 
@@ -6141,10 +6244,12 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Handler() interface
 // Callback structure for asynchronous continuation of file dialog requests.
 ///
 
+type cCFileDialogCallbackT C.cef_file_dialog_callback_t
+
 // Go type for cef_file_dialog_callback_t
 type CFileDialogCallbackT struct {
-	noCopy                 noCopy
-	p_file_dialog_callback *C.cef_file_dialog_callback_t
+	noCopy                  noCopy
+	pc_file_dialog_callback *cCFileDialogCallbackT
 }
 
 type RefToCFileDialogCallbackT struct {
@@ -6170,21 +6275,22 @@ func newCFileDialogCallbackT(p *C.cef_file_dialog_callback_t) *CFileDialogCallba
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T129.1:")
-	BaseAddRef(p)
-	go_file_dialog_callback := CFileDialogCallbackT{noCopy{}, p}
+	pc := (*cCFileDialogCallbackT)(p)
+	BaseAddRef(pc)
+	go_file_dialog_callback := CFileDialogCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_file_dialog_callback, func(g *CFileDialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_file_dialog_callback), "T129.2:")
-		BaseRelease(g.p_file_dialog_callback)
+		Tracef(unsafe.Pointer(g.pc_file_dialog_callback), "T129.2:")
+		BaseRelease(g.pc_file_dialog_callback)
 	})
 	return &go_file_dialog_callback
 }
 
 // *C.cef_file_dialog_callback_t has refCounted interface
 func (file_dialog_callback *CFileDialogCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(file_dialog_callback.p_file_dialog_callback)
+	return BaseHasOneRef(file_dialog_callback.pc_file_dialog_callback)
 }
 
-func (p *C.cef_file_dialog_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCFileDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -6200,7 +6306,7 @@ func (self *CFileDialogCallbackT) Cont(
 	file_paths CStringListT,
 ) {
 
-	C.cefingo_file_dialog_callback_cont(self.p_file_dialog_callback, (C.int)(selected_accept_filter), (C.cef_string_list_t)(file_paths))
+	C.cefingo_file_dialog_callback_cont((*C.cef_file_dialog_callback_t)(self.pc_file_dialog_callback), (C.int)(selected_accept_filter), (C.cef_string_list_t)(file_paths))
 
 }
 
@@ -6209,7 +6315,7 @@ func (self *CFileDialogCallbackT) Cont(
 ///
 func (self *CFileDialogCallbackT) Cancel() {
 
-	C.cefingo_file_dialog_callback_cancel(self.p_file_dialog_callback)
+	C.cefingo_file_dialog_callback_cancel((*C.cef_file_dialog_callback_t)(self.pc_file_dialog_callback))
 
 }
 
@@ -6218,10 +6324,12 @@ func (self *CFileDialogCallbackT) Cancel() {
 // structure will be called on the browser process UI thread.
 ///
 
+type cCDialogHandlerT C.cef_dialog_handler_t
+
 // Go type for cef_dialog_handler_t
 type CDialogHandlerT struct {
-	noCopy           noCopy
-	p_dialog_handler *C.cef_dialog_handler_t
+	noCopy            noCopy
+	pc_dialog_handler *cCDialogHandlerT
 }
 
 type RefToCDialogHandlerT struct {
@@ -6247,21 +6355,22 @@ func newCDialogHandlerT(p *C.cef_dialog_handler_t) *CDialogHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T130.1:")
-	BaseAddRef(p)
-	go_dialog_handler := CDialogHandlerT{noCopy{}, p}
+	pc := (*cCDialogHandlerT)(p)
+	BaseAddRef(pc)
+	go_dialog_handler := CDialogHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_dialog_handler, func(g *CDialogHandlerT) {
-		Tracef(unsafe.Pointer(g.p_dialog_handler), "T130.2:")
-		BaseRelease(g.p_dialog_handler)
+		Tracef(unsafe.Pointer(g.pc_dialog_handler), "T130.2:")
+		BaseRelease(g.pc_dialog_handler)
 	})
 	return &go_dialog_handler
 }
 
 // *C.cef_dialog_handler_t has refCounted interface
 func (dialog_handler *CDialogHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(dialog_handler.p_dialog_handler)
+	return BaseHasOneRef(dialog_handler.pc_dialog_handler)
 }
 
-func (p *C.cef_dialog_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDialogHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -6294,17 +6403,18 @@ type OnFileDialogHandler interface {
 }
 
 var dialog_handler_handlers = struct {
-	handler                map[*C.cef_dialog_handler_t]interface{}
-	on_file_dialog_handler map[*C.cef_dialog_handler_t]OnFileDialogHandler
+	handler                map[*cCDialogHandlerT]interface{}
+	on_file_dialog_handler map[*cCDialogHandlerT]OnFileDialogHandler
 }{
-	map[*C.cef_dialog_handler_t]interface{}{},
-	map[*C.cef_dialog_handler_t]OnFileDialogHandler{},
+	map[*cCDialogHandlerT]interface{}{},
+	map[*cCDialogHandlerT]OnFileDialogHandler{},
 }
 
 // AllocCDialogHandlerT allocates CDialogHandlerT and construct it
 func AllocCDialogHandlerT() *CDialogHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_dialog_handler_wrapper_t, "T130.3:")
 	cefp := C.cefingo_construct_dialog_handler((*C.cefingo_dialog_handler_wrapper_t)(up))
+	cgop := (*cCDialogHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_dialog_handler_t itself in DeassocFunc,
@@ -6313,8 +6423,8 @@ func AllocCDialogHandlerT() *CDialogHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(dialog_handler_handlers.handler, cefp)
-		delete(dialog_handler_handlers.on_file_dialog_handler, cefp)
+		delete(dialog_handler_handlers.handler, cgop)
+		delete(dialog_handler_handlers.on_file_dialog_handler, cgop)
 	}))
 
 	return newCDialogHandlerT(cefp)
@@ -6324,7 +6434,7 @@ func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := dialog_handler.p_dialog_handler
+	cp := dialog_handler.pc_dialog_handler
 	dialog_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnFileDialogHandler); ok {
@@ -6341,7 +6451,7 @@ func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
 
 func (dialog_handler *CDialogHandlerT) UnbindAll() {
 
-	cp := dialog_handler.p_dialog_handler
+	cp := dialog_handler.pc_dialog_handler
 	delete(dialog_handler_handlers.handler, cp)
 
 	delete(dialog_handler_handlers.on_file_dialog_handler, cp)
@@ -6352,7 +6462,7 @@ func (dialog_handler *CDialogHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := dialog_handler.p_dialog_handler
+	cp := dialog_handler.pc_dialog_handler
 	return dialog_handler_handlers.handler[cp]
 }
 
@@ -6367,10 +6477,12 @@ func (dialog_handler *CDialogHandlerT) Handler() interface{} {
 // otherwise indicated.
 ///
 
+type cCDisplayT C.cef_display_t
+
 // Go type for cef_display_t
 type CDisplayT struct {
-	noCopy    noCopy
-	p_display *C.cef_display_t
+	noCopy     noCopy
+	pc_display *cCDisplayT
 }
 
 type RefToCDisplayT struct {
@@ -6396,21 +6508,22 @@ func newCDisplayT(p *C.cef_display_t) *CDisplayT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T131.1:")
-	BaseAddRef(p)
-	go_display := CDisplayT{noCopy{}, p}
+	pc := (*cCDisplayT)(p)
+	BaseAddRef(pc)
+	go_display := CDisplayT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_display, func(g *CDisplayT) {
-		Tracef(unsafe.Pointer(g.p_display), "T131.2:")
-		BaseRelease(g.p_display)
+		Tracef(unsafe.Pointer(g.pc_display), "T131.2:")
+		BaseRelease(g.pc_display)
 	})
 	return &go_display
 }
 
 // *C.cef_display_t has refCounted interface
 func (display *CDisplayT) HasOneRef() bool {
-	return BaseHasOneRef(display.p_display)
+	return BaseHasOneRef(display.pc_display)
 }
 
-func (p *C.cef_display_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDisplayT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -6419,7 +6532,7 @@ func (p *C.cef_display_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 ///
 func (self *CDisplayT) GetId() (ret int64) {
 
-	cRet := C.cefingo_display_get_id(self.p_display)
+	cRet := C.cefingo_display_get_id((*C.cef_display_t)(self.pc_display))
 
 	ret = (int64)(cRet)
 	return ret
@@ -6433,7 +6546,7 @@ func (self *CDisplayT) GetId() (ret int64) {
 ///
 func (self *CDisplayT) GetDeviceScaleFactor() (ret float32) {
 
-	cRet := C.cefingo_display_get_device_scale_factor(self.p_display)
+	cRet := C.cefingo_display_get_device_scale_factor((*C.cef_display_t)(self.pc_display))
 
 	ret = (float32)(cRet)
 	return ret
@@ -6447,7 +6560,7 @@ func (self *CDisplayT) ConvertPointToPixels(
 	point *CPointT,
 ) {
 
-	C.cefingo_display_convert_point_to_pixels(self.p_display, (*C.cef_point_t)(point))
+	C.cefingo_display_convert_point_to_pixels((*C.cef_display_t)(self.pc_display), (*C.cef_point_t)(point))
 
 }
 
@@ -6459,7 +6572,7 @@ func (self *CDisplayT) ConvertPointFromPixels(
 	point *CPointT,
 ) {
 
-	C.cefingo_display_convert_point_from_pixels(self.p_display, (*C.cef_point_t)(point))
+	C.cefingo_display_convert_point_from_pixels((*C.cef_display_t)(self.pc_display), (*C.cef_point_t)(point))
 
 }
 
@@ -6469,7 +6582,7 @@ func (self *CDisplayT) ConvertPointFromPixels(
 ///
 func (self *CDisplayT) GetBounds() (ret CRectT) {
 
-	cRet := C.cefingo_display_get_bounds(self.p_display)
+	cRet := C.cefingo_display_get_bounds((*C.cef_display_t)(self.pc_display))
 
 	ret = (CRectT)(cRet)
 	return ret
@@ -6481,7 +6594,7 @@ func (self *CDisplayT) GetBounds() (ret CRectT) {
 ///
 func (self *CDisplayT) GetWorkArea() (ret CRectT) {
 
-	cRet := C.cefingo_display_get_work_area(self.p_display)
+	cRet := C.cefingo_display_get_work_area((*C.cef_display_t)(self.pc_display))
 
 	ret = (CRectT)(cRet)
 	return ret
@@ -6492,7 +6605,7 @@ func (self *CDisplayT) GetWorkArea() (ret CRectT) {
 ///
 func (self *CDisplayT) GetRotation() (ret bool) {
 
-	cRet := C.cefingo_display_get_rotation(self.p_display)
+	cRet := C.cefingo_display_get_rotation((*C.cef_display_t)(self.pc_display))
 
 	ret = cRet == 1
 	return ret
@@ -6578,10 +6691,12 @@ func DisplayGetAlls() (displays []*CDisplayT) {
 // The functions of this structure will be called on the UI thread.
 ///
 
+type cCDisplayHandlerT C.cef_display_handler_t
+
 // Go type for cef_display_handler_t
 type CDisplayHandlerT struct {
-	noCopy            noCopy
-	p_display_handler *C.cef_display_handler_t
+	noCopy             noCopy
+	pc_display_handler *cCDisplayHandlerT
 }
 
 type RefToCDisplayHandlerT struct {
@@ -6607,21 +6722,22 @@ func newCDisplayHandlerT(p *C.cef_display_handler_t) *CDisplayHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T132.1:")
-	BaseAddRef(p)
-	go_display_handler := CDisplayHandlerT{noCopy{}, p}
+	pc := (*cCDisplayHandlerT)(p)
+	BaseAddRef(pc)
+	go_display_handler := CDisplayHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_display_handler, func(g *CDisplayHandlerT) {
-		Tracef(unsafe.Pointer(g.p_display_handler), "T132.2:")
-		BaseRelease(g.p_display_handler)
+		Tracef(unsafe.Pointer(g.pc_display_handler), "T132.2:")
+		BaseRelease(g.pc_display_handler)
 	})
 	return &go_display_handler
 }
 
 // *C.cef_display_handler_t has refCounted interface
 func (display_handler *CDisplayHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(display_handler.p_display_handler)
+	return BaseHasOneRef(display_handler.pc_display_handler)
 }
 
-func (p *C.cef_display_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDisplayHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -6744,33 +6860,34 @@ type OnLoadingProgressChangeHandler interface {
 }
 
 var display_handler_handlers = struct {
-	handler                            map[*C.cef_display_handler_t]interface{}
-	on_address_change_handler          map[*C.cef_display_handler_t]OnAddressChangeHandler
-	on_title_change_handler            map[*C.cef_display_handler_t]OnTitleChangeHandler
-	on_favicon_urlchange_handler       map[*C.cef_display_handler_t]OnFaviconUrlchangeHandler
-	on_fullscreen_mode_change_handler  map[*C.cef_display_handler_t]OnFullscreenModeChangeHandler
-	on_tooltip_handler                 map[*C.cef_display_handler_t]OnTooltipHandler
-	on_status_message_handler          map[*C.cef_display_handler_t]OnStatusMessageHandler
-	on_console_message_handler         map[*C.cef_display_handler_t]OnConsoleMessageHandler
-	on_auto_resize_handler             map[*C.cef_display_handler_t]OnAutoResizeHandler
-	on_loading_progress_change_handler map[*C.cef_display_handler_t]OnLoadingProgressChangeHandler
+	handler                            map[*cCDisplayHandlerT]interface{}
+	on_address_change_handler          map[*cCDisplayHandlerT]OnAddressChangeHandler
+	on_title_change_handler            map[*cCDisplayHandlerT]OnTitleChangeHandler
+	on_favicon_urlchange_handler       map[*cCDisplayHandlerT]OnFaviconUrlchangeHandler
+	on_fullscreen_mode_change_handler  map[*cCDisplayHandlerT]OnFullscreenModeChangeHandler
+	on_tooltip_handler                 map[*cCDisplayHandlerT]OnTooltipHandler
+	on_status_message_handler          map[*cCDisplayHandlerT]OnStatusMessageHandler
+	on_console_message_handler         map[*cCDisplayHandlerT]OnConsoleMessageHandler
+	on_auto_resize_handler             map[*cCDisplayHandlerT]OnAutoResizeHandler
+	on_loading_progress_change_handler map[*cCDisplayHandlerT]OnLoadingProgressChangeHandler
 }{
-	map[*C.cef_display_handler_t]interface{}{},
-	map[*C.cef_display_handler_t]OnAddressChangeHandler{},
-	map[*C.cef_display_handler_t]OnTitleChangeHandler{},
-	map[*C.cef_display_handler_t]OnFaviconUrlchangeHandler{},
-	map[*C.cef_display_handler_t]OnFullscreenModeChangeHandler{},
-	map[*C.cef_display_handler_t]OnTooltipHandler{},
-	map[*C.cef_display_handler_t]OnStatusMessageHandler{},
-	map[*C.cef_display_handler_t]OnConsoleMessageHandler{},
-	map[*C.cef_display_handler_t]OnAutoResizeHandler{},
-	map[*C.cef_display_handler_t]OnLoadingProgressChangeHandler{},
+	map[*cCDisplayHandlerT]interface{}{},
+	map[*cCDisplayHandlerT]OnAddressChangeHandler{},
+	map[*cCDisplayHandlerT]OnTitleChangeHandler{},
+	map[*cCDisplayHandlerT]OnFaviconUrlchangeHandler{},
+	map[*cCDisplayHandlerT]OnFullscreenModeChangeHandler{},
+	map[*cCDisplayHandlerT]OnTooltipHandler{},
+	map[*cCDisplayHandlerT]OnStatusMessageHandler{},
+	map[*cCDisplayHandlerT]OnConsoleMessageHandler{},
+	map[*cCDisplayHandlerT]OnAutoResizeHandler{},
+	map[*cCDisplayHandlerT]OnLoadingProgressChangeHandler{},
 }
 
 // AllocCDisplayHandlerT allocates CDisplayHandlerT and construct it
 func AllocCDisplayHandlerT() *CDisplayHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_display_handler_wrapper_t, "T132.3:")
 	cefp := C.cefingo_construct_display_handler((*C.cefingo_display_handler_wrapper_t)(up))
+	cgop := (*cCDisplayHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_display_handler_t itself in DeassocFunc,
@@ -6779,16 +6896,16 @@ func AllocCDisplayHandlerT() *CDisplayHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(display_handler_handlers.handler, cefp)
-		delete(display_handler_handlers.on_address_change_handler, cefp)
-		delete(display_handler_handlers.on_title_change_handler, cefp)
-		delete(display_handler_handlers.on_favicon_urlchange_handler, cefp)
-		delete(display_handler_handlers.on_fullscreen_mode_change_handler, cefp)
-		delete(display_handler_handlers.on_tooltip_handler, cefp)
-		delete(display_handler_handlers.on_status_message_handler, cefp)
-		delete(display_handler_handlers.on_console_message_handler, cefp)
-		delete(display_handler_handlers.on_auto_resize_handler, cefp)
-		delete(display_handler_handlers.on_loading_progress_change_handler, cefp)
+		delete(display_handler_handlers.handler, cgop)
+		delete(display_handler_handlers.on_address_change_handler, cgop)
+		delete(display_handler_handlers.on_title_change_handler, cgop)
+		delete(display_handler_handlers.on_favicon_urlchange_handler, cgop)
+		delete(display_handler_handlers.on_fullscreen_mode_change_handler, cgop)
+		delete(display_handler_handlers.on_tooltip_handler, cgop)
+		delete(display_handler_handlers.on_status_message_handler, cgop)
+		delete(display_handler_handlers.on_console_message_handler, cgop)
+		delete(display_handler_handlers.on_auto_resize_handler, cgop)
+		delete(display_handler_handlers.on_loading_progress_change_handler, cgop)
 	}))
 
 	return newCDisplayHandlerT(cefp)
@@ -6798,7 +6915,7 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := display_handler.p_display_handler
+	cp := display_handler.pc_display_handler
 	display_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnAddressChangeHandler); ok {
@@ -6847,7 +6964,7 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 
 func (display_handler *CDisplayHandlerT) UnbindAll() {
 
-	cp := display_handler.p_display_handler
+	cp := display_handler.pc_display_handler
 	delete(display_handler_handlers.handler, cp)
 
 	delete(display_handler_handlers.on_address_change_handler, cp)
@@ -6866,7 +6983,7 @@ func (display_handler *CDisplayHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := display_handler.p_display_handler
+	cp := display_handler.pc_display_handler
 	return display_handler_handlers.handler[cp]
 }
 
@@ -6877,10 +6994,12 @@ func (display_handler *CDisplayHandlerT) Handler() interface{} {
 // will be called on the render process main thread.
 ///
 
+type cCDomvisitorT C.cef_domvisitor_t
+
 // Go type for cef_domvisitor_t
 type CDomvisitorT struct {
-	noCopy       noCopy
-	p_domvisitor *C.cef_domvisitor_t
+	noCopy        noCopy
+	pc_domvisitor *cCDomvisitorT
 }
 
 type RefToCDomvisitorT struct {
@@ -6906,21 +7025,22 @@ func newCDomvisitorT(p *C.cef_domvisitor_t) *CDomvisitorT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T133.1:")
-	BaseAddRef(p)
-	go_domvisitor := CDomvisitorT{noCopy{}, p}
+	pc := (*cCDomvisitorT)(p)
+	BaseAddRef(pc)
+	go_domvisitor := CDomvisitorT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_domvisitor, func(g *CDomvisitorT) {
-		Tracef(unsafe.Pointer(g.p_domvisitor), "T133.2:")
-		BaseRelease(g.p_domvisitor)
+		Tracef(unsafe.Pointer(g.pc_domvisitor), "T133.2:")
+		BaseRelease(g.pc_domvisitor)
 	})
 	return &go_domvisitor
 }
 
 // *C.cef_domvisitor_t has refCounted interface
 func (domvisitor *CDomvisitorT) HasOneRef() bool {
-	return BaseHasOneRef(domvisitor.p_domvisitor)
+	return BaseHasOneRef(domvisitor.pc_domvisitor)
 }
 
-func (p *C.cef_domvisitor_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDomvisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -6939,17 +7059,18 @@ type CDomvisitorTVisitHandler interface {
 }
 
 var domvisitor_handlers = struct {
-	handler       map[*C.cef_domvisitor_t]interface{}
-	visit_handler map[*C.cef_domvisitor_t]CDomvisitorTVisitHandler
+	handler       map[*cCDomvisitorT]interface{}
+	visit_handler map[*cCDomvisitorT]CDomvisitorTVisitHandler
 }{
-	map[*C.cef_domvisitor_t]interface{}{},
-	map[*C.cef_domvisitor_t]CDomvisitorTVisitHandler{},
+	map[*cCDomvisitorT]interface{}{},
+	map[*cCDomvisitorT]CDomvisitorTVisitHandler{},
 }
 
 // AllocCDomvisitorT allocates CDomvisitorT and construct it
 func AllocCDomvisitorT() *CDomvisitorT {
 	up := c_calloc(1, C.sizeof_cefingo_domvisitor_wrapper_t, "T133.3:")
 	cefp := C.cefingo_construct_domvisitor((*C.cefingo_domvisitor_wrapper_t)(up))
+	cgop := (*cCDomvisitorT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_domvisitor_t itself in DeassocFunc,
@@ -6958,8 +7079,8 @@ func AllocCDomvisitorT() *CDomvisitorT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(domvisitor_handlers.handler, cefp)
-		delete(domvisitor_handlers.visit_handler, cefp)
+		delete(domvisitor_handlers.handler, cgop)
+		delete(domvisitor_handlers.visit_handler, cgop)
 	}))
 
 	return newCDomvisitorT(cefp)
@@ -6969,7 +7090,7 @@ func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := domvisitor.p_domvisitor
+	cp := domvisitor.pc_domvisitor
 	domvisitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CDomvisitorTVisitHandler); ok {
@@ -6986,7 +7107,7 @@ func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
 
 func (domvisitor *CDomvisitorT) UnbindAll() {
 
-	cp := domvisitor.p_domvisitor
+	cp := domvisitor.pc_domvisitor
 	delete(domvisitor_handlers.handler, cp)
 
 	delete(domvisitor_handlers.visit_handler, cp)
@@ -6997,7 +7118,7 @@ func (domvisitor *CDomvisitorT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := domvisitor.p_domvisitor
+	cp := domvisitor.pc_domvisitor
 	return domvisitor_handlers.handler[cp]
 }
 
@@ -7006,10 +7127,12 @@ func (domvisitor *CDomvisitorT) Handler() interface{} {
 // should only be called on the render process main thread thread.
 ///
 
+type cCDomdocumentT C.cef_domdocument_t
+
 // Go type for cef_domdocument_t
 type CDomdocumentT struct {
-	noCopy        noCopy
-	p_domdocument *C.cef_domdocument_t
+	noCopy         noCopy
+	pc_domdocument *cCDomdocumentT
 }
 
 type RefToCDomdocumentT struct {
@@ -7035,21 +7158,22 @@ func newCDomdocumentT(p *C.cef_domdocument_t) *CDomdocumentT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T134.1:")
-	BaseAddRef(p)
-	go_domdocument := CDomdocumentT{noCopy{}, p}
+	pc := (*cCDomdocumentT)(p)
+	BaseAddRef(pc)
+	go_domdocument := CDomdocumentT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_domdocument, func(g *CDomdocumentT) {
-		Tracef(unsafe.Pointer(g.p_domdocument), "T134.2:")
-		BaseRelease(g.p_domdocument)
+		Tracef(unsafe.Pointer(g.pc_domdocument), "T134.2:")
+		BaseRelease(g.pc_domdocument)
 	})
 	return &go_domdocument
 }
 
 // *C.cef_domdocument_t has refCounted interface
 func (domdocument *CDomdocumentT) HasOneRef() bool {
-	return BaseHasOneRef(domdocument.p_domdocument)
+	return BaseHasOneRef(domdocument.pc_domdocument)
 }
 
-func (p *C.cef_domdocument_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDomdocumentT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -7058,7 +7182,7 @@ func (p *C.cef_domdocument_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 ///
 func (self *CDomdocumentT) GetType() (ret CDomDocumentTypeT) {
 
-	cRet := C.cefingo_domdocument_get_type(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_type((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	ret = CDomDocumentTypeT(cRet)
 	return ret
@@ -7069,7 +7193,7 @@ func (self *CDomdocumentT) GetType() (ret CDomDocumentTypeT) {
 ///
 func (self *CDomdocumentT) GetDocument() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domdocument_get_document(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_document((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7080,7 +7204,7 @@ func (self *CDomdocumentT) GetDocument() (ret *CDomnodeT) {
 ///
 func (self *CDomdocumentT) GetBody() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domdocument_get_body(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_body((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7091,7 +7215,7 @@ func (self *CDomdocumentT) GetBody() (ret *CDomnodeT) {
 ///
 func (self *CDomdocumentT) GetHead() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domdocument_get_head(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_head((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7103,7 +7227,7 @@ func (self *CDomdocumentT) GetHead() (ret *CDomnodeT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetTitle() (ret string) {
 
-	cRet := C.cefingo_domdocument_get_title(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_title((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7121,7 +7245,7 @@ func (self *CDomdocumentT) GetElementById(
 ) (ret *CDomnodeT) {
 	c_id := create_cef_string(id)
 
-	cRet := C.cefingo_domdocument_get_element_by_id(self.p_domdocument, c_id.p_cef_string_t)
+	cRet := C.cefingo_domdocument_get_element_by_id((*C.cef_domdocument_t)(self.pc_domdocument), c_id.p_cef_string_t)
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7132,7 +7256,7 @@ func (self *CDomdocumentT) GetElementById(
 ///
 func (self *CDomdocumentT) GetFocusedNode() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domdocument_get_focused_node(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_focused_node((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7143,7 +7267,7 @@ func (self *CDomdocumentT) GetFocusedNode() (ret *CDomnodeT) {
 ///
 func (self *CDomdocumentT) HasSelection() (ret bool) {
 
-	cRet := C.cefingo_domdocument_has_selection(self.p_domdocument)
+	cRet := C.cefingo_domdocument_has_selection((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	ret = cRet == 1
 	return ret
@@ -7154,7 +7278,7 @@ func (self *CDomdocumentT) HasSelection() (ret bool) {
 ///
 func (self *CDomdocumentT) GetSelectionStartOffset() (ret bool) {
 
-	cRet := C.cefingo_domdocument_get_selection_start_offset(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_selection_start_offset((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	ret = cRet == 1
 	return ret
@@ -7165,7 +7289,7 @@ func (self *CDomdocumentT) GetSelectionStartOffset() (ret bool) {
 ///
 func (self *CDomdocumentT) GetSelectionEndOffset() (ret bool) {
 
-	cRet := C.cefingo_domdocument_get_selection_end_offset(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_selection_end_offset((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	ret = cRet == 1
 	return ret
@@ -7177,7 +7301,7 @@ func (self *CDomdocumentT) GetSelectionEndOffset() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetSelectionAsMarkup() (ret string) {
 
-	cRet := C.cefingo_domdocument_get_selection_as_markup(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_selection_as_markup((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7193,7 +7317,7 @@ func (self *CDomdocumentT) GetSelectionAsMarkup() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetSelectionAsText() (ret string) {
 
-	cRet := C.cefingo_domdocument_get_selection_as_text(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_selection_as_text((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7209,7 +7333,7 @@ func (self *CDomdocumentT) GetSelectionAsText() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetBaseUrl() (ret string) {
 
-	cRet := C.cefingo_domdocument_get_base_url(self.p_domdocument)
+	cRet := C.cefingo_domdocument_get_base_url((*C.cef_domdocument_t)(self.pc_domdocument))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7229,7 +7353,7 @@ func (self *CDomdocumentT) GetCompleteUrl(
 ) (ret string) {
 	c_partialURL := create_cef_string(partialURL)
 
-	cRet := C.cefingo_domdocument_get_complete_url(self.p_domdocument, c_partialURL.p_cef_string_t)
+	cRet := C.cefingo_domdocument_get_complete_url((*C.cef_domdocument_t)(self.pc_domdocument), c_partialURL.p_cef_string_t)
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7244,10 +7368,12 @@ func (self *CDomdocumentT) GetCompleteUrl(
 // should only be called on the render process main thread.
 ///
 
+type cCDomnodeT C.cef_domnode_t
+
 // Go type for cef_domnode_t
 type CDomnodeT struct {
-	noCopy    noCopy
-	p_domnode *C.cef_domnode_t
+	noCopy     noCopy
+	pc_domnode *cCDomnodeT
 }
 
 type RefToCDomnodeT struct {
@@ -7273,21 +7399,22 @@ func newCDomnodeT(p *C.cef_domnode_t) *CDomnodeT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T135.1:")
-	BaseAddRef(p)
-	go_domnode := CDomnodeT{noCopy{}, p}
+	pc := (*cCDomnodeT)(p)
+	BaseAddRef(pc)
+	go_domnode := CDomnodeT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_domnode, func(g *CDomnodeT) {
-		Tracef(unsafe.Pointer(g.p_domnode), "T135.2:")
-		BaseRelease(g.p_domnode)
+		Tracef(unsafe.Pointer(g.pc_domnode), "T135.2:")
+		BaseRelease(g.pc_domnode)
 	})
 	return &go_domnode
 }
 
 // *C.cef_domnode_t has refCounted interface
 func (domnode *CDomnodeT) HasOneRef() bool {
-	return BaseHasOneRef(domnode.p_domnode)
+	return BaseHasOneRef(domnode.pc_domnode)
 }
 
-func (p *C.cef_domnode_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDomnodeT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -7296,7 +7423,7 @@ func (p *C.cef_domnode_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 ///
 func (self *CDomnodeT) GetType() (ret CDomNodeTypeT) {
 
-	cRet := C.cefingo_domnode_get_type(self.p_domnode)
+	cRet := C.cefingo_domnode_get_type((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = CDomNodeTypeT(cRet)
 	return ret
@@ -7307,7 +7434,7 @@ func (self *CDomnodeT) GetType() (ret CDomNodeTypeT) {
 ///
 func (self *CDomnodeT) IsText() (ret bool) {
 
-	cRet := C.cefingo_domnode_is_text(self.p_domnode)
+	cRet := C.cefingo_domnode_is_text((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = cRet == 1
 	return ret
@@ -7318,7 +7445,7 @@ func (self *CDomnodeT) IsText() (ret bool) {
 ///
 func (self *CDomnodeT) IsElement() (ret bool) {
 
-	cRet := C.cefingo_domnode_is_element(self.p_domnode)
+	cRet := C.cefingo_domnode_is_element((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = cRet == 1
 	return ret
@@ -7329,7 +7456,7 @@ func (self *CDomnodeT) IsElement() (ret bool) {
 ///
 func (self *CDomnodeT) IsEditable() (ret bool) {
 
-	cRet := C.cefingo_domnode_is_editable(self.p_domnode)
+	cRet := C.cefingo_domnode_is_editable((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = cRet == 1
 	return ret
@@ -7340,7 +7467,7 @@ func (self *CDomnodeT) IsEditable() (ret bool) {
 ///
 func (self *CDomnodeT) IsFormControlElement() (ret bool) {
 
-	cRet := C.cefingo_domnode_is_form_control_element(self.p_domnode)
+	cRet := C.cefingo_domnode_is_form_control_element((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = cRet == 1
 	return ret
@@ -7352,7 +7479,7 @@ func (self *CDomnodeT) IsFormControlElement() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetFormControlElementType() (ret string) {
 
-	cRet := C.cefingo_domnode_get_form_control_element_type(self.p_domnode)
+	cRet := C.cefingo_domnode_get_form_control_element_type((*C.cef_domnode_t)(self.pc_domnode))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7371,11 +7498,11 @@ func (self *CDomnodeT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_domnode_t
 	if that != nil {
-		goTmpthat = that.p_domnode
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_domnode)
+		goTmpthat = (*C.cef_domnode_t)(that.pc_domnode)
 	}
 
-	cRet := C.cefingo_domnode_is_same(self.p_domnode, goTmpthat)
+	cRet := C.cefingo_domnode_is_same((*C.cef_domnode_t)(self.pc_domnode), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -7387,7 +7514,7 @@ func (self *CDomnodeT) IsSame(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetName() (ret string) {
 
-	cRet := C.cefingo_domnode_get_name(self.p_domnode)
+	cRet := C.cefingo_domnode_get_name((*C.cef_domnode_t)(self.pc_domnode))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7403,7 +7530,7 @@ func (self *CDomnodeT) GetName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetValue() (ret string) {
 
-	cRet := C.cefingo_domnode_get_value(self.p_domnode)
+	cRet := C.cefingo_domnode_get_value((*C.cef_domnode_t)(self.pc_domnode))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7421,7 +7548,7 @@ func (self *CDomnodeT) SetValue(
 ) (ret bool) {
 	c_value := create_cef_string(value)
 
-	cRet := C.cefingo_domnode_set_value(self.p_domnode, c_value.p_cef_string_t)
+	cRet := C.cefingo_domnode_set_value((*C.cef_domnode_t)(self.pc_domnode), c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -7433,7 +7560,7 @@ func (self *CDomnodeT) SetValue(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetAsMarkup() (ret string) {
 
-	cRet := C.cefingo_domnode_get_as_markup(self.p_domnode)
+	cRet := C.cefingo_domnode_get_as_markup((*C.cef_domnode_t)(self.pc_domnode))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7448,7 +7575,7 @@ func (self *CDomnodeT) GetAsMarkup() (ret string) {
 ///
 func (self *CDomnodeT) GetDocument() (ret *CDomdocumentT) {
 
-	cRet := C.cefingo_domnode_get_document(self.p_domnode)
+	cRet := C.cefingo_domnode_get_document((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = newCDomdocumentT(cRet)
 	return ret
@@ -7459,7 +7586,7 @@ func (self *CDomnodeT) GetDocument() (ret *CDomdocumentT) {
 ///
 func (self *CDomnodeT) GetParent() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domnode_get_parent(self.p_domnode)
+	cRet := C.cefingo_domnode_get_parent((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7470,7 +7597,7 @@ func (self *CDomnodeT) GetParent() (ret *CDomnodeT) {
 ///
 func (self *CDomnodeT) GetPreviousSibling() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domnode_get_previous_sibling(self.p_domnode)
+	cRet := C.cefingo_domnode_get_previous_sibling((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7481,7 +7608,7 @@ func (self *CDomnodeT) GetPreviousSibling() (ret *CDomnodeT) {
 ///
 func (self *CDomnodeT) GetNextSibling() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domnode_get_next_sibling(self.p_domnode)
+	cRet := C.cefingo_domnode_get_next_sibling((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7492,7 +7619,7 @@ func (self *CDomnodeT) GetNextSibling() (ret *CDomnodeT) {
 ///
 func (self *CDomnodeT) HasChildren() (ret bool) {
 
-	cRet := C.cefingo_domnode_has_children(self.p_domnode)
+	cRet := C.cefingo_domnode_has_children((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = cRet == 1
 	return ret
@@ -7503,7 +7630,7 @@ func (self *CDomnodeT) HasChildren() (ret bool) {
 ///
 func (self *CDomnodeT) GetFirstChild() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domnode_get_first_child(self.p_domnode)
+	cRet := C.cefingo_domnode_get_first_child((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7514,7 +7641,7 @@ func (self *CDomnodeT) GetFirstChild() (ret *CDomnodeT) {
 ///
 func (self *CDomnodeT) GetLastChild() (ret *CDomnodeT) {
 
-	cRet := C.cefingo_domnode_get_last_child(self.p_domnode)
+	cRet := C.cefingo_domnode_get_last_child((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = newCDomnodeT(cRet)
 	return ret
@@ -7526,7 +7653,7 @@ func (self *CDomnodeT) GetLastChild() (ret *CDomnodeT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetElementTagName() (ret string) {
 
-	cRet := C.cefingo_domnode_get_element_tag_name(self.p_domnode)
+	cRet := C.cefingo_domnode_get_element_tag_name((*C.cef_domnode_t)(self.pc_domnode))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7541,7 +7668,7 @@ func (self *CDomnodeT) GetElementTagName() (ret string) {
 ///
 func (self *CDomnodeT) HasElementAttributes() (ret bool) {
 
-	cRet := C.cefingo_domnode_has_element_attributes(self.p_domnode)
+	cRet := C.cefingo_domnode_has_element_attributes((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = cRet == 1
 	return ret
@@ -7555,7 +7682,7 @@ func (self *CDomnodeT) HasElementAttribute(
 ) (ret bool) {
 	c_attrName := create_cef_string(attrName)
 
-	cRet := C.cefingo_domnode_has_element_attribute(self.p_domnode, c_attrName.p_cef_string_t)
+	cRet := C.cefingo_domnode_has_element_attribute((*C.cef_domnode_t)(self.pc_domnode), c_attrName.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -7570,7 +7697,7 @@ func (self *CDomnodeT) GetElementAttribute(
 ) (ret string) {
 	c_attrName := create_cef_string(attrName)
 
-	cRet := C.cefingo_domnode_get_element_attribute(self.p_domnode, c_attrName.p_cef_string_t)
+	cRet := C.cefingo_domnode_get_element_attribute((*C.cef_domnode_t)(self.pc_domnode), c_attrName.p_cef_string_t)
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7587,7 +7714,7 @@ func (self *CDomnodeT) GetElementAttributes(
 	attrMap CStringMapT,
 ) {
 
-	C.cefingo_domnode_get_element_attributes(self.p_domnode, (C.cef_string_map_t)(attrMap))
+	C.cefingo_domnode_get_element_attributes((*C.cef_domnode_t)(self.pc_domnode), (C.cef_string_map_t)(attrMap))
 
 }
 
@@ -7602,7 +7729,7 @@ func (self *CDomnodeT) SetElementAttribute(
 	c_attrName := create_cef_string(attrName)
 	c_value := create_cef_string(value)
 
-	cRet := C.cefingo_domnode_set_element_attribute(self.p_domnode, c_attrName.p_cef_string_t, c_value.p_cef_string_t)
+	cRet := C.cefingo_domnode_set_element_attribute((*C.cef_domnode_t)(self.pc_domnode), c_attrName.p_cef_string_t, c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -7614,7 +7741,7 @@ func (self *CDomnodeT) SetElementAttribute(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetElementInnerText() (ret string) {
 
-	cRet := C.cefingo_domnode_get_element_inner_text(self.p_domnode)
+	cRet := C.cefingo_domnode_get_element_inner_text((*C.cef_domnode_t)(self.pc_domnode))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -7629,7 +7756,7 @@ func (self *CDomnodeT) GetElementInnerText() (ret string) {
 ///
 func (self *CDomnodeT) GetElementBounds() (ret CRectT) {
 
-	cRet := C.cefingo_domnode_get_element_bounds(self.p_domnode)
+	cRet := C.cefingo_domnode_get_element_bounds((*C.cef_domnode_t)(self.pc_domnode))
 
 	ret = (CRectT)(cRet)
 	return ret
@@ -7641,10 +7768,12 @@ func (self *CDomnodeT) GetElementBounds() (ret CRectT) {
 // Callback structure used to asynchronously continue a download.
 ///
 
+type cCBeforeDownloadCallbackT C.cef_before_download_callback_t
+
 // Go type for cef_before_download_callback_t
 type CBeforeDownloadCallbackT struct {
-	noCopy                     noCopy
-	p_before_download_callback *C.cef_before_download_callback_t
+	noCopy                      noCopy
+	pc_before_download_callback *cCBeforeDownloadCallbackT
 }
 
 type RefToCBeforeDownloadCallbackT struct {
@@ -7670,21 +7799,22 @@ func newCBeforeDownloadCallbackT(p *C.cef_before_download_callback_t) *CBeforeDo
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T136.1:")
-	BaseAddRef(p)
-	go_before_download_callback := CBeforeDownloadCallbackT{noCopy{}, p}
+	pc := (*cCBeforeDownloadCallbackT)(p)
+	BaseAddRef(pc)
+	go_before_download_callback := CBeforeDownloadCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_before_download_callback, func(g *CBeforeDownloadCallbackT) {
-		Tracef(unsafe.Pointer(g.p_before_download_callback), "T136.2:")
-		BaseRelease(g.p_before_download_callback)
+		Tracef(unsafe.Pointer(g.pc_before_download_callback), "T136.2:")
+		BaseRelease(g.pc_before_download_callback)
 	})
 	return &go_before_download_callback
 }
 
 // *C.cef_before_download_callback_t has refCounted interface
 func (before_download_callback *CBeforeDownloadCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(before_download_callback.p_before_download_callback)
+	return BaseHasOneRef(before_download_callback.pc_before_download_callback)
 }
 
-func (p *C.cef_before_download_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCBeforeDownloadCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -7700,7 +7830,7 @@ func (self *CBeforeDownloadCallbackT) Cont(
 ) {
 	c_download_path := create_cef_string(download_path)
 
-	C.cefingo_before_download_callback_cont(self.p_before_download_callback, c_download_path.p_cef_string_t, (C.int)(show_dialog))
+	C.cefingo_before_download_callback_cont((*C.cef_before_download_callback_t)(self.pc_before_download_callback), c_download_path.p_cef_string_t, (C.int)(show_dialog))
 
 }
 
@@ -7708,10 +7838,12 @@ func (self *CBeforeDownloadCallbackT) Cont(
 // Callback structure used to asynchronously cancel a download.
 ///
 
+type cCDownloadItemCallbackT C.cef_download_item_callback_t
+
 // Go type for cef_download_item_callback_t
 type CDownloadItemCallbackT struct {
-	noCopy                   noCopy
-	p_download_item_callback *C.cef_download_item_callback_t
+	noCopy                    noCopy
+	pc_download_item_callback *cCDownloadItemCallbackT
 }
 
 type RefToCDownloadItemCallbackT struct {
@@ -7737,21 +7869,22 @@ func newCDownloadItemCallbackT(p *C.cef_download_item_callback_t) *CDownloadItem
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T137.1:")
-	BaseAddRef(p)
-	go_download_item_callback := CDownloadItemCallbackT{noCopy{}, p}
+	pc := (*cCDownloadItemCallbackT)(p)
+	BaseAddRef(pc)
+	go_download_item_callback := CDownloadItemCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_download_item_callback, func(g *CDownloadItemCallbackT) {
-		Tracef(unsafe.Pointer(g.p_download_item_callback), "T137.2:")
-		BaseRelease(g.p_download_item_callback)
+		Tracef(unsafe.Pointer(g.pc_download_item_callback), "T137.2:")
+		BaseRelease(g.pc_download_item_callback)
 	})
 	return &go_download_item_callback
 }
 
 // *C.cef_download_item_callback_t has refCounted interface
 func (download_item_callback *CDownloadItemCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(download_item_callback.p_download_item_callback)
+	return BaseHasOneRef(download_item_callback.pc_download_item_callback)
 }
 
-func (p *C.cef_download_item_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDownloadItemCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -7760,7 +7893,7 @@ func (p *C.cef_download_item_callback_t) cast_to_p_base_ref_counted_t() *C.cef_b
 ///
 func (self *CDownloadItemCallbackT) Cancel() {
 
-	C.cefingo_download_item_callback_cancel(self.p_download_item_callback)
+	C.cefingo_download_item_callback_cancel((*C.cef_download_item_callback_t)(self.pc_download_item_callback))
 
 }
 
@@ -7769,7 +7902,7 @@ func (self *CDownloadItemCallbackT) Cancel() {
 ///
 func (self *CDownloadItemCallbackT) Pause() {
 
-	C.cefingo_download_item_callback_pause(self.p_download_item_callback)
+	C.cefingo_download_item_callback_pause((*C.cef_download_item_callback_t)(self.pc_download_item_callback))
 
 }
 
@@ -7778,7 +7911,7 @@ func (self *CDownloadItemCallbackT) Pause() {
 ///
 func (self *CDownloadItemCallbackT) Resume() {
 
-	C.cefingo_download_item_callback_resume(self.p_download_item_callback)
+	C.cefingo_download_item_callback_resume((*C.cef_download_item_callback_t)(self.pc_download_item_callback))
 
 }
 
@@ -7787,10 +7920,12 @@ func (self *CDownloadItemCallbackT) Resume() {
 // called on the browser process UI thread.
 ///
 
+type cCDownloadHandlerT C.cef_download_handler_t
+
 // Go type for cef_download_handler_t
 type CDownloadHandlerT struct {
-	noCopy             noCopy
-	p_download_handler *C.cef_download_handler_t
+	noCopy              noCopy
+	pc_download_handler *cCDownloadHandlerT
 }
 
 type RefToCDownloadHandlerT struct {
@@ -7816,21 +7951,22 @@ func newCDownloadHandlerT(p *C.cef_download_handler_t) *CDownloadHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T138.1:")
-	BaseAddRef(p)
-	go_download_handler := CDownloadHandlerT{noCopy{}, p}
+	pc := (*cCDownloadHandlerT)(p)
+	BaseAddRef(pc)
+	go_download_handler := CDownloadHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_download_handler, func(g *CDownloadHandlerT) {
-		Tracef(unsafe.Pointer(g.p_download_handler), "T138.2:")
-		BaseRelease(g.p_download_handler)
+		Tracef(unsafe.Pointer(g.pc_download_handler), "T138.2:")
+		BaseRelease(g.pc_download_handler)
 	})
 	return &go_download_handler
 }
 
 // *C.cef_download_handler_t has refCounted interface
 func (download_handler *CDownloadHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(download_handler.p_download_handler)
+	return BaseHasOneRef(download_handler.pc_download_handler)
 }
 
-func (p *C.cef_download_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDownloadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -7868,19 +8004,20 @@ type OnDownloadUpdatedHandler interface {
 }
 
 var download_handler_handlers = struct {
-	handler                     map[*C.cef_download_handler_t]interface{}
-	on_before_download_handler  map[*C.cef_download_handler_t]OnBeforeDownloadHandler
-	on_download_updated_handler map[*C.cef_download_handler_t]OnDownloadUpdatedHandler
+	handler                     map[*cCDownloadHandlerT]interface{}
+	on_before_download_handler  map[*cCDownloadHandlerT]OnBeforeDownloadHandler
+	on_download_updated_handler map[*cCDownloadHandlerT]OnDownloadUpdatedHandler
 }{
-	map[*C.cef_download_handler_t]interface{}{},
-	map[*C.cef_download_handler_t]OnBeforeDownloadHandler{},
-	map[*C.cef_download_handler_t]OnDownloadUpdatedHandler{},
+	map[*cCDownloadHandlerT]interface{}{},
+	map[*cCDownloadHandlerT]OnBeforeDownloadHandler{},
+	map[*cCDownloadHandlerT]OnDownloadUpdatedHandler{},
 }
 
 // AllocCDownloadHandlerT allocates CDownloadHandlerT and construct it
 func AllocCDownloadHandlerT() *CDownloadHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_download_handler_wrapper_t, "T138.3:")
 	cefp := C.cefingo_construct_download_handler((*C.cefingo_download_handler_wrapper_t)(up))
+	cgop := (*cCDownloadHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_download_handler_t itself in DeassocFunc,
@@ -7889,9 +8026,9 @@ func AllocCDownloadHandlerT() *CDownloadHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(download_handler_handlers.handler, cefp)
-		delete(download_handler_handlers.on_before_download_handler, cefp)
-		delete(download_handler_handlers.on_download_updated_handler, cefp)
+		delete(download_handler_handlers.handler, cgop)
+		delete(download_handler_handlers.on_before_download_handler, cgop)
+		delete(download_handler_handlers.on_download_updated_handler, cgop)
 	}))
 
 	return newCDownloadHandlerT(cefp)
@@ -7901,7 +8038,7 @@ func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandler
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := download_handler.p_download_handler
+	cp := download_handler.pc_download_handler
 	download_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforeDownloadHandler); ok {
@@ -7922,7 +8059,7 @@ func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandler
 
 func (download_handler *CDownloadHandlerT) UnbindAll() {
 
-	cp := download_handler.p_download_handler
+	cp := download_handler.pc_download_handler
 	delete(download_handler_handlers.handler, cp)
 
 	delete(download_handler_handlers.on_before_download_handler, cp)
@@ -7934,7 +8071,7 @@ func (download_handler *CDownloadHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := download_handler.p_download_handler
+	cp := download_handler.pc_download_handler
 	return download_handler_handlers.handler[cp]
 }
 
@@ -7944,10 +8081,12 @@ func (download_handler *CDownloadHandlerT) Handler() interface{} {
 // Structure used to represent a download item.
 ///
 
+type cCDownloadItemT C.cef_download_item_t
+
 // Go type for cef_download_item_t
 type CDownloadItemT struct {
-	noCopy          noCopy
-	p_download_item *C.cef_download_item_t
+	noCopy           noCopy
+	pc_download_item *cCDownloadItemT
 }
 
 type RefToCDownloadItemT struct {
@@ -7973,21 +8112,22 @@ func newCDownloadItemT(p *C.cef_download_item_t) *CDownloadItemT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T139.1:")
-	BaseAddRef(p)
-	go_download_item := CDownloadItemT{noCopy{}, p}
+	pc := (*cCDownloadItemT)(p)
+	BaseAddRef(pc)
+	go_download_item := CDownloadItemT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_download_item, func(g *CDownloadItemT) {
-		Tracef(unsafe.Pointer(g.p_download_item), "T139.2:")
-		BaseRelease(g.p_download_item)
+		Tracef(unsafe.Pointer(g.pc_download_item), "T139.2:")
+		BaseRelease(g.pc_download_item)
 	})
 	return &go_download_item
 }
 
 // *C.cef_download_item_t has refCounted interface
 func (download_item *CDownloadItemT) HasOneRef() bool {
-	return BaseHasOneRef(download_item.p_download_item)
+	return BaseHasOneRef(download_item.pc_download_item)
 }
 
-func (p *C.cef_download_item_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDownloadItemT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -7997,7 +8137,7 @@ func (p *C.cef_download_item_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 ///
 func (self *CDownloadItemT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_download_item_is_valid(self.p_download_item)
+	cRet := C.cefingo_download_item_is_valid((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = cRet == 1
 	return ret
@@ -8008,7 +8148,7 @@ func (self *CDownloadItemT) IsValid() (ret bool) {
 ///
 func (self *CDownloadItemT) IsInProgress() (ret bool) {
 
-	cRet := C.cefingo_download_item_is_in_progress(self.p_download_item)
+	cRet := C.cefingo_download_item_is_in_progress((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = cRet == 1
 	return ret
@@ -8019,7 +8159,7 @@ func (self *CDownloadItemT) IsInProgress() (ret bool) {
 ///
 func (self *CDownloadItemT) IsComplete() (ret bool) {
 
-	cRet := C.cefingo_download_item_is_complete(self.p_download_item)
+	cRet := C.cefingo_download_item_is_complete((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = cRet == 1
 	return ret
@@ -8030,7 +8170,7 @@ func (self *CDownloadItemT) IsComplete() (ret bool) {
 ///
 func (self *CDownloadItemT) IsCanceled() (ret bool) {
 
-	cRet := C.cefingo_download_item_is_canceled(self.p_download_item)
+	cRet := C.cefingo_download_item_is_canceled((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = cRet == 1
 	return ret
@@ -8041,7 +8181,7 @@ func (self *CDownloadItemT) IsCanceled() (ret bool) {
 ///
 func (self *CDownloadItemT) GetCurrentSpeed() (ret int64) {
 
-	cRet := C.cefingo_download_item_get_current_speed(self.p_download_item)
+	cRet := C.cefingo_download_item_get_current_speed((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = (int64)(cRet)
 	return ret
@@ -8053,7 +8193,7 @@ func (self *CDownloadItemT) GetCurrentSpeed() (ret int64) {
 ///
 func (self *CDownloadItemT) GetPercentComplete() (ret bool) {
 
-	cRet := C.cefingo_download_item_get_percent_complete(self.p_download_item)
+	cRet := C.cefingo_download_item_get_percent_complete((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = cRet == 1
 	return ret
@@ -8064,7 +8204,7 @@ func (self *CDownloadItemT) GetPercentComplete() (ret bool) {
 ///
 func (self *CDownloadItemT) GetTotalBytes() (ret int64) {
 
-	cRet := C.cefingo_download_item_get_total_bytes(self.p_download_item)
+	cRet := C.cefingo_download_item_get_total_bytes((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = (int64)(cRet)
 	return ret
@@ -8075,7 +8215,7 @@ func (self *CDownloadItemT) GetTotalBytes() (ret int64) {
 ///
 func (self *CDownloadItemT) GetReceivedBytes() (ret int64) {
 
-	cRet := C.cefingo_download_item_get_received_bytes(self.p_download_item)
+	cRet := C.cefingo_download_item_get_received_bytes((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = (int64)(cRet)
 	return ret
@@ -8086,7 +8226,7 @@ func (self *CDownloadItemT) GetReceivedBytes() (ret int64) {
 ///
 func (self *CDownloadItemT) GetStartTime() (ret CTimeT) {
 
-	cRet := C.cefingo_download_item_get_start_time(self.p_download_item)
+	cRet := C.cefingo_download_item_get_start_time((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = (CTimeT)(cRet)
 	return ret
@@ -8097,7 +8237,7 @@ func (self *CDownloadItemT) GetStartTime() (ret CTimeT) {
 ///
 func (self *CDownloadItemT) GetEndTime() (ret CTimeT) {
 
-	cRet := C.cefingo_download_item_get_end_time(self.p_download_item)
+	cRet := C.cefingo_download_item_get_end_time((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = (CTimeT)(cRet)
 	return ret
@@ -8109,7 +8249,7 @@ func (self *CDownloadItemT) GetEndTime() (ret CTimeT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetFullPath() (ret string) {
 
-	cRet := C.cefingo_download_item_get_full_path(self.p_download_item)
+	cRet := C.cefingo_download_item_get_full_path((*C.cef_download_item_t)(self.pc_download_item))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8124,7 +8264,7 @@ func (self *CDownloadItemT) GetFullPath() (ret string) {
 ///
 func (self *CDownloadItemT) GetId() (ret uint32) {
 
-	cRet := C.cefingo_download_item_get_id(self.p_download_item)
+	cRet := C.cefingo_download_item_get_id((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = (uint32)(cRet)
 	return ret
@@ -8136,7 +8276,7 @@ func (self *CDownloadItemT) GetId() (ret uint32) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetUrl() (ret string) {
 
-	cRet := C.cefingo_download_item_get_url(self.p_download_item)
+	cRet := C.cefingo_download_item_get_url((*C.cef_download_item_t)(self.pc_download_item))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8152,7 +8292,7 @@ func (self *CDownloadItemT) GetUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetOriginalUrl() (ret string) {
 
-	cRet := C.cefingo_download_item_get_original_url(self.p_download_item)
+	cRet := C.cefingo_download_item_get_original_url((*C.cef_download_item_t)(self.pc_download_item))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8168,7 +8308,7 @@ func (self *CDownloadItemT) GetOriginalUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetSuggestedFileName() (ret string) {
 
-	cRet := C.cefingo_download_item_get_suggested_file_name(self.p_download_item)
+	cRet := C.cefingo_download_item_get_suggested_file_name((*C.cef_download_item_t)(self.pc_download_item))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8184,7 +8324,7 @@ func (self *CDownloadItemT) GetSuggestedFileName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetContentDisposition() (ret string) {
 
-	cRet := C.cefingo_download_item_get_content_disposition(self.p_download_item)
+	cRet := C.cefingo_download_item_get_content_disposition((*C.cef_download_item_t)(self.pc_download_item))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8200,7 +8340,7 @@ func (self *CDownloadItemT) GetContentDisposition() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetMimeType() (ret string) {
 
-	cRet := C.cefingo_download_item_get_mime_type(self.p_download_item)
+	cRet := C.cefingo_download_item_get_mime_type((*C.cef_download_item_t)(self.pc_download_item))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8217,10 +8357,12 @@ func (self *CDownloadItemT) GetMimeType() (ret string) {
 // called on any thread.
 ///
 
+type cCDragDataT C.cef_drag_data_t
+
 // Go type for cef_drag_data_t
 type CDragDataT struct {
-	noCopy      noCopy
-	p_drag_data *C.cef_drag_data_t
+	noCopy       noCopy
+	pc_drag_data *cCDragDataT
 }
 
 type RefToCDragDataT struct {
@@ -8246,21 +8388,22 @@ func newCDragDataT(p *C.cef_drag_data_t) *CDragDataT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T140.1:")
-	BaseAddRef(p)
-	go_drag_data := CDragDataT{noCopy{}, p}
+	pc := (*cCDragDataT)(p)
+	BaseAddRef(pc)
+	go_drag_data := CDragDataT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_drag_data, func(g *CDragDataT) {
-		Tracef(unsafe.Pointer(g.p_drag_data), "T140.2:")
-		BaseRelease(g.p_drag_data)
+		Tracef(unsafe.Pointer(g.pc_drag_data), "T140.2:")
+		BaseRelease(g.pc_drag_data)
 	})
 	return &go_drag_data
 }
 
 // *C.cef_drag_data_t has refCounted interface
 func (drag_data *CDragDataT) HasOneRef() bool {
-	return BaseHasOneRef(drag_data.p_drag_data)
+	return BaseHasOneRef(drag_data.pc_drag_data)
 }
 
-func (p *C.cef_drag_data_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDragDataT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -8269,7 +8412,7 @@ func (p *C.cef_drag_data_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 ///
 func (self *CDragDataT) Clone() (ret *CDragDataT) {
 
-	cRet := C.cefingo_drag_data_clone(self.p_drag_data)
+	cRet := C.cefingo_drag_data_clone((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	ret = newCDragDataT(cRet)
 	return ret
@@ -8280,7 +8423,7 @@ func (self *CDragDataT) Clone() (ret *CDragDataT) {
 ///
 func (self *CDragDataT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_drag_data_is_read_only(self.p_drag_data)
+	cRet := C.cefingo_drag_data_is_read_only((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	ret = cRet == 1
 	return ret
@@ -8291,7 +8434,7 @@ func (self *CDragDataT) IsReadOnly() (ret bool) {
 ///
 func (self *CDragDataT) IsLink() (ret bool) {
 
-	cRet := C.cefingo_drag_data_is_link(self.p_drag_data)
+	cRet := C.cefingo_drag_data_is_link((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	ret = cRet == 1
 	return ret
@@ -8302,7 +8445,7 @@ func (self *CDragDataT) IsLink() (ret bool) {
 ///
 func (self *CDragDataT) IsFragment() (ret bool) {
 
-	cRet := C.cefingo_drag_data_is_fragment(self.p_drag_data)
+	cRet := C.cefingo_drag_data_is_fragment((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	ret = cRet == 1
 	return ret
@@ -8313,7 +8456,7 @@ func (self *CDragDataT) IsFragment() (ret bool) {
 ///
 func (self *CDragDataT) IsFile() (ret bool) {
 
-	cRet := C.cefingo_drag_data_is_file(self.p_drag_data)
+	cRet := C.cefingo_drag_data_is_file((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	ret = cRet == 1
 	return ret
@@ -8325,7 +8468,7 @@ func (self *CDragDataT) IsFile() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkUrl() (ret string) {
 
-	cRet := C.cefingo_drag_data_get_link_url(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_link_url((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8341,7 +8484,7 @@ func (self *CDragDataT) GetLinkUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkTitle() (ret string) {
 
-	cRet := C.cefingo_drag_data_get_link_title(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_link_title((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8357,7 +8500,7 @@ func (self *CDragDataT) GetLinkTitle() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkMetadata() (ret string) {
 
-	cRet := C.cefingo_drag_data_get_link_metadata(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_link_metadata((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8373,7 +8516,7 @@ func (self *CDragDataT) GetLinkMetadata() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentText() (ret string) {
 
-	cRet := C.cefingo_drag_data_get_fragment_text(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_fragment_text((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8389,7 +8532,7 @@ func (self *CDragDataT) GetFragmentText() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentHtml() (ret string) {
 
-	cRet := C.cefingo_drag_data_get_fragment_html(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_fragment_html((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8406,7 +8549,7 @@ func (self *CDragDataT) GetFragmentHtml() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentBaseUrl() (ret string) {
 
-	cRet := C.cefingo_drag_data_get_fragment_base_url(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_fragment_base_url((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8422,7 +8565,7 @@ func (self *CDragDataT) GetFragmentBaseUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFileName() (ret string) {
 
-	cRet := C.cefingo_drag_data_get_file_name(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_file_name((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8443,11 +8586,11 @@ func (self *CDragDataT) GetFileContents(
 ) (ret int64) {
 	var goTmpwriter *C.cef_stream_writer_t
 	if writer != nil {
-		goTmpwriter = writer.p_stream_writer
-		BaseAddRef(goTmpwriter)
+		BaseAddRef(writer.pc_stream_writer)
+		goTmpwriter = (*C.cef_stream_writer_t)(writer.pc_stream_writer)
 	}
 
-	cRet := C.cefingo_drag_data_get_file_contents(self.p_drag_data, goTmpwriter)
+	cRet := C.cefingo_drag_data_get_file_contents((*C.cef_drag_data_t)(self.pc_drag_data), goTmpwriter)
 
 	ret = (int64)(cRet)
 	return ret
@@ -8461,7 +8604,7 @@ func (self *CDragDataT) GetFileNames(
 	names CStringListT,
 ) (ret bool) {
 
-	cRet := C.cefingo_drag_data_get_file_names(self.p_drag_data, (C.cef_string_list_t)(names))
+	cRet := C.cefingo_drag_data_get_file_names((*C.cef_drag_data_t)(self.pc_drag_data), (C.cef_string_list_t)(names))
 
 	ret = cRet == 1
 	return ret
@@ -8475,7 +8618,7 @@ func (self *CDragDataT) SetLinkUrl(
 ) {
 	c_url := create_cef_string(url)
 
-	C.cefingo_drag_data_set_link_url(self.p_drag_data, c_url.p_cef_string_t)
+	C.cefingo_drag_data_set_link_url((*C.cef_drag_data_t)(self.pc_drag_data), c_url.p_cef_string_t)
 
 }
 
@@ -8487,7 +8630,7 @@ func (self *CDragDataT) SetLinkTitle(
 ) {
 	c_title := create_cef_string(title)
 
-	C.cefingo_drag_data_set_link_title(self.p_drag_data, c_title.p_cef_string_t)
+	C.cefingo_drag_data_set_link_title((*C.cef_drag_data_t)(self.pc_drag_data), c_title.p_cef_string_t)
 
 }
 
@@ -8499,7 +8642,7 @@ func (self *CDragDataT) SetLinkMetadata(
 ) {
 	c_data := create_cef_string(data)
 
-	C.cefingo_drag_data_set_link_metadata(self.p_drag_data, c_data.p_cef_string_t)
+	C.cefingo_drag_data_set_link_metadata((*C.cef_drag_data_t)(self.pc_drag_data), c_data.p_cef_string_t)
 
 }
 
@@ -8511,7 +8654,7 @@ func (self *CDragDataT) SetFragmentText(
 ) {
 	c_text := create_cef_string(text)
 
-	C.cefingo_drag_data_set_fragment_text(self.p_drag_data, c_text.p_cef_string_t)
+	C.cefingo_drag_data_set_fragment_text((*C.cef_drag_data_t)(self.pc_drag_data), c_text.p_cef_string_t)
 
 }
 
@@ -8523,7 +8666,7 @@ func (self *CDragDataT) SetFragmentHtml(
 ) {
 	c_html := create_cef_string(html)
 
-	C.cefingo_drag_data_set_fragment_html(self.p_drag_data, c_html.p_cef_string_t)
+	C.cefingo_drag_data_set_fragment_html((*C.cef_drag_data_t)(self.pc_drag_data), c_html.p_cef_string_t)
 
 }
 
@@ -8535,7 +8678,7 @@ func (self *CDragDataT) SetFragmentBaseUrl(
 ) {
 	c_base_url := create_cef_string(base_url)
 
-	C.cefingo_drag_data_set_fragment_base_url(self.p_drag_data, c_base_url.p_cef_string_t)
+	C.cefingo_drag_data_set_fragment_base_url((*C.cef_drag_data_t)(self.pc_drag_data), c_base_url.p_cef_string_t)
 
 }
 
@@ -8546,7 +8689,7 @@ func (self *CDragDataT) SetFragmentBaseUrl(
 ///
 func (self *CDragDataT) ResetFileContents() {
 
-	C.cefingo_drag_data_reset_file_contents(self.p_drag_data)
+	C.cefingo_drag_data_reset_file_contents((*C.cef_drag_data_t)(self.pc_drag_data))
 
 }
 
@@ -8560,7 +8703,7 @@ func (self *CDragDataT) AddFile(
 	c_path := create_cef_string(path)
 	c_display_name := create_cef_string(display_name)
 
-	C.cefingo_drag_data_add_file(self.p_drag_data, c_path.p_cef_string_t, c_display_name.p_cef_string_t)
+	C.cefingo_drag_data_add_file((*C.cef_drag_data_t)(self.pc_drag_data), c_path.p_cef_string_t, c_display_name.p_cef_string_t)
 
 }
 
@@ -8570,7 +8713,7 @@ func (self *CDragDataT) AddFile(
 ///
 func (self *CDragDataT) GetImage() (ret *CImageT) {
 
-	cRet := C.cefingo_drag_data_get_image(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_image((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	ret = newCImageT(cRet)
 	return ret
@@ -8581,7 +8724,7 @@ func (self *CDragDataT) GetImage() (ret *CImageT) {
 ///
 func (self *CDragDataT) GetImageHotspot() (ret CPointT) {
 
-	cRet := C.cefingo_drag_data_get_image_hotspot(self.p_drag_data)
+	cRet := C.cefingo_drag_data_get_image_hotspot((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	ret = (CPointT)(cRet)
 	return ret
@@ -8592,7 +8735,7 @@ func (self *CDragDataT) GetImageHotspot() (ret CPointT) {
 ///
 func (self *CDragDataT) HasImage() (ret bool) {
 
-	cRet := C.cefingo_drag_data_has_image(self.p_drag_data)
+	cRet := C.cefingo_drag_data_has_image((*C.cef_drag_data_t)(self.pc_drag_data))
 
 	ret = cRet == 1
 	return ret
@@ -8616,10 +8759,12 @@ func DragDataCreate() (ret *CDragDataT) {
 // of this structure will be called on the UI thread.
 ///
 
+type cCDragHandlerT C.cef_drag_handler_t
+
 // Go type for cef_drag_handler_t
 type CDragHandlerT struct {
-	noCopy         noCopy
-	p_drag_handler *C.cef_drag_handler_t
+	noCopy          noCopy
+	pc_drag_handler *cCDragHandlerT
 }
 
 type RefToCDragHandlerT struct {
@@ -8645,21 +8790,22 @@ func newCDragHandlerT(p *C.cef_drag_handler_t) *CDragHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T141.1:")
-	BaseAddRef(p)
-	go_drag_handler := CDragHandlerT{noCopy{}, p}
+	pc := (*cCDragHandlerT)(p)
+	BaseAddRef(pc)
+	go_drag_handler := CDragHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_drag_handler, func(g *CDragHandlerT) {
-		Tracef(unsafe.Pointer(g.p_drag_handler), "T141.2:")
-		BaseRelease(g.p_drag_handler)
+		Tracef(unsafe.Pointer(g.pc_drag_handler), "T141.2:")
+		BaseRelease(g.pc_drag_handler)
 	})
 	return &go_drag_handler
 }
 
 // *C.cef_drag_handler_t has refCounted interface
 func (drag_handler *CDragHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(drag_handler.p_drag_handler)
+	return BaseHasOneRef(drag_handler.pc_drag_handler)
 }
 
-func (p *C.cef_drag_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDragHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -8696,19 +8842,20 @@ type OnDraggableRegionsChangedHandler interface {
 }
 
 var drag_handler_handlers = struct {
-	handler                              map[*C.cef_drag_handler_t]interface{}
-	on_drag_enter_handler                map[*C.cef_drag_handler_t]OnDragEnterHandler
-	on_draggable_regions_changed_handler map[*C.cef_drag_handler_t]OnDraggableRegionsChangedHandler
+	handler                              map[*cCDragHandlerT]interface{}
+	on_drag_enter_handler                map[*cCDragHandlerT]OnDragEnterHandler
+	on_draggable_regions_changed_handler map[*cCDragHandlerT]OnDraggableRegionsChangedHandler
 }{
-	map[*C.cef_drag_handler_t]interface{}{},
-	map[*C.cef_drag_handler_t]OnDragEnterHandler{},
-	map[*C.cef_drag_handler_t]OnDraggableRegionsChangedHandler{},
+	map[*cCDragHandlerT]interface{}{},
+	map[*cCDragHandlerT]OnDragEnterHandler{},
+	map[*cCDragHandlerT]OnDraggableRegionsChangedHandler{},
 }
 
 // AllocCDragHandlerT allocates CDragHandlerT and construct it
 func AllocCDragHandlerT() *CDragHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_drag_handler_wrapper_t, "T141.3:")
 	cefp := C.cefingo_construct_drag_handler((*C.cefingo_drag_handler_wrapper_t)(up))
+	cgop := (*cCDragHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_drag_handler_t itself in DeassocFunc,
@@ -8717,9 +8864,9 @@ func AllocCDragHandlerT() *CDragHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(drag_handler_handlers.handler, cefp)
-		delete(drag_handler_handlers.on_drag_enter_handler, cefp)
-		delete(drag_handler_handlers.on_draggable_regions_changed_handler, cefp)
+		delete(drag_handler_handlers.handler, cgop)
+		delete(drag_handler_handlers.on_drag_enter_handler, cgop)
+		delete(drag_handler_handlers.on_draggable_regions_changed_handler, cgop)
 	}))
 
 	return newCDragHandlerT(cefp)
@@ -8729,7 +8876,7 @@ func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := drag_handler.p_drag_handler
+	cp := drag_handler.pc_drag_handler
 	drag_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnDragEnterHandler); ok {
@@ -8750,7 +8897,7 @@ func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
 
 func (drag_handler *CDragHandlerT) UnbindAll() {
 
-	cp := drag_handler.p_drag_handler
+	cp := drag_handler.pc_drag_handler
 	delete(drag_handler_handlers.handler, cp)
 
 	delete(drag_handler_handlers.on_drag_enter_handler, cp)
@@ -8762,7 +8909,7 @@ func (drag_handler *CDragHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := drag_handler.p_drag_handler
+	cp := drag_handler.pc_drag_handler
 	return drag_handler_handlers.handler[cp]
 }
 
@@ -8773,10 +8920,12 @@ func (drag_handler *CDragHandlerT) Handler() interface{} {
 // otherwise indicated.
 ///
 
+type cCExtensionT C.cef_extension_t
+
 // Go type for cef_extension_t
 type CExtensionT struct {
-	noCopy      noCopy
-	p_extension *C.cef_extension_t
+	noCopy       noCopy
+	pc_extension *cCExtensionT
 }
 
 type RefToCExtensionT struct {
@@ -8802,21 +8951,22 @@ func newCExtensionT(p *C.cef_extension_t) *CExtensionT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T142.1:")
-	BaseAddRef(p)
-	go_extension := CExtensionT{noCopy{}, p}
+	pc := (*cCExtensionT)(p)
+	BaseAddRef(pc)
+	go_extension := CExtensionT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_extension, func(g *CExtensionT) {
-		Tracef(unsafe.Pointer(g.p_extension), "T142.2:")
-		BaseRelease(g.p_extension)
+		Tracef(unsafe.Pointer(g.pc_extension), "T142.2:")
+		BaseRelease(g.pc_extension)
 	})
 	return &go_extension
 }
 
 // *C.cef_extension_t has refCounted interface
 func (extension *CExtensionT) HasOneRef() bool {
-	return BaseHasOneRef(extension.p_extension)
+	return BaseHasOneRef(extension.pc_extension)
 }
 
-func (p *C.cef_extension_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCExtensionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -8828,7 +8978,7 @@ func (p *C.cef_extension_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CExtensionT) GetIdentifier() (ret string) {
 
-	cRet := C.cefingo_extension_get_identifier(self.p_extension)
+	cRet := C.cefingo_extension_get_identifier((*C.cef_extension_t)(self.pc_extension))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8846,7 +8996,7 @@ func (self *CExtensionT) GetIdentifier() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CExtensionT) GetPath() (ret string) {
 
-	cRet := C.cefingo_extension_get_path(self.p_extension)
+	cRet := C.cefingo_extension_get_path((*C.cef_extension_t)(self.pc_extension))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -8862,7 +9012,7 @@ func (self *CExtensionT) GetPath() (ret string) {
 ///
 func (self *CExtensionT) GetManifest() (ret *CDictionaryValueT) {
 
-	cRet := C.cefingo_extension_get_manifest(self.p_extension)
+	cRet := C.cefingo_extension_get_manifest((*C.cef_extension_t)(self.pc_extension))
 
 	ret = newCDictionaryValueT(cRet)
 	return ret
@@ -8878,11 +9028,11 @@ func (self *CExtensionT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_extension_t
 	if that != nil {
-		goTmpthat = that.p_extension
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_extension)
+		goTmpthat = (*C.cef_extension_t)(that.pc_extension)
 	}
 
-	cRet := C.cefingo_extension_is_same(self.p_extension, goTmpthat)
+	cRet := C.cefingo_extension_is_same((*C.cef_extension_t)(self.pc_extension), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -8895,7 +9045,7 @@ func (self *CExtensionT) IsSame(
 ///
 func (self *CExtensionT) GetHandler() (ret *CExtensionHandlerT) {
 
-	cRet := C.cefingo_extension_get_handler(self.p_extension)
+	cRet := C.cefingo_extension_get_handler((*C.cef_extension_t)(self.pc_extension))
 
 	ret = newCExtensionHandlerT(cRet)
 	return ret
@@ -8909,7 +9059,7 @@ func (self *CExtensionT) GetHandler() (ret *CExtensionHandlerT) {
 ///
 func (self *CExtensionT) GetLoaderContext() (ret *CRequestContextT) {
 
-	cRet := C.cefingo_extension_get_loader_context(self.p_extension)
+	cRet := C.cefingo_extension_get_loader_context((*C.cef_extension_t)(self.pc_extension))
 
 	ret = newCRequestContextT(cRet)
 	return ret
@@ -8921,7 +9071,7 @@ func (self *CExtensionT) GetLoaderContext() (ret *CRequestContextT) {
 ///
 func (self *CExtensionT) IsLoaded() (ret bool) {
 
-	cRet := C.cefingo_extension_is_loaded(self.p_extension)
+	cRet := C.cefingo_extension_is_loaded((*C.cef_extension_t)(self.pc_extension))
 
 	ret = cRet == 1
 	return ret
@@ -8934,7 +9084,7 @@ func (self *CExtensionT) IsLoaded() (ret bool) {
 ///
 func (self *CExtensionT) Unload() {
 
-	C.cefingo_extension_unload(self.p_extension)
+	C.cefingo_extension_unload((*C.cef_extension_t)(self.pc_extension))
 
 }
 
@@ -8945,10 +9095,12 @@ func (self *CExtensionT) Unload() {
 // cef_extension_handler_t::GetExtensionResource.
 ///
 
+type cCGetExtensionResourceCallbackT C.cef_get_extension_resource_callback_t
+
 // Go type for cef_get_extension_resource_callback_t
 type CGetExtensionResourceCallbackT struct {
-	noCopy                            noCopy
-	p_get_extension_resource_callback *C.cef_get_extension_resource_callback_t
+	noCopy                             noCopy
+	pc_get_extension_resource_callback *cCGetExtensionResourceCallbackT
 }
 
 type RefToCGetExtensionResourceCallbackT struct {
@@ -8974,21 +9126,22 @@ func newCGetExtensionResourceCallbackT(p *C.cef_get_extension_resource_callback_
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T143.1:")
-	BaseAddRef(p)
-	go_get_extension_resource_callback := CGetExtensionResourceCallbackT{noCopy{}, p}
+	pc := (*cCGetExtensionResourceCallbackT)(p)
+	BaseAddRef(pc)
+	go_get_extension_resource_callback := CGetExtensionResourceCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_get_extension_resource_callback, func(g *CGetExtensionResourceCallbackT) {
-		Tracef(unsafe.Pointer(g.p_get_extension_resource_callback), "T143.2:")
-		BaseRelease(g.p_get_extension_resource_callback)
+		Tracef(unsafe.Pointer(g.pc_get_extension_resource_callback), "T143.2:")
+		BaseRelease(g.pc_get_extension_resource_callback)
 	})
 	return &go_get_extension_resource_callback
 }
 
 // *C.cef_get_extension_resource_callback_t has refCounted interface
 func (get_extension_resource_callback *CGetExtensionResourceCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(get_extension_resource_callback.p_get_extension_resource_callback)
+	return BaseHasOneRef(get_extension_resource_callback.pc_get_extension_resource_callback)
 }
 
-func (p *C.cef_get_extension_resource_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCGetExtensionResourceCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -9000,11 +9153,11 @@ func (self *CGetExtensionResourceCallbackT) Cont(
 ) {
 	var goTmpstream *C.cef_stream_reader_t
 	if stream != nil {
-		goTmpstream = stream.p_stream_reader
-		BaseAddRef(goTmpstream)
+		BaseAddRef(stream.pc_stream_reader)
+		goTmpstream = (*C.cef_stream_reader_t)(stream.pc_stream_reader)
 	}
 
-	C.cefingo_get_extension_resource_callback_cont(self.p_get_extension_resource_callback, goTmpstream)
+	C.cefingo_get_extension_resource_callback_cont((*C.cef_get_extension_resource_callback_t)(self.pc_get_extension_resource_callback), goTmpstream)
 
 }
 
@@ -9013,7 +9166,7 @@ func (self *CGetExtensionResourceCallbackT) Cont(
 ///
 func (self *CGetExtensionResourceCallbackT) Cancel() {
 
-	C.cefingo_get_extension_resource_callback_cancel(self.p_get_extension_resource_callback)
+	C.cefingo_get_extension_resource_callback_cancel((*C.cef_get_extension_resource_callback_t)(self.pc_get_extension_resource_callback))
 
 }
 
@@ -9023,10 +9176,12 @@ func (self *CGetExtensionResourceCallbackT) Cancel() {
 // cef_request_context_t::LoadExtension for information about extension loading.
 ///
 
+type cCExtensionHandlerT C.cef_extension_handler_t
+
 // Go type for cef_extension_handler_t
 type CExtensionHandlerT struct {
-	noCopy              noCopy
-	p_extension_handler *C.cef_extension_handler_t
+	noCopy               noCopy
+	pc_extension_handler *cCExtensionHandlerT
 }
 
 type RefToCExtensionHandlerT struct {
@@ -9052,21 +9207,22 @@ func newCExtensionHandlerT(p *C.cef_extension_handler_t) *CExtensionHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T144.1:")
-	BaseAddRef(p)
-	go_extension_handler := CExtensionHandlerT{noCopy{}, p}
+	pc := (*cCExtensionHandlerT)(p)
+	BaseAddRef(pc)
+	go_extension_handler := CExtensionHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_extension_handler, func(g *CExtensionHandlerT) {
-		Tracef(unsafe.Pointer(g.p_extension_handler), "T144.2:")
-		BaseRelease(g.p_extension_handler)
+		Tracef(unsafe.Pointer(g.pc_extension_handler), "T144.2:")
+		BaseRelease(g.pc_extension_handler)
 	})
 	return &go_extension_handler
 }
 
 // *C.cef_extension_handler_t has refCounted interface
 func (extension_handler *CExtensionHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(extension_handler.p_extension_handler)
+	return BaseHasOneRef(extension_handler.pc_extension_handler)
 }
 
-func (p *C.cef_extension_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCExtensionHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -9214,31 +9370,32 @@ type GetExtensionResourceHandler interface {
 }
 
 var extension_handler_handlers = struct {
-	handler                              map[*C.cef_extension_handler_t]interface{}
-	on_extension_load_failed_handler     map[*C.cef_extension_handler_t]OnExtensionLoadFailedHandler
-	on_extension_loaded_handler          map[*C.cef_extension_handler_t]OnExtensionLoadedHandler
-	on_extension_unloaded_handler        map[*C.cef_extension_handler_t]OnExtensionUnloadedHandler
-	on_before_background_browser_handler map[*C.cef_extension_handler_t]OnBeforeBackgroundBrowserHandler
-	on_before_browser_handler            map[*C.cef_extension_handler_t]OnBeforeBrowserHandler
-	get_active_browser_handler           map[*C.cef_extension_handler_t]GetActiveBrowserHandler
-	can_access_browser_handler           map[*C.cef_extension_handler_t]CanAccessBrowserHandler
-	get_extension_resource_handler       map[*C.cef_extension_handler_t]GetExtensionResourceHandler
+	handler                              map[*cCExtensionHandlerT]interface{}
+	on_extension_load_failed_handler     map[*cCExtensionHandlerT]OnExtensionLoadFailedHandler
+	on_extension_loaded_handler          map[*cCExtensionHandlerT]OnExtensionLoadedHandler
+	on_extension_unloaded_handler        map[*cCExtensionHandlerT]OnExtensionUnloadedHandler
+	on_before_background_browser_handler map[*cCExtensionHandlerT]OnBeforeBackgroundBrowserHandler
+	on_before_browser_handler            map[*cCExtensionHandlerT]OnBeforeBrowserHandler
+	get_active_browser_handler           map[*cCExtensionHandlerT]GetActiveBrowserHandler
+	can_access_browser_handler           map[*cCExtensionHandlerT]CanAccessBrowserHandler
+	get_extension_resource_handler       map[*cCExtensionHandlerT]GetExtensionResourceHandler
 }{
-	map[*C.cef_extension_handler_t]interface{}{},
-	map[*C.cef_extension_handler_t]OnExtensionLoadFailedHandler{},
-	map[*C.cef_extension_handler_t]OnExtensionLoadedHandler{},
-	map[*C.cef_extension_handler_t]OnExtensionUnloadedHandler{},
-	map[*C.cef_extension_handler_t]OnBeforeBackgroundBrowserHandler{},
-	map[*C.cef_extension_handler_t]OnBeforeBrowserHandler{},
-	map[*C.cef_extension_handler_t]GetActiveBrowserHandler{},
-	map[*C.cef_extension_handler_t]CanAccessBrowserHandler{},
-	map[*C.cef_extension_handler_t]GetExtensionResourceHandler{},
+	map[*cCExtensionHandlerT]interface{}{},
+	map[*cCExtensionHandlerT]OnExtensionLoadFailedHandler{},
+	map[*cCExtensionHandlerT]OnExtensionLoadedHandler{},
+	map[*cCExtensionHandlerT]OnExtensionUnloadedHandler{},
+	map[*cCExtensionHandlerT]OnBeforeBackgroundBrowserHandler{},
+	map[*cCExtensionHandlerT]OnBeforeBrowserHandler{},
+	map[*cCExtensionHandlerT]GetActiveBrowserHandler{},
+	map[*cCExtensionHandlerT]CanAccessBrowserHandler{},
+	map[*cCExtensionHandlerT]GetExtensionResourceHandler{},
 }
 
 // AllocCExtensionHandlerT allocates CExtensionHandlerT and construct it
 func AllocCExtensionHandlerT() *CExtensionHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_extension_handler_wrapper_t, "T144.3:")
 	cefp := C.cefingo_construct_extension_handler((*C.cefingo_extension_handler_wrapper_t)(up))
+	cgop := (*cCExtensionHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_extension_handler_t itself in DeassocFunc,
@@ -9247,15 +9404,15 @@ func AllocCExtensionHandlerT() *CExtensionHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(extension_handler_handlers.handler, cefp)
-		delete(extension_handler_handlers.on_extension_load_failed_handler, cefp)
-		delete(extension_handler_handlers.on_extension_loaded_handler, cefp)
-		delete(extension_handler_handlers.on_extension_unloaded_handler, cefp)
-		delete(extension_handler_handlers.on_before_background_browser_handler, cefp)
-		delete(extension_handler_handlers.on_before_browser_handler, cefp)
-		delete(extension_handler_handlers.get_active_browser_handler, cefp)
-		delete(extension_handler_handlers.can_access_browser_handler, cefp)
-		delete(extension_handler_handlers.get_extension_resource_handler, cefp)
+		delete(extension_handler_handlers.handler, cgop)
+		delete(extension_handler_handlers.on_extension_load_failed_handler, cgop)
+		delete(extension_handler_handlers.on_extension_loaded_handler, cgop)
+		delete(extension_handler_handlers.on_extension_unloaded_handler, cgop)
+		delete(extension_handler_handlers.on_before_background_browser_handler, cgop)
+		delete(extension_handler_handlers.on_before_browser_handler, cgop)
+		delete(extension_handler_handlers.get_active_browser_handler, cgop)
+		delete(extension_handler_handlers.can_access_browser_handler, cgop)
+		delete(extension_handler_handlers.get_extension_resource_handler, cgop)
 	}))
 
 	return newCExtensionHandlerT(cefp)
@@ -9265,7 +9422,7 @@ func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHand
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := extension_handler.p_extension_handler
+	cp := extension_handler.pc_extension_handler
 	extension_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnExtensionLoadFailedHandler); ok {
@@ -9310,7 +9467,7 @@ func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHand
 
 func (extension_handler *CExtensionHandlerT) UnbindAll() {
 
-	cp := extension_handler.p_extension_handler
+	cp := extension_handler.pc_extension_handler
 	delete(extension_handler_handlers.handler, cp)
 
 	delete(extension_handler_handlers.on_extension_load_failed_handler, cp)
@@ -9328,7 +9485,7 @@ func (extension_handler *CExtensionHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := extension_handler.p_extension_handler
+	cp := extension_handler.pc_extension_handler
 	return extension_handler_handlers.handler[cp]
 }
 
@@ -9494,10 +9651,12 @@ func LoadCrlsetsFile(
 // UI thread unless otherwise indicated.
 ///
 
+type cCFillLayoutT C.cef_fill_layout_t
+
 // Go type for cef_fill_layout_t
 type CFillLayoutT struct {
-	noCopy        noCopy
-	p_fill_layout *C.cef_fill_layout_t
+	noCopy         noCopy
+	pc_fill_layout *cCFillLayoutT
 }
 
 type RefToCFillLayoutT struct {
@@ -9523,26 +9682,28 @@ func newCFillLayoutT(p *C.cef_fill_layout_t) *CFillLayoutT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T145.1:")
-	BaseAddRef(p)
-	go_fill_layout := CFillLayoutT{noCopy{}, p}
+	pc := (*cCFillLayoutT)(p)
+	BaseAddRef(pc)
+	go_fill_layout := CFillLayoutT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_fill_layout, func(g *CFillLayoutT) {
-		Tracef(unsafe.Pointer(g.p_fill_layout), "T145.2:")
-		BaseRelease(g.p_fill_layout)
+		Tracef(unsafe.Pointer(g.pc_fill_layout), "T145.2:")
+		BaseRelease(g.pc_fill_layout)
 	})
 	return &go_fill_layout
 }
 
 // *C.cef_fill_layout_t has refCounted interface
 func (fill_layout *CFillLayoutT) HasOneRef() bool {
-	return BaseHasOneRef(fill_layout.p_fill_layout)
+	return BaseHasOneRef(fill_layout.pc_fill_layout)
 }
 
-func (p *C.cef_fill_layout_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCFillLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CLayoutT
 func (fill_layout *CFillLayoutT) ToCLayoutT() *CLayoutT {
-	p := (*C.cef_layout_t)(unsafe.Pointer(fill_layout.p_fill_layout))
+	p := (*C.cef_layout_t)(unsafe.Pointer(fill_layout.pc_fill_layout))
 	return newCLayoutT(p)
 }
 
@@ -9553,10 +9714,12 @@ func (fill_layout *CFillLayoutT) ToCLayoutT() *CLayoutT {
 // functions of this structure will be called on the UI thread.
 ///
 
+type cCFindHandlerT C.cef_find_handler_t
+
 // Go type for cef_find_handler_t
 type CFindHandlerT struct {
-	noCopy         noCopy
-	p_find_handler *C.cef_find_handler_t
+	noCopy          noCopy
+	pc_find_handler *cCFindHandlerT
 }
 
 type RefToCFindHandlerT struct {
@@ -9582,21 +9745,22 @@ func newCFindHandlerT(p *C.cef_find_handler_t) *CFindHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T146.1:")
-	BaseAddRef(p)
-	go_find_handler := CFindHandlerT{noCopy{}, p}
+	pc := (*cCFindHandlerT)(p)
+	BaseAddRef(pc)
+	go_find_handler := CFindHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_find_handler, func(g *CFindHandlerT) {
-		Tracef(unsafe.Pointer(g.p_find_handler), "T146.2:")
-		BaseRelease(g.p_find_handler)
+		Tracef(unsafe.Pointer(g.pc_find_handler), "T146.2:")
+		BaseRelease(g.pc_find_handler)
 	})
 	return &go_find_handler
 }
 
 // *C.cef_find_handler_t has refCounted interface
 func (find_handler *CFindHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(find_handler.p_find_handler)
+	return BaseHasOneRef(find_handler.pc_find_handler)
 }
 
-func (p *C.cef_find_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCFindHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -9621,17 +9785,18 @@ type OnFindResultHandler interface {
 }
 
 var find_handler_handlers = struct {
-	handler                map[*C.cef_find_handler_t]interface{}
-	on_find_result_handler map[*C.cef_find_handler_t]OnFindResultHandler
+	handler                map[*cCFindHandlerT]interface{}
+	on_find_result_handler map[*cCFindHandlerT]OnFindResultHandler
 }{
-	map[*C.cef_find_handler_t]interface{}{},
-	map[*C.cef_find_handler_t]OnFindResultHandler{},
+	map[*cCFindHandlerT]interface{}{},
+	map[*cCFindHandlerT]OnFindResultHandler{},
 }
 
 // AllocCFindHandlerT allocates CFindHandlerT and construct it
 func AllocCFindHandlerT() *CFindHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_find_handler_wrapper_t, "T146.3:")
 	cefp := C.cefingo_construct_find_handler((*C.cefingo_find_handler_wrapper_t)(up))
+	cgop := (*cCFindHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_find_handler_t itself in DeassocFunc,
@@ -9640,8 +9805,8 @@ func AllocCFindHandlerT() *CFindHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(find_handler_handlers.handler, cefp)
-		delete(find_handler_handlers.on_find_result_handler, cefp)
+		delete(find_handler_handlers.handler, cgop)
+		delete(find_handler_handlers.on_find_result_handler, cgop)
 	}))
 
 	return newCFindHandlerT(cefp)
@@ -9651,7 +9816,7 @@ func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := find_handler.p_find_handler
+	cp := find_handler.pc_find_handler
 	find_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnFindResultHandler); ok {
@@ -9668,7 +9833,7 @@ func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
 
 func (find_handler *CFindHandlerT) UnbindAll() {
 
-	cp := find_handler.p_find_handler
+	cp := find_handler.pc_find_handler
 	delete(find_handler_handlers.handler, cp)
 
 	delete(find_handler_handlers.on_find_result_handler, cp)
@@ -9679,7 +9844,7 @@ func (find_handler *CFindHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := find_handler.p_find_handler
+	cp := find_handler.pc_find_handler
 	return find_handler_handlers.handler[cp]
 }
 
@@ -9690,10 +9855,12 @@ func (find_handler *CFindHandlerT) Handler() interface{} {
 // this structure will be called on the UI thread.
 ///
 
+type cCFocusHandlerT C.cef_focus_handler_t
+
 // Go type for cef_focus_handler_t
 type CFocusHandlerT struct {
-	noCopy          noCopy
-	p_focus_handler *C.cef_focus_handler_t
+	noCopy           noCopy
+	pc_focus_handler *cCFocusHandlerT
 }
 
 type RefToCFocusHandlerT struct {
@@ -9719,21 +9886,22 @@ func newCFocusHandlerT(p *C.cef_focus_handler_t) *CFocusHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T147.1:")
-	BaseAddRef(p)
-	go_focus_handler := CFocusHandlerT{noCopy{}, p}
+	pc := (*cCFocusHandlerT)(p)
+	BaseAddRef(pc)
+	go_focus_handler := CFocusHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_focus_handler, func(g *CFocusHandlerT) {
-		Tracef(unsafe.Pointer(g.p_focus_handler), "T147.2:")
-		BaseRelease(g.p_focus_handler)
+		Tracef(unsafe.Pointer(g.pc_focus_handler), "T147.2:")
+		BaseRelease(g.pc_focus_handler)
 	})
 	return &go_focus_handler
 }
 
 // *C.cef_focus_handler_t has refCounted interface
 func (focus_handler *CFocusHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(focus_handler.p_focus_handler)
+	return BaseHasOneRef(focus_handler.pc_focus_handler)
 }
 
-func (p *C.cef_focus_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCFocusHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -9775,21 +9943,22 @@ type OnGotFocusHandler interface {
 }
 
 var focus_handler_handlers = struct {
-	handler               map[*C.cef_focus_handler_t]interface{}
-	on_take_focus_handler map[*C.cef_focus_handler_t]OnTakeFocusHandler
-	on_set_focus_handler  map[*C.cef_focus_handler_t]OnSetFocusHandler
-	on_got_focus_handler  map[*C.cef_focus_handler_t]OnGotFocusHandler
+	handler               map[*cCFocusHandlerT]interface{}
+	on_take_focus_handler map[*cCFocusHandlerT]OnTakeFocusHandler
+	on_set_focus_handler  map[*cCFocusHandlerT]OnSetFocusHandler
+	on_got_focus_handler  map[*cCFocusHandlerT]OnGotFocusHandler
 }{
-	map[*C.cef_focus_handler_t]interface{}{},
-	map[*C.cef_focus_handler_t]OnTakeFocusHandler{},
-	map[*C.cef_focus_handler_t]OnSetFocusHandler{},
-	map[*C.cef_focus_handler_t]OnGotFocusHandler{},
+	map[*cCFocusHandlerT]interface{}{},
+	map[*cCFocusHandlerT]OnTakeFocusHandler{},
+	map[*cCFocusHandlerT]OnSetFocusHandler{},
+	map[*cCFocusHandlerT]OnGotFocusHandler{},
 }
 
 // AllocCFocusHandlerT allocates CFocusHandlerT and construct it
 func AllocCFocusHandlerT() *CFocusHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_focus_handler_wrapper_t, "T147.3:")
 	cefp := C.cefingo_construct_focus_handler((*C.cefingo_focus_handler_wrapper_t)(up))
+	cgop := (*cCFocusHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_focus_handler_t itself in DeassocFunc,
@@ -9798,10 +9967,10 @@ func AllocCFocusHandlerT() *CFocusHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(focus_handler_handlers.handler, cefp)
-		delete(focus_handler_handlers.on_take_focus_handler, cefp)
-		delete(focus_handler_handlers.on_set_focus_handler, cefp)
-		delete(focus_handler_handlers.on_got_focus_handler, cefp)
+		delete(focus_handler_handlers.handler, cgop)
+		delete(focus_handler_handlers.on_take_focus_handler, cgop)
+		delete(focus_handler_handlers.on_set_focus_handler, cgop)
+		delete(focus_handler_handlers.on_got_focus_handler, cgop)
 	}))
 
 	return newCFocusHandlerT(cefp)
@@ -9811,7 +9980,7 @@ func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := focus_handler.p_focus_handler
+	cp := focus_handler.pc_focus_handler
 	focus_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnTakeFocusHandler); ok {
@@ -9836,7 +10005,7 @@ func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
 
 func (focus_handler *CFocusHandlerT) UnbindAll() {
 
-	cp := focus_handler.p_focus_handler
+	cp := focus_handler.pc_focus_handler
 	delete(focus_handler_handlers.handler, cp)
 
 	delete(focus_handler_handlers.on_take_focus_handler, cp)
@@ -9849,7 +10018,7 @@ func (focus_handler *CFocusHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := focus_handler.p_focus_handler
+	cp := focus_handler.pc_focus_handler
 	return focus_handler_handlers.handler[cp]
 }
 
@@ -9862,10 +10031,12 @@ func (focus_handler *CFocusHandlerT) Handler() interface{} {
 // the functions of this structure may only be called on the main thread.
 ///
 
+type cCFrameT C.cef_frame_t
+
 // Go type for cef_frame_t
 type CFrameT struct {
-	noCopy  noCopy
-	p_frame *C.cef_frame_t
+	noCopy   noCopy
+	pc_frame *cCFrameT
 }
 
 type RefToCFrameT struct {
@@ -9891,21 +10062,22 @@ func newCFrameT(p *C.cef_frame_t) *CFrameT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T148.1:")
-	BaseAddRef(p)
-	go_frame := CFrameT{noCopy{}, p}
+	pc := (*cCFrameT)(p)
+	BaseAddRef(pc)
+	go_frame := CFrameT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_frame, func(g *CFrameT) {
-		Tracef(unsafe.Pointer(g.p_frame), "T148.2:")
-		BaseRelease(g.p_frame)
+		Tracef(unsafe.Pointer(g.pc_frame), "T148.2:")
+		BaseRelease(g.pc_frame)
 	})
 	return &go_frame
 }
 
 // *C.cef_frame_t has refCounted interface
 func (frame *CFrameT) HasOneRef() bool {
-	return BaseHasOneRef(frame.p_frame)
+	return BaseHasOneRef(frame.pc_frame)
 }
 
-func (p *C.cef_frame_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCFrameT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -9914,7 +10086,7 @@ func (p *C.cef_frame_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 ///
 func (self *CFrameT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_frame_is_valid(self.p_frame)
+	cRet := C.cefingo_frame_is_valid((*C.cef_frame_t)(self.pc_frame))
 
 	ret = cRet == 1
 	return ret
@@ -9925,7 +10097,7 @@ func (self *CFrameT) IsValid() (ret bool) {
 ///
 func (self *CFrameT) Undo() {
 
-	C.cefingo_frame_undo(self.p_frame)
+	C.cefingo_frame_undo((*C.cef_frame_t)(self.pc_frame))
 
 }
 
@@ -9934,7 +10106,7 @@ func (self *CFrameT) Undo() {
 ///
 func (self *CFrameT) Redo() {
 
-	C.cefingo_frame_redo(self.p_frame)
+	C.cefingo_frame_redo((*C.cef_frame_t)(self.pc_frame))
 
 }
 
@@ -9943,7 +10115,7 @@ func (self *CFrameT) Redo() {
 ///
 func (self *CFrameT) Cut() {
 
-	C.cefingo_frame_cut(self.p_frame)
+	C.cefingo_frame_cut((*C.cef_frame_t)(self.pc_frame))
 
 }
 
@@ -9952,7 +10124,7 @@ func (self *CFrameT) Cut() {
 ///
 func (self *CFrameT) Copy() {
 
-	C.cefingo_frame_copy(self.p_frame)
+	C.cefingo_frame_copy((*C.cef_frame_t)(self.pc_frame))
 
 }
 
@@ -9961,7 +10133,7 @@ func (self *CFrameT) Copy() {
 ///
 func (self *CFrameT) Paste() {
 
-	C.cefingo_frame_paste(self.p_frame)
+	C.cefingo_frame_paste((*C.cef_frame_t)(self.pc_frame))
 
 }
 
@@ -9970,7 +10142,7 @@ func (self *CFrameT) Paste() {
 ///
 func (self *CFrameT) Del() {
 
-	C.cefingo_frame_del(self.p_frame)
+	C.cefingo_frame_del((*C.cef_frame_t)(self.pc_frame))
 
 }
 
@@ -9979,7 +10151,7 @@ func (self *CFrameT) Del() {
 ///
 func (self *CFrameT) SelectAll() {
 
-	C.cefingo_frame_select_all(self.p_frame)
+	C.cefingo_frame_select_all((*C.cef_frame_t)(self.pc_frame))
 
 }
 
@@ -9990,7 +10162,7 @@ func (self *CFrameT) SelectAll() {
 ///
 func (self *CFrameT) ViewSource() {
 
-	C.cefingo_frame_view_source(self.p_frame)
+	C.cefingo_frame_view_source((*C.cef_frame_t)(self.pc_frame))
 
 }
 
@@ -10003,11 +10175,11 @@ func (self *CFrameT) GetSource(
 ) {
 	var goTmpvisitor *C.cef_string_visitor_t
 	if visitor != nil {
-		goTmpvisitor = visitor.p_string_visitor
-		BaseAddRef(goTmpvisitor)
+		BaseAddRef(visitor.pc_string_visitor)
+		goTmpvisitor = (*C.cef_string_visitor_t)(visitor.pc_string_visitor)
 	}
 
-	C.cefingo_frame_get_source(self.p_frame, goTmpvisitor)
+	C.cefingo_frame_get_source((*C.cef_frame_t)(self.pc_frame), goTmpvisitor)
 
 }
 
@@ -10020,11 +10192,11 @@ func (self *CFrameT) GetText(
 ) {
 	var goTmpvisitor *C.cef_string_visitor_t
 	if visitor != nil {
-		goTmpvisitor = visitor.p_string_visitor
-		BaseAddRef(goTmpvisitor)
+		BaseAddRef(visitor.pc_string_visitor)
+		goTmpvisitor = (*C.cef_string_visitor_t)(visitor.pc_string_visitor)
 	}
 
-	C.cefingo_frame_get_text(self.p_frame, goTmpvisitor)
+	C.cefingo_frame_get_text((*C.cef_frame_t)(self.pc_frame), goTmpvisitor)
 
 }
 
@@ -10040,11 +10212,11 @@ func (self *CFrameT) LoadRequest(
 ) {
 	var goTmprequest *C.cef_request_t
 	if request != nil {
-		goTmprequest = request.p_request
-		BaseAddRef(goTmprequest)
+		BaseAddRef(request.pc_request)
+		goTmprequest = (*C.cef_request_t)(request.pc_request)
 	}
 
-	C.cefingo_frame_load_request(self.p_frame, goTmprequest)
+	C.cefingo_frame_load_request((*C.cef_frame_t)(self.pc_frame), goTmprequest)
 
 }
 
@@ -10056,7 +10228,7 @@ func (self *CFrameT) LoadUrl(
 ) {
 	c_url := create_cef_string(url)
 
-	C.cefingo_frame_load_url(self.p_frame, c_url.p_cef_string_t)
+	C.cefingo_frame_load_url((*C.cef_frame_t)(self.pc_frame), c_url.p_cef_string_t)
 
 }
 
@@ -10075,7 +10247,7 @@ func (self *CFrameT) ExecuteJavaScript(
 	c_code := create_cef_string(code)
 	c_script_url := create_cef_string(script_url)
 
-	C.cefingo_frame_execute_java_script(self.p_frame, c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line))
+	C.cefingo_frame_execute_java_script((*C.cef_frame_t)(self.pc_frame), c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line))
 
 }
 
@@ -10084,7 +10256,7 @@ func (self *CFrameT) ExecuteJavaScript(
 ///
 func (self *CFrameT) IsMain() (ret bool) {
 
-	cRet := C.cefingo_frame_is_main(self.p_frame)
+	cRet := C.cefingo_frame_is_main((*C.cef_frame_t)(self.pc_frame))
 
 	ret = cRet == 1
 	return ret
@@ -10095,7 +10267,7 @@ func (self *CFrameT) IsMain() (ret bool) {
 ///
 func (self *CFrameT) IsFocused() (ret bool) {
 
-	cRet := C.cefingo_frame_is_focused(self.p_frame)
+	cRet := C.cefingo_frame_is_focused((*C.cef_frame_t)(self.pc_frame))
 
 	ret = cRet == 1
 	return ret
@@ -10111,7 +10283,7 @@ func (self *CFrameT) IsFocused() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CFrameT) GetName() (ret string) {
 
-	cRet := C.cefingo_frame_get_name(self.p_frame)
+	cRet := C.cefingo_frame_get_name((*C.cef_frame_t)(self.pc_frame))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -10127,7 +10299,7 @@ func (self *CFrameT) GetName() (ret string) {
 ///
 func (self *CFrameT) GetIdentifier() (ret int64) {
 
-	cRet := C.cefingo_frame_get_identifier(self.p_frame)
+	cRet := C.cefingo_frame_get_identifier((*C.cef_frame_t)(self.pc_frame))
 
 	ret = (int64)(cRet)
 	return ret
@@ -10139,7 +10311,7 @@ func (self *CFrameT) GetIdentifier() (ret int64) {
 ///
 func (self *CFrameT) GetParent() (ret *CFrameT) {
 
-	cRet := C.cefingo_frame_get_parent(self.p_frame)
+	cRet := C.cefingo_frame_get_parent((*C.cef_frame_t)(self.pc_frame))
 
 	ret = newCFrameT(cRet)
 	return ret
@@ -10151,7 +10323,7 @@ func (self *CFrameT) GetParent() (ret *CFrameT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CFrameT) GetUrl() (ret string) {
 
-	cRet := C.cefingo_frame_get_url(self.p_frame)
+	cRet := C.cefingo_frame_get_url((*C.cef_frame_t)(self.pc_frame))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -10166,7 +10338,7 @@ func (self *CFrameT) GetUrl() (ret string) {
 ///
 func (self *CFrameT) GetBrowser() (ret *CBrowserT) {
 
-	cRet := C.cefingo_frame_get_browser(self.p_frame)
+	cRet := C.cefingo_frame_get_browser((*C.cef_frame_t)(self.pc_frame))
 
 	ret = newCBrowserT(cRet)
 	return ret
@@ -10178,7 +10350,7 @@ func (self *CFrameT) GetBrowser() (ret *CBrowserT) {
 ///
 func (self *CFrameT) GetV8context() (ret *CV8contextT) {
 
-	cRet := C.cefingo_frame_get_v8context(self.p_frame)
+	cRet := C.cefingo_frame_get_v8context((*C.cef_frame_t)(self.pc_frame))
 
 	ret = newCV8contextT(cRet)
 	return ret
@@ -10193,11 +10365,11 @@ func (self *CFrameT) VisitDom(
 ) {
 	var goTmpvisitor *C.cef_domvisitor_t
 	if visitor != nil {
-		goTmpvisitor = visitor.p_domvisitor
-		BaseAddRef(goTmpvisitor)
+		BaseAddRef(visitor.pc_domvisitor)
+		goTmpvisitor = (*C.cef_domvisitor_t)(visitor.pc_domvisitor)
 	}
 
-	C.cefingo_frame_visit_dom(self.p_frame, goTmpvisitor)
+	C.cefingo_frame_visit_dom((*C.cef_frame_t)(self.pc_frame), goTmpvisitor)
 
 }
 
@@ -10229,16 +10401,16 @@ func (self *CFrameT) CreateUrlrequest(
 ) (ret *CUrlrequestT) {
 	var goTmprequest *C.cef_request_t
 	if request != nil {
-		goTmprequest = request.p_request
-		BaseAddRef(goTmprequest)
+		BaseAddRef(request.pc_request)
+		goTmprequest = (*C.cef_request_t)(request.pc_request)
 	}
 	var goTmpclient *C.cef_urlrequest_client_t
 	if client != nil {
-		goTmpclient = client.p_urlrequest_client
-		BaseAddRef(goTmpclient)
+		BaseAddRef(client.pc_urlrequest_client)
+		goTmpclient = (*C.cef_urlrequest_client_t)(client.pc_urlrequest_client)
 	}
 
-	cRet := C.cefingo_frame_create_urlrequest(self.p_frame, goTmprequest, goTmpclient)
+	cRet := C.cefingo_frame_create_urlrequest((*C.cef_frame_t)(self.pc_frame), goTmprequest, goTmpclient)
 
 	ret = newCUrlrequestT(cRet)
 	return ret
@@ -10256,11 +10428,11 @@ func (self *CFrameT) SendProcessMessage(
 ) {
 	var goTmpmessage *C.cef_process_message_t
 	if message != nil {
-		goTmpmessage = message.p_process_message
-		BaseAddRef(goTmpmessage)
+		BaseAddRef(message.pc_process_message)
+		goTmpmessage = (*C.cef_process_message_t)(message.pc_process_message)
 	}
 
-	C.cefingo_frame_send_process_message(self.p_frame, (C.cef_process_id_t)(target_process), goTmpmessage)
+	C.cefingo_frame_send_process_message((*C.cef_frame_t)(self.pc_frame), (C.cef_process_id_t)(target_process), goTmpmessage)
 
 }
 
@@ -10275,10 +10447,12 @@ func (self *CFrameT) SendProcessMessage(
 // structure can be called on any browser process thread.
 ///
 
+type cCImageT C.cef_image_t
+
 // Go type for cef_image_t
 type CImageT struct {
-	noCopy  noCopy
-	p_image *C.cef_image_t
+	noCopy   noCopy
+	pc_image *cCImageT
 }
 
 type RefToCImageT struct {
@@ -10304,21 +10478,22 @@ func newCImageT(p *C.cef_image_t) *CImageT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T149.1:")
-	BaseAddRef(p)
-	go_image := CImageT{noCopy{}, p}
+	pc := (*cCImageT)(p)
+	BaseAddRef(pc)
+	go_image := CImageT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_image, func(g *CImageT) {
-		Tracef(unsafe.Pointer(g.p_image), "T149.2:")
-		BaseRelease(g.p_image)
+		Tracef(unsafe.Pointer(g.pc_image), "T149.2:")
+		BaseRelease(g.pc_image)
 	})
 	return &go_image
 }
 
 // *C.cef_image_t has refCounted interface
 func (image *CImageT) HasOneRef() bool {
-	return BaseHasOneRef(image.p_image)
+	return BaseHasOneRef(image.pc_image)
 }
 
-func (p *C.cef_image_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCImageT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -10327,7 +10502,7 @@ func (p *C.cef_image_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 ///
 func (self *CImageT) IsEmpty() (ret bool) {
 
-	cRet := C.cefingo_image_is_empty(self.p_image)
+	cRet := C.cefingo_image_is_empty((*C.cef_image_t)(self.pc_image))
 
 	ret = cRet == 1
 	return ret
@@ -10342,11 +10517,11 @@ func (self *CImageT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_image_t
 	if that != nil {
-		goTmpthat = that.p_image
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_image)
+		goTmpthat = (*C.cef_image_t)(that.pc_image)
 	}
 
-	cRet := C.cefingo_image_is_same(self.p_image, goTmpthat)
+	cRet := C.cefingo_image_is_same((*C.cef_image_t)(self.pc_image), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -10371,7 +10546,7 @@ func (self *CImageT) AddBitmap(
 	tmppixel_data := C.CBytes(pixel_data)
 	defer C.free(tmppixel_data)
 
-	cRet := C.cefingo_image_add_bitmap(self.p_image, (C.float)(scale_factor), (C.int)(pixel_width), (C.int)(pixel_height), (C.cef_color_type_t)(color_type), (C.cef_alpha_type_t)(alpha_type), tmppixel_data, (C.size_t)(pixel_data_size))
+	cRet := C.cefingo_image_add_bitmap((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.int)(pixel_width), (C.int)(pixel_height), (C.cef_color_type_t)(color_type), (C.cef_alpha_type_t)(alpha_type), tmppixel_data, (C.size_t)(pixel_data_size))
 
 	ret = cRet == 1
 	return ret
@@ -10390,7 +10565,7 @@ func (self *CImageT) AddPng(
 	tmppng_data := C.CBytes(png_data)
 	defer C.free(tmppng_data)
 
-	cRet := C.cefingo_image_add_png(self.p_image, (C.float)(scale_factor), tmppng_data, (C.size_t)(png_data_size))
+	cRet := C.cefingo_image_add_png((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), tmppng_data, (C.size_t)(png_data_size))
 
 	ret = cRet == 1
 	return ret
@@ -10409,7 +10584,7 @@ func (self *CImageT) AddJpeg(
 	tmpjpeg_data := C.CBytes(jpeg_data)
 	defer C.free(tmpjpeg_data)
 
-	cRet := C.cefingo_image_add_jpeg(self.p_image, (C.float)(scale_factor), tmpjpeg_data, (C.size_t)(jpeg_data_size))
+	cRet := C.cefingo_image_add_jpeg((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), tmpjpeg_data, (C.size_t)(jpeg_data_size))
 
 	ret = cRet == 1
 	return ret
@@ -10420,7 +10595,7 @@ func (self *CImageT) AddJpeg(
 ///
 func (self *CImageT) GetWidth() (ret int64) {
 
-	cRet := C.cefingo_image_get_width(self.p_image)
+	cRet := C.cefingo_image_get_width((*C.cef_image_t)(self.pc_image))
 
 	ret = (int64)(cRet)
 	return ret
@@ -10431,7 +10606,7 @@ func (self *CImageT) GetWidth() (ret int64) {
 ///
 func (self *CImageT) GetHeight() (ret int64) {
 
-	cRet := C.cefingo_image_get_height(self.p_image)
+	cRet := C.cefingo_image_get_height((*C.cef_image_t)(self.pc_image))
 
 	ret = (int64)(cRet)
 	return ret
@@ -10445,7 +10620,7 @@ func (self *CImageT) HasRepresentation(
 	scale_factor float32,
 ) (ret bool) {
 
-	cRet := C.cefingo_image_has_representation(self.p_image, (C.float)(scale_factor))
+	cRet := C.cefingo_image_has_representation((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor))
 
 	ret = cRet == 1
 	return ret
@@ -10458,7 +10633,7 @@ func (self *CImageT) RemoveRepresentation(
 	scale_factor float32,
 ) (ret bool) {
 
-	cRet := C.cefingo_image_remove_representation(self.p_image, (C.float)(scale_factor))
+	cRet := C.cefingo_image_remove_representation((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor))
 
 	ret = cRet == 1
 	return ret
@@ -10477,7 +10652,7 @@ func (self *CImageT) GetRepresentationInfo(
 	var tmppixel_width C.int
 	var tmppixel_height C.int
 
-	cRet := C.cefingo_image_get_representation_info(self.p_image, (C.float)(scale_factor), &tmpactual_scale_factor, &tmppixel_width, &tmppixel_height)
+	cRet := C.cefingo_image_get_representation_info((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), &tmpactual_scale_factor, &tmppixel_width, &tmppixel_height)
 
 	actual_scale_factor = (float32)(tmpactual_scale_factor)
 	pixel_width = (int)(tmppixel_width)
@@ -10503,7 +10678,7 @@ func (self *CImageT) GetAsBitmap(
 	var tmppixel_width C.int
 	var tmppixel_height C.int
 
-	cRet := C.cefingo_image_get_as_bitmap(self.p_image, (C.float)(scale_factor), (C.cef_color_type_t)(color_type), (C.cef_alpha_type_t)(alpha_type), &tmppixel_width, &tmppixel_height)
+	cRet := C.cefingo_image_get_as_bitmap((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.cef_color_type_t)(color_type), (C.cef_alpha_type_t)(alpha_type), &tmppixel_width, &tmppixel_height)
 
 	pixel_width = (int)(tmppixel_width)
 	pixel_height = (int)(tmppixel_height)
@@ -10527,7 +10702,7 @@ func (self *CImageT) GetAsPng(
 	var tmppixel_width C.int
 	var tmppixel_height C.int
 
-	cRet := C.cefingo_image_get_as_png(self.p_image, (C.float)(scale_factor), (C.int)(with_transparency), &tmppixel_width, &tmppixel_height)
+	cRet := C.cefingo_image_get_as_png((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.int)(with_transparency), &tmppixel_width, &tmppixel_height)
 
 	pixel_width = (int)(tmppixel_width)
 	pixel_height = (int)(tmppixel_height)
@@ -10552,7 +10727,7 @@ func (self *CImageT) GetAsJpeg(
 	var tmppixel_width C.int
 	var tmppixel_height C.int
 
-	cRet := C.cefingo_image_get_as_jpeg(self.p_image, (C.float)(scale_factor), (C.int)(quality), &tmppixel_width, &tmppixel_height)
+	cRet := C.cefingo_image_get_as_jpeg((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.int)(quality), &tmppixel_width, &tmppixel_height)
 
 	pixel_width = (int)(tmppixel_width)
 	pixel_height = (int)(tmppixel_height)
@@ -10580,10 +10755,12 @@ func ImageCreate() (ret *CImageT) {
 // requests.
 ///
 
+type cCJsdialogCallbackT C.cef_jsdialog_callback_t
+
 // Go type for cef_jsdialog_callback_t
 type CJsdialogCallbackT struct {
-	noCopy              noCopy
-	p_jsdialog_callback *C.cef_jsdialog_callback_t
+	noCopy               noCopy
+	pc_jsdialog_callback *cCJsdialogCallbackT
 }
 
 type RefToCJsdialogCallbackT struct {
@@ -10609,21 +10786,22 @@ func newCJsdialogCallbackT(p *C.cef_jsdialog_callback_t) *CJsdialogCallbackT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T150.1:")
-	BaseAddRef(p)
-	go_jsdialog_callback := CJsdialogCallbackT{noCopy{}, p}
+	pc := (*cCJsdialogCallbackT)(p)
+	BaseAddRef(pc)
+	go_jsdialog_callback := CJsdialogCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_jsdialog_callback, func(g *CJsdialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_jsdialog_callback), "T150.2:")
-		BaseRelease(g.p_jsdialog_callback)
+		Tracef(unsafe.Pointer(g.pc_jsdialog_callback), "T150.2:")
+		BaseRelease(g.pc_jsdialog_callback)
 	})
 	return &go_jsdialog_callback
 }
 
 // *C.cef_jsdialog_callback_t has refCounted interface
 func (jsdialog_callback *CJsdialogCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(jsdialog_callback.p_jsdialog_callback)
+	return BaseHasOneRef(jsdialog_callback.pc_jsdialog_callback)
 }
 
-func (p *C.cef_jsdialog_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCJsdialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -10637,7 +10815,7 @@ func (self *CJsdialogCallbackT) Cont(
 ) {
 	c_user_input := create_cef_string(user_input)
 
-	C.cefingo_jsdialog_callback_cont(self.p_jsdialog_callback, (C.int)(success), c_user_input.p_cef_string_t)
+	C.cefingo_jsdialog_callback_cont((*C.cef_jsdialog_callback_t)(self.pc_jsdialog_callback), (C.int)(success), c_user_input.p_cef_string_t)
 
 }
 
@@ -10646,10 +10824,12 @@ func (self *CJsdialogCallbackT) Cont(
 // functions of this structure will be called on the UI thread.
 ///
 
+type cCJsdialogHandlerT C.cef_jsdialog_handler_t
+
 // Go type for cef_jsdialog_handler_t
 type CJsdialogHandlerT struct {
-	noCopy             noCopy
-	p_jsdialog_handler *C.cef_jsdialog_handler_t
+	noCopy              noCopy
+	pc_jsdialog_handler *cCJsdialogHandlerT
 }
 
 type RefToCJsdialogHandlerT struct {
@@ -10675,21 +10855,22 @@ func newCJsdialogHandlerT(p *C.cef_jsdialog_handler_t) *CJsdialogHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T151.1:")
-	BaseAddRef(p)
-	go_jsdialog_handler := CJsdialogHandlerT{noCopy{}, p}
+	pc := (*cCJsdialogHandlerT)(p)
+	BaseAddRef(pc)
+	go_jsdialog_handler := CJsdialogHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_jsdialog_handler, func(g *CJsdialogHandlerT) {
-		Tracef(unsafe.Pointer(g.p_jsdialog_handler), "T151.2:")
-		BaseRelease(g.p_jsdialog_handler)
+		Tracef(unsafe.Pointer(g.pc_jsdialog_handler), "T151.2:")
+		BaseRelease(g.pc_jsdialog_handler)
 	})
 	return &go_jsdialog_handler
 }
 
 // *C.cef_jsdialog_handler_t has refCounted interface
 func (jsdialog_handler *CJsdialogHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(jsdialog_handler.p_jsdialog_handler)
+	return BaseHasOneRef(jsdialog_handler.pc_jsdialog_handler)
 }
 
-func (p *C.cef_jsdialog_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCJsdialogHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -10763,23 +10944,24 @@ type OnDialogClosedHandler interface {
 }
 
 var jsdialog_handler_handlers = struct {
-	handler                         map[*C.cef_jsdialog_handler_t]interface{}
-	on_jsdialog_handler             map[*C.cef_jsdialog_handler_t]OnJsdialogHandler
-	on_before_unload_dialog_handler map[*C.cef_jsdialog_handler_t]OnBeforeUnloadDialogHandler
-	on_reset_dialog_state_handler   map[*C.cef_jsdialog_handler_t]OnResetDialogStateHandler
-	on_dialog_closed_handler        map[*C.cef_jsdialog_handler_t]OnDialogClosedHandler
+	handler                         map[*cCJsdialogHandlerT]interface{}
+	on_jsdialog_handler             map[*cCJsdialogHandlerT]OnJsdialogHandler
+	on_before_unload_dialog_handler map[*cCJsdialogHandlerT]OnBeforeUnloadDialogHandler
+	on_reset_dialog_state_handler   map[*cCJsdialogHandlerT]OnResetDialogStateHandler
+	on_dialog_closed_handler        map[*cCJsdialogHandlerT]OnDialogClosedHandler
 }{
-	map[*C.cef_jsdialog_handler_t]interface{}{},
-	map[*C.cef_jsdialog_handler_t]OnJsdialogHandler{},
-	map[*C.cef_jsdialog_handler_t]OnBeforeUnloadDialogHandler{},
-	map[*C.cef_jsdialog_handler_t]OnResetDialogStateHandler{},
-	map[*C.cef_jsdialog_handler_t]OnDialogClosedHandler{},
+	map[*cCJsdialogHandlerT]interface{}{},
+	map[*cCJsdialogHandlerT]OnJsdialogHandler{},
+	map[*cCJsdialogHandlerT]OnBeforeUnloadDialogHandler{},
+	map[*cCJsdialogHandlerT]OnResetDialogStateHandler{},
+	map[*cCJsdialogHandlerT]OnDialogClosedHandler{},
 }
 
 // AllocCJsdialogHandlerT allocates CJsdialogHandlerT and construct it
 func AllocCJsdialogHandlerT() *CJsdialogHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_jsdialog_handler_wrapper_t, "T151.3:")
 	cefp := C.cefingo_construct_jsdialog_handler((*C.cefingo_jsdialog_handler_wrapper_t)(up))
+	cgop := (*cCJsdialogHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_jsdialog_handler_t itself in DeassocFunc,
@@ -10788,11 +10970,11 @@ func AllocCJsdialogHandlerT() *CJsdialogHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(jsdialog_handler_handlers.handler, cefp)
-		delete(jsdialog_handler_handlers.on_jsdialog_handler, cefp)
-		delete(jsdialog_handler_handlers.on_before_unload_dialog_handler, cefp)
-		delete(jsdialog_handler_handlers.on_reset_dialog_state_handler, cefp)
-		delete(jsdialog_handler_handlers.on_dialog_closed_handler, cefp)
+		delete(jsdialog_handler_handlers.handler, cgop)
+		delete(jsdialog_handler_handlers.on_jsdialog_handler, cgop)
+		delete(jsdialog_handler_handlers.on_before_unload_dialog_handler, cgop)
+		delete(jsdialog_handler_handlers.on_reset_dialog_state_handler, cgop)
+		delete(jsdialog_handler_handlers.on_dialog_closed_handler, cgop)
 	}))
 
 	return newCJsdialogHandlerT(cefp)
@@ -10802,7 +10984,7 @@ func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandler
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := jsdialog_handler.p_jsdialog_handler
+	cp := jsdialog_handler.pc_jsdialog_handler
 	jsdialog_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnJsdialogHandler); ok {
@@ -10831,7 +11013,7 @@ func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandler
 
 func (jsdialog_handler *CJsdialogHandlerT) UnbindAll() {
 
-	cp := jsdialog_handler.p_jsdialog_handler
+	cp := jsdialog_handler.pc_jsdialog_handler
 	delete(jsdialog_handler_handlers.handler, cp)
 
 	delete(jsdialog_handler_handlers.on_jsdialog_handler, cp)
@@ -10845,7 +11027,7 @@ func (jsdialog_handler *CJsdialogHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := jsdialog_handler.p_jsdialog_handler
+	cp := jsdialog_handler.pc_jsdialog_handler
 	return jsdialog_handler_handlers.handler[cp]
 }
 
@@ -10856,10 +11038,12 @@ func (jsdialog_handler *CJsdialogHandlerT) Handler() interface{} {
 // functions of this structure will be called on the UI thread.
 ///
 
+type cCKeyboardHandlerT C.cef_keyboard_handler_t
+
 // Go type for cef_keyboard_handler_t
 type CKeyboardHandlerT struct {
-	noCopy             noCopy
-	p_keyboard_handler *C.cef_keyboard_handler_t
+	noCopy              noCopy
+	pc_keyboard_handler *cCKeyboardHandlerT
 }
 
 type RefToCKeyboardHandlerT struct {
@@ -10885,21 +11069,22 @@ func newCKeyboardHandlerT(p *C.cef_keyboard_handler_t) *CKeyboardHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T152.1:")
-	BaseAddRef(p)
-	go_keyboard_handler := CKeyboardHandlerT{noCopy{}, p}
+	pc := (*cCKeyboardHandlerT)(p)
+	BaseAddRef(pc)
+	go_keyboard_handler := CKeyboardHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_keyboard_handler, func(g *CKeyboardHandlerT) {
-		Tracef(unsafe.Pointer(g.p_keyboard_handler), "T152.2:")
-		BaseRelease(g.p_keyboard_handler)
+		Tracef(unsafe.Pointer(g.pc_keyboard_handler), "T152.2:")
+		BaseRelease(g.pc_keyboard_handler)
 	})
 	return &go_keyboard_handler
 }
 
 // *C.cef_keyboard_handler_t has refCounted interface
 func (keyboard_handler *CKeyboardHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(keyboard_handler.p_keyboard_handler)
+	return BaseHasOneRef(keyboard_handler.pc_keyboard_handler)
 }
 
-func (p *C.cef_keyboard_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCKeyboardHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -10935,19 +11120,20 @@ type CKeyboardHandlerTOnKeyEventHandler interface {
 }
 
 var keyboard_handler_handlers = struct {
-	handler                  map[*C.cef_keyboard_handler_t]interface{}
-	on_pre_key_event_handler map[*C.cef_keyboard_handler_t]OnPreKeyEventHandler
-	on_key_event_handler     map[*C.cef_keyboard_handler_t]CKeyboardHandlerTOnKeyEventHandler
+	handler                  map[*cCKeyboardHandlerT]interface{}
+	on_pre_key_event_handler map[*cCKeyboardHandlerT]OnPreKeyEventHandler
+	on_key_event_handler     map[*cCKeyboardHandlerT]CKeyboardHandlerTOnKeyEventHandler
 }{
-	map[*C.cef_keyboard_handler_t]interface{}{},
-	map[*C.cef_keyboard_handler_t]OnPreKeyEventHandler{},
-	map[*C.cef_keyboard_handler_t]CKeyboardHandlerTOnKeyEventHandler{},
+	map[*cCKeyboardHandlerT]interface{}{},
+	map[*cCKeyboardHandlerT]OnPreKeyEventHandler{},
+	map[*cCKeyboardHandlerT]CKeyboardHandlerTOnKeyEventHandler{},
 }
 
 // AllocCKeyboardHandlerT allocates CKeyboardHandlerT and construct it
 func AllocCKeyboardHandlerT() *CKeyboardHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_keyboard_handler_wrapper_t, "T152.3:")
 	cefp := C.cefingo_construct_keyboard_handler((*C.cefingo_keyboard_handler_wrapper_t)(up))
+	cgop := (*cCKeyboardHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_keyboard_handler_t itself in DeassocFunc,
@@ -10956,9 +11142,9 @@ func AllocCKeyboardHandlerT() *CKeyboardHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(keyboard_handler_handlers.handler, cefp)
-		delete(keyboard_handler_handlers.on_pre_key_event_handler, cefp)
-		delete(keyboard_handler_handlers.on_key_event_handler, cefp)
+		delete(keyboard_handler_handlers.handler, cgop)
+		delete(keyboard_handler_handlers.on_pre_key_event_handler, cgop)
+		delete(keyboard_handler_handlers.on_key_event_handler, cgop)
 	}))
 
 	return newCKeyboardHandlerT(cefp)
@@ -10968,7 +11154,7 @@ func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandler
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := keyboard_handler.p_keyboard_handler
+	cp := keyboard_handler.pc_keyboard_handler
 	keyboard_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnPreKeyEventHandler); ok {
@@ -10989,7 +11175,7 @@ func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandler
 
 func (keyboard_handler *CKeyboardHandlerT) UnbindAll() {
 
-	cp := keyboard_handler.p_keyboard_handler
+	cp := keyboard_handler.pc_keyboard_handler
 	delete(keyboard_handler_handlers.handler, cp)
 
 	delete(keyboard_handler_handlers.on_pre_key_event_handler, cp)
@@ -11001,7 +11187,7 @@ func (keyboard_handler *CKeyboardHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := keyboard_handler.p_keyboard_handler
+	cp := keyboard_handler.pc_keyboard_handler
 	return keyboard_handler_handlers.handler[cp]
 }
 
@@ -11012,10 +11198,12 @@ func (keyboard_handler *CKeyboardHandlerT) Handler() interface{} {
 // called on the browser process UI thread unless otherwise indicated.
 ///
 
+type cCLabelButtonT C.cef_label_button_t
+
 // Go type for cef_label_button_t
 type CLabelButtonT struct {
-	noCopy         noCopy
-	p_label_button *C.cef_label_button_t
+	noCopy          noCopy
+	pc_label_button *cCLabelButtonT
 }
 
 type RefToCLabelButtonT struct {
@@ -11041,26 +11229,28 @@ func newCLabelButtonT(p *C.cef_label_button_t) *CLabelButtonT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T153.1:")
-	BaseAddRef(p)
-	go_label_button := CLabelButtonT{noCopy{}, p}
+	pc := (*cCLabelButtonT)(p)
+	BaseAddRef(pc)
+	go_label_button := CLabelButtonT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_label_button, func(g *CLabelButtonT) {
-		Tracef(unsafe.Pointer(g.p_label_button), "T153.2:")
-		BaseRelease(g.p_label_button)
+		Tracef(unsafe.Pointer(g.pc_label_button), "T153.2:")
+		BaseRelease(g.pc_label_button)
 	})
 	return &go_label_button
 }
 
 // *C.cef_label_button_t has refCounted interface
 func (label_button *CLabelButtonT) HasOneRef() bool {
-	return BaseHasOneRef(label_button.p_label_button)
+	return BaseHasOneRef(label_button.pc_label_button)
 }
 
-func (p *C.cef_label_button_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCLabelButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CButtonT
 func (label_button *CLabelButtonT) ToCButtonT() *CButtonT {
-	p := (*C.cef_button_t)(unsafe.Pointer(label_button.p_label_button))
+	p := (*C.cef_button_t)(unsafe.Pointer(label_button.pc_label_button))
 	return newCButtonT(p)
 }
 
@@ -11070,7 +11260,7 @@ func (label_button *CLabelButtonT) ToCButtonT() *CButtonT {
 ///
 func (self *CLabelButtonT) AsMenuButton() (ret *CMenuButtonT) {
 
-	cRet := C.cefingo_label_button_as_menu_button(self.p_label_button)
+	cRet := C.cefingo_label_button_as_menu_button((*C.cef_label_button_t)(self.pc_label_button))
 
 	ret = newCMenuButtonT(cRet)
 	return ret
@@ -11085,7 +11275,7 @@ func (self *CLabelButtonT) SetText(
 ) {
 	c_text := create_cef_string(text)
 
-	C.cefingo_label_button_set_text(self.p_label_button, c_text.p_cef_string_t)
+	C.cefingo_label_button_set_text((*C.cef_label_button_t)(self.pc_label_button), c_text.p_cef_string_t)
 
 }
 
@@ -11095,7 +11285,7 @@ func (self *CLabelButtonT) SetText(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CLabelButtonT) GetText() (ret string) {
 
-	cRet := C.cefingo_label_button_get_text(self.p_label_button)
+	cRet := C.cefingo_label_button_get_text((*C.cef_label_button_t)(self.pc_label_button))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -11116,11 +11306,11 @@ func (self *CLabelButtonT) SetImage(
 ) {
 	var goTmpimage *C.cef_image_t
 	if image != nil {
-		goTmpimage = image.p_image
-		BaseAddRef(goTmpimage)
+		BaseAddRef(image.pc_image)
+		goTmpimage = (*C.cef_image_t)(image.pc_image)
 	}
 
-	C.cefingo_label_button_set_image(self.p_label_button, (C.cef_button_state_t)(button_state), goTmpimage)
+	C.cefingo_label_button_set_image((*C.cef_label_button_t)(self.pc_label_button), (C.cef_button_state_t)(button_state), goTmpimage)
 
 }
 
@@ -11132,7 +11322,7 @@ func (self *CLabelButtonT) GetImage(
 	button_state CButtonStateT,
 ) (ret *CImageT) {
 
-	cRet := C.cefingo_label_button_get_image(self.p_label_button, (C.cef_button_state_t)(button_state))
+	cRet := C.cefingo_label_button_get_image((*C.cef_label_button_t)(self.pc_label_button), (C.cef_button_state_t)(button_state))
 
 	ret = newCImageT(cRet)
 	return ret
@@ -11146,7 +11336,7 @@ func (self *CLabelButtonT) SetTextColor(
 	color CColorT,
 ) {
 
-	C.cefingo_label_button_set_text_color(self.p_label_button, (C.cef_button_state_t)(for_state), (C.cef_color_t)(color))
+	C.cefingo_label_button_set_text_color((*C.cef_label_button_t)(self.pc_label_button), (C.cef_button_state_t)(for_state), (C.cef_color_t)(color))
 
 }
 
@@ -11157,7 +11347,7 @@ func (self *CLabelButtonT) SetEnabledTextColors(
 	color CColorT,
 ) {
 
-	C.cefingo_label_button_set_enabled_text_colors(self.p_label_button, (C.cef_color_t)(color))
+	C.cefingo_label_button_set_enabled_text_colors((*C.cef_label_button_t)(self.pc_label_button), (C.cef_color_t)(color))
 
 }
 
@@ -11176,7 +11366,7 @@ func (self *CLabelButtonT) SetFontList(
 ) {
 	c_font_list := create_cef_string(font_list)
 
-	C.cefingo_label_button_set_font_list(self.p_label_button, c_font_list.p_cef_string_t)
+	C.cefingo_label_button_set_font_list((*C.cef_label_button_t)(self.pc_label_button), c_font_list.p_cef_string_t)
 
 }
 
@@ -11188,7 +11378,7 @@ func (self *CLabelButtonT) SetHorizontalAlignment(
 	alignment CHorizontalAlignmentT,
 ) {
 
-	C.cefingo_label_button_set_horizontal_alignment(self.p_label_button, (C.cef_horizontal_alignment_t)(alignment))
+	C.cefingo_label_button_set_horizontal_alignment((*C.cef_label_button_t)(self.pc_label_button), (C.cef_horizontal_alignment_t)(alignment))
 
 }
 
@@ -11199,7 +11389,7 @@ func (self *CLabelButtonT) SetMinimumSize(
 	size *CSizeT,
 ) {
 
-	C.cefingo_label_button_set_minimum_size(self.p_label_button, (*C.cef_size_t)(size))
+	C.cefingo_label_button_set_minimum_size((*C.cef_label_button_t)(self.pc_label_button), (*C.cef_size_t)(size))
 
 }
 
@@ -11210,7 +11400,7 @@ func (self *CLabelButtonT) SetMaximumSize(
 	size *CSizeT,
 ) {
 
-	C.cefingo_label_button_set_maximum_size(self.p_label_button, (*C.cef_size_t)(size))
+	C.cefingo_label_button_set_maximum_size((*C.cef_label_button_t)(self.pc_label_button), (*C.cef_size_t)(size))
 
 }
 
@@ -11225,8 +11415,8 @@ func LabelButtonCreate(
 ) (ret *CLabelButtonT) {
 	var goTmpdelegate *C.cef_button_delegate_t
 	if delegate != nil {
-		goTmpdelegate = delegate.p_button_delegate
-		BaseAddRef(goTmpdelegate)
+		BaseAddRef(delegate.pc_button_delegate)
+		goTmpdelegate = (*C.cef_button_delegate_t)(delegate.pc_button_delegate)
 	}
 	c_text := create_cef_string(text)
 
@@ -11244,10 +11434,12 @@ func LabelButtonCreate(
 // process UI thread unless otherwise indicated.
 ///
 
+type cCLayoutT C.cef_layout_t
+
 // Go type for cef_layout_t
 type CLayoutT struct {
-	noCopy   noCopy
-	p_layout *C.cef_layout_t
+	noCopy    noCopy
+	pc_layout *cCLayoutT
 }
 
 type RefToCLayoutT struct {
@@ -11273,21 +11465,22 @@ func newCLayoutT(p *C.cef_layout_t) *CLayoutT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T154.1:")
-	BaseAddRef(p)
-	go_layout := CLayoutT{noCopy{}, p}
+	pc := (*cCLayoutT)(p)
+	BaseAddRef(pc)
+	go_layout := CLayoutT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_layout, func(g *CLayoutT) {
-		Tracef(unsafe.Pointer(g.p_layout), "T154.2:")
-		BaseRelease(g.p_layout)
+		Tracef(unsafe.Pointer(g.pc_layout), "T154.2:")
+		BaseRelease(g.pc_layout)
 	})
 	return &go_layout
 }
 
 // *C.cef_layout_t has refCounted interface
 func (layout *CLayoutT) HasOneRef() bool {
-	return BaseHasOneRef(layout.p_layout)
+	return BaseHasOneRef(layout.pc_layout)
 }
 
-func (p *C.cef_layout_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -11296,7 +11489,7 @@ func (p *C.cef_layout_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 ///
 func (self *CLayoutT) AsBoxLayout() (ret *CBoxLayoutT) {
 
-	cRet := C.cefingo_layout_as_box_layout(self.p_layout)
+	cRet := C.cefingo_layout_as_box_layout((*C.cef_layout_t)(self.pc_layout))
 
 	ret = newCBoxLayoutT(cRet)
 	return ret
@@ -11307,7 +11500,7 @@ func (self *CLayoutT) AsBoxLayout() (ret *CBoxLayoutT) {
 ///
 func (self *CLayoutT) AsFillLayout() (ret *CFillLayoutT) {
 
-	cRet := C.cefingo_layout_as_fill_layout(self.p_layout)
+	cRet := C.cefingo_layout_as_fill_layout((*C.cef_layout_t)(self.pc_layout))
 
 	ret = newCFillLayoutT(cRet)
 	return ret
@@ -11318,7 +11511,7 @@ func (self *CLayoutT) AsFillLayout() (ret *CFillLayoutT) {
 ///
 func (self *CLayoutT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_layout_is_valid(self.p_layout)
+	cRet := C.cefingo_layout_is_valid((*C.cef_layout_t)(self.pc_layout))
 
 	ret = cRet == 1
 	return ret
@@ -11332,10 +11525,12 @@ func (self *CLayoutT) IsValid() (ret bool) {
 // indicated.
 ///
 
+type cCLifeSpanHandlerT C.cef_life_span_handler_t
+
 // Go type for cef_life_span_handler_t
 type CLifeSpanHandlerT struct {
-	noCopy              noCopy
-	p_life_span_handler *C.cef_life_span_handler_t
+	noCopy               noCopy
+	pc_life_span_handler *cCLifeSpanHandlerT
 }
 
 type RefToCLifeSpanHandlerT struct {
@@ -11361,21 +11556,22 @@ func newCLifeSpanHandlerT(p *C.cef_life_span_handler_t) *CLifeSpanHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T155.1:")
-	BaseAddRef(p)
-	go_life_span_handler := CLifeSpanHandlerT{noCopy{}, p}
+	pc := (*cCLifeSpanHandlerT)(p)
+	BaseAddRef(pc)
+	go_life_span_handler := CLifeSpanHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_life_span_handler, func(g *CLifeSpanHandlerT) {
-		Tracef(unsafe.Pointer(g.p_life_span_handler), "T155.2:")
-		BaseRelease(g.p_life_span_handler)
+		Tracef(unsafe.Pointer(g.pc_life_span_handler), "T155.2:")
+		BaseRelease(g.pc_life_span_handler)
 	})
 	return &go_life_span_handler
 }
 
 // *C.cef_life_span_handler_t has refCounted interface
 func (life_span_handler *CLifeSpanHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(life_span_handler.p_life_span_handler)
+	return BaseHasOneRef(life_span_handler.pc_life_span_handler)
 }
 
-func (p *C.cef_life_span_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCLifeSpanHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -11547,23 +11743,24 @@ type OnBeforeCloseHandler interface {
 }
 
 var life_span_handler_handlers = struct {
-	handler                  map[*C.cef_life_span_handler_t]interface{}
-	on_before_popup_handler  map[*C.cef_life_span_handler_t]OnBeforePopupHandler
-	on_after_created_handler map[*C.cef_life_span_handler_t]OnAfterCreatedHandler
-	do_close_handler         map[*C.cef_life_span_handler_t]DoCloseHandler
-	on_before_close_handler  map[*C.cef_life_span_handler_t]OnBeforeCloseHandler
+	handler                  map[*cCLifeSpanHandlerT]interface{}
+	on_before_popup_handler  map[*cCLifeSpanHandlerT]OnBeforePopupHandler
+	on_after_created_handler map[*cCLifeSpanHandlerT]OnAfterCreatedHandler
+	do_close_handler         map[*cCLifeSpanHandlerT]DoCloseHandler
+	on_before_close_handler  map[*cCLifeSpanHandlerT]OnBeforeCloseHandler
 }{
-	map[*C.cef_life_span_handler_t]interface{}{},
-	map[*C.cef_life_span_handler_t]OnBeforePopupHandler{},
-	map[*C.cef_life_span_handler_t]OnAfterCreatedHandler{},
-	map[*C.cef_life_span_handler_t]DoCloseHandler{},
-	map[*C.cef_life_span_handler_t]OnBeforeCloseHandler{},
+	map[*cCLifeSpanHandlerT]interface{}{},
+	map[*cCLifeSpanHandlerT]OnBeforePopupHandler{},
+	map[*cCLifeSpanHandlerT]OnAfterCreatedHandler{},
+	map[*cCLifeSpanHandlerT]DoCloseHandler{},
+	map[*cCLifeSpanHandlerT]OnBeforeCloseHandler{},
 }
 
 // AllocCLifeSpanHandlerT allocates CLifeSpanHandlerT and construct it
 func AllocCLifeSpanHandlerT() *CLifeSpanHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_life_span_handler_wrapper_t, "T155.3:")
 	cefp := C.cefingo_construct_life_span_handler((*C.cefingo_life_span_handler_wrapper_t)(up))
+	cgop := (*cCLifeSpanHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_life_span_handler_t itself in DeassocFunc,
@@ -11572,11 +11769,11 @@ func AllocCLifeSpanHandlerT() *CLifeSpanHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(life_span_handler_handlers.handler, cefp)
-		delete(life_span_handler_handlers.on_before_popup_handler, cefp)
-		delete(life_span_handler_handlers.on_after_created_handler, cefp)
-		delete(life_span_handler_handlers.do_close_handler, cefp)
-		delete(life_span_handler_handlers.on_before_close_handler, cefp)
+		delete(life_span_handler_handlers.handler, cgop)
+		delete(life_span_handler_handlers.on_before_popup_handler, cgop)
+		delete(life_span_handler_handlers.on_after_created_handler, cgop)
+		delete(life_span_handler_handlers.do_close_handler, cgop)
+		delete(life_span_handler_handlers.on_before_close_handler, cgop)
 	}))
 
 	return newCLifeSpanHandlerT(cefp)
@@ -11586,7 +11783,7 @@ func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandle
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := life_span_handler.p_life_span_handler
+	cp := life_span_handler.pc_life_span_handler
 	life_span_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforePopupHandler); ok {
@@ -11615,7 +11812,7 @@ func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandle
 
 func (life_span_handler *CLifeSpanHandlerT) UnbindAll() {
 
-	cp := life_span_handler.p_life_span_handler
+	cp := life_span_handler.pc_life_span_handler
 	delete(life_span_handler_handlers.handler, cp)
 
 	delete(life_span_handler_handlers.on_before_popup_handler, cp)
@@ -11629,7 +11826,7 @@ func (life_span_handler *CLifeSpanHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := life_span_handler.p_life_span_handler
+	cp := life_span_handler.pc_life_span_handler
 	return life_span_handler_handlers.handler[cp]
 }
 
@@ -11641,10 +11838,12 @@ func (life_span_handler *CLifeSpanHandlerT) Handler() interface{} {
 // or render process main thread (TID_RENDERER).
 ///
 
+type cCLoadHandlerT C.cef_load_handler_t
+
 // Go type for cef_load_handler_t
 type CLoadHandlerT struct {
-	noCopy         noCopy
-	p_load_handler *C.cef_load_handler_t
+	noCopy          noCopy
+	pc_load_handler *cCLoadHandlerT
 }
 
 type RefToCLoadHandlerT struct {
@@ -11670,21 +11869,22 @@ func newCLoadHandlerT(p *C.cef_load_handler_t) *CLoadHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T156.1:")
-	BaseAddRef(p)
-	go_load_handler := CLoadHandlerT{noCopy{}, p}
+	pc := (*cCLoadHandlerT)(p)
+	BaseAddRef(pc)
+	go_load_handler := CLoadHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_load_handler, func(g *CLoadHandlerT) {
-		Tracef(unsafe.Pointer(g.p_load_handler), "T156.2:")
-		BaseRelease(g.p_load_handler)
+		Tracef(unsafe.Pointer(g.pc_load_handler), "T156.2:")
+		BaseRelease(g.pc_load_handler)
 	})
 	return &go_load_handler
 }
 
 // *C.cef_load_handler_t has refCounted interface
 func (load_handler *CLoadHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(load_handler.p_load_handler)
+	return BaseHasOneRef(load_handler.pc_load_handler)
 }
 
-func (p *C.cef_load_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCLoadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -11764,23 +11964,24 @@ type OnLoadErrorHandler interface {
 }
 
 var load_handler_handlers = struct {
-	handler                         map[*C.cef_load_handler_t]interface{}
-	on_loading_state_change_handler map[*C.cef_load_handler_t]OnLoadingStateChangeHandler
-	on_load_start_handler           map[*C.cef_load_handler_t]OnLoadStartHandler
-	on_load_end_handler             map[*C.cef_load_handler_t]OnLoadEndHandler
-	on_load_error_handler           map[*C.cef_load_handler_t]OnLoadErrorHandler
+	handler                         map[*cCLoadHandlerT]interface{}
+	on_loading_state_change_handler map[*cCLoadHandlerT]OnLoadingStateChangeHandler
+	on_load_start_handler           map[*cCLoadHandlerT]OnLoadStartHandler
+	on_load_end_handler             map[*cCLoadHandlerT]OnLoadEndHandler
+	on_load_error_handler           map[*cCLoadHandlerT]OnLoadErrorHandler
 }{
-	map[*C.cef_load_handler_t]interface{}{},
-	map[*C.cef_load_handler_t]OnLoadingStateChangeHandler{},
-	map[*C.cef_load_handler_t]OnLoadStartHandler{},
-	map[*C.cef_load_handler_t]OnLoadEndHandler{},
-	map[*C.cef_load_handler_t]OnLoadErrorHandler{},
+	map[*cCLoadHandlerT]interface{}{},
+	map[*cCLoadHandlerT]OnLoadingStateChangeHandler{},
+	map[*cCLoadHandlerT]OnLoadStartHandler{},
+	map[*cCLoadHandlerT]OnLoadEndHandler{},
+	map[*cCLoadHandlerT]OnLoadErrorHandler{},
 }
 
 // AllocCLoadHandlerT allocates CLoadHandlerT and construct it
 func AllocCLoadHandlerT() *CLoadHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_load_handler_wrapper_t, "T156.3:")
 	cefp := C.cefingo_construct_load_handler((*C.cefingo_load_handler_wrapper_t)(up))
+	cgop := (*cCLoadHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_load_handler_t itself in DeassocFunc,
@@ -11789,11 +11990,11 @@ func AllocCLoadHandlerT() *CLoadHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(load_handler_handlers.handler, cefp)
-		delete(load_handler_handlers.on_loading_state_change_handler, cefp)
-		delete(load_handler_handlers.on_load_start_handler, cefp)
-		delete(load_handler_handlers.on_load_end_handler, cefp)
-		delete(load_handler_handlers.on_load_error_handler, cefp)
+		delete(load_handler_handlers.handler, cgop)
+		delete(load_handler_handlers.on_loading_state_change_handler, cgop)
+		delete(load_handler_handlers.on_load_start_handler, cgop)
+		delete(load_handler_handlers.on_load_end_handler, cgop)
+		delete(load_handler_handlers.on_load_error_handler, cgop)
 	}))
 
 	return newCLoadHandlerT(cefp)
@@ -11803,7 +12004,7 @@ func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := load_handler.p_load_handler
+	cp := load_handler.pc_load_handler
 	load_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnLoadingStateChangeHandler); ok {
@@ -11832,7 +12033,7 @@ func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
 
 func (load_handler *CLoadHandlerT) UnbindAll() {
 
-	cp := load_handler.p_load_handler
+	cp := load_handler.pc_load_handler
 	delete(load_handler_handlers.handler, cp)
 
 	delete(load_handler_handlers.on_loading_state_change_handler, cp)
@@ -11846,7 +12047,7 @@ func (load_handler *CLoadHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := load_handler.p_load_handler
+	cp := load_handler.pc_load_handler
 	return load_handler_handlers.handler[cp]
 }
 
@@ -11858,10 +12059,12 @@ func (load_handler *CLoadHandlerT) Handler() interface{} {
 // be called on any browser process thread unless otherwise indicated.
 ///
 
+type cCMediaRouterT C.cef_media_router_t
+
 // Go type for cef_media_router_t
 type CMediaRouterT struct {
-	noCopy         noCopy
-	p_media_router *C.cef_media_router_t
+	noCopy          noCopy
+	pc_media_router *cCMediaRouterT
 }
 
 type RefToCMediaRouterT struct {
@@ -11887,21 +12090,22 @@ func newCMediaRouterT(p *C.cef_media_router_t) *CMediaRouterT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T157.1:")
-	BaseAddRef(p)
-	go_media_router := CMediaRouterT{noCopy{}, p}
+	pc := (*cCMediaRouterT)(p)
+	BaseAddRef(pc)
+	go_media_router := CMediaRouterT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_media_router, func(g *CMediaRouterT) {
-		Tracef(unsafe.Pointer(g.p_media_router), "T157.2:")
-		BaseRelease(g.p_media_router)
+		Tracef(unsafe.Pointer(g.pc_media_router), "T157.2:")
+		BaseRelease(g.pc_media_router)
 	})
 	return &go_media_router
 }
 
 // *C.cef_media_router_t has refCounted interface
 func (media_router *CMediaRouterT) HasOneRef() bool {
-	return BaseHasOneRef(media_router.p_media_router)
+	return BaseHasOneRef(media_router.pc_media_router)
 }
 
-func (p *C.cef_media_router_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMediaRouterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -11914,11 +12118,11 @@ func (self *CMediaRouterT) AddObserver(
 ) (ret *CRegistrationT) {
 	var goTmpobserver *C.cef_media_observer_t
 	if observer != nil {
-		goTmpobserver = observer.p_media_observer
-		BaseAddRef(goTmpobserver)
+		BaseAddRef(observer.pc_media_observer)
+		goTmpobserver = (*C.cef_media_observer_t)(observer.pc_media_observer)
 	}
 
-	cRet := C.cefingo_media_router_add_observer(self.p_media_router, goTmpobserver)
+	cRet := C.cefingo_media_router_add_observer((*C.cef_media_router_t)(self.pc_media_router), goTmpobserver)
 
 	ret = newCRegistrationT(cRet)
 	return ret
@@ -11934,7 +12138,7 @@ func (self *CMediaRouterT) GetSource(
 ) (ret *CMediaSourceT) {
 	c_urn := create_cef_string(urn)
 
-	cRet := C.cefingo_media_router_get_source(self.p_media_router, c_urn.p_cef_string_t)
+	cRet := C.cefingo_media_router_get_source((*C.cef_media_router_t)(self.pc_media_router), c_urn.p_cef_string_t)
 
 	ret = newCMediaSourceT(cRet)
 	return ret
@@ -11946,7 +12150,7 @@ func (self *CMediaRouterT) GetSource(
 ///
 func (self *CMediaRouterT) NotifyCurrentSinks() {
 
-	C.cefingo_media_router_notify_current_sinks(self.p_media_router)
+	C.cefingo_media_router_notify_current_sinks((*C.cef_media_router_t)(self.pc_media_router))
 
 }
 
@@ -11965,21 +12169,21 @@ func (self *CMediaRouterT) CreateRoute(
 ) {
 	var goTmpsource *C.cef_media_source_t
 	if source != nil {
-		goTmpsource = source.p_media_source
-		BaseAddRef(goTmpsource)
+		BaseAddRef(source.pc_media_source)
+		goTmpsource = (*C.cef_media_source_t)(source.pc_media_source)
 	}
 	var goTmpsink *C.cef_media_sink_t
 	if sink != nil {
-		goTmpsink = sink.p_media_sink
-		BaseAddRef(goTmpsink)
+		BaseAddRef(sink.pc_media_sink)
+		goTmpsink = (*C.cef_media_sink_t)(sink.pc_media_sink)
 	}
 	var goTmpcallback *C.cef_media_route_create_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_media_route_create_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_media_route_create_callback)
+		goTmpcallback = (*C.cef_media_route_create_callback_t)(callback.pc_media_route_create_callback)
 	}
 
-	C.cefingo_media_router_create_route(self.p_media_router, goTmpsource, goTmpsink, goTmpcallback)
+	C.cefingo_media_router_create_route((*C.cef_media_router_t)(self.pc_media_router), goTmpsource, goTmpsink, goTmpcallback)
 
 }
 
@@ -11989,7 +12193,7 @@ func (self *CMediaRouterT) CreateRoute(
 ///
 func (self *CMediaRouterT) NotifyCurrentRoutes() {
 
-	C.cefingo_media_router_notify_current_routes(self.p_media_router)
+	C.cefingo_media_router_notify_current_routes((*C.cef_media_router_t)(self.pc_media_router))
 
 }
 
@@ -12012,10 +12216,12 @@ func MediaRouterGetGlobal() (ret *CMediaRouterT) {
 // called on the browser process UI thread.
 ///
 
+type cCMediaObserverT C.cef_media_observer_t
+
 // Go type for cef_media_observer_t
 type CMediaObserverT struct {
-	noCopy           noCopy
-	p_media_observer *C.cef_media_observer_t
+	noCopy            noCopy
+	pc_media_observer *cCMediaObserverT
 }
 
 type RefToCMediaObserverT struct {
@@ -12041,21 +12247,22 @@ func newCMediaObserverT(p *C.cef_media_observer_t) *CMediaObserverT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T158.1:")
-	BaseAddRef(p)
-	go_media_observer := CMediaObserverT{noCopy{}, p}
+	pc := (*cCMediaObserverT)(p)
+	BaseAddRef(pc)
+	go_media_observer := CMediaObserverT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_media_observer, func(g *CMediaObserverT) {
-		Tracef(unsafe.Pointer(g.p_media_observer), "T158.2:")
-		BaseRelease(g.p_media_observer)
+		Tracef(unsafe.Pointer(g.pc_media_observer), "T158.2:")
+		BaseRelease(g.pc_media_observer)
 	})
 	return &go_media_observer
 }
 
 // *C.cef_media_observer_t has refCounted interface
 func (media_observer *CMediaObserverT) HasOneRef() bool {
-	return BaseHasOneRef(media_observer.p_media_observer)
+	return BaseHasOneRef(media_observer.pc_media_observer)
 }
 
-func (p *C.cef_media_observer_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMediaObserverT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -12105,23 +12312,24 @@ type OnRouteMessageReceivedHandler interface {
 }
 
 var media_observer_handlers = struct {
-	handler                           map[*C.cef_media_observer_t]interface{}
-	on_sinks_handler                  map[*C.cef_media_observer_t]OnSinksHandler
-	on_routes_handler                 map[*C.cef_media_observer_t]OnRoutesHandler
-	on_route_state_changed_handler    map[*C.cef_media_observer_t]OnRouteStateChangedHandler
-	on_route_message_received_handler map[*C.cef_media_observer_t]OnRouteMessageReceivedHandler
+	handler                           map[*cCMediaObserverT]interface{}
+	on_sinks_handler                  map[*cCMediaObserverT]OnSinksHandler
+	on_routes_handler                 map[*cCMediaObserverT]OnRoutesHandler
+	on_route_state_changed_handler    map[*cCMediaObserverT]OnRouteStateChangedHandler
+	on_route_message_received_handler map[*cCMediaObserverT]OnRouteMessageReceivedHandler
 }{
-	map[*C.cef_media_observer_t]interface{}{},
-	map[*C.cef_media_observer_t]OnSinksHandler{},
-	map[*C.cef_media_observer_t]OnRoutesHandler{},
-	map[*C.cef_media_observer_t]OnRouteStateChangedHandler{},
-	map[*C.cef_media_observer_t]OnRouteMessageReceivedHandler{},
+	map[*cCMediaObserverT]interface{}{},
+	map[*cCMediaObserverT]OnSinksHandler{},
+	map[*cCMediaObserverT]OnRoutesHandler{},
+	map[*cCMediaObserverT]OnRouteStateChangedHandler{},
+	map[*cCMediaObserverT]OnRouteMessageReceivedHandler{},
 }
 
 // AllocCMediaObserverT allocates CMediaObserverT and construct it
 func AllocCMediaObserverT() *CMediaObserverT {
 	up := c_calloc(1, C.sizeof_cefingo_media_observer_wrapper_t, "T158.3:")
 	cefp := C.cefingo_construct_media_observer((*C.cefingo_media_observer_wrapper_t)(up))
+	cgop := (*cCMediaObserverT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_media_observer_t itself in DeassocFunc,
@@ -12130,11 +12338,11 @@ func AllocCMediaObserverT() *CMediaObserverT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(media_observer_handlers.handler, cefp)
-		delete(media_observer_handlers.on_sinks_handler, cefp)
-		delete(media_observer_handlers.on_routes_handler, cefp)
-		delete(media_observer_handlers.on_route_state_changed_handler, cefp)
-		delete(media_observer_handlers.on_route_message_received_handler, cefp)
+		delete(media_observer_handlers.handler, cgop)
+		delete(media_observer_handlers.on_sinks_handler, cgop)
+		delete(media_observer_handlers.on_routes_handler, cgop)
+		delete(media_observer_handlers.on_route_state_changed_handler, cgop)
+		delete(media_observer_handlers.on_route_message_received_handler, cgop)
 	}))
 
 	return newCMediaObserverT(cefp)
@@ -12144,7 +12352,7 @@ func (media_observer *CMediaObserverT) Bind(a interface{}) *CMediaObserverT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := media_observer.p_media_observer
+	cp := media_observer.pc_media_observer
 	media_observer_handlers.handler[cp] = a
 
 	if h, ok := a.(OnSinksHandler); ok {
@@ -12173,7 +12381,7 @@ func (media_observer *CMediaObserverT) Bind(a interface{}) *CMediaObserverT {
 
 func (media_observer *CMediaObserverT) UnbindAll() {
 
-	cp := media_observer.p_media_observer
+	cp := media_observer.pc_media_observer
 	delete(media_observer_handlers.handler, cp)
 
 	delete(media_observer_handlers.on_sinks_handler, cp)
@@ -12187,7 +12395,7 @@ func (media_observer *CMediaObserverT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := media_observer.p_media_observer
+	cp := media_observer.pc_media_observer
 	return media_observer_handlers.handler[cp]
 }
 
@@ -12199,10 +12407,12 @@ func (media_observer *CMediaObserverT) Handler() interface{} {
 // process thread unless otherwise indicated.
 ///
 
+type cCMediaRouteT C.cef_media_route_t
+
 // Go type for cef_media_route_t
 type CMediaRouteT struct {
-	noCopy        noCopy
-	p_media_route *C.cef_media_route_t
+	noCopy         noCopy
+	pc_media_route *cCMediaRouteT
 }
 
 type RefToCMediaRouteT struct {
@@ -12228,21 +12438,22 @@ func newCMediaRouteT(p *C.cef_media_route_t) *CMediaRouteT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T159.1:")
-	BaseAddRef(p)
-	go_media_route := CMediaRouteT{noCopy{}, p}
+	pc := (*cCMediaRouteT)(p)
+	BaseAddRef(pc)
+	go_media_route := CMediaRouteT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_media_route, func(g *CMediaRouteT) {
-		Tracef(unsafe.Pointer(g.p_media_route), "T159.2:")
-		BaseRelease(g.p_media_route)
+		Tracef(unsafe.Pointer(g.pc_media_route), "T159.2:")
+		BaseRelease(g.pc_media_route)
 	})
 	return &go_media_route
 }
 
 // *C.cef_media_route_t has refCounted interface
 func (media_route *CMediaRouteT) HasOneRef() bool {
-	return BaseHasOneRef(media_route.p_media_route)
+	return BaseHasOneRef(media_route.pc_media_route)
 }
 
-func (p *C.cef_media_route_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMediaRouteT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -12252,7 +12463,7 @@ func (p *C.cef_media_route_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaRouteT) GetId() (ret string) {
 
-	cRet := C.cefingo_media_route_get_id(self.p_media_route)
+	cRet := C.cefingo_media_route_get_id((*C.cef_media_route_t)(self.pc_media_route))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -12267,7 +12478,7 @@ func (self *CMediaRouteT) GetId() (ret string) {
 ///
 func (self *CMediaRouteT) GetSource() (ret *CMediaSourceT) {
 
-	cRet := C.cefingo_media_route_get_source(self.p_media_route)
+	cRet := C.cefingo_media_route_get_source((*C.cef_media_route_t)(self.pc_media_route))
 
 	ret = newCMediaSourceT(cRet)
 	return ret
@@ -12278,7 +12489,7 @@ func (self *CMediaRouteT) GetSource() (ret *CMediaSourceT) {
 ///
 func (self *CMediaRouteT) GetSink() (ret *CMediaSinkT) {
 
-	cRet := C.cefingo_media_route_get_sink(self.p_media_route)
+	cRet := C.cefingo_media_route_get_sink((*C.cef_media_route_t)(self.pc_media_route))
 
 	ret = newCMediaSinkT(cRet)
 	return ret
@@ -12294,7 +12505,7 @@ func (self *CMediaRouteT) SendRouteMessage(
 	tmpmessage := C.CBytes(message)
 	defer C.free(tmpmessage)
 
-	C.cefingo_media_route_send_route_message(self.p_media_route, tmpmessage, (C.size_t)(message_size))
+	C.cefingo_media_route_send_route_message((*C.cef_media_route_t)(self.pc_media_route), tmpmessage, (C.size_t)(message_size))
 
 }
 
@@ -12304,7 +12515,7 @@ func (self *CMediaRouteT) SendRouteMessage(
 ///
 func (self *CMediaRouteT) Terminate() {
 
-	C.cefingo_media_route_terminate(self.p_media_route)
+	C.cefingo_media_route_terminate((*C.cef_media_route_t)(self.pc_media_route))
 
 }
 
@@ -12313,10 +12524,12 @@ func (self *CMediaRouteT) Terminate() {
 // structure will be called on the browser process UI thread.
 ///
 
+type cCMediaRouteCreateCallbackT C.cef_media_route_create_callback_t
+
 // Go type for cef_media_route_create_callback_t
 type CMediaRouteCreateCallbackT struct {
-	noCopy                        noCopy
-	p_media_route_create_callback *C.cef_media_route_create_callback_t
+	noCopy                         noCopy
+	pc_media_route_create_callback *cCMediaRouteCreateCallbackT
 }
 
 type RefToCMediaRouteCreateCallbackT struct {
@@ -12342,21 +12555,22 @@ func newCMediaRouteCreateCallbackT(p *C.cef_media_route_create_callback_t) *CMed
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T160.1:")
-	BaseAddRef(p)
-	go_media_route_create_callback := CMediaRouteCreateCallbackT{noCopy{}, p}
+	pc := (*cCMediaRouteCreateCallbackT)(p)
+	BaseAddRef(pc)
+	go_media_route_create_callback := CMediaRouteCreateCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_media_route_create_callback, func(g *CMediaRouteCreateCallbackT) {
-		Tracef(unsafe.Pointer(g.p_media_route_create_callback), "T160.2:")
-		BaseRelease(g.p_media_route_create_callback)
+		Tracef(unsafe.Pointer(g.pc_media_route_create_callback), "T160.2:")
+		BaseRelease(g.pc_media_route_create_callback)
 	})
 	return &go_media_route_create_callback
 }
 
 // *C.cef_media_route_create_callback_t has refCounted interface
 func (media_route_create_callback *CMediaRouteCreateCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(media_route_create_callback.p_media_route_create_callback)
+	return BaseHasOneRef(media_route_create_callback.pc_media_route_create_callback)
 }
 
-func (p *C.cef_media_route_create_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMediaRouteCreateCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -12374,11 +12588,11 @@ func (self *CMediaRouteCreateCallbackT) OnMediaRouteCreateFinished(
 	c_error := create_cef_string(error)
 	var goTmproute *C.cef_media_route_t
 	if route != nil {
-		goTmproute = route.p_media_route
-		BaseAddRef(goTmproute)
+		BaseAddRef(route.pc_media_route)
+		goTmproute = (*C.cef_media_route_t)(route.pc_media_route)
 	}
 
-	C.cefingo_media_route_create_callback_on_media_route_create_finished(self.p_media_route_create_callback, (C.cef_media_route_create_result_t)(result), c_error.p_cef_string_t, goTmproute)
+	C.cefingo_media_route_create_callback_on_media_route_create_finished((*C.cef_media_route_create_callback_t)(self.pc_media_route_create_callback), (C.cef_media_route_create_result_t)(result), c_error.p_cef_string_t, goTmproute)
 
 }
 
@@ -12388,10 +12602,12 @@ func (self *CMediaRouteCreateCallbackT) OnMediaRouteCreateFinished(
 // may be called on any browser process thread unless otherwise indicated.
 ///
 
+type cCMediaSinkT C.cef_media_sink_t
+
 // Go type for cef_media_sink_t
 type CMediaSinkT struct {
-	noCopy       noCopy
-	p_media_sink *C.cef_media_sink_t
+	noCopy        noCopy
+	pc_media_sink *cCMediaSinkT
 }
 
 type RefToCMediaSinkT struct {
@@ -12417,21 +12633,22 @@ func newCMediaSinkT(p *C.cef_media_sink_t) *CMediaSinkT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T161.1:")
-	BaseAddRef(p)
-	go_media_sink := CMediaSinkT{noCopy{}, p}
+	pc := (*cCMediaSinkT)(p)
+	BaseAddRef(pc)
+	go_media_sink := CMediaSinkT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_media_sink, func(g *CMediaSinkT) {
-		Tracef(unsafe.Pointer(g.p_media_sink), "T161.2:")
-		BaseRelease(g.p_media_sink)
+		Tracef(unsafe.Pointer(g.pc_media_sink), "T161.2:")
+		BaseRelease(g.pc_media_sink)
 	})
 	return &go_media_sink
 }
 
 // *C.cef_media_sink_t has refCounted interface
 func (media_sink *CMediaSinkT) HasOneRef() bool {
-	return BaseHasOneRef(media_sink.p_media_sink)
+	return BaseHasOneRef(media_sink.pc_media_sink)
 }
 
-func (p *C.cef_media_sink_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMediaSinkT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -12441,7 +12658,7 @@ func (p *C.cef_media_sink_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetId() (ret string) {
 
-	cRet := C.cefingo_media_sink_get_id(self.p_media_sink)
+	cRet := C.cefingo_media_sink_get_id((*C.cef_media_sink_t)(self.pc_media_sink))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -12457,7 +12674,7 @@ func (self *CMediaSinkT) GetId() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetName() (ret string) {
 
-	cRet := C.cefingo_media_sink_get_name(self.p_media_sink)
+	cRet := C.cefingo_media_sink_get_name((*C.cef_media_sink_t)(self.pc_media_sink))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -12473,7 +12690,7 @@ func (self *CMediaSinkT) GetName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetDescription() (ret string) {
 
-	cRet := C.cefingo_media_sink_get_description(self.p_media_sink)
+	cRet := C.cefingo_media_sink_get_description((*C.cef_media_sink_t)(self.pc_media_sink))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -12488,7 +12705,7 @@ func (self *CMediaSinkT) GetDescription() (ret string) {
 ///
 func (self *CMediaSinkT) GetIconType() (ret CMediaSinkIconTypeT) {
 
-	cRet := C.cefingo_media_sink_get_icon_type(self.p_media_sink)
+	cRet := C.cefingo_media_sink_get_icon_type((*C.cef_media_sink_t)(self.pc_media_sink))
 
 	ret = CMediaSinkIconTypeT(cRet)
 	return ret
@@ -12502,11 +12719,11 @@ func (self *CMediaSinkT) GetDeviceInfo(
 ) {
 	var goTmpcallback *C.cef_media_sink_device_info_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_media_sink_device_info_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_media_sink_device_info_callback)
+		goTmpcallback = (*C.cef_media_sink_device_info_callback_t)(callback.pc_media_sink_device_info_callback)
 	}
 
-	C.cefingo_media_sink_get_device_info(self.p_media_sink, goTmpcallback)
+	C.cefingo_media_sink_get_device_info((*C.cef_media_sink_t)(self.pc_media_sink), goTmpcallback)
 
 }
 
@@ -12515,7 +12732,7 @@ func (self *CMediaSinkT) GetDeviceInfo(
 ///
 func (self *CMediaSinkT) IsCastSink() (ret bool) {
 
-	cRet := C.cefingo_media_sink_is_cast_sink(self.p_media_sink)
+	cRet := C.cefingo_media_sink_is_cast_sink((*C.cef_media_sink_t)(self.pc_media_sink))
 
 	ret = cRet == 1
 	return ret
@@ -12526,7 +12743,7 @@ func (self *CMediaSinkT) IsCastSink() (ret bool) {
 ///
 func (self *CMediaSinkT) IsDialSink() (ret bool) {
 
-	cRet := C.cefingo_media_sink_is_dial_sink(self.p_media_sink)
+	cRet := C.cefingo_media_sink_is_dial_sink((*C.cef_media_sink_t)(self.pc_media_sink))
 
 	ret = cRet == 1
 	return ret
@@ -12540,11 +12757,11 @@ func (self *CMediaSinkT) IsCompatibleWith(
 ) (ret bool) {
 	var goTmpsource *C.cef_media_source_t
 	if source != nil {
-		goTmpsource = source.p_media_source
-		BaseAddRef(goTmpsource)
+		BaseAddRef(source.pc_media_source)
+		goTmpsource = (*C.cef_media_source_t)(source.pc_media_source)
 	}
 
-	cRet := C.cefingo_media_sink_is_compatible_with(self.p_media_sink, goTmpsource)
+	cRet := C.cefingo_media_sink_is_compatible_with((*C.cef_media_sink_t)(self.pc_media_sink), goTmpsource)
 
 	ret = cRet == 1
 	return ret
@@ -12555,10 +12772,12 @@ func (self *CMediaSinkT) IsCompatibleWith(
 // structure will be called on the browser process UI thread.
 ///
 
+type cCMediaSinkDeviceInfoCallbackT C.cef_media_sink_device_info_callback_t
+
 // Go type for cef_media_sink_device_info_callback_t
 type CMediaSinkDeviceInfoCallbackT struct {
-	noCopy                            noCopy
-	p_media_sink_device_info_callback *C.cef_media_sink_device_info_callback_t
+	noCopy                             noCopy
+	pc_media_sink_device_info_callback *cCMediaSinkDeviceInfoCallbackT
 }
 
 type RefToCMediaSinkDeviceInfoCallbackT struct {
@@ -12584,21 +12803,22 @@ func newCMediaSinkDeviceInfoCallbackT(p *C.cef_media_sink_device_info_callback_t
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T338.1:")
-	BaseAddRef(p)
-	go_media_sink_device_info_callback := CMediaSinkDeviceInfoCallbackT{noCopy{}, p}
+	pc := (*cCMediaSinkDeviceInfoCallbackT)(p)
+	BaseAddRef(pc)
+	go_media_sink_device_info_callback := CMediaSinkDeviceInfoCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_media_sink_device_info_callback, func(g *CMediaSinkDeviceInfoCallbackT) {
-		Tracef(unsafe.Pointer(g.p_media_sink_device_info_callback), "T338.2:")
-		BaseRelease(g.p_media_sink_device_info_callback)
+		Tracef(unsafe.Pointer(g.pc_media_sink_device_info_callback), "T338.2:")
+		BaseRelease(g.pc_media_sink_device_info_callback)
 	})
 	return &go_media_sink_device_info_callback
 }
 
 // *C.cef_media_sink_device_info_callback_t has refCounted interface
 func (media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(media_sink_device_info_callback.p_media_sink_device_info_callback)
+	return BaseHasOneRef(media_sink_device_info_callback.pc_media_sink_device_info_callback)
 }
 
-func (p *C.cef_media_sink_device_info_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMediaSinkDeviceInfoCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -12610,7 +12830,7 @@ func (self *CMediaSinkDeviceInfoCallbackT) OnMediaSinkDeviceInfo(
 	device_info *CMediaSinkDeviceInfoT,
 ) {
 
-	C.cefingo_media_sink_device_info_callback_on_media_sink_device_info(self.p_media_sink_device_info_callback, (*C.cef_media_sink_device_info_t)(device_info))
+	C.cefingo_media_sink_device_info_callback_on_media_sink_device_info((*C.cef_media_sink_device_info_callback_t)(self.pc_media_sink_device_info_callback), (*C.cef_media_sink_device_info_t)(device_info))
 
 }
 
@@ -12621,10 +12841,12 @@ func (self *CMediaSinkDeviceInfoCallbackT) OnMediaSinkDeviceInfo(
 // indicated.
 ///
 
+type cCMediaSourceT C.cef_media_source_t
+
 // Go type for cef_media_source_t
 type CMediaSourceT struct {
-	noCopy         noCopy
-	p_media_source *C.cef_media_source_t
+	noCopy          noCopy
+	pc_media_source *cCMediaSourceT
 }
 
 type RefToCMediaSourceT struct {
@@ -12650,21 +12872,22 @@ func newCMediaSourceT(p *C.cef_media_source_t) *CMediaSourceT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T162.1:")
-	BaseAddRef(p)
-	go_media_source := CMediaSourceT{noCopy{}, p}
+	pc := (*cCMediaSourceT)(p)
+	BaseAddRef(pc)
+	go_media_source := CMediaSourceT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_media_source, func(g *CMediaSourceT) {
-		Tracef(unsafe.Pointer(g.p_media_source), "T162.2:")
-		BaseRelease(g.p_media_source)
+		Tracef(unsafe.Pointer(g.pc_media_source), "T162.2:")
+		BaseRelease(g.pc_media_source)
 	})
 	return &go_media_source
 }
 
 // *C.cef_media_source_t has refCounted interface
 func (media_source *CMediaSourceT) HasOneRef() bool {
-	return BaseHasOneRef(media_source.p_media_source)
+	return BaseHasOneRef(media_source.pc_media_source)
 }
 
-func (p *C.cef_media_source_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMediaSourceT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -12674,7 +12897,7 @@ func (p *C.cef_media_source_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSourceT) GetId() (ret string) {
 
-	cRet := C.cefingo_media_source_get_id(self.p_media_source)
+	cRet := C.cefingo_media_source_get_id((*C.cef_media_source_t)(self.pc_media_source))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -12689,7 +12912,7 @@ func (self *CMediaSourceT) GetId() (ret string) {
 ///
 func (self *CMediaSourceT) IsCastSource() (ret bool) {
 
-	cRet := C.cefingo_media_source_is_cast_source(self.p_media_source)
+	cRet := C.cefingo_media_source_is_cast_source((*C.cef_media_source_t)(self.pc_media_source))
 
 	ret = cRet == 1
 	return ret
@@ -12700,7 +12923,7 @@ func (self *CMediaSourceT) IsCastSource() (ret bool) {
 ///
 func (self *CMediaSourceT) IsDialSource() (ret bool) {
 
-	cRet := C.cefingo_media_source_is_dial_source(self.p_media_source)
+	cRet := C.cefingo_media_source_is_dial_source((*C.cef_media_source_t)(self.pc_media_source))
 
 	ret = cRet == 1
 	return ret
@@ -12715,10 +12938,12 @@ func (self *CMediaSourceT) IsDialSource() (ret bool) {
 // must be called on the browser process UI thread unless otherwise indicated.
 ///
 
+type cCMenuButtonT C.cef_menu_button_t
+
 // Go type for cef_menu_button_t
 type CMenuButtonT struct {
-	noCopy        noCopy
-	p_menu_button *C.cef_menu_button_t
+	noCopy         noCopy
+	pc_menu_button *cCMenuButtonT
 }
 
 type RefToCMenuButtonT struct {
@@ -12744,26 +12969,28 @@ func newCMenuButtonT(p *C.cef_menu_button_t) *CMenuButtonT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T163.1:")
-	BaseAddRef(p)
-	go_menu_button := CMenuButtonT{noCopy{}, p}
+	pc := (*cCMenuButtonT)(p)
+	BaseAddRef(pc)
+	go_menu_button := CMenuButtonT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_menu_button, func(g *CMenuButtonT) {
-		Tracef(unsafe.Pointer(g.p_menu_button), "T163.2:")
-		BaseRelease(g.p_menu_button)
+		Tracef(unsafe.Pointer(g.pc_menu_button), "T163.2:")
+		BaseRelease(g.pc_menu_button)
 	})
 	return &go_menu_button
 }
 
 // *C.cef_menu_button_t has refCounted interface
 func (menu_button *CMenuButtonT) HasOneRef() bool {
-	return BaseHasOneRef(menu_button.p_menu_button)
+	return BaseHasOneRef(menu_button.pc_menu_button)
 }
 
-func (p *C.cef_menu_button_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMenuButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CLabelButtonT
 func (menu_button *CMenuButtonT) ToCLabelButtonT() *CLabelButtonT {
-	p := (*C.cef_label_button_t)(unsafe.Pointer(menu_button.p_menu_button))
+	p := (*C.cef_label_button_t)(unsafe.Pointer(menu_button.pc_menu_button))
 	return newCLabelButtonT(p)
 }
 
@@ -12780,11 +13007,11 @@ func (self *CMenuButtonT) ShowMenu(
 ) {
 	var goTmpmenu_model *C.cef_menu_model_t
 	if menu_model != nil {
-		goTmpmenu_model = menu_model.p_menu_model
-		BaseAddRef(goTmpmenu_model)
+		BaseAddRef(menu_model.pc_menu_model)
+		goTmpmenu_model = (*C.cef_menu_model_t)(menu_model.pc_menu_model)
 	}
 
-	C.cefingo_menu_button_show_menu(self.p_menu_button, goTmpmenu_model, (*C.cef_point_t)(screen_point), (C.cef_menu_anchor_position_t)(anchor_position))
+	C.cefingo_menu_button_show_menu((*C.cef_menu_button_t)(self.pc_menu_button), goTmpmenu_model, (*C.cef_point_t)(screen_point), (C.cef_menu_anchor_position_t)(anchor_position))
 
 }
 
@@ -12794,7 +13021,7 @@ func (self *CMenuButtonT) ShowMenu(
 ///
 func (self *CMenuButtonT) TriggerMenu() {
 
-	C.cefingo_menu_button_trigger_menu(self.p_menu_button)
+	C.cefingo_menu_button_trigger_menu((*C.cef_menu_button_t)(self.pc_menu_button))
 
 }
 
@@ -12813,8 +13040,8 @@ func MenuButtonCreate(
 ) (ret *CMenuButtonT) {
 	var goTmpdelegate *C.cef_menu_button_delegate_t
 	if delegate != nil {
-		goTmpdelegate = delegate.p_menu_button_delegate
-		BaseAddRef(goTmpdelegate)
+		BaseAddRef(delegate.pc_menu_button_delegate)
+		goTmpdelegate = (*C.cef_menu_button_delegate_t)(delegate.pc_menu_button_delegate)
 	}
 	c_text := create_cef_string(text)
 
@@ -12830,10 +13057,12 @@ func MenuButtonCreate(
 // MenuButton pressed lock is released when this object is destroyed.
 ///
 
+type cCMenuButtonPressedLockT C.cef_menu_button_pressed_lock_t
+
 // Go type for cef_menu_button_pressed_lock_t
 type CMenuButtonPressedLockT struct {
-	noCopy                     noCopy
-	p_menu_button_pressed_lock *C.cef_menu_button_pressed_lock_t
+	noCopy                      noCopy
+	pc_menu_button_pressed_lock *cCMenuButtonPressedLockT
 }
 
 type RefToCMenuButtonPressedLockT struct {
@@ -12859,21 +13088,22 @@ func newCMenuButtonPressedLockT(p *C.cef_menu_button_pressed_lock_t) *CMenuButto
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T164.1:")
-	BaseAddRef(p)
-	go_menu_button_pressed_lock := CMenuButtonPressedLockT{noCopy{}, p}
+	pc := (*cCMenuButtonPressedLockT)(p)
+	BaseAddRef(pc)
+	go_menu_button_pressed_lock := CMenuButtonPressedLockT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_menu_button_pressed_lock, func(g *CMenuButtonPressedLockT) {
-		Tracef(unsafe.Pointer(g.p_menu_button_pressed_lock), "T164.2:")
-		BaseRelease(g.p_menu_button_pressed_lock)
+		Tracef(unsafe.Pointer(g.pc_menu_button_pressed_lock), "T164.2:")
+		BaseRelease(g.pc_menu_button_pressed_lock)
 	})
 	return &go_menu_button_pressed_lock
 }
 
 // *C.cef_menu_button_pressed_lock_t has refCounted interface
 func (menu_button_pressed_lock *CMenuButtonPressedLockT) HasOneRef() bool {
-	return BaseHasOneRef(menu_button_pressed_lock.p_menu_button_pressed_lock)
+	return BaseHasOneRef(menu_button_pressed_lock.pc_menu_button_pressed_lock)
 }
 
-func (p *C.cef_menu_button_pressed_lock_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMenuButtonPressedLockT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -12883,10 +13113,12 @@ func (p *C.cef_menu_button_pressed_lock_t) cast_to_p_base_ref_counted_t() *C.cef
 // indicated.
 ///
 
+type cCMenuButtonDelegateT C.cef_menu_button_delegate_t
+
 // Go type for cef_menu_button_delegate_t
 type CMenuButtonDelegateT struct {
-	noCopy                 noCopy
-	p_menu_button_delegate *C.cef_menu_button_delegate_t
+	noCopy                  noCopy
+	pc_menu_button_delegate *cCMenuButtonDelegateT
 }
 
 type RefToCMenuButtonDelegateT struct {
@@ -12912,26 +13144,28 @@ func newCMenuButtonDelegateT(p *C.cef_menu_button_delegate_t) *CMenuButtonDelega
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T165.1:")
-	BaseAddRef(p)
-	go_menu_button_delegate := CMenuButtonDelegateT{noCopy{}, p}
+	pc := (*cCMenuButtonDelegateT)(p)
+	BaseAddRef(pc)
+	go_menu_button_delegate := CMenuButtonDelegateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_menu_button_delegate, func(g *CMenuButtonDelegateT) {
-		Tracef(unsafe.Pointer(g.p_menu_button_delegate), "T165.2:")
-		BaseRelease(g.p_menu_button_delegate)
+		Tracef(unsafe.Pointer(g.pc_menu_button_delegate), "T165.2:")
+		BaseRelease(g.pc_menu_button_delegate)
 	})
 	return &go_menu_button_delegate
 }
 
 // *C.cef_menu_button_delegate_t has refCounted interface
 func (menu_button_delegate *CMenuButtonDelegateT) HasOneRef() bool {
-	return BaseHasOneRef(menu_button_delegate.p_menu_button_delegate)
+	return BaseHasOneRef(menu_button_delegate.pc_menu_button_delegate)
 }
 
-func (p *C.cef_menu_button_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMenuButtonDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CButtonDelegateT
 func (menu_button_delegate *CMenuButtonDelegateT) ToCButtonDelegateT() *CButtonDelegateT {
-	p := (*C.cef_button_delegate_t)(unsafe.Pointer(menu_button_delegate.p_menu_button_delegate))
+	p := (*C.cef_button_delegate_t)(unsafe.Pointer(menu_button_delegate.pc_menu_button_delegate))
 	return newCButtonDelegateT(p)
 }
 
@@ -12951,37 +13185,38 @@ type OnMenuButtonPressedHandler interface {
 }
 
 var menu_button_delegate_handlers = struct {
-	handler                         map[*C.cef_menu_button_delegate_t]interface{}
-	on_menu_button_pressed_handler  map[*C.cef_menu_button_delegate_t]OnMenuButtonPressedHandler
-	on_button_pressed_handler       map[*C.cef_menu_button_delegate_t]OnButtonPressedHandler
-	on_button_state_changed_handler map[*C.cef_menu_button_delegate_t]OnButtonStateChangedHandler
-	get_preferred_size_handler      map[*C.cef_menu_button_delegate_t]GetPreferredSizeHandler
-	get_minimum_size_handler        map[*C.cef_menu_button_delegate_t]GetMinimumSizeHandler
-	get_maximum_size_handler        map[*C.cef_menu_button_delegate_t]GetMaximumSizeHandler
-	get_height_for_width_handler    map[*C.cef_menu_button_delegate_t]GetHeightForWidthHandler
-	on_parent_view_changed_handler  map[*C.cef_menu_button_delegate_t]OnParentViewChangedHandler
-	on_child_view_changed_handler   map[*C.cef_menu_button_delegate_t]OnChildViewChangedHandler
-	on_focus_handler                map[*C.cef_menu_button_delegate_t]OnFocusHandler
-	on_blur_handler                 map[*C.cef_menu_button_delegate_t]OnBlurHandler
+	handler                         map[*cCMenuButtonDelegateT]interface{}
+	on_menu_button_pressed_handler  map[*cCMenuButtonDelegateT]OnMenuButtonPressedHandler
+	on_button_pressed_handler       map[*cCMenuButtonDelegateT]OnButtonPressedHandler
+	on_button_state_changed_handler map[*cCMenuButtonDelegateT]OnButtonStateChangedHandler
+	get_preferred_size_handler      map[*cCMenuButtonDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler        map[*cCMenuButtonDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler        map[*cCMenuButtonDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler    map[*cCMenuButtonDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler  map[*cCMenuButtonDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler   map[*cCMenuButtonDelegateT]OnChildViewChangedHandler
+	on_focus_handler                map[*cCMenuButtonDelegateT]OnFocusHandler
+	on_blur_handler                 map[*cCMenuButtonDelegateT]OnBlurHandler
 }{
-	map[*C.cef_menu_button_delegate_t]interface{}{},
-	map[*C.cef_menu_button_delegate_t]OnMenuButtonPressedHandler{},
-	map[*C.cef_menu_button_delegate_t]OnButtonPressedHandler{},
-	map[*C.cef_menu_button_delegate_t]OnButtonStateChangedHandler{},
-	map[*C.cef_menu_button_delegate_t]GetPreferredSizeHandler{},
-	map[*C.cef_menu_button_delegate_t]GetMinimumSizeHandler{},
-	map[*C.cef_menu_button_delegate_t]GetMaximumSizeHandler{},
-	map[*C.cef_menu_button_delegate_t]GetHeightForWidthHandler{},
-	map[*C.cef_menu_button_delegate_t]OnParentViewChangedHandler{},
-	map[*C.cef_menu_button_delegate_t]OnChildViewChangedHandler{},
-	map[*C.cef_menu_button_delegate_t]OnFocusHandler{},
-	map[*C.cef_menu_button_delegate_t]OnBlurHandler{},
+	map[*cCMenuButtonDelegateT]interface{}{},
+	map[*cCMenuButtonDelegateT]OnMenuButtonPressedHandler{},
+	map[*cCMenuButtonDelegateT]OnButtonPressedHandler{},
+	map[*cCMenuButtonDelegateT]OnButtonStateChangedHandler{},
+	map[*cCMenuButtonDelegateT]GetPreferredSizeHandler{},
+	map[*cCMenuButtonDelegateT]GetMinimumSizeHandler{},
+	map[*cCMenuButtonDelegateT]GetMaximumSizeHandler{},
+	map[*cCMenuButtonDelegateT]GetHeightForWidthHandler{},
+	map[*cCMenuButtonDelegateT]OnParentViewChangedHandler{},
+	map[*cCMenuButtonDelegateT]OnChildViewChangedHandler{},
+	map[*cCMenuButtonDelegateT]OnFocusHandler{},
+	map[*cCMenuButtonDelegateT]OnBlurHandler{},
 }
 
 // AllocCMenuButtonDelegateT allocates CMenuButtonDelegateT and construct it
 func AllocCMenuButtonDelegateT() *CMenuButtonDelegateT {
 	up := c_calloc(1, C.sizeof_cefingo_menu_button_delegate_wrapper_t, "T165.3:")
 	cefp := C.cefingo_construct_menu_button_delegate((*C.cefingo_menu_button_delegate_wrapper_t)(up))
+	cgop := (*cCMenuButtonDelegateT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_menu_button_delegate_t itself in DeassocFunc,
@@ -12990,18 +13225,18 @@ func AllocCMenuButtonDelegateT() *CMenuButtonDelegateT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(menu_button_delegate_handlers.handler, cefp)
-		delete(menu_button_delegate_handlers.on_menu_button_pressed_handler, cefp)
-		delete(menu_button_delegate_handlers.on_button_pressed_handler, cefp)
-		delete(menu_button_delegate_handlers.on_button_state_changed_handler, cefp)
-		delete(menu_button_delegate_handlers.get_preferred_size_handler, cefp)
-		delete(menu_button_delegate_handlers.get_minimum_size_handler, cefp)
-		delete(menu_button_delegate_handlers.get_maximum_size_handler, cefp)
-		delete(menu_button_delegate_handlers.get_height_for_width_handler, cefp)
-		delete(menu_button_delegate_handlers.on_parent_view_changed_handler, cefp)
-		delete(menu_button_delegate_handlers.on_child_view_changed_handler, cefp)
-		delete(menu_button_delegate_handlers.on_focus_handler, cefp)
-		delete(menu_button_delegate_handlers.on_blur_handler, cefp)
+		delete(menu_button_delegate_handlers.handler, cgop)
+		delete(menu_button_delegate_handlers.on_menu_button_pressed_handler, cgop)
+		delete(menu_button_delegate_handlers.on_button_pressed_handler, cgop)
+		delete(menu_button_delegate_handlers.on_button_state_changed_handler, cgop)
+		delete(menu_button_delegate_handlers.get_preferred_size_handler, cgop)
+		delete(menu_button_delegate_handlers.get_minimum_size_handler, cgop)
+		delete(menu_button_delegate_handlers.get_maximum_size_handler, cgop)
+		delete(menu_button_delegate_handlers.get_height_for_width_handler, cgop)
+		delete(menu_button_delegate_handlers.on_parent_view_changed_handler, cgop)
+		delete(menu_button_delegate_handlers.on_child_view_changed_handler, cgop)
+		delete(menu_button_delegate_handlers.on_focus_handler, cgop)
+		delete(menu_button_delegate_handlers.on_blur_handler, cgop)
 	}))
 
 	return newCMenuButtonDelegateT(cefp)
@@ -13011,7 +13246,7 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := menu_button_delegate.p_menu_button_delegate
+	cp := menu_button_delegate.pc_menu_button_delegate
 	menu_button_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(OnMenuButtonPressedHandler); ok {
@@ -13068,7 +13303,7 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 
 func (menu_button_delegate *CMenuButtonDelegateT) UnbindAll() {
 
-	cp := menu_button_delegate.p_menu_button_delegate
+	cp := menu_button_delegate.pc_menu_button_delegate
 	delete(menu_button_delegate_handlers.handler, cp)
 
 	delete(menu_button_delegate_handlers.on_menu_button_pressed_handler, cp)
@@ -13089,7 +13324,7 @@ func (menu_button_delegate *CMenuButtonDelegateT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := menu_button_delegate.p_menu_button_delegate
+	cp := menu_button_delegate.pc_menu_button_delegate
 	return menu_button_delegate_handlers.handler[cp]
 }
 
@@ -13102,10 +13337,12 @@ func (menu_button_delegate *CMenuButtonDelegateT) Handler() interface{} {
 // this structure can only be accessed on the browser process the UI thread.
 ///
 
+type cCMenuModelT C.cef_menu_model_t
+
 // Go type for cef_menu_model_t
 type CMenuModelT struct {
-	noCopy       noCopy
-	p_menu_model *C.cef_menu_model_t
+	noCopy        noCopy
+	pc_menu_model *cCMenuModelT
 }
 
 type RefToCMenuModelT struct {
@@ -13131,21 +13368,22 @@ func newCMenuModelT(p *C.cef_menu_model_t) *CMenuModelT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T166.1:")
-	BaseAddRef(p)
-	go_menu_model := CMenuModelT{noCopy{}, p}
+	pc := (*cCMenuModelT)(p)
+	BaseAddRef(pc)
+	go_menu_model := CMenuModelT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_menu_model, func(g *CMenuModelT) {
-		Tracef(unsafe.Pointer(g.p_menu_model), "T166.2:")
-		BaseRelease(g.p_menu_model)
+		Tracef(unsafe.Pointer(g.pc_menu_model), "T166.2:")
+		BaseRelease(g.pc_menu_model)
 	})
 	return &go_menu_model
 }
 
 // *C.cef_menu_model_t has refCounted interface
 func (menu_model *CMenuModelT) HasOneRef() bool {
-	return BaseHasOneRef(menu_model.p_menu_model)
+	return BaseHasOneRef(menu_model.pc_menu_model)
 }
 
-func (p *C.cef_menu_model_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMenuModelT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -13154,7 +13392,7 @@ func (p *C.cef_menu_model_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 ///
 func (self *CMenuModelT) IsSubMenu() (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_sub_menu(self.p_menu_model)
+	cRet := C.cefingo_menu_model_is_sub_menu((*C.cef_menu_model_t)(self.pc_menu_model))
 
 	ret = cRet == 1
 	return ret
@@ -13165,7 +13403,7 @@ func (self *CMenuModelT) IsSubMenu() (ret bool) {
 ///
 func (self *CMenuModelT) Clear() (ret bool) {
 
-	cRet := C.cefingo_menu_model_clear(self.p_menu_model)
+	cRet := C.cefingo_menu_model_clear((*C.cef_menu_model_t)(self.pc_menu_model))
 
 	ret = cRet == 1
 	return ret
@@ -13176,7 +13414,7 @@ func (self *CMenuModelT) Clear() (ret bool) {
 ///
 func (self *CMenuModelT) GetCount() (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_count(self.p_menu_model)
+	cRet := C.cefingo_menu_model_get_count((*C.cef_menu_model_t)(self.pc_menu_model))
 
 	ret = cRet == 1
 	return ret
@@ -13187,7 +13425,7 @@ func (self *CMenuModelT) GetCount() (ret bool) {
 ///
 func (self *CMenuModelT) AddSeparator() (ret bool) {
 
-	cRet := C.cefingo_menu_model_add_separator(self.p_menu_model)
+	cRet := C.cefingo_menu_model_add_separator((*C.cef_menu_model_t)(self.pc_menu_model))
 
 	ret = cRet == 1
 	return ret
@@ -13202,7 +13440,7 @@ func (self *CMenuModelT) AddItem(
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_add_item(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_add_item((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13217,7 +13455,7 @@ func (self *CMenuModelT) AddCheckItem(
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_add_check_item(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_add_check_item((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13234,7 +13472,7 @@ func (self *CMenuModelT) AddRadioItem(
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_add_radio_item(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t, (C.int)(group_id))
+	cRet := C.cefingo_menu_model_add_radio_item((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), c_label.p_cef_string_t, (C.int)(group_id))
 
 	ret = cRet == 1
 	return ret
@@ -13249,7 +13487,7 @@ func (self *CMenuModelT) AddSubMenu(
 ) (ret *CMenuModelT) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_add_sub_menu(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_add_sub_menu((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = newCMenuModelT(cRet)
 	return ret
@@ -13263,7 +13501,7 @@ func (self *CMenuModelT) InsertSeparatorAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_insert_separator_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_insert_separator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13280,7 +13518,7 @@ func (self *CMenuModelT) InsertItemAt(
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_insert_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_insert_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13297,7 +13535,7 @@ func (self *CMenuModelT) InsertCheckItemAt(
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_insert_check_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_insert_check_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13316,7 +13554,7 @@ func (self *CMenuModelT) InsertRadioItemAt(
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_insert_radio_item_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t, (C.int)(group_id))
+	cRet := C.cefingo_menu_model_insert_radio_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t, (C.int)(group_id))
 
 	ret = cRet == 1
 	return ret
@@ -13333,7 +13571,7 @@ func (self *CMenuModelT) InsertSubMenuAt(
 ) (ret *CMenuModelT) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_insert_sub_menu_at(self.p_menu_model, (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_insert_sub_menu_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = newCMenuModelT(cRet)
 	return ret
@@ -13347,7 +13585,7 @@ func (self *CMenuModelT) Remove(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_remove(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_remove((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13360,7 +13598,7 @@ func (self *CMenuModelT) RemoveAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_remove_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_remove_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13374,7 +13612,7 @@ func (self *CMenuModelT) GetIndexOf(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_index_of(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_get_index_of((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13388,7 +13626,7 @@ func (self *CMenuModelT) GetCommandIdAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_command_id_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_get_command_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13402,7 +13640,7 @@ func (self *CMenuModelT) SetCommandIdAt(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_command_id_at(self.p_menu_model, (C.int)(index), (C.int)(command_id))
+	cRet := C.cefingo_menu_model_set_command_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13416,7 +13654,7 @@ func (self *CMenuModelT) GetLabel(
 	command_id int,
 ) (ret string) {
 
-	cRet := C.cefingo_menu_model_get_label(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_get_label((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -13435,7 +13673,7 @@ func (self *CMenuModelT) GetLabelAt(
 	index int,
 ) (ret string) {
 
-	cRet := C.cefingo_menu_model_get_label_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_get_label_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -13454,7 +13692,7 @@ func (self *CMenuModelT) SetLabel(
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_set_label(self.p_menu_model, (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_set_label((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13469,7 +13707,7 @@ func (self *CMenuModelT) SetLabelAt(
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_set_label_at(self.p_menu_model, (C.int)(index), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_set_label_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -13482,7 +13720,7 @@ func (self *CMenuModelT) GetType(
 	command_id int,
 ) (ret CMenuItemTypeT) {
 
-	cRet := C.cefingo_menu_model_get_type(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_get_type((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = CMenuItemTypeT(cRet)
 	return ret
@@ -13495,7 +13733,7 @@ func (self *CMenuModelT) GetTypeAt(
 	index int,
 ) (ret CMenuItemTypeT) {
 
-	cRet := C.cefingo_menu_model_get_type_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_get_type_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = CMenuItemTypeT(cRet)
 	return ret
@@ -13508,7 +13746,7 @@ func (self *CMenuModelT) GetGroupId(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_group_id(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_get_group_id((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13521,7 +13759,7 @@ func (self *CMenuModelT) GetGroupIdAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_group_id_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_get_group_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13536,7 +13774,7 @@ func (self *CMenuModelT) SetGroupId(
 	group_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_group_id(self.p_menu_model, (C.int)(command_id), (C.int)(group_id))
+	cRet := C.cefingo_menu_model_set_group_id((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), (C.int)(group_id))
 
 	ret = cRet == 1
 	return ret
@@ -13550,7 +13788,7 @@ func (self *CMenuModelT) SetGroupIdAt(
 	group_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_group_id_at(self.p_menu_model, (C.int)(index), (C.int)(group_id))
+	cRet := C.cefingo_menu_model_set_group_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(group_id))
 
 	ret = cRet == 1
 	return ret
@@ -13563,7 +13801,7 @@ func (self *CMenuModelT) GetSubMenu(
 	command_id int,
 ) (ret *CMenuModelT) {
 
-	cRet := C.cefingo_menu_model_get_sub_menu(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_get_sub_menu((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = newCMenuModelT(cRet)
 	return ret
@@ -13576,7 +13814,7 @@ func (self *CMenuModelT) GetSubMenuAt(
 	index int,
 ) (ret *CMenuModelT) {
 
-	cRet := C.cefingo_menu_model_get_sub_menu_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_get_sub_menu_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = newCMenuModelT(cRet)
 	return ret
@@ -13589,7 +13827,7 @@ func (self *CMenuModelT) IsVisible(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_visible(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_is_visible((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13602,7 +13840,7 @@ func (self *CMenuModelT) IsVisibleAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_visible_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_is_visible_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13617,7 +13855,7 @@ func (self *CMenuModelT) SetVisible(
 	visible int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_visible(self.p_menu_model, (C.int)(command_id), (C.int)(visible))
+	cRet := C.cefingo_menu_model_set_visible((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), (C.int)(visible))
 
 	ret = cRet == 1
 	return ret
@@ -13632,7 +13870,7 @@ func (self *CMenuModelT) SetVisibleAt(
 	visible int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_visible_at(self.p_menu_model, (C.int)(index), (C.int)(visible))
+	cRet := C.cefingo_menu_model_set_visible_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(visible))
 
 	ret = cRet == 1
 	return ret
@@ -13645,7 +13883,7 @@ func (self *CMenuModelT) IsEnabled(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_enabled(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_is_enabled((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13658,7 +13896,7 @@ func (self *CMenuModelT) IsEnabledAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_enabled_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_is_enabled_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13673,7 +13911,7 @@ func (self *CMenuModelT) SetEnabled(
 	enabled int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_enabled(self.p_menu_model, (C.int)(command_id), (C.int)(enabled))
+	cRet := C.cefingo_menu_model_set_enabled((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), (C.int)(enabled))
 
 	ret = cRet == 1
 	return ret
@@ -13688,7 +13926,7 @@ func (self *CMenuModelT) SetEnabledAt(
 	enabled int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_enabled_at(self.p_menu_model, (C.int)(index), (C.int)(enabled))
+	cRet := C.cefingo_menu_model_set_enabled_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(enabled))
 
 	ret = cRet == 1
 	return ret
@@ -13702,7 +13940,7 @@ func (self *CMenuModelT) IsChecked(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_checked(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_is_checked((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13716,7 +13954,7 @@ func (self *CMenuModelT) IsCheckedAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_checked_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_is_checked_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13731,7 +13969,7 @@ func (self *CMenuModelT) SetChecked(
 	checked int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_checked(self.p_menu_model, (C.int)(command_id), (C.int)(checked))
+	cRet := C.cefingo_menu_model_set_checked((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), (C.int)(checked))
 
 	ret = cRet == 1
 	return ret
@@ -13746,7 +13984,7 @@ func (self *CMenuModelT) SetCheckedAt(
 	checked int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_checked_at(self.p_menu_model, (C.int)(index), (C.int)(checked))
+	cRet := C.cefingo_menu_model_set_checked_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(checked))
 
 	ret = cRet == 1
 	return ret
@@ -13760,7 +13998,7 @@ func (self *CMenuModelT) HasAccelerator(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_has_accelerator(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_has_accelerator((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13774,7 +14012,7 @@ func (self *CMenuModelT) HasAcceleratorAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_has_accelerator_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_has_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13792,7 +14030,7 @@ func (self *CMenuModelT) SetAccelerator(
 	alt_pressed int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_accelerator(self.p_menu_model, (C.int)(command_id), (C.int)(key_code), (C.int)(shift_pressed), (C.int)(ctrl_pressed), (C.int)(alt_pressed))
+	cRet := C.cefingo_menu_model_set_accelerator((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), (C.int)(key_code), (C.int)(shift_pressed), (C.int)(ctrl_pressed), (C.int)(alt_pressed))
 
 	ret = cRet == 1
 	return ret
@@ -13810,7 +14048,7 @@ func (self *CMenuModelT) SetAcceleratorAt(
 	alt_pressed int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_accelerator_at(self.p_menu_model, (C.int)(index), (C.int)(key_code), (C.int)(shift_pressed), (C.int)(ctrl_pressed), (C.int)(alt_pressed))
+	cRet := C.cefingo_menu_model_set_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(key_code), (C.int)(shift_pressed), (C.int)(ctrl_pressed), (C.int)(alt_pressed))
 
 	ret = cRet == 1
 	return ret
@@ -13824,7 +14062,7 @@ func (self *CMenuModelT) RemoveAccelerator(
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_remove_accelerator(self.p_menu_model, (C.int)(command_id))
+	cRet := C.cefingo_menu_model_remove_accelerator((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -13838,7 +14076,7 @@ func (self *CMenuModelT) RemoveAcceleratorAt(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_remove_accelerator_at(self.p_menu_model, (C.int)(index))
+	cRet := C.cefingo_menu_model_remove_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -13856,7 +14094,7 @@ func (self *CMenuModelT) GetAccelerator(
 	var tmpctrl_pressed C.int
 	var tmpalt_pressed C.int
 
-	cRet := C.cefingo_menu_model_get_accelerator(self.p_menu_model, (C.int)(command_id), &tmpkey_code, &tmpshift_pressed, &tmpctrl_pressed, &tmpalt_pressed)
+	cRet := C.cefingo_menu_model_get_accelerator((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), &tmpkey_code, &tmpshift_pressed, &tmpctrl_pressed, &tmpalt_pressed)
 
 	key_code = (int)(tmpkey_code)
 	shift_pressed = (int)(tmpshift_pressed)
@@ -13879,7 +14117,7 @@ func (self *CMenuModelT) GetAcceleratorAt(
 	var tmpctrl_pressed C.int
 	var tmpalt_pressed C.int
 
-	cRet := C.cefingo_menu_model_get_accelerator_at(self.p_menu_model, (C.int)(index), &tmpkey_code, &tmpshift_pressed, &tmpctrl_pressed, &tmpalt_pressed)
+	cRet := C.cefingo_menu_model_get_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), &tmpkey_code, &tmpshift_pressed, &tmpctrl_pressed, &tmpalt_pressed)
 
 	key_code = (int)(tmpkey_code)
 	shift_pressed = (int)(tmpshift_pressed)
@@ -13902,7 +14140,7 @@ func (self *CMenuModelT) SetColor(
 	color CColorT,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_color(self.p_menu_model, (C.int)(command_id), (C.cef_menu_color_type_t)(color_type), (C.cef_color_t)(color))
+	cRet := C.cefingo_menu_model_set_color((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), (C.cef_menu_color_type_t)(color_type), (C.cef_color_t)(color))
 
 	ret = cRet == 1
 	return ret
@@ -13921,7 +14159,7 @@ func (self *CMenuModelT) SetColorAt(
 	color CColorT,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_color_at(self.p_menu_model, (C.int)(index), (C.cef_menu_color_type_t)(color_type), (C.cef_color_t)(color))
+	cRet := C.cefingo_menu_model_set_color_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.cef_menu_color_type_t)(color_type), (C.cef_color_t)(color))
 
 	ret = cRet == 1
 	return ret
@@ -13938,7 +14176,7 @@ func (self *CMenuModelT) GetColor(
 	color *CColorT,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_color(self.p_menu_model, (C.int)(command_id), (C.cef_menu_color_type_t)(color_type), (*C.cef_color_t)(color))
+	cRet := C.cefingo_menu_model_get_color((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), (C.cef_menu_color_type_t)(color_type), (*C.cef_color_t)(color))
 
 	ret = cRet == 1
 	return ret
@@ -13956,7 +14194,7 @@ func (self *CMenuModelT) GetColorAt(
 	color *CColorT,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_color_at(self.p_menu_model, (C.int)(index), (C.cef_menu_color_type_t)(color_type), (*C.cef_color_t)(color))
+	cRet := C.cefingo_menu_model_get_color_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.cef_menu_color_type_t)(color_type), (*C.cef_color_t)(color))
 
 	ret = cRet == 1
 	return ret
@@ -13980,7 +14218,7 @@ func (self *CMenuModelT) SetFontList(
 ) (ret bool) {
 	c_font_list := create_cef_string(font_list)
 
-	cRet := C.cefingo_menu_model_set_font_list(self.p_menu_model, (C.int)(command_id), c_font_list.p_cef_string_t)
+	cRet := C.cefingo_menu_model_set_font_list((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), c_font_list.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -14005,7 +14243,7 @@ func (self *CMenuModelT) SetFontListAt(
 ) (ret bool) {
 	c_font_list := create_cef_string(font_list)
 
-	cRet := C.cefingo_menu_model_set_font_list_at(self.p_menu_model, (C.int)(index), c_font_list.p_cef_string_t)
+	cRet := C.cefingo_menu_model_set_font_list_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), c_font_list.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -14019,8 +14257,8 @@ func MenuModelCreate(
 ) (ret *CMenuModelT) {
 	var goTmpdelegate *C.cef_menu_model_delegate_t
 	if delegate != nil {
-		goTmpdelegate = delegate.p_menu_model_delegate
-		BaseAddRef(goTmpdelegate)
+		BaseAddRef(delegate.pc_menu_model_delegate)
+		goTmpdelegate = (*C.cef_menu_model_delegate_t)(delegate.pc_menu_model_delegate)
 	}
 
 	cRet := C.cef_menu_model_create(goTmpdelegate)
@@ -14037,10 +14275,12 @@ func MenuModelCreate(
 // indicated.
 ///
 
+type cCMenuModelDelegateT C.cef_menu_model_delegate_t
+
 // Go type for cef_menu_model_delegate_t
 type CMenuModelDelegateT struct {
-	noCopy                noCopy
-	p_menu_model_delegate *C.cef_menu_model_delegate_t
+	noCopy                 noCopy
+	pc_menu_model_delegate *cCMenuModelDelegateT
 }
 
 type RefToCMenuModelDelegateT struct {
@@ -14066,21 +14306,22 @@ func newCMenuModelDelegateT(p *C.cef_menu_model_delegate_t) *CMenuModelDelegateT
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T167.1:")
-	BaseAddRef(p)
-	go_menu_model_delegate := CMenuModelDelegateT{noCopy{}, p}
+	pc := (*cCMenuModelDelegateT)(p)
+	BaseAddRef(pc)
+	go_menu_model_delegate := CMenuModelDelegateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_menu_model_delegate, func(g *CMenuModelDelegateT) {
-		Tracef(unsafe.Pointer(g.p_menu_model_delegate), "T167.2:")
-		BaseRelease(g.p_menu_model_delegate)
+		Tracef(unsafe.Pointer(g.pc_menu_model_delegate), "T167.2:")
+		BaseRelease(g.pc_menu_model_delegate)
 	})
 	return &go_menu_model_delegate
 }
 
 // *C.cef_menu_model_delegate_t has refCounted interface
 func (menu_model_delegate *CMenuModelDelegateT) HasOneRef() bool {
-	return BaseHasOneRef(menu_model_delegate.p_menu_model_delegate)
+	return BaseHasOneRef(menu_model_delegate.pc_menu_model_delegate)
 }
 
-func (p *C.cef_menu_model_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCMenuModelDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -14166,29 +14407,30 @@ type FormatLabelHandler interface {
 }
 
 var menu_model_delegate_handlers = struct {
-	handler                         map[*C.cef_menu_model_delegate_t]interface{}
-	execute_command_handler         map[*C.cef_menu_model_delegate_t]ExecuteCommandHandler
-	mouse_outside_menu_handler      map[*C.cef_menu_model_delegate_t]MouseOutsideMenuHandler
-	unhandled_open_submenu_handler  map[*C.cef_menu_model_delegate_t]UnhandledOpenSubmenuHandler
-	unhandled_close_submenu_handler map[*C.cef_menu_model_delegate_t]UnhandledCloseSubmenuHandler
-	menu_will_show_handler          map[*C.cef_menu_model_delegate_t]MenuWillShowHandler
-	menu_closed_handler             map[*C.cef_menu_model_delegate_t]MenuClosedHandler
-	format_label_handler            map[*C.cef_menu_model_delegate_t]FormatLabelHandler
+	handler                         map[*cCMenuModelDelegateT]interface{}
+	execute_command_handler         map[*cCMenuModelDelegateT]ExecuteCommandHandler
+	mouse_outside_menu_handler      map[*cCMenuModelDelegateT]MouseOutsideMenuHandler
+	unhandled_open_submenu_handler  map[*cCMenuModelDelegateT]UnhandledOpenSubmenuHandler
+	unhandled_close_submenu_handler map[*cCMenuModelDelegateT]UnhandledCloseSubmenuHandler
+	menu_will_show_handler          map[*cCMenuModelDelegateT]MenuWillShowHandler
+	menu_closed_handler             map[*cCMenuModelDelegateT]MenuClosedHandler
+	format_label_handler            map[*cCMenuModelDelegateT]FormatLabelHandler
 }{
-	map[*C.cef_menu_model_delegate_t]interface{}{},
-	map[*C.cef_menu_model_delegate_t]ExecuteCommandHandler{},
-	map[*C.cef_menu_model_delegate_t]MouseOutsideMenuHandler{},
-	map[*C.cef_menu_model_delegate_t]UnhandledOpenSubmenuHandler{},
-	map[*C.cef_menu_model_delegate_t]UnhandledCloseSubmenuHandler{},
-	map[*C.cef_menu_model_delegate_t]MenuWillShowHandler{},
-	map[*C.cef_menu_model_delegate_t]MenuClosedHandler{},
-	map[*C.cef_menu_model_delegate_t]FormatLabelHandler{},
+	map[*cCMenuModelDelegateT]interface{}{},
+	map[*cCMenuModelDelegateT]ExecuteCommandHandler{},
+	map[*cCMenuModelDelegateT]MouseOutsideMenuHandler{},
+	map[*cCMenuModelDelegateT]UnhandledOpenSubmenuHandler{},
+	map[*cCMenuModelDelegateT]UnhandledCloseSubmenuHandler{},
+	map[*cCMenuModelDelegateT]MenuWillShowHandler{},
+	map[*cCMenuModelDelegateT]MenuClosedHandler{},
+	map[*cCMenuModelDelegateT]FormatLabelHandler{},
 }
 
 // AllocCMenuModelDelegateT allocates CMenuModelDelegateT and construct it
 func AllocCMenuModelDelegateT() *CMenuModelDelegateT {
 	up := c_calloc(1, C.sizeof_cefingo_menu_model_delegate_wrapper_t, "T167.3:")
 	cefp := C.cefingo_construct_menu_model_delegate((*C.cefingo_menu_model_delegate_wrapper_t)(up))
+	cgop := (*cCMenuModelDelegateT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_menu_model_delegate_t itself in DeassocFunc,
@@ -14197,14 +14439,14 @@ func AllocCMenuModelDelegateT() *CMenuModelDelegateT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(menu_model_delegate_handlers.handler, cefp)
-		delete(menu_model_delegate_handlers.execute_command_handler, cefp)
-		delete(menu_model_delegate_handlers.mouse_outside_menu_handler, cefp)
-		delete(menu_model_delegate_handlers.unhandled_open_submenu_handler, cefp)
-		delete(menu_model_delegate_handlers.unhandled_close_submenu_handler, cefp)
-		delete(menu_model_delegate_handlers.menu_will_show_handler, cefp)
-		delete(menu_model_delegate_handlers.menu_closed_handler, cefp)
-		delete(menu_model_delegate_handlers.format_label_handler, cefp)
+		delete(menu_model_delegate_handlers.handler, cgop)
+		delete(menu_model_delegate_handlers.execute_command_handler, cgop)
+		delete(menu_model_delegate_handlers.mouse_outside_menu_handler, cgop)
+		delete(menu_model_delegate_handlers.unhandled_open_submenu_handler, cgop)
+		delete(menu_model_delegate_handlers.unhandled_close_submenu_handler, cgop)
+		delete(menu_model_delegate_handlers.menu_will_show_handler, cgop)
+		delete(menu_model_delegate_handlers.menu_closed_handler, cgop)
+		delete(menu_model_delegate_handlers.format_label_handler, cgop)
 	}))
 
 	return newCMenuModelDelegateT(cefp)
@@ -14214,7 +14456,7 @@ func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelD
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := menu_model_delegate.p_menu_model_delegate
+	cp := menu_model_delegate.pc_menu_model_delegate
 	menu_model_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(ExecuteCommandHandler); ok {
@@ -14255,7 +14497,7 @@ func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelD
 
 func (menu_model_delegate *CMenuModelDelegateT) UnbindAll() {
 
-	cp := menu_model_delegate.p_menu_model_delegate
+	cp := menu_model_delegate.pc_menu_model_delegate
 	delete(menu_model_delegate_handlers.handler, cp)
 
 	delete(menu_model_delegate_handlers.execute_command_handler, cp)
@@ -14272,7 +14514,7 @@ func (menu_model_delegate *CMenuModelDelegateT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := menu_model_delegate.p_menu_model_delegate
+	cp := menu_model_delegate.pc_menu_model_delegate
 	return menu_model_delegate_handlers.handler[cp]
 }
 
@@ -14282,10 +14524,12 @@ func (menu_model_delegate *CMenuModelDelegateT) Handler() interface{} {
 // Structure used to represent an entry in navigation history.
 ///
 
+type cCNavigationEntryT C.cef_navigation_entry_t
+
 // Go type for cef_navigation_entry_t
 type CNavigationEntryT struct {
-	noCopy             noCopy
-	p_navigation_entry *C.cef_navigation_entry_t
+	noCopy              noCopy
+	pc_navigation_entry *cCNavigationEntryT
 }
 
 type RefToCNavigationEntryT struct {
@@ -14311,21 +14555,22 @@ func newCNavigationEntryT(p *C.cef_navigation_entry_t) *CNavigationEntryT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T168.1:")
-	BaseAddRef(p)
-	go_navigation_entry := CNavigationEntryT{noCopy{}, p}
+	pc := (*cCNavigationEntryT)(p)
+	BaseAddRef(pc)
+	go_navigation_entry := CNavigationEntryT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_navigation_entry, func(g *CNavigationEntryT) {
-		Tracef(unsafe.Pointer(g.p_navigation_entry), "T168.2:")
-		BaseRelease(g.p_navigation_entry)
+		Tracef(unsafe.Pointer(g.pc_navigation_entry), "T168.2:")
+		BaseRelease(g.pc_navigation_entry)
 	})
 	return &go_navigation_entry
 }
 
 // *C.cef_navigation_entry_t has refCounted interface
 func (navigation_entry *CNavigationEntryT) HasOneRef() bool {
-	return BaseHasOneRef(navigation_entry.p_navigation_entry)
+	return BaseHasOneRef(navigation_entry.pc_navigation_entry)
 }
 
-func (p *C.cef_navigation_entry_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCNavigationEntryT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -14335,7 +14580,7 @@ func (p *C.cef_navigation_entry_t) cast_to_p_base_ref_counted_t() *C.cef_base_re
 ///
 func (self *CNavigationEntryT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_navigation_entry_is_valid(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_is_valid((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	ret = cRet == 1
 	return ret
@@ -14348,7 +14593,7 @@ func (self *CNavigationEntryT) IsValid() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetUrl() (ret string) {
 
-	cRet := C.cefingo_navigation_entry_get_url(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_get_url((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -14364,7 +14609,7 @@ func (self *CNavigationEntryT) GetUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetDisplayUrl() (ret string) {
 
-	cRet := C.cefingo_navigation_entry_get_display_url(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_get_display_url((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -14380,7 +14625,7 @@ func (self *CNavigationEntryT) GetDisplayUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetOriginalUrl() (ret string) {
 
-	cRet := C.cefingo_navigation_entry_get_original_url(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_get_original_url((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -14396,7 +14641,7 @@ func (self *CNavigationEntryT) GetOriginalUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetTitle() (ret string) {
 
-	cRet := C.cefingo_navigation_entry_get_title(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_get_title((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -14412,7 +14657,7 @@ func (self *CNavigationEntryT) GetTitle() (ret string) {
 ///
 func (self *CNavigationEntryT) GetTransitionType() (ret CTransitionTypeT) {
 
-	cRet := C.cefingo_navigation_entry_get_transition_type(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_get_transition_type((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	ret = CTransitionTypeT(cRet)
 	return ret
@@ -14423,7 +14668,7 @@ func (self *CNavigationEntryT) GetTransitionType() (ret CTransitionTypeT) {
 ///
 func (self *CNavigationEntryT) HasPostData() (ret bool) {
 
-	cRet := C.cefingo_navigation_entry_has_post_data(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_has_post_data((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	ret = cRet == 1
 	return ret
@@ -14436,7 +14681,7 @@ func (self *CNavigationEntryT) HasPostData() (ret bool) {
 ///
 func (self *CNavigationEntryT) GetCompletionTime() (ret CTimeT) {
 
-	cRet := C.cefingo_navigation_entry_get_completion_time(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_get_completion_time((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	ret = (CTimeT)(cRet)
 	return ret
@@ -14449,7 +14694,7 @@ func (self *CNavigationEntryT) GetCompletionTime() (ret CTimeT) {
 ///
 func (self *CNavigationEntryT) GetHttpStatusCode() (ret bool) {
 
-	cRet := C.cefingo_navigation_entry_get_http_status_code(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_get_http_status_code((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	ret = cRet == 1
 	return ret
@@ -14460,7 +14705,7 @@ func (self *CNavigationEntryT) GetHttpStatusCode() (ret bool) {
 ///
 func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 
-	cRet := C.cefingo_navigation_entry_get_sslstatus(self.p_navigation_entry)
+	cRet := C.cefingo_navigation_entry_get_sslstatus((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
 	ret = newCSslstatusT(cRet)
 	return ret
@@ -14560,10 +14805,12 @@ func ClearCrossOriginWhitelist() (ret bool) {
 // otherwise indicated.
 ///
 
+type cCPanelT C.cef_panel_t
+
 // Go type for cef_panel_t
 type CPanelT struct {
-	noCopy  noCopy
-	p_panel *C.cef_panel_t
+	noCopy   noCopy
+	pc_panel *cCPanelT
 }
 
 type RefToCPanelT struct {
@@ -14589,26 +14836,28 @@ func newCPanelT(p *C.cef_panel_t) *CPanelT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T169.1:")
-	BaseAddRef(p)
-	go_panel := CPanelT{noCopy{}, p}
+	pc := (*cCPanelT)(p)
+	BaseAddRef(pc)
+	go_panel := CPanelT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_panel, func(g *CPanelT) {
-		Tracef(unsafe.Pointer(g.p_panel), "T169.2:")
-		BaseRelease(g.p_panel)
+		Tracef(unsafe.Pointer(g.pc_panel), "T169.2:")
+		BaseRelease(g.pc_panel)
 	})
 	return &go_panel
 }
 
 // *C.cef_panel_t has refCounted interface
 func (panel *CPanelT) HasOneRef() bool {
-	return BaseHasOneRef(panel.p_panel)
+	return BaseHasOneRef(panel.pc_panel)
 }
 
-func (p *C.cef_panel_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPanelT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewT
 func (panel *CPanelT) ToCViewT() *CViewT {
-	p := (*C.cef_view_t)(unsafe.Pointer(panel.p_panel))
+	p := (*C.cef_view_t)(unsafe.Pointer(panel.pc_panel))
 	return newCViewT(p)
 }
 
@@ -14617,7 +14866,7 @@ func (panel *CPanelT) ToCViewT() *CViewT {
 ///
 func (self *CPanelT) AsWindow() (ret *CWindowT) {
 
-	cRet := C.cefingo_panel_as_window(self.p_panel)
+	cRet := C.cefingo_panel_as_window((*C.cef_panel_t)(self.pc_panel))
 
 	ret = newCWindowT(cRet)
 	return ret
@@ -14628,7 +14877,7 @@ func (self *CPanelT) AsWindow() (ret *CWindowT) {
 ///
 func (self *CPanelT) SetToFillLayout() (ret *CFillLayoutT) {
 
-	cRet := C.cefingo_panel_set_to_fill_layout(self.p_panel)
+	cRet := C.cefingo_panel_set_to_fill_layout((*C.cef_panel_t)(self.pc_panel))
 
 	ret = newCFillLayoutT(cRet)
 	return ret
@@ -14641,7 +14890,7 @@ func (self *CPanelT) SetToBoxLayout(
 	settings *CBoxLayoutSettingsT,
 ) (ret *CBoxLayoutT) {
 
-	cRet := C.cefingo_panel_set_to_box_layout(self.p_panel, (*C.cef_box_layout_settings_t)(settings))
+	cRet := C.cefingo_panel_set_to_box_layout((*C.cef_panel_t)(self.pc_panel), (*C.cef_box_layout_settings_t)(settings))
 
 	ret = newCBoxLayoutT(cRet)
 	return ret
@@ -14652,7 +14901,7 @@ func (self *CPanelT) SetToBoxLayout(
 ///
 func (self *CPanelT) GetLayout() (ret *CLayoutT) {
 
-	cRet := C.cefingo_panel_get_layout(self.p_panel)
+	cRet := C.cefingo_panel_get_layout((*C.cef_panel_t)(self.pc_panel))
 
 	ret = newCLayoutT(cRet)
 	return ret
@@ -14664,7 +14913,7 @@ func (self *CPanelT) GetLayout() (ret *CLayoutT) {
 ///
 func (self *CPanelT) Layout() {
 
-	C.cefingo_panel_layout(self.p_panel)
+	C.cefingo_panel_layout((*C.cef_panel_t)(self.pc_panel))
 
 }
 
@@ -14676,11 +14925,11 @@ func (self *CPanelT) AddChildView(
 ) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	C.cefingo_panel_add_child_view(self.p_panel, goTmpview)
+	C.cefingo_panel_add_child_view((*C.cef_panel_t)(self.pc_panel), goTmpview)
 
 }
 
@@ -14694,11 +14943,11 @@ func (self *CPanelT) AddChildViewAt(
 ) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	C.cefingo_panel_add_child_view_at(self.p_panel, goTmpview, (C.int)(index))
+	C.cefingo_panel_add_child_view_at((*C.cef_panel_t)(self.pc_panel), goTmpview, (C.int)(index))
 
 }
 
@@ -14712,11 +14961,11 @@ func (self *CPanelT) ReorderChildView(
 ) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	C.cefingo_panel_reorder_child_view(self.p_panel, goTmpview, (C.int)(index))
+	C.cefingo_panel_reorder_child_view((*C.cef_panel_t)(self.pc_panel), goTmpview, (C.int)(index))
 
 }
 
@@ -14728,11 +14977,11 @@ func (self *CPanelT) RemoveChildView(
 ) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	C.cefingo_panel_remove_child_view(self.p_panel, goTmpview)
+	C.cefingo_panel_remove_child_view((*C.cef_panel_t)(self.pc_panel), goTmpview)
 
 }
 
@@ -14742,7 +14991,7 @@ func (self *CPanelT) RemoveChildView(
 ///
 func (self *CPanelT) RemoveAllChildViews() {
 
-	C.cefingo_panel_remove_all_child_views(self.p_panel)
+	C.cefingo_panel_remove_all_child_views((*C.cef_panel_t)(self.pc_panel))
 
 }
 
@@ -14751,7 +15000,7 @@ func (self *CPanelT) RemoveAllChildViews() {
 ///
 func (self *CPanelT) GetChildViewCount() (ret int64) {
 
-	cRet := C.cefingo_panel_get_child_view_count(self.p_panel)
+	cRet := C.cefingo_panel_get_child_view_count((*C.cef_panel_t)(self.pc_panel))
 
 	ret = (int64)(cRet)
 	return ret
@@ -14764,7 +15013,7 @@ func (self *CPanelT) GetChildViewAt(
 	index int,
 ) (ret *CViewT) {
 
-	cRet := C.cefingo_panel_get_child_view_at(self.p_panel, (C.int)(index))
+	cRet := C.cefingo_panel_get_child_view_at((*C.cef_panel_t)(self.pc_panel), (C.int)(index))
 
 	ret = newCViewT(cRet)
 	return ret
@@ -14778,8 +15027,8 @@ func PanelCreate(
 ) (ret *CPanelT) {
 	var goTmpdelegate *C.cef_panel_delegate_t
 	if delegate != nil {
-		goTmpdelegate = delegate.p_panel_delegate
-		BaseAddRef(goTmpdelegate)
+		BaseAddRef(delegate.pc_panel_delegate)
+		goTmpdelegate = (*C.cef_panel_delegate_t)(delegate.pc_panel_delegate)
 	}
 
 	cRet := C.cef_panel_create(goTmpdelegate)
@@ -14796,10 +15045,12 @@ func PanelCreate(
 // indicated.
 ///
 
+type cCPanelDelegateT C.cef_panel_delegate_t
+
 // Go type for cef_panel_delegate_t
 type CPanelDelegateT struct {
-	noCopy           noCopy
-	p_panel_delegate *C.cef_panel_delegate_t
+	noCopy            noCopy
+	pc_panel_delegate *cCPanelDelegateT
 }
 
 type RefToCPanelDelegateT struct {
@@ -14825,55 +15076,58 @@ func newCPanelDelegateT(p *C.cef_panel_delegate_t) *CPanelDelegateT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T170.1:")
-	BaseAddRef(p)
-	go_panel_delegate := CPanelDelegateT{noCopy{}, p}
+	pc := (*cCPanelDelegateT)(p)
+	BaseAddRef(pc)
+	go_panel_delegate := CPanelDelegateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_panel_delegate, func(g *CPanelDelegateT) {
-		Tracef(unsafe.Pointer(g.p_panel_delegate), "T170.2:")
-		BaseRelease(g.p_panel_delegate)
+		Tracef(unsafe.Pointer(g.pc_panel_delegate), "T170.2:")
+		BaseRelease(g.pc_panel_delegate)
 	})
 	return &go_panel_delegate
 }
 
 // *C.cef_panel_delegate_t has refCounted interface
 func (panel_delegate *CPanelDelegateT) HasOneRef() bool {
-	return BaseHasOneRef(panel_delegate.p_panel_delegate)
+	return BaseHasOneRef(panel_delegate.pc_panel_delegate)
 }
 
-func (p *C.cef_panel_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPanelDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewDelegateT
 func (panel_delegate *CPanelDelegateT) ToCViewDelegateT() *CViewDelegateT {
-	p := (*C.cef_view_delegate_t)(unsafe.Pointer(panel_delegate.p_panel_delegate))
+	p := (*C.cef_view_delegate_t)(unsafe.Pointer(panel_delegate.pc_panel_delegate))
 	return newCViewDelegateT(p)
 }
 
 var panel_delegate_handlers = struct {
-	handler                        map[*C.cef_panel_delegate_t]interface{}
-	get_preferred_size_handler     map[*C.cef_panel_delegate_t]GetPreferredSizeHandler
-	get_minimum_size_handler       map[*C.cef_panel_delegate_t]GetMinimumSizeHandler
-	get_maximum_size_handler       map[*C.cef_panel_delegate_t]GetMaximumSizeHandler
-	get_height_for_width_handler   map[*C.cef_panel_delegate_t]GetHeightForWidthHandler
-	on_parent_view_changed_handler map[*C.cef_panel_delegate_t]OnParentViewChangedHandler
-	on_child_view_changed_handler  map[*C.cef_panel_delegate_t]OnChildViewChangedHandler
-	on_focus_handler               map[*C.cef_panel_delegate_t]OnFocusHandler
-	on_blur_handler                map[*C.cef_panel_delegate_t]OnBlurHandler
+	handler                        map[*cCPanelDelegateT]interface{}
+	get_preferred_size_handler     map[*cCPanelDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler       map[*cCPanelDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler       map[*cCPanelDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler   map[*cCPanelDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler map[*cCPanelDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler  map[*cCPanelDelegateT]OnChildViewChangedHandler
+	on_focus_handler               map[*cCPanelDelegateT]OnFocusHandler
+	on_blur_handler                map[*cCPanelDelegateT]OnBlurHandler
 }{
-	map[*C.cef_panel_delegate_t]interface{}{},
-	map[*C.cef_panel_delegate_t]GetPreferredSizeHandler{},
-	map[*C.cef_panel_delegate_t]GetMinimumSizeHandler{},
-	map[*C.cef_panel_delegate_t]GetMaximumSizeHandler{},
-	map[*C.cef_panel_delegate_t]GetHeightForWidthHandler{},
-	map[*C.cef_panel_delegate_t]OnParentViewChangedHandler{},
-	map[*C.cef_panel_delegate_t]OnChildViewChangedHandler{},
-	map[*C.cef_panel_delegate_t]OnFocusHandler{},
-	map[*C.cef_panel_delegate_t]OnBlurHandler{},
+	map[*cCPanelDelegateT]interface{}{},
+	map[*cCPanelDelegateT]GetPreferredSizeHandler{},
+	map[*cCPanelDelegateT]GetMinimumSizeHandler{},
+	map[*cCPanelDelegateT]GetMaximumSizeHandler{},
+	map[*cCPanelDelegateT]GetHeightForWidthHandler{},
+	map[*cCPanelDelegateT]OnParentViewChangedHandler{},
+	map[*cCPanelDelegateT]OnChildViewChangedHandler{},
+	map[*cCPanelDelegateT]OnFocusHandler{},
+	map[*cCPanelDelegateT]OnBlurHandler{},
 }
 
 // AllocCPanelDelegateT allocates CPanelDelegateT and construct it
 func AllocCPanelDelegateT() *CPanelDelegateT {
 	up := c_calloc(1, C.sizeof_cefingo_panel_delegate_wrapper_t, "T170.3:")
 	cefp := C.cefingo_construct_panel_delegate((*C.cefingo_panel_delegate_wrapper_t)(up))
+	cgop := (*cCPanelDelegateT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_panel_delegate_t itself in DeassocFunc,
@@ -14882,15 +15136,15 @@ func AllocCPanelDelegateT() *CPanelDelegateT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(panel_delegate_handlers.handler, cefp)
-		delete(panel_delegate_handlers.get_preferred_size_handler, cefp)
-		delete(panel_delegate_handlers.get_minimum_size_handler, cefp)
-		delete(panel_delegate_handlers.get_maximum_size_handler, cefp)
-		delete(panel_delegate_handlers.get_height_for_width_handler, cefp)
-		delete(panel_delegate_handlers.on_parent_view_changed_handler, cefp)
-		delete(panel_delegate_handlers.on_child_view_changed_handler, cefp)
-		delete(panel_delegate_handlers.on_focus_handler, cefp)
-		delete(panel_delegate_handlers.on_blur_handler, cefp)
+		delete(panel_delegate_handlers.handler, cgop)
+		delete(panel_delegate_handlers.get_preferred_size_handler, cgop)
+		delete(panel_delegate_handlers.get_minimum_size_handler, cgop)
+		delete(panel_delegate_handlers.get_maximum_size_handler, cgop)
+		delete(panel_delegate_handlers.get_height_for_width_handler, cgop)
+		delete(panel_delegate_handlers.on_parent_view_changed_handler, cgop)
+		delete(panel_delegate_handlers.on_child_view_changed_handler, cgop)
+		delete(panel_delegate_handlers.on_focus_handler, cgop)
+		delete(panel_delegate_handlers.on_blur_handler, cgop)
 	}))
 
 	return newCPanelDelegateT(cefp)
@@ -14900,7 +15154,7 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := panel_delegate.p_panel_delegate
+	cp := panel_delegate.pc_panel_delegate
 	panel_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
@@ -14945,7 +15199,7 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 
 func (panel_delegate *CPanelDelegateT) UnbindAll() {
 
-	cp := panel_delegate.p_panel_delegate
+	cp := panel_delegate.pc_panel_delegate
 	delete(panel_delegate_handlers.handler, cp)
 
 	delete(panel_delegate_handlers.get_preferred_size_handler, cp)
@@ -14963,7 +15217,7 @@ func (panel_delegate *CPanelDelegateT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := panel_delegate.p_panel_delegate
+	cp := panel_delegate.pc_panel_delegate
 	return panel_delegate_handlers.handler[cp]
 }
 
@@ -14973,10 +15227,12 @@ func (panel_delegate *CPanelDelegateT) Handler() interface{} {
 // Callback structure for asynchronous continuation of print dialog requests.
 ///
 
+type cCPrintDialogCallbackT C.cef_print_dialog_callback_t
+
 // Go type for cef_print_dialog_callback_t
 type CPrintDialogCallbackT struct {
-	noCopy                  noCopy
-	p_print_dialog_callback *C.cef_print_dialog_callback_t
+	noCopy                   noCopy
+	pc_print_dialog_callback *cCPrintDialogCallbackT
 }
 
 type RefToCPrintDialogCallbackT struct {
@@ -15002,21 +15258,22 @@ func newCPrintDialogCallbackT(p *C.cef_print_dialog_callback_t) *CPrintDialogCal
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T171.1:")
-	BaseAddRef(p)
-	go_print_dialog_callback := CPrintDialogCallbackT{noCopy{}, p}
+	pc := (*cCPrintDialogCallbackT)(p)
+	BaseAddRef(pc)
+	go_print_dialog_callback := CPrintDialogCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_print_dialog_callback, func(g *CPrintDialogCallbackT) {
-		Tracef(unsafe.Pointer(g.p_print_dialog_callback), "T171.2:")
-		BaseRelease(g.p_print_dialog_callback)
+		Tracef(unsafe.Pointer(g.pc_print_dialog_callback), "T171.2:")
+		BaseRelease(g.pc_print_dialog_callback)
 	})
 	return &go_print_dialog_callback
 }
 
 // *C.cef_print_dialog_callback_t has refCounted interface
 func (print_dialog_callback *CPrintDialogCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(print_dialog_callback.p_print_dialog_callback)
+	return BaseHasOneRef(print_dialog_callback.pc_print_dialog_callback)
 }
 
-func (p *C.cef_print_dialog_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPrintDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -15028,11 +15285,11 @@ func (self *CPrintDialogCallbackT) Cont(
 ) {
 	var goTmpsettings *C.cef_print_settings_t
 	if settings != nil {
-		goTmpsettings = settings.p_print_settings
-		BaseAddRef(goTmpsettings)
+		BaseAddRef(settings.pc_print_settings)
+		goTmpsettings = (*C.cef_print_settings_t)(settings.pc_print_settings)
 	}
 
-	C.cefingo_print_dialog_callback_cont(self.p_print_dialog_callback, goTmpsettings)
+	C.cefingo_print_dialog_callback_cont((*C.cef_print_dialog_callback_t)(self.pc_print_dialog_callback), goTmpsettings)
 
 }
 
@@ -15041,7 +15298,7 @@ func (self *CPrintDialogCallbackT) Cont(
 ///
 func (self *CPrintDialogCallbackT) Cancel() {
 
-	C.cefingo_print_dialog_callback_cancel(self.p_print_dialog_callback)
+	C.cefingo_print_dialog_callback_cancel((*C.cef_print_dialog_callback_t)(self.pc_print_dialog_callback))
 
 }
 
@@ -15049,10 +15306,12 @@ func (self *CPrintDialogCallbackT) Cancel() {
 // Callback structure for asynchronous continuation of print job requests.
 ///
 
+type cCPrintJobCallbackT C.cef_print_job_callback_t
+
 // Go type for cef_print_job_callback_t
 type CPrintJobCallbackT struct {
-	noCopy               noCopy
-	p_print_job_callback *C.cef_print_job_callback_t
+	noCopy                noCopy
+	pc_print_job_callback *cCPrintJobCallbackT
 }
 
 type RefToCPrintJobCallbackT struct {
@@ -15078,21 +15337,22 @@ func newCPrintJobCallbackT(p *C.cef_print_job_callback_t) *CPrintJobCallbackT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T172.1:")
-	BaseAddRef(p)
-	go_print_job_callback := CPrintJobCallbackT{noCopy{}, p}
+	pc := (*cCPrintJobCallbackT)(p)
+	BaseAddRef(pc)
+	go_print_job_callback := CPrintJobCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_print_job_callback, func(g *CPrintJobCallbackT) {
-		Tracef(unsafe.Pointer(g.p_print_job_callback), "T172.2:")
-		BaseRelease(g.p_print_job_callback)
+		Tracef(unsafe.Pointer(g.pc_print_job_callback), "T172.2:")
+		BaseRelease(g.pc_print_job_callback)
 	})
 	return &go_print_job_callback
 }
 
 // *C.cef_print_job_callback_t has refCounted interface
 func (print_job_callback *CPrintJobCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(print_job_callback.p_print_job_callback)
+	return BaseHasOneRef(print_job_callback.pc_print_job_callback)
 }
 
-func (p *C.cef_print_job_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPrintJobCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -15101,7 +15361,7 @@ func (p *C.cef_print_job_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_
 ///
 func (self *CPrintJobCallbackT) Cont() {
 
-	C.cefingo_print_job_callback_cont(self.p_print_job_callback)
+	C.cefingo_print_job_callback_cont((*C.cef_print_job_callback_t)(self.pc_print_job_callback))
 
 }
 
@@ -15111,10 +15371,12 @@ func (self *CPrintJobCallbackT) Cont() {
 // will be called on the browser process UI thread.
 ///
 
+type cCPrintHandlerT C.cef_print_handler_t
+
 // Go type for cef_print_handler_t
 type CPrintHandlerT struct {
-	noCopy          noCopy
-	p_print_handler *C.cef_print_handler_t
+	noCopy           noCopy
+	pc_print_handler *cCPrintHandlerT
 }
 
 type RefToCPrintHandlerT struct {
@@ -15140,21 +15402,22 @@ func newCPrintHandlerT(p *C.cef_print_handler_t) *CPrintHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T173.1:")
-	BaseAddRef(p)
-	go_print_handler := CPrintHandlerT{noCopy{}, p}
+	pc := (*cCPrintHandlerT)(p)
+	BaseAddRef(pc)
+	go_print_handler := CPrintHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_print_handler, func(g *CPrintHandlerT) {
-		Tracef(unsafe.Pointer(g.p_print_handler), "T173.2:")
-		BaseRelease(g.p_print_handler)
+		Tracef(unsafe.Pointer(g.pc_print_handler), "T173.2:")
+		BaseRelease(g.pc_print_handler)
 	})
 	return &go_print_handler
 }
 
 // *C.cef_print_handler_t has refCounted interface
 func (print_handler *CPrintHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(print_handler.p_print_handler)
+	return BaseHasOneRef(print_handler.pc_print_handler)
 }
 
-func (p *C.cef_print_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPrintHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -15236,27 +15499,28 @@ type GetPdfPaperSizeHandler interface {
 }
 
 var print_handler_handlers = struct {
-	handler                    map[*C.cef_print_handler_t]interface{}
-	on_print_start_handler     map[*C.cef_print_handler_t]OnPrintStartHandler
-	on_print_settings_handler  map[*C.cef_print_handler_t]OnPrintSettingsHandler
-	on_print_dialog_handler    map[*C.cef_print_handler_t]OnPrintDialogHandler
-	on_print_job_handler       map[*C.cef_print_handler_t]OnPrintJobHandler
-	on_print_reset_handler     map[*C.cef_print_handler_t]OnPrintResetHandler
-	get_pdf_paper_size_handler map[*C.cef_print_handler_t]GetPdfPaperSizeHandler
+	handler                    map[*cCPrintHandlerT]interface{}
+	on_print_start_handler     map[*cCPrintHandlerT]OnPrintStartHandler
+	on_print_settings_handler  map[*cCPrintHandlerT]OnPrintSettingsHandler
+	on_print_dialog_handler    map[*cCPrintHandlerT]OnPrintDialogHandler
+	on_print_job_handler       map[*cCPrintHandlerT]OnPrintJobHandler
+	on_print_reset_handler     map[*cCPrintHandlerT]OnPrintResetHandler
+	get_pdf_paper_size_handler map[*cCPrintHandlerT]GetPdfPaperSizeHandler
 }{
-	map[*C.cef_print_handler_t]interface{}{},
-	map[*C.cef_print_handler_t]OnPrintStartHandler{},
-	map[*C.cef_print_handler_t]OnPrintSettingsHandler{},
-	map[*C.cef_print_handler_t]OnPrintDialogHandler{},
-	map[*C.cef_print_handler_t]OnPrintJobHandler{},
-	map[*C.cef_print_handler_t]OnPrintResetHandler{},
-	map[*C.cef_print_handler_t]GetPdfPaperSizeHandler{},
+	map[*cCPrintHandlerT]interface{}{},
+	map[*cCPrintHandlerT]OnPrintStartHandler{},
+	map[*cCPrintHandlerT]OnPrintSettingsHandler{},
+	map[*cCPrintHandlerT]OnPrintDialogHandler{},
+	map[*cCPrintHandlerT]OnPrintJobHandler{},
+	map[*cCPrintHandlerT]OnPrintResetHandler{},
+	map[*cCPrintHandlerT]GetPdfPaperSizeHandler{},
 }
 
 // AllocCPrintHandlerT allocates CPrintHandlerT and construct it
 func AllocCPrintHandlerT() *CPrintHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_print_handler_wrapper_t, "T173.3:")
 	cefp := C.cefingo_construct_print_handler((*C.cefingo_print_handler_wrapper_t)(up))
+	cgop := (*cCPrintHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_print_handler_t itself in DeassocFunc,
@@ -15265,13 +15529,13 @@ func AllocCPrintHandlerT() *CPrintHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(print_handler_handlers.handler, cefp)
-		delete(print_handler_handlers.on_print_start_handler, cefp)
-		delete(print_handler_handlers.on_print_settings_handler, cefp)
-		delete(print_handler_handlers.on_print_dialog_handler, cefp)
-		delete(print_handler_handlers.on_print_job_handler, cefp)
-		delete(print_handler_handlers.on_print_reset_handler, cefp)
-		delete(print_handler_handlers.get_pdf_paper_size_handler, cefp)
+		delete(print_handler_handlers.handler, cgop)
+		delete(print_handler_handlers.on_print_start_handler, cgop)
+		delete(print_handler_handlers.on_print_settings_handler, cgop)
+		delete(print_handler_handlers.on_print_dialog_handler, cgop)
+		delete(print_handler_handlers.on_print_job_handler, cgop)
+		delete(print_handler_handlers.on_print_reset_handler, cgop)
+		delete(print_handler_handlers.get_pdf_paper_size_handler, cgop)
 	}))
 
 	return newCPrintHandlerT(cefp)
@@ -15281,7 +15545,7 @@ func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := print_handler.p_print_handler
+	cp := print_handler.pc_print_handler
 	print_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnPrintStartHandler); ok {
@@ -15318,7 +15582,7 @@ func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
 
 func (print_handler *CPrintHandlerT) UnbindAll() {
 
-	cp := print_handler.p_print_handler
+	cp := print_handler.pc_print_handler
 	delete(print_handler_handlers.handler, cp)
 
 	delete(print_handler_handlers.on_print_start_handler, cp)
@@ -15334,7 +15598,7 @@ func (print_handler *CPrintHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := print_handler.p_print_handler
+	cp := print_handler.pc_print_handler
 	return print_handler_handlers.handler[cp]
 }
 
@@ -15344,10 +15608,12 @@ func (print_handler *CPrintHandlerT) Handler() interface{} {
 // Structure representing print settings.
 ///
 
+type cCPrintSettingsT C.cef_print_settings_t
+
 // Go type for cef_print_settings_t
 type CPrintSettingsT struct {
-	noCopy           noCopy
-	p_print_settings *C.cef_print_settings_t
+	noCopy            noCopy
+	pc_print_settings *cCPrintSettingsT
 }
 
 type RefToCPrintSettingsT struct {
@@ -15373,21 +15639,22 @@ func newCPrintSettingsT(p *C.cef_print_settings_t) *CPrintSettingsT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T174.1:")
-	BaseAddRef(p)
-	go_print_settings := CPrintSettingsT{noCopy{}, p}
+	pc := (*cCPrintSettingsT)(p)
+	BaseAddRef(pc)
+	go_print_settings := CPrintSettingsT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_print_settings, func(g *CPrintSettingsT) {
-		Tracef(unsafe.Pointer(g.p_print_settings), "T174.2:")
-		BaseRelease(g.p_print_settings)
+		Tracef(unsafe.Pointer(g.pc_print_settings), "T174.2:")
+		BaseRelease(g.pc_print_settings)
 	})
 	return &go_print_settings
 }
 
 // *C.cef_print_settings_t has refCounted interface
 func (print_settings *CPrintSettingsT) HasOneRef() bool {
-	return BaseHasOneRef(print_settings.p_print_settings)
+	return BaseHasOneRef(print_settings.pc_print_settings)
 }
 
-func (p *C.cef_print_settings_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPrintSettingsT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -15397,7 +15664,7 @@ func (p *C.cef_print_settings_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_
 ///
 func (self *CPrintSettingsT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_print_settings_is_valid(self.p_print_settings)
+	cRet := C.cefingo_print_settings_is_valid((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = cRet == 1
 	return ret
@@ -15409,7 +15676,7 @@ func (self *CPrintSettingsT) IsValid() (ret bool) {
 ///
 func (self *CPrintSettingsT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_print_settings_is_read_only(self.p_print_settings)
+	cRet := C.cefingo_print_settings_is_read_only((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = cRet == 1
 	return ret
@@ -15422,7 +15689,7 @@ func (self *CPrintSettingsT) SetOrientation(
 	landscape int,
 ) {
 
-	C.cefingo_print_settings_set_orientation(self.p_print_settings, (C.int)(landscape))
+	C.cefingo_print_settings_set_orientation((*C.cef_print_settings_t)(self.pc_print_settings), (C.int)(landscape))
 
 }
 
@@ -15431,7 +15698,7 @@ func (self *CPrintSettingsT) SetOrientation(
 ///
 func (self *CPrintSettingsT) IsLandscape() (ret bool) {
 
-	cRet := C.cefingo_print_settings_is_landscape(self.p_print_settings)
+	cRet := C.cefingo_print_settings_is_landscape((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = cRet == 1
 	return ret
@@ -15448,7 +15715,7 @@ func (self *CPrintSettingsT) SetPrinterPrintableArea(
 	landscape_needs_flip int,
 ) {
 
-	C.cefingo_print_settings_set_printer_printable_area(self.p_print_settings, (*C.cef_size_t)(physical_size_device_units), (*C.cef_rect_t)(printable_area_device_units), (C.int)(landscape_needs_flip))
+	C.cefingo_print_settings_set_printer_printable_area((*C.cef_print_settings_t)(self.pc_print_settings), (*C.cef_size_t)(physical_size_device_units), (*C.cef_rect_t)(printable_area_device_units), (C.int)(landscape_needs_flip))
 
 }
 
@@ -15460,7 +15727,7 @@ func (self *CPrintSettingsT) SetDeviceName(
 ) {
 	c_name := create_cef_string(name)
 
-	C.cefingo_print_settings_set_device_name(self.p_print_settings, c_name.p_cef_string_t)
+	C.cefingo_print_settings_set_device_name((*C.cef_print_settings_t)(self.pc_print_settings), c_name.p_cef_string_t)
 
 }
 
@@ -15470,7 +15737,7 @@ func (self *CPrintSettingsT) SetDeviceName(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CPrintSettingsT) GetDeviceName() (ret string) {
 
-	cRet := C.cefingo_print_settings_get_device_name(self.p_print_settings)
+	cRet := C.cefingo_print_settings_get_device_name((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -15487,7 +15754,7 @@ func (self *CPrintSettingsT) SetDpi(
 	dpi int,
 ) {
 
-	C.cefingo_print_settings_set_dpi(self.p_print_settings, (C.int)(dpi))
+	C.cefingo_print_settings_set_dpi((*C.cef_print_settings_t)(self.pc_print_settings), (C.int)(dpi))
 
 }
 
@@ -15496,7 +15763,7 @@ func (self *CPrintSettingsT) SetDpi(
 ///
 func (self *CPrintSettingsT) GetDpi() (ret bool) {
 
-	cRet := C.cefingo_print_settings_get_dpi(self.p_print_settings)
+	cRet := C.cefingo_print_settings_get_dpi((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = cRet == 1
 	return ret
@@ -15510,7 +15777,7 @@ func (self *CPrintSettingsT) SetPageRanges(
 	ranges *CRangeT,
 ) {
 
-	C.cefingo_print_settings_set_page_ranges(self.p_print_settings, (C.size_t)(rangesCount), (*C.cef_range_t)(ranges))
+	C.cefingo_print_settings_set_page_ranges((*C.cef_print_settings_t)(self.pc_print_settings), (C.size_t)(rangesCount), (*C.cef_range_t)(ranges))
 
 }
 
@@ -15519,7 +15786,7 @@ func (self *CPrintSettingsT) SetPageRanges(
 ///
 func (self *CPrintSettingsT) GetPageRangesCount() (ret int64) {
 
-	cRet := C.cefingo_print_settings_get_page_ranges_count(self.p_print_settings)
+	cRet := C.cefingo_print_settings_get_page_ranges_count((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = (int64)(cRet)
 	return ret
@@ -15532,7 +15799,7 @@ func (self *CPrintSettingsT) SetSelectionOnly(
 	selection_only int,
 ) {
 
-	C.cefingo_print_settings_set_selection_only(self.p_print_settings, (C.int)(selection_only))
+	C.cefingo_print_settings_set_selection_only((*C.cef_print_settings_t)(self.pc_print_settings), (C.int)(selection_only))
 
 }
 
@@ -15541,7 +15808,7 @@ func (self *CPrintSettingsT) SetSelectionOnly(
 ///
 func (self *CPrintSettingsT) IsSelectionOnly() (ret bool) {
 
-	cRet := C.cefingo_print_settings_is_selection_only(self.p_print_settings)
+	cRet := C.cefingo_print_settings_is_selection_only((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = cRet == 1
 	return ret
@@ -15554,7 +15821,7 @@ func (self *CPrintSettingsT) SetCollate(
 	collate int,
 ) {
 
-	C.cefingo_print_settings_set_collate(self.p_print_settings, (C.int)(collate))
+	C.cefingo_print_settings_set_collate((*C.cef_print_settings_t)(self.pc_print_settings), (C.int)(collate))
 
 }
 
@@ -15563,7 +15830,7 @@ func (self *CPrintSettingsT) SetCollate(
 ///
 func (self *CPrintSettingsT) WillCollate() (ret bool) {
 
-	cRet := C.cefingo_print_settings_will_collate(self.p_print_settings)
+	cRet := C.cefingo_print_settings_will_collate((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = cRet == 1
 	return ret
@@ -15576,7 +15843,7 @@ func (self *CPrintSettingsT) SetColorModel(
 	model CColorModelT,
 ) {
 
-	C.cefingo_print_settings_set_color_model(self.p_print_settings, (C.cef_color_model_t)(model))
+	C.cefingo_print_settings_set_color_model((*C.cef_print_settings_t)(self.pc_print_settings), (C.cef_color_model_t)(model))
 
 }
 
@@ -15585,7 +15852,7 @@ func (self *CPrintSettingsT) SetColorModel(
 ///
 func (self *CPrintSettingsT) GetColorModel() (ret CColorModelT) {
 
-	cRet := C.cefingo_print_settings_get_color_model(self.p_print_settings)
+	cRet := C.cefingo_print_settings_get_color_model((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = CColorModelT(cRet)
 	return ret
@@ -15598,7 +15865,7 @@ func (self *CPrintSettingsT) SetCopies(
 	copies int,
 ) {
 
-	C.cefingo_print_settings_set_copies(self.p_print_settings, (C.int)(copies))
+	C.cefingo_print_settings_set_copies((*C.cef_print_settings_t)(self.pc_print_settings), (C.int)(copies))
 
 }
 
@@ -15607,7 +15874,7 @@ func (self *CPrintSettingsT) SetCopies(
 ///
 func (self *CPrintSettingsT) GetCopies() (ret bool) {
 
-	cRet := C.cefingo_print_settings_get_copies(self.p_print_settings)
+	cRet := C.cefingo_print_settings_get_copies((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = cRet == 1
 	return ret
@@ -15620,7 +15887,7 @@ func (self *CPrintSettingsT) SetDuplexMode(
 	mode CDuplexModeT,
 ) {
 
-	C.cefingo_print_settings_set_duplex_mode(self.p_print_settings, (C.cef_duplex_mode_t)(mode))
+	C.cefingo_print_settings_set_duplex_mode((*C.cef_print_settings_t)(self.pc_print_settings), (C.cef_duplex_mode_t)(mode))
 
 }
 
@@ -15629,7 +15896,7 @@ func (self *CPrintSettingsT) SetDuplexMode(
 ///
 func (self *CPrintSettingsT) GetDuplexMode() (ret CDuplexModeT) {
 
-	cRet := C.cefingo_print_settings_get_duplex_mode(self.p_print_settings)
+	cRet := C.cefingo_print_settings_get_duplex_mode((*C.cef_print_settings_t)(self.pc_print_settings))
 
 	ret = CDuplexModeT(cRet)
 	return ret
@@ -15652,10 +15919,12 @@ func PrintSettingsCreate() (ret *CPrintSettingsT) {
 // Structure representing a message. Can be used on any process and thread.
 ///
 
+type cCProcessMessageT C.cef_process_message_t
+
 // Go type for cef_process_message_t
 type CProcessMessageT struct {
-	noCopy            noCopy
-	p_process_message *C.cef_process_message_t
+	noCopy             noCopy
+	pc_process_message *cCProcessMessageT
 }
 
 type RefToCProcessMessageT struct {
@@ -15681,21 +15950,22 @@ func newCProcessMessageT(p *C.cef_process_message_t) *CProcessMessageT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T175.1:")
-	BaseAddRef(p)
-	go_process_message := CProcessMessageT{noCopy{}, p}
+	pc := (*cCProcessMessageT)(p)
+	BaseAddRef(pc)
+	go_process_message := CProcessMessageT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_process_message, func(g *CProcessMessageT) {
-		Tracef(unsafe.Pointer(g.p_process_message), "T175.2:")
-		BaseRelease(g.p_process_message)
+		Tracef(unsafe.Pointer(g.pc_process_message), "T175.2:")
+		BaseRelease(g.pc_process_message)
 	})
 	return &go_process_message
 }
 
 // *C.cef_process_message_t has refCounted interface
 func (process_message *CProcessMessageT) HasOneRef() bool {
-	return BaseHasOneRef(process_message.p_process_message)
+	return BaseHasOneRef(process_message.pc_process_message)
 }
 
-func (p *C.cef_process_message_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCProcessMessageT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -15705,7 +15975,7 @@ func (p *C.cef_process_message_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 ///
 func (self *CProcessMessageT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_process_message_is_valid(self.p_process_message)
+	cRet := C.cefingo_process_message_is_valid((*C.cef_process_message_t)(self.pc_process_message))
 
 	ret = cRet == 1
 	return ret
@@ -15717,7 +15987,7 @@ func (self *CProcessMessageT) IsValid() (ret bool) {
 ///
 func (self *CProcessMessageT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_process_message_is_read_only(self.p_process_message)
+	cRet := C.cefingo_process_message_is_read_only((*C.cef_process_message_t)(self.pc_process_message))
 
 	ret = cRet == 1
 	return ret
@@ -15728,7 +15998,7 @@ func (self *CProcessMessageT) IsReadOnly() (ret bool) {
 ///
 func (self *CProcessMessageT) Copy() (ret *CProcessMessageT) {
 
-	cRet := C.cefingo_process_message_copy(self.p_process_message)
+	cRet := C.cefingo_process_message_copy((*C.cef_process_message_t)(self.pc_process_message))
 
 	ret = newCProcessMessageT(cRet)
 	return ret
@@ -15740,7 +16010,7 @@ func (self *CProcessMessageT) Copy() (ret *CProcessMessageT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CProcessMessageT) GetName() (ret string) {
 
-	cRet := C.cefingo_process_message_get_name(self.p_process_message)
+	cRet := C.cefingo_process_message_get_name((*C.cef_process_message_t)(self.pc_process_message))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -15755,7 +16025,7 @@ func (self *CProcessMessageT) GetName() (ret string) {
 ///
 func (self *CProcessMessageT) GetArgumentList() (ret *CListValueT) {
 
-	cRet := C.cefingo_process_message_get_argument_list(self.p_process_message)
+	cRet := C.cefingo_process_message_get_argument_list((*C.cef_process_message_t)(self.pc_process_message))
 
 	ret = newCListValueT(cRet)
 	return ret
@@ -15781,10 +16051,12 @@ func ProcessMessageCreate(
 // Generic callback structure used for managing the lifespan of a registration.
 ///
 
+type cCRegistrationT C.cef_registration_t
+
 // Go type for cef_registration_t
 type CRegistrationT struct {
-	noCopy         noCopy
-	p_registration *C.cef_registration_t
+	noCopy          noCopy
+	pc_registration *cCRegistrationT
 }
 
 type RefToCRegistrationT struct {
@@ -15810,21 +16082,22 @@ func newCRegistrationT(p *C.cef_registration_t) *CRegistrationT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T176.1:")
-	BaseAddRef(p)
-	go_registration := CRegistrationT{noCopy{}, p}
+	pc := (*cCRegistrationT)(p)
+	BaseAddRef(pc)
+	go_registration := CRegistrationT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_registration, func(g *CRegistrationT) {
-		Tracef(unsafe.Pointer(g.p_registration), "T176.2:")
-		BaseRelease(g.p_registration)
+		Tracef(unsafe.Pointer(g.pc_registration), "T176.2:")
+		BaseRelease(g.pc_registration)
 	})
 	return &go_registration
 }
 
 // *C.cef_registration_t has refCounted interface
 func (registration *CRegistrationT) HasOneRef() bool {
-	return BaseHasOneRef(registration.p_registration)
+	return BaseHasOneRef(registration.pc_registration)
 }
 
-func (p *C.cef_registration_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRegistrationT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -15835,10 +16108,12 @@ func (p *C.cef_registration_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 // The functions of this structure will be called on the UI thread.
 ///
 
+type cCRenderHandlerT C.cef_render_handler_t
+
 // Go type for cef_render_handler_t
 type CRenderHandlerT struct {
-	noCopy           noCopy
-	p_render_handler *C.cef_render_handler_t
+	noCopy            noCopy
+	pc_render_handler *cCRenderHandlerT
 }
 
 type RefToCRenderHandlerT struct {
@@ -15864,21 +16139,22 @@ func newCRenderHandlerT(p *C.cef_render_handler_t) *CRenderHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T177.1:")
-	BaseAddRef(p)
-	go_render_handler := CRenderHandlerT{noCopy{}, p}
+	pc := (*cCRenderHandlerT)(p)
+	BaseAddRef(pc)
+	go_render_handler := CRenderHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_render_handler, func(g *CRenderHandlerT) {
-		Tracef(unsafe.Pointer(g.p_render_handler), "T177.2:")
-		BaseRelease(g.p_render_handler)
+		Tracef(unsafe.Pointer(g.pc_render_handler), "T177.2:")
+		BaseRelease(g.pc_render_handler)
 	})
 	return &go_render_handler
 }
 
 // *C.cef_render_handler_t has refCounted interface
 func (render_handler *CRenderHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(render_handler.p_render_handler)
+	return BaseHasOneRef(render_handler.pc_render_handler)
 }
 
-func (p *C.cef_render_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRenderHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -16120,47 +16396,48 @@ type OnVirtualKeyboardRequestedHandler interface {
 }
 
 var render_handler_handlers = struct {
-	handler                                  map[*C.cef_render_handler_t]interface{}
-	get_accessibility_handler_handler        map[*C.cef_render_handler_t]GetAccessibilityHandlerHandler
-	get_root_screen_rect_handler             map[*C.cef_render_handler_t]GetRootScreenRectHandler
-	get_view_rect_handler                    map[*C.cef_render_handler_t]GetViewRectHandler
-	get_screen_point_handler                 map[*C.cef_render_handler_t]GetScreenPointHandler
-	get_screen_info_handler                  map[*C.cef_render_handler_t]GetScreenInfoHandler
-	on_popup_show_handler                    map[*C.cef_render_handler_t]OnPopupShowHandler
-	on_popup_size_handler                    map[*C.cef_render_handler_t]OnPopupSizeHandler
-	on_paint_handler                         map[*C.cef_render_handler_t]OnPaintHandler
-	on_accelerated_paint_handler             map[*C.cef_render_handler_t]OnAcceleratedPaintHandler
-	on_cursor_change_handler                 map[*C.cef_render_handler_t]OnCursorChangeHandler
-	start_dragging_handler                   map[*C.cef_render_handler_t]StartDraggingHandler
-	update_drag_cursor_handler               map[*C.cef_render_handler_t]UpdateDragCursorHandler
-	on_scroll_offset_changed_handler         map[*C.cef_render_handler_t]OnScrollOffsetChangedHandler
-	on_ime_composition_range_changed_handler map[*C.cef_render_handler_t]OnImeCompositionRangeChangedHandler
-	on_text_selection_changed_handler        map[*C.cef_render_handler_t]OnTextSelectionChangedHandler
-	on_virtual_keyboard_requested_handler    map[*C.cef_render_handler_t]OnVirtualKeyboardRequestedHandler
+	handler                                  map[*cCRenderHandlerT]interface{}
+	get_accessibility_handler_handler        map[*cCRenderHandlerT]GetAccessibilityHandlerHandler
+	get_root_screen_rect_handler             map[*cCRenderHandlerT]GetRootScreenRectHandler
+	get_view_rect_handler                    map[*cCRenderHandlerT]GetViewRectHandler
+	get_screen_point_handler                 map[*cCRenderHandlerT]GetScreenPointHandler
+	get_screen_info_handler                  map[*cCRenderHandlerT]GetScreenInfoHandler
+	on_popup_show_handler                    map[*cCRenderHandlerT]OnPopupShowHandler
+	on_popup_size_handler                    map[*cCRenderHandlerT]OnPopupSizeHandler
+	on_paint_handler                         map[*cCRenderHandlerT]OnPaintHandler
+	on_accelerated_paint_handler             map[*cCRenderHandlerT]OnAcceleratedPaintHandler
+	on_cursor_change_handler                 map[*cCRenderHandlerT]OnCursorChangeHandler
+	start_dragging_handler                   map[*cCRenderHandlerT]StartDraggingHandler
+	update_drag_cursor_handler               map[*cCRenderHandlerT]UpdateDragCursorHandler
+	on_scroll_offset_changed_handler         map[*cCRenderHandlerT]OnScrollOffsetChangedHandler
+	on_ime_composition_range_changed_handler map[*cCRenderHandlerT]OnImeCompositionRangeChangedHandler
+	on_text_selection_changed_handler        map[*cCRenderHandlerT]OnTextSelectionChangedHandler
+	on_virtual_keyboard_requested_handler    map[*cCRenderHandlerT]OnVirtualKeyboardRequestedHandler
 }{
-	map[*C.cef_render_handler_t]interface{}{},
-	map[*C.cef_render_handler_t]GetAccessibilityHandlerHandler{},
-	map[*C.cef_render_handler_t]GetRootScreenRectHandler{},
-	map[*C.cef_render_handler_t]GetViewRectHandler{},
-	map[*C.cef_render_handler_t]GetScreenPointHandler{},
-	map[*C.cef_render_handler_t]GetScreenInfoHandler{},
-	map[*C.cef_render_handler_t]OnPopupShowHandler{},
-	map[*C.cef_render_handler_t]OnPopupSizeHandler{},
-	map[*C.cef_render_handler_t]OnPaintHandler{},
-	map[*C.cef_render_handler_t]OnAcceleratedPaintHandler{},
-	map[*C.cef_render_handler_t]OnCursorChangeHandler{},
-	map[*C.cef_render_handler_t]StartDraggingHandler{},
-	map[*C.cef_render_handler_t]UpdateDragCursorHandler{},
-	map[*C.cef_render_handler_t]OnScrollOffsetChangedHandler{},
-	map[*C.cef_render_handler_t]OnImeCompositionRangeChangedHandler{},
-	map[*C.cef_render_handler_t]OnTextSelectionChangedHandler{},
-	map[*C.cef_render_handler_t]OnVirtualKeyboardRequestedHandler{},
+	map[*cCRenderHandlerT]interface{}{},
+	map[*cCRenderHandlerT]GetAccessibilityHandlerHandler{},
+	map[*cCRenderHandlerT]GetRootScreenRectHandler{},
+	map[*cCRenderHandlerT]GetViewRectHandler{},
+	map[*cCRenderHandlerT]GetScreenPointHandler{},
+	map[*cCRenderHandlerT]GetScreenInfoHandler{},
+	map[*cCRenderHandlerT]OnPopupShowHandler{},
+	map[*cCRenderHandlerT]OnPopupSizeHandler{},
+	map[*cCRenderHandlerT]OnPaintHandler{},
+	map[*cCRenderHandlerT]OnAcceleratedPaintHandler{},
+	map[*cCRenderHandlerT]OnCursorChangeHandler{},
+	map[*cCRenderHandlerT]StartDraggingHandler{},
+	map[*cCRenderHandlerT]UpdateDragCursorHandler{},
+	map[*cCRenderHandlerT]OnScrollOffsetChangedHandler{},
+	map[*cCRenderHandlerT]OnImeCompositionRangeChangedHandler{},
+	map[*cCRenderHandlerT]OnTextSelectionChangedHandler{},
+	map[*cCRenderHandlerT]OnVirtualKeyboardRequestedHandler{},
 }
 
 // AllocCRenderHandlerT allocates CRenderHandlerT and construct it
 func AllocCRenderHandlerT() *CRenderHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_render_handler_wrapper_t, "T177.3:")
 	cefp := C.cefingo_construct_render_handler((*C.cefingo_render_handler_wrapper_t)(up))
+	cgop := (*cCRenderHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_render_handler_t itself in DeassocFunc,
@@ -16169,23 +16446,23 @@ func AllocCRenderHandlerT() *CRenderHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(render_handler_handlers.handler, cefp)
-		delete(render_handler_handlers.get_accessibility_handler_handler, cefp)
-		delete(render_handler_handlers.get_root_screen_rect_handler, cefp)
-		delete(render_handler_handlers.get_view_rect_handler, cefp)
-		delete(render_handler_handlers.get_screen_point_handler, cefp)
-		delete(render_handler_handlers.get_screen_info_handler, cefp)
-		delete(render_handler_handlers.on_popup_show_handler, cefp)
-		delete(render_handler_handlers.on_popup_size_handler, cefp)
-		delete(render_handler_handlers.on_paint_handler, cefp)
-		delete(render_handler_handlers.on_accelerated_paint_handler, cefp)
-		delete(render_handler_handlers.on_cursor_change_handler, cefp)
-		delete(render_handler_handlers.start_dragging_handler, cefp)
-		delete(render_handler_handlers.update_drag_cursor_handler, cefp)
-		delete(render_handler_handlers.on_scroll_offset_changed_handler, cefp)
-		delete(render_handler_handlers.on_ime_composition_range_changed_handler, cefp)
-		delete(render_handler_handlers.on_text_selection_changed_handler, cefp)
-		delete(render_handler_handlers.on_virtual_keyboard_requested_handler, cefp)
+		delete(render_handler_handlers.handler, cgop)
+		delete(render_handler_handlers.get_accessibility_handler_handler, cgop)
+		delete(render_handler_handlers.get_root_screen_rect_handler, cgop)
+		delete(render_handler_handlers.get_view_rect_handler, cgop)
+		delete(render_handler_handlers.get_screen_point_handler, cgop)
+		delete(render_handler_handlers.get_screen_info_handler, cgop)
+		delete(render_handler_handlers.on_popup_show_handler, cgop)
+		delete(render_handler_handlers.on_popup_size_handler, cgop)
+		delete(render_handler_handlers.on_paint_handler, cgop)
+		delete(render_handler_handlers.on_accelerated_paint_handler, cgop)
+		delete(render_handler_handlers.on_cursor_change_handler, cgop)
+		delete(render_handler_handlers.start_dragging_handler, cgop)
+		delete(render_handler_handlers.update_drag_cursor_handler, cgop)
+		delete(render_handler_handlers.on_scroll_offset_changed_handler, cgop)
+		delete(render_handler_handlers.on_ime_composition_range_changed_handler, cgop)
+		delete(render_handler_handlers.on_text_selection_changed_handler, cgop)
+		delete(render_handler_handlers.on_virtual_keyboard_requested_handler, cgop)
 	}))
 
 	return newCRenderHandlerT(cefp)
@@ -16195,7 +16472,7 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := render_handler.p_render_handler
+	cp := render_handler.pc_render_handler
 	render_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(GetAccessibilityHandlerHandler); ok {
@@ -16272,7 +16549,7 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 
 func (render_handler *CRenderHandlerT) UnbindAll() {
 
-	cp := render_handler.p_render_handler
+	cp := render_handler.pc_render_handler
 	delete(render_handler_handlers.handler, cp)
 
 	delete(render_handler_handlers.get_accessibility_handler_handler, cp)
@@ -16298,7 +16575,7 @@ func (render_handler *CRenderHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := render_handler.p_render_handler
+	cp := render_handler.pc_render_handler
 	return render_handler_handlers.handler[cp]
 }
 
@@ -16310,10 +16587,12 @@ func (render_handler *CRenderHandlerT) Handler() interface{} {
 // unless otherwise indicated.
 ///
 
+type cCRenderProcessHandlerT C.cef_render_process_handler_t
+
 // Go type for cef_render_process_handler_t
 type CRenderProcessHandlerT struct {
-	noCopy                   noCopy
-	p_render_process_handler *C.cef_render_process_handler_t
+	noCopy                    noCopy
+	pc_render_process_handler *cCRenderProcessHandlerT
 }
 
 type RefToCRenderProcessHandlerT struct {
@@ -16339,21 +16618,22 @@ func newCRenderProcessHandlerT(p *C.cef_render_process_handler_t) *CRenderProces
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T178.1:")
-	BaseAddRef(p)
-	go_render_process_handler := CRenderProcessHandlerT{noCopy{}, p}
+	pc := (*cCRenderProcessHandlerT)(p)
+	BaseAddRef(pc)
+	go_render_process_handler := CRenderProcessHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_render_process_handler, func(g *CRenderProcessHandlerT) {
-		Tracef(unsafe.Pointer(g.p_render_process_handler), "T178.2:")
-		BaseRelease(g.p_render_process_handler)
+		Tracef(unsafe.Pointer(g.pc_render_process_handler), "T178.2:")
+		BaseRelease(g.pc_render_process_handler)
 	})
 	return &go_render_process_handler
 }
 
 // *C.cef_render_process_handler_t has refCounted interface
 func (render_process_handler *CRenderProcessHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(render_process_handler.p_render_process_handler)
+	return BaseHasOneRef(render_process_handler.pc_render_process_handler)
 }
 
-func (p *C.cef_render_process_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRenderProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -16481,33 +16761,34 @@ type CRenderProcessHandlerTOnProcessMessageReceivedHandler interface {
 }
 
 var render_process_handler_handlers = struct {
-	handler                             map[*C.cef_render_process_handler_t]interface{}
-	on_web_kit_initialized_handler      map[*C.cef_render_process_handler_t]OnWebKitInitializedHandler
-	on_browser_created_handler          map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnBrowserCreatedHandler
-	on_browser_destroyed_handler        map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnBrowserDestroyedHandler
-	get_load_handler_handler            map[*C.cef_render_process_handler_t]CRenderProcessHandlerTGetLoadHandlerHandler
-	on_context_created_handler          map[*C.cef_render_process_handler_t]OnContextCreatedHandler
-	on_context_released_handler         map[*C.cef_render_process_handler_t]OnContextReleasedHandler
-	on_uncaught_exception_handler       map[*C.cef_render_process_handler_t]OnUncaughtExceptionHandler
-	on_focused_node_changed_handler     map[*C.cef_render_process_handler_t]OnFocusedNodeChangedHandler
-	on_process_message_received_handler map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnProcessMessageReceivedHandler
+	handler                             map[*cCRenderProcessHandlerT]interface{}
+	on_web_kit_initialized_handler      map[*cCRenderProcessHandlerT]OnWebKitInitializedHandler
+	on_browser_created_handler          map[*cCRenderProcessHandlerT]CRenderProcessHandlerTOnBrowserCreatedHandler
+	on_browser_destroyed_handler        map[*cCRenderProcessHandlerT]CRenderProcessHandlerTOnBrowserDestroyedHandler
+	get_load_handler_handler            map[*cCRenderProcessHandlerT]CRenderProcessHandlerTGetLoadHandlerHandler
+	on_context_created_handler          map[*cCRenderProcessHandlerT]OnContextCreatedHandler
+	on_context_released_handler         map[*cCRenderProcessHandlerT]OnContextReleasedHandler
+	on_uncaught_exception_handler       map[*cCRenderProcessHandlerT]OnUncaughtExceptionHandler
+	on_focused_node_changed_handler     map[*cCRenderProcessHandlerT]OnFocusedNodeChangedHandler
+	on_process_message_received_handler map[*cCRenderProcessHandlerT]CRenderProcessHandlerTOnProcessMessageReceivedHandler
 }{
-	map[*C.cef_render_process_handler_t]interface{}{},
-	map[*C.cef_render_process_handler_t]OnWebKitInitializedHandler{},
-	map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnBrowserCreatedHandler{},
-	map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnBrowserDestroyedHandler{},
-	map[*C.cef_render_process_handler_t]CRenderProcessHandlerTGetLoadHandlerHandler{},
-	map[*C.cef_render_process_handler_t]OnContextCreatedHandler{},
-	map[*C.cef_render_process_handler_t]OnContextReleasedHandler{},
-	map[*C.cef_render_process_handler_t]OnUncaughtExceptionHandler{},
-	map[*C.cef_render_process_handler_t]OnFocusedNodeChangedHandler{},
-	map[*C.cef_render_process_handler_t]CRenderProcessHandlerTOnProcessMessageReceivedHandler{},
+	map[*cCRenderProcessHandlerT]interface{}{},
+	map[*cCRenderProcessHandlerT]OnWebKitInitializedHandler{},
+	map[*cCRenderProcessHandlerT]CRenderProcessHandlerTOnBrowserCreatedHandler{},
+	map[*cCRenderProcessHandlerT]CRenderProcessHandlerTOnBrowserDestroyedHandler{},
+	map[*cCRenderProcessHandlerT]CRenderProcessHandlerTGetLoadHandlerHandler{},
+	map[*cCRenderProcessHandlerT]OnContextCreatedHandler{},
+	map[*cCRenderProcessHandlerT]OnContextReleasedHandler{},
+	map[*cCRenderProcessHandlerT]OnUncaughtExceptionHandler{},
+	map[*cCRenderProcessHandlerT]OnFocusedNodeChangedHandler{},
+	map[*cCRenderProcessHandlerT]CRenderProcessHandlerTOnProcessMessageReceivedHandler{},
 }
 
 // AllocCRenderProcessHandlerT allocates CRenderProcessHandlerT and construct it
 func AllocCRenderProcessHandlerT() *CRenderProcessHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_render_process_handler_wrapper_t, "T178.3:")
 	cefp := C.cefingo_construct_render_process_handler((*C.cefingo_render_process_handler_wrapper_t)(up))
+	cgop := (*cCRenderProcessHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_render_process_handler_t itself in DeassocFunc,
@@ -16516,16 +16797,16 @@ func AllocCRenderProcessHandlerT() *CRenderProcessHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(render_process_handler_handlers.handler, cefp)
-		delete(render_process_handler_handlers.on_web_kit_initialized_handler, cefp)
-		delete(render_process_handler_handlers.on_browser_created_handler, cefp)
-		delete(render_process_handler_handlers.on_browser_destroyed_handler, cefp)
-		delete(render_process_handler_handlers.get_load_handler_handler, cefp)
-		delete(render_process_handler_handlers.on_context_created_handler, cefp)
-		delete(render_process_handler_handlers.on_context_released_handler, cefp)
-		delete(render_process_handler_handlers.on_uncaught_exception_handler, cefp)
-		delete(render_process_handler_handlers.on_focused_node_changed_handler, cefp)
-		delete(render_process_handler_handlers.on_process_message_received_handler, cefp)
+		delete(render_process_handler_handlers.handler, cgop)
+		delete(render_process_handler_handlers.on_web_kit_initialized_handler, cgop)
+		delete(render_process_handler_handlers.on_browser_created_handler, cgop)
+		delete(render_process_handler_handlers.on_browser_destroyed_handler, cgop)
+		delete(render_process_handler_handlers.get_load_handler_handler, cgop)
+		delete(render_process_handler_handlers.on_context_created_handler, cgop)
+		delete(render_process_handler_handlers.on_context_released_handler, cgop)
+		delete(render_process_handler_handlers.on_uncaught_exception_handler, cgop)
+		delete(render_process_handler_handlers.on_focused_node_changed_handler, cgop)
+		delete(render_process_handler_handlers.on_process_message_received_handler, cgop)
 	}))
 
 	return newCRenderProcessHandlerT(cefp)
@@ -16535,7 +16816,7 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := render_process_handler.p_render_process_handler
+	cp := render_process_handler.pc_render_process_handler
 	render_process_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnWebKitInitializedHandler); ok {
@@ -16584,7 +16865,7 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 
 func (render_process_handler *CRenderProcessHandlerT) UnbindAll() {
 
-	cp := render_process_handler.p_render_process_handler
+	cp := render_process_handler.pc_render_process_handler
 	delete(render_process_handler_handlers.handler, cp)
 
 	delete(render_process_handler_handlers.on_web_kit_initialized_handler, cp)
@@ -16603,7 +16884,7 @@ func (render_process_handler *CRenderProcessHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := render_process_handler.p_render_process_handler
+	cp := render_process_handler.pc_render_process_handler
 	return render_process_handler_handlers.handler[cp]
 }
 
@@ -16613,10 +16894,12 @@ func (render_process_handler *CRenderProcessHandlerT) Handler() interface{} {
 // Callback structure used for asynchronous continuation of url requests.
 ///
 
+type cCRequestCallbackT C.cef_request_callback_t
+
 // Go type for cef_request_callback_t
 type CRequestCallbackT struct {
-	noCopy             noCopy
-	p_request_callback *C.cef_request_callback_t
+	noCopy              noCopy
+	pc_request_callback *cCRequestCallbackT
 }
 
 type RefToCRequestCallbackT struct {
@@ -16642,21 +16925,22 @@ func newCRequestCallbackT(p *C.cef_request_callback_t) *CRequestCallbackT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T179.1:")
-	BaseAddRef(p)
-	go_request_callback := CRequestCallbackT{noCopy{}, p}
+	pc := (*cCRequestCallbackT)(p)
+	BaseAddRef(pc)
+	go_request_callback := CRequestCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_request_callback, func(g *CRequestCallbackT) {
-		Tracef(unsafe.Pointer(g.p_request_callback), "T179.2:")
-		BaseRelease(g.p_request_callback)
+		Tracef(unsafe.Pointer(g.pc_request_callback), "T179.2:")
+		BaseRelease(g.pc_request_callback)
 	})
 	return &go_request_callback
 }
 
 // *C.cef_request_callback_t has refCounted interface
 func (request_callback *CRequestCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(request_callback.p_request_callback)
+	return BaseHasOneRef(request_callback.pc_request_callback)
 }
 
-func (p *C.cef_request_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRequestCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -16668,7 +16952,7 @@ func (self *CRequestCallbackT) Cont(
 	allow int,
 ) {
 
-	C.cefingo_request_callback_cont(self.p_request_callback, (C.int)(allow))
+	C.cefingo_request_callback_cont((*C.cef_request_callback_t)(self.pc_request_callback), (C.int)(allow))
 
 }
 
@@ -16677,7 +16961,7 @@ func (self *CRequestCallbackT) Cont(
 ///
 func (self *CRequestCallbackT) Cancel() {
 
-	C.cefingo_request_callback_cancel(self.p_request_callback)
+	C.cefingo_request_callback_cancel((*C.cef_request_callback_t)(self.pc_request_callback))
 
 }
 
@@ -16688,10 +16972,12 @@ func (self *CRequestCallbackT) Cancel() {
 // may be called on any thread.
 ///
 
+type cCRequestT C.cef_request_t
+
 // Go type for cef_request_t
 type CRequestT struct {
-	noCopy    noCopy
-	p_request *C.cef_request_t
+	noCopy     noCopy
+	pc_request *cCRequestT
 }
 
 type RefToCRequestT struct {
@@ -16717,21 +17003,22 @@ func newCRequestT(p *C.cef_request_t) *CRequestT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T180.1:")
-	BaseAddRef(p)
-	go_request := CRequestT{noCopy{}, p}
+	pc := (*cCRequestT)(p)
+	BaseAddRef(pc)
+	go_request := CRequestT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_request, func(g *CRequestT) {
-		Tracef(unsafe.Pointer(g.p_request), "T180.2:")
-		BaseRelease(g.p_request)
+		Tracef(unsafe.Pointer(g.pc_request), "T180.2:")
+		BaseRelease(g.pc_request)
 	})
 	return &go_request
 }
 
 // *C.cef_request_t has refCounted interface
 func (request *CRequestT) HasOneRef() bool {
-	return BaseHasOneRef(request.p_request)
+	return BaseHasOneRef(request.pc_request)
 }
 
-func (p *C.cef_request_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRequestT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -16740,7 +17027,7 @@ func (p *C.cef_request_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 ///
 func (self *CRequestT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_request_is_read_only(self.p_request)
+	cRet := C.cefingo_request_is_read_only((*C.cef_request_t)(self.pc_request))
 
 	ret = cRet == 1
 	return ret
@@ -16752,7 +17039,7 @@ func (self *CRequestT) IsReadOnly() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetUrl() (ret string) {
 
-	cRet := C.cefingo_request_get_url(self.p_request)
+	cRet := C.cefingo_request_get_url((*C.cef_request_t)(self.pc_request))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -16770,7 +17057,7 @@ func (self *CRequestT) SetUrl(
 ) {
 	c_url := create_cef_string(url)
 
-	C.cefingo_request_set_url(self.p_request, c_url.p_cef_string_t)
+	C.cefingo_request_set_url((*C.cef_request_t)(self.pc_request), c_url.p_cef_string_t)
 
 }
 
@@ -16781,7 +17068,7 @@ func (self *CRequestT) SetUrl(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetMethod() (ret string) {
 
-	cRet := C.cefingo_request_get_method(self.p_request)
+	cRet := C.cefingo_request_get_method((*C.cef_request_t)(self.pc_request))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -16799,7 +17086,7 @@ func (self *CRequestT) SetMethod(
 ) {
 	c_method := create_cef_string(method)
 
-	C.cefingo_request_set_method(self.p_request, c_method.p_cef_string_t)
+	C.cefingo_request_set_method((*C.cef_request_t)(self.pc_request), c_method.p_cef_string_t)
 
 }
 
@@ -16814,7 +17101,7 @@ func (self *CRequestT) SetReferrer(
 ) {
 	c_referrer_url := create_cef_string(referrer_url)
 
-	C.cefingo_request_set_referrer(self.p_request, c_referrer_url.p_cef_string_t, (C.cef_referrer_policy_t)(policy))
+	C.cefingo_request_set_referrer((*C.cef_request_t)(self.pc_request), c_referrer_url.p_cef_string_t, (C.cef_referrer_policy_t)(policy))
 
 }
 
@@ -16824,7 +17111,7 @@ func (self *CRequestT) SetReferrer(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetReferrerUrl() (ret string) {
 
-	cRet := C.cefingo_request_get_referrer_url(self.p_request)
+	cRet := C.cefingo_request_get_referrer_url((*C.cef_request_t)(self.pc_request))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -16839,7 +17126,7 @@ func (self *CRequestT) GetReferrerUrl() (ret string) {
 ///
 func (self *CRequestT) GetReferrerPolicy() (ret CReferrerPolicyT) {
 
-	cRet := C.cefingo_request_get_referrer_policy(self.p_request)
+	cRet := C.cefingo_request_get_referrer_policy((*C.cef_request_t)(self.pc_request))
 
 	ret = CReferrerPolicyT(cRet)
 	return ret
@@ -16850,7 +17137,7 @@ func (self *CRequestT) GetReferrerPolicy() (ret CReferrerPolicyT) {
 ///
 func (self *CRequestT) GetPostData() (ret *CPostDataT) {
 
-	cRet := C.cefingo_request_get_post_data(self.p_request)
+	cRet := C.cefingo_request_get_post_data((*C.cef_request_t)(self.pc_request))
 
 	ret = newCPostDataT(cRet)
 	return ret
@@ -16864,11 +17151,11 @@ func (self *CRequestT) SetPostData(
 ) {
 	var goTmppostData *C.cef_post_data_t
 	if postData != nil {
-		goTmppostData = postData.p_post_data
-		BaseAddRef(goTmppostData)
+		BaseAddRef(postData.pc_post_data)
+		goTmppostData = (*C.cef_post_data_t)(postData.pc_post_data)
 	}
 
-	C.cefingo_request_set_post_data(self.p_request, goTmppostData)
+	C.cefingo_request_set_post_data((*C.cef_request_t)(self.pc_request), goTmppostData)
 
 }
 
@@ -16879,7 +17166,7 @@ func (self *CRequestT) GetHeaderMap(
 	headerMap CStringMultimapT,
 ) {
 
-	C.cefingo_request_get_header_map(self.p_request, (C.cef_string_multimap_t)(headerMap))
+	C.cefingo_request_get_header_map((*C.cef_request_t)(self.pc_request), (C.cef_string_multimap_t)(headerMap))
 
 }
 
@@ -16891,7 +17178,7 @@ func (self *CRequestT) SetHeaderMap(
 	headerMap CStringMultimapT,
 ) {
 
-	C.cefingo_request_set_header_map(self.p_request, (C.cef_string_multimap_t)(headerMap))
+	C.cefingo_request_set_header_map((*C.cef_request_t)(self.pc_request), (C.cef_string_multimap_t)(headerMap))
 
 }
 
@@ -16906,7 +17193,7 @@ func (self *CRequestT) GetHeaderByName(
 ) (ret string) {
 	c_name := create_cef_string(name)
 
-	cRet := C.cefingo_request_get_header_by_name(self.p_request, c_name.p_cef_string_t)
+	cRet := C.cefingo_request_get_header_by_name((*C.cef_request_t)(self.pc_request), c_name.p_cef_string_t)
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -16930,7 +17217,7 @@ func (self *CRequestT) SetHeaderByName(
 	c_name := create_cef_string(name)
 	c_value := create_cef_string(value)
 
-	C.cefingo_request_set_header_by_name(self.p_request, c_name.p_cef_string_t, c_value.p_cef_string_t, (C.int)(overwrite))
+	C.cefingo_request_set_header_by_name((*C.cef_request_t)(self.pc_request), c_name.p_cef_string_t, c_value.p_cef_string_t, (C.int)(overwrite))
 
 }
 
@@ -16947,11 +17234,11 @@ func (self *CRequestT) Set(
 	c_method := create_cef_string(method)
 	var goTmppostData *C.cef_post_data_t
 	if postData != nil {
-		goTmppostData = postData.p_post_data
-		BaseAddRef(goTmppostData)
+		BaseAddRef(postData.pc_post_data)
+		goTmppostData = (*C.cef_post_data_t)(postData.pc_post_data)
 	}
 
-	C.cefingo_request_set(self.p_request, c_url.p_cef_string_t, c_method.p_cef_string_t, goTmppostData, (C.cef_string_multimap_t)(headerMap))
+	C.cefingo_request_set((*C.cef_request_t)(self.pc_request), c_url.p_cef_string_t, c_method.p_cef_string_t, goTmppostData, (C.cef_string_multimap_t)(headerMap))
 
 }
 
@@ -16961,7 +17248,7 @@ func (self *CRequestT) Set(
 ///
 func (self *CRequestT) GetFlags() (ret bool) {
 
-	cRet := C.cefingo_request_get_flags(self.p_request)
+	cRet := C.cefingo_request_get_flags((*C.cef_request_t)(self.pc_request))
 
 	ret = cRet == 1
 	return ret
@@ -16975,7 +17262,7 @@ func (self *CRequestT) SetFlags(
 	flags int,
 ) {
 
-	C.cefingo_request_set_flags(self.p_request, (C.int)(flags))
+	C.cefingo_request_set_flags((*C.cef_request_t)(self.pc_request), (C.int)(flags))
 
 }
 
@@ -16986,7 +17273,7 @@ func (self *CRequestT) SetFlags(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetFirstPartyForCookies() (ret string) {
 
-	cRet := C.cefingo_request_get_first_party_for_cookies(self.p_request)
+	cRet := C.cefingo_request_get_first_party_for_cookies((*C.cef_request_t)(self.pc_request))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -17005,7 +17292,7 @@ func (self *CRequestT) SetFirstPartyForCookies(
 ) {
 	c_url := create_cef_string(url)
 
-	C.cefingo_request_set_first_party_for_cookies(self.p_request, c_url.p_cef_string_t)
+	C.cefingo_request_set_first_party_for_cookies((*C.cef_request_t)(self.pc_request), c_url.p_cef_string_t)
 
 }
 
@@ -17015,7 +17302,7 @@ func (self *CRequestT) SetFirstPartyForCookies(
 ///
 func (self *CRequestT) GetResourceType() (ret CResourceTypeT) {
 
-	cRet := C.cefingo_request_get_resource_type(self.p_request)
+	cRet := C.cefingo_request_get_resource_type((*C.cef_request_t)(self.pc_request))
 
 	ret = CResourceTypeT(cRet)
 	return ret
@@ -17028,7 +17315,7 @@ func (self *CRequestT) GetResourceType() (ret CResourceTypeT) {
 ///
 func (self *CRequestT) GetTransitionType() (ret CTransitionTypeT) {
 
-	cRet := C.cefingo_request_get_transition_type(self.p_request)
+	cRet := C.cefingo_request_get_transition_type((*C.cef_request_t)(self.pc_request))
 
 	ret = CTransitionTypeT(cRet)
 	return ret
@@ -17041,7 +17328,7 @@ func (self *CRequestT) GetTransitionType() (ret CTransitionTypeT) {
 ///
 func (self *CRequestT) GetIdentifier() (ret uint64) {
 
-	cRet := C.cefingo_request_get_identifier(self.p_request)
+	cRet := C.cefingo_request_get_identifier((*C.cef_request_t)(self.pc_request))
 
 	ret = (uint64)(cRet)
 	return ret
@@ -17063,10 +17350,12 @@ func RequestCreate() (ret *CRequestT) {
 // this structure may be called on any thread.
 ///
 
+type cCPostDataT C.cef_post_data_t
+
 // Go type for cef_post_data_t
 type CPostDataT struct {
-	noCopy      noCopy
-	p_post_data *C.cef_post_data_t
+	noCopy       noCopy
+	pc_post_data *cCPostDataT
 }
 
 type RefToCPostDataT struct {
@@ -17092,21 +17381,22 @@ func newCPostDataT(p *C.cef_post_data_t) *CPostDataT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T181.1:")
-	BaseAddRef(p)
-	go_post_data := CPostDataT{noCopy{}, p}
+	pc := (*cCPostDataT)(p)
+	BaseAddRef(pc)
+	go_post_data := CPostDataT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_post_data, func(g *CPostDataT) {
-		Tracef(unsafe.Pointer(g.p_post_data), "T181.2:")
-		BaseRelease(g.p_post_data)
+		Tracef(unsafe.Pointer(g.pc_post_data), "T181.2:")
+		BaseRelease(g.pc_post_data)
 	})
 	return &go_post_data
 }
 
 // *C.cef_post_data_t has refCounted interface
 func (post_data *CPostDataT) HasOneRef() bool {
-	return BaseHasOneRef(post_data.p_post_data)
+	return BaseHasOneRef(post_data.pc_post_data)
 }
 
-func (p *C.cef_post_data_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPostDataT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -17115,7 +17405,7 @@ func (p *C.cef_post_data_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 ///
 func (self *CPostDataT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_post_data_is_read_only(self.p_post_data)
+	cRet := C.cefingo_post_data_is_read_only((*C.cef_post_data_t)(self.pc_post_data))
 
 	ret = cRet == 1
 	return ret
@@ -17129,7 +17419,7 @@ func (self *CPostDataT) IsReadOnly() (ret bool) {
 ///
 func (self *CPostDataT) HasExcludedElements() (ret bool) {
 
-	cRet := C.cefingo_post_data_has_excluded_elements(self.p_post_data)
+	cRet := C.cefingo_post_data_has_excluded_elements((*C.cef_post_data_t)(self.pc_post_data))
 
 	ret = cRet == 1
 	return ret
@@ -17140,7 +17430,7 @@ func (self *CPostDataT) HasExcludedElements() (ret bool) {
 ///
 func (self *CPostDataT) GetElementCount() (ret int64) {
 
-	cRet := C.cefingo_post_data_get_element_count(self.p_post_data)
+	cRet := C.cefingo_post_data_get_element_count((*C.cef_post_data_t)(self.pc_post_data))
 
 	ret = (int64)(cRet)
 	return ret
@@ -17155,11 +17445,11 @@ func (self *CPostDataT) RemoveElement(
 ) (ret bool) {
 	var goTmpelement *C.cef_post_data_element_t
 	if element != nil {
-		goTmpelement = element.p_post_data_element
-		BaseAddRef(goTmpelement)
+		BaseAddRef(element.pc_post_data_element)
+		goTmpelement = (*C.cef_post_data_element_t)(element.pc_post_data_element)
 	}
 
-	cRet := C.cefingo_post_data_remove_element(self.p_post_data, goTmpelement)
+	cRet := C.cefingo_post_data_remove_element((*C.cef_post_data_t)(self.pc_post_data), goTmpelement)
 
 	ret = cRet == 1
 	return ret
@@ -17173,11 +17463,11 @@ func (self *CPostDataT) AddElement(
 ) (ret bool) {
 	var goTmpelement *C.cef_post_data_element_t
 	if element != nil {
-		goTmpelement = element.p_post_data_element
-		BaseAddRef(goTmpelement)
+		BaseAddRef(element.pc_post_data_element)
+		goTmpelement = (*C.cef_post_data_element_t)(element.pc_post_data_element)
 	}
 
-	cRet := C.cefingo_post_data_add_element(self.p_post_data, goTmpelement)
+	cRet := C.cefingo_post_data_add_element((*C.cef_post_data_t)(self.pc_post_data), goTmpelement)
 
 	ret = cRet == 1
 	return ret
@@ -17188,7 +17478,7 @@ func (self *CPostDataT) AddElement(
 ///
 func (self *CPostDataT) RemoveElements() {
 
-	C.cefingo_post_data_remove_elements(self.p_post_data)
+	C.cefingo_post_data_remove_elements((*C.cef_post_data_t)(self.pc_post_data))
 
 }
 
@@ -17208,10 +17498,12 @@ func PostDataCreate() (ret *CPostDataT) {
 // functions of this structure may be called on any thread.
 ///
 
+type cCPostDataElementT C.cef_post_data_element_t
+
 // Go type for cef_post_data_element_t
 type CPostDataElementT struct {
-	noCopy              noCopy
-	p_post_data_element *C.cef_post_data_element_t
+	noCopy               noCopy
+	pc_post_data_element *cCPostDataElementT
 }
 
 type RefToCPostDataElementT struct {
@@ -17237,21 +17529,22 @@ func newCPostDataElementT(p *C.cef_post_data_element_t) *CPostDataElementT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T182.1:")
-	BaseAddRef(p)
-	go_post_data_element := CPostDataElementT{noCopy{}, p}
+	pc := (*cCPostDataElementT)(p)
+	BaseAddRef(pc)
+	go_post_data_element := CPostDataElementT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_post_data_element, func(g *CPostDataElementT) {
-		Tracef(unsafe.Pointer(g.p_post_data_element), "T182.2:")
-		BaseRelease(g.p_post_data_element)
+		Tracef(unsafe.Pointer(g.pc_post_data_element), "T182.2:")
+		BaseRelease(g.pc_post_data_element)
 	})
 	return &go_post_data_element
 }
 
 // *C.cef_post_data_element_t has refCounted interface
 func (post_data_element *CPostDataElementT) HasOneRef() bool {
-	return BaseHasOneRef(post_data_element.p_post_data_element)
+	return BaseHasOneRef(post_data_element.pc_post_data_element)
 }
 
-func (p *C.cef_post_data_element_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCPostDataElementT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -17260,7 +17553,7 @@ func (p *C.cef_post_data_element_t) cast_to_p_base_ref_counted_t() *C.cef_base_r
 ///
 func (self *CPostDataElementT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_post_data_element_is_read_only(self.p_post_data_element)
+	cRet := C.cefingo_post_data_element_is_read_only((*C.cef_post_data_element_t)(self.pc_post_data_element))
 
 	ret = cRet == 1
 	return ret
@@ -17271,7 +17564,7 @@ func (self *CPostDataElementT) IsReadOnly() (ret bool) {
 ///
 func (self *CPostDataElementT) SetToEmpty() {
 
-	C.cefingo_post_data_element_set_to_empty(self.p_post_data_element)
+	C.cefingo_post_data_element_set_to_empty((*C.cef_post_data_element_t)(self.pc_post_data_element))
 
 }
 
@@ -17283,7 +17576,7 @@ func (self *CPostDataElementT) SetToFile(
 ) {
 	c_fileName := create_cef_string(fileName)
 
-	C.cefingo_post_data_element_set_to_file(self.p_post_data_element, c_fileName.p_cef_string_t)
+	C.cefingo_post_data_element_set_to_file((*C.cef_post_data_element_t)(self.pc_post_data_element), c_fileName.p_cef_string_t)
 
 }
 
@@ -17298,7 +17591,7 @@ func (self *CPostDataElementT) SetToBytes(
 	tmpbytes := C.CBytes(bytes)
 	defer C.free(tmpbytes)
 
-	C.cefingo_post_data_element_set_to_bytes(self.p_post_data_element, (C.size_t)(size), tmpbytes)
+	C.cefingo_post_data_element_set_to_bytes((*C.cef_post_data_element_t)(self.pc_post_data_element), (C.size_t)(size), tmpbytes)
 
 }
 
@@ -17307,7 +17600,7 @@ func (self *CPostDataElementT) SetToBytes(
 ///
 func (self *CPostDataElementT) GetType() (ret CPostdataelementTypeT) {
 
-	cRet := C.cefingo_post_data_element_get_type(self.p_post_data_element)
+	cRet := C.cefingo_post_data_element_get_type((*C.cef_post_data_element_t)(self.pc_post_data_element))
 
 	ret = CPostdataelementTypeT(cRet)
 	return ret
@@ -17319,7 +17612,7 @@ func (self *CPostDataElementT) GetType() (ret CPostdataelementTypeT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CPostDataElementT) GetFile() (ret string) {
 
-	cRet := C.cefingo_post_data_element_get_file(self.p_post_data_element)
+	cRet := C.cefingo_post_data_element_get_file((*C.cef_post_data_element_t)(self.pc_post_data_element))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -17334,7 +17627,7 @@ func (self *CPostDataElementT) GetFile() (ret string) {
 ///
 func (self *CPostDataElementT) GetBytesCount() (ret int64) {
 
-	cRet := C.cefingo_post_data_element_get_bytes_count(self.p_post_data_element)
+	cRet := C.cefingo_post_data_element_get_bytes_count((*C.cef_post_data_element_t)(self.pc_post_data_element))
 
 	ret = (int64)(cRet)
 	return ret
@@ -17349,7 +17642,7 @@ func (self *CPostDataElementT) GetBytes(
 	bytes unsafe.Pointer,
 ) (ret int64) {
 
-	cRet := C.cefingo_post_data_element_get_bytes(self.p_post_data_element, (C.size_t)(size), bytes)
+	cRet := C.cefingo_post_data_element_get_bytes((*C.cef_post_data_element_t)(self.pc_post_data_element), (C.size_t)(size), bytes)
 
 	ret = (int64)(cRet)
 	return ret
@@ -17372,10 +17665,12 @@ func PostDataElementCreate() (ret *CPostDataElementT) {
 // Callback structure for cef_request_context_t::ResolveHost.
 ///
 
+type cCResolveCallbackT C.cef_resolve_callback_t
+
 // Go type for cef_resolve_callback_t
 type CResolveCallbackT struct {
-	noCopy             noCopy
-	p_resolve_callback *C.cef_resolve_callback_t
+	noCopy              noCopy
+	pc_resolve_callback *cCResolveCallbackT
 }
 
 type RefToCResolveCallbackT struct {
@@ -17401,21 +17696,22 @@ func newCResolveCallbackT(p *C.cef_resolve_callback_t) *CResolveCallbackT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T183.1:")
-	BaseAddRef(p)
-	go_resolve_callback := CResolveCallbackT{noCopy{}, p}
+	pc := (*cCResolveCallbackT)(p)
+	BaseAddRef(pc)
+	go_resolve_callback := CResolveCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_resolve_callback, func(g *CResolveCallbackT) {
-		Tracef(unsafe.Pointer(g.p_resolve_callback), "T183.2:")
-		BaseRelease(g.p_resolve_callback)
+		Tracef(unsafe.Pointer(g.pc_resolve_callback), "T183.2:")
+		BaseRelease(g.pc_resolve_callback)
 	})
 	return &go_resolve_callback
 }
 
 // *C.cef_resolve_callback_t has refCounted interface
 func (resolve_callback *CResolveCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(resolve_callback.p_resolve_callback)
+	return BaseHasOneRef(resolve_callback.pc_resolve_callback)
 }
 
-func (p *C.cef_resolve_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCResolveCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -17429,7 +17725,7 @@ func (self *CResolveCallbackT) OnResolveCompleted(
 	resolved_ips CStringListT,
 ) {
 
-	C.cefingo_resolve_callback_on_resolve_completed(self.p_resolve_callback, (C.cef_errorcode_t)(result), (C.cef_string_list_t)(resolved_ips))
+	C.cefingo_resolve_callback_on_resolve_completed((*C.cef_resolve_callback_t)(self.pc_resolve_callback), (C.cef_errorcode_t)(result), (C.cef_string_list_t)(resolved_ips))
 
 }
 
@@ -17450,10 +17746,12 @@ func (self *CResolveCallbackT) OnResolveCompleted(
 // function and all other request context objects will be ignored.
 ///
 
+type cCRequestContextT C.cef_request_context_t
+
 // Go type for cef_request_context_t
 type CRequestContextT struct {
-	noCopy            noCopy
-	p_request_context *C.cef_request_context_t
+	noCopy             noCopy
+	pc_request_context *cCRequestContextT
 }
 
 type RefToCRequestContextT struct {
@@ -17479,21 +17777,22 @@ func newCRequestContextT(p *C.cef_request_context_t) *CRequestContextT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T184.1:")
-	BaseAddRef(p)
-	go_request_context := CRequestContextT{noCopy{}, p}
+	pc := (*cCRequestContextT)(p)
+	BaseAddRef(pc)
+	go_request_context := CRequestContextT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_request_context, func(g *CRequestContextT) {
-		Tracef(unsafe.Pointer(g.p_request_context), "T184.2:")
-		BaseRelease(g.p_request_context)
+		Tracef(unsafe.Pointer(g.pc_request_context), "T184.2:")
+		BaseRelease(g.pc_request_context)
 	})
 	return &go_request_context
 }
 
 // *C.cef_request_context_t has refCounted interface
 func (request_context *CRequestContextT) HasOneRef() bool {
-	return BaseHasOneRef(request_context.p_request_context)
+	return BaseHasOneRef(request_context.pc_request_context)
 }
 
-func (p *C.cef_request_context_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRequestContextT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -17506,11 +17805,11 @@ func (self *CRequestContextT) IsSame(
 ) (ret bool) {
 	var goTmpother *C.cef_request_context_t
 	if other != nil {
-		goTmpother = other.p_request_context
-		BaseAddRef(goTmpother)
+		BaseAddRef(other.pc_request_context)
+		goTmpother = (*C.cef_request_context_t)(other.pc_request_context)
 	}
 
-	cRet := C.cefingo_request_context_is_same(self.p_request_context, goTmpother)
+	cRet := C.cefingo_request_context_is_same((*C.cef_request_context_t)(self.pc_request_context), goTmpother)
 
 	ret = cRet == 1
 	return ret
@@ -17525,11 +17824,11 @@ func (self *CRequestContextT) IsSharingWith(
 ) (ret bool) {
 	var goTmpother *C.cef_request_context_t
 	if other != nil {
-		goTmpother = other.p_request_context
-		BaseAddRef(goTmpother)
+		BaseAddRef(other.pc_request_context)
+		goTmpother = (*C.cef_request_context_t)(other.pc_request_context)
 	}
 
-	cRet := C.cefingo_request_context_is_sharing_with(self.p_request_context, goTmpother)
+	cRet := C.cefingo_request_context_is_sharing_with((*C.cef_request_context_t)(self.pc_request_context), goTmpother)
 
 	ret = cRet == 1
 	return ret
@@ -17542,7 +17841,7 @@ func (self *CRequestContextT) IsSharingWith(
 ///
 func (self *CRequestContextT) IsGlobal() (ret bool) {
 
-	cRet := C.cefingo_request_context_is_global(self.p_request_context)
+	cRet := C.cefingo_request_context_is_global((*C.cef_request_context_t)(self.pc_request_context))
 
 	ret = cRet == 1
 	return ret
@@ -17553,7 +17852,7 @@ func (self *CRequestContextT) IsGlobal() (ret bool) {
 ///
 func (self *CRequestContextT) GetHandler() (ret *CRequestContextHandlerT) {
 
-	cRet := C.cefingo_request_context_get_handler(self.p_request_context)
+	cRet := C.cefingo_request_context_get_handler((*C.cef_request_context_t)(self.pc_request_context))
 
 	ret = newCRequestContextHandlerT(cRet)
 	return ret
@@ -17566,7 +17865,7 @@ func (self *CRequestContextT) GetHandler() (ret *CRequestContextHandlerT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestContextT) GetCachePath() (ret string) {
 
-	cRet := C.cefingo_request_context_get_cache_path(self.p_request_context)
+	cRet := C.cefingo_request_context_get_cache_path((*C.cef_request_context_t)(self.pc_request_context))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -17586,11 +17885,11 @@ func (self *CRequestContextT) GetCookieManager(
 ) (ret *CCookieManagerT) {
 	var goTmpcallback *C.cef_completion_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_completion_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_completion_callback)
+		goTmpcallback = (*C.cef_completion_callback_t)(callback.pc_completion_callback)
 	}
 
-	cRet := C.cefingo_request_context_get_cookie_manager(self.p_request_context, goTmpcallback)
+	cRet := C.cefingo_request_context_get_cookie_manager((*C.cef_request_context_t)(self.pc_request_context), goTmpcallback)
 
 	ret = newCCookieManagerT(cRet)
 	return ret
@@ -17618,11 +17917,11 @@ func (self *CRequestContextT) RegisterSchemeHandlerFactory(
 	c_domain_name := create_cef_string(domain_name)
 	var goTmpfactory *C.cef_scheme_handler_factory_t
 	if factory != nil {
-		goTmpfactory = factory.p_scheme_handler_factory
-		BaseAddRef(goTmpfactory)
+		BaseAddRef(factory.pc_scheme_handler_factory)
+		goTmpfactory = (*C.cef_scheme_handler_factory_t)(factory.pc_scheme_handler_factory)
 	}
 
-	cRet := C.cefingo_request_context_register_scheme_handler_factory(self.p_request_context, c_scheme_name.p_cef_string_t, c_domain_name.p_cef_string_t, goTmpfactory)
+	cRet := C.cefingo_request_context_register_scheme_handler_factory((*C.cef_request_context_t)(self.pc_request_context), c_scheme_name.p_cef_string_t, c_domain_name.p_cef_string_t, goTmpfactory)
 
 	ret = cRet == 1
 	return ret
@@ -17634,7 +17933,7 @@ func (self *CRequestContextT) RegisterSchemeHandlerFactory(
 ///
 func (self *CRequestContextT) ClearSchemeHandlerFactories() (ret bool) {
 
-	cRet := C.cefingo_request_context_clear_scheme_handler_factories(self.p_request_context)
+	cRet := C.cefingo_request_context_clear_scheme_handler_factories((*C.cef_request_context_t)(self.pc_request_context))
 
 	ret = cRet == 1
 	return ret
@@ -17651,7 +17950,7 @@ func (self *CRequestContextT) PurgePluginListCache(
 	reload_pages int,
 ) {
 
-	C.cefingo_request_context_purge_plugin_list_cache(self.p_request_context, (C.int)(reload_pages))
+	C.cefingo_request_context_purge_plugin_list_cache((*C.cef_request_context_t)(self.pc_request_context), (C.int)(reload_pages))
 
 }
 
@@ -17664,7 +17963,7 @@ func (self *CRequestContextT) HasPreference(
 ) (ret bool) {
 	c_name := create_cef_string(name)
 
-	cRet := C.cefingo_request_context_has_preference(self.p_request_context, c_name.p_cef_string_t)
+	cRet := C.cefingo_request_context_has_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -17682,7 +17981,7 @@ func (self *CRequestContextT) GetPreference(
 ) (ret *CValueT) {
 	c_name := create_cef_string(name)
 
-	cRet := C.cefingo_request_context_get_preference(self.p_request_context, c_name.p_cef_string_t)
+	cRet := C.cefingo_request_context_get_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t)
 
 	ret = newCValueT(cRet)
 	return ret
@@ -17700,7 +17999,7 @@ func (self *CRequestContextT) GetAllPreferences(
 	include_defaults int,
 ) (ret *CDictionaryValueT) {
 
-	cRet := C.cefingo_request_context_get_all_preferences(self.p_request_context, (C.int)(include_defaults))
+	cRet := C.cefingo_request_context_get_all_preferences((*C.cef_request_context_t)(self.pc_request_context), (C.int)(include_defaults))
 
 	ret = newCDictionaryValueT(cRet)
 	return ret
@@ -17717,7 +18016,7 @@ func (self *CRequestContextT) CanSetPreference(
 ) (ret bool) {
 	c_name := create_cef_string(name)
 
-	cRet := C.cefingo_request_context_can_set_preference(self.p_request_context, c_name.p_cef_string_t)
+	cRet := C.cefingo_request_context_can_set_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -17737,12 +18036,12 @@ func (self *CRequestContextT) SetPreference(
 	c_name := create_cef_string(name)
 	var goTmpvalue *C.cef_value_t
 	if value != nil {
-		goTmpvalue = value.p_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_value)
+		goTmpvalue = (*C.cef_value_t)(value.pc_value)
 	}
 	tmpc_error := create_cef_string("")
 
-	cRet := C.cefingo_request_context_set_preference(self.p_request_context, c_name.p_cef_string_t, goTmpvalue, tmpc_error.p_cef_string_t)
+	cRet := C.cefingo_request_context_set_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t, goTmpvalue, tmpc_error.p_cef_string_t)
 
 	error = string_from_cef_string(tmpc_error.p_cef_string_t)
 
@@ -17763,11 +18062,11 @@ func (self *CRequestContextT) ClearCertificateExceptions(
 ) {
 	var goTmpcallback *C.cef_completion_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_completion_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_completion_callback)
+		goTmpcallback = (*C.cef_completion_callback_t)(callback.pc_completion_callback)
 	}
 
-	C.cefingo_request_context_clear_certificate_exceptions(self.p_request_context, goTmpcallback)
+	C.cefingo_request_context_clear_certificate_exceptions((*C.cef_request_context_t)(self.pc_request_context), goTmpcallback)
 
 }
 
@@ -17781,11 +18080,11 @@ func (self *CRequestContextT) ClearHttpAuthCredentials(
 ) {
 	var goTmpcallback *C.cef_completion_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_completion_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_completion_callback)
+		goTmpcallback = (*C.cef_completion_callback_t)(callback.pc_completion_callback)
 	}
 
-	C.cefingo_request_context_clear_http_auth_credentials(self.p_request_context, goTmpcallback)
+	C.cefingo_request_context_clear_http_auth_credentials((*C.cef_request_context_t)(self.pc_request_context), goTmpcallback)
 
 }
 
@@ -17800,11 +18099,11 @@ func (self *CRequestContextT) CloseAllConnections(
 ) {
 	var goTmpcallback *C.cef_completion_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_completion_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_completion_callback)
+		goTmpcallback = (*C.cef_completion_callback_t)(callback.pc_completion_callback)
 	}
 
-	C.cefingo_request_context_close_all_connections(self.p_request_context, goTmpcallback)
+	C.cefingo_request_context_close_all_connections((*C.cef_request_context_t)(self.pc_request_context), goTmpcallback)
 
 }
 
@@ -17819,11 +18118,11 @@ func (self *CRequestContextT) ResolveHost(
 	c_origin := create_cef_string(origin)
 	var goTmpcallback *C.cef_resolve_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_resolve_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_resolve_callback)
+		goTmpcallback = (*C.cef_resolve_callback_t)(callback.pc_resolve_callback)
 	}
 
-	C.cefingo_request_context_resolve_host(self.p_request_context, c_origin.p_cef_string_t, goTmpcallback)
+	C.cefingo_request_context_resolve_host((*C.cef_request_context_t)(self.pc_request_context), c_origin.p_cef_string_t, goTmpcallback)
 
 }
 
@@ -17883,16 +18182,16 @@ func (self *CRequestContextT) LoadExtension(
 	c_root_directory := create_cef_string(root_directory)
 	var goTmpmanifest *C.cef_dictionary_value_t
 	if manifest != nil {
-		goTmpmanifest = manifest.p_dictionary_value
-		BaseAddRef(goTmpmanifest)
+		BaseAddRef(manifest.pc_dictionary_value)
+		goTmpmanifest = (*C.cef_dictionary_value_t)(manifest.pc_dictionary_value)
 	}
 	var goTmphandler *C.cef_extension_handler_t
 	if handler != nil {
-		goTmphandler = handler.p_extension_handler
-		BaseAddRef(goTmphandler)
+		BaseAddRef(handler.pc_extension_handler)
+		goTmphandler = (*C.cef_extension_handler_t)(handler.pc_extension_handler)
 	}
 
-	C.cefingo_request_context_load_extension(self.p_request_context, c_root_directory.p_cef_string_t, goTmpmanifest, goTmphandler)
+	C.cefingo_request_context_load_extension((*C.cef_request_context_t)(self.pc_request_context), c_root_directory.p_cef_string_t, goTmpmanifest, goTmphandler)
 
 }
 
@@ -17907,7 +18206,7 @@ func (self *CRequestContextT) DidLoadExtension(
 ) (ret bool) {
 	c_extension_id := create_cef_string(extension_id)
 
-	cRet := C.cefingo_request_context_did_load_extension(self.p_request_context, c_extension_id.p_cef_string_t)
+	cRet := C.cefingo_request_context_did_load_extension((*C.cef_request_context_t)(self.pc_request_context), c_extension_id.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -17924,7 +18223,7 @@ func (self *CRequestContextT) HasExtension(
 ) (ret bool) {
 	c_extension_id := create_cef_string(extension_id)
 
-	cRet := C.cefingo_request_context_has_extension(self.p_request_context, c_extension_id.p_cef_string_t)
+	cRet := C.cefingo_request_context_has_extension((*C.cef_request_context_t)(self.pc_request_context), c_extension_id.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -17940,7 +18239,7 @@ func (self *CRequestContextT) GetExtensions(
 	extension_ids CStringListT,
 ) (ret bool) {
 
-	cRet := C.cefingo_request_context_get_extensions(self.p_request_context, (C.cef_string_list_t)(extension_ids))
+	cRet := C.cefingo_request_context_get_extensions((*C.cef_request_context_t)(self.pc_request_context), (C.cef_string_list_t)(extension_ids))
 
 	ret = cRet == 1
 	return ret
@@ -17956,7 +18255,7 @@ func (self *CRequestContextT) GetExtension(
 ) (ret *CExtensionT) {
 	c_extension_id := create_cef_string(extension_id)
 
-	cRet := C.cefingo_request_context_get_extension(self.p_request_context, c_extension_id.p_cef_string_t)
+	cRet := C.cefingo_request_context_get_extension((*C.cef_request_context_t)(self.pc_request_context), c_extension_id.p_cef_string_t)
 
 	ret = newCExtensionT(cRet)
 	return ret
@@ -17967,7 +18266,7 @@ func (self *CRequestContextT) GetExtension(
 ///
 func (self *CRequestContextT) GetMediaRouter() (ret *CMediaRouterT) {
 
-	cRet := C.cefingo_request_context_get_media_router(self.p_request_context)
+	cRet := C.cefingo_request_context_get_media_router((*C.cef_request_context_t)(self.pc_request_context))
 
 	ret = newCMediaRouterT(cRet)
 	return ret
@@ -17994,8 +18293,8 @@ func RequestContextCreateContext(
 ) (ret *CRequestContextT) {
 	var goTmphandler *C.cef_request_context_handler_t
 	if handler != nil {
-		goTmphandler = handler.p_request_context_handler
-		BaseAddRef(goTmphandler)
+		BaseAddRef(handler.pc_request_context_handler)
+		goTmphandler = (*C.cef_request_context_handler_t)(handler.pc_request_context_handler)
 	}
 
 	cRet := C.cef_request_context_create_context((*C.cef_request_context_settings_t)(settings), goTmphandler)
@@ -18014,13 +18313,13 @@ func CreateContextShared(
 ) (ret *CRequestContextT) {
 	var goTmpother *C.cef_request_context_t
 	if other != nil {
-		goTmpother = other.p_request_context
-		BaseAddRef(goTmpother)
+		BaseAddRef(other.pc_request_context)
+		goTmpother = (*C.cef_request_context_t)(other.pc_request_context)
 	}
 	var goTmphandler *C.cef_request_context_handler_t
 	if handler != nil {
-		goTmphandler = handler.p_request_context_handler
-		BaseAddRef(goTmphandler)
+		BaseAddRef(handler.pc_request_context_handler)
+		goTmphandler = (*C.cef_request_context_handler_t)(handler.pc_request_context_handler)
 	}
 
 	cRet := C.cef_create_context_shared(goTmpother, goTmphandler)
@@ -18037,10 +18336,12 @@ func CreateContextShared(
 // been destroyed.
 ///
 
+type cCRequestContextHandlerT C.cef_request_context_handler_t
+
 // Go type for cef_request_context_handler_t
 type CRequestContextHandlerT struct {
-	noCopy                    noCopy
-	p_request_context_handler *C.cef_request_context_handler_t
+	noCopy                     noCopy
+	pc_request_context_handler *cCRequestContextHandlerT
 }
 
 type RefToCRequestContextHandlerT struct {
@@ -18066,21 +18367,22 @@ func newCRequestContextHandlerT(p *C.cef_request_context_handler_t) *CRequestCon
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T185.1:")
-	BaseAddRef(p)
-	go_request_context_handler := CRequestContextHandlerT{noCopy{}, p}
+	pc := (*cCRequestContextHandlerT)(p)
+	BaseAddRef(pc)
+	go_request_context_handler := CRequestContextHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_request_context_handler, func(g *CRequestContextHandlerT) {
-		Tracef(unsafe.Pointer(g.p_request_context_handler), "T185.2:")
-		BaseRelease(g.p_request_context_handler)
+		Tracef(unsafe.Pointer(g.pc_request_context_handler), "T185.2:")
+		BaseRelease(g.pc_request_context_handler)
 	})
 	return &go_request_context_handler
 }
 
 // *C.cef_request_context_handler_t has refCounted interface
 func (request_context_handler *CRequestContextHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(request_context_handler.p_request_context_handler)
+	return BaseHasOneRef(request_context_handler.pc_request_context_handler)
 }
 
-func (p *C.cef_request_context_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRequestContextHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -18156,21 +18458,22 @@ type CRequestContextHandlerTGetResourceRequestHandlerHandler interface {
 }
 
 var request_context_handler_handlers = struct {
-	handler                                map[*C.cef_request_context_handler_t]interface{}
-	on_request_context_initialized_handler map[*C.cef_request_context_handler_t]OnRequestContextInitializedHandler
-	on_before_plugin_load_handler          map[*C.cef_request_context_handler_t]OnBeforePluginLoadHandler
-	get_resource_request_handler_handler   map[*C.cef_request_context_handler_t]CRequestContextHandlerTGetResourceRequestHandlerHandler
+	handler                                map[*cCRequestContextHandlerT]interface{}
+	on_request_context_initialized_handler map[*cCRequestContextHandlerT]OnRequestContextInitializedHandler
+	on_before_plugin_load_handler          map[*cCRequestContextHandlerT]OnBeforePluginLoadHandler
+	get_resource_request_handler_handler   map[*cCRequestContextHandlerT]CRequestContextHandlerTGetResourceRequestHandlerHandler
 }{
-	map[*C.cef_request_context_handler_t]interface{}{},
-	map[*C.cef_request_context_handler_t]OnRequestContextInitializedHandler{},
-	map[*C.cef_request_context_handler_t]OnBeforePluginLoadHandler{},
-	map[*C.cef_request_context_handler_t]CRequestContextHandlerTGetResourceRequestHandlerHandler{},
+	map[*cCRequestContextHandlerT]interface{}{},
+	map[*cCRequestContextHandlerT]OnRequestContextInitializedHandler{},
+	map[*cCRequestContextHandlerT]OnBeforePluginLoadHandler{},
+	map[*cCRequestContextHandlerT]CRequestContextHandlerTGetResourceRequestHandlerHandler{},
 }
 
 // AllocCRequestContextHandlerT allocates CRequestContextHandlerT and construct it
 func AllocCRequestContextHandlerT() *CRequestContextHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_request_context_handler_wrapper_t, "T185.3:")
 	cefp := C.cefingo_construct_request_context_handler((*C.cefingo_request_context_handler_wrapper_t)(up))
+	cgop := (*cCRequestContextHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_request_context_handler_t itself in DeassocFunc,
@@ -18179,10 +18482,10 @@ func AllocCRequestContextHandlerT() *CRequestContextHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(request_context_handler_handlers.handler, cefp)
-		delete(request_context_handler_handlers.on_request_context_initialized_handler, cefp)
-		delete(request_context_handler_handlers.on_before_plugin_load_handler, cefp)
-		delete(request_context_handler_handlers.get_resource_request_handler_handler, cefp)
+		delete(request_context_handler_handlers.handler, cgop)
+		delete(request_context_handler_handlers.on_request_context_initialized_handler, cgop)
+		delete(request_context_handler_handlers.on_before_plugin_load_handler, cgop)
+		delete(request_context_handler_handlers.get_resource_request_handler_handler, cgop)
 	}))
 
 	return newCRequestContextHandlerT(cefp)
@@ -18192,7 +18495,7 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := request_context_handler.p_request_context_handler
+	cp := request_context_handler.pc_request_context_handler
 	request_context_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnRequestContextInitializedHandler); ok {
@@ -18217,7 +18520,7 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 
 func (request_context_handler *CRequestContextHandlerT) UnbindAll() {
 
-	cp := request_context_handler.p_request_context_handler
+	cp := request_context_handler.pc_request_context_handler
 	delete(request_context_handler_handlers.handler, cp)
 
 	delete(request_context_handler_handlers.on_request_context_initialized_handler, cp)
@@ -18230,7 +18533,7 @@ func (request_context_handler *CRequestContextHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := request_context_handler.p_request_context_handler
+	cp := request_context_handler.pc_request_context_handler
 	return request_context_handler_handlers.handler[cp]
 }
 
@@ -18240,10 +18543,12 @@ func (request_context_handler *CRequestContextHandlerT) Handler() interface{} {
 // Callback structure used to select a client certificate for authentication.
 ///
 
+type cCSelectClientCertificateCallbackT C.cef_select_client_certificate_callback_t
+
 // Go type for cef_select_client_certificate_callback_t
 type CSelectClientCertificateCallbackT struct {
-	noCopy                               noCopy
-	p_select_client_certificate_callback *C.cef_select_client_certificate_callback_t
+	noCopy                                noCopy
+	pc_select_client_certificate_callback *cCSelectClientCertificateCallbackT
 }
 
 type RefToCSelectClientCertificateCallbackT struct {
@@ -18269,21 +18574,22 @@ func newCSelectClientCertificateCallbackT(p *C.cef_select_client_certificate_cal
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T186.1:")
-	BaseAddRef(p)
-	go_select_client_certificate_callback := CSelectClientCertificateCallbackT{noCopy{}, p}
+	pc := (*cCSelectClientCertificateCallbackT)(p)
+	BaseAddRef(pc)
+	go_select_client_certificate_callback := CSelectClientCertificateCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_select_client_certificate_callback, func(g *CSelectClientCertificateCallbackT) {
-		Tracef(unsafe.Pointer(g.p_select_client_certificate_callback), "T186.2:")
-		BaseRelease(g.p_select_client_certificate_callback)
+		Tracef(unsafe.Pointer(g.pc_select_client_certificate_callback), "T186.2:")
+		BaseRelease(g.pc_select_client_certificate_callback)
 	})
 	return &go_select_client_certificate_callback
 }
 
 // *C.cef_select_client_certificate_callback_t has refCounted interface
 func (select_client_certificate_callback *CSelectClientCertificateCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(select_client_certificate_callback.p_select_client_certificate_callback)
+	return BaseHasOneRef(select_client_certificate_callback.pc_select_client_certificate_callback)
 }
 
-func (p *C.cef_select_client_certificate_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCSelectClientCertificateCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -18296,11 +18602,11 @@ func (self *CSelectClientCertificateCallbackT) Select(
 ) {
 	var goTmpcert *C.cef_x509certificate_t
 	if cert != nil {
-		goTmpcert = cert.p_x509certificate
-		BaseAddRef(goTmpcert)
+		BaseAddRef(cert.pc_x509certificate)
+		goTmpcert = (*C.cef_x509certificate_t)(cert.pc_x509certificate)
 	}
 
-	C.cefingo_select_client_certificate_callback_select(self.p_select_client_certificate_callback, goTmpcert)
+	C.cefingo_select_client_certificate_callback_select((*C.cef_select_client_certificate_callback_t)(self.pc_select_client_certificate_callback), goTmpcert)
 
 }
 
@@ -18309,10 +18615,12 @@ func (self *CSelectClientCertificateCallbackT) Select(
 // functions of this structure will be called on the thread indicated.
 ///
 
+type cCRequestHandlerT C.cef_request_handler_t
+
 // Go type for cef_request_handler_t
 type CRequestHandlerT struct {
-	noCopy            noCopy
-	p_request_handler *C.cef_request_handler_t
+	noCopy             noCopy
+	pc_request_handler *cCRequestHandlerT
 }
 
 type RefToCRequestHandlerT struct {
@@ -18338,21 +18646,22 @@ func newCRequestHandlerT(p *C.cef_request_handler_t) *CRequestHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T187.1:")
-	BaseAddRef(p)
-	go_request_handler := CRequestHandlerT{noCopy{}, p}
+	pc := (*cCRequestHandlerT)(p)
+	BaseAddRef(pc)
+	go_request_handler := CRequestHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_request_handler, func(g *CRequestHandlerT) {
-		Tracef(unsafe.Pointer(g.p_request_handler), "T187.2:")
-		BaseRelease(g.p_request_handler)
+		Tracef(unsafe.Pointer(g.pc_request_handler), "T187.2:")
+		BaseRelease(g.pc_request_handler)
 	})
 	return &go_request_handler
 }
 
 // *C.cef_request_handler_t has refCounted interface
 func (request_handler *CRequestHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(request_handler.p_request_handler)
+	return BaseHasOneRef(request_handler.pc_request_handler)
 }
 
-func (p *C.cef_request_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRequestHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -18571,37 +18880,38 @@ type OnDocumentAvailableInMainFrameHandler interface {
 }
 
 var request_handler_handlers = struct {
-	handler                                     map[*C.cef_request_handler_t]interface{}
-	on_before_browse_handler                    map[*C.cef_request_handler_t]OnBeforeBrowseHandler
-	on_open_urlfrom_tab_handler                 map[*C.cef_request_handler_t]OnOpenUrlfromTabHandler
-	get_resource_request_handler_handler        map[*C.cef_request_handler_t]CRequestHandlerTGetResourceRequestHandlerHandler
-	get_auth_credentials_handler                map[*C.cef_request_handler_t]CRequestHandlerTGetAuthCredentialsHandler
-	on_quota_request_handler                    map[*C.cef_request_handler_t]OnQuotaRequestHandler
-	on_certificate_error_handler                map[*C.cef_request_handler_t]OnCertificateErrorHandler
-	on_select_client_certificate_handler        map[*C.cef_request_handler_t]OnSelectClientCertificateHandler
-	on_plugin_crashed_handler                   map[*C.cef_request_handler_t]OnPluginCrashedHandler
-	on_render_view_ready_handler                map[*C.cef_request_handler_t]OnRenderViewReadyHandler
-	on_render_process_terminated_handler        map[*C.cef_request_handler_t]OnRenderProcessTerminatedHandler
-	on_document_available_in_main_frame_handler map[*C.cef_request_handler_t]OnDocumentAvailableInMainFrameHandler
+	handler                                     map[*cCRequestHandlerT]interface{}
+	on_before_browse_handler                    map[*cCRequestHandlerT]OnBeforeBrowseHandler
+	on_open_urlfrom_tab_handler                 map[*cCRequestHandlerT]OnOpenUrlfromTabHandler
+	get_resource_request_handler_handler        map[*cCRequestHandlerT]CRequestHandlerTGetResourceRequestHandlerHandler
+	get_auth_credentials_handler                map[*cCRequestHandlerT]CRequestHandlerTGetAuthCredentialsHandler
+	on_quota_request_handler                    map[*cCRequestHandlerT]OnQuotaRequestHandler
+	on_certificate_error_handler                map[*cCRequestHandlerT]OnCertificateErrorHandler
+	on_select_client_certificate_handler        map[*cCRequestHandlerT]OnSelectClientCertificateHandler
+	on_plugin_crashed_handler                   map[*cCRequestHandlerT]OnPluginCrashedHandler
+	on_render_view_ready_handler                map[*cCRequestHandlerT]OnRenderViewReadyHandler
+	on_render_process_terminated_handler        map[*cCRequestHandlerT]OnRenderProcessTerminatedHandler
+	on_document_available_in_main_frame_handler map[*cCRequestHandlerT]OnDocumentAvailableInMainFrameHandler
 }{
-	map[*C.cef_request_handler_t]interface{}{},
-	map[*C.cef_request_handler_t]OnBeforeBrowseHandler{},
-	map[*C.cef_request_handler_t]OnOpenUrlfromTabHandler{},
-	map[*C.cef_request_handler_t]CRequestHandlerTGetResourceRequestHandlerHandler{},
-	map[*C.cef_request_handler_t]CRequestHandlerTGetAuthCredentialsHandler{},
-	map[*C.cef_request_handler_t]OnQuotaRequestHandler{},
-	map[*C.cef_request_handler_t]OnCertificateErrorHandler{},
-	map[*C.cef_request_handler_t]OnSelectClientCertificateHandler{},
-	map[*C.cef_request_handler_t]OnPluginCrashedHandler{},
-	map[*C.cef_request_handler_t]OnRenderViewReadyHandler{},
-	map[*C.cef_request_handler_t]OnRenderProcessTerminatedHandler{},
-	map[*C.cef_request_handler_t]OnDocumentAvailableInMainFrameHandler{},
+	map[*cCRequestHandlerT]interface{}{},
+	map[*cCRequestHandlerT]OnBeforeBrowseHandler{},
+	map[*cCRequestHandlerT]OnOpenUrlfromTabHandler{},
+	map[*cCRequestHandlerT]CRequestHandlerTGetResourceRequestHandlerHandler{},
+	map[*cCRequestHandlerT]CRequestHandlerTGetAuthCredentialsHandler{},
+	map[*cCRequestHandlerT]OnQuotaRequestHandler{},
+	map[*cCRequestHandlerT]OnCertificateErrorHandler{},
+	map[*cCRequestHandlerT]OnSelectClientCertificateHandler{},
+	map[*cCRequestHandlerT]OnPluginCrashedHandler{},
+	map[*cCRequestHandlerT]OnRenderViewReadyHandler{},
+	map[*cCRequestHandlerT]OnRenderProcessTerminatedHandler{},
+	map[*cCRequestHandlerT]OnDocumentAvailableInMainFrameHandler{},
 }
 
 // AllocCRequestHandlerT allocates CRequestHandlerT and construct it
 func AllocCRequestHandlerT() *CRequestHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_request_handler_wrapper_t, "T187.3:")
 	cefp := C.cefingo_construct_request_handler((*C.cefingo_request_handler_wrapper_t)(up))
+	cgop := (*cCRequestHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_request_handler_t itself in DeassocFunc,
@@ -18610,18 +18920,18 @@ func AllocCRequestHandlerT() *CRequestHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(request_handler_handlers.handler, cefp)
-		delete(request_handler_handlers.on_before_browse_handler, cefp)
-		delete(request_handler_handlers.on_open_urlfrom_tab_handler, cefp)
-		delete(request_handler_handlers.get_resource_request_handler_handler, cefp)
-		delete(request_handler_handlers.get_auth_credentials_handler, cefp)
-		delete(request_handler_handlers.on_quota_request_handler, cefp)
-		delete(request_handler_handlers.on_certificate_error_handler, cefp)
-		delete(request_handler_handlers.on_select_client_certificate_handler, cefp)
-		delete(request_handler_handlers.on_plugin_crashed_handler, cefp)
-		delete(request_handler_handlers.on_render_view_ready_handler, cefp)
-		delete(request_handler_handlers.on_render_process_terminated_handler, cefp)
-		delete(request_handler_handlers.on_document_available_in_main_frame_handler, cefp)
+		delete(request_handler_handlers.handler, cgop)
+		delete(request_handler_handlers.on_before_browse_handler, cgop)
+		delete(request_handler_handlers.on_open_urlfrom_tab_handler, cgop)
+		delete(request_handler_handlers.get_resource_request_handler_handler, cgop)
+		delete(request_handler_handlers.get_auth_credentials_handler, cgop)
+		delete(request_handler_handlers.on_quota_request_handler, cgop)
+		delete(request_handler_handlers.on_certificate_error_handler, cgop)
+		delete(request_handler_handlers.on_select_client_certificate_handler, cgop)
+		delete(request_handler_handlers.on_plugin_crashed_handler, cgop)
+		delete(request_handler_handlers.on_render_view_ready_handler, cgop)
+		delete(request_handler_handlers.on_render_process_terminated_handler, cgop)
+		delete(request_handler_handlers.on_document_available_in_main_frame_handler, cgop)
 	}))
 
 	return newCRequestHandlerT(cefp)
@@ -18631,7 +18941,7 @@ func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := request_handler.p_request_handler
+	cp := request_handler.pc_request_handler
 	request_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforeBrowseHandler); ok {
@@ -18688,7 +18998,7 @@ func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
 
 func (request_handler *CRequestHandlerT) UnbindAll() {
 
-	cp := request_handler.p_request_handler
+	cp := request_handler.pc_request_handler
 	delete(request_handler_handlers.handler, cp)
 
 	delete(request_handler_handlers.on_before_browse_handler, cp)
@@ -18709,7 +19019,7 @@ func (request_handler *CRequestHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := request_handler.p_request_handler
+	cp := request_handler.pc_request_handler
 	return request_handler_handlers.handler[cp]
 }
 
@@ -18721,10 +19031,12 @@ func (request_handler *CRequestHandlerT) Handler() interface{} {
 // functions of this structure may be called on multiple threads.
 ///
 
+type cCResourceBundleHandlerT C.cef_resource_bundle_handler_t
+
 // Go type for cef_resource_bundle_handler_t
 type CResourceBundleHandlerT struct {
-	noCopy                    noCopy
-	p_resource_bundle_handler *C.cef_resource_bundle_handler_t
+	noCopy                     noCopy
+	pc_resource_bundle_handler *cCResourceBundleHandlerT
 }
 
 type RefToCResourceBundleHandlerT struct {
@@ -18750,21 +19062,22 @@ func newCResourceBundleHandlerT(p *C.cef_resource_bundle_handler_t) *CResourceBu
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T188.1:")
-	BaseAddRef(p)
-	go_resource_bundle_handler := CResourceBundleHandlerT{noCopy{}, p}
+	pc := (*cCResourceBundleHandlerT)(p)
+	BaseAddRef(pc)
+	go_resource_bundle_handler := CResourceBundleHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_resource_bundle_handler, func(g *CResourceBundleHandlerT) {
-		Tracef(unsafe.Pointer(g.p_resource_bundle_handler), "T188.2:")
-		BaseRelease(g.p_resource_bundle_handler)
+		Tracef(unsafe.Pointer(g.pc_resource_bundle_handler), "T188.2:")
+		BaseRelease(g.pc_resource_bundle_handler)
 	})
 	return &go_resource_bundle_handler
 }
 
 // *C.cef_resource_bundle_handler_t has refCounted interface
 func (resource_bundle_handler *CResourceBundleHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(resource_bundle_handler.p_resource_bundle_handler)
+	return BaseHasOneRef(resource_bundle_handler.pc_resource_bundle_handler)
 }
 
-func (p *C.cef_resource_bundle_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCResourceBundleHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -18813,21 +19126,22 @@ type GetDataResourceForScaleHandler interface {
 }
 
 var resource_bundle_handler_handlers = struct {
-	handler                             map[*C.cef_resource_bundle_handler_t]interface{}
-	get_localized_string_handler        map[*C.cef_resource_bundle_handler_t]GetLocalizedStringHandler
-	get_data_resource_handler           map[*C.cef_resource_bundle_handler_t]GetDataResourceHandler
-	get_data_resource_for_scale_handler map[*C.cef_resource_bundle_handler_t]GetDataResourceForScaleHandler
+	handler                             map[*cCResourceBundleHandlerT]interface{}
+	get_localized_string_handler        map[*cCResourceBundleHandlerT]GetLocalizedStringHandler
+	get_data_resource_handler           map[*cCResourceBundleHandlerT]GetDataResourceHandler
+	get_data_resource_for_scale_handler map[*cCResourceBundleHandlerT]GetDataResourceForScaleHandler
 }{
-	map[*C.cef_resource_bundle_handler_t]interface{}{},
-	map[*C.cef_resource_bundle_handler_t]GetLocalizedStringHandler{},
-	map[*C.cef_resource_bundle_handler_t]GetDataResourceHandler{},
-	map[*C.cef_resource_bundle_handler_t]GetDataResourceForScaleHandler{},
+	map[*cCResourceBundleHandlerT]interface{}{},
+	map[*cCResourceBundleHandlerT]GetLocalizedStringHandler{},
+	map[*cCResourceBundleHandlerT]GetDataResourceHandler{},
+	map[*cCResourceBundleHandlerT]GetDataResourceForScaleHandler{},
 }
 
 // AllocCResourceBundleHandlerT allocates CResourceBundleHandlerT and construct it
 func AllocCResourceBundleHandlerT() *CResourceBundleHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_resource_bundle_handler_wrapper_t, "T188.3:")
 	cefp := C.cefingo_construct_resource_bundle_handler((*C.cefingo_resource_bundle_handler_wrapper_t)(up))
+	cgop := (*cCResourceBundleHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_resource_bundle_handler_t itself in DeassocFunc,
@@ -18836,10 +19150,10 @@ func AllocCResourceBundleHandlerT() *CResourceBundleHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(resource_bundle_handler_handlers.handler, cefp)
-		delete(resource_bundle_handler_handlers.get_localized_string_handler, cefp)
-		delete(resource_bundle_handler_handlers.get_data_resource_handler, cefp)
-		delete(resource_bundle_handler_handlers.get_data_resource_for_scale_handler, cefp)
+		delete(resource_bundle_handler_handlers.handler, cgop)
+		delete(resource_bundle_handler_handlers.get_localized_string_handler, cgop)
+		delete(resource_bundle_handler_handlers.get_data_resource_handler, cgop)
+		delete(resource_bundle_handler_handlers.get_data_resource_for_scale_handler, cgop)
 	}))
 
 	return newCResourceBundleHandlerT(cefp)
@@ -18849,7 +19163,7 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CRe
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_bundle_handler.p_resource_bundle_handler
+	cp := resource_bundle_handler.pc_resource_bundle_handler
 	resource_bundle_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(GetLocalizedStringHandler); ok {
@@ -18874,7 +19188,7 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CRe
 
 func (resource_bundle_handler *CResourceBundleHandlerT) UnbindAll() {
 
-	cp := resource_bundle_handler.p_resource_bundle_handler
+	cp := resource_bundle_handler.pc_resource_bundle_handler
 	delete(resource_bundle_handler_handlers.handler, cp)
 
 	delete(resource_bundle_handler_handlers.get_localized_string_handler, cp)
@@ -18887,7 +19201,7 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_bundle_handler.p_resource_bundle_handler
+	cp := resource_bundle_handler.pc_resource_bundle_handler
 	return resource_bundle_handler_handlers.handler[cp]
 }
 
@@ -18897,10 +19211,12 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Handler() interface{} {
 // Callback for asynchronous continuation of cef_resource_handler_t::skip().
 ///
 
+type cCResourceSkipCallbackT C.cef_resource_skip_callback_t
+
 // Go type for cef_resource_skip_callback_t
 type CResourceSkipCallbackT struct {
-	noCopy                   noCopy
-	p_resource_skip_callback *C.cef_resource_skip_callback_t
+	noCopy                    noCopy
+	pc_resource_skip_callback *cCResourceSkipCallbackT
 }
 
 type RefToCResourceSkipCallbackT struct {
@@ -18926,21 +19242,22 @@ func newCResourceSkipCallbackT(p *C.cef_resource_skip_callback_t) *CResourceSkip
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T189.1:")
-	BaseAddRef(p)
-	go_resource_skip_callback := CResourceSkipCallbackT{noCopy{}, p}
+	pc := (*cCResourceSkipCallbackT)(p)
+	BaseAddRef(pc)
+	go_resource_skip_callback := CResourceSkipCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_resource_skip_callback, func(g *CResourceSkipCallbackT) {
-		Tracef(unsafe.Pointer(g.p_resource_skip_callback), "T189.2:")
-		BaseRelease(g.p_resource_skip_callback)
+		Tracef(unsafe.Pointer(g.pc_resource_skip_callback), "T189.2:")
+		BaseRelease(g.pc_resource_skip_callback)
 	})
 	return &go_resource_skip_callback
 }
 
 // *C.cef_resource_skip_callback_t has refCounted interface
 func (resource_skip_callback *CResourceSkipCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(resource_skip_callback.p_resource_skip_callback)
+	return BaseHasOneRef(resource_skip_callback.pc_resource_skip_callback)
 }
 
-func (p *C.cef_resource_skip_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCResourceSkipCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -18954,7 +19271,7 @@ func (self *CResourceSkipCallbackT) Cont(
 	bytes_skipped int64,
 ) {
 
-	C.cefingo_resource_skip_callback_cont(self.p_resource_skip_callback, (C.int64)(bytes_skipped))
+	C.cefingo_resource_skip_callback_cont((*C.cef_resource_skip_callback_t)(self.pc_resource_skip_callback), (C.int64)(bytes_skipped))
 
 }
 
@@ -18962,10 +19279,12 @@ func (self *CResourceSkipCallbackT) Cont(
 // Callback for asynchronous continuation of cef_resource_handler_t::read().
 ///
 
+type cCResourceReadCallbackT C.cef_resource_read_callback_t
+
 // Go type for cef_resource_read_callback_t
 type CResourceReadCallbackT struct {
-	noCopy                   noCopy
-	p_resource_read_callback *C.cef_resource_read_callback_t
+	noCopy                    noCopy
+	pc_resource_read_callback *cCResourceReadCallbackT
 }
 
 type RefToCResourceReadCallbackT struct {
@@ -18991,21 +19310,22 @@ func newCResourceReadCallbackT(p *C.cef_resource_read_callback_t) *CResourceRead
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T190.1:")
-	BaseAddRef(p)
-	go_resource_read_callback := CResourceReadCallbackT{noCopy{}, p}
+	pc := (*cCResourceReadCallbackT)(p)
+	BaseAddRef(pc)
+	go_resource_read_callback := CResourceReadCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_resource_read_callback, func(g *CResourceReadCallbackT) {
-		Tracef(unsafe.Pointer(g.p_resource_read_callback), "T190.2:")
-		BaseRelease(g.p_resource_read_callback)
+		Tracef(unsafe.Pointer(g.pc_resource_read_callback), "T190.2:")
+		BaseRelease(g.pc_resource_read_callback)
 	})
 	return &go_resource_read_callback
 }
 
 // *C.cef_resource_read_callback_t has refCounted interface
 func (resource_read_callback *CResourceReadCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(resource_read_callback.p_resource_read_callback)
+	return BaseHasOneRef(resource_read_callback.pc_resource_read_callback)
 }
 
-func (p *C.cef_resource_read_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCResourceReadCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -19020,7 +19340,7 @@ func (self *CResourceReadCallbackT) Cont(
 	bytes_read int,
 ) {
 
-	C.cefingo_resource_read_callback_cont(self.p_resource_read_callback, (C.int)(bytes_read))
+	C.cefingo_resource_read_callback_cont((*C.cef_resource_read_callback_t)(self.pc_resource_read_callback), (C.int)(bytes_read))
 
 }
 
@@ -19029,10 +19349,12 @@ func (self *CResourceReadCallbackT) Cont(
 // of this structure will be called on the IO thread unless otherwise indicated.
 ///
 
+type cCResourceHandlerT C.cef_resource_handler_t
+
 // Go type for cef_resource_handler_t
 type CResourceHandlerT struct {
-	noCopy             noCopy
-	p_resource_handler *C.cef_resource_handler_t
+	noCopy              noCopy
+	pc_resource_handler *cCResourceHandlerT
 }
 
 type RefToCResourceHandlerT struct {
@@ -19058,21 +19380,22 @@ func newCResourceHandlerT(p *C.cef_resource_handler_t) *CResourceHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T191.1:")
-	BaseAddRef(p)
-	go_resource_handler := CResourceHandlerT{noCopy{}, p}
+	pc := (*cCResourceHandlerT)(p)
+	BaseAddRef(pc)
+	go_resource_handler := CResourceHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_resource_handler, func(g *CResourceHandlerT) {
-		Tracef(unsafe.Pointer(g.p_resource_handler), "T191.2:")
-		BaseRelease(g.p_resource_handler)
+		Tracef(unsafe.Pointer(g.pc_resource_handler), "T191.2:")
+		BaseRelease(g.pc_resource_handler)
 	})
 	return &go_resource_handler
 }
 
 // *C.cef_resource_handler_t has refCounted interface
 func (resource_handler *CResourceHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(resource_handler.p_resource_handler)
+	return BaseHasOneRef(resource_handler.pc_resource_handler)
 }
 
-func (p *C.cef_resource_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCResourceHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -19198,29 +19521,30 @@ type CancelHandler interface {
 }
 
 var resource_handler_handlers = struct {
-	handler                      map[*C.cef_resource_handler_t]interface{}
-	open_handler                 map[*C.cef_resource_handler_t]OpenHandler
-	process_request_handler      map[*C.cef_resource_handler_t]ProcessRequestHandler
-	get_response_headers_handler map[*C.cef_resource_handler_t]GetResponseHeadersHandler
-	skip_handler                 map[*C.cef_resource_handler_t]SkipHandler
-	read_handler                 map[*C.cef_resource_handler_t]CResourceHandlerTReadHandler
-	read_response_handler        map[*C.cef_resource_handler_t]ReadResponseHandler
-	cancel_handler               map[*C.cef_resource_handler_t]CancelHandler
+	handler                      map[*cCResourceHandlerT]interface{}
+	open_handler                 map[*cCResourceHandlerT]OpenHandler
+	process_request_handler      map[*cCResourceHandlerT]ProcessRequestHandler
+	get_response_headers_handler map[*cCResourceHandlerT]GetResponseHeadersHandler
+	skip_handler                 map[*cCResourceHandlerT]SkipHandler
+	read_handler                 map[*cCResourceHandlerT]CResourceHandlerTReadHandler
+	read_response_handler        map[*cCResourceHandlerT]ReadResponseHandler
+	cancel_handler               map[*cCResourceHandlerT]CancelHandler
 }{
-	map[*C.cef_resource_handler_t]interface{}{},
-	map[*C.cef_resource_handler_t]OpenHandler{},
-	map[*C.cef_resource_handler_t]ProcessRequestHandler{},
-	map[*C.cef_resource_handler_t]GetResponseHeadersHandler{},
-	map[*C.cef_resource_handler_t]SkipHandler{},
-	map[*C.cef_resource_handler_t]CResourceHandlerTReadHandler{},
-	map[*C.cef_resource_handler_t]ReadResponseHandler{},
-	map[*C.cef_resource_handler_t]CancelHandler{},
+	map[*cCResourceHandlerT]interface{}{},
+	map[*cCResourceHandlerT]OpenHandler{},
+	map[*cCResourceHandlerT]ProcessRequestHandler{},
+	map[*cCResourceHandlerT]GetResponseHeadersHandler{},
+	map[*cCResourceHandlerT]SkipHandler{},
+	map[*cCResourceHandlerT]CResourceHandlerTReadHandler{},
+	map[*cCResourceHandlerT]ReadResponseHandler{},
+	map[*cCResourceHandlerT]CancelHandler{},
 }
 
 // AllocCResourceHandlerT allocates CResourceHandlerT and construct it
 func AllocCResourceHandlerT() *CResourceHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_resource_handler_wrapper_t, "T191.3:")
 	cefp := C.cefingo_construct_resource_handler((*C.cefingo_resource_handler_wrapper_t)(up))
+	cgop := (*cCResourceHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_resource_handler_t itself in DeassocFunc,
@@ -19229,14 +19553,14 @@ func AllocCResourceHandlerT() *CResourceHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(resource_handler_handlers.handler, cefp)
-		delete(resource_handler_handlers.open_handler, cefp)
-		delete(resource_handler_handlers.process_request_handler, cefp)
-		delete(resource_handler_handlers.get_response_headers_handler, cefp)
-		delete(resource_handler_handlers.skip_handler, cefp)
-		delete(resource_handler_handlers.read_handler, cefp)
-		delete(resource_handler_handlers.read_response_handler, cefp)
-		delete(resource_handler_handlers.cancel_handler, cefp)
+		delete(resource_handler_handlers.handler, cgop)
+		delete(resource_handler_handlers.open_handler, cgop)
+		delete(resource_handler_handlers.process_request_handler, cgop)
+		delete(resource_handler_handlers.get_response_headers_handler, cgop)
+		delete(resource_handler_handlers.skip_handler, cgop)
+		delete(resource_handler_handlers.read_handler, cgop)
+		delete(resource_handler_handlers.read_response_handler, cgop)
+		delete(resource_handler_handlers.cancel_handler, cgop)
 	}))
 
 	return newCResourceHandlerT(cefp)
@@ -19246,7 +19570,7 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_handler.p_resource_handler
+	cp := resource_handler.pc_resource_handler
 	resource_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OpenHandler); ok {
@@ -19287,7 +19611,7 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 
 func (resource_handler *CResourceHandlerT) UnbindAll() {
 
-	cp := resource_handler.p_resource_handler
+	cp := resource_handler.pc_resource_handler
 	delete(resource_handler_handlers.handler, cp)
 
 	delete(resource_handler_handlers.open_handler, cp)
@@ -19304,7 +19628,7 @@ func (resource_handler *CResourceHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_handler.p_resource_handler
+	cp := resource_handler.pc_resource_handler
 	return resource_handler_handlers.handler[cp]
 }
 
@@ -19316,10 +19640,12 @@ func (resource_handler *CResourceHandlerT) Handler() interface{} {
 // indicated.
 ///
 
+type cCResourceRequestHandlerT C.cef_resource_request_handler_t
+
 // Go type for cef_resource_request_handler_t
 type CResourceRequestHandlerT struct {
-	noCopy                     noCopy
-	p_resource_request_handler *C.cef_resource_request_handler_t
+	noCopy                      noCopy
+	pc_resource_request_handler *cCResourceRequestHandlerT
 }
 
 type RefToCResourceRequestHandlerT struct {
@@ -19345,21 +19671,22 @@ func newCResourceRequestHandlerT(p *C.cef_resource_request_handler_t) *CResource
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T192.1:")
-	BaseAddRef(p)
-	go_resource_request_handler := CResourceRequestHandlerT{noCopy{}, p}
+	pc := (*cCResourceRequestHandlerT)(p)
+	BaseAddRef(pc)
+	go_resource_request_handler := CResourceRequestHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_resource_request_handler, func(g *CResourceRequestHandlerT) {
-		Tracef(unsafe.Pointer(g.p_resource_request_handler), "T192.2:")
-		BaseRelease(g.p_resource_request_handler)
+		Tracef(unsafe.Pointer(g.pc_resource_request_handler), "T192.2:")
+		BaseRelease(g.pc_resource_request_handler)
 	})
 	return &go_resource_request_handler
 }
 
 // *C.cef_resource_request_handler_t has refCounted interface
 func (resource_request_handler *CResourceRequestHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(resource_request_handler.p_resource_request_handler)
+	return BaseHasOneRef(resource_request_handler.pc_resource_request_handler)
 }
 
-func (p *C.cef_resource_request_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCResourceRequestHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -19526,31 +19853,32 @@ type OnProtocolExecutionHandler interface {
 }
 
 var resource_request_handler_handlers = struct {
-	handler                              map[*C.cef_resource_request_handler_t]interface{}
-	get_cookie_access_filter_handler     map[*C.cef_resource_request_handler_t]GetCookieAccessFilterHandler
-	on_before_resource_load_handler      map[*C.cef_resource_request_handler_t]OnBeforeResourceLoadHandler
-	get_resource_handler_handler         map[*C.cef_resource_request_handler_t]GetResourceHandlerHandler
-	on_resource_redirect_handler         map[*C.cef_resource_request_handler_t]OnResourceRedirectHandler
-	on_resource_response_handler         map[*C.cef_resource_request_handler_t]OnResourceResponseHandler
-	get_resource_response_filter_handler map[*C.cef_resource_request_handler_t]GetResourceResponseFilterHandler
-	on_resource_load_complete_handler    map[*C.cef_resource_request_handler_t]OnResourceLoadCompleteHandler
-	on_protocol_execution_handler        map[*C.cef_resource_request_handler_t]OnProtocolExecutionHandler
+	handler                              map[*cCResourceRequestHandlerT]interface{}
+	get_cookie_access_filter_handler     map[*cCResourceRequestHandlerT]GetCookieAccessFilterHandler
+	on_before_resource_load_handler      map[*cCResourceRequestHandlerT]OnBeforeResourceLoadHandler
+	get_resource_handler_handler         map[*cCResourceRequestHandlerT]GetResourceHandlerHandler
+	on_resource_redirect_handler         map[*cCResourceRequestHandlerT]OnResourceRedirectHandler
+	on_resource_response_handler         map[*cCResourceRequestHandlerT]OnResourceResponseHandler
+	get_resource_response_filter_handler map[*cCResourceRequestHandlerT]GetResourceResponseFilterHandler
+	on_resource_load_complete_handler    map[*cCResourceRequestHandlerT]OnResourceLoadCompleteHandler
+	on_protocol_execution_handler        map[*cCResourceRequestHandlerT]OnProtocolExecutionHandler
 }{
-	map[*C.cef_resource_request_handler_t]interface{}{},
-	map[*C.cef_resource_request_handler_t]GetCookieAccessFilterHandler{},
-	map[*C.cef_resource_request_handler_t]OnBeforeResourceLoadHandler{},
-	map[*C.cef_resource_request_handler_t]GetResourceHandlerHandler{},
-	map[*C.cef_resource_request_handler_t]OnResourceRedirectHandler{},
-	map[*C.cef_resource_request_handler_t]OnResourceResponseHandler{},
-	map[*C.cef_resource_request_handler_t]GetResourceResponseFilterHandler{},
-	map[*C.cef_resource_request_handler_t]OnResourceLoadCompleteHandler{},
-	map[*C.cef_resource_request_handler_t]OnProtocolExecutionHandler{},
+	map[*cCResourceRequestHandlerT]interface{}{},
+	map[*cCResourceRequestHandlerT]GetCookieAccessFilterHandler{},
+	map[*cCResourceRequestHandlerT]OnBeforeResourceLoadHandler{},
+	map[*cCResourceRequestHandlerT]GetResourceHandlerHandler{},
+	map[*cCResourceRequestHandlerT]OnResourceRedirectHandler{},
+	map[*cCResourceRequestHandlerT]OnResourceResponseHandler{},
+	map[*cCResourceRequestHandlerT]GetResourceResponseFilterHandler{},
+	map[*cCResourceRequestHandlerT]OnResourceLoadCompleteHandler{},
+	map[*cCResourceRequestHandlerT]OnProtocolExecutionHandler{},
 }
 
 // AllocCResourceRequestHandlerT allocates CResourceRequestHandlerT and construct it
 func AllocCResourceRequestHandlerT() *CResourceRequestHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_resource_request_handler_wrapper_t, "T192.3:")
 	cefp := C.cefingo_construct_resource_request_handler((*C.cefingo_resource_request_handler_wrapper_t)(up))
+	cgop := (*cCResourceRequestHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_resource_request_handler_t itself in DeassocFunc,
@@ -19559,15 +19887,15 @@ func AllocCResourceRequestHandlerT() *CResourceRequestHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(resource_request_handler_handlers.handler, cefp)
-		delete(resource_request_handler_handlers.get_cookie_access_filter_handler, cefp)
-		delete(resource_request_handler_handlers.on_before_resource_load_handler, cefp)
-		delete(resource_request_handler_handlers.get_resource_handler_handler, cefp)
-		delete(resource_request_handler_handlers.on_resource_redirect_handler, cefp)
-		delete(resource_request_handler_handlers.on_resource_response_handler, cefp)
-		delete(resource_request_handler_handlers.get_resource_response_filter_handler, cefp)
-		delete(resource_request_handler_handlers.on_resource_load_complete_handler, cefp)
-		delete(resource_request_handler_handlers.on_protocol_execution_handler, cefp)
+		delete(resource_request_handler_handlers.handler, cgop)
+		delete(resource_request_handler_handlers.get_cookie_access_filter_handler, cgop)
+		delete(resource_request_handler_handlers.on_before_resource_load_handler, cgop)
+		delete(resource_request_handler_handlers.get_resource_handler_handler, cgop)
+		delete(resource_request_handler_handlers.on_resource_redirect_handler, cgop)
+		delete(resource_request_handler_handlers.on_resource_response_handler, cgop)
+		delete(resource_request_handler_handlers.get_resource_response_filter_handler, cgop)
+		delete(resource_request_handler_handlers.on_resource_load_complete_handler, cgop)
+		delete(resource_request_handler_handlers.on_protocol_execution_handler, cgop)
 	}))
 
 	return newCResourceRequestHandlerT(cefp)
@@ -19577,7 +19905,7 @@ func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *C
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_request_handler.p_resource_request_handler
+	cp := resource_request_handler.pc_resource_request_handler
 	resource_request_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(GetCookieAccessFilterHandler); ok {
@@ -19622,7 +19950,7 @@ func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *C
 
 func (resource_request_handler *CResourceRequestHandlerT) UnbindAll() {
 
-	cp := resource_request_handler.p_resource_request_handler
+	cp := resource_request_handler.pc_resource_request_handler
 	delete(resource_request_handler_handlers.handler, cp)
 
 	delete(resource_request_handler_handlers.get_cookie_access_filter_handler, cp)
@@ -19640,7 +19968,7 @@ func (resource_request_handler *CResourceRequestHandlerT) Handler() interface{} 
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_request_handler.p_resource_request_handler
+	cp := resource_request_handler.pc_resource_request_handler
 	return resource_request_handler_handlers.handler[cp]
 }
 
@@ -19650,10 +19978,12 @@ func (resource_request_handler *CResourceRequestHandlerT) Handler() interface{} 
 // thread unless otherwise indicated.
 ///
 
+type cCCookieAccessFilterT C.cef_cookie_access_filter_t
+
 // Go type for cef_cookie_access_filter_t
 type CCookieAccessFilterT struct {
-	noCopy                 noCopy
-	p_cookie_access_filter *C.cef_cookie_access_filter_t
+	noCopy                  noCopy
+	pc_cookie_access_filter *cCCookieAccessFilterT
 }
 
 type RefToCCookieAccessFilterT struct {
@@ -19679,21 +20009,22 @@ func newCCookieAccessFilterT(p *C.cef_cookie_access_filter_t) *CCookieAccessFilt
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T193.1:")
-	BaseAddRef(p)
-	go_cookie_access_filter := CCookieAccessFilterT{noCopy{}, p}
+	pc := (*cCCookieAccessFilterT)(p)
+	BaseAddRef(pc)
+	go_cookie_access_filter := CCookieAccessFilterT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_cookie_access_filter, func(g *CCookieAccessFilterT) {
-		Tracef(unsafe.Pointer(g.p_cookie_access_filter), "T193.2:")
-		BaseRelease(g.p_cookie_access_filter)
+		Tracef(unsafe.Pointer(g.pc_cookie_access_filter), "T193.2:")
+		BaseRelease(g.pc_cookie_access_filter)
 	})
 	return &go_cookie_access_filter
 }
 
 // *C.cef_cookie_access_filter_t has refCounted interface
 func (cookie_access_filter *CCookieAccessFilterT) HasOneRef() bool {
-	return BaseHasOneRef(cookie_access_filter.p_cookie_access_filter)
+	return BaseHasOneRef(cookie_access_filter.pc_cookie_access_filter)
 }
 
-func (p *C.cef_cookie_access_filter_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCCookieAccessFilterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -19734,19 +20065,20 @@ type CanSaveCookieHandler interface {
 }
 
 var cookie_access_filter_handlers = struct {
-	handler                 map[*C.cef_cookie_access_filter_t]interface{}
-	can_send_cookie_handler map[*C.cef_cookie_access_filter_t]CanSendCookieHandler
-	can_save_cookie_handler map[*C.cef_cookie_access_filter_t]CanSaveCookieHandler
+	handler                 map[*cCCookieAccessFilterT]interface{}
+	can_send_cookie_handler map[*cCCookieAccessFilterT]CanSendCookieHandler
+	can_save_cookie_handler map[*cCCookieAccessFilterT]CanSaveCookieHandler
 }{
-	map[*C.cef_cookie_access_filter_t]interface{}{},
-	map[*C.cef_cookie_access_filter_t]CanSendCookieHandler{},
-	map[*C.cef_cookie_access_filter_t]CanSaveCookieHandler{},
+	map[*cCCookieAccessFilterT]interface{}{},
+	map[*cCCookieAccessFilterT]CanSendCookieHandler{},
+	map[*cCCookieAccessFilterT]CanSaveCookieHandler{},
 }
 
 // AllocCCookieAccessFilterT allocates CCookieAccessFilterT and construct it
 func AllocCCookieAccessFilterT() *CCookieAccessFilterT {
 	up := c_calloc(1, C.sizeof_cefingo_cookie_access_filter_wrapper_t, "T193.3:")
 	cefp := C.cefingo_construct_cookie_access_filter((*C.cefingo_cookie_access_filter_wrapper_t)(up))
+	cgop := (*cCCookieAccessFilterT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_cookie_access_filter_t itself in DeassocFunc,
@@ -19755,9 +20087,9 @@ func AllocCCookieAccessFilterT() *CCookieAccessFilterT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(cookie_access_filter_handlers.handler, cefp)
-		delete(cookie_access_filter_handlers.can_send_cookie_handler, cefp)
-		delete(cookie_access_filter_handlers.can_save_cookie_handler, cefp)
+		delete(cookie_access_filter_handlers.handler, cgop)
+		delete(cookie_access_filter_handlers.can_send_cookie_handler, cgop)
+		delete(cookie_access_filter_handlers.can_save_cookie_handler, cgop)
 	}))
 
 	return newCCookieAccessFilterT(cefp)
@@ -19767,7 +20099,7 @@ func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAc
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := cookie_access_filter.p_cookie_access_filter
+	cp := cookie_access_filter.pc_cookie_access_filter
 	cookie_access_filter_handlers.handler[cp] = a
 
 	if h, ok := a.(CanSendCookieHandler); ok {
@@ -19788,7 +20120,7 @@ func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAc
 
 func (cookie_access_filter *CCookieAccessFilterT) UnbindAll() {
 
-	cp := cookie_access_filter.p_cookie_access_filter
+	cp := cookie_access_filter.pc_cookie_access_filter
 	delete(cookie_access_filter_handlers.handler, cp)
 
 	delete(cookie_access_filter_handlers.can_send_cookie_handler, cp)
@@ -19800,7 +20132,7 @@ func (cookie_access_filter *CCookieAccessFilterT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := cookie_access_filter.p_cookie_access_filter
+	cp := cookie_access_filter.pc_cookie_access_filter
 	return cookie_access_filter_handlers.handler[cp]
 }
 
@@ -19811,10 +20143,12 @@ func (cookie_access_filter *CCookieAccessFilterT) Handler() interface{} {
 // may be called on any thread.
 ///
 
+type cCResponseT C.cef_response_t
+
 // Go type for cef_response_t
 type CResponseT struct {
-	noCopy     noCopy
-	p_response *C.cef_response_t
+	noCopy      noCopy
+	pc_response *cCResponseT
 }
 
 type RefToCResponseT struct {
@@ -19840,21 +20174,22 @@ func newCResponseT(p *C.cef_response_t) *CResponseT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T194.1:")
-	BaseAddRef(p)
-	go_response := CResponseT{noCopy{}, p}
+	pc := (*cCResponseT)(p)
+	BaseAddRef(pc)
+	go_response := CResponseT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_response, func(g *CResponseT) {
-		Tracef(unsafe.Pointer(g.p_response), "T194.2:")
-		BaseRelease(g.p_response)
+		Tracef(unsafe.Pointer(g.pc_response), "T194.2:")
+		BaseRelease(g.pc_response)
 	})
 	return &go_response
 }
 
 // *C.cef_response_t has refCounted interface
 func (response *CResponseT) HasOneRef() bool {
-	return BaseHasOneRef(response.p_response)
+	return BaseHasOneRef(response.pc_response)
 }
 
-func (p *C.cef_response_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCResponseT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -19863,7 +20198,7 @@ func (p *C.cef_response_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 ///
 func (self *CResponseT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_response_is_read_only(self.p_response)
+	cRet := C.cefingo_response_is_read_only((*C.cef_response_t)(self.pc_response))
 
 	ret = cRet == 1
 	return ret
@@ -19874,7 +20209,7 @@ func (self *CResponseT) IsReadOnly() (ret bool) {
 ///
 func (self *CResponseT) GetError() (ret CErrorcodeT) {
 
-	cRet := C.cefingo_response_get_error(self.p_response)
+	cRet := C.cefingo_response_get_error((*C.cef_response_t)(self.pc_response))
 
 	ret = CErrorcodeT(cRet)
 	return ret
@@ -19888,7 +20223,7 @@ func (self *CResponseT) SetError(
 	error CErrorcodeT,
 ) {
 
-	C.cefingo_response_set_error(self.p_response, (C.cef_errorcode_t)(error))
+	C.cefingo_response_set_error((*C.cef_response_t)(self.pc_response), (C.cef_errorcode_t)(error))
 
 }
 
@@ -19897,7 +20232,7 @@ func (self *CResponseT) SetError(
 ///
 func (self *CResponseT) GetStatus() (ret bool) {
 
-	cRet := C.cefingo_response_get_status(self.p_response)
+	cRet := C.cefingo_response_get_status((*C.cef_response_t)(self.pc_response))
 
 	ret = cRet == 1
 	return ret
@@ -19910,7 +20245,7 @@ func (self *CResponseT) SetStatus(
 	status int,
 ) {
 
-	C.cefingo_response_set_status(self.p_response, (C.int)(status))
+	C.cefingo_response_set_status((*C.cef_response_t)(self.pc_response), (C.int)(status))
 
 }
 
@@ -19920,7 +20255,7 @@ func (self *CResponseT) SetStatus(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetStatusText() (ret string) {
 
-	cRet := C.cefingo_response_get_status_text(self.p_response)
+	cRet := C.cefingo_response_get_status_text((*C.cef_response_t)(self.pc_response))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -19938,7 +20273,7 @@ func (self *CResponseT) SetStatusText(
 ) {
 	c_statusText := create_cef_string(statusText)
 
-	C.cefingo_response_set_status_text(self.p_response, c_statusText.p_cef_string_t)
+	C.cefingo_response_set_status_text((*C.cef_response_t)(self.pc_response), c_statusText.p_cef_string_t)
 
 }
 
@@ -19948,7 +20283,7 @@ func (self *CResponseT) SetStatusText(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetMimeType() (ret string) {
 
-	cRet := C.cefingo_response_get_mime_type(self.p_response)
+	cRet := C.cefingo_response_get_mime_type((*C.cef_response_t)(self.pc_response))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -19966,7 +20301,7 @@ func (self *CResponseT) SetMimeType(
 ) {
 	c_mimeType := create_cef_string(mimeType)
 
-	C.cefingo_response_set_mime_type(self.p_response, c_mimeType.p_cef_string_t)
+	C.cefingo_response_set_mime_type((*C.cef_response_t)(self.pc_response), c_mimeType.p_cef_string_t)
 
 }
 
@@ -19976,7 +20311,7 @@ func (self *CResponseT) SetMimeType(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetCharset() (ret string) {
 
-	cRet := C.cefingo_response_get_charset(self.p_response)
+	cRet := C.cefingo_response_get_charset((*C.cef_response_t)(self.pc_response))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -19994,7 +20329,7 @@ func (self *CResponseT) SetCharset(
 ) {
 	c_charset := create_cef_string(charset)
 
-	C.cefingo_response_set_charset(self.p_response, c_charset.p_cef_string_t)
+	C.cefingo_response_set_charset((*C.cef_response_t)(self.pc_response), c_charset.p_cef_string_t)
 
 }
 
@@ -20007,7 +20342,7 @@ func (self *CResponseT) GetHeaderByName(
 ) (ret string) {
 	c_name := create_cef_string(name)
 
-	cRet := C.cefingo_response_get_header_by_name(self.p_response, c_name.p_cef_string_t)
+	cRet := C.cefingo_response_get_header_by_name((*C.cef_response_t)(self.pc_response), c_name.p_cef_string_t)
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -20030,7 +20365,7 @@ func (self *CResponseT) SetHeaderByName(
 	c_name := create_cef_string(name)
 	c_value := create_cef_string(value)
 
-	C.cefingo_response_set_header_by_name(self.p_response, c_name.p_cef_string_t, c_value.p_cef_string_t, (C.int)(overwrite))
+	C.cefingo_response_set_header_by_name((*C.cef_response_t)(self.pc_response), c_name.p_cef_string_t, c_value.p_cef_string_t, (C.int)(overwrite))
 
 }
 
@@ -20041,7 +20376,7 @@ func (self *CResponseT) GetHeaderMap(
 	headerMap CStringMultimapT,
 ) {
 
-	C.cefingo_response_get_header_map(self.p_response, (C.cef_string_multimap_t)(headerMap))
+	C.cefingo_response_get_header_map((*C.cef_response_t)(self.pc_response), (C.cef_string_multimap_t)(headerMap))
 
 }
 
@@ -20052,7 +20387,7 @@ func (self *CResponseT) SetHeaderMap(
 	headerMap CStringMultimapT,
 ) {
 
-	C.cefingo_response_set_header_map(self.p_response, (C.cef_string_multimap_t)(headerMap))
+	C.cefingo_response_set_header_map((*C.cef_response_t)(self.pc_response), (C.cef_string_multimap_t)(headerMap))
 
 }
 
@@ -20062,7 +20397,7 @@ func (self *CResponseT) SetHeaderMap(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetUrl() (ret string) {
 
-	cRet := C.cefingo_response_get_url(self.p_response)
+	cRet := C.cefingo_response_get_url((*C.cef_response_t)(self.pc_response))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -20080,7 +20415,7 @@ func (self *CResponseT) SetUrl(
 ) {
 	c_url := create_cef_string(url)
 
-	C.cefingo_response_set_url(self.p_response, c_url.p_cef_string_t)
+	C.cefingo_response_set_url((*C.cef_response_t)(self.pc_response), c_url.p_cef_string_t)
 
 }
 
@@ -20102,10 +20437,12 @@ func ResponseCreate() (ret *CResponseT) {
 // of this structure will be called on the browser process IO thread.
 ///
 
+type cCResponseFilterT C.cef_response_filter_t
+
 // Go type for cef_response_filter_t
 type CResponseFilterT struct {
-	noCopy            noCopy
-	p_response_filter *C.cef_response_filter_t
+	noCopy             noCopy
+	pc_response_filter *cCResponseFilterT
 }
 
 type RefToCResponseFilterT struct {
@@ -20131,21 +20468,22 @@ func newCResponseFilterT(p *C.cef_response_filter_t) *CResponseFilterT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T195.1:")
-	BaseAddRef(p)
-	go_response_filter := CResponseFilterT{noCopy{}, p}
+	pc := (*cCResponseFilterT)(p)
+	BaseAddRef(pc)
+	go_response_filter := CResponseFilterT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_response_filter, func(g *CResponseFilterT) {
-		Tracef(unsafe.Pointer(g.p_response_filter), "T195.2:")
-		BaseRelease(g.p_response_filter)
+		Tracef(unsafe.Pointer(g.pc_response_filter), "T195.2:")
+		BaseRelease(g.pc_response_filter)
 	})
 	return &go_response_filter
 }
 
 // *C.cef_response_filter_t has refCounted interface
 func (response_filter *CResponseFilterT) HasOneRef() bool {
-	return BaseHasOneRef(response_filter.p_response_filter)
+	return BaseHasOneRef(response_filter.pc_response_filter)
 }
 
-func (p *C.cef_response_filter_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCResponseFilterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -20199,19 +20537,20 @@ type FilterHandler interface {
 }
 
 var response_filter_handlers = struct {
-	handler             map[*C.cef_response_filter_t]interface{}
-	init_filter_handler map[*C.cef_response_filter_t]InitFilterHandler
-	filter_handler      map[*C.cef_response_filter_t]FilterHandler
+	handler             map[*cCResponseFilterT]interface{}
+	init_filter_handler map[*cCResponseFilterT]InitFilterHandler
+	filter_handler      map[*cCResponseFilterT]FilterHandler
 }{
-	map[*C.cef_response_filter_t]interface{}{},
-	map[*C.cef_response_filter_t]InitFilterHandler{},
-	map[*C.cef_response_filter_t]FilterHandler{},
+	map[*cCResponseFilterT]interface{}{},
+	map[*cCResponseFilterT]InitFilterHandler{},
+	map[*cCResponseFilterT]FilterHandler{},
 }
 
 // AllocCResponseFilterT allocates CResponseFilterT and construct it
 func AllocCResponseFilterT() *CResponseFilterT {
 	up := c_calloc(1, C.sizeof_cefingo_response_filter_wrapper_t, "T195.3:")
 	cefp := C.cefingo_construct_response_filter((*C.cefingo_response_filter_wrapper_t)(up))
+	cgop := (*cCResponseFilterT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_response_filter_t itself in DeassocFunc,
@@ -20220,9 +20559,9 @@ func AllocCResponseFilterT() *CResponseFilterT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(response_filter_handlers.handler, cefp)
-		delete(response_filter_handlers.init_filter_handler, cefp)
-		delete(response_filter_handlers.filter_handler, cefp)
+		delete(response_filter_handlers.handler, cgop)
+		delete(response_filter_handlers.init_filter_handler, cgop)
+		delete(response_filter_handlers.filter_handler, cgop)
 	}))
 
 	return newCResponseFilterT(cefp)
@@ -20232,7 +20571,7 @@ func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := response_filter.p_response_filter
+	cp := response_filter.pc_response_filter
 	response_filter_handlers.handler[cp] = a
 
 	if h, ok := a.(InitFilterHandler); ok {
@@ -20253,7 +20592,7 @@ func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
 
 func (response_filter *CResponseFilterT) UnbindAll() {
 
-	cp := response_filter.p_response_filter
+	cp := response_filter.pc_response_filter
 	delete(response_filter_handlers.handler, cp)
 
 	delete(response_filter_handlers.init_filter_handler, cp)
@@ -20265,7 +20604,7 @@ func (response_filter *CResponseFilterT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := response_filter.p_response_filter
+	cp := response_filter.pc_response_filter
 	return response_filter_handlers.handler[cp]
 }
 
@@ -20275,10 +20614,12 @@ func (response_filter *CResponseFilterT) Handler() interface{} {
 // Structure that manages custom scheme registrations.
 ///
 
+type cCSchemeRegistrarT C.cef_scheme_registrar_t
+
 // Go type for cef_scheme_registrar_t
 type CSchemeRegistrarT struct {
-	noCopy             noCopy
-	p_scheme_registrar *C.cef_scheme_registrar_t
+	noCopy              noCopy
+	pc_scheme_registrar *cCSchemeRegistrarT
 }
 
 type RefToCSchemeRegistrarT struct {
@@ -20304,7 +20645,8 @@ func newCSchemeRegistrarT(p *C.cef_scheme_registrar_t) *CSchemeRegistrarT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T196.1:")
-	go_scheme_registrar := CSchemeRegistrarT{noCopy{}, p}
+	pc := (*cCSchemeRegistrarT)(p)
+	go_scheme_registrar := CSchemeRegistrarT{noCopy{}, pc}
 	return &go_scheme_registrar
 }
 
@@ -20324,7 +20666,7 @@ func (self *CSchemeRegistrarT) AddCustomScheme(
 ) (ret bool) {
 	c_scheme_name := create_cef_string(scheme_name)
 
-	cRet := C.cefingo_scheme_registrar_add_custom_scheme(self.p_scheme_registrar, c_scheme_name.p_cef_string_t, (C.int)(options))
+	cRet := C.cefingo_scheme_registrar_add_custom_scheme((*C.cef_scheme_registrar_t)(self.pc_scheme_registrar), c_scheme_name.p_cef_string_t, (C.int)(options))
 
 	ret = cRet == 1
 	return ret
@@ -20336,10 +20678,12 @@ func (self *CSchemeRegistrarT) AddCustomScheme(
 // thread.
 ///
 
+type cCSchemeHandlerFactoryT C.cef_scheme_handler_factory_t
+
 // Go type for cef_scheme_handler_factory_t
 type CSchemeHandlerFactoryT struct {
-	noCopy                   noCopy
-	p_scheme_handler_factory *C.cef_scheme_handler_factory_t
+	noCopy                    noCopy
+	pc_scheme_handler_factory *cCSchemeHandlerFactoryT
 }
 
 type RefToCSchemeHandlerFactoryT struct {
@@ -20365,21 +20709,22 @@ func newCSchemeHandlerFactoryT(p *C.cef_scheme_handler_factory_t) *CSchemeHandle
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T197.1:")
-	BaseAddRef(p)
-	go_scheme_handler_factory := CSchemeHandlerFactoryT{noCopy{}, p}
+	pc := (*cCSchemeHandlerFactoryT)(p)
+	BaseAddRef(pc)
+	go_scheme_handler_factory := CSchemeHandlerFactoryT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_scheme_handler_factory, func(g *CSchemeHandlerFactoryT) {
-		Tracef(unsafe.Pointer(g.p_scheme_handler_factory), "T197.2:")
-		BaseRelease(g.p_scheme_handler_factory)
+		Tracef(unsafe.Pointer(g.pc_scheme_handler_factory), "T197.2:")
+		BaseRelease(g.pc_scheme_handler_factory)
 	})
 	return &go_scheme_handler_factory
 }
 
 // *C.cef_scheme_handler_factory_t has refCounted interface
 func (scheme_handler_factory *CSchemeHandlerFactoryT) HasOneRef() bool {
-	return BaseHasOneRef(scheme_handler_factory.p_scheme_handler_factory)
+	return BaseHasOneRef(scheme_handler_factory.pc_scheme_handler_factory)
 }
 
-func (p *C.cef_scheme_handler_factory_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCSchemeHandlerFactoryT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -20402,17 +20747,18 @@ type CreateHandler interface {
 }
 
 var scheme_handler_factory_handlers = struct {
-	handler        map[*C.cef_scheme_handler_factory_t]interface{}
-	create_handler map[*C.cef_scheme_handler_factory_t]CreateHandler
+	handler        map[*cCSchemeHandlerFactoryT]interface{}
+	create_handler map[*cCSchemeHandlerFactoryT]CreateHandler
 }{
-	map[*C.cef_scheme_handler_factory_t]interface{}{},
-	map[*C.cef_scheme_handler_factory_t]CreateHandler{},
+	map[*cCSchemeHandlerFactoryT]interface{}{},
+	map[*cCSchemeHandlerFactoryT]CreateHandler{},
 }
 
 // AllocCSchemeHandlerFactoryT allocates CSchemeHandlerFactoryT and construct it
 func AllocCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
 	up := c_calloc(1, C.sizeof_cefingo_scheme_handler_factory_wrapper_t, "T197.3:")
 	cefp := C.cefingo_construct_scheme_handler_factory((*C.cefingo_scheme_handler_factory_wrapper_t)(up))
+	cgop := (*cCSchemeHandlerFactoryT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_scheme_handler_factory_t itself in DeassocFunc,
@@ -20421,8 +20767,8 @@ func AllocCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(scheme_handler_factory_handlers.handler, cefp)
-		delete(scheme_handler_factory_handlers.create_handler, cefp)
+		delete(scheme_handler_factory_handlers.handler, cgop)
+		delete(scheme_handler_factory_handlers.create_handler, cgop)
 	}))
 
 	return newCSchemeHandlerFactoryT(cefp)
@@ -20432,7 +20778,7 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := scheme_handler_factory.p_scheme_handler_factory
+	cp := scheme_handler_factory.pc_scheme_handler_factory
 	scheme_handler_factory_handlers.handler[cp] = a
 
 	if h, ok := a.(CreateHandler); ok {
@@ -20449,7 +20795,7 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 
 func (scheme_handler_factory *CSchemeHandlerFactoryT) UnbindAll() {
 
-	cp := scheme_handler_factory.p_scheme_handler_factory
+	cp := scheme_handler_factory.pc_scheme_handler_factory
 	delete(scheme_handler_factory_handlers.handler, cp)
 
 	delete(scheme_handler_factory_handlers.create_handler, cp)
@@ -20460,7 +20806,7 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := scheme_handler_factory.p_scheme_handler_factory
+	cp := scheme_handler_factory.pc_scheme_handler_factory
 	return scheme_handler_factory_handlers.handler[cp]
 }
 
@@ -20488,8 +20834,8 @@ func RegisterSchemeHandlerFactory(
 	c_domain_name := create_cef_string(domain_name)
 	var goTmpfactory *C.cef_scheme_handler_factory_t
 	if factory != nil {
-		goTmpfactory = factory.p_scheme_handler_factory
-		BaseAddRef(goTmpfactory)
+		BaseAddRef(factory.pc_scheme_handler_factory)
+		goTmpfactory = (*C.cef_scheme_handler_factory_t)(factory.pc_scheme_handler_factory)
 	}
 
 	cRet := C.cef_register_scheme_handler_factory(c_scheme_name.p_cef_string_t, c_domain_name.p_cef_string_t, goTmpfactory)
@@ -20521,10 +20867,12 @@ func ClearSchemeHandlerFactories() (ret bool) {
 // browser process UI thread unless otherwise indicated.
 ///
 
+type cCScrollViewT C.cef_scroll_view_t
+
 // Go type for cef_scroll_view_t
 type CScrollViewT struct {
-	noCopy        noCopy
-	p_scroll_view *C.cef_scroll_view_t
+	noCopy         noCopy
+	pc_scroll_view *cCScrollViewT
 }
 
 type RefToCScrollViewT struct {
@@ -20550,26 +20898,28 @@ func newCScrollViewT(p *C.cef_scroll_view_t) *CScrollViewT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T198.1:")
-	BaseAddRef(p)
-	go_scroll_view := CScrollViewT{noCopy{}, p}
+	pc := (*cCScrollViewT)(p)
+	BaseAddRef(pc)
+	go_scroll_view := CScrollViewT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_scroll_view, func(g *CScrollViewT) {
-		Tracef(unsafe.Pointer(g.p_scroll_view), "T198.2:")
-		BaseRelease(g.p_scroll_view)
+		Tracef(unsafe.Pointer(g.pc_scroll_view), "T198.2:")
+		BaseRelease(g.pc_scroll_view)
 	})
 	return &go_scroll_view
 }
 
 // *C.cef_scroll_view_t has refCounted interface
 func (scroll_view *CScrollViewT) HasOneRef() bool {
-	return BaseHasOneRef(scroll_view.p_scroll_view)
+	return BaseHasOneRef(scroll_view.pc_scroll_view)
 }
 
-func (p *C.cef_scroll_view_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCScrollViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewT
 func (scroll_view *CScrollViewT) ToCViewT() *CViewT {
-	p := (*C.cef_view_t)(unsafe.Pointer(scroll_view.p_scroll_view))
+	p := (*C.cef_view_t)(unsafe.Pointer(scroll_view.pc_scroll_view))
 	return newCViewT(p)
 }
 
@@ -20582,11 +20932,11 @@ func (self *CScrollViewT) SetContentView(
 ) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	C.cefingo_scroll_view_set_content_view(self.p_scroll_view, goTmpview)
+	C.cefingo_scroll_view_set_content_view((*C.cef_scroll_view_t)(self.pc_scroll_view), goTmpview)
 
 }
 
@@ -20595,7 +20945,7 @@ func (self *CScrollViewT) SetContentView(
 ///
 func (self *CScrollViewT) GetContentView() (ret *CViewT) {
 
-	cRet := C.cefingo_scroll_view_get_content_view(self.p_scroll_view)
+	cRet := C.cefingo_scroll_view_get_content_view((*C.cef_scroll_view_t)(self.pc_scroll_view))
 
 	ret = newCViewT(cRet)
 	return ret
@@ -20606,7 +20956,7 @@ func (self *CScrollViewT) GetContentView() (ret *CViewT) {
 ///
 func (self *CScrollViewT) GetVisibleContentRect() (ret CRectT) {
 
-	cRet := C.cefingo_scroll_view_get_visible_content_rect(self.p_scroll_view)
+	cRet := C.cefingo_scroll_view_get_visible_content_rect((*C.cef_scroll_view_t)(self.pc_scroll_view))
 
 	ret = (CRectT)(cRet)
 	return ret
@@ -20617,7 +20967,7 @@ func (self *CScrollViewT) GetVisibleContentRect() (ret CRectT) {
 ///
 func (self *CScrollViewT) HasHorizontalScrollbar() (ret bool) {
 
-	cRet := C.cefingo_scroll_view_has_horizontal_scrollbar(self.p_scroll_view)
+	cRet := C.cefingo_scroll_view_has_horizontal_scrollbar((*C.cef_scroll_view_t)(self.pc_scroll_view))
 
 	ret = cRet == 1
 	return ret
@@ -20628,7 +20978,7 @@ func (self *CScrollViewT) HasHorizontalScrollbar() (ret bool) {
 ///
 func (self *CScrollViewT) GetHorizontalScrollbarHeight() (ret bool) {
 
-	cRet := C.cefingo_scroll_view_get_horizontal_scrollbar_height(self.p_scroll_view)
+	cRet := C.cefingo_scroll_view_get_horizontal_scrollbar_height((*C.cef_scroll_view_t)(self.pc_scroll_view))
 
 	ret = cRet == 1
 	return ret
@@ -20639,7 +20989,7 @@ func (self *CScrollViewT) GetHorizontalScrollbarHeight() (ret bool) {
 ///
 func (self *CScrollViewT) HasVerticalScrollbar() (ret bool) {
 
-	cRet := C.cefingo_scroll_view_has_vertical_scrollbar(self.p_scroll_view)
+	cRet := C.cefingo_scroll_view_has_vertical_scrollbar((*C.cef_scroll_view_t)(self.pc_scroll_view))
 
 	ret = cRet == 1
 	return ret
@@ -20650,7 +21000,7 @@ func (self *CScrollViewT) HasVerticalScrollbar() (ret bool) {
 ///
 func (self *CScrollViewT) GetVerticalScrollbarWidth() (ret bool) {
 
-	cRet := C.cefingo_scroll_view_get_vertical_scrollbar_width(self.p_scroll_view)
+	cRet := C.cefingo_scroll_view_get_vertical_scrollbar_width((*C.cef_scroll_view_t)(self.pc_scroll_view))
 
 	ret = cRet == 1
 	return ret
@@ -20664,8 +21014,8 @@ func ScrollViewCreate(
 ) (ret *CScrollViewT) {
 	var goTmpdelegate *C.cef_view_delegate_t
 	if delegate != nil {
-		goTmpdelegate = delegate.p_view_delegate
-		BaseAddRef(goTmpdelegate)
+		BaseAddRef(delegate.pc_view_delegate)
+		goTmpdelegate = (*C.cef_view_delegate_t)(delegate.pc_view_delegate)
 	}
 
 	cRet := C.cef_scroll_view_create(goTmpdelegate)
@@ -20680,10 +21030,12 @@ func ScrollViewCreate(
 // Structure representing SSL information.
 ///
 
+type cCSslinfoT C.cef_sslinfo_t
+
 // Go type for cef_sslinfo_t
 type CSslinfoT struct {
-	noCopy    noCopy
-	p_sslinfo *C.cef_sslinfo_t
+	noCopy     noCopy
+	pc_sslinfo *cCSslinfoT
 }
 
 type RefToCSslinfoT struct {
@@ -20709,21 +21061,22 @@ func newCSslinfoT(p *C.cef_sslinfo_t) *CSslinfoT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T199.1:")
-	BaseAddRef(p)
-	go_sslinfo := CSslinfoT{noCopy{}, p}
+	pc := (*cCSslinfoT)(p)
+	BaseAddRef(pc)
+	go_sslinfo := CSslinfoT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_sslinfo, func(g *CSslinfoT) {
-		Tracef(unsafe.Pointer(g.p_sslinfo), "T199.2:")
-		BaseRelease(g.p_sslinfo)
+		Tracef(unsafe.Pointer(g.pc_sslinfo), "T199.2:")
+		BaseRelease(g.pc_sslinfo)
 	})
 	return &go_sslinfo
 }
 
 // *C.cef_sslinfo_t has refCounted interface
 func (sslinfo *CSslinfoT) HasOneRef() bool {
-	return BaseHasOneRef(sslinfo.p_sslinfo)
+	return BaseHasOneRef(sslinfo.pc_sslinfo)
 }
 
-func (p *C.cef_sslinfo_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCSslinfoT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -20733,7 +21086,7 @@ func (p *C.cef_sslinfo_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 ///
 func (self *CSslinfoT) GetCertStatus() (ret CCertStatusT) {
 
-	cRet := C.cefingo_sslinfo_get_cert_status(self.p_sslinfo)
+	cRet := C.cefingo_sslinfo_get_cert_status((*C.cef_sslinfo_t)(self.pc_sslinfo))
 
 	ret = CCertStatusT(cRet)
 	return ret
@@ -20744,7 +21097,7 @@ func (self *CSslinfoT) GetCertStatus() (ret CCertStatusT) {
 ///
 func (self *CSslinfoT) GetX509certificate() (ret *CX509certificateT) {
 
-	cRet := C.cefingo_sslinfo_get_x509certificate(self.p_sslinfo)
+	cRet := C.cefingo_sslinfo_get_x509certificate((*C.cef_sslinfo_t)(self.pc_sslinfo))
 
 	ret = newCX509certificateT(cRet)
 	return ret
@@ -20769,10 +21122,12 @@ func IsCertStatusError(
 // Structure representing the SSL information for a navigation entry.
 ///
 
+type cCSslstatusT C.cef_sslstatus_t
+
 // Go type for cef_sslstatus_t
 type CSslstatusT struct {
-	noCopy      noCopy
-	p_sslstatus *C.cef_sslstatus_t
+	noCopy       noCopy
+	pc_sslstatus *cCSslstatusT
 }
 
 type RefToCSslstatusT struct {
@@ -20798,21 +21153,22 @@ func newCSslstatusT(p *C.cef_sslstatus_t) *CSslstatusT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T200.1:")
-	BaseAddRef(p)
-	go_sslstatus := CSslstatusT{noCopy{}, p}
+	pc := (*cCSslstatusT)(p)
+	BaseAddRef(pc)
+	go_sslstatus := CSslstatusT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_sslstatus, func(g *CSslstatusT) {
-		Tracef(unsafe.Pointer(g.p_sslstatus), "T200.2:")
-		BaseRelease(g.p_sslstatus)
+		Tracef(unsafe.Pointer(g.pc_sslstatus), "T200.2:")
+		BaseRelease(g.pc_sslstatus)
 	})
 	return &go_sslstatus
 }
 
 // *C.cef_sslstatus_t has refCounted interface
 func (sslstatus *CSslstatusT) HasOneRef() bool {
-	return BaseHasOneRef(sslstatus.p_sslstatus)
+	return BaseHasOneRef(sslstatus.pc_sslstatus)
 }
 
-func (p *C.cef_sslstatus_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCSslstatusT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -20821,7 +21177,7 @@ func (p *C.cef_sslstatus_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 ///
 func (self *CSslstatusT) IsSecureConnection() (ret bool) {
 
-	cRet := C.cefingo_sslstatus_is_secure_connection(self.p_sslstatus)
+	cRet := C.cefingo_sslstatus_is_secure_connection((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
 	ret = cRet == 1
 	return ret
@@ -20833,7 +21189,7 @@ func (self *CSslstatusT) IsSecureConnection() (ret bool) {
 ///
 func (self *CSslstatusT) GetCertStatus() (ret CCertStatusT) {
 
-	cRet := C.cefingo_sslstatus_get_cert_status(self.p_sslstatus)
+	cRet := C.cefingo_sslstatus_get_cert_status((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
 	ret = CCertStatusT(cRet)
 	return ret
@@ -20844,7 +21200,7 @@ func (self *CSslstatusT) GetCertStatus() (ret CCertStatusT) {
 ///
 func (self *CSslstatusT) GetSslversion() (ret CSslVersionT) {
 
-	cRet := C.cefingo_sslstatus_get_sslversion(self.p_sslstatus)
+	cRet := C.cefingo_sslstatus_get_sslversion((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
 	ret = CSslVersionT(cRet)
 	return ret
@@ -20855,7 +21211,7 @@ func (self *CSslstatusT) GetSslversion() (ret CSslVersionT) {
 ///
 func (self *CSslstatusT) GetContentStatus() (ret CSslContentStatusT) {
 
-	cRet := C.cefingo_sslstatus_get_content_status(self.p_sslstatus)
+	cRet := C.cefingo_sslstatus_get_content_status((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
 	ret = CSslContentStatusT(cRet)
 	return ret
@@ -20866,7 +21222,7 @@ func (self *CSslstatusT) GetContentStatus() (ret CSslContentStatusT) {
 ///
 func (self *CSslstatusT) GetX509certificate() (ret *CX509certificateT) {
 
-	cRet := C.cefingo_sslstatus_get_x509certificate(self.p_sslstatus)
+	cRet := C.cefingo_sslstatus_get_x509certificate((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
 	ret = newCX509certificateT(cRet)
 	return ret
@@ -20879,10 +21235,12 @@ func (self *CSslstatusT) GetX509certificate() (ret *CX509certificateT) {
 // functions of this structure may be called on any thread.
 ///
 
+type cCReadHandlerT C.cef_read_handler_t
+
 // Go type for cef_read_handler_t
 type CReadHandlerT struct {
-	noCopy         noCopy
-	p_read_handler *C.cef_read_handler_t
+	noCopy          noCopy
+	pc_read_handler *cCReadHandlerT
 }
 
 type RefToCReadHandlerT struct {
@@ -20908,21 +21266,22 @@ func newCReadHandlerT(p *C.cef_read_handler_t) *CReadHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T201.1:")
-	BaseAddRef(p)
-	go_read_handler := CReadHandlerT{noCopy{}, p}
+	pc := (*cCReadHandlerT)(p)
+	BaseAddRef(pc)
+	go_read_handler := CReadHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_read_handler, func(g *CReadHandlerT) {
-		Tracef(unsafe.Pointer(g.p_read_handler), "T201.2:")
-		BaseRelease(g.p_read_handler)
+		Tracef(unsafe.Pointer(g.pc_read_handler), "T201.2:")
+		BaseRelease(g.pc_read_handler)
 	})
 	return &go_read_handler
 }
 
 // *C.cef_read_handler_t has refCounted interface
 func (read_handler *CReadHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(read_handler.p_read_handler)
+	return BaseHasOneRef(read_handler.pc_read_handler)
 }
 
-func (p *C.cef_read_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCReadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -20980,25 +21339,26 @@ type CReadHandlerTMayBlockHandler interface {
 }
 
 var read_handler_handlers = struct {
-	handler           map[*C.cef_read_handler_t]interface{}
-	read_handler      map[*C.cef_read_handler_t]CReadHandlerTReadHandler
-	seek_handler      map[*C.cef_read_handler_t]CReadHandlerTSeekHandler
-	tell_handler      map[*C.cef_read_handler_t]CReadHandlerTTellHandler
-	eof_handler       map[*C.cef_read_handler_t]EofHandler
-	may_block_handler map[*C.cef_read_handler_t]CReadHandlerTMayBlockHandler
+	handler           map[*cCReadHandlerT]interface{}
+	read_handler      map[*cCReadHandlerT]CReadHandlerTReadHandler
+	seek_handler      map[*cCReadHandlerT]CReadHandlerTSeekHandler
+	tell_handler      map[*cCReadHandlerT]CReadHandlerTTellHandler
+	eof_handler       map[*cCReadHandlerT]EofHandler
+	may_block_handler map[*cCReadHandlerT]CReadHandlerTMayBlockHandler
 }{
-	map[*C.cef_read_handler_t]interface{}{},
-	map[*C.cef_read_handler_t]CReadHandlerTReadHandler{},
-	map[*C.cef_read_handler_t]CReadHandlerTSeekHandler{},
-	map[*C.cef_read_handler_t]CReadHandlerTTellHandler{},
-	map[*C.cef_read_handler_t]EofHandler{},
-	map[*C.cef_read_handler_t]CReadHandlerTMayBlockHandler{},
+	map[*cCReadHandlerT]interface{}{},
+	map[*cCReadHandlerT]CReadHandlerTReadHandler{},
+	map[*cCReadHandlerT]CReadHandlerTSeekHandler{},
+	map[*cCReadHandlerT]CReadHandlerTTellHandler{},
+	map[*cCReadHandlerT]EofHandler{},
+	map[*cCReadHandlerT]CReadHandlerTMayBlockHandler{},
 }
 
 // AllocCReadHandlerT allocates CReadHandlerT and construct it
 func AllocCReadHandlerT() *CReadHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_read_handler_wrapper_t, "T201.3:")
 	cefp := C.cefingo_construct_read_handler((*C.cefingo_read_handler_wrapper_t)(up))
+	cgop := (*cCReadHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_read_handler_t itself in DeassocFunc,
@@ -21007,12 +21367,12 @@ func AllocCReadHandlerT() *CReadHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(read_handler_handlers.handler, cefp)
-		delete(read_handler_handlers.read_handler, cefp)
-		delete(read_handler_handlers.seek_handler, cefp)
-		delete(read_handler_handlers.tell_handler, cefp)
-		delete(read_handler_handlers.eof_handler, cefp)
-		delete(read_handler_handlers.may_block_handler, cefp)
+		delete(read_handler_handlers.handler, cgop)
+		delete(read_handler_handlers.read_handler, cgop)
+		delete(read_handler_handlers.seek_handler, cgop)
+		delete(read_handler_handlers.tell_handler, cgop)
+		delete(read_handler_handlers.eof_handler, cgop)
+		delete(read_handler_handlers.may_block_handler, cgop)
 	}))
 
 	return newCReadHandlerT(cefp)
@@ -21022,7 +21382,7 @@ func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := read_handler.p_read_handler
+	cp := read_handler.pc_read_handler
 	read_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(CReadHandlerTReadHandler); ok {
@@ -21055,7 +21415,7 @@ func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
 
 func (read_handler *CReadHandlerT) UnbindAll() {
 
-	cp := read_handler.p_read_handler
+	cp := read_handler.pc_read_handler
 	delete(read_handler_handlers.handler, cp)
 
 	delete(read_handler_handlers.read_handler, cp)
@@ -21070,7 +21430,7 @@ func (read_handler *CReadHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := read_handler.p_read_handler
+	cp := read_handler.pc_read_handler
 	return read_handler_handlers.handler[cp]
 }
 
@@ -21079,10 +21439,12 @@ func (read_handler *CReadHandlerT) Handler() interface{} {
 // may be called on any thread.
 ///
 
+type cCStreamReaderT C.cef_stream_reader_t
+
 // Go type for cef_stream_reader_t
 type CStreamReaderT struct {
-	noCopy          noCopy
-	p_stream_reader *C.cef_stream_reader_t
+	noCopy           noCopy
+	pc_stream_reader *cCStreamReaderT
 }
 
 type RefToCStreamReaderT struct {
@@ -21108,21 +21470,22 @@ func newCStreamReaderT(p *C.cef_stream_reader_t) *CStreamReaderT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T202.1:")
-	BaseAddRef(p)
-	go_stream_reader := CStreamReaderT{noCopy{}, p}
+	pc := (*cCStreamReaderT)(p)
+	BaseAddRef(pc)
+	go_stream_reader := CStreamReaderT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_stream_reader, func(g *CStreamReaderT) {
-		Tracef(unsafe.Pointer(g.p_stream_reader), "T202.2:")
-		BaseRelease(g.p_stream_reader)
+		Tracef(unsafe.Pointer(g.pc_stream_reader), "T202.2:")
+		BaseRelease(g.pc_stream_reader)
 	})
 	return &go_stream_reader
 }
 
 // *C.cef_stream_reader_t has refCounted interface
 func (stream_reader *CStreamReaderT) HasOneRef() bool {
-	return BaseHasOneRef(stream_reader.p_stream_reader)
+	return BaseHasOneRef(stream_reader.pc_stream_reader)
 }
 
-func (p *C.cef_stream_reader_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCStreamReaderT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -21135,7 +21498,7 @@ func (self *CStreamReaderT) Read(
 	n int64,
 ) (ret int64) {
 
-	cRet := C.cefingo_stream_reader_read(self.p_stream_reader, ptr, (C.size_t)(size), (C.size_t)(n))
+	cRet := C.cefingo_stream_reader_read((*C.cef_stream_reader_t)(self.pc_stream_reader), ptr, (C.size_t)(size), (C.size_t)(n))
 
 	ret = (int64)(cRet)
 	return ret
@@ -21150,7 +21513,7 @@ func (self *CStreamReaderT) Seek(
 	whence int,
 ) (ret bool) {
 
-	cRet := C.cefingo_stream_reader_seek(self.p_stream_reader, (C.int64)(offset), (C.int)(whence))
+	cRet := C.cefingo_stream_reader_seek((*C.cef_stream_reader_t)(self.pc_stream_reader), (C.int64)(offset), (C.int)(whence))
 
 	ret = cRet == 1
 	return ret
@@ -21161,7 +21524,7 @@ func (self *CStreamReaderT) Seek(
 ///
 func (self *CStreamReaderT) Tell() (ret int64) {
 
-	cRet := C.cefingo_stream_reader_tell(self.p_stream_reader)
+	cRet := C.cefingo_stream_reader_tell((*C.cef_stream_reader_t)(self.pc_stream_reader))
 
 	ret = (int64)(cRet)
 	return ret
@@ -21172,7 +21535,7 @@ func (self *CStreamReaderT) Tell() (ret int64) {
 ///
 func (self *CStreamReaderT) Eof() (ret bool) {
 
-	cRet := C.cefingo_stream_reader_eof(self.p_stream_reader)
+	cRet := C.cefingo_stream_reader_eof((*C.cef_stream_reader_t)(self.pc_stream_reader))
 
 	ret = cRet == 1
 	return ret
@@ -21185,7 +21548,7 @@ func (self *CStreamReaderT) Eof() (ret bool) {
 ///
 func (self *CStreamReaderT) MayBlock() (ret bool) {
 
-	cRet := C.cefingo_stream_reader_may_block(self.p_stream_reader)
+	cRet := C.cefingo_stream_reader_may_block((*C.cef_stream_reader_t)(self.pc_stream_reader))
 
 	ret = cRet == 1
 	return ret
@@ -21229,8 +21592,8 @@ func StreamReaderCreateForHandler(
 ) (ret *CStreamReaderT) {
 	var goTmphandler *C.cef_read_handler_t
 	if handler != nil {
-		goTmphandler = handler.p_read_handler
-		BaseAddRef(goTmphandler)
+		BaseAddRef(handler.pc_read_handler)
+		goTmphandler = (*C.cef_read_handler_t)(handler.pc_read_handler)
 	}
 
 	cRet := C.cef_stream_reader_create_for_handler(goTmphandler)
@@ -21244,10 +21607,12 @@ func StreamReaderCreateForHandler(
 // functions of this structure may be called on any thread.
 ///
 
+type cCWriteHandlerT C.cef_write_handler_t
+
 // Go type for cef_write_handler_t
 type CWriteHandlerT struct {
-	noCopy          noCopy
-	p_write_handler *C.cef_write_handler_t
+	noCopy           noCopy
+	pc_write_handler *cCWriteHandlerT
 }
 
 type RefToCWriteHandlerT struct {
@@ -21273,21 +21638,22 @@ func newCWriteHandlerT(p *C.cef_write_handler_t) *CWriteHandlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T203.1:")
-	BaseAddRef(p)
-	go_write_handler := CWriteHandlerT{noCopy{}, p}
+	pc := (*cCWriteHandlerT)(p)
+	BaseAddRef(pc)
+	go_write_handler := CWriteHandlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_write_handler, func(g *CWriteHandlerT) {
-		Tracef(unsafe.Pointer(g.p_write_handler), "T203.2:")
-		BaseRelease(g.p_write_handler)
+		Tracef(unsafe.Pointer(g.pc_write_handler), "T203.2:")
+		BaseRelease(g.pc_write_handler)
 	})
 	return &go_write_handler
 }
 
 // *C.cef_write_handler_t has refCounted interface
 func (write_handler *CWriteHandlerT) HasOneRef() bool {
-	return BaseHasOneRef(write_handler.p_write_handler)
+	return BaseHasOneRef(write_handler.pc_write_handler)
 }
 
-func (p *C.cef_write_handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCWriteHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -21345,25 +21711,26 @@ type CWriteHandlerTMayBlockHandler interface {
 }
 
 var write_handler_handlers = struct {
-	handler           map[*C.cef_write_handler_t]interface{}
-	write_handler     map[*C.cef_write_handler_t]WriteHandler
-	seek_handler      map[*C.cef_write_handler_t]CWriteHandlerTSeekHandler
-	tell_handler      map[*C.cef_write_handler_t]CWriteHandlerTTellHandler
-	flush_handler     map[*C.cef_write_handler_t]FlushHandler
-	may_block_handler map[*C.cef_write_handler_t]CWriteHandlerTMayBlockHandler
+	handler           map[*cCWriteHandlerT]interface{}
+	write_handler     map[*cCWriteHandlerT]WriteHandler
+	seek_handler      map[*cCWriteHandlerT]CWriteHandlerTSeekHandler
+	tell_handler      map[*cCWriteHandlerT]CWriteHandlerTTellHandler
+	flush_handler     map[*cCWriteHandlerT]FlushHandler
+	may_block_handler map[*cCWriteHandlerT]CWriteHandlerTMayBlockHandler
 }{
-	map[*C.cef_write_handler_t]interface{}{},
-	map[*C.cef_write_handler_t]WriteHandler{},
-	map[*C.cef_write_handler_t]CWriteHandlerTSeekHandler{},
-	map[*C.cef_write_handler_t]CWriteHandlerTTellHandler{},
-	map[*C.cef_write_handler_t]FlushHandler{},
-	map[*C.cef_write_handler_t]CWriteHandlerTMayBlockHandler{},
+	map[*cCWriteHandlerT]interface{}{},
+	map[*cCWriteHandlerT]WriteHandler{},
+	map[*cCWriteHandlerT]CWriteHandlerTSeekHandler{},
+	map[*cCWriteHandlerT]CWriteHandlerTTellHandler{},
+	map[*cCWriteHandlerT]FlushHandler{},
+	map[*cCWriteHandlerT]CWriteHandlerTMayBlockHandler{},
 }
 
 // AllocCWriteHandlerT allocates CWriteHandlerT and construct it
 func AllocCWriteHandlerT() *CWriteHandlerT {
 	up := c_calloc(1, C.sizeof_cefingo_write_handler_wrapper_t, "T203.3:")
 	cefp := C.cefingo_construct_write_handler((*C.cefingo_write_handler_wrapper_t)(up))
+	cgop := (*cCWriteHandlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_write_handler_t itself in DeassocFunc,
@@ -21372,12 +21739,12 @@ func AllocCWriteHandlerT() *CWriteHandlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(write_handler_handlers.handler, cefp)
-		delete(write_handler_handlers.write_handler, cefp)
-		delete(write_handler_handlers.seek_handler, cefp)
-		delete(write_handler_handlers.tell_handler, cefp)
-		delete(write_handler_handlers.flush_handler, cefp)
-		delete(write_handler_handlers.may_block_handler, cefp)
+		delete(write_handler_handlers.handler, cgop)
+		delete(write_handler_handlers.write_handler, cgop)
+		delete(write_handler_handlers.seek_handler, cgop)
+		delete(write_handler_handlers.tell_handler, cgop)
+		delete(write_handler_handlers.flush_handler, cgop)
+		delete(write_handler_handlers.may_block_handler, cgop)
 	}))
 
 	return newCWriteHandlerT(cefp)
@@ -21387,7 +21754,7 @@ func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := write_handler.p_write_handler
+	cp := write_handler.pc_write_handler
 	write_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(WriteHandler); ok {
@@ -21420,7 +21787,7 @@ func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
 
 func (write_handler *CWriteHandlerT) UnbindAll() {
 
-	cp := write_handler.p_write_handler
+	cp := write_handler.pc_write_handler
 	delete(write_handler_handlers.handler, cp)
 
 	delete(write_handler_handlers.write_handler, cp)
@@ -21435,7 +21802,7 @@ func (write_handler *CWriteHandlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := write_handler.p_write_handler
+	cp := write_handler.pc_write_handler
 	return write_handler_handlers.handler[cp]
 }
 
@@ -21444,10 +21811,12 @@ func (write_handler *CWriteHandlerT) Handler() interface{} {
 // be called on any thread.
 ///
 
+type cCStreamWriterT C.cef_stream_writer_t
+
 // Go type for cef_stream_writer_t
 type CStreamWriterT struct {
-	noCopy          noCopy
-	p_stream_writer *C.cef_stream_writer_t
+	noCopy           noCopy
+	pc_stream_writer *cCStreamWriterT
 }
 
 type RefToCStreamWriterT struct {
@@ -21473,21 +21842,22 @@ func newCStreamWriterT(p *C.cef_stream_writer_t) *CStreamWriterT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T204.1:")
-	BaseAddRef(p)
-	go_stream_writer := CStreamWriterT{noCopy{}, p}
+	pc := (*cCStreamWriterT)(p)
+	BaseAddRef(pc)
+	go_stream_writer := CStreamWriterT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_stream_writer, func(g *CStreamWriterT) {
-		Tracef(unsafe.Pointer(g.p_stream_writer), "T204.2:")
-		BaseRelease(g.p_stream_writer)
+		Tracef(unsafe.Pointer(g.pc_stream_writer), "T204.2:")
+		BaseRelease(g.pc_stream_writer)
 	})
 	return &go_stream_writer
 }
 
 // *C.cef_stream_writer_t has refCounted interface
 func (stream_writer *CStreamWriterT) HasOneRef() bool {
-	return BaseHasOneRef(stream_writer.p_stream_writer)
+	return BaseHasOneRef(stream_writer.pc_stream_writer)
 }
 
-func (p *C.cef_stream_writer_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCStreamWriterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -21500,7 +21870,7 @@ func (self *CStreamWriterT) Write(
 	n int64,
 ) (ret int64) {
 
-	cRet := C.cefingo_stream_writer_write(self.p_stream_writer, ptr, (C.size_t)(size), (C.size_t)(n))
+	cRet := C.cefingo_stream_writer_write((*C.cef_stream_writer_t)(self.pc_stream_writer), ptr, (C.size_t)(size), (C.size_t)(n))
 
 	ret = (int64)(cRet)
 	return ret
@@ -21515,7 +21885,7 @@ func (self *CStreamWriterT) Seek(
 	whence int,
 ) (ret bool) {
 
-	cRet := C.cefingo_stream_writer_seek(self.p_stream_writer, (C.int64)(offset), (C.int)(whence))
+	cRet := C.cefingo_stream_writer_seek((*C.cef_stream_writer_t)(self.pc_stream_writer), (C.int64)(offset), (C.int)(whence))
 
 	ret = cRet == 1
 	return ret
@@ -21526,7 +21896,7 @@ func (self *CStreamWriterT) Seek(
 ///
 func (self *CStreamWriterT) Tell() (ret int64) {
 
-	cRet := C.cefingo_stream_writer_tell(self.p_stream_writer)
+	cRet := C.cefingo_stream_writer_tell((*C.cef_stream_writer_t)(self.pc_stream_writer))
 
 	ret = (int64)(cRet)
 	return ret
@@ -21537,7 +21907,7 @@ func (self *CStreamWriterT) Tell() (ret int64) {
 ///
 func (self *CStreamWriterT) Flush() (ret bool) {
 
-	cRet := C.cefingo_stream_writer_flush(self.p_stream_writer)
+	cRet := C.cefingo_stream_writer_flush((*C.cef_stream_writer_t)(self.pc_stream_writer))
 
 	ret = cRet == 1
 	return ret
@@ -21550,7 +21920,7 @@ func (self *CStreamWriterT) Flush() (ret bool) {
 ///
 func (self *CStreamWriterT) MayBlock() (ret bool) {
 
-	cRet := C.cefingo_stream_writer_may_block(self.p_stream_writer)
+	cRet := C.cefingo_stream_writer_may_block((*C.cef_stream_writer_t)(self.pc_stream_writer))
 
 	ret = cRet == 1
 	return ret
@@ -21578,8 +21948,8 @@ func StreamWriterCreateForHandler(
 ) (ret *CStreamWriterT) {
 	var goTmphandler *C.cef_write_handler_t
 	if handler != nil {
-		goTmphandler = handler.p_write_handler
-		BaseAddRef(goTmphandler)
+		BaseAddRef(handler.pc_write_handler)
+		goTmphandler = (*C.cef_write_handler_t)(handler.pc_write_handler)
 	}
 
 	cRet := C.cef_stream_writer_create_for_handler(goTmphandler)
@@ -21594,10 +21964,12 @@ func StreamWriterCreateForHandler(
 // Implement this structure to receive string values asynchronously.
 ///
 
+type cCStringVisitorT C.cef_string_visitor_t
+
 // Go type for cef_string_visitor_t
 type CStringVisitorT struct {
-	noCopy           noCopy
-	p_string_visitor *C.cef_string_visitor_t
+	noCopy            noCopy
+	pc_string_visitor *cCStringVisitorT
 }
 
 type RefToCStringVisitorT struct {
@@ -21623,21 +21995,22 @@ func newCStringVisitorT(p *C.cef_string_visitor_t) *CStringVisitorT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T205.1:")
-	BaseAddRef(p)
-	go_string_visitor := CStringVisitorT{noCopy{}, p}
+	pc := (*cCStringVisitorT)(p)
+	BaseAddRef(pc)
+	go_string_visitor := CStringVisitorT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_string_visitor, func(g *CStringVisitorT) {
-		Tracef(unsafe.Pointer(g.p_string_visitor), "T205.2:")
-		BaseRelease(g.p_string_visitor)
+		Tracef(unsafe.Pointer(g.pc_string_visitor), "T205.2:")
+		BaseRelease(g.pc_string_visitor)
 	})
 	return &go_string_visitor
 }
 
 // *C.cef_string_visitor_t has refCounted interface
 func (string_visitor *CStringVisitorT) HasOneRef() bool {
-	return BaseHasOneRef(string_visitor.p_string_visitor)
+	return BaseHasOneRef(string_visitor.pc_string_visitor)
 }
 
-func (p *C.cef_string_visitor_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCStringVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -21652,17 +22025,18 @@ type CStringVisitorTVisitHandler interface {
 }
 
 var string_visitor_handlers = struct {
-	handler       map[*C.cef_string_visitor_t]interface{}
-	visit_handler map[*C.cef_string_visitor_t]CStringVisitorTVisitHandler
+	handler       map[*cCStringVisitorT]interface{}
+	visit_handler map[*cCStringVisitorT]CStringVisitorTVisitHandler
 }{
-	map[*C.cef_string_visitor_t]interface{}{},
-	map[*C.cef_string_visitor_t]CStringVisitorTVisitHandler{},
+	map[*cCStringVisitorT]interface{}{},
+	map[*cCStringVisitorT]CStringVisitorTVisitHandler{},
 }
 
 // AllocCStringVisitorT allocates CStringVisitorT and construct it
 func AllocCStringVisitorT() *CStringVisitorT {
 	up := c_calloc(1, C.sizeof_cefingo_string_visitor_wrapper_t, "T205.3:")
 	cefp := C.cefingo_construct_string_visitor((*C.cefingo_string_visitor_wrapper_t)(up))
+	cgop := (*cCStringVisitorT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_string_visitor_t itself in DeassocFunc,
@@ -21671,8 +22045,8 @@ func AllocCStringVisitorT() *CStringVisitorT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(string_visitor_handlers.handler, cefp)
-		delete(string_visitor_handlers.visit_handler, cefp)
+		delete(string_visitor_handlers.handler, cgop)
+		delete(string_visitor_handlers.visit_handler, cgop)
 	}))
 
 	return newCStringVisitorT(cefp)
@@ -21682,7 +22056,7 @@ func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := string_visitor.p_string_visitor
+	cp := string_visitor.pc_string_visitor
 	string_visitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CStringVisitorTVisitHandler); ok {
@@ -21699,7 +22073,7 @@ func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
 
 func (string_visitor *CStringVisitorT) UnbindAll() {
 
-	cp := string_visitor.p_string_visitor
+	cp := string_visitor.pc_string_visitor
 	delete(string_visitor_handlers.handler, cp)
 
 	delete(string_visitor_handlers.visit_handler, cp)
@@ -21710,7 +22084,7 @@ func (string_visitor *CStringVisitorT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := string_visitor.p_string_visitor
+	cp := string_visitor.pc_string_visitor
 	return string_visitor_handlers.handler[cp]
 }
 
@@ -21725,10 +22099,12 @@ func (string_visitor *CStringVisitorT) Handler() interface{} {
 // task object destructor.
 ///
 
+type cCTaskT C.cef_task_t
+
 // Go type for cef_task_t
 type CTaskT struct {
-	noCopy noCopy
-	p_task *C.cef_task_t
+	noCopy  noCopy
+	pc_task *cCTaskT
 }
 
 type RefToCTaskT struct {
@@ -21754,21 +22130,22 @@ func newCTaskT(p *C.cef_task_t) *CTaskT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T206.1:")
-	BaseAddRef(p)
-	go_task := CTaskT{noCopy{}, p}
+	pc := (*cCTaskT)(p)
+	BaseAddRef(pc)
+	go_task := CTaskT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_task, func(g *CTaskT) {
-		Tracef(unsafe.Pointer(g.p_task), "T206.2:")
-		BaseRelease(g.p_task)
+		Tracef(unsafe.Pointer(g.pc_task), "T206.2:")
+		BaseRelease(g.pc_task)
 	})
 	return &go_task
 }
 
 // *C.cef_task_t has refCounted interface
 func (task *CTaskT) HasOneRef() bool {
-	return BaseHasOneRef(task.p_task)
+	return BaseHasOneRef(task.pc_task)
 }
 
-func (p *C.cef_task_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCTaskT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -21782,17 +22159,18 @@ type CTaskTExecuteHandler interface {
 }
 
 var task_handlers = struct {
-	handler         map[*C.cef_task_t]interface{}
-	execute_handler map[*C.cef_task_t]CTaskTExecuteHandler
+	handler         map[*cCTaskT]interface{}
+	execute_handler map[*cCTaskT]CTaskTExecuteHandler
 }{
-	map[*C.cef_task_t]interface{}{},
-	map[*C.cef_task_t]CTaskTExecuteHandler{},
+	map[*cCTaskT]interface{}{},
+	map[*cCTaskT]CTaskTExecuteHandler{},
 }
 
 // AllocCTaskT allocates CTaskT and construct it
 func AllocCTaskT() *CTaskT {
 	up := c_calloc(1, C.sizeof_cefingo_task_wrapper_t, "T206.3:")
 	cefp := C.cefingo_construct_task((*C.cefingo_task_wrapper_t)(up))
+	cgop := (*cCTaskT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_task_t itself in DeassocFunc,
@@ -21801,8 +22179,8 @@ func AllocCTaskT() *CTaskT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(task_handlers.handler, cefp)
-		delete(task_handlers.execute_handler, cefp)
+		delete(task_handlers.handler, cgop)
+		delete(task_handlers.execute_handler, cgop)
 	}))
 
 	return newCTaskT(cefp)
@@ -21812,7 +22190,7 @@ func (task *CTaskT) Bind(a interface{}) *CTaskT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := task.p_task
+	cp := task.pc_task
 	task_handlers.handler[cp] = a
 
 	if h, ok := a.(CTaskTExecuteHandler); ok {
@@ -21829,7 +22207,7 @@ func (task *CTaskT) Bind(a interface{}) *CTaskT {
 
 func (task *CTaskT) UnbindAll() {
 
-	cp := task.p_task
+	cp := task.pc_task
 	delete(task_handlers.handler, cp)
 
 	delete(task_handlers.execute_handler, cp)
@@ -21840,7 +22218,7 @@ func (task *CTaskT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := task.p_task
+	cp := task.pc_task
 	return task_handlers.handler[cp]
 }
 
@@ -21854,10 +22232,12 @@ func (task *CTaskT) Handler() interface{} {
 // other CEF threads as appropriate (for example, V8 WebWorker threads).
 ///
 
+type cCTaskRunnerT C.cef_task_runner_t
+
 // Go type for cef_task_runner_t
 type CTaskRunnerT struct {
-	noCopy        noCopy
-	p_task_runner *C.cef_task_runner_t
+	noCopy         noCopy
+	pc_task_runner *cCTaskRunnerT
 }
 
 type RefToCTaskRunnerT struct {
@@ -21883,21 +22263,22 @@ func newCTaskRunnerT(p *C.cef_task_runner_t) *CTaskRunnerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T207.1:")
-	BaseAddRef(p)
-	go_task_runner := CTaskRunnerT{noCopy{}, p}
+	pc := (*cCTaskRunnerT)(p)
+	BaseAddRef(pc)
+	go_task_runner := CTaskRunnerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_task_runner, func(g *CTaskRunnerT) {
-		Tracef(unsafe.Pointer(g.p_task_runner), "T207.2:")
-		BaseRelease(g.p_task_runner)
+		Tracef(unsafe.Pointer(g.pc_task_runner), "T207.2:")
+		BaseRelease(g.pc_task_runner)
 	})
 	return &go_task_runner
 }
 
 // *C.cef_task_runner_t has refCounted interface
 func (task_runner *CTaskRunnerT) HasOneRef() bool {
-	return BaseHasOneRef(task_runner.p_task_runner)
+	return BaseHasOneRef(task_runner.pc_task_runner)
 }
 
-func (p *C.cef_task_runner_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCTaskRunnerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -21910,11 +22291,11 @@ func (self *CTaskRunnerT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_task_runner_t
 	if that != nil {
-		goTmpthat = that.p_task_runner
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_task_runner)
+		goTmpthat = (*C.cef_task_runner_t)(that.pc_task_runner)
 	}
 
-	cRet := C.cefingo_task_runner_is_same(self.p_task_runner, goTmpthat)
+	cRet := C.cefingo_task_runner_is_same((*C.cef_task_runner_t)(self.pc_task_runner), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -21925,7 +22306,7 @@ func (self *CTaskRunnerT) IsSame(
 ///
 func (self *CTaskRunnerT) BelongsToCurrentThread() (ret bool) {
 
-	cRet := C.cefingo_task_runner_belongs_to_current_thread(self.p_task_runner)
+	cRet := C.cefingo_task_runner_belongs_to_current_thread((*C.cef_task_runner_t)(self.pc_task_runner))
 
 	ret = cRet == 1
 	return ret
@@ -21938,7 +22319,7 @@ func (self *CTaskRunnerT) BelongsToThread(
 	threadId CThreadIdT,
 ) (ret bool) {
 
-	cRet := C.cefingo_task_runner_belongs_to_thread(self.p_task_runner, (C.cef_thread_id_t)(threadId))
+	cRet := C.cefingo_task_runner_belongs_to_thread((*C.cef_task_runner_t)(self.pc_task_runner), (C.cef_thread_id_t)(threadId))
 
 	ret = cRet == 1
 	return ret
@@ -21953,11 +22334,11 @@ func (self *CTaskRunnerT) PostTask(
 ) (ret bool) {
 	var goTmptask *C.cef_task_t
 	if task != nil {
-		goTmptask = task.p_task
-		BaseAddRef(goTmptask)
+		BaseAddRef(task.pc_task)
+		goTmptask = (*C.cef_task_t)(task.pc_task)
 	}
 
-	cRet := C.cefingo_task_runner_post_task(self.p_task_runner, goTmptask)
+	cRet := C.cefingo_task_runner_post_task((*C.cef_task_runner_t)(self.pc_task_runner), goTmptask)
 
 	ret = cRet == 1
 	return ret
@@ -21975,11 +22356,11 @@ func (self *CTaskRunnerT) PostDelayedTask(
 ) (ret bool) {
 	var goTmptask *C.cef_task_t
 	if task != nil {
-		goTmptask = task.p_task
-		BaseAddRef(goTmptask)
+		BaseAddRef(task.pc_task)
+		goTmptask = (*C.cef_task_t)(task.pc_task)
 	}
 
-	cRet := C.cefingo_task_runner_post_delayed_task(self.p_task_runner, goTmptask, (C.int64)(delay_ms))
+	cRet := C.cefingo_task_runner_post_delayed_task((*C.cef_task_runner_t)(self.pc_task_runner), goTmptask, (C.int64)(delay_ms))
 
 	ret = cRet == 1
 	return ret
@@ -22035,8 +22416,8 @@ func PostTask(
 ) (ret bool) {
 	var goTmptask *C.cef_task_t
 	if task != nil {
-		goTmptask = task.p_task
-		BaseAddRef(goTmptask)
+		BaseAddRef(task.pc_task)
+		goTmptask = (*C.cef_task_t)(task.pc_task)
 	}
 
 	cRet := C.cef_post_task((C.cef_thread_id_t)(threadId), goTmptask)
@@ -22057,8 +22438,8 @@ func PostDelayedTask(
 ) (ret bool) {
 	var goTmptask *C.cef_task_t
 	if task != nil {
-		goTmptask = task.p_task
-		BaseAddRef(goTmptask)
+		BaseAddRef(task.pc_task)
+		goTmptask = (*C.cef_task_t)(task.pc_task)
 	}
 
 	cRet := C.cef_post_delayed_task((C.cef_thread_id_t)(threadId), goTmptask, (C.int64)(delay_ms))
@@ -22075,10 +22456,12 @@ func PostDelayedTask(
 // thread unless otherwise indicated.
 ///
 
+type cCTextfieldT C.cef_textfield_t
+
 // Go type for cef_textfield_t
 type CTextfieldT struct {
-	noCopy      noCopy
-	p_textfield *C.cef_textfield_t
+	noCopy       noCopy
+	pc_textfield *cCTextfieldT
 }
 
 type RefToCTextfieldT struct {
@@ -22104,26 +22487,28 @@ func newCTextfieldT(p *C.cef_textfield_t) *CTextfieldT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T208.1:")
-	BaseAddRef(p)
-	go_textfield := CTextfieldT{noCopy{}, p}
+	pc := (*cCTextfieldT)(p)
+	BaseAddRef(pc)
+	go_textfield := CTextfieldT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_textfield, func(g *CTextfieldT) {
-		Tracef(unsafe.Pointer(g.p_textfield), "T208.2:")
-		BaseRelease(g.p_textfield)
+		Tracef(unsafe.Pointer(g.pc_textfield), "T208.2:")
+		BaseRelease(g.pc_textfield)
 	})
 	return &go_textfield
 }
 
 // *C.cef_textfield_t has refCounted interface
 func (textfield *CTextfieldT) HasOneRef() bool {
-	return BaseHasOneRef(textfield.p_textfield)
+	return BaseHasOneRef(textfield.pc_textfield)
 }
 
-func (p *C.cef_textfield_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCTextfieldT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewT
 func (textfield *CTextfieldT) ToCViewT() *CViewT {
-	p := (*C.cef_view_t)(unsafe.Pointer(textfield.p_textfield))
+	p := (*C.cef_view_t)(unsafe.Pointer(textfield.pc_textfield))
 	return newCViewT(p)
 }
 
@@ -22134,7 +22519,7 @@ func (self *CTextfieldT) SetPasswordInput(
 	password_input int,
 ) {
 
-	C.cefingo_textfield_set_password_input(self.p_textfield, (C.int)(password_input))
+	C.cefingo_textfield_set_password_input((*C.cef_textfield_t)(self.pc_textfield), (C.int)(password_input))
 
 }
 
@@ -22143,7 +22528,7 @@ func (self *CTextfieldT) SetPasswordInput(
 ///
 func (self *CTextfieldT) IsPasswordInput() (ret bool) {
 
-	cRet := C.cefingo_textfield_is_password_input(self.p_textfield)
+	cRet := C.cefingo_textfield_is_password_input((*C.cef_textfield_t)(self.pc_textfield))
 
 	ret = cRet == 1
 	return ret
@@ -22156,7 +22541,7 @@ func (self *CTextfieldT) SetReadOnly(
 	read_only int,
 ) {
 
-	C.cefingo_textfield_set_read_only(self.p_textfield, (C.int)(read_only))
+	C.cefingo_textfield_set_read_only((*C.cef_textfield_t)(self.pc_textfield), (C.int)(read_only))
 
 }
 
@@ -22165,7 +22550,7 @@ func (self *CTextfieldT) SetReadOnly(
 ///
 func (self *CTextfieldT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_textfield_is_read_only(self.p_textfield)
+	cRet := C.cefingo_textfield_is_read_only((*C.cef_textfield_t)(self.pc_textfield))
 
 	ret = cRet == 1
 	return ret
@@ -22177,7 +22562,7 @@ func (self *CTextfieldT) IsReadOnly() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetText() (ret string) {
 
-	cRet := C.cefingo_textfield_get_text(self.p_textfield)
+	cRet := C.cefingo_textfield_get_text((*C.cef_textfield_t)(self.pc_textfield))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -22196,7 +22581,7 @@ func (self *CTextfieldT) SetText(
 ) {
 	c_text := create_cef_string(text)
 
-	C.cefingo_textfield_set_text(self.p_textfield, c_text.p_cef_string_t)
+	C.cefingo_textfield_set_text((*C.cef_textfield_t)(self.pc_textfield), c_text.p_cef_string_t)
 
 }
 
@@ -22208,7 +22593,7 @@ func (self *CTextfieldT) AppendText(
 ) {
 	c_text := create_cef_string(text)
 
-	C.cefingo_textfield_append_text(self.p_textfield, c_text.p_cef_string_t)
+	C.cefingo_textfield_append_text((*C.cef_textfield_t)(self.pc_textfield), c_text.p_cef_string_t)
 
 }
 
@@ -22220,7 +22605,7 @@ func (self *CTextfieldT) InsertOrReplaceText(
 ) {
 	c_text := create_cef_string(text)
 
-	C.cefingo_textfield_insert_or_replace_text(self.p_textfield, c_text.p_cef_string_t)
+	C.cefingo_textfield_insert_or_replace_text((*C.cef_textfield_t)(self.pc_textfield), c_text.p_cef_string_t)
 
 }
 
@@ -22229,7 +22614,7 @@ func (self *CTextfieldT) InsertOrReplaceText(
 ///
 func (self *CTextfieldT) HasSelection() (ret bool) {
 
-	cRet := C.cefingo_textfield_has_selection(self.p_textfield)
+	cRet := C.cefingo_textfield_has_selection((*C.cef_textfield_t)(self.pc_textfield))
 
 	ret = cRet == 1
 	return ret
@@ -22241,7 +22626,7 @@ func (self *CTextfieldT) HasSelection() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetSelectedText() (ret string) {
 
-	cRet := C.cefingo_textfield_get_selected_text(self.p_textfield)
+	cRet := C.cefingo_textfield_get_selected_text((*C.cef_textfield_t)(self.pc_textfield))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -22260,7 +22645,7 @@ func (self *CTextfieldT) SelectAll(
 	reversed int,
 ) {
 
-	C.cefingo_textfield_select_all(self.p_textfield, (C.int)(reversed))
+	C.cefingo_textfield_select_all((*C.cef_textfield_t)(self.pc_textfield), (C.int)(reversed))
 
 }
 
@@ -22269,7 +22654,7 @@ func (self *CTextfieldT) SelectAll(
 ///
 func (self *CTextfieldT) ClearSelection() {
 
-	C.cefingo_textfield_clear_selection(self.p_textfield)
+	C.cefingo_textfield_clear_selection((*C.cef_textfield_t)(self.pc_textfield))
 
 }
 
@@ -22278,7 +22663,7 @@ func (self *CTextfieldT) ClearSelection() {
 ///
 func (self *CTextfieldT) GetSelectedRange() (ret CRangeT) {
 
-	cRet := C.cefingo_textfield_get_selected_range(self.p_textfield)
+	cRet := C.cefingo_textfield_get_selected_range((*C.cef_textfield_t)(self.pc_textfield))
 
 	ret = (CRangeT)(cRet)
 	return ret
@@ -22291,7 +22676,7 @@ func (self *CTextfieldT) SelectRange(
 	crange *CRangeT,
 ) {
 
-	C.cefingo_textfield_select_range(self.p_textfield, (*C.cef_range_t)(crange))
+	C.cefingo_textfield_select_range((*C.cef_textfield_t)(self.pc_textfield), (*C.cef_range_t)(crange))
 
 }
 
@@ -22300,7 +22685,7 @@ func (self *CTextfieldT) SelectRange(
 ///
 func (self *CTextfieldT) GetCursorPosition() (ret int64) {
 
-	cRet := C.cefingo_textfield_get_cursor_position(self.p_textfield)
+	cRet := C.cefingo_textfield_get_cursor_position((*C.cef_textfield_t)(self.pc_textfield))
 
 	ret = (int64)(cRet)
 	return ret
@@ -22313,7 +22698,7 @@ func (self *CTextfieldT) SetTextColor(
 	color CColorT,
 ) {
 
-	C.cefingo_textfield_set_text_color(self.p_textfield, (C.cef_color_t)(color))
+	C.cefingo_textfield_set_text_color((*C.cef_textfield_t)(self.pc_textfield), (C.cef_color_t)(color))
 
 }
 
@@ -22322,7 +22707,7 @@ func (self *CTextfieldT) SetTextColor(
 ///
 func (self *CTextfieldT) GetTextColor() (ret CColorT) {
 
-	cRet := C.cefingo_textfield_get_text_color(self.p_textfield)
+	cRet := C.cefingo_textfield_get_text_color((*C.cef_textfield_t)(self.pc_textfield))
 
 	ret = (CColorT)(cRet)
 	return ret
@@ -22335,7 +22720,7 @@ func (self *CTextfieldT) SetSelectionTextColor(
 	color CColorT,
 ) {
 
-	C.cefingo_textfield_set_selection_text_color(self.p_textfield, (C.cef_color_t)(color))
+	C.cefingo_textfield_set_selection_text_color((*C.cef_textfield_t)(self.pc_textfield), (C.cef_color_t)(color))
 
 }
 
@@ -22344,7 +22729,7 @@ func (self *CTextfieldT) SetSelectionTextColor(
 ///
 func (self *CTextfieldT) GetSelectionTextColor() (ret CColorT) {
 
-	cRet := C.cefingo_textfield_get_selection_text_color(self.p_textfield)
+	cRet := C.cefingo_textfield_get_selection_text_color((*C.cef_textfield_t)(self.pc_textfield))
 
 	ret = (CColorT)(cRet)
 	return ret
@@ -22357,7 +22742,7 @@ func (self *CTextfieldT) SetSelectionBackgroundColor(
 	color CColorT,
 ) {
 
-	C.cefingo_textfield_set_selection_background_color(self.p_textfield, (C.cef_color_t)(color))
+	C.cefingo_textfield_set_selection_background_color((*C.cef_textfield_t)(self.pc_textfield), (C.cef_color_t)(color))
 
 }
 
@@ -22366,7 +22751,7 @@ func (self *CTextfieldT) SetSelectionBackgroundColor(
 ///
 func (self *CTextfieldT) GetSelectionBackgroundColor() (ret CColorT) {
 
-	cRet := C.cefingo_textfield_get_selection_background_color(self.p_textfield)
+	cRet := C.cefingo_textfield_get_selection_background_color((*C.cef_textfield_t)(self.pc_textfield))
 
 	ret = (CColorT)(cRet)
 	return ret
@@ -22387,7 +22772,7 @@ func (self *CTextfieldT) SetFontList(
 ) {
 	c_font_list := create_cef_string(font_list)
 
-	C.cefingo_textfield_set_font_list(self.p_textfield, c_font_list.p_cef_string_t)
+	C.cefingo_textfield_set_font_list((*C.cef_textfield_t)(self.pc_textfield), c_font_list.p_cef_string_t)
 
 }
 
@@ -22401,7 +22786,7 @@ func (self *CTextfieldT) ApplyTextColor(
 	crange *CRangeT,
 ) {
 
-	C.cefingo_textfield_apply_text_color(self.p_textfield, (C.cef_color_t)(color), (*C.cef_range_t)(crange))
+	C.cefingo_textfield_apply_text_color((*C.cef_textfield_t)(self.pc_textfield), (C.cef_color_t)(color), (*C.cef_range_t)(crange))
 
 }
 
@@ -22417,7 +22802,7 @@ func (self *CTextfieldT) ApplyTextStyle(
 	crange *CRangeT,
 ) {
 
-	C.cefingo_textfield_apply_text_style(self.p_textfield, (C.cef_text_style_t)(style), (C.int)(add), (*C.cef_range_t)(crange))
+	C.cefingo_textfield_apply_text_style((*C.cef_textfield_t)(self.pc_textfield), (C.cef_text_style_t)(style), (C.int)(add), (*C.cef_range_t)(crange))
 
 }
 
@@ -22429,7 +22814,7 @@ func (self *CTextfieldT) IsCommandEnabled(
 	command_id CTextFieldCommandsT,
 ) (ret bool) {
 
-	cRet := C.cefingo_textfield_is_command_enabled(self.p_textfield, (C.cef_text_field_commands_t)(command_id))
+	cRet := C.cefingo_textfield_is_command_enabled((*C.cef_textfield_t)(self.pc_textfield), (C.cef_text_field_commands_t)(command_id))
 
 	ret = cRet == 1
 	return ret
@@ -22442,7 +22827,7 @@ func (self *CTextfieldT) ExecuteCommand(
 	command_id CTextFieldCommandsT,
 ) {
 
-	C.cefingo_textfield_execute_command(self.p_textfield, (C.cef_text_field_commands_t)(command_id))
+	C.cefingo_textfield_execute_command((*C.cef_textfield_t)(self.pc_textfield), (C.cef_text_field_commands_t)(command_id))
 
 }
 
@@ -22451,7 +22836,7 @@ func (self *CTextfieldT) ExecuteCommand(
 ///
 func (self *CTextfieldT) ClearEditHistory() {
 
-	C.cefingo_textfield_clear_edit_history(self.p_textfield)
+	C.cefingo_textfield_clear_edit_history((*C.cef_textfield_t)(self.pc_textfield))
 
 }
 
@@ -22464,7 +22849,7 @@ func (self *CTextfieldT) SetPlaceholderText(
 ) {
 	c_text := create_cef_string(text)
 
-	C.cefingo_textfield_set_placeholder_text(self.p_textfield, c_text.p_cef_string_t)
+	C.cefingo_textfield_set_placeholder_text((*C.cef_textfield_t)(self.pc_textfield), c_text.p_cef_string_t)
 
 }
 
@@ -22475,7 +22860,7 @@ func (self *CTextfieldT) SetPlaceholderText(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetPlaceholderText() (ret string) {
 
-	cRet := C.cefingo_textfield_get_placeholder_text(self.p_textfield)
+	cRet := C.cefingo_textfield_get_placeholder_text((*C.cef_textfield_t)(self.pc_textfield))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -22492,7 +22877,7 @@ func (self *CTextfieldT) SetPlaceholderTextColor(
 	color CColorT,
 ) {
 
-	C.cefingo_textfield_set_placeholder_text_color(self.p_textfield, (C.cef_color_t)(color))
+	C.cefingo_textfield_set_placeholder_text_color((*C.cef_textfield_t)(self.pc_textfield), (C.cef_color_t)(color))
 
 }
 
@@ -22504,7 +22889,7 @@ func (self *CTextfieldT) SetAccessibleName(
 ) {
 	c_name := create_cef_string(name)
 
-	C.cefingo_textfield_set_accessible_name(self.p_textfield, c_name.p_cef_string_t)
+	C.cefingo_textfield_set_accessible_name((*C.cef_textfield_t)(self.pc_textfield), c_name.p_cef_string_t)
 
 }
 
@@ -22516,8 +22901,8 @@ func TextfieldCreate(
 ) (ret *CTextfieldT) {
 	var goTmpdelegate *C.cef_textfield_delegate_t
 	if delegate != nil {
-		goTmpdelegate = delegate.p_textfield_delegate
-		BaseAddRef(goTmpdelegate)
+		BaseAddRef(delegate.pc_textfield_delegate)
+		goTmpdelegate = (*C.cef_textfield_delegate_t)(delegate.pc_textfield_delegate)
 	}
 
 	cRet := C.cef_textfield_create(goTmpdelegate)
@@ -22534,10 +22919,12 @@ func TextfieldCreate(
 // indicated.
 ///
 
+type cCTextfieldDelegateT C.cef_textfield_delegate_t
+
 // Go type for cef_textfield_delegate_t
 type CTextfieldDelegateT struct {
-	noCopy               noCopy
-	p_textfield_delegate *C.cef_textfield_delegate_t
+	noCopy                noCopy
+	pc_textfield_delegate *cCTextfieldDelegateT
 }
 
 type RefToCTextfieldDelegateT struct {
@@ -22563,26 +22950,28 @@ func newCTextfieldDelegateT(p *C.cef_textfield_delegate_t) *CTextfieldDelegateT 
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T209.1:")
-	BaseAddRef(p)
-	go_textfield_delegate := CTextfieldDelegateT{noCopy{}, p}
+	pc := (*cCTextfieldDelegateT)(p)
+	BaseAddRef(pc)
+	go_textfield_delegate := CTextfieldDelegateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_textfield_delegate, func(g *CTextfieldDelegateT) {
-		Tracef(unsafe.Pointer(g.p_textfield_delegate), "T209.2:")
-		BaseRelease(g.p_textfield_delegate)
+		Tracef(unsafe.Pointer(g.pc_textfield_delegate), "T209.2:")
+		BaseRelease(g.pc_textfield_delegate)
 	})
 	return &go_textfield_delegate
 }
 
 // *C.cef_textfield_delegate_t has refCounted interface
 func (textfield_delegate *CTextfieldDelegateT) HasOneRef() bool {
-	return BaseHasOneRef(textfield_delegate.p_textfield_delegate)
+	return BaseHasOneRef(textfield_delegate.pc_textfield_delegate)
 }
 
-func (p *C.cef_textfield_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCTextfieldDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CViewDelegateT
 func (textfield_delegate *CTextfieldDelegateT) ToCViewDelegateT() *CViewDelegateT {
-	p := (*C.cef_view_delegate_t)(unsafe.Pointer(textfield_delegate.p_textfield_delegate))
+	p := (*C.cef_view_delegate_t)(unsafe.Pointer(textfield_delegate.pc_textfield_delegate))
 	return newCViewDelegateT(p)
 }
 
@@ -22610,35 +22999,36 @@ type OnAfterUserActionHandler interface {
 }
 
 var textfield_delegate_handlers = struct {
-	handler                        map[*C.cef_textfield_delegate_t]interface{}
-	on_key_event_handler           map[*C.cef_textfield_delegate_t]CTextfieldDelegateTOnKeyEventHandler
-	on_after_user_action_handler   map[*C.cef_textfield_delegate_t]OnAfterUserActionHandler
-	get_preferred_size_handler     map[*C.cef_textfield_delegate_t]GetPreferredSizeHandler
-	get_minimum_size_handler       map[*C.cef_textfield_delegate_t]GetMinimumSizeHandler
-	get_maximum_size_handler       map[*C.cef_textfield_delegate_t]GetMaximumSizeHandler
-	get_height_for_width_handler   map[*C.cef_textfield_delegate_t]GetHeightForWidthHandler
-	on_parent_view_changed_handler map[*C.cef_textfield_delegate_t]OnParentViewChangedHandler
-	on_child_view_changed_handler  map[*C.cef_textfield_delegate_t]OnChildViewChangedHandler
-	on_focus_handler               map[*C.cef_textfield_delegate_t]OnFocusHandler
-	on_blur_handler                map[*C.cef_textfield_delegate_t]OnBlurHandler
+	handler                        map[*cCTextfieldDelegateT]interface{}
+	on_key_event_handler           map[*cCTextfieldDelegateT]CTextfieldDelegateTOnKeyEventHandler
+	on_after_user_action_handler   map[*cCTextfieldDelegateT]OnAfterUserActionHandler
+	get_preferred_size_handler     map[*cCTextfieldDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler       map[*cCTextfieldDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler       map[*cCTextfieldDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler   map[*cCTextfieldDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler map[*cCTextfieldDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler  map[*cCTextfieldDelegateT]OnChildViewChangedHandler
+	on_focus_handler               map[*cCTextfieldDelegateT]OnFocusHandler
+	on_blur_handler                map[*cCTextfieldDelegateT]OnBlurHandler
 }{
-	map[*C.cef_textfield_delegate_t]interface{}{},
-	map[*C.cef_textfield_delegate_t]CTextfieldDelegateTOnKeyEventHandler{},
-	map[*C.cef_textfield_delegate_t]OnAfterUserActionHandler{},
-	map[*C.cef_textfield_delegate_t]GetPreferredSizeHandler{},
-	map[*C.cef_textfield_delegate_t]GetMinimumSizeHandler{},
-	map[*C.cef_textfield_delegate_t]GetMaximumSizeHandler{},
-	map[*C.cef_textfield_delegate_t]GetHeightForWidthHandler{},
-	map[*C.cef_textfield_delegate_t]OnParentViewChangedHandler{},
-	map[*C.cef_textfield_delegate_t]OnChildViewChangedHandler{},
-	map[*C.cef_textfield_delegate_t]OnFocusHandler{},
-	map[*C.cef_textfield_delegate_t]OnBlurHandler{},
+	map[*cCTextfieldDelegateT]interface{}{},
+	map[*cCTextfieldDelegateT]CTextfieldDelegateTOnKeyEventHandler{},
+	map[*cCTextfieldDelegateT]OnAfterUserActionHandler{},
+	map[*cCTextfieldDelegateT]GetPreferredSizeHandler{},
+	map[*cCTextfieldDelegateT]GetMinimumSizeHandler{},
+	map[*cCTextfieldDelegateT]GetMaximumSizeHandler{},
+	map[*cCTextfieldDelegateT]GetHeightForWidthHandler{},
+	map[*cCTextfieldDelegateT]OnParentViewChangedHandler{},
+	map[*cCTextfieldDelegateT]OnChildViewChangedHandler{},
+	map[*cCTextfieldDelegateT]OnFocusHandler{},
+	map[*cCTextfieldDelegateT]OnBlurHandler{},
 }
 
 // AllocCTextfieldDelegateT allocates CTextfieldDelegateT and construct it
 func AllocCTextfieldDelegateT() *CTextfieldDelegateT {
 	up := c_calloc(1, C.sizeof_cefingo_textfield_delegate_wrapper_t, "T209.3:")
 	cefp := C.cefingo_construct_textfield_delegate((*C.cefingo_textfield_delegate_wrapper_t)(up))
+	cgop := (*cCTextfieldDelegateT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_textfield_delegate_t itself in DeassocFunc,
@@ -22647,17 +23037,17 @@ func AllocCTextfieldDelegateT() *CTextfieldDelegateT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(textfield_delegate_handlers.handler, cefp)
-		delete(textfield_delegate_handlers.on_key_event_handler, cefp)
-		delete(textfield_delegate_handlers.on_after_user_action_handler, cefp)
-		delete(textfield_delegate_handlers.get_preferred_size_handler, cefp)
-		delete(textfield_delegate_handlers.get_minimum_size_handler, cefp)
-		delete(textfield_delegate_handlers.get_maximum_size_handler, cefp)
-		delete(textfield_delegate_handlers.get_height_for_width_handler, cefp)
-		delete(textfield_delegate_handlers.on_parent_view_changed_handler, cefp)
-		delete(textfield_delegate_handlers.on_child_view_changed_handler, cefp)
-		delete(textfield_delegate_handlers.on_focus_handler, cefp)
-		delete(textfield_delegate_handlers.on_blur_handler, cefp)
+		delete(textfield_delegate_handlers.handler, cgop)
+		delete(textfield_delegate_handlers.on_key_event_handler, cgop)
+		delete(textfield_delegate_handlers.on_after_user_action_handler, cgop)
+		delete(textfield_delegate_handlers.get_preferred_size_handler, cgop)
+		delete(textfield_delegate_handlers.get_minimum_size_handler, cgop)
+		delete(textfield_delegate_handlers.get_maximum_size_handler, cgop)
+		delete(textfield_delegate_handlers.get_height_for_width_handler, cgop)
+		delete(textfield_delegate_handlers.on_parent_view_changed_handler, cgop)
+		delete(textfield_delegate_handlers.on_child_view_changed_handler, cgop)
+		delete(textfield_delegate_handlers.on_focus_handler, cgop)
+		delete(textfield_delegate_handlers.on_blur_handler, cgop)
 	}))
 
 	return newCTextfieldDelegateT(cefp)
@@ -22667,7 +23057,7 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := textfield_delegate.p_textfield_delegate
+	cp := textfield_delegate.pc_textfield_delegate
 	textfield_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(CTextfieldDelegateTOnKeyEventHandler); ok {
@@ -22720,7 +23110,7 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 
 func (textfield_delegate *CTextfieldDelegateT) UnbindAll() {
 
-	cp := textfield_delegate.p_textfield_delegate
+	cp := textfield_delegate.pc_textfield_delegate
 	delete(textfield_delegate_handlers.handler, cp)
 
 	delete(textfield_delegate_handlers.on_key_event_handler, cp)
@@ -22740,7 +23130,7 @@ func (textfield_delegate *CTextfieldDelegateT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := textfield_delegate.p_textfield_delegate
+	cp := textfield_delegate.pc_textfield_delegate
 	return textfield_delegate_handlers.handler[cp]
 }
 
@@ -22754,10 +23144,12 @@ func (textfield_delegate *CTextfieldDelegateT) Handler() interface{} {
 // accessed on the same thread that created it.
 ///
 
+type cCUrlrequestT C.cef_urlrequest_t
+
 // Go type for cef_urlrequest_t
 type CUrlrequestT struct {
-	noCopy       noCopy
-	p_urlrequest *C.cef_urlrequest_t
+	noCopy        noCopy
+	pc_urlrequest *cCUrlrequestT
 }
 
 type RefToCUrlrequestT struct {
@@ -22783,21 +23175,22 @@ func newCUrlrequestT(p *C.cef_urlrequest_t) *CUrlrequestT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T210.1:")
-	BaseAddRef(p)
-	go_urlrequest := CUrlrequestT{noCopy{}, p}
+	pc := (*cCUrlrequestT)(p)
+	BaseAddRef(pc)
+	go_urlrequest := CUrlrequestT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_urlrequest, func(g *CUrlrequestT) {
-		Tracef(unsafe.Pointer(g.p_urlrequest), "T210.2:")
-		BaseRelease(g.p_urlrequest)
+		Tracef(unsafe.Pointer(g.pc_urlrequest), "T210.2:")
+		BaseRelease(g.pc_urlrequest)
 	})
 	return &go_urlrequest
 }
 
 // *C.cef_urlrequest_t has refCounted interface
 func (urlrequest *CUrlrequestT) HasOneRef() bool {
-	return BaseHasOneRef(urlrequest.p_urlrequest)
+	return BaseHasOneRef(urlrequest.pc_urlrequest)
 }
 
-func (p *C.cef_urlrequest_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCUrlrequestT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -22807,7 +23200,7 @@ func (p *C.cef_urlrequest_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 ///
 func (self *CUrlrequestT) GetRequest() (ret *CRequestT) {
 
-	cRet := C.cefingo_urlrequest_get_request(self.p_urlrequest)
+	cRet := C.cefingo_urlrequest_get_request((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
 	ret = newCRequestT(cRet)
 	return ret
@@ -22818,7 +23211,7 @@ func (self *CUrlrequestT) GetRequest() (ret *CRequestT) {
 ///
 func (self *CUrlrequestT) GetClient() (ret *CUrlrequestClientT) {
 
-	cRet := C.cefingo_urlrequest_get_client(self.p_urlrequest)
+	cRet := C.cefingo_urlrequest_get_client((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
 	ret = newCUrlrequestClientT(cRet)
 	return ret
@@ -22829,7 +23222,7 @@ func (self *CUrlrequestT) GetClient() (ret *CUrlrequestClientT) {
 ///
 func (self *CUrlrequestT) GetRequestStatus() (ret CUrlrequestStatusT) {
 
-	cRet := C.cefingo_urlrequest_get_request_status(self.p_urlrequest)
+	cRet := C.cefingo_urlrequest_get_request_status((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
 	ret = CUrlrequestStatusT(cRet)
 	return ret
@@ -22841,7 +23234,7 @@ func (self *CUrlrequestT) GetRequestStatus() (ret CUrlrequestStatusT) {
 ///
 func (self *CUrlrequestT) GetRequestError() (ret CErrorcodeT) {
 
-	cRet := C.cefingo_urlrequest_get_request_error(self.p_urlrequest)
+	cRet := C.cefingo_urlrequest_get_request_error((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
 	ret = CErrorcodeT(cRet)
 	return ret
@@ -22854,7 +23247,7 @@ func (self *CUrlrequestT) GetRequestError() (ret CErrorcodeT) {
 ///
 func (self *CUrlrequestT) GetResponse() (ret *CResponseT) {
 
-	cRet := C.cefingo_urlrequest_get_response(self.p_urlrequest)
+	cRet := C.cefingo_urlrequest_get_response((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
 	ret = newCResponseT(cRet)
 	return ret
@@ -22866,7 +23259,7 @@ func (self *CUrlrequestT) GetResponse() (ret *CResponseT) {
 ///
 func (self *CUrlrequestT) ResponseWasCached() (ret bool) {
 
-	cRet := C.cefingo_urlrequest_response_was_cached(self.p_urlrequest)
+	cRet := C.cefingo_urlrequest_response_was_cached((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
 	ret = cRet == 1
 	return ret
@@ -22877,7 +23270,7 @@ func (self *CUrlrequestT) ResponseWasCached() (ret bool) {
 ///
 func (self *CUrlrequestT) Cancel() {
 
-	C.cefingo_urlrequest_cancel(self.p_urlrequest)
+	C.cefingo_urlrequest_cancel((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
 }
 
@@ -22902,18 +23295,18 @@ func UrlrequestCreate(
 ) (ret *CUrlrequestT) {
 	var goTmprequest *C.cef_request_t
 	if request != nil {
-		goTmprequest = request.p_request
-		BaseAddRef(goTmprequest)
+		BaseAddRef(request.pc_request)
+		goTmprequest = (*C.cef_request_t)(request.pc_request)
 	}
 	var goTmpclient *C.cef_urlrequest_client_t
 	if client != nil {
-		goTmpclient = client.p_urlrequest_client
-		BaseAddRef(goTmpclient)
+		BaseAddRef(client.pc_urlrequest_client)
+		goTmpclient = (*C.cef_urlrequest_client_t)(client.pc_urlrequest_client)
 	}
 	var goTmprequest_context *C.cef_request_context_t
 	if request_context != nil {
-		goTmprequest_context = request_context.p_request_context
-		BaseAddRef(goTmprequest_context)
+		BaseAddRef(request_context.pc_request_context)
+		goTmprequest_context = (*C.cef_request_context_t)(request_context.pc_request_context)
 	}
 
 	cRet := C.cef_urlrequest_create(goTmprequest, goTmpclient, goTmprequest_context)
@@ -22928,10 +23321,12 @@ func UrlrequestCreate(
 // the request unless otherwise documented.
 ///
 
+type cCUrlrequestClientT C.cef_urlrequest_client_t
+
 // Go type for cef_urlrequest_client_t
 type CUrlrequestClientT struct {
-	noCopy              noCopy
-	p_urlrequest_client *C.cef_urlrequest_client_t
+	noCopy               noCopy
+	pc_urlrequest_client *cCUrlrequestClientT
 }
 
 type RefToCUrlrequestClientT struct {
@@ -22957,21 +23352,22 @@ func newCUrlrequestClientT(p *C.cef_urlrequest_client_t) *CUrlrequestClientT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T211.1:")
-	BaseAddRef(p)
-	go_urlrequest_client := CUrlrequestClientT{noCopy{}, p}
+	pc := (*cCUrlrequestClientT)(p)
+	BaseAddRef(pc)
+	go_urlrequest_client := CUrlrequestClientT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_urlrequest_client, func(g *CUrlrequestClientT) {
-		Tracef(unsafe.Pointer(g.p_urlrequest_client), "T211.2:")
-		BaseRelease(g.p_urlrequest_client)
+		Tracef(unsafe.Pointer(g.pc_urlrequest_client), "T211.2:")
+		BaseRelease(g.pc_urlrequest_client)
 	})
 	return &go_urlrequest_client
 }
 
 // *C.cef_urlrequest_client_t has refCounted interface
 func (urlrequest_client *CUrlrequestClientT) HasOneRef() bool {
-	return BaseHasOneRef(urlrequest_client.p_urlrequest_client)
+	return BaseHasOneRef(urlrequest_client.pc_urlrequest_client)
 }
 
-func (p *C.cef_urlrequest_client_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCUrlrequestClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -23053,25 +23449,26 @@ type CUrlrequestClientTGetAuthCredentialsHandler interface {
 }
 
 var urlrequest_client_handlers = struct {
-	handler                      map[*C.cef_urlrequest_client_t]interface{}
-	on_request_complete_handler  map[*C.cef_urlrequest_client_t]OnRequestCompleteHandler
-	on_upload_progress_handler   map[*C.cef_urlrequest_client_t]OnUploadProgressHandler
-	on_download_progress_handler map[*C.cef_urlrequest_client_t]OnDownloadProgressHandler
-	on_download_data_handler     map[*C.cef_urlrequest_client_t]OnDownloadDataHandler
-	get_auth_credentials_handler map[*C.cef_urlrequest_client_t]CUrlrequestClientTGetAuthCredentialsHandler
+	handler                      map[*cCUrlrequestClientT]interface{}
+	on_request_complete_handler  map[*cCUrlrequestClientT]OnRequestCompleteHandler
+	on_upload_progress_handler   map[*cCUrlrequestClientT]OnUploadProgressHandler
+	on_download_progress_handler map[*cCUrlrequestClientT]OnDownloadProgressHandler
+	on_download_data_handler     map[*cCUrlrequestClientT]OnDownloadDataHandler
+	get_auth_credentials_handler map[*cCUrlrequestClientT]CUrlrequestClientTGetAuthCredentialsHandler
 }{
-	map[*C.cef_urlrequest_client_t]interface{}{},
-	map[*C.cef_urlrequest_client_t]OnRequestCompleteHandler{},
-	map[*C.cef_urlrequest_client_t]OnUploadProgressHandler{},
-	map[*C.cef_urlrequest_client_t]OnDownloadProgressHandler{},
-	map[*C.cef_urlrequest_client_t]OnDownloadDataHandler{},
-	map[*C.cef_urlrequest_client_t]CUrlrequestClientTGetAuthCredentialsHandler{},
+	map[*cCUrlrequestClientT]interface{}{},
+	map[*cCUrlrequestClientT]OnRequestCompleteHandler{},
+	map[*cCUrlrequestClientT]OnUploadProgressHandler{},
+	map[*cCUrlrequestClientT]OnDownloadProgressHandler{},
+	map[*cCUrlrequestClientT]OnDownloadDataHandler{},
+	map[*cCUrlrequestClientT]CUrlrequestClientTGetAuthCredentialsHandler{},
 }
 
 // AllocCUrlrequestClientT allocates CUrlrequestClientT and construct it
 func AllocCUrlrequestClientT() *CUrlrequestClientT {
 	up := c_calloc(1, C.sizeof_cefingo_urlrequest_client_wrapper_t, "T211.3:")
 	cefp := C.cefingo_construct_urlrequest_client((*C.cefingo_urlrequest_client_wrapper_t)(up))
+	cgop := (*cCUrlrequestClientT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_urlrequest_client_t itself in DeassocFunc,
@@ -23080,12 +23477,12 @@ func AllocCUrlrequestClientT() *CUrlrequestClientT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(urlrequest_client_handlers.handler, cefp)
-		delete(urlrequest_client_handlers.on_request_complete_handler, cefp)
-		delete(urlrequest_client_handlers.on_upload_progress_handler, cefp)
-		delete(urlrequest_client_handlers.on_download_progress_handler, cefp)
-		delete(urlrequest_client_handlers.on_download_data_handler, cefp)
-		delete(urlrequest_client_handlers.get_auth_credentials_handler, cefp)
+		delete(urlrequest_client_handlers.handler, cgop)
+		delete(urlrequest_client_handlers.on_request_complete_handler, cgop)
+		delete(urlrequest_client_handlers.on_upload_progress_handler, cgop)
+		delete(urlrequest_client_handlers.on_download_progress_handler, cgop)
+		delete(urlrequest_client_handlers.on_download_data_handler, cgop)
+		delete(urlrequest_client_handlers.get_auth_credentials_handler, cgop)
 	}))
 
 	return newCUrlrequestClientT(cefp)
@@ -23095,7 +23492,7 @@ func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestCli
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := urlrequest_client.p_urlrequest_client
+	cp := urlrequest_client.pc_urlrequest_client
 	urlrequest_client_handlers.handler[cp] = a
 
 	if h, ok := a.(OnRequestCompleteHandler); ok {
@@ -23128,7 +23525,7 @@ func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestCli
 
 func (urlrequest_client *CUrlrequestClientT) UnbindAll() {
 
-	cp := urlrequest_client.p_urlrequest_client
+	cp := urlrequest_client.pc_urlrequest_client
 	delete(urlrequest_client_handlers.handler, cp)
 
 	delete(urlrequest_client_handlers.on_request_complete_handler, cp)
@@ -23143,7 +23540,7 @@ func (urlrequest_client *CUrlrequestClientT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := urlrequest_client.p_urlrequest_client
+	cp := urlrequest_client.pc_urlrequest_client
 	return urlrequest_client_handlers.handler[cp]
 }
 
@@ -23157,10 +23554,12 @@ func (urlrequest_client *CUrlrequestClientT) Handler() interface{} {
 // retrieved via the cef_v8context_t::get_task_runner() function.
 ///
 
+type cCV8contextT C.cef_v8context_t
+
 // Go type for cef_v8context_t
 type CV8contextT struct {
-	noCopy      noCopy
-	p_v8context *C.cef_v8context_t
+	noCopy       noCopy
+	pc_v8context *cCV8contextT
 }
 
 type RefToCV8contextT struct {
@@ -23186,21 +23585,22 @@ func newCV8contextT(p *C.cef_v8context_t) *CV8contextT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T212.1:")
-	BaseAddRef(p)
-	go_v8context := CV8contextT{noCopy{}, p}
+	pc := (*cCV8contextT)(p)
+	BaseAddRef(pc)
+	go_v8context := CV8contextT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8context, func(g *CV8contextT) {
-		Tracef(unsafe.Pointer(g.p_v8context), "T212.2:")
-		BaseRelease(g.p_v8context)
+		Tracef(unsafe.Pointer(g.pc_v8context), "T212.2:")
+		BaseRelease(g.pc_v8context)
 	})
 	return &go_v8context
 }
 
 // *C.cef_v8context_t has refCounted interface
 func (v8context *CV8contextT) HasOneRef() bool {
-	return BaseHasOneRef(v8context.p_v8context)
+	return BaseHasOneRef(v8context.pc_v8context)
 }
 
-func (p *C.cef_v8context_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8contextT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -23211,7 +23611,7 @@ func (p *C.cef_v8context_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 ///
 func (self *CV8contextT) GetTaskRunner() (ret *CTaskRunnerT) {
 
-	cRet := C.cefingo_v8context_get_task_runner(self.p_v8context)
+	cRet := C.cefingo_v8context_get_task_runner((*C.cef_v8context_t)(self.pc_v8context))
 
 	ret = newCTaskRunnerT(cRet)
 	return ret
@@ -23224,7 +23624,7 @@ func (self *CV8contextT) GetTaskRunner() (ret *CTaskRunnerT) {
 ///
 func (self *CV8contextT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_v8context_is_valid(self.p_v8context)
+	cRet := C.cefingo_v8context_is_valid((*C.cef_v8context_t)(self.pc_v8context))
 
 	ret = cRet == 1
 	return ret
@@ -23236,7 +23636,7 @@ func (self *CV8contextT) IsValid() (ret bool) {
 ///
 func (self *CV8contextT) GetBrowser() (ret *CBrowserT) {
 
-	cRet := C.cefingo_v8context_get_browser(self.p_v8context)
+	cRet := C.cefingo_v8context_get_browser((*C.cef_v8context_t)(self.pc_v8context))
 
 	ret = newCBrowserT(cRet)
 	return ret
@@ -23248,7 +23648,7 @@ func (self *CV8contextT) GetBrowser() (ret *CBrowserT) {
 ///
 func (self *CV8contextT) GetFrame() (ret *CFrameT) {
 
-	cRet := C.cefingo_v8context_get_frame(self.p_v8context)
+	cRet := C.cefingo_v8context_get_frame((*C.cef_v8context_t)(self.pc_v8context))
 
 	ret = newCFrameT(cRet)
 	return ret
@@ -23260,7 +23660,7 @@ func (self *CV8contextT) GetFrame() (ret *CFrameT) {
 ///
 func (self *CV8contextT) GetGlobal() (ret *CV8valueT) {
 
-	cRet := C.cefingo_v8context_get_global(self.p_v8context)
+	cRet := C.cefingo_v8context_get_global((*C.cef_v8context_t)(self.pc_v8context))
 
 	ret = newCV8valueT(cRet)
 	return ret
@@ -23275,7 +23675,7 @@ func (self *CV8contextT) GetGlobal() (ret *CV8valueT) {
 ///
 func (self *CV8contextT) Enter() (ret bool) {
 
-	cRet := C.cefingo_v8context_enter(self.p_v8context)
+	cRet := C.cefingo_v8context_enter((*C.cef_v8context_t)(self.pc_v8context))
 
 	ret = cRet == 1
 	return ret
@@ -23287,7 +23687,7 @@ func (self *CV8contextT) Enter() (ret bool) {
 ///
 func (self *CV8contextT) Exit() (ret bool) {
 
-	cRet := C.cefingo_v8context_exit(self.p_v8context)
+	cRet := C.cefingo_v8context_exit((*C.cef_v8context_t)(self.pc_v8context))
 
 	ret = cRet == 1
 	return ret
@@ -23302,11 +23702,11 @@ func (self *CV8contextT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_v8context_t
 	if that != nil {
-		goTmpthat = that.p_v8context
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_v8context)
+		goTmpthat = (*C.cef_v8context_t)(that.pc_v8context)
 	}
 
-	cRet := C.cefingo_v8context_is_same(self.p_v8context, goTmpthat)
+	cRet := C.cefingo_v8context_is_same((*C.cef_v8context_t)(self.pc_v8context), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -23330,7 +23730,7 @@ func (self *CV8contextT) Eval(
 	var tmpretval *C.cef_v8value_t
 	var tmpexception *C.cef_v8exception_t
 
-	cRet := C.cefingo_v8context_eval(self.p_v8context, c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line), &tmpretval, &tmpexception)
+	cRet := C.cefingo_v8context_eval((*C.cef_v8context_t)(self.pc_v8context), c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line), &tmpretval, &tmpexception)
 
 	retval = newCV8valueT(tmpretval)
 	exception = newCV8exceptionT(tmpexception)
@@ -23378,10 +23778,12 @@ func V8contextInContext() (ret bool) {
 // V8 function.
 ///
 
+type cCV8handlerT C.cef_v8handler_t
+
 // Go type for cef_v8handler_t
 type CV8handlerT struct {
-	noCopy      noCopy
-	p_v8handler *C.cef_v8handler_t
+	noCopy       noCopy
+	pc_v8handler *cCV8handlerT
 }
 
 type RefToCV8handlerT struct {
@@ -23407,21 +23809,22 @@ func newCV8handlerT(p *C.cef_v8handler_t) *CV8handlerT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T213.1:")
-	BaseAddRef(p)
-	go_v8handler := CV8handlerT{noCopy{}, p}
+	pc := (*cCV8handlerT)(p)
+	BaseAddRef(pc)
+	go_v8handler := CV8handlerT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8handler, func(g *CV8handlerT) {
-		Tracef(unsafe.Pointer(g.p_v8handler), "T213.2:")
-		BaseRelease(g.p_v8handler)
+		Tracef(unsafe.Pointer(g.pc_v8handler), "T213.2:")
+		BaseRelease(g.pc_v8handler)
 	})
 	return &go_v8handler
 }
 
 // *C.cef_v8handler_t has refCounted interface
 func (v8handler *CV8handlerT) HasOneRef() bool {
-	return BaseHasOneRef(v8handler.p_v8handler)
+	return BaseHasOneRef(v8handler.pc_v8handler)
 }
 
-func (p *C.cef_v8handler_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8handlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -23442,17 +23845,18 @@ type CV8handlerTExecuteHandler interface {
 }
 
 var v8handler_handlers = struct {
-	handler         map[*C.cef_v8handler_t]interface{}
-	execute_handler map[*C.cef_v8handler_t]CV8handlerTExecuteHandler
+	handler         map[*cCV8handlerT]interface{}
+	execute_handler map[*cCV8handlerT]CV8handlerTExecuteHandler
 }{
-	map[*C.cef_v8handler_t]interface{}{},
-	map[*C.cef_v8handler_t]CV8handlerTExecuteHandler{},
+	map[*cCV8handlerT]interface{}{},
+	map[*cCV8handlerT]CV8handlerTExecuteHandler{},
 }
 
 // AllocCV8handlerT allocates CV8handlerT and construct it
 func AllocCV8handlerT() *CV8handlerT {
 	up := c_calloc(1, C.sizeof_cefingo_v8handler_wrapper_t, "T213.3:")
 	cefp := C.cefingo_construct_v8handler((*C.cefingo_v8handler_wrapper_t)(up))
+	cgop := (*cCV8handlerT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_v8handler_t itself in DeassocFunc,
@@ -23461,8 +23865,8 @@ func AllocCV8handlerT() *CV8handlerT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(v8handler_handlers.handler, cefp)
-		delete(v8handler_handlers.execute_handler, cefp)
+		delete(v8handler_handlers.handler, cgop)
+		delete(v8handler_handlers.execute_handler, cgop)
 	}))
 
 	return newCV8handlerT(cefp)
@@ -23472,7 +23876,7 @@ func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := v8handler.p_v8handler
+	cp := v8handler.pc_v8handler
 	v8handler_handlers.handler[cp] = a
 
 	if h, ok := a.(CV8handlerTExecuteHandler); ok {
@@ -23489,7 +23893,7 @@ func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
 
 func (v8handler *CV8handlerT) UnbindAll() {
 
-	cp := v8handler.p_v8handler
+	cp := v8handler.pc_v8handler
 	delete(v8handler_handlers.handler, cp)
 
 	delete(v8handler_handlers.execute_handler, cp)
@@ -23500,7 +23904,7 @@ func (v8handler *CV8handlerT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := v8handler.p_v8handler
+	cp := v8handler.pc_v8handler
 	return v8handler_handlers.handler[cp]
 }
 
@@ -23511,10 +23915,12 @@ func (v8handler *CV8handlerT) Handler() interface{} {
 // V8 accessor.
 ///
 
+type cCV8accessorT C.cef_v8accessor_t
+
 // Go type for cef_v8accessor_t
 type CV8accessorT struct {
-	noCopy       noCopy
-	p_v8accessor *C.cef_v8accessor_t
+	noCopy        noCopy
+	pc_v8accessor *cCV8accessorT
 }
 
 type RefToCV8accessorT struct {
@@ -23540,21 +23946,22 @@ func newCV8accessorT(p *C.cef_v8accessor_t) *CV8accessorT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T214.1:")
-	BaseAddRef(p)
-	go_v8accessor := CV8accessorT{noCopy{}, p}
+	pc := (*cCV8accessorT)(p)
+	BaseAddRef(pc)
+	go_v8accessor := CV8accessorT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8accessor, func(g *CV8accessorT) {
-		Tracef(unsafe.Pointer(g.p_v8accessor), "T214.2:")
-		BaseRelease(g.p_v8accessor)
+		Tracef(unsafe.Pointer(g.pc_v8accessor), "T214.2:")
+		BaseRelease(g.pc_v8accessor)
 	})
 	return &go_v8accessor
 }
 
 // *C.cef_v8accessor_t has refCounted interface
 func (v8accessor *CV8accessorT) HasOneRef() bool {
-	return BaseHasOneRef(v8accessor.p_v8accessor)
+	return BaseHasOneRef(v8accessor.pc_v8accessor)
 }
 
-func (p *C.cef_v8accessor_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8accessorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -23590,19 +23997,20 @@ type SetHandler interface {
 }
 
 var v8accessor_handlers = struct {
-	handler     map[*C.cef_v8accessor_t]interface{}
-	get_handler map[*C.cef_v8accessor_t]GetHandler
-	set_handler map[*C.cef_v8accessor_t]SetHandler
+	handler     map[*cCV8accessorT]interface{}
+	get_handler map[*cCV8accessorT]GetHandler
+	set_handler map[*cCV8accessorT]SetHandler
 }{
-	map[*C.cef_v8accessor_t]interface{}{},
-	map[*C.cef_v8accessor_t]GetHandler{},
-	map[*C.cef_v8accessor_t]SetHandler{},
+	map[*cCV8accessorT]interface{}{},
+	map[*cCV8accessorT]GetHandler{},
+	map[*cCV8accessorT]SetHandler{},
 }
 
 // AllocCV8accessorT allocates CV8accessorT and construct it
 func AllocCV8accessorT() *CV8accessorT {
 	up := c_calloc(1, C.sizeof_cefingo_v8accessor_wrapper_t, "T214.3:")
 	cefp := C.cefingo_construct_v8accessor((*C.cefingo_v8accessor_wrapper_t)(up))
+	cgop := (*cCV8accessorT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_v8accessor_t itself in DeassocFunc,
@@ -23611,9 +24019,9 @@ func AllocCV8accessorT() *CV8accessorT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(v8accessor_handlers.handler, cefp)
-		delete(v8accessor_handlers.get_handler, cefp)
-		delete(v8accessor_handlers.set_handler, cefp)
+		delete(v8accessor_handlers.handler, cgop)
+		delete(v8accessor_handlers.get_handler, cgop)
+		delete(v8accessor_handlers.set_handler, cgop)
 	}))
 
 	return newCV8accessorT(cefp)
@@ -23623,7 +24031,7 @@ func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := v8accessor.p_v8accessor
+	cp := v8accessor.pc_v8accessor
 	v8accessor_handlers.handler[cp] = a
 
 	if h, ok := a.(GetHandler); ok {
@@ -23644,7 +24052,7 @@ func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
 
 func (v8accessor *CV8accessorT) UnbindAll() {
 
-	cp := v8accessor.p_v8accessor
+	cp := v8accessor.pc_v8accessor
 	delete(v8accessor_handlers.handler, cp)
 
 	delete(v8accessor_handlers.get_handler, cp)
@@ -23656,7 +24064,7 @@ func (v8accessor *CV8accessorT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := v8accessor.p_v8accessor
+	cp := v8accessor.pc_v8accessor
 	return v8accessor_handlers.handler[cp]
 }
 
@@ -23669,10 +24077,12 @@ func (v8accessor *CV8accessorT) Handler() interface{} {
 // by integer.
 ///
 
+type cCV8interceptorT C.cef_v8interceptor_t
+
 // Go type for cef_v8interceptor_t
 type CV8interceptorT struct {
-	noCopy          noCopy
-	p_v8interceptor *C.cef_v8interceptor_t
+	noCopy           noCopy
+	pc_v8interceptor *cCV8interceptorT
 }
 
 type RefToCV8interceptorT struct {
@@ -23698,21 +24108,22 @@ func newCV8interceptorT(p *C.cef_v8interceptor_t) *CV8interceptorT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T215.1:")
-	BaseAddRef(p)
-	go_v8interceptor := CV8interceptorT{noCopy{}, p}
+	pc := (*cCV8interceptorT)(p)
+	BaseAddRef(pc)
+	go_v8interceptor := CV8interceptorT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8interceptor, func(g *CV8interceptorT) {
-		Tracef(unsafe.Pointer(g.p_v8interceptor), "T215.2:")
-		BaseRelease(g.p_v8interceptor)
+		Tracef(unsafe.Pointer(g.pc_v8interceptor), "T215.2:")
+		BaseRelease(g.pc_v8interceptor)
 	})
 	return &go_v8interceptor
 }
 
 // *C.cef_v8interceptor_t has refCounted interface
 func (v8interceptor *CV8interceptorT) HasOneRef() bool {
-	return BaseHasOneRef(v8interceptor.p_v8interceptor)
+	return BaseHasOneRef(v8interceptor.pc_v8interceptor)
 }
 
-func (p *C.cef_v8interceptor_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8interceptorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -23732,13 +24143,13 @@ func (self *CV8interceptorT) GetByname(
 	c_name := create_cef_string(name)
 	var goTmpobject *C.cef_v8value_t
 	if object != nil {
-		goTmpobject = object.p_v8value
-		BaseAddRef(goTmpobject)
+		BaseAddRef(object.pc_v8value)
+		goTmpobject = (*C.cef_v8value_t)(object.pc_v8value)
 	}
 	var tmpretval *C.cef_v8value_t
 	tmpc_exception := create_cef_string("")
 
-	cRet := C.cefingo_v8interceptor_get_byname(self.p_v8interceptor, c_name.p_cef_string_t, goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
+	cRet := C.cefingo_v8interceptor_get_byname((*C.cef_v8interceptor_t)(self.pc_v8interceptor), c_name.p_cef_string_t, goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
 
 	retval = newCV8valueT(tmpretval)
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
@@ -23761,13 +24172,13 @@ func (self *CV8interceptorT) GetByindex(
 ) (ret bool, retval *CV8valueT, exception string) {
 	var goTmpobject *C.cef_v8value_t
 	if object != nil {
-		goTmpobject = object.p_v8value
-		BaseAddRef(goTmpobject)
+		BaseAddRef(object.pc_v8value)
+		goTmpobject = (*C.cef_v8value_t)(object.pc_v8value)
 	}
 	var tmpretval *C.cef_v8value_t
 	tmpc_exception := create_cef_string("")
 
-	cRet := C.cefingo_v8interceptor_get_byindex(self.p_v8interceptor, (C.int)(index), goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
+	cRet := C.cefingo_v8interceptor_get_byindex((*C.cef_v8interceptor_t)(self.pc_v8interceptor), (C.int)(index), goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
 
 	retval = newCV8valueT(tmpretval)
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
@@ -23792,17 +24203,17 @@ func (self *CV8interceptorT) SetByname(
 	c_name := create_cef_string(name)
 	var goTmpobject *C.cef_v8value_t
 	if object != nil {
-		goTmpobject = object.p_v8value
-		BaseAddRef(goTmpobject)
+		BaseAddRef(object.pc_v8value)
+		goTmpobject = (*C.cef_v8value_t)(object.pc_v8value)
 	}
 	var goTmpvalue *C.cef_v8value_t
 	if value != nil {
-		goTmpvalue = value.p_v8value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_v8value)
+		goTmpvalue = (*C.cef_v8value_t)(value.pc_v8value)
 	}
 	tmpc_exception := create_cef_string("")
 
-	cRet := C.cefingo_v8interceptor_set_byname(self.p_v8interceptor, c_name.p_cef_string_t, goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t)
+	cRet := C.cefingo_v8interceptor_set_byname((*C.cef_v8interceptor_t)(self.pc_v8interceptor), c_name.p_cef_string_t, goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t)
 
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
@@ -23824,17 +24235,17 @@ func (self *CV8interceptorT) SetByindex(
 ) (ret bool, exception string) {
 	var goTmpobject *C.cef_v8value_t
 	if object != nil {
-		goTmpobject = object.p_v8value
-		BaseAddRef(goTmpobject)
+		BaseAddRef(object.pc_v8value)
+		goTmpobject = (*C.cef_v8value_t)(object.pc_v8value)
 	}
 	var goTmpvalue *C.cef_v8value_t
 	if value != nil {
-		goTmpvalue = value.p_v8value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_v8value)
+		goTmpvalue = (*C.cef_v8value_t)(value.pc_v8value)
 	}
 	tmpc_exception := create_cef_string("")
 
-	cRet := C.cefingo_v8interceptor_set_byindex(self.p_v8interceptor, (C.int)(index), goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t)
+	cRet := C.cefingo_v8interceptor_set_byindex((*C.cef_v8interceptor_t)(self.pc_v8interceptor), (C.int)(index), goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t)
 
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
@@ -23847,10 +24258,12 @@ func (self *CV8interceptorT) SetByindex(
 // called on any render process thread.
 ///
 
+type cCV8exceptionT C.cef_v8exception_t
+
 // Go type for cef_v8exception_t
 type CV8exceptionT struct {
-	noCopy        noCopy
-	p_v8exception *C.cef_v8exception_t
+	noCopy         noCopy
+	pc_v8exception *cCV8exceptionT
 }
 
 type RefToCV8exceptionT struct {
@@ -23876,21 +24289,22 @@ func newCV8exceptionT(p *C.cef_v8exception_t) *CV8exceptionT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T216.1:")
-	BaseAddRef(p)
-	go_v8exception := CV8exceptionT{noCopy{}, p}
+	pc := (*cCV8exceptionT)(p)
+	BaseAddRef(pc)
+	go_v8exception := CV8exceptionT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8exception, func(g *CV8exceptionT) {
-		Tracef(unsafe.Pointer(g.p_v8exception), "T216.2:")
-		BaseRelease(g.p_v8exception)
+		Tracef(unsafe.Pointer(g.pc_v8exception), "T216.2:")
+		BaseRelease(g.pc_v8exception)
 	})
 	return &go_v8exception
 }
 
 // *C.cef_v8exception_t has refCounted interface
 func (v8exception *CV8exceptionT) HasOneRef() bool {
-	return BaseHasOneRef(v8exception.p_v8exception)
+	return BaseHasOneRef(v8exception.pc_v8exception)
 }
 
-func (p *C.cef_v8exception_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8exceptionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -23900,7 +24314,7 @@ func (p *C.cef_v8exception_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetMessage() (ret string) {
 
-	cRet := C.cefingo_v8exception_get_message(self.p_v8exception)
+	cRet := C.cefingo_v8exception_get_message((*C.cef_v8exception_t)(self.pc_v8exception))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -23916,7 +24330,7 @@ func (self *CV8exceptionT) GetMessage() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetSourceLine() (ret string) {
 
-	cRet := C.cefingo_v8exception_get_source_line(self.p_v8exception)
+	cRet := C.cefingo_v8exception_get_source_line((*C.cef_v8exception_t)(self.pc_v8exception))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -23933,7 +24347,7 @@ func (self *CV8exceptionT) GetSourceLine() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetScriptResourceName() (ret string) {
 
-	cRet := C.cefingo_v8exception_get_script_resource_name(self.p_v8exception)
+	cRet := C.cefingo_v8exception_get_script_resource_name((*C.cef_v8exception_t)(self.pc_v8exception))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -23949,7 +24363,7 @@ func (self *CV8exceptionT) GetScriptResourceName() (ret string) {
 ///
 func (self *CV8exceptionT) GetLineNumber() (ret bool) {
 
-	cRet := C.cefingo_v8exception_get_line_number(self.p_v8exception)
+	cRet := C.cefingo_v8exception_get_line_number((*C.cef_v8exception_t)(self.pc_v8exception))
 
 	ret = cRet == 1
 	return ret
@@ -23961,7 +24375,7 @@ func (self *CV8exceptionT) GetLineNumber() (ret bool) {
 ///
 func (self *CV8exceptionT) GetStartPosition() (ret bool) {
 
-	cRet := C.cefingo_v8exception_get_start_position(self.p_v8exception)
+	cRet := C.cefingo_v8exception_get_start_position((*C.cef_v8exception_t)(self.pc_v8exception))
 
 	ret = cRet == 1
 	return ret
@@ -23973,7 +24387,7 @@ func (self *CV8exceptionT) GetStartPosition() (ret bool) {
 ///
 func (self *CV8exceptionT) GetEndPosition() (ret bool) {
 
-	cRet := C.cefingo_v8exception_get_end_position(self.p_v8exception)
+	cRet := C.cefingo_v8exception_get_end_position((*C.cef_v8exception_t)(self.pc_v8exception))
 
 	ret = cRet == 1
 	return ret
@@ -23985,7 +24399,7 @@ func (self *CV8exceptionT) GetEndPosition() (ret bool) {
 ///
 func (self *CV8exceptionT) GetStartColumn() (ret bool) {
 
-	cRet := C.cefingo_v8exception_get_start_column(self.p_v8exception)
+	cRet := C.cefingo_v8exception_get_start_column((*C.cef_v8exception_t)(self.pc_v8exception))
 
 	ret = cRet == 1
 	return ret
@@ -23997,7 +24411,7 @@ func (self *CV8exceptionT) GetStartColumn() (ret bool) {
 ///
 func (self *CV8exceptionT) GetEndColumn() (ret bool) {
 
-	cRet := C.cefingo_v8exception_get_end_column(self.p_v8exception)
+	cRet := C.cefingo_v8exception_get_end_column((*C.cef_v8exception_t)(self.pc_v8exception))
 
 	ret = cRet == 1
 	return ret
@@ -24007,10 +24421,12 @@ func (self *CV8exceptionT) GetEndColumn() (ret bool) {
 // Callback structure that is passed to cef_v8value_t::CreateArrayBuffer.
 ///
 
+type cCV8arrayBufferReleaseCallbackT C.cef_v8array_buffer_release_callback_t
+
 // Go type for cef_v8array_buffer_release_callback_t
 type CV8arrayBufferReleaseCallbackT struct {
-	noCopy                            noCopy
-	p_v8array_buffer_release_callback *C.cef_v8array_buffer_release_callback_t
+	noCopy                             noCopy
+	pc_v8array_buffer_release_callback *cCV8arrayBufferReleaseCallbackT
 }
 
 type RefToCV8arrayBufferReleaseCallbackT struct {
@@ -24036,21 +24452,22 @@ func newCV8arrayBufferReleaseCallbackT(p *C.cef_v8array_buffer_release_callback_
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T217.1:")
-	BaseAddRef(p)
-	go_v8array_buffer_release_callback := CV8arrayBufferReleaseCallbackT{noCopy{}, p}
+	pc := (*cCV8arrayBufferReleaseCallbackT)(p)
+	BaseAddRef(pc)
+	go_v8array_buffer_release_callback := CV8arrayBufferReleaseCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8array_buffer_release_callback, func(g *CV8arrayBufferReleaseCallbackT) {
-		Tracef(unsafe.Pointer(g.p_v8array_buffer_release_callback), "T217.2:")
-		BaseRelease(g.p_v8array_buffer_release_callback)
+		Tracef(unsafe.Pointer(g.pc_v8array_buffer_release_callback), "T217.2:")
+		BaseRelease(g.pc_v8array_buffer_release_callback)
 	})
 	return &go_v8array_buffer_release_callback
 }
 
 // *C.cef_v8array_buffer_release_callback_t has refCounted interface
 func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(v8array_buffer_release_callback.p_v8array_buffer_release_callback)
+	return BaseHasOneRef(v8array_buffer_release_callback.pc_v8array_buffer_release_callback)
 }
 
-func (p *C.cef_v8array_buffer_release_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8arrayBufferReleaseCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -24067,17 +24484,18 @@ type ReleaseBufferHandler interface {
 }
 
 var v8array_buffer_release_callback_handlers = struct {
-	handler                map[*C.cef_v8array_buffer_release_callback_t]interface{}
-	release_buffer_handler map[*C.cef_v8array_buffer_release_callback_t]ReleaseBufferHandler
+	handler                map[*cCV8arrayBufferReleaseCallbackT]interface{}
+	release_buffer_handler map[*cCV8arrayBufferReleaseCallbackT]ReleaseBufferHandler
 }{
-	map[*C.cef_v8array_buffer_release_callback_t]interface{}{},
-	map[*C.cef_v8array_buffer_release_callback_t]ReleaseBufferHandler{},
+	map[*cCV8arrayBufferReleaseCallbackT]interface{}{},
+	map[*cCV8arrayBufferReleaseCallbackT]ReleaseBufferHandler{},
 }
 
 // AllocCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT and construct it
 func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
 	up := c_calloc(1, C.sizeof_cefingo_v8array_buffer_release_callback_wrapper_t, "T217.3:")
 	cefp := C.cefingo_construct_v8array_buffer_release_callback((*C.cefingo_v8array_buffer_release_callback_wrapper_t)(up))
+	cgop := (*cCV8arrayBufferReleaseCallbackT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_v8array_buffer_release_callback_t itself in DeassocFunc,
@@ -24086,8 +24504,8 @@ func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(v8array_buffer_release_callback_handlers.handler, cefp)
-		delete(v8array_buffer_release_callback_handlers.release_buffer_handler, cefp)
+		delete(v8array_buffer_release_callback_handlers.handler, cgop)
+		delete(v8array_buffer_release_callback_handlers.release_buffer_handler, cgop)
 	}))
 
 	return newCV8arrayBufferReleaseCallbackT(cefp)
@@ -24097,7 +24515,7 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a in
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := v8array_buffer_release_callback.p_v8array_buffer_release_callback
+	cp := v8array_buffer_release_callback.pc_v8array_buffer_release_callback
 	v8array_buffer_release_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(ReleaseBufferHandler); ok {
@@ -24114,7 +24532,7 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a in
 
 func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) UnbindAll() {
 
-	cp := v8array_buffer_release_callback.p_v8array_buffer_release_callback
+	cp := v8array_buffer_release_callback.pc_v8array_buffer_release_callback
 	delete(v8array_buffer_release_callback_handlers.handler, cp)
 
 	delete(v8array_buffer_release_callback_handlers.release_buffer_handler, cp)
@@ -24125,7 +24543,7 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Handler()
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := v8array_buffer_release_callback.p_v8array_buffer_release_callback
+	cp := v8array_buffer_release_callback.pc_v8array_buffer_release_callback
 	return v8array_buffer_release_callback_handlers.handler[cp]
 }
 
@@ -24137,10 +24555,12 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Handler()
 // retrieved via the cef_v8context_t::get_task_runner() function.
 ///
 
+type cCV8valueT C.cef_v8value_t
+
 // Go type for cef_v8value_t
 type CV8valueT struct {
-	noCopy    noCopy
-	p_v8value *C.cef_v8value_t
+	noCopy     noCopy
+	pc_v8value *cCV8valueT
 }
 
 type RefToCV8valueT struct {
@@ -24166,21 +24586,22 @@ func newCV8valueT(p *C.cef_v8value_t) *CV8valueT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T218.1:")
-	BaseAddRef(p)
-	go_v8value := CV8valueT{noCopy{}, p}
+	pc := (*cCV8valueT)(p)
+	BaseAddRef(pc)
+	go_v8value := CV8valueT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8value, func(g *CV8valueT) {
-		Tracef(unsafe.Pointer(g.p_v8value), "T218.2:")
-		BaseRelease(g.p_v8value)
+		Tracef(unsafe.Pointer(g.pc_v8value), "T218.2:")
+		BaseRelease(g.pc_v8value)
 	})
 	return &go_v8value
 }
 
 // *C.cef_v8value_t has refCounted interface
 func (v8value *CV8valueT) HasOneRef() bool {
-	return BaseHasOneRef(v8value.p_v8value)
+	return BaseHasOneRef(v8value.pc_v8value)
 }
 
-func (p *C.cef_v8value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8valueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -24191,7 +24612,7 @@ func (p *C.cef_v8value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 ///
 func (self *CV8valueT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_valid(self.p_v8value)
+	cRet := C.cefingo_v8value_is_valid((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24202,7 +24623,7 @@ func (self *CV8valueT) IsValid() (ret bool) {
 ///
 func (self *CV8valueT) IsUndefined() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_undefined(self.p_v8value)
+	cRet := C.cefingo_v8value_is_undefined((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24213,7 +24634,7 @@ func (self *CV8valueT) IsUndefined() (ret bool) {
 ///
 func (self *CV8valueT) IsNull() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_null(self.p_v8value)
+	cRet := C.cefingo_v8value_is_null((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24224,7 +24645,7 @@ func (self *CV8valueT) IsNull() (ret bool) {
 ///
 func (self *CV8valueT) IsBool() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_bool(self.p_v8value)
+	cRet := C.cefingo_v8value_is_bool((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24235,7 +24656,7 @@ func (self *CV8valueT) IsBool() (ret bool) {
 ///
 func (self *CV8valueT) IsInt() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_int(self.p_v8value)
+	cRet := C.cefingo_v8value_is_int((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24246,7 +24667,7 @@ func (self *CV8valueT) IsInt() (ret bool) {
 ///
 func (self *CV8valueT) IsUint() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_uint(self.p_v8value)
+	cRet := C.cefingo_v8value_is_uint((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24257,7 +24678,7 @@ func (self *CV8valueT) IsUint() (ret bool) {
 ///
 func (self *CV8valueT) IsDouble() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_double(self.p_v8value)
+	cRet := C.cefingo_v8value_is_double((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24268,7 +24689,7 @@ func (self *CV8valueT) IsDouble() (ret bool) {
 ///
 func (self *CV8valueT) IsDate() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_date(self.p_v8value)
+	cRet := C.cefingo_v8value_is_date((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24279,7 +24700,7 @@ func (self *CV8valueT) IsDate() (ret bool) {
 ///
 func (self *CV8valueT) IsString() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_string(self.p_v8value)
+	cRet := C.cefingo_v8value_is_string((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24290,7 +24711,7 @@ func (self *CV8valueT) IsString() (ret bool) {
 ///
 func (self *CV8valueT) IsObject() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_object(self.p_v8value)
+	cRet := C.cefingo_v8value_is_object((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24301,7 +24722,7 @@ func (self *CV8valueT) IsObject() (ret bool) {
 ///
 func (self *CV8valueT) IsArray() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_array(self.p_v8value)
+	cRet := C.cefingo_v8value_is_array((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24312,7 +24733,7 @@ func (self *CV8valueT) IsArray() (ret bool) {
 ///
 func (self *CV8valueT) IsArrayBuffer() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_array_buffer(self.p_v8value)
+	cRet := C.cefingo_v8value_is_array_buffer((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24323,7 +24744,7 @@ func (self *CV8valueT) IsArrayBuffer() (ret bool) {
 ///
 func (self *CV8valueT) IsFunction() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_function(self.p_v8value)
+	cRet := C.cefingo_v8value_is_function((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24338,11 +24759,11 @@ func (self *CV8valueT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_v8value_t
 	if that != nil {
-		goTmpthat = that.p_v8value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_v8value)
+		goTmpthat = (*C.cef_v8value_t)(that.pc_v8value)
 	}
 
-	cRet := C.cefingo_v8value_is_same(self.p_v8value, goTmpthat)
+	cRet := C.cefingo_v8value_is_same((*C.cef_v8value_t)(self.pc_v8value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -24353,7 +24774,7 @@ func (self *CV8valueT) IsSame(
 ///
 func (self *CV8valueT) GetBoolValue() (ret bool) {
 
-	cRet := C.cefingo_v8value_get_bool_value(self.p_v8value)
+	cRet := C.cefingo_v8value_get_bool_value((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24364,7 +24785,7 @@ func (self *CV8valueT) GetBoolValue() (ret bool) {
 ///
 func (self *CV8valueT) GetIntValue() (ret int32) {
 
-	cRet := C.cefingo_v8value_get_int_value(self.p_v8value)
+	cRet := C.cefingo_v8value_get_int_value((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = (int32)(cRet)
 	return ret
@@ -24375,7 +24796,7 @@ func (self *CV8valueT) GetIntValue() (ret int32) {
 ///
 func (self *CV8valueT) GetUintValue() (ret uint32) {
 
-	cRet := C.cefingo_v8value_get_uint_value(self.p_v8value)
+	cRet := C.cefingo_v8value_get_uint_value((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = (uint32)(cRet)
 	return ret
@@ -24386,7 +24807,7 @@ func (self *CV8valueT) GetUintValue() (ret uint32) {
 ///
 func (self *CV8valueT) GetDoubleValue() (ret float64) {
 
-	cRet := C.cefingo_v8value_get_double_value(self.p_v8value)
+	cRet := C.cefingo_v8value_get_double_value((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = (float64)(cRet)
 	return ret
@@ -24397,7 +24818,7 @@ func (self *CV8valueT) GetDoubleValue() (ret float64) {
 ///
 func (self *CV8valueT) GetDateValue() (ret CTimeT) {
 
-	cRet := C.cefingo_v8value_get_date_value(self.p_v8value)
+	cRet := C.cefingo_v8value_get_date_value((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = (CTimeT)(cRet)
 	return ret
@@ -24409,7 +24830,7 @@ func (self *CV8valueT) GetDateValue() (ret CTimeT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8valueT) GetStringValue() (ret string) {
 
-	cRet := C.cefingo_v8value_get_string_value(self.p_v8value)
+	cRet := C.cefingo_v8value_get_string_value((*C.cef_v8value_t)(self.pc_v8value))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -24424,7 +24845,7 @@ func (self *CV8valueT) GetStringValue() (ret string) {
 ///
 func (self *CV8valueT) IsUserCreated() (ret bool) {
 
-	cRet := C.cefingo_v8value_is_user_created(self.p_v8value)
+	cRet := C.cefingo_v8value_is_user_created((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24436,7 +24857,7 @@ func (self *CV8valueT) IsUserCreated() (ret bool) {
 ///
 func (self *CV8valueT) HasException() (ret bool) {
 
-	cRet := C.cefingo_v8value_has_exception(self.p_v8value)
+	cRet := C.cefingo_v8value_has_exception((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24448,7 +24869,7 @@ func (self *CV8valueT) HasException() (ret bool) {
 ///
 func (self *CV8valueT) GetException() (ret *CV8exceptionT) {
 
-	cRet := C.cefingo_v8value_get_exception(self.p_v8value)
+	cRet := C.cefingo_v8value_get_exception((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = newCV8exceptionT(cRet)
 	return ret
@@ -24459,7 +24880,7 @@ func (self *CV8valueT) GetException() (ret *CV8exceptionT) {
 ///
 func (self *CV8valueT) ClearException() (ret bool) {
 
-	cRet := C.cefingo_v8value_clear_exception(self.p_v8value)
+	cRet := C.cefingo_v8value_clear_exception((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24471,7 +24892,7 @@ func (self *CV8valueT) ClearException() (ret bool) {
 ///
 func (self *CV8valueT) WillRethrowExceptions() (ret bool) {
 
-	cRet := C.cefingo_v8value_will_rethrow_exceptions(self.p_v8value)
+	cRet := C.cefingo_v8value_will_rethrow_exceptions((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24488,7 +24909,7 @@ func (self *CV8valueT) SetRethrowExceptions(
 	rethrow int,
 ) (ret bool) {
 
-	cRet := C.cefingo_v8value_set_rethrow_exceptions(self.p_v8value, (C.int)(rethrow))
+	cRet := C.cefingo_v8value_set_rethrow_exceptions((*C.cef_v8value_t)(self.pc_v8value), (C.int)(rethrow))
 
 	ret = cRet == 1
 	return ret
@@ -24502,7 +24923,7 @@ func (self *CV8valueT) HasValueBykey(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_v8value_has_value_bykey(self.p_v8value, c_key.p_cef_string_t)
+	cRet := C.cefingo_v8value_has_value_bykey((*C.cef_v8value_t)(self.pc_v8value), c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -24515,7 +24936,7 @@ func (self *CV8valueT) HasValueByindex(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_v8value_has_value_byindex(self.p_v8value, (C.int)(index))
+	cRet := C.cefingo_v8value_has_value_byindex((*C.cef_v8value_t)(self.pc_v8value), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -24532,7 +24953,7 @@ func (self *CV8valueT) DeleteValueBykey(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_v8value_delete_value_bykey(self.p_v8value, c_key.p_cef_string_t)
+	cRet := C.cefingo_v8value_delete_value_bykey((*C.cef_v8value_t)(self.pc_v8value), c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -24548,7 +24969,7 @@ func (self *CV8valueT) DeleteValueByindex(
 	index int,
 ) (ret bool) {
 
-	cRet := C.cefingo_v8value_delete_value_byindex(self.p_v8value, (C.int)(index))
+	cRet := C.cefingo_v8value_delete_value_byindex((*C.cef_v8value_t)(self.pc_v8value), (C.int)(index))
 
 	ret = cRet == 1
 	return ret
@@ -24563,7 +24984,7 @@ func (self *CV8valueT) GetValueBykey(
 ) (ret *CV8valueT) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_v8value_get_value_bykey(self.p_v8value, c_key.p_cef_string_t)
+	cRet := C.cefingo_v8value_get_value_bykey((*C.cef_v8value_t)(self.pc_v8value), c_key.p_cef_string_t)
 
 	ret = newCV8valueT(cRet)
 	return ret
@@ -24577,7 +24998,7 @@ func (self *CV8valueT) GetValueByindex(
 	index int,
 ) (ret *CV8valueT) {
 
-	cRet := C.cefingo_v8value_get_value_byindex(self.p_v8value, (C.int)(index))
+	cRet := C.cefingo_v8value_get_value_byindex((*C.cef_v8value_t)(self.pc_v8value), (C.int)(index))
 
 	ret = newCV8valueT(cRet)
 	return ret
@@ -24597,11 +25018,11 @@ func (self *CV8valueT) SetValueBykey(
 	c_key := create_cef_string(key)
 	var goTmpvalue *C.cef_v8value_t
 	if value != nil {
-		goTmpvalue = value.p_v8value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_v8value)
+		goTmpvalue = (*C.cef_v8value_t)(value.pc_v8value)
 	}
 
-	cRet := C.cefingo_v8value_set_value_bykey(self.p_v8value, c_key.p_cef_string_t, goTmpvalue, (C.cef_v8_propertyattribute_t)(attribute))
+	cRet := C.cefingo_v8value_set_value_bykey((*C.cef_v8value_t)(self.pc_v8value), c_key.p_cef_string_t, goTmpvalue, (C.cef_v8_propertyattribute_t)(attribute))
 
 	ret = cRet == 1
 	return ret
@@ -24619,11 +25040,11 @@ func (self *CV8valueT) SetValueByindex(
 ) (ret bool) {
 	var goTmpvalue *C.cef_v8value_t
 	if value != nil {
-		goTmpvalue = value.p_v8value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_v8value)
+		goTmpvalue = (*C.cef_v8value_t)(value.pc_v8value)
 	}
 
-	cRet := C.cefingo_v8value_set_value_byindex(self.p_v8value, (C.int)(index), goTmpvalue)
+	cRet := C.cefingo_v8value_set_value_byindex((*C.cef_v8value_t)(self.pc_v8value), (C.int)(index), goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -24643,7 +25064,7 @@ func (self *CV8valueT) SetValueByaccessor(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_v8value_set_value_byaccessor(self.p_v8value, c_key.p_cef_string_t, (C.cef_v8_accesscontrol_t)(settings), (C.cef_v8_propertyattribute_t)(attribute))
+	cRet := C.cefingo_v8value_set_value_byaccessor((*C.cef_v8value_t)(self.pc_v8value), c_key.p_cef_string_t, (C.cef_v8_accesscontrol_t)(settings), (C.cef_v8_propertyattribute_t)(attribute))
 
 	ret = cRet == 1
 	return ret
@@ -24657,7 +25078,7 @@ func (self *CV8valueT) GetKeys(
 	keys CStringListT,
 ) (ret bool) {
 
-	cRet := C.cefingo_v8value_get_keys(self.p_v8value, (C.cef_string_list_t)(keys))
+	cRet := C.cefingo_v8value_get_keys((*C.cef_v8value_t)(self.pc_v8value), (C.cef_string_list_t)(keys))
 
 	ret = cRet == 1
 	return ret
@@ -24669,7 +25090,7 @@ func (self *CV8valueT) GetKeys(
 ///
 func (self *CV8valueT) GetExternallyAllocatedMemory() (ret bool) {
 
-	cRet := C.cefingo_v8value_get_externally_allocated_memory(self.p_v8value)
+	cRet := C.cefingo_v8value_get_externally_allocated_memory((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24690,7 +25111,7 @@ func (self *CV8valueT) AdjustExternallyAllocatedMemory(
 	change_in_bytes int,
 ) (ret bool) {
 
-	cRet := C.cefingo_v8value_adjust_externally_allocated_memory(self.p_v8value, (C.int)(change_in_bytes))
+	cRet := C.cefingo_v8value_adjust_externally_allocated_memory((*C.cef_v8value_t)(self.pc_v8value), (C.int)(change_in_bytes))
 
 	ret = cRet == 1
 	return ret
@@ -24701,7 +25122,7 @@ func (self *CV8valueT) AdjustExternallyAllocatedMemory(
 ///
 func (self *CV8valueT) GetArrayLength() (ret bool) {
 
-	cRet := C.cefingo_v8value_get_array_length(self.p_v8value)
+	cRet := C.cefingo_v8value_get_array_length((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24713,7 +25134,7 @@ func (self *CV8valueT) GetArrayLength() (ret bool) {
 ///
 func (self *CV8valueT) GetArrayBufferReleaseCallback() (ret *CV8arrayBufferReleaseCallbackT) {
 
-	cRet := C.cefingo_v8value_get_array_buffer_release_callback(self.p_v8value)
+	cRet := C.cefingo_v8value_get_array_buffer_release_callback((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = newCV8arrayBufferReleaseCallbackT(cRet)
 	return ret
@@ -24728,7 +25149,7 @@ func (self *CV8valueT) GetArrayBufferReleaseCallback() (ret *CV8arrayBufferRelea
 ///
 func (self *CV8valueT) NeuterArrayBuffer() (ret bool) {
 
-	cRet := C.cefingo_v8value_neuter_array_buffer(self.p_v8value)
+	cRet := C.cefingo_v8value_neuter_array_buffer((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = cRet == 1
 	return ret
@@ -24740,7 +25161,7 @@ func (self *CV8valueT) NeuterArrayBuffer() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8valueT) GetFunctionName() (ret string) {
 
-	cRet := C.cefingo_v8value_get_function_name(self.p_v8value)
+	cRet := C.cefingo_v8value_get_function_name((*C.cef_v8value_t)(self.pc_v8value))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -24755,7 +25176,7 @@ func (self *CV8valueT) GetFunctionName() (ret string) {
 ///
 func (self *CV8valueT) GetFunctionHandler() (ret *CV8handlerT) {
 
-	cRet := C.cefingo_v8value_get_function_handler(self.p_v8value)
+	cRet := C.cefingo_v8value_get_function_handler((*C.cef_v8value_t)(self.pc_v8value))
 
 	ret = newCV8handlerT(cRet)
 	return ret
@@ -24778,21 +25199,21 @@ func (self *CV8valueT) ExecuteFunction(
 ) (ret *CV8valueT) {
 	var goTmpobject *C.cef_v8value_t
 	if object != nil {
-		goTmpobject = object.p_v8value
-		BaseAddRef(goTmpobject)
+		BaseAddRef(object.pc_v8value)
+		goTmpobject = (*C.cef_v8value_t)(object.pc_v8value)
 	}
 	argumentsCount := len(arguments)
 	tmparguments := c_calloc(C.size_t(argumentsCount), (C.size_t)(unsafe.Sizeof(arguments[0])), "T218.3:cef_v8value_t::execute_function::arguments")
 	slice := (*[1 << 30]*C.cef_v8value_t)(tmparguments)[:argumentsCount:argumentsCount]
 	for i, v := range arguments {
-		cefp := v.p_v8value
+		cefp := v.pc_v8value
 		if cefp != nil {
 			BaseAddRef(cefp)
 		}
-		slice[i] = cefp
+		slice[i] = (*C.cef_v8value_t)(cefp)
 	}
 
-	cRet := C.cefingo_v8value_execute_function(self.p_v8value, goTmpobject, (C.size_t)(argumentsCount), (**C.cef_v8value_t)(tmparguments))
+	cRet := C.cefingo_v8value_execute_function((*C.cef_v8value_t)(self.pc_v8value), goTmpobject, (C.size_t)(argumentsCount), (**C.cef_v8value_t)(tmparguments))
 
 	ret = newCV8valueT(cRet)
 	return ret
@@ -24813,26 +25234,26 @@ func (self *CV8valueT) ExecuteFunctionWithContext(
 ) (ret *CV8valueT) {
 	var goTmpcontext *C.cef_v8context_t
 	if context != nil {
-		goTmpcontext = context.p_v8context
-		BaseAddRef(goTmpcontext)
+		BaseAddRef(context.pc_v8context)
+		goTmpcontext = (*C.cef_v8context_t)(context.pc_v8context)
 	}
 	var goTmpobject *C.cef_v8value_t
 	if object != nil {
-		goTmpobject = object.p_v8value
-		BaseAddRef(goTmpobject)
+		BaseAddRef(object.pc_v8value)
+		goTmpobject = (*C.cef_v8value_t)(object.pc_v8value)
 	}
 	argumentsCount := len(arguments)
 	tmparguments := c_calloc(C.size_t(argumentsCount), (C.size_t)(unsafe.Sizeof(arguments[0])), "T218.4:cef_v8value_t::execute_function_with_context::arguments")
 	slice := (*[1 << 30]*C.cef_v8value_t)(tmparguments)[:argumentsCount:argumentsCount]
 	for i, v := range arguments {
-		cefp := v.p_v8value
+		cefp := v.pc_v8value
 		if cefp != nil {
 			BaseAddRef(cefp)
 		}
-		slice[i] = cefp
+		slice[i] = (*C.cef_v8value_t)(cefp)
 	}
 
-	cRet := C.cefingo_v8value_execute_function_with_context(self.p_v8value, goTmpcontext, goTmpobject, (C.size_t)(argumentsCount), (**C.cef_v8value_t)(tmparguments))
+	cRet := C.cefingo_v8value_execute_function_with_context((*C.cef_v8value_t)(self.pc_v8value), goTmpcontext, goTmpobject, (C.size_t)(argumentsCount), (**C.cef_v8value_t)(tmparguments))
 
 	ret = newCV8valueT(cRet)
 	return ret
@@ -24955,13 +25376,13 @@ func V8valueCreateObject(
 ) (ret *CV8valueT) {
 	var goTmpaccessor *C.cef_v8accessor_t
 	if accessor != nil {
-		goTmpaccessor = accessor.p_v8accessor
-		BaseAddRef(goTmpaccessor)
+		BaseAddRef(accessor.pc_v8accessor)
+		goTmpaccessor = (*C.cef_v8accessor_t)(accessor.pc_v8accessor)
 	}
 	var goTmpinterceptor *C.cef_v8interceptor_t
 	if interceptor != nil {
-		goTmpinterceptor = interceptor.p_v8interceptor
-		BaseAddRef(goTmpinterceptor)
+		BaseAddRef(interceptor.pc_v8interceptor)
+		goTmpinterceptor = (*C.cef_v8interceptor_t)(interceptor.pc_v8interceptor)
 	}
 
 	cRet := C.cef_v8value_create_object(goTmpaccessor, goTmpinterceptor)
@@ -25005,8 +25426,8 @@ func V8valueCreateArrayBuffer(
 ) (ret *CV8valueT) {
 	var goTmprelease_callback *C.cef_v8array_buffer_release_callback_t
 	if release_callback != nil {
-		goTmprelease_callback = release_callback.p_v8array_buffer_release_callback
-		BaseAddRef(goTmprelease_callback)
+		BaseAddRef(release_callback.pc_v8array_buffer_release_callback)
+		goTmprelease_callback = (*C.cef_v8array_buffer_release_callback_t)(release_callback.pc_v8array_buffer_release_callback)
 	}
 
 	cRet := C.cef_v8value_create_array_buffer(buffer, (C.size_t)(length), goTmprelease_callback)
@@ -25028,8 +25449,8 @@ func V8valueCreateFunction(
 	c_name := create_cef_string(name)
 	var goTmphandler *C.cef_v8handler_t
 	if handler != nil {
-		goTmphandler = handler.p_v8handler
-		BaseAddRef(goTmphandler)
+		BaseAddRef(handler.pc_v8handler)
+		goTmphandler = (*C.cef_v8handler_t)(handler.pc_v8handler)
 	}
 
 	cRet := C.cef_v8value_create_function(c_name.p_cef_string_t, goTmphandler)
@@ -25046,10 +25467,12 @@ func V8valueCreateFunction(
 // thread can be retrieved via the cef_v8context_t::get_task_runner() function.
 ///
 
+type cCV8stackTraceT C.cef_v8stack_trace_t
+
 // Go type for cef_v8stack_trace_t
 type CV8stackTraceT struct {
-	noCopy          noCopy
-	p_v8stack_trace *C.cef_v8stack_trace_t
+	noCopy           noCopy
+	pc_v8stack_trace *cCV8stackTraceT
 }
 
 type RefToCV8stackTraceT struct {
@@ -25075,21 +25498,22 @@ func newCV8stackTraceT(p *C.cef_v8stack_trace_t) *CV8stackTraceT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T219.1:")
-	BaseAddRef(p)
-	go_v8stack_trace := CV8stackTraceT{noCopy{}, p}
+	pc := (*cCV8stackTraceT)(p)
+	BaseAddRef(pc)
+	go_v8stack_trace := CV8stackTraceT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8stack_trace, func(g *CV8stackTraceT) {
-		Tracef(unsafe.Pointer(g.p_v8stack_trace), "T219.2:")
-		BaseRelease(g.p_v8stack_trace)
+		Tracef(unsafe.Pointer(g.pc_v8stack_trace), "T219.2:")
+		BaseRelease(g.pc_v8stack_trace)
 	})
 	return &go_v8stack_trace
 }
 
 // *C.cef_v8stack_trace_t has refCounted interface
 func (v8stack_trace *CV8stackTraceT) HasOneRef() bool {
-	return BaseHasOneRef(v8stack_trace.p_v8stack_trace)
+	return BaseHasOneRef(v8stack_trace.pc_v8stack_trace)
 }
 
-func (p *C.cef_v8stack_trace_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8stackTraceT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -25100,7 +25524,7 @@ func (p *C.cef_v8stack_trace_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 ///
 func (self *CV8stackTraceT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_v8stack_trace_is_valid(self.p_v8stack_trace)
+	cRet := C.cefingo_v8stack_trace_is_valid((*C.cef_v8stack_trace_t)(self.pc_v8stack_trace))
 
 	ret = cRet == 1
 	return ret
@@ -25111,7 +25535,7 @@ func (self *CV8stackTraceT) IsValid() (ret bool) {
 ///
 func (self *CV8stackTraceT) GetFrameCount() (ret bool) {
 
-	cRet := C.cefingo_v8stack_trace_get_frame_count(self.p_v8stack_trace)
+	cRet := C.cefingo_v8stack_trace_get_frame_count((*C.cef_v8stack_trace_t)(self.pc_v8stack_trace))
 
 	ret = cRet == 1
 	return ret
@@ -25124,7 +25548,7 @@ func (self *CV8stackTraceT) GetFrame(
 	index int,
 ) (ret *CV8stackFrameT) {
 
-	cRet := C.cefingo_v8stack_trace_get_frame(self.p_v8stack_trace, (C.int)(index))
+	cRet := C.cefingo_v8stack_trace_get_frame((*C.cef_v8stack_trace_t)(self.pc_v8stack_trace), (C.int)(index))
 
 	ret = newCV8stackFrameT(cRet)
 	return ret
@@ -25152,10 +25576,12 @@ func V8stackTraceGetCurrent(
 // thread can be retrieved via the cef_v8context_t::get_task_runner() function.
 ///
 
+type cCV8stackFrameT C.cef_v8stack_frame_t
+
 // Go type for cef_v8stack_frame_t
 type CV8stackFrameT struct {
-	noCopy          noCopy
-	p_v8stack_frame *C.cef_v8stack_frame_t
+	noCopy           noCopy
+	pc_v8stack_frame *cCV8stackFrameT
 }
 
 type RefToCV8stackFrameT struct {
@@ -25181,21 +25607,22 @@ func newCV8stackFrameT(p *C.cef_v8stack_frame_t) *CV8stackFrameT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T220.1:")
-	BaseAddRef(p)
-	go_v8stack_frame := CV8stackFrameT{noCopy{}, p}
+	pc := (*cCV8stackFrameT)(p)
+	BaseAddRef(pc)
+	go_v8stack_frame := CV8stackFrameT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_v8stack_frame, func(g *CV8stackFrameT) {
-		Tracef(unsafe.Pointer(g.p_v8stack_frame), "T220.2:")
-		BaseRelease(g.p_v8stack_frame)
+		Tracef(unsafe.Pointer(g.pc_v8stack_frame), "T220.2:")
+		BaseRelease(g.pc_v8stack_frame)
 	})
 	return &go_v8stack_frame
 }
 
 // *C.cef_v8stack_frame_t has refCounted interface
 func (v8stack_frame *CV8stackFrameT) HasOneRef() bool {
-	return BaseHasOneRef(v8stack_frame.p_v8stack_frame)
+	return BaseHasOneRef(v8stack_frame.pc_v8stack_frame)
 }
 
-func (p *C.cef_v8stack_frame_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCV8stackFrameT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -25206,7 +25633,7 @@ func (p *C.cef_v8stack_frame_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 ///
 func (self *CV8stackFrameT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_v8stack_frame_is_valid(self.p_v8stack_frame)
+	cRet := C.cefingo_v8stack_frame_is_valid((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
 
 	ret = cRet == 1
 	return ret
@@ -25218,7 +25645,7 @@ func (self *CV8stackFrameT) IsValid() (ret bool) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetScriptName() (ret string) {
 
-	cRet := C.cefingo_v8stack_frame_get_script_name(self.p_v8stack_frame)
+	cRet := C.cefingo_v8stack_frame_get_script_name((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -25236,7 +25663,7 @@ func (self *CV8stackFrameT) GetScriptName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetScriptNameOrSourceUrl() (ret string) {
 
-	cRet := C.cefingo_v8stack_frame_get_script_name_or_source_url(self.p_v8stack_frame)
+	cRet := C.cefingo_v8stack_frame_get_script_name_or_source_url((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -25252,7 +25679,7 @@ func (self *CV8stackFrameT) GetScriptNameOrSourceUrl() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetFunctionName() (ret string) {
 
-	cRet := C.cefingo_v8stack_frame_get_function_name(self.p_v8stack_frame)
+	cRet := C.cefingo_v8stack_frame_get_function_name((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -25267,7 +25694,7 @@ func (self *CV8stackFrameT) GetFunctionName() (ret string) {
 ///
 func (self *CV8stackFrameT) GetLineNumber() (ret bool) {
 
-	cRet := C.cefingo_v8stack_frame_get_line_number(self.p_v8stack_frame)
+	cRet := C.cefingo_v8stack_frame_get_line_number((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
 
 	ret = cRet == 1
 	return ret
@@ -25279,7 +25706,7 @@ func (self *CV8stackFrameT) GetLineNumber() (ret bool) {
 ///
 func (self *CV8stackFrameT) GetColumn() (ret bool) {
 
-	cRet := C.cefingo_v8stack_frame_get_column(self.p_v8stack_frame)
+	cRet := C.cefingo_v8stack_frame_get_column((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
 
 	ret = cRet == 1
 	return ret
@@ -25290,7 +25717,7 @@ func (self *CV8stackFrameT) GetColumn() (ret bool) {
 ///
 func (self *CV8stackFrameT) IsEval() (ret bool) {
 
-	cRet := C.cefingo_v8stack_frame_is_eval(self.p_v8stack_frame)
+	cRet := C.cefingo_v8stack_frame_is_eval((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
 
 	ret = cRet == 1
 	return ret
@@ -25301,7 +25728,7 @@ func (self *CV8stackFrameT) IsEval() (ret bool) {
 ///
 func (self *CV8stackFrameT) IsConstructor() (ret bool) {
 
-	cRet := C.cefingo_v8stack_frame_is_constructor(self.p_v8stack_frame)
+	cRet := C.cefingo_v8stack_frame_is_constructor((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
 
 	ret = cRet == 1
 	return ret
@@ -25372,8 +25799,8 @@ func RegisterExtension(
 	c_javascript_code := create_cef_string(javascript_code)
 	var goTmphandler *C.cef_v8handler_t
 	if handler != nil {
-		goTmphandler = handler.p_v8handler
-		BaseAddRef(goTmphandler)
+		BaseAddRef(handler.pc_v8handler)
+		goTmphandler = (*C.cef_v8handler_t)(handler.pc_v8handler)
 	}
 
 	cRet := C.cef_register_extension(c_extension_name.p_cef_string_t, c_javascript_code.p_cef_string_t, goTmphandler)
@@ -25390,10 +25817,12 @@ func RegisterExtension(
 // used on any process and thread.
 ///
 
+type cCValueT C.cef_value_t
+
 // Go type for cef_value_t
 type CValueT struct {
-	noCopy  noCopy
-	p_value *C.cef_value_t
+	noCopy   noCopy
+	pc_value *cCValueT
 }
 
 type RefToCValueT struct {
@@ -25419,21 +25848,22 @@ func newCValueT(p *C.cef_value_t) *CValueT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T221.1:")
-	BaseAddRef(p)
-	go_value := CValueT{noCopy{}, p}
+	pc := (*cCValueT)(p)
+	BaseAddRef(pc)
+	go_value := CValueT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_value, func(g *CValueT) {
-		Tracef(unsafe.Pointer(g.p_value), "T221.2:")
-		BaseRelease(g.p_value)
+		Tracef(unsafe.Pointer(g.pc_value), "T221.2:")
+		BaseRelease(g.pc_value)
 	})
 	return &go_value
 }
 
 // *C.cef_value_t has refCounted interface
 func (value *CValueT) HasOneRef() bool {
-	return BaseHasOneRef(value.p_value)
+	return BaseHasOneRef(value.pc_value)
 }
 
-func (p *C.cef_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -25447,7 +25877,7 @@ func (p *C.cef_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 ///
 func (self *CValueT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_value_is_valid(self.p_value)
+	cRet := C.cefingo_value_is_valid((*C.cef_value_t)(self.pc_value))
 
 	ret = cRet == 1
 	return ret
@@ -25458,7 +25888,7 @@ func (self *CValueT) IsValid() (ret bool) {
 ///
 func (self *CValueT) IsOwned() (ret bool) {
 
-	cRet := C.cefingo_value_is_owned(self.p_value)
+	cRet := C.cefingo_value_is_owned((*C.cef_value_t)(self.pc_value))
 
 	ret = cRet == 1
 	return ret
@@ -25470,7 +25900,7 @@ func (self *CValueT) IsOwned() (ret bool) {
 ///
 func (self *CValueT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_value_is_read_only(self.p_value)
+	cRet := C.cefingo_value_is_read_only((*C.cef_value_t)(self.pc_value))
 
 	ret = cRet == 1
 	return ret
@@ -25486,11 +25916,11 @@ func (self *CValueT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_value_t
 	if that != nil {
-		goTmpthat = that.p_value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_value)
+		goTmpthat = (*C.cef_value_t)(that.pc_value)
 	}
 
-	cRet := C.cefingo_value_is_same(self.p_value, goTmpthat)
+	cRet := C.cefingo_value_is_same((*C.cef_value_t)(self.pc_value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -25505,11 +25935,11 @@ func (self *CValueT) IsEqual(
 ) (ret bool) {
 	var goTmpthat *C.cef_value_t
 	if that != nil {
-		goTmpthat = that.p_value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_value)
+		goTmpthat = (*C.cef_value_t)(that.pc_value)
 	}
 
-	cRet := C.cefingo_value_is_equal(self.p_value, goTmpthat)
+	cRet := C.cefingo_value_is_equal((*C.cef_value_t)(self.pc_value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -25520,7 +25950,7 @@ func (self *CValueT) IsEqual(
 ///
 func (self *CValueT) Copy() (ret *CValueT) {
 
-	cRet := C.cefingo_value_copy(self.p_value)
+	cRet := C.cefingo_value_copy((*C.cef_value_t)(self.pc_value))
 
 	ret = newCValueT(cRet)
 	return ret
@@ -25531,7 +25961,7 @@ func (self *CValueT) Copy() (ret *CValueT) {
 ///
 func (self *CValueT) GetType() (ret CValueTypeT) {
 
-	cRet := C.cefingo_value_get_type(self.p_value)
+	cRet := C.cefingo_value_get_type((*C.cef_value_t)(self.pc_value))
 
 	ret = CValueTypeT(cRet)
 	return ret
@@ -25542,7 +25972,7 @@ func (self *CValueT) GetType() (ret CValueTypeT) {
 ///
 func (self *CValueT) GetBool() (ret bool) {
 
-	cRet := C.cefingo_value_get_bool(self.p_value)
+	cRet := C.cefingo_value_get_bool((*C.cef_value_t)(self.pc_value))
 
 	ret = cRet == 1
 	return ret
@@ -25553,7 +25983,7 @@ func (self *CValueT) GetBool() (ret bool) {
 ///
 func (self *CValueT) GetInt() (ret bool) {
 
-	cRet := C.cefingo_value_get_int(self.p_value)
+	cRet := C.cefingo_value_get_int((*C.cef_value_t)(self.pc_value))
 
 	ret = cRet == 1
 	return ret
@@ -25564,7 +25994,7 @@ func (self *CValueT) GetInt() (ret bool) {
 ///
 func (self *CValueT) GetDouble() (ret float64) {
 
-	cRet := C.cefingo_value_get_double(self.p_value)
+	cRet := C.cefingo_value_get_double((*C.cef_value_t)(self.pc_value))
 
 	ret = (float64)(cRet)
 	return ret
@@ -25576,7 +26006,7 @@ func (self *CValueT) GetDouble() (ret float64) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CValueT) GetString() (ret string) {
 
-	cRet := C.cefingo_value_get_string(self.p_value)
+	cRet := C.cefingo_value_get_string((*C.cef_value_t)(self.pc_value))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -25596,7 +26026,7 @@ func (self *CValueT) GetString() (ret string) {
 ///
 func (self *CValueT) GetBinary() (ret *CBinaryValueT) {
 
-	cRet := C.cefingo_value_get_binary(self.p_value)
+	cRet := C.cefingo_value_get_binary((*C.cef_value_t)(self.pc_value))
 
 	ret = newCBinaryValueT(cRet)
 	return ret
@@ -25612,7 +26042,7 @@ func (self *CValueT) GetBinary() (ret *CBinaryValueT) {
 ///
 func (self *CValueT) GetDictionary() (ret *CDictionaryValueT) {
 
-	cRet := C.cefingo_value_get_dictionary(self.p_value)
+	cRet := C.cefingo_value_get_dictionary((*C.cef_value_t)(self.pc_value))
 
 	ret = newCDictionaryValueT(cRet)
 	return ret
@@ -25628,7 +26058,7 @@ func (self *CValueT) GetDictionary() (ret *CDictionaryValueT) {
 ///
 func (self *CValueT) GetList() (ret *CListValueT) {
 
-	cRet := C.cefingo_value_get_list(self.p_value)
+	cRet := C.cefingo_value_get_list((*C.cef_value_t)(self.pc_value))
 
 	ret = newCListValueT(cRet)
 	return ret
@@ -25640,7 +26070,7 @@ func (self *CValueT) GetList() (ret *CListValueT) {
 ///
 func (self *CValueT) SetNull() (ret bool) {
 
-	cRet := C.cefingo_value_set_null(self.p_value)
+	cRet := C.cefingo_value_set_null((*C.cef_value_t)(self.pc_value))
 
 	ret = cRet == 1
 	return ret
@@ -25658,7 +26088,7 @@ func (self *CValueT) SetBool(
 		tmpvalue = 1
 	}
 
-	cRet := C.cefingo_value_set_bool(self.p_value, C.int(tmpvalue))
+	cRet := C.cefingo_value_set_bool((*C.cef_value_t)(self.pc_value), C.int(tmpvalue))
 
 	ret = cRet == 1
 	return ret
@@ -25672,7 +26102,7 @@ func (self *CValueT) SetInt(
 	value int,
 ) (ret bool) {
 
-	cRet := C.cefingo_value_set_int(self.p_value, (C.int)(value))
+	cRet := C.cefingo_value_set_int((*C.cef_value_t)(self.pc_value), (C.int)(value))
 
 	ret = cRet == 1
 	return ret
@@ -25686,7 +26116,7 @@ func (self *CValueT) SetDouble(
 	value float64,
 ) (ret bool) {
 
-	cRet := C.cefingo_value_set_double(self.p_value, (C.double)(value))
+	cRet := C.cefingo_value_set_double((*C.cef_value_t)(self.pc_value), (C.double)(value))
 
 	ret = cRet == 1
 	return ret
@@ -25701,7 +26131,7 @@ func (self *CValueT) SetString(
 ) (ret bool) {
 	c_value := create_cef_string(value)
 
-	cRet := C.cefingo_value_set_string(self.p_value, c_value.p_cef_string_t)
+	cRet := C.cefingo_value_set_string((*C.cef_value_t)(self.pc_value), c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -25717,11 +26147,11 @@ func (self *CValueT) SetBinary(
 ) (ret bool) {
 	var goTmpvalue *C.cef_binary_value_t
 	if value != nil {
-		goTmpvalue = value.p_binary_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_binary_value)
+		goTmpvalue = (*C.cef_binary_value_t)(value.pc_binary_value)
 	}
 
-	cRet := C.cefingo_value_set_binary(self.p_value, goTmpvalue)
+	cRet := C.cefingo_value_set_binary((*C.cef_value_t)(self.pc_value), goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -25737,11 +26167,11 @@ func (self *CValueT) SetDictionary(
 ) (ret bool) {
 	var goTmpvalue *C.cef_dictionary_value_t
 	if value != nil {
-		goTmpvalue = value.p_dictionary_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_dictionary_value)
+		goTmpvalue = (*C.cef_dictionary_value_t)(value.pc_dictionary_value)
 	}
 
-	cRet := C.cefingo_value_set_dictionary(self.p_value, goTmpvalue)
+	cRet := C.cefingo_value_set_dictionary((*C.cef_value_t)(self.pc_value), goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -25757,11 +26187,11 @@ func (self *CValueT) SetList(
 ) (ret bool) {
 	var goTmpvalue *C.cef_list_value_t
 	if value != nil {
-		goTmpvalue = value.p_list_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_list_value)
+		goTmpvalue = (*C.cef_list_value_t)(value.pc_list_value)
 	}
 
-	cRet := C.cefingo_value_set_list(self.p_value, goTmpvalue)
+	cRet := C.cefingo_value_set_list((*C.cef_value_t)(self.pc_value), goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -25782,10 +26212,12 @@ func ValueCreate() (ret *CValueT) {
 // Structure representing a binary value. Can be used on any process and thread.
 ///
 
+type cCBinaryValueT C.cef_binary_value_t
+
 // Go type for cef_binary_value_t
 type CBinaryValueT struct {
-	noCopy         noCopy
-	p_binary_value *C.cef_binary_value_t
+	noCopy          noCopy
+	pc_binary_value *cCBinaryValueT
 }
 
 type RefToCBinaryValueT struct {
@@ -25811,21 +26243,22 @@ func newCBinaryValueT(p *C.cef_binary_value_t) *CBinaryValueT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T222.1:")
-	BaseAddRef(p)
-	go_binary_value := CBinaryValueT{noCopy{}, p}
+	pc := (*cCBinaryValueT)(p)
+	BaseAddRef(pc)
+	go_binary_value := CBinaryValueT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_binary_value, func(g *CBinaryValueT) {
-		Tracef(unsafe.Pointer(g.p_binary_value), "T222.2:")
-		BaseRelease(g.p_binary_value)
+		Tracef(unsafe.Pointer(g.pc_binary_value), "T222.2:")
+		BaseRelease(g.pc_binary_value)
 	})
 	return &go_binary_value
 }
 
 // *C.cef_binary_value_t has refCounted interface
 func (binary_value *CBinaryValueT) HasOneRef() bool {
-	return BaseHasOneRef(binary_value.p_binary_value)
+	return BaseHasOneRef(binary_value.pc_binary_value)
 }
 
-func (p *C.cef_binary_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCBinaryValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -25837,7 +26270,7 @@ func (p *C.cef_binary_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 ///
 func (self *CBinaryValueT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_binary_value_is_valid(self.p_binary_value)
+	cRet := C.cefingo_binary_value_is_valid((*C.cef_binary_value_t)(self.pc_binary_value))
 
 	ret = cRet == 1
 	return ret
@@ -25848,7 +26281,7 @@ func (self *CBinaryValueT) IsValid() (ret bool) {
 ///
 func (self *CBinaryValueT) IsOwned() (ret bool) {
 
-	cRet := C.cefingo_binary_value_is_owned(self.p_binary_value)
+	cRet := C.cefingo_binary_value_is_owned((*C.cef_binary_value_t)(self.pc_binary_value))
 
 	ret = cRet == 1
 	return ret
@@ -25863,11 +26296,11 @@ func (self *CBinaryValueT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_binary_value_t
 	if that != nil {
-		goTmpthat = that.p_binary_value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_binary_value)
+		goTmpthat = (*C.cef_binary_value_t)(that.pc_binary_value)
 	}
 
-	cRet := C.cefingo_binary_value_is_same(self.p_binary_value, goTmpthat)
+	cRet := C.cefingo_binary_value_is_same((*C.cef_binary_value_t)(self.pc_binary_value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -25882,11 +26315,11 @@ func (self *CBinaryValueT) IsEqual(
 ) (ret bool) {
 	var goTmpthat *C.cef_binary_value_t
 	if that != nil {
-		goTmpthat = that.p_binary_value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_binary_value)
+		goTmpthat = (*C.cef_binary_value_t)(that.pc_binary_value)
 	}
 
-	cRet := C.cefingo_binary_value_is_equal(self.p_binary_value, goTmpthat)
+	cRet := C.cefingo_binary_value_is_equal((*C.cef_binary_value_t)(self.pc_binary_value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -25897,7 +26330,7 @@ func (self *CBinaryValueT) IsEqual(
 ///
 func (self *CBinaryValueT) Copy() (ret *CBinaryValueT) {
 
-	cRet := C.cefingo_binary_value_copy(self.p_binary_value)
+	cRet := C.cefingo_binary_value_copy((*C.cef_binary_value_t)(self.pc_binary_value))
 
 	ret = newCBinaryValueT(cRet)
 	return ret
@@ -25908,7 +26341,7 @@ func (self *CBinaryValueT) Copy() (ret *CBinaryValueT) {
 ///
 func (self *CBinaryValueT) GetSize() (ret int64) {
 
-	cRet := C.cefingo_binary_value_get_size(self.p_binary_value)
+	cRet := C.cefingo_binary_value_get_size((*C.cef_binary_value_t)(self.pc_binary_value))
 
 	ret = (int64)(cRet)
 	return ret
@@ -25924,7 +26357,7 @@ func (self *CBinaryValueT) GetData(
 	data_offset int64,
 ) (ret int64) {
 
-	cRet := C.cefingo_binary_value_get_data(self.p_binary_value, buffer, (C.size_t)(buffer_size), (C.size_t)(data_offset))
+	cRet := C.cefingo_binary_value_get_data((*C.cef_binary_value_t)(self.pc_binary_value), buffer, (C.size_t)(buffer_size), (C.size_t)(data_offset))
 
 	ret = (int64)(cRet)
 	return ret
@@ -25952,10 +26385,12 @@ func BinaryValueCreate(
 // thread.
 ///
 
+type cCDictionaryValueT C.cef_dictionary_value_t
+
 // Go type for cef_dictionary_value_t
 type CDictionaryValueT struct {
-	noCopy             noCopy
-	p_dictionary_value *C.cef_dictionary_value_t
+	noCopy              noCopy
+	pc_dictionary_value *cCDictionaryValueT
 }
 
 type RefToCDictionaryValueT struct {
@@ -25981,21 +26416,22 @@ func newCDictionaryValueT(p *C.cef_dictionary_value_t) *CDictionaryValueT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T223.1:")
-	BaseAddRef(p)
-	go_dictionary_value := CDictionaryValueT{noCopy{}, p}
+	pc := (*cCDictionaryValueT)(p)
+	BaseAddRef(pc)
+	go_dictionary_value := CDictionaryValueT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_dictionary_value, func(g *CDictionaryValueT) {
-		Tracef(unsafe.Pointer(g.p_dictionary_value), "T223.2:")
-		BaseRelease(g.p_dictionary_value)
+		Tracef(unsafe.Pointer(g.pc_dictionary_value), "T223.2:")
+		BaseRelease(g.pc_dictionary_value)
 	})
 	return &go_dictionary_value
 }
 
 // *C.cef_dictionary_value_t has refCounted interface
 func (dictionary_value *CDictionaryValueT) HasOneRef() bool {
-	return BaseHasOneRef(dictionary_value.p_dictionary_value)
+	return BaseHasOneRef(dictionary_value.pc_dictionary_value)
 }
 
-func (p *C.cef_dictionary_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCDictionaryValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -26007,7 +26443,7 @@ func (p *C.cef_dictionary_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_re
 ///
 func (self *CDictionaryValueT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_dictionary_value_is_valid(self.p_dictionary_value)
+	cRet := C.cefingo_dictionary_value_is_valid((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
 
 	ret = cRet == 1
 	return ret
@@ -26018,7 +26454,7 @@ func (self *CDictionaryValueT) IsValid() (ret bool) {
 ///
 func (self *CDictionaryValueT) IsOwned() (ret bool) {
 
-	cRet := C.cefingo_dictionary_value_is_owned(self.p_dictionary_value)
+	cRet := C.cefingo_dictionary_value_is_owned((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
 
 	ret = cRet == 1
 	return ret
@@ -26030,7 +26466,7 @@ func (self *CDictionaryValueT) IsOwned() (ret bool) {
 ///
 func (self *CDictionaryValueT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_dictionary_value_is_read_only(self.p_dictionary_value)
+	cRet := C.cefingo_dictionary_value_is_read_only((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
 
 	ret = cRet == 1
 	return ret
@@ -26046,11 +26482,11 @@ func (self *CDictionaryValueT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_dictionary_value_t
 	if that != nil {
-		goTmpthat = that.p_dictionary_value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_dictionary_value)
+		goTmpthat = (*C.cef_dictionary_value_t)(that.pc_dictionary_value)
 	}
 
-	cRet := C.cefingo_dictionary_value_is_same(self.p_dictionary_value, goTmpthat)
+	cRet := C.cefingo_dictionary_value_is_same((*C.cef_dictionary_value_t)(self.pc_dictionary_value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -26065,11 +26501,11 @@ func (self *CDictionaryValueT) IsEqual(
 ) (ret bool) {
 	var goTmpthat *C.cef_dictionary_value_t
 	if that != nil {
-		goTmpthat = that.p_dictionary_value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_dictionary_value)
+		goTmpthat = (*C.cef_dictionary_value_t)(that.pc_dictionary_value)
 	}
 
-	cRet := C.cefingo_dictionary_value_is_equal(self.p_dictionary_value, goTmpthat)
+	cRet := C.cefingo_dictionary_value_is_equal((*C.cef_dictionary_value_t)(self.pc_dictionary_value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -26083,7 +26519,7 @@ func (self *CDictionaryValueT) Copy(
 	exclude_empty_children int,
 ) (ret *CDictionaryValueT) {
 
-	cRet := C.cefingo_dictionary_value_copy(self.p_dictionary_value, (C.int)(exclude_empty_children))
+	cRet := C.cefingo_dictionary_value_copy((*C.cef_dictionary_value_t)(self.pc_dictionary_value), (C.int)(exclude_empty_children))
 
 	ret = newCDictionaryValueT(cRet)
 	return ret
@@ -26094,7 +26530,7 @@ func (self *CDictionaryValueT) Copy(
 ///
 func (self *CDictionaryValueT) GetSize() (ret int64) {
 
-	cRet := C.cefingo_dictionary_value_get_size(self.p_dictionary_value)
+	cRet := C.cefingo_dictionary_value_get_size((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
 
 	ret = (int64)(cRet)
 	return ret
@@ -26105,7 +26541,7 @@ func (self *CDictionaryValueT) GetSize() (ret int64) {
 ///
 func (self *CDictionaryValueT) Clear() (ret bool) {
 
-	cRet := C.cefingo_dictionary_value_clear(self.p_dictionary_value)
+	cRet := C.cefingo_dictionary_value_clear((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
 
 	ret = cRet == 1
 	return ret
@@ -26119,7 +26555,7 @@ func (self *CDictionaryValueT) HasKey(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_has_key(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_has_key((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26132,7 +26568,7 @@ func (self *CDictionaryValueT) GetKeys(
 	keys CStringListT,
 ) (ret bool) {
 
-	cRet := C.cefingo_dictionary_value_get_keys(self.p_dictionary_value, (C.cef_string_list_t)(keys))
+	cRet := C.cefingo_dictionary_value_get_keys((*C.cef_dictionary_value_t)(self.pc_dictionary_value), (C.cef_string_list_t)(keys))
 
 	ret = cRet == 1
 	return ret
@@ -26147,7 +26583,7 @@ func (self *CDictionaryValueT) Remove(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_remove(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_remove((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26161,7 +26597,7 @@ func (self *CDictionaryValueT) GetType(
 ) (ret CValueTypeT) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_type(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_type((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = CValueTypeT(cRet)
 	return ret
@@ -26179,7 +26615,7 @@ func (self *CDictionaryValueT) GetValue(
 ) (ret *CValueT) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_value(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_value((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = newCValueT(cRet)
 	return ret
@@ -26193,7 +26629,7 @@ func (self *CDictionaryValueT) GetBool(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_bool(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_bool((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26207,7 +26643,7 @@ func (self *CDictionaryValueT) GetInt(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_int(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_int((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26221,7 +26657,7 @@ func (self *CDictionaryValueT) GetDouble(
 ) (ret float64) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_double(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_double((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = (float64)(cRet)
 	return ret
@@ -26236,7 +26672,7 @@ func (self *CDictionaryValueT) GetString(
 ) (ret string) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_string(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_string((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -26255,7 +26691,7 @@ func (self *CDictionaryValueT) GetBinary(
 ) (ret *CBinaryValueT) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_binary(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_binary((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = newCBinaryValueT(cRet)
 	return ret
@@ -26271,7 +26707,7 @@ func (self *CDictionaryValueT) GetDictionary(
 ) (ret *CDictionaryValueT) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_dictionary(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_dictionary((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = newCDictionaryValueT(cRet)
 	return ret
@@ -26287,7 +26723,7 @@ func (self *CDictionaryValueT) GetList(
 ) (ret *CListValueT) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_get_list(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_get_list((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = newCListValueT(cRet)
 	return ret
@@ -26308,11 +26744,11 @@ func (self *CDictionaryValueT) SetValue(
 	c_key := create_cef_string(key)
 	var goTmpvalue *C.cef_value_t
 	if value != nil {
-		goTmpvalue = value.p_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_value)
+		goTmpvalue = (*C.cef_value_t)(value.pc_value)
 	}
 
-	cRet := C.cefingo_dictionary_value_set_value(self.p_dictionary_value, c_key.p_cef_string_t, goTmpvalue)
+	cRet := C.cefingo_dictionary_value_set_value((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t, goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26327,7 +26763,7 @@ func (self *CDictionaryValueT) SetNull(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_set_null(self.p_dictionary_value, c_key.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_set_null((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26347,7 +26783,7 @@ func (self *CDictionaryValueT) SetBool(
 		tmpvalue = 1
 	}
 
-	cRet := C.cefingo_dictionary_value_set_bool(self.p_dictionary_value, c_key.p_cef_string_t, C.int(tmpvalue))
+	cRet := C.cefingo_dictionary_value_set_bool((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t, C.int(tmpvalue))
 
 	ret = cRet == 1
 	return ret
@@ -26363,7 +26799,7 @@ func (self *CDictionaryValueT) SetInt(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_set_int(self.p_dictionary_value, c_key.p_cef_string_t, (C.int)(value))
+	cRet := C.cefingo_dictionary_value_set_int((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t, (C.int)(value))
 
 	ret = cRet == 1
 	return ret
@@ -26379,7 +26815,7 @@ func (self *CDictionaryValueT) SetDouble(
 ) (ret bool) {
 	c_key := create_cef_string(key)
 
-	cRet := C.cefingo_dictionary_value_set_double(self.p_dictionary_value, c_key.p_cef_string_t, (C.double)(value))
+	cRet := C.cefingo_dictionary_value_set_double((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t, (C.double)(value))
 
 	ret = cRet == 1
 	return ret
@@ -26396,7 +26832,7 @@ func (self *CDictionaryValueT) SetString(
 	c_key := create_cef_string(key)
 	c_value := create_cef_string(value)
 
-	cRet := C.cefingo_dictionary_value_set_string(self.p_dictionary_value, c_key.p_cef_string_t, c_value.p_cef_string_t)
+	cRet := C.cefingo_dictionary_value_set_string((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t, c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26416,11 +26852,11 @@ func (self *CDictionaryValueT) SetBinary(
 	c_key := create_cef_string(key)
 	var goTmpvalue *C.cef_binary_value_t
 	if value != nil {
-		goTmpvalue = value.p_binary_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_binary_value)
+		goTmpvalue = (*C.cef_binary_value_t)(value.pc_binary_value)
 	}
 
-	cRet := C.cefingo_dictionary_value_set_binary(self.p_dictionary_value, c_key.p_cef_string_t, goTmpvalue)
+	cRet := C.cefingo_dictionary_value_set_binary((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t, goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26440,11 +26876,11 @@ func (self *CDictionaryValueT) SetDictionary(
 	c_key := create_cef_string(key)
 	var goTmpvalue *C.cef_dictionary_value_t
 	if value != nil {
-		goTmpvalue = value.p_dictionary_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_dictionary_value)
+		goTmpvalue = (*C.cef_dictionary_value_t)(value.pc_dictionary_value)
 	}
 
-	cRet := C.cefingo_dictionary_value_set_dictionary(self.p_dictionary_value, c_key.p_cef_string_t, goTmpvalue)
+	cRet := C.cefingo_dictionary_value_set_dictionary((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t, goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26464,11 +26900,11 @@ func (self *CDictionaryValueT) SetList(
 	c_key := create_cef_string(key)
 	var goTmpvalue *C.cef_list_value_t
 	if value != nil {
-		goTmpvalue = value.p_list_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_list_value)
+		goTmpvalue = (*C.cef_list_value_t)(value.pc_list_value)
 	}
 
-	cRet := C.cefingo_dictionary_value_set_list(self.p_dictionary_value, c_key.p_cef_string_t, goTmpvalue)
+	cRet := C.cefingo_dictionary_value_set_list((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t, goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26489,10 +26925,12 @@ func DictionaryValueCreate() (ret *CDictionaryValueT) {
 // Structure representing a list value. Can be used on any process and thread.
 ///
 
+type cCListValueT C.cef_list_value_t
+
 // Go type for cef_list_value_t
 type CListValueT struct {
-	noCopy       noCopy
-	p_list_value *C.cef_list_value_t
+	noCopy        noCopy
+	pc_list_value *cCListValueT
 }
 
 type RefToCListValueT struct {
@@ -26518,21 +26956,22 @@ func newCListValueT(p *C.cef_list_value_t) *CListValueT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T224.1:")
-	BaseAddRef(p)
-	go_list_value := CListValueT{noCopy{}, p}
+	pc := (*cCListValueT)(p)
+	BaseAddRef(pc)
+	go_list_value := CListValueT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_list_value, func(g *CListValueT) {
-		Tracef(unsafe.Pointer(g.p_list_value), "T224.2:")
-		BaseRelease(g.p_list_value)
+		Tracef(unsafe.Pointer(g.pc_list_value), "T224.2:")
+		BaseRelease(g.pc_list_value)
 	})
 	return &go_list_value
 }
 
 // *C.cef_list_value_t has refCounted interface
 func (list_value *CListValueT) HasOneRef() bool {
-	return BaseHasOneRef(list_value.p_list_value)
+	return BaseHasOneRef(list_value.pc_list_value)
 }
 
-func (p *C.cef_list_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCListValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -26544,7 +26983,7 @@ func (p *C.cef_list_value_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 ///
 func (self *CListValueT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_list_value_is_valid(self.p_list_value)
+	cRet := C.cefingo_list_value_is_valid((*C.cef_list_value_t)(self.pc_list_value))
 
 	ret = cRet == 1
 	return ret
@@ -26555,7 +26994,7 @@ func (self *CListValueT) IsValid() (ret bool) {
 ///
 func (self *CListValueT) IsOwned() (ret bool) {
 
-	cRet := C.cefingo_list_value_is_owned(self.p_list_value)
+	cRet := C.cefingo_list_value_is_owned((*C.cef_list_value_t)(self.pc_list_value))
 
 	ret = cRet == 1
 	return ret
@@ -26567,7 +27006,7 @@ func (self *CListValueT) IsOwned() (ret bool) {
 ///
 func (self *CListValueT) IsReadOnly() (ret bool) {
 
-	cRet := C.cefingo_list_value_is_read_only(self.p_list_value)
+	cRet := C.cefingo_list_value_is_read_only((*C.cef_list_value_t)(self.pc_list_value))
 
 	ret = cRet == 1
 	return ret
@@ -26583,11 +27022,11 @@ func (self *CListValueT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_list_value_t
 	if that != nil {
-		goTmpthat = that.p_list_value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_list_value)
+		goTmpthat = (*C.cef_list_value_t)(that.pc_list_value)
 	}
 
-	cRet := C.cefingo_list_value_is_same(self.p_list_value, goTmpthat)
+	cRet := C.cefingo_list_value_is_same((*C.cef_list_value_t)(self.pc_list_value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -26602,11 +27041,11 @@ func (self *CListValueT) IsEqual(
 ) (ret bool) {
 	var goTmpthat *C.cef_list_value_t
 	if that != nil {
-		goTmpthat = that.p_list_value
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_list_value)
+		goTmpthat = (*C.cef_list_value_t)(that.pc_list_value)
 	}
 
-	cRet := C.cefingo_list_value_is_equal(self.p_list_value, goTmpthat)
+	cRet := C.cefingo_list_value_is_equal((*C.cef_list_value_t)(self.pc_list_value), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -26617,7 +27056,7 @@ func (self *CListValueT) IsEqual(
 ///
 func (self *CListValueT) Copy() (ret *CListValueT) {
 
-	cRet := C.cefingo_list_value_copy(self.p_list_value)
+	cRet := C.cefingo_list_value_copy((*C.cef_list_value_t)(self.pc_list_value))
 
 	ret = newCListValueT(cRet)
 	return ret
@@ -26631,7 +27070,7 @@ func (self *CListValueT) SetSize(
 	size int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_list_value_set_size(self.p_list_value, (C.size_t)(size))
+	cRet := C.cefingo_list_value_set_size((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(size))
 
 	ret = cRet == 1
 	return ret
@@ -26642,7 +27081,7 @@ func (self *CListValueT) SetSize(
 ///
 func (self *CListValueT) GetSize() (ret int64) {
 
-	cRet := C.cefingo_list_value_get_size(self.p_list_value)
+	cRet := C.cefingo_list_value_get_size((*C.cef_list_value_t)(self.pc_list_value))
 
 	ret = (int64)(cRet)
 	return ret
@@ -26653,7 +27092,7 @@ func (self *CListValueT) GetSize() (ret int64) {
 ///
 func (self *CListValueT) Clear() (ret bool) {
 
-	cRet := C.cefingo_list_value_clear(self.p_list_value)
+	cRet := C.cefingo_list_value_clear((*C.cef_list_value_t)(self.pc_list_value))
 
 	ret = cRet == 1
 	return ret
@@ -26666,7 +27105,7 @@ func (self *CListValueT) Remove(
 	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_list_value_remove(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_remove((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
@@ -26679,7 +27118,7 @@ func (self *CListValueT) GetType(
 	index int64,
 ) (ret CValueTypeT) {
 
-	cRet := C.cefingo_list_value_get_type(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_type((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = CValueTypeT(cRet)
 	return ret
@@ -26696,7 +27135,7 @@ func (self *CListValueT) GetValue(
 	index int64,
 ) (ret *CValueT) {
 
-	cRet := C.cefingo_list_value_get_value(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_value((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = newCValueT(cRet)
 	return ret
@@ -26709,7 +27148,7 @@ func (self *CListValueT) GetBool(
 	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_list_value_get_bool(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_bool((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
@@ -26722,7 +27161,7 @@ func (self *CListValueT) GetInt(
 	index int64,
 ) (ret int) {
 
-	cRet := C.cefingo_list_value_get_int(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_int((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = (int)(cRet)
 	return ret
@@ -26735,7 +27174,7 @@ func (self *CListValueT) GetDouble(
 	index int64,
 ) (ret float64) {
 
-	cRet := C.cefingo_list_value_get_double(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_double((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = (float64)(cRet)
 	return ret
@@ -26749,7 +27188,7 @@ func (self *CListValueT) GetString(
 	index int64,
 ) (ret string) {
 
-	cRet := C.cefingo_list_value_get_string(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_string((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -26767,7 +27206,7 @@ func (self *CListValueT) GetBinary(
 	index int64,
 ) (ret *CBinaryValueT) {
 
-	cRet := C.cefingo_list_value_get_binary(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_binary((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = newCBinaryValueT(cRet)
 	return ret
@@ -26782,7 +27221,7 @@ func (self *CListValueT) GetDictionary(
 	index int64,
 ) (ret *CDictionaryValueT) {
 
-	cRet := C.cefingo_list_value_get_dictionary(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_dictionary((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = newCDictionaryValueT(cRet)
 	return ret
@@ -26797,7 +27236,7 @@ func (self *CListValueT) GetList(
 	index int64,
 ) (ret *CListValueT) {
 
-	cRet := C.cefingo_list_value_get_list(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_get_list((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = newCListValueT(cRet)
 	return ret
@@ -26817,11 +27256,11 @@ func (self *CListValueT) SetValue(
 ) (ret bool) {
 	var goTmpvalue *C.cef_value_t
 	if value != nil {
-		goTmpvalue = value.p_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_value)
+		goTmpvalue = (*C.cef_value_t)(value.pc_value)
 	}
 
-	cRet := C.cefingo_list_value_set_value(self.p_list_value, (C.size_t)(index), goTmpvalue)
+	cRet := C.cefingo_list_value_set_value((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index), goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26835,7 +27274,7 @@ func (self *CListValueT) SetNull(
 	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_list_value_set_null(self.p_list_value, (C.size_t)(index))
+	cRet := C.cefingo_list_value_set_null((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
@@ -26854,7 +27293,7 @@ func (self *CListValueT) SetBool(
 		tmpvalue = 1
 	}
 
-	cRet := C.cefingo_list_value_set_bool(self.p_list_value, (C.size_t)(index), C.int(tmpvalue))
+	cRet := C.cefingo_list_value_set_bool((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index), C.int(tmpvalue))
 
 	ret = cRet == 1
 	return ret
@@ -26869,7 +27308,7 @@ func (self *CListValueT) SetInt(
 	value int,
 ) (ret bool) {
 
-	cRet := C.cefingo_list_value_set_int(self.p_list_value, (C.size_t)(index), (C.int)(value))
+	cRet := C.cefingo_list_value_set_int((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index), (C.int)(value))
 
 	ret = cRet == 1
 	return ret
@@ -26884,7 +27323,7 @@ func (self *CListValueT) SetDouble(
 	value float64,
 ) (ret bool) {
 
-	cRet := C.cefingo_list_value_set_double(self.p_list_value, (C.size_t)(index), (C.double)(value))
+	cRet := C.cefingo_list_value_set_double((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index), (C.double)(value))
 
 	ret = cRet == 1
 	return ret
@@ -26900,7 +27339,7 @@ func (self *CListValueT) SetString(
 ) (ret bool) {
 	c_value := create_cef_string(value)
 
-	cRet := C.cefingo_list_value_set_string(self.p_list_value, (C.size_t)(index), c_value.p_cef_string_t)
+	cRet := C.cefingo_list_value_set_string((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index), c_value.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
@@ -26919,11 +27358,11 @@ func (self *CListValueT) SetBinary(
 ) (ret bool) {
 	var goTmpvalue *C.cef_binary_value_t
 	if value != nil {
-		goTmpvalue = value.p_binary_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_binary_value)
+		goTmpvalue = (*C.cef_binary_value_t)(value.pc_binary_value)
 	}
 
-	cRet := C.cefingo_list_value_set_binary(self.p_list_value, (C.size_t)(index), goTmpvalue)
+	cRet := C.cefingo_list_value_set_binary((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index), goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26942,11 +27381,11 @@ func (self *CListValueT) SetDictionary(
 ) (ret bool) {
 	var goTmpvalue *C.cef_dictionary_value_t
 	if value != nil {
-		goTmpvalue = value.p_dictionary_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_dictionary_value)
+		goTmpvalue = (*C.cef_dictionary_value_t)(value.pc_dictionary_value)
 	}
 
-	cRet := C.cefingo_list_value_set_dictionary(self.p_list_value, (C.size_t)(index), goTmpvalue)
+	cRet := C.cefingo_list_value_set_dictionary((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index), goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26965,11 +27404,11 @@ func (self *CListValueT) SetList(
 ) (ret bool) {
 	var goTmpvalue *C.cef_list_value_t
 	if value != nil {
-		goTmpvalue = value.p_list_value
-		BaseAddRef(goTmpvalue)
+		BaseAddRef(value.pc_list_value)
+		goTmpvalue = (*C.cef_list_value_t)(value.pc_list_value)
 	}
 
-	cRet := C.cefingo_list_value_set_list(self.p_list_value, (C.size_t)(index), goTmpvalue)
+	cRet := C.cefingo_list_value_set_list((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index), goTmpvalue)
 
 	ret = cRet == 1
 	return ret
@@ -26995,10 +27434,12 @@ func ListValueCreate() (ret *CListValueT) {
 // on the browser process UI thread unless otherwise indicated.
 ///
 
+type cCViewT C.cef_view_t
+
 // Go type for cef_view_t
 type CViewT struct {
-	noCopy noCopy
-	p_view *C.cef_view_t
+	noCopy  noCopy
+	pc_view *cCViewT
 }
 
 type RefToCViewT struct {
@@ -27024,21 +27465,22 @@ func newCViewT(p *C.cef_view_t) *CViewT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T225.1:")
-	BaseAddRef(p)
-	go_view := CViewT{noCopy{}, p}
+	pc := (*cCViewT)(p)
+	BaseAddRef(pc)
+	go_view := CViewT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_view, func(g *CViewT) {
-		Tracef(unsafe.Pointer(g.p_view), "T225.2:")
-		BaseRelease(g.p_view)
+		Tracef(unsafe.Pointer(g.pc_view), "T225.2:")
+		BaseRelease(g.pc_view)
 	})
 	return &go_view
 }
 
 // *C.cef_view_t has refCounted interface
 func (view *CViewT) HasOneRef() bool {
-	return BaseHasOneRef(view.p_view)
+	return BaseHasOneRef(view.pc_view)
 }
 
-func (p *C.cef_view_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -27047,7 +27489,7 @@ func (p *C.cef_view_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 ///
 func (self *CViewT) AsBrowserView() (ret *CBrowserViewT) {
 
-	cRet := C.cefingo_view_as_browser_view(self.p_view)
+	cRet := C.cefingo_view_as_browser_view((*C.cef_view_t)(self.pc_view))
 
 	ret = newCBrowserViewT(cRet)
 	return ret
@@ -27058,7 +27500,7 @@ func (self *CViewT) AsBrowserView() (ret *CBrowserViewT) {
 ///
 func (self *CViewT) AsButton() (ret *CButtonT) {
 
-	cRet := C.cefingo_view_as_button(self.p_view)
+	cRet := C.cefingo_view_as_button((*C.cef_view_t)(self.pc_view))
 
 	ret = newCButtonT(cRet)
 	return ret
@@ -27069,7 +27511,7 @@ func (self *CViewT) AsButton() (ret *CButtonT) {
 ///
 func (self *CViewT) AsPanel() (ret *CPanelT) {
 
-	cRet := C.cefingo_view_as_panel(self.p_view)
+	cRet := C.cefingo_view_as_panel((*C.cef_view_t)(self.pc_view))
 
 	ret = newCPanelT(cRet)
 	return ret
@@ -27080,7 +27522,7 @@ func (self *CViewT) AsPanel() (ret *CPanelT) {
 ///
 func (self *CViewT) AsScrollView() (ret *CScrollViewT) {
 
-	cRet := C.cefingo_view_as_scroll_view(self.p_view)
+	cRet := C.cefingo_view_as_scroll_view((*C.cef_view_t)(self.pc_view))
 
 	ret = newCScrollViewT(cRet)
 	return ret
@@ -27091,7 +27533,7 @@ func (self *CViewT) AsScrollView() (ret *CScrollViewT) {
 ///
 func (self *CViewT) AsTextfield() (ret *CTextfieldT) {
 
-	cRet := C.cefingo_view_as_textfield(self.p_view)
+	cRet := C.cefingo_view_as_textfield((*C.cef_view_t)(self.pc_view))
 
 	ret = newCTextfieldT(cRet)
 	return ret
@@ -27104,7 +27546,7 @@ func (self *CViewT) AsTextfield() (ret *CTextfieldT) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CViewT) GetTypeString() (ret string) {
 
-	cRet := C.cefingo_view_get_type_string(self.p_view)
+	cRet := C.cefingo_view_get_type_string((*C.cef_view_t)(self.pc_view))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -27125,7 +27567,7 @@ func (self *CViewT) ToString(
 	include_children int,
 ) (ret string) {
 
-	cRet := C.cefingo_view_to_string(self.p_view, (C.int)(include_children))
+	cRet := C.cefingo_view_to_string((*C.cef_view_t)(self.pc_view), (C.int)(include_children))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -27140,7 +27582,7 @@ func (self *CViewT) ToString(
 ///
 func (self *CViewT) IsValid() (ret bool) {
 
-	cRet := C.cefingo_view_is_valid(self.p_view)
+	cRet := C.cefingo_view_is_valid((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27152,7 +27594,7 @@ func (self *CViewT) IsValid() (ret bool) {
 ///
 func (self *CViewT) IsAttached() (ret bool) {
 
-	cRet := C.cefingo_view_is_attached(self.p_view)
+	cRet := C.cefingo_view_is_attached((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27166,11 +27608,11 @@ func (self *CViewT) IsSame(
 ) (ret bool) {
 	var goTmpthat *C.cef_view_t
 	if that != nil {
-		goTmpthat = that.p_view
-		BaseAddRef(goTmpthat)
+		BaseAddRef(that.pc_view)
+		goTmpthat = (*C.cef_view_t)(that.pc_view)
 	}
 
-	cRet := C.cefingo_view_is_same(self.p_view, goTmpthat)
+	cRet := C.cefingo_view_is_same((*C.cef_view_t)(self.pc_view), goTmpthat)
 
 	ret = cRet == 1
 	return ret
@@ -27181,7 +27623,7 @@ func (self *CViewT) IsSame(
 ///
 func (self *CViewT) GetDelegate() (ret *CViewDelegateT) {
 
-	cRet := C.cefingo_view_get_delegate(self.p_view)
+	cRet := C.cefingo_view_get_delegate((*C.cef_view_t)(self.pc_view))
 
 	ret = newCViewDelegateT(cRet)
 	return ret
@@ -27192,7 +27634,7 @@ func (self *CViewT) GetDelegate() (ret *CViewDelegateT) {
 ///
 func (self *CViewT) GetWindow() (ret *CWindowT) {
 
-	cRet := C.cefingo_view_get_window(self.p_view)
+	cRet := C.cefingo_view_get_window((*C.cef_view_t)(self.pc_view))
 
 	ret = newCWindowT(cRet)
 	return ret
@@ -27203,7 +27645,7 @@ func (self *CViewT) GetWindow() (ret *CWindowT) {
 ///
 func (self *CViewT) GetId() (ret bool) {
 
-	cRet := C.cefingo_view_get_id(self.p_view)
+	cRet := C.cefingo_view_get_id((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27217,7 +27659,7 @@ func (self *CViewT) SetId(
 	id int,
 ) {
 
-	C.cefingo_view_set_id(self.p_view, (C.int)(id))
+	C.cefingo_view_set_id((*C.cef_view_t)(self.pc_view), (C.int)(id))
 
 }
 
@@ -27226,7 +27668,7 @@ func (self *CViewT) SetId(
 ///
 func (self *CViewT) GetGroupId() (ret bool) {
 
-	cRet := C.cefingo_view_get_group_id(self.p_view)
+	cRet := C.cefingo_view_get_group_id((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27241,7 +27683,7 @@ func (self *CViewT) SetGroupId(
 	group_id int,
 ) {
 
-	C.cefingo_view_set_group_id(self.p_view, (C.int)(group_id))
+	C.cefingo_view_set_group_id((*C.cef_view_t)(self.pc_view), (C.int)(group_id))
 
 }
 
@@ -27250,7 +27692,7 @@ func (self *CViewT) SetGroupId(
 ///
 func (self *CViewT) GetParentView() (ret *CViewT) {
 
-	cRet := C.cefingo_view_get_parent_view(self.p_view)
+	cRet := C.cefingo_view_get_parent_view((*C.cef_view_t)(self.pc_view))
 
 	ret = newCViewT(cRet)
 	return ret
@@ -27265,7 +27707,7 @@ func (self *CViewT) GetViewForId(
 	id int,
 ) (ret *CViewT) {
 
-	cRet := C.cefingo_view_get_view_for_id(self.p_view, (C.int)(id))
+	cRet := C.cefingo_view_get_view_for_id((*C.cef_view_t)(self.pc_view), (C.int)(id))
 
 	ret = newCViewT(cRet)
 	return ret
@@ -27279,7 +27721,7 @@ func (self *CViewT) SetBounds(
 	bounds *CRectT,
 ) {
 
-	C.cefingo_view_set_bounds(self.p_view, (*C.cef_rect_t)(bounds))
+	C.cefingo_view_set_bounds((*C.cef_view_t)(self.pc_view), (*C.cef_rect_t)(bounds))
 
 }
 
@@ -27289,7 +27731,7 @@ func (self *CViewT) SetBounds(
 ///
 func (self *CViewT) GetBounds() (ret CRectT) {
 
-	cRet := C.cefingo_view_get_bounds(self.p_view)
+	cRet := C.cefingo_view_get_bounds((*C.cef_view_t)(self.pc_view))
 
 	ret = (CRectT)(cRet)
 	return ret
@@ -27301,7 +27743,7 @@ func (self *CViewT) GetBounds() (ret CRectT) {
 ///
 func (self *CViewT) GetBoundsInScreen() (ret CRectT) {
 
-	cRet := C.cefingo_view_get_bounds_in_screen(self.p_view)
+	cRet := C.cefingo_view_get_bounds_in_screen((*C.cef_view_t)(self.pc_view))
 
 	ret = (CRectT)(cRet)
 	return ret
@@ -27315,7 +27757,7 @@ func (self *CViewT) SetSize(
 	size *CSizeT,
 ) {
 
-	C.cefingo_view_set_size(self.p_view, (*C.cef_size_t)(size))
+	C.cefingo_view_set_size((*C.cef_view_t)(self.pc_view), (*C.cef_size_t)(size))
 
 }
 
@@ -27325,7 +27767,7 @@ func (self *CViewT) SetSize(
 ///
 func (self *CViewT) GetSize() (ret CSizeT) {
 
-	cRet := C.cefingo_view_get_size(self.p_view)
+	cRet := C.cefingo_view_get_size((*C.cef_view_t)(self.pc_view))
 
 	ret = (CSizeT)(cRet)
 	return ret
@@ -27339,7 +27781,7 @@ func (self *CViewT) SetPosition(
 	position *CPointT,
 ) {
 
-	C.cefingo_view_set_position(self.p_view, (*C.cef_point_t)(position))
+	C.cefingo_view_set_position((*C.cef_view_t)(self.pc_view), (*C.cef_point_t)(position))
 
 }
 
@@ -27349,7 +27791,7 @@ func (self *CViewT) SetPosition(
 ///
 func (self *CViewT) GetPosition() (ret CPointT) {
 
-	cRet := C.cefingo_view_get_position(self.p_view)
+	cRet := C.cefingo_view_get_position((*C.cef_view_t)(self.pc_view))
 
 	ret = (CPointT)(cRet)
 	return ret
@@ -27362,7 +27804,7 @@ func (self *CViewT) GetPosition() (ret CPointT) {
 ///
 func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 
-	cRet := C.cefingo_view_get_preferred_size(self.p_view)
+	cRet := C.cefingo_view_get_preferred_size((*C.cef_view_t)(self.pc_view))
 
 	ret = (CSizeT)(cRet)
 	return ret
@@ -27374,7 +27816,7 @@ func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 ///
 func (self *CViewT) SizeToPreferredSize() {
 
-	C.cefingo_view_size_to_preferred_size(self.p_view)
+	C.cefingo_view_size_to_preferred_size((*C.cef_view_t)(self.pc_view))
 
 }
 
@@ -27384,7 +27826,7 @@ func (self *CViewT) SizeToPreferredSize() {
 ///
 func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 
-	cRet := C.cefingo_view_get_minimum_size(self.p_view)
+	cRet := C.cefingo_view_get_minimum_size((*C.cef_view_t)(self.pc_view))
 
 	ret = (CSizeT)(cRet)
 	return ret
@@ -27396,7 +27838,7 @@ func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 ///
 func (self *CViewT) GetMaximumSize() (ret CSizeT) {
 
-	cRet := C.cefingo_view_get_maximum_size(self.p_view)
+	cRet := C.cefingo_view_get_maximum_size((*C.cef_view_t)(self.pc_view))
 
 	ret = (CSizeT)(cRet)
 	return ret
@@ -27409,7 +27851,7 @@ func (self *CViewT) GetHeightForWidth(
 	width int,
 ) (ret bool) {
 
-	cRet := C.cefingo_view_get_height_for_width(self.p_view, (C.int)(width))
+	cRet := C.cefingo_view_get_height_for_width((*C.cef_view_t)(self.pc_view), (C.int)(width))
 
 	ret = cRet == 1
 	return ret
@@ -27422,7 +27864,7 @@ func (self *CViewT) GetHeightForWidth(
 ///
 func (self *CViewT) InvalidateLayout() {
 
-	C.cefingo_view_invalidate_layout(self.p_view)
+	C.cefingo_view_invalidate_layout((*C.cef_view_t)(self.pc_view))
 
 }
 
@@ -27439,7 +27881,7 @@ func (self *CViewT) SetVisible(
 	visible int,
 ) {
 
-	C.cefingo_view_set_visible(self.p_view, (C.int)(visible))
+	C.cefingo_view_set_visible((*C.cef_view_t)(self.pc_view), (C.int)(visible))
 
 }
 
@@ -27453,7 +27895,7 @@ func (self *CViewT) SetVisible(
 ///
 func (self *CViewT) IsVisible() (ret bool) {
 
-	cRet := C.cefingo_view_is_visible(self.p_view)
+	cRet := C.cefingo_view_is_visible((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27468,7 +27910,7 @@ func (self *CViewT) IsVisible() (ret bool) {
 ///
 func (self *CViewT) IsDrawn() (ret bool) {
 
-	cRet := C.cefingo_view_is_drawn(self.p_view)
+	cRet := C.cefingo_view_is_drawn((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27483,7 +27925,7 @@ func (self *CViewT) SetEnabled(
 	enabled int,
 ) {
 
-	C.cefingo_view_set_enabled(self.p_view, (C.int)(enabled))
+	C.cefingo_view_set_enabled((*C.cef_view_t)(self.pc_view), (C.int)(enabled))
 
 }
 
@@ -27492,7 +27934,7 @@ func (self *CViewT) SetEnabled(
 ///
 func (self *CViewT) IsEnabled() (ret bool) {
 
-	cRet := C.cefingo_view_is_enabled(self.p_view)
+	cRet := C.cefingo_view_is_enabled((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27511,7 +27953,7 @@ func (self *CViewT) SetFocusable(
 		tmpfocusable = 1
 	}
 
-	C.cefingo_view_set_focusable(self.p_view, C.int(tmpfocusable))
+	C.cefingo_view_set_focusable((*C.cef_view_t)(self.pc_view), C.int(tmpfocusable))
 
 }
 
@@ -27520,7 +27962,7 @@ func (self *CViewT) SetFocusable(
 ///
 func (self *CViewT) IsFocusable() (ret bool) {
 
-	cRet := C.cefingo_view_is_focusable(self.p_view)
+	cRet := C.cefingo_view_is_focusable((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27532,7 +27974,7 @@ func (self *CViewT) IsFocusable() (ret bool) {
 ///
 func (self *CViewT) IsAccessibilityFocusable() (ret bool) {
 
-	cRet := C.cefingo_view_is_accessibility_focusable(self.p_view)
+	cRet := C.cefingo_view_is_accessibility_focusable((*C.cef_view_t)(self.pc_view))
 
 	ret = cRet == 1
 	return ret
@@ -27544,7 +27986,7 @@ func (self *CViewT) IsAccessibilityFocusable() (ret bool) {
 ///
 func (self *CViewT) RequestFocus() {
 
-	C.cefingo_view_request_focus(self.p_view)
+	C.cefingo_view_request_focus((*C.cef_view_t)(self.pc_view))
 
 }
 
@@ -27555,7 +27997,7 @@ func (self *CViewT) SetBackgroundColor(
 	color CColorT,
 ) {
 
-	C.cefingo_view_set_background_color(self.p_view, (C.cef_color_t)(color))
+	C.cefingo_view_set_background_color((*C.cef_view_t)(self.pc_view), (C.cef_color_t)(color))
 
 }
 
@@ -27564,7 +28006,7 @@ func (self *CViewT) SetBackgroundColor(
 ///
 func (self *CViewT) GetBackgroundColor() (ret CColorT) {
 
-	cRet := C.cefingo_view_get_background_color(self.p_view)
+	cRet := C.cefingo_view_get_background_color((*C.cef_view_t)(self.pc_view))
 
 	ret = (CColorT)(cRet)
 	return ret
@@ -27581,7 +28023,7 @@ func (self *CViewT) ConvertPointToScreen(
 	point *CPointT,
 ) (ret bool) {
 
-	cRet := C.cefingo_view_convert_point_to_screen(self.p_view, (*C.cef_point_t)(point))
+	cRet := C.cefingo_view_convert_point_to_screen((*C.cef_view_t)(self.pc_view), (*C.cef_point_t)(point))
 
 	ret = cRet == 1
 	return ret
@@ -27598,7 +28040,7 @@ func (self *CViewT) ConvertPointFromScreen(
 	point *CPointT,
 ) (ret bool) {
 
-	cRet := C.cefingo_view_convert_point_from_screen(self.p_view, (*C.cef_point_t)(point))
+	cRet := C.cefingo_view_convert_point_from_screen((*C.cef_view_t)(self.pc_view), (*C.cef_point_t)(point))
 
 	ret = cRet == 1
 	return ret
@@ -27613,7 +28055,7 @@ func (self *CViewT) ConvertPointToWindow(
 	point *CPointT,
 ) (ret bool) {
 
-	cRet := C.cefingo_view_convert_point_to_window(self.p_view, (*C.cef_point_t)(point))
+	cRet := C.cefingo_view_convert_point_to_window((*C.cef_view_t)(self.pc_view), (*C.cef_point_t)(point))
 
 	ret = cRet == 1
 	return ret
@@ -27628,7 +28070,7 @@ func (self *CViewT) ConvertPointFromWindow(
 	point *CPointT,
 ) (ret bool) {
 
-	cRet := C.cefingo_view_convert_point_from_window(self.p_view, (*C.cef_point_t)(point))
+	cRet := C.cefingo_view_convert_point_from_window((*C.cef_view_t)(self.pc_view), (*C.cef_point_t)(point))
 
 	ret = cRet == 1
 	return ret
@@ -27646,11 +28088,11 @@ func (self *CViewT) ConvertPointToView(
 ) (ret bool) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	cRet := C.cefingo_view_convert_point_to_view(self.p_view, goTmpview, (*C.cef_point_t)(point))
+	cRet := C.cefingo_view_convert_point_to_view((*C.cef_view_t)(self.pc_view), goTmpview, (*C.cef_point_t)(point))
 
 	ret = cRet == 1
 	return ret
@@ -27667,11 +28109,11 @@ func (self *CViewT) ConvertPointFromView(
 ) (ret bool) {
 	var goTmpview *C.cef_view_t
 	if view != nil {
-		goTmpview = view.p_view
-		BaseAddRef(goTmpview)
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
 	}
 
-	cRet := C.cefingo_view_convert_point_from_view(self.p_view, goTmpview, (*C.cef_point_t)(point))
+	cRet := C.cefingo_view_convert_point_from_view((*C.cef_view_t)(self.pc_view), goTmpview, (*C.cef_point_t)(point))
 
 	ret = cRet == 1
 	return ret
@@ -27685,10 +28127,12 @@ func (self *CViewT) ConvertPointFromView(
 // indicated.
 ///
 
+type cCViewDelegateT C.cef_view_delegate_t
+
 // Go type for cef_view_delegate_t
 type CViewDelegateT struct {
-	noCopy          noCopy
-	p_view_delegate *C.cef_view_delegate_t
+	noCopy           noCopy
+	pc_view_delegate *cCViewDelegateT
 }
 
 type RefToCViewDelegateT struct {
@@ -27714,21 +28158,22 @@ func newCViewDelegateT(p *C.cef_view_delegate_t) *CViewDelegateT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T226.1:")
-	BaseAddRef(p)
-	go_view_delegate := CViewDelegateT{noCopy{}, p}
+	pc := (*cCViewDelegateT)(p)
+	BaseAddRef(pc)
+	go_view_delegate := CViewDelegateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_view_delegate, func(g *CViewDelegateT) {
-		Tracef(unsafe.Pointer(g.p_view_delegate), "T226.2:")
-		BaseRelease(g.p_view_delegate)
+		Tracef(unsafe.Pointer(g.pc_view_delegate), "T226.2:")
+		BaseRelease(g.pc_view_delegate)
 	})
 	return &go_view_delegate
 }
 
 // *C.cef_view_delegate_t has refCounted interface
 func (view_delegate *CViewDelegateT) HasOneRef() bool {
-	return BaseHasOneRef(view_delegate.p_view_delegate)
+	return BaseHasOneRef(view_delegate.pc_view_delegate)
 }
 
-func (p *C.cef_view_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCViewDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -27831,31 +28276,32 @@ type OnBlurHandler interface {
 }
 
 var view_delegate_handlers = struct {
-	handler                        map[*C.cef_view_delegate_t]interface{}
-	get_preferred_size_handler     map[*C.cef_view_delegate_t]GetPreferredSizeHandler
-	get_minimum_size_handler       map[*C.cef_view_delegate_t]GetMinimumSizeHandler
-	get_maximum_size_handler       map[*C.cef_view_delegate_t]GetMaximumSizeHandler
-	get_height_for_width_handler   map[*C.cef_view_delegate_t]GetHeightForWidthHandler
-	on_parent_view_changed_handler map[*C.cef_view_delegate_t]OnParentViewChangedHandler
-	on_child_view_changed_handler  map[*C.cef_view_delegate_t]OnChildViewChangedHandler
-	on_focus_handler               map[*C.cef_view_delegate_t]OnFocusHandler
-	on_blur_handler                map[*C.cef_view_delegate_t]OnBlurHandler
+	handler                        map[*cCViewDelegateT]interface{}
+	get_preferred_size_handler     map[*cCViewDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler       map[*cCViewDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler       map[*cCViewDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler   map[*cCViewDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler map[*cCViewDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler  map[*cCViewDelegateT]OnChildViewChangedHandler
+	on_focus_handler               map[*cCViewDelegateT]OnFocusHandler
+	on_blur_handler                map[*cCViewDelegateT]OnBlurHandler
 }{
-	map[*C.cef_view_delegate_t]interface{}{},
-	map[*C.cef_view_delegate_t]GetPreferredSizeHandler{},
-	map[*C.cef_view_delegate_t]GetMinimumSizeHandler{},
-	map[*C.cef_view_delegate_t]GetMaximumSizeHandler{},
-	map[*C.cef_view_delegate_t]GetHeightForWidthHandler{},
-	map[*C.cef_view_delegate_t]OnParentViewChangedHandler{},
-	map[*C.cef_view_delegate_t]OnChildViewChangedHandler{},
-	map[*C.cef_view_delegate_t]OnFocusHandler{},
-	map[*C.cef_view_delegate_t]OnBlurHandler{},
+	map[*cCViewDelegateT]interface{}{},
+	map[*cCViewDelegateT]GetPreferredSizeHandler{},
+	map[*cCViewDelegateT]GetMinimumSizeHandler{},
+	map[*cCViewDelegateT]GetMaximumSizeHandler{},
+	map[*cCViewDelegateT]GetHeightForWidthHandler{},
+	map[*cCViewDelegateT]OnParentViewChangedHandler{},
+	map[*cCViewDelegateT]OnChildViewChangedHandler{},
+	map[*cCViewDelegateT]OnFocusHandler{},
+	map[*cCViewDelegateT]OnBlurHandler{},
 }
 
 // AllocCViewDelegateT allocates CViewDelegateT and construct it
 func AllocCViewDelegateT() *CViewDelegateT {
 	up := c_calloc(1, C.sizeof_cefingo_view_delegate_wrapper_t, "T226.3:")
 	cefp := C.cefingo_construct_view_delegate((*C.cefingo_view_delegate_wrapper_t)(up))
+	cgop := (*cCViewDelegateT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_view_delegate_t itself in DeassocFunc,
@@ -27864,15 +28310,15 @@ func AllocCViewDelegateT() *CViewDelegateT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(view_delegate_handlers.handler, cefp)
-		delete(view_delegate_handlers.get_preferred_size_handler, cefp)
-		delete(view_delegate_handlers.get_minimum_size_handler, cefp)
-		delete(view_delegate_handlers.get_maximum_size_handler, cefp)
-		delete(view_delegate_handlers.get_height_for_width_handler, cefp)
-		delete(view_delegate_handlers.on_parent_view_changed_handler, cefp)
-		delete(view_delegate_handlers.on_child_view_changed_handler, cefp)
-		delete(view_delegate_handlers.on_focus_handler, cefp)
-		delete(view_delegate_handlers.on_blur_handler, cefp)
+		delete(view_delegate_handlers.handler, cgop)
+		delete(view_delegate_handlers.get_preferred_size_handler, cgop)
+		delete(view_delegate_handlers.get_minimum_size_handler, cgop)
+		delete(view_delegate_handlers.get_maximum_size_handler, cgop)
+		delete(view_delegate_handlers.get_height_for_width_handler, cgop)
+		delete(view_delegate_handlers.on_parent_view_changed_handler, cgop)
+		delete(view_delegate_handlers.on_child_view_changed_handler, cgop)
+		delete(view_delegate_handlers.on_focus_handler, cgop)
+		delete(view_delegate_handlers.on_blur_handler, cgop)
 	}))
 
 	return newCViewDelegateT(cefp)
@@ -27882,7 +28328,7 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := view_delegate.p_view_delegate
+	cp := view_delegate.pc_view_delegate
 	view_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
@@ -27927,7 +28373,7 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 
 func (view_delegate *CViewDelegateT) UnbindAll() {
 
-	cp := view_delegate.p_view_delegate
+	cp := view_delegate.pc_view_delegate
 	delete(view_delegate_handlers.handler, cp)
 
 	delete(view_delegate_handlers.get_preferred_size_handler, cp)
@@ -27945,7 +28391,7 @@ func (view_delegate *CViewDelegateT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := view_delegate.p_view_delegate
+	cp := view_delegate.pc_view_delegate
 	return view_delegate_handlers.handler[cp]
 }
 
@@ -27955,10 +28401,12 @@ func (view_delegate *CViewDelegateT) Handler() interface{} {
 // Information about a specific web plugin.
 ///
 
+type cCWebPluginInfoT C.cef_web_plugin_info_t
+
 // Go type for cef_web_plugin_info_t
 type CWebPluginInfoT struct {
-	noCopy            noCopy
-	p_web_plugin_info *C.cef_web_plugin_info_t
+	noCopy             noCopy
+	pc_web_plugin_info *cCWebPluginInfoT
 }
 
 type RefToCWebPluginInfoT struct {
@@ -27984,21 +28432,22 @@ func newCWebPluginInfoT(p *C.cef_web_plugin_info_t) *CWebPluginInfoT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T227.1:")
-	BaseAddRef(p)
-	go_web_plugin_info := CWebPluginInfoT{noCopy{}, p}
+	pc := (*cCWebPluginInfoT)(p)
+	BaseAddRef(pc)
+	go_web_plugin_info := CWebPluginInfoT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_web_plugin_info, func(g *CWebPluginInfoT) {
-		Tracef(unsafe.Pointer(g.p_web_plugin_info), "T227.2:")
-		BaseRelease(g.p_web_plugin_info)
+		Tracef(unsafe.Pointer(g.pc_web_plugin_info), "T227.2:")
+		BaseRelease(g.pc_web_plugin_info)
 	})
 	return &go_web_plugin_info
 }
 
 // *C.cef_web_plugin_info_t has refCounted interface
 func (web_plugin_info *CWebPluginInfoT) HasOneRef() bool {
-	return BaseHasOneRef(web_plugin_info.p_web_plugin_info)
+	return BaseHasOneRef(web_plugin_info.pc_web_plugin_info)
 }
 
-func (p *C.cef_web_plugin_info_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCWebPluginInfoT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -28008,7 +28457,7 @@ func (p *C.cef_web_plugin_info_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CWebPluginInfoT) GetName() (ret string) {
 
-	cRet := C.cefingo_web_plugin_info_get_name(self.p_web_plugin_info)
+	cRet := C.cefingo_web_plugin_info_get_name((*C.cef_web_plugin_info_t)(self.pc_web_plugin_info))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -28024,7 +28473,7 @@ func (self *CWebPluginInfoT) GetName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CWebPluginInfoT) GetPath() (ret string) {
 
-	cRet := C.cefingo_web_plugin_info_get_path(self.p_web_plugin_info)
+	cRet := C.cefingo_web_plugin_info_get_path((*C.cef_web_plugin_info_t)(self.pc_web_plugin_info))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -28040,7 +28489,7 @@ func (self *CWebPluginInfoT) GetPath() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CWebPluginInfoT) GetVersion() (ret string) {
 
-	cRet := C.cefingo_web_plugin_info_get_version(self.p_web_plugin_info)
+	cRet := C.cefingo_web_plugin_info_get_version((*C.cef_web_plugin_info_t)(self.pc_web_plugin_info))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -28056,7 +28505,7 @@ func (self *CWebPluginInfoT) GetVersion() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CWebPluginInfoT) GetDescription() (ret string) {
 
-	cRet := C.cefingo_web_plugin_info_get_description(self.p_web_plugin_info)
+	cRet := C.cefingo_web_plugin_info_get_description((*C.cef_web_plugin_info_t)(self.pc_web_plugin_info))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -28071,10 +28520,12 @@ func (self *CWebPluginInfoT) GetDescription() (ret string) {
 // this structure will be called on the browser process UI thread.
 ///
 
+type cCWebPluginInfoVisitorT C.cef_web_plugin_info_visitor_t
+
 // Go type for cef_web_plugin_info_visitor_t
 type CWebPluginInfoVisitorT struct {
-	noCopy                    noCopy
-	p_web_plugin_info_visitor *C.cef_web_plugin_info_visitor_t
+	noCopy                     noCopy
+	pc_web_plugin_info_visitor *cCWebPluginInfoVisitorT
 }
 
 type RefToCWebPluginInfoVisitorT struct {
@@ -28100,21 +28551,22 @@ func newCWebPluginInfoVisitorT(p *C.cef_web_plugin_info_visitor_t) *CWebPluginIn
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T228.1:")
-	BaseAddRef(p)
-	go_web_plugin_info_visitor := CWebPluginInfoVisitorT{noCopy{}, p}
+	pc := (*cCWebPluginInfoVisitorT)(p)
+	BaseAddRef(pc)
+	go_web_plugin_info_visitor := CWebPluginInfoVisitorT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_web_plugin_info_visitor, func(g *CWebPluginInfoVisitorT) {
-		Tracef(unsafe.Pointer(g.p_web_plugin_info_visitor), "T228.2:")
-		BaseRelease(g.p_web_plugin_info_visitor)
+		Tracef(unsafe.Pointer(g.pc_web_plugin_info_visitor), "T228.2:")
+		BaseRelease(g.pc_web_plugin_info_visitor)
 	})
 	return &go_web_plugin_info_visitor
 }
 
 // *C.cef_web_plugin_info_visitor_t has refCounted interface
 func (web_plugin_info_visitor *CWebPluginInfoVisitorT) HasOneRef() bool {
-	return BaseHasOneRef(web_plugin_info_visitor.p_web_plugin_info_visitor)
+	return BaseHasOneRef(web_plugin_info_visitor.pc_web_plugin_info_visitor)
 }
 
-func (p *C.cef_web_plugin_info_visitor_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCWebPluginInfoVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -28134,17 +28586,18 @@ type CWebPluginInfoVisitorTVisitHandler interface {
 }
 
 var web_plugin_info_visitor_handlers = struct {
-	handler       map[*C.cef_web_plugin_info_visitor_t]interface{}
-	visit_handler map[*C.cef_web_plugin_info_visitor_t]CWebPluginInfoVisitorTVisitHandler
+	handler       map[*cCWebPluginInfoVisitorT]interface{}
+	visit_handler map[*cCWebPluginInfoVisitorT]CWebPluginInfoVisitorTVisitHandler
 }{
-	map[*C.cef_web_plugin_info_visitor_t]interface{}{},
-	map[*C.cef_web_plugin_info_visitor_t]CWebPluginInfoVisitorTVisitHandler{},
+	map[*cCWebPluginInfoVisitorT]interface{}{},
+	map[*cCWebPluginInfoVisitorT]CWebPluginInfoVisitorTVisitHandler{},
 }
 
 // AllocCWebPluginInfoVisitorT allocates CWebPluginInfoVisitorT and construct it
 func AllocCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT {
 	up := c_calloc(1, C.sizeof_cefingo_web_plugin_info_visitor_wrapper_t, "T228.3:")
 	cefp := C.cefingo_construct_web_plugin_info_visitor((*C.cefingo_web_plugin_info_visitor_wrapper_t)(up))
+	cgop := (*cCWebPluginInfoVisitorT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_web_plugin_info_visitor_t itself in DeassocFunc,
@@ -28153,8 +28606,8 @@ func AllocCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(web_plugin_info_visitor_handlers.handler, cefp)
-		delete(web_plugin_info_visitor_handlers.visit_handler, cefp)
+		delete(web_plugin_info_visitor_handlers.handler, cgop)
+		delete(web_plugin_info_visitor_handlers.visit_handler, cgop)
 	}))
 
 	return newCWebPluginInfoVisitorT(cefp)
@@ -28164,7 +28617,7 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWeb
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := web_plugin_info_visitor.p_web_plugin_info_visitor
+	cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
 	web_plugin_info_visitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CWebPluginInfoVisitorTVisitHandler); ok {
@@ -28181,7 +28634,7 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWeb
 
 func (web_plugin_info_visitor *CWebPluginInfoVisitorT) UnbindAll() {
 
-	cp := web_plugin_info_visitor.p_web_plugin_info_visitor
+	cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
 	delete(web_plugin_info_visitor_handlers.handler, cp)
 
 	delete(web_plugin_info_visitor_handlers.visit_handler, cp)
@@ -28192,7 +28645,7 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := web_plugin_info_visitor.p_web_plugin_info_visitor
+	cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
 	return web_plugin_info_visitor_handlers.handler[cp]
 }
 
@@ -28201,10 +28654,12 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Handler() interface{} {
 // functions of this structure will be called on the browser process IO thread.
 ///
 
+type cCWebPluginUnstableCallbackT C.cef_web_plugin_unstable_callback_t
+
 // Go type for cef_web_plugin_unstable_callback_t
 type CWebPluginUnstableCallbackT struct {
-	noCopy                         noCopy
-	p_web_plugin_unstable_callback *C.cef_web_plugin_unstable_callback_t
+	noCopy                          noCopy
+	pc_web_plugin_unstable_callback *cCWebPluginUnstableCallbackT
 }
 
 type RefToCWebPluginUnstableCallbackT struct {
@@ -28230,21 +28685,22 @@ func newCWebPluginUnstableCallbackT(p *C.cef_web_plugin_unstable_callback_t) *CW
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T229.1:")
-	BaseAddRef(p)
-	go_web_plugin_unstable_callback := CWebPluginUnstableCallbackT{noCopy{}, p}
+	pc := (*cCWebPluginUnstableCallbackT)(p)
+	BaseAddRef(pc)
+	go_web_plugin_unstable_callback := CWebPluginUnstableCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_web_plugin_unstable_callback, func(g *CWebPluginUnstableCallbackT) {
-		Tracef(unsafe.Pointer(g.p_web_plugin_unstable_callback), "T229.2:")
-		BaseRelease(g.p_web_plugin_unstable_callback)
+		Tracef(unsafe.Pointer(g.pc_web_plugin_unstable_callback), "T229.2:")
+		BaseRelease(g.pc_web_plugin_unstable_callback)
 	})
 	return &go_web_plugin_unstable_callback
 }
 
 // *C.cef_web_plugin_unstable_callback_t has refCounted interface
 func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(web_plugin_unstable_callback.p_web_plugin_unstable_callback)
+	return BaseHasOneRef(web_plugin_unstable_callback.pc_web_plugin_unstable_callback)
 }
 
-func (p *C.cef_web_plugin_unstable_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCWebPluginUnstableCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -28262,17 +28718,18 @@ type IsUnstableHandler interface {
 }
 
 var web_plugin_unstable_callback_handlers = struct {
-	handler             map[*C.cef_web_plugin_unstable_callback_t]interface{}
-	is_unstable_handler map[*C.cef_web_plugin_unstable_callback_t]IsUnstableHandler
+	handler             map[*cCWebPluginUnstableCallbackT]interface{}
+	is_unstable_handler map[*cCWebPluginUnstableCallbackT]IsUnstableHandler
 }{
-	map[*C.cef_web_plugin_unstable_callback_t]interface{}{},
-	map[*C.cef_web_plugin_unstable_callback_t]IsUnstableHandler{},
+	map[*cCWebPluginUnstableCallbackT]interface{}{},
+	map[*cCWebPluginUnstableCallbackT]IsUnstableHandler{},
 }
 
 // AllocCWebPluginUnstableCallbackT allocates CWebPluginUnstableCallbackT and construct it
 func AllocCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT {
 	up := c_calloc(1, C.sizeof_cefingo_web_plugin_unstable_callback_wrapper_t, "T229.3:")
 	cefp := C.cefingo_construct_web_plugin_unstable_callback((*C.cefingo_web_plugin_unstable_callback_wrapper_t)(up))
+	cgop := (*cCWebPluginUnstableCallbackT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_web_plugin_unstable_callback_t itself in DeassocFunc,
@@ -28281,8 +28738,8 @@ func AllocCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(web_plugin_unstable_callback_handlers.handler, cefp)
-		delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cefp)
+		delete(web_plugin_unstable_callback_handlers.handler, cgop)
+		delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cgop)
 	}))
 
 	return newCWebPluginUnstableCallbackT(cefp)
@@ -28292,7 +28749,7 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interfac
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := web_plugin_unstable_callback.p_web_plugin_unstable_callback
+	cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
 	web_plugin_unstable_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(IsUnstableHandler); ok {
@@ -28309,7 +28766,7 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interfac
 
 func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) UnbindAll() {
 
-	cp := web_plugin_unstable_callback.p_web_plugin_unstable_callback
+	cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
 	delete(web_plugin_unstable_callback_handlers.handler, cp)
 
 	delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cp)
@@ -28320,7 +28777,7 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Handler() inter
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := web_plugin_unstable_callback.p_web_plugin_unstable_callback
+	cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
 	return web_plugin_unstable_callback_handlers.handler[cp]
 }
 
@@ -28330,10 +28787,12 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Handler() inter
 // process UI thread.
 ///
 
+type cCRegisterCdmCallbackT C.cef_register_cdm_callback_t
+
 // Go type for cef_register_cdm_callback_t
 type CRegisterCdmCallbackT struct {
-	noCopy                  noCopy
-	p_register_cdm_callback *C.cef_register_cdm_callback_t
+	noCopy                   noCopy
+	pc_register_cdm_callback *cCRegisterCdmCallbackT
 }
 
 type RefToCRegisterCdmCallbackT struct {
@@ -28359,21 +28818,22 @@ func newCRegisterCdmCallbackT(p *C.cef_register_cdm_callback_t) *CRegisterCdmCal
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T230.1:")
-	BaseAddRef(p)
-	go_register_cdm_callback := CRegisterCdmCallbackT{noCopy{}, p}
+	pc := (*cCRegisterCdmCallbackT)(p)
+	BaseAddRef(pc)
+	go_register_cdm_callback := CRegisterCdmCallbackT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_register_cdm_callback, func(g *CRegisterCdmCallbackT) {
-		Tracef(unsafe.Pointer(g.p_register_cdm_callback), "T230.2:")
-		BaseRelease(g.p_register_cdm_callback)
+		Tracef(unsafe.Pointer(g.pc_register_cdm_callback), "T230.2:")
+		BaseRelease(g.pc_register_cdm_callback)
 	})
 	return &go_register_cdm_callback
 }
 
 // *C.cef_register_cdm_callback_t has refCounted interface
 func (register_cdm_callback *CRegisterCdmCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(register_cdm_callback.p_register_cdm_callback)
+	return BaseHasOneRef(register_cdm_callback.pc_register_cdm_callback)
 }
 
-func (p *C.cef_register_cdm_callback_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCRegisterCdmCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -28392,17 +28852,18 @@ type OnCdmRegistrationCompleteHandler interface {
 }
 
 var register_cdm_callback_handlers = struct {
-	handler                              map[*C.cef_register_cdm_callback_t]interface{}
-	on_cdm_registration_complete_handler map[*C.cef_register_cdm_callback_t]OnCdmRegistrationCompleteHandler
+	handler                              map[*cCRegisterCdmCallbackT]interface{}
+	on_cdm_registration_complete_handler map[*cCRegisterCdmCallbackT]OnCdmRegistrationCompleteHandler
 }{
-	map[*C.cef_register_cdm_callback_t]interface{}{},
-	map[*C.cef_register_cdm_callback_t]OnCdmRegistrationCompleteHandler{},
+	map[*cCRegisterCdmCallbackT]interface{}{},
+	map[*cCRegisterCdmCallbackT]OnCdmRegistrationCompleteHandler{},
 }
 
 // AllocCRegisterCdmCallbackT allocates CRegisterCdmCallbackT and construct it
 func AllocCRegisterCdmCallbackT() *CRegisterCdmCallbackT {
 	up := c_calloc(1, C.sizeof_cefingo_register_cdm_callback_wrapper_t, "T230.3:")
 	cefp := C.cefingo_construct_register_cdm_callback((*C.cefingo_register_cdm_callback_wrapper_t)(up))
+	cgop := (*cCRegisterCdmCallbackT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_register_cdm_callback_t itself in DeassocFunc,
@@ -28411,8 +28872,8 @@ func AllocCRegisterCdmCallbackT() *CRegisterCdmCallbackT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(register_cdm_callback_handlers.handler, cefp)
-		delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cefp)
+		delete(register_cdm_callback_handlers.handler, cgop)
+		delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cgop)
 	}))
 
 	return newCRegisterCdmCallbackT(cefp)
@@ -28422,7 +28883,7 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegist
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := register_cdm_callback.p_register_cdm_callback
+	cp := register_cdm_callback.pc_register_cdm_callback
 	register_cdm_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(OnCdmRegistrationCompleteHandler); ok {
@@ -28439,7 +28900,7 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegist
 
 func (register_cdm_callback *CRegisterCdmCallbackT) UnbindAll() {
 
-	cp := register_cdm_callback.p_register_cdm_callback
+	cp := register_cdm_callback.pc_register_cdm_callback
 	delete(register_cdm_callback_handlers.handler, cp)
 
 	delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cp)
@@ -28450,7 +28911,7 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := register_cdm_callback.p_register_cdm_callback
+	cp := register_cdm_callback.pc_register_cdm_callback
 	return register_cdm_callback_handlers.handler[cp]
 }
 
@@ -28463,8 +28924,8 @@ func VisitWebPluginInfo(
 ) {
 	var goTmpvisitor *C.cef_web_plugin_info_visitor_t
 	if visitor != nil {
-		goTmpvisitor = visitor.p_web_plugin_info_visitor
-		BaseAddRef(goTmpvisitor)
+		BaseAddRef(visitor.pc_web_plugin_info_visitor)
+		goTmpvisitor = (*C.cef_web_plugin_info_visitor_t)(visitor.pc_web_plugin_info_visitor)
 	}
 
 	C.cef_visit_web_plugin_info(goTmpvisitor)
@@ -28520,8 +28981,8 @@ func IsWebPluginUnstable(
 	c_path := create_cef_string(path)
 	var goTmpcallback *C.cef_web_plugin_unstable_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_web_plugin_unstable_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_web_plugin_unstable_callback)
+		goTmpcallback = (*C.cef_web_plugin_unstable_callback_t)(callback.pc_web_plugin_unstable_callback)
 	}
 
 	C.cef_is_web_plugin_unstable(c_path.p_cef_string_t, goTmpcallback)
@@ -28577,8 +29038,8 @@ func RegisterWidevineCdm(
 	c_path := create_cef_string(path)
 	var goTmpcallback *C.cef_register_cdm_callback_t
 	if callback != nil {
-		goTmpcallback = callback.p_register_cdm_callback
-		BaseAddRef(goTmpcallback)
+		BaseAddRef(callback.pc_register_cdm_callback)
+		goTmpcallback = (*C.cef_register_cdm_callback_t)(callback.pc_register_cdm_callback)
 	}
 
 	C.cef_register_widevine_cdm(c_path.p_cef_string_t, goTmpcallback)
@@ -28595,10 +29056,12 @@ func RegisterWidevineCdm(
 // browser process UI thread unless otherwise indicated.
 ///
 
+type cCWindowT C.cef_window_t
+
 // Go type for cef_window_t
 type CWindowT struct {
-	noCopy   noCopy
-	p_window *C.cef_window_t
+	noCopy    noCopy
+	pc_window *cCWindowT
 }
 
 type RefToCWindowT struct {
@@ -28624,26 +29087,28 @@ func newCWindowT(p *C.cef_window_t) *CWindowT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T231.1:")
-	BaseAddRef(p)
-	go_window := CWindowT{noCopy{}, p}
+	pc := (*cCWindowT)(p)
+	BaseAddRef(pc)
+	go_window := CWindowT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_window, func(g *CWindowT) {
-		Tracef(unsafe.Pointer(g.p_window), "T231.2:")
-		BaseRelease(g.p_window)
+		Tracef(unsafe.Pointer(g.pc_window), "T231.2:")
+		BaseRelease(g.pc_window)
 	})
 	return &go_window
 }
 
 // *C.cef_window_t has refCounted interface
 func (window *CWindowT) HasOneRef() bool {
-	return BaseHasOneRef(window.p_window)
+	return BaseHasOneRef(window.pc_window)
 }
 
-func (p *C.cef_window_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCWindowT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CPanelT
 func (window *CWindowT) ToCPanelT() *CPanelT {
-	p := (*C.cef_panel_t)(unsafe.Pointer(window.p_window))
+	p := (*C.cef_panel_t)(unsafe.Pointer(window.pc_window))
 	return newCPanelT(p)
 }
 
@@ -28652,7 +29117,7 @@ func (window *CWindowT) ToCPanelT() *CPanelT {
 ///
 func (self *CWindowT) Show() {
 
-	C.cefingo_window_show(self.p_window)
+	C.cefingo_window_show((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28661,7 +29126,7 @@ func (self *CWindowT) Show() {
 ///
 func (self *CWindowT) Hide() {
 
-	C.cefingo_window_hide(self.p_window)
+	C.cefingo_window_hide((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28672,7 +29137,7 @@ func (self *CWindowT) CenterWindow(
 	size *CSizeT,
 ) {
 
-	C.cefingo_window_center_window(self.p_window, (*C.cef_size_t)(size))
+	C.cefingo_window_center_window((*C.cef_window_t)(self.pc_window), (*C.cef_size_t)(size))
 
 }
 
@@ -28681,7 +29146,7 @@ func (self *CWindowT) CenterWindow(
 ///
 func (self *CWindowT) Close() {
 
-	C.cefingo_window_close(self.p_window)
+	C.cefingo_window_close((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28690,7 +29155,7 @@ func (self *CWindowT) Close() {
 ///
 func (self *CWindowT) IsClosed() (ret bool) {
 
-	cRet := C.cefingo_window_is_closed(self.p_window)
+	cRet := C.cefingo_window_is_closed((*C.cef_window_t)(self.pc_window))
 
 	ret = cRet == 1
 	return ret
@@ -28701,7 +29166,7 @@ func (self *CWindowT) IsClosed() (ret bool) {
 ///
 func (self *CWindowT) Activate() {
 
-	C.cefingo_window_activate(self.p_window)
+	C.cefingo_window_activate((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28711,7 +29176,7 @@ func (self *CWindowT) Activate() {
 ///
 func (self *CWindowT) Deactivate() {
 
-	C.cefingo_window_deactivate(self.p_window)
+	C.cefingo_window_deactivate((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28720,7 +29185,7 @@ func (self *CWindowT) Deactivate() {
 ///
 func (self *CWindowT) IsActive() (ret bool) {
 
-	cRet := C.cefingo_window_is_active(self.p_window)
+	cRet := C.cefingo_window_is_active((*C.cef_window_t)(self.pc_window))
 
 	ret = cRet == 1
 	return ret
@@ -28731,7 +29196,7 @@ func (self *CWindowT) IsActive() (ret bool) {
 ///
 func (self *CWindowT) BringToTop() {
 
-	C.cefingo_window_bring_to_top(self.p_window)
+	C.cefingo_window_bring_to_top((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28742,7 +29207,7 @@ func (self *CWindowT) SetAlwaysOnTop(
 	on_top int,
 ) {
 
-	C.cefingo_window_set_always_on_top(self.p_window, (C.int)(on_top))
+	C.cefingo_window_set_always_on_top((*C.cef_window_t)(self.pc_window), (C.int)(on_top))
 
 }
 
@@ -28752,7 +29217,7 @@ func (self *CWindowT) SetAlwaysOnTop(
 ///
 func (self *CWindowT) IsAlwaysOnTop() (ret bool) {
 
-	cRet := C.cefingo_window_is_always_on_top(self.p_window)
+	cRet := C.cefingo_window_is_always_on_top((*C.cef_window_t)(self.pc_window))
 
 	ret = cRet == 1
 	return ret
@@ -28763,7 +29228,7 @@ func (self *CWindowT) IsAlwaysOnTop() (ret bool) {
 ///
 func (self *CWindowT) Maximize() {
 
-	C.cefingo_window_maximize(self.p_window)
+	C.cefingo_window_maximize((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28772,7 +29237,7 @@ func (self *CWindowT) Maximize() {
 ///
 func (self *CWindowT) Minimize() {
 
-	C.cefingo_window_minimize(self.p_window)
+	C.cefingo_window_minimize((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28781,7 +29246,7 @@ func (self *CWindowT) Minimize() {
 ///
 func (self *CWindowT) Restore() {
 
-	C.cefingo_window_restore(self.p_window)
+	C.cefingo_window_restore((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28792,7 +29257,7 @@ func (self *CWindowT) SetFullscreen(
 	fullscreen int,
 ) {
 
-	C.cefingo_window_set_fullscreen(self.p_window, (C.int)(fullscreen))
+	C.cefingo_window_set_fullscreen((*C.cef_window_t)(self.pc_window), (C.int)(fullscreen))
 
 }
 
@@ -28801,7 +29266,7 @@ func (self *CWindowT) SetFullscreen(
 ///
 func (self *CWindowT) IsMaximized() (ret bool) {
 
-	cRet := C.cefingo_window_is_maximized(self.p_window)
+	cRet := C.cefingo_window_is_maximized((*C.cef_window_t)(self.pc_window))
 
 	ret = cRet == 1
 	return ret
@@ -28812,7 +29277,7 @@ func (self *CWindowT) IsMaximized() (ret bool) {
 ///
 func (self *CWindowT) IsMinimized() (ret bool) {
 
-	cRet := C.cefingo_window_is_minimized(self.p_window)
+	cRet := C.cefingo_window_is_minimized((*C.cef_window_t)(self.pc_window))
 
 	ret = cRet == 1
 	return ret
@@ -28823,7 +29288,7 @@ func (self *CWindowT) IsMinimized() (ret bool) {
 ///
 func (self *CWindowT) IsFullscreen() (ret bool) {
 
-	cRet := C.cefingo_window_is_fullscreen(self.p_window)
+	cRet := C.cefingo_window_is_fullscreen((*C.cef_window_t)(self.pc_window))
 
 	ret = cRet == 1
 	return ret
@@ -28837,7 +29302,7 @@ func (self *CWindowT) SetTitle(
 ) {
 	c_title := create_cef_string(title)
 
-	C.cefingo_window_set_title(self.p_window, c_title.p_cef_string_t)
+	C.cefingo_window_set_title((*C.cef_window_t)(self.pc_window), c_title.p_cef_string_t)
 
 }
 
@@ -28847,7 +29312,7 @@ func (self *CWindowT) SetTitle(
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CWindowT) GetTitle() (ret string) {
 
-	cRet := C.cefingo_window_get_title(self.p_window)
+	cRet := C.cefingo_window_get_title((*C.cef_window_t)(self.pc_window))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -28866,11 +29331,11 @@ func (self *CWindowT) SetWindowIcon(
 ) {
 	var goTmpimage *C.cef_image_t
 	if image != nil {
-		goTmpimage = image.p_image
-		BaseAddRef(goTmpimage)
+		BaseAddRef(image.pc_image)
+		goTmpimage = (*C.cef_image_t)(image.pc_image)
 	}
 
-	C.cefingo_window_set_window_icon(self.p_window, goTmpimage)
+	C.cefingo_window_set_window_icon((*C.cef_window_t)(self.pc_window), goTmpimage)
 
 }
 
@@ -28879,7 +29344,7 @@ func (self *CWindowT) SetWindowIcon(
 ///
 func (self *CWindowT) GetWindowIcon() (ret *CImageT) {
 
-	cRet := C.cefingo_window_get_window_icon(self.p_window)
+	cRet := C.cefingo_window_get_window_icon((*C.cef_window_t)(self.pc_window))
 
 	ret = newCImageT(cRet)
 	return ret
@@ -28896,11 +29361,11 @@ func (self *CWindowT) SetWindowAppIcon(
 ) {
 	var goTmpimage *C.cef_image_t
 	if image != nil {
-		goTmpimage = image.p_image
-		BaseAddRef(goTmpimage)
+		BaseAddRef(image.pc_image)
+		goTmpimage = (*C.cef_image_t)(image.pc_image)
 	}
 
-	C.cefingo_window_set_window_app_icon(self.p_window, goTmpimage)
+	C.cefingo_window_set_window_app_icon((*C.cef_window_t)(self.pc_window), goTmpimage)
 
 }
 
@@ -28909,7 +29374,7 @@ func (self *CWindowT) SetWindowAppIcon(
 ///
 func (self *CWindowT) GetWindowAppIcon() (ret *CImageT) {
 
-	cRet := C.cefingo_window_get_window_app_icon(self.p_window)
+	cRet := C.cefingo_window_get_window_app_icon((*C.cef_window_t)(self.pc_window))
 
 	ret = newCImageT(cRet)
 	return ret
@@ -28927,11 +29392,11 @@ func (self *CWindowT) ShowMenu(
 ) {
 	var goTmpmenu_model *C.cef_menu_model_t
 	if menu_model != nil {
-		goTmpmenu_model = menu_model.p_menu_model
-		BaseAddRef(goTmpmenu_model)
+		BaseAddRef(menu_model.pc_menu_model)
+		goTmpmenu_model = (*C.cef_menu_model_t)(menu_model.pc_menu_model)
 	}
 
-	C.cefingo_window_show_menu(self.p_window, goTmpmenu_model, (*C.cef_point_t)(screen_point), (C.cef_menu_anchor_position_t)(anchor_position))
+	C.cefingo_window_show_menu((*C.cef_window_t)(self.pc_window), goTmpmenu_model, (*C.cef_point_t)(screen_point), (C.cef_menu_anchor_position_t)(anchor_position))
 
 }
 
@@ -28940,7 +29405,7 @@ func (self *CWindowT) ShowMenu(
 ///
 func (self *CWindowT) CancelMenu() {
 
-	C.cefingo_window_cancel_menu(self.p_window)
+	C.cefingo_window_cancel_menu((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -28950,7 +29415,7 @@ func (self *CWindowT) CancelMenu() {
 ///
 func (self *CWindowT) GetDisplay() (ret *CDisplayT) {
 
-	cRet := C.cefingo_window_get_display(self.p_window)
+	cRet := C.cefingo_window_get_display((*C.cef_window_t)(self.pc_window))
 
 	ret = newCDisplayT(cRet)
 	return ret
@@ -28962,7 +29427,7 @@ func (self *CWindowT) GetDisplay() (ret *CDisplayT) {
 ///
 func (self *CWindowT) GetClientAreaBoundsInScreen() (ret CRectT) {
 
-	cRet := C.cefingo_window_get_client_area_bounds_in_screen(self.p_window)
+	cRet := C.cefingo_window_get_client_area_bounds_in_screen((*C.cef_window_t)(self.pc_window))
 
 	ret = (CRectT)(cRet)
 	return ret
@@ -28979,7 +29444,7 @@ func (self *CWindowT) SetDraggableRegions(
 	regions *CDraggableRegionT,
 ) {
 
-	C.cefingo_window_set_draggable_regions(self.p_window, (C.size_t)(regionsCount), (*C.cef_draggable_region_t)(regions))
+	C.cefingo_window_set_draggable_regions((*C.cef_window_t)(self.pc_window), (C.size_t)(regionsCount), (*C.cef_draggable_region_t)(regions))
 
 }
 
@@ -28988,7 +29453,7 @@ func (self *CWindowT) SetDraggableRegions(
 ///
 func (self *CWindowT) GetWindowHandle() (ret CWindowHandleT) {
 
-	cRet := C.cefingo_window_get_window_handle(self.p_window)
+	cRet := C.cefingo_window_get_window_handle((*C.cef_window_t)(self.pc_window))
 
 	ret = (CWindowHandleT)(cRet)
 	return ret
@@ -29006,7 +29471,7 @@ func (self *CWindowT) SendKeyPress(
 	event_flags uint32,
 ) {
 
-	C.cefingo_window_send_key_press(self.p_window, (C.int)(key_code), (C.uint32)(event_flags))
+	C.cefingo_window_send_key_press((*C.cef_window_t)(self.pc_window), (C.int)(key_code), (C.uint32)(event_flags))
 
 }
 
@@ -29020,7 +29485,7 @@ func (self *CWindowT) SendMouseMove(
 	screen_y int,
 ) {
 
-	C.cefingo_window_send_mouse_move(self.p_window, (C.int)(screen_x), (C.int)(screen_y))
+	C.cefingo_window_send_mouse_move((*C.cef_window_t)(self.pc_window), (C.int)(screen_x), (C.int)(screen_y))
 
 }
 
@@ -29039,7 +29504,7 @@ func (self *CWindowT) SendMouseEvents(
 	mouse_up int,
 ) {
 
-	C.cefingo_window_send_mouse_events(self.p_window, (C.cef_mouse_button_type_t)(button), (C.int)(mouse_down), (C.int)(mouse_up))
+	C.cefingo_window_send_mouse_events((*C.cef_window_t)(self.pc_window), (C.cef_mouse_button_type_t)(button), (C.int)(mouse_down), (C.int)(mouse_up))
 
 }
 
@@ -29057,7 +29522,7 @@ func (self *CWindowT) SetAccelerator(
 	alt_pressed int,
 ) {
 
-	C.cefingo_window_set_accelerator(self.p_window, (C.int)(command_id), (C.int)(key_code), (C.int)(shift_pressed), (C.int)(ctrl_pressed), (C.int)(alt_pressed))
+	C.cefingo_window_set_accelerator((*C.cef_window_t)(self.pc_window), (C.int)(command_id), (C.int)(key_code), (C.int)(shift_pressed), (C.int)(ctrl_pressed), (C.int)(alt_pressed))
 
 }
 
@@ -29068,7 +29533,7 @@ func (self *CWindowT) RemoveAccelerator(
 	command_id int,
 ) {
 
-	C.cefingo_window_remove_accelerator(self.p_window, (C.int)(command_id))
+	C.cefingo_window_remove_accelerator((*C.cef_window_t)(self.pc_window), (C.int)(command_id))
 
 }
 
@@ -29077,7 +29542,7 @@ func (self *CWindowT) RemoveAccelerator(
 ///
 func (self *CWindowT) RemoveAllAccelerators() {
 
-	C.cefingo_window_remove_all_accelerators(self.p_window)
+	C.cefingo_window_remove_all_accelerators((*C.cef_window_t)(self.pc_window))
 
 }
 
@@ -29089,8 +29554,8 @@ func WindowCreateTopLevel(
 ) (ret *CWindowT) {
 	var goTmpdelegate *C.cef_window_delegate_t
 	if delegate != nil {
-		goTmpdelegate = delegate.p_window_delegate
-		BaseAddRef(goTmpdelegate)
+		BaseAddRef(delegate.pc_window_delegate)
+		goTmpdelegate = (*C.cef_window_delegate_t)(delegate.pc_window_delegate)
 	}
 
 	cRet := C.cef_window_create_top_level(goTmpdelegate)
@@ -29107,10 +29572,12 @@ func WindowCreateTopLevel(
 // indicated.
 ///
 
+type cCWindowDelegateT C.cef_window_delegate_t
+
 // Go type for cef_window_delegate_t
 type CWindowDelegateT struct {
-	noCopy            noCopy
-	p_window_delegate *C.cef_window_delegate_t
+	noCopy             noCopy
+	pc_window_delegate *cCWindowDelegateT
 }
 
 type RefToCWindowDelegateT struct {
@@ -29136,26 +29603,28 @@ func newCWindowDelegateT(p *C.cef_window_delegate_t) *CWindowDelegateT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T232.1:")
-	BaseAddRef(p)
-	go_window_delegate := CWindowDelegateT{noCopy{}, p}
+	pc := (*cCWindowDelegateT)(p)
+	BaseAddRef(pc)
+	go_window_delegate := CWindowDelegateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_window_delegate, func(g *CWindowDelegateT) {
-		Tracef(unsafe.Pointer(g.p_window_delegate), "T232.2:")
-		BaseRelease(g.p_window_delegate)
+		Tracef(unsafe.Pointer(g.pc_window_delegate), "T232.2:")
+		BaseRelease(g.pc_window_delegate)
 	})
 	return &go_window_delegate
 }
 
 // *C.cef_window_delegate_t has refCounted interface
 func (window_delegate *CWindowDelegateT) HasOneRef() bool {
-	return BaseHasOneRef(window_delegate.p_window_delegate)
+	return BaseHasOneRef(window_delegate.pc_window_delegate)
 }
 
-func (p *C.cef_window_delegate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCWindowDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
+// Convert to Base Class Pointer *CPanelDelegateT
 func (window_delegate *CWindowDelegateT) ToCPanelDelegateT() *CPanelDelegateT {
-	p := (*C.cef_panel_delegate_t)(unsafe.Pointer(window_delegate.p_window_delegate))
+	p := (*C.cef_panel_delegate_t)(unsafe.Pointer(window_delegate.pc_window_delegate))
 	return newCPanelDelegateT(p)
 }
 
@@ -29291,53 +29760,54 @@ type CWindowDelegateTOnKeyEventHandler interface {
 }
 
 var window_delegate_handlers = struct {
-	handler                        map[*C.cef_window_delegate_t]interface{}
-	on_window_created_handler      map[*C.cef_window_delegate_t]OnWindowCreatedHandler
-	on_window_destroyed_handler    map[*C.cef_window_delegate_t]OnWindowDestroyedHandler
-	get_parent_window_handler      map[*C.cef_window_delegate_t]GetParentWindowHandler
-	get_initial_bounds_handler     map[*C.cef_window_delegate_t]GetInitialBoundsHandler
-	is_frameless_handler           map[*C.cef_window_delegate_t]IsFramelessHandler
-	can_resize_handler             map[*C.cef_window_delegate_t]CanResizeHandler
-	can_maximize_handler           map[*C.cef_window_delegate_t]CanMaximizeHandler
-	can_minimize_handler           map[*C.cef_window_delegate_t]CanMinimizeHandler
-	can_close_handler              map[*C.cef_window_delegate_t]CanCloseHandler
-	on_accelerator_handler         map[*C.cef_window_delegate_t]OnAcceleratorHandler
-	on_key_event_handler           map[*C.cef_window_delegate_t]CWindowDelegateTOnKeyEventHandler
-	get_preferred_size_handler     map[*C.cef_window_delegate_t]GetPreferredSizeHandler
-	get_minimum_size_handler       map[*C.cef_window_delegate_t]GetMinimumSizeHandler
-	get_maximum_size_handler       map[*C.cef_window_delegate_t]GetMaximumSizeHandler
-	get_height_for_width_handler   map[*C.cef_window_delegate_t]GetHeightForWidthHandler
-	on_parent_view_changed_handler map[*C.cef_window_delegate_t]OnParentViewChangedHandler
-	on_child_view_changed_handler  map[*C.cef_window_delegate_t]OnChildViewChangedHandler
-	on_focus_handler               map[*C.cef_window_delegate_t]OnFocusHandler
-	on_blur_handler                map[*C.cef_window_delegate_t]OnBlurHandler
+	handler                        map[*cCWindowDelegateT]interface{}
+	on_window_created_handler      map[*cCWindowDelegateT]OnWindowCreatedHandler
+	on_window_destroyed_handler    map[*cCWindowDelegateT]OnWindowDestroyedHandler
+	get_parent_window_handler      map[*cCWindowDelegateT]GetParentWindowHandler
+	get_initial_bounds_handler     map[*cCWindowDelegateT]GetInitialBoundsHandler
+	is_frameless_handler           map[*cCWindowDelegateT]IsFramelessHandler
+	can_resize_handler             map[*cCWindowDelegateT]CanResizeHandler
+	can_maximize_handler           map[*cCWindowDelegateT]CanMaximizeHandler
+	can_minimize_handler           map[*cCWindowDelegateT]CanMinimizeHandler
+	can_close_handler              map[*cCWindowDelegateT]CanCloseHandler
+	on_accelerator_handler         map[*cCWindowDelegateT]OnAcceleratorHandler
+	on_key_event_handler           map[*cCWindowDelegateT]CWindowDelegateTOnKeyEventHandler
+	get_preferred_size_handler     map[*cCWindowDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler       map[*cCWindowDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler       map[*cCWindowDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler   map[*cCWindowDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler map[*cCWindowDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler  map[*cCWindowDelegateT]OnChildViewChangedHandler
+	on_focus_handler               map[*cCWindowDelegateT]OnFocusHandler
+	on_blur_handler                map[*cCWindowDelegateT]OnBlurHandler
 }{
-	map[*C.cef_window_delegate_t]interface{}{},
-	map[*C.cef_window_delegate_t]OnWindowCreatedHandler{},
-	map[*C.cef_window_delegate_t]OnWindowDestroyedHandler{},
-	map[*C.cef_window_delegate_t]GetParentWindowHandler{},
-	map[*C.cef_window_delegate_t]GetInitialBoundsHandler{},
-	map[*C.cef_window_delegate_t]IsFramelessHandler{},
-	map[*C.cef_window_delegate_t]CanResizeHandler{},
-	map[*C.cef_window_delegate_t]CanMaximizeHandler{},
-	map[*C.cef_window_delegate_t]CanMinimizeHandler{},
-	map[*C.cef_window_delegate_t]CanCloseHandler{},
-	map[*C.cef_window_delegate_t]OnAcceleratorHandler{},
-	map[*C.cef_window_delegate_t]CWindowDelegateTOnKeyEventHandler{},
-	map[*C.cef_window_delegate_t]GetPreferredSizeHandler{},
-	map[*C.cef_window_delegate_t]GetMinimumSizeHandler{},
-	map[*C.cef_window_delegate_t]GetMaximumSizeHandler{},
-	map[*C.cef_window_delegate_t]GetHeightForWidthHandler{},
-	map[*C.cef_window_delegate_t]OnParentViewChangedHandler{},
-	map[*C.cef_window_delegate_t]OnChildViewChangedHandler{},
-	map[*C.cef_window_delegate_t]OnFocusHandler{},
-	map[*C.cef_window_delegate_t]OnBlurHandler{},
+	map[*cCWindowDelegateT]interface{}{},
+	map[*cCWindowDelegateT]OnWindowCreatedHandler{},
+	map[*cCWindowDelegateT]OnWindowDestroyedHandler{},
+	map[*cCWindowDelegateT]GetParentWindowHandler{},
+	map[*cCWindowDelegateT]GetInitialBoundsHandler{},
+	map[*cCWindowDelegateT]IsFramelessHandler{},
+	map[*cCWindowDelegateT]CanResizeHandler{},
+	map[*cCWindowDelegateT]CanMaximizeHandler{},
+	map[*cCWindowDelegateT]CanMinimizeHandler{},
+	map[*cCWindowDelegateT]CanCloseHandler{},
+	map[*cCWindowDelegateT]OnAcceleratorHandler{},
+	map[*cCWindowDelegateT]CWindowDelegateTOnKeyEventHandler{},
+	map[*cCWindowDelegateT]GetPreferredSizeHandler{},
+	map[*cCWindowDelegateT]GetMinimumSizeHandler{},
+	map[*cCWindowDelegateT]GetMaximumSizeHandler{},
+	map[*cCWindowDelegateT]GetHeightForWidthHandler{},
+	map[*cCWindowDelegateT]OnParentViewChangedHandler{},
+	map[*cCWindowDelegateT]OnChildViewChangedHandler{},
+	map[*cCWindowDelegateT]OnFocusHandler{},
+	map[*cCWindowDelegateT]OnBlurHandler{},
 }
 
 // AllocCWindowDelegateT allocates CWindowDelegateT and construct it
 func AllocCWindowDelegateT() *CWindowDelegateT {
 	up := c_calloc(1, C.sizeof_cefingo_window_delegate_wrapper_t, "T232.3:")
 	cefp := C.cefingo_construct_window_delegate((*C.cefingo_window_delegate_wrapper_t)(up))
+	cgop := (*cCWindowDelegateT)(cefp)
 
 	registerDeassocer(up, DeassocFunc(func() {
 		// Do not have reference to cef_window_delegate_t itself in DeassocFunc,
@@ -29346,26 +29816,26 @@ func AllocCWindowDelegateT() *CWindowDelegateT {
 
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
-		delete(window_delegate_handlers.handler, cefp)
-		delete(window_delegate_handlers.on_window_created_handler, cefp)
-		delete(window_delegate_handlers.on_window_destroyed_handler, cefp)
-		delete(window_delegate_handlers.get_parent_window_handler, cefp)
-		delete(window_delegate_handlers.get_initial_bounds_handler, cefp)
-		delete(window_delegate_handlers.is_frameless_handler, cefp)
-		delete(window_delegate_handlers.can_resize_handler, cefp)
-		delete(window_delegate_handlers.can_maximize_handler, cefp)
-		delete(window_delegate_handlers.can_minimize_handler, cefp)
-		delete(window_delegate_handlers.can_close_handler, cefp)
-		delete(window_delegate_handlers.on_accelerator_handler, cefp)
-		delete(window_delegate_handlers.on_key_event_handler, cefp)
-		delete(window_delegate_handlers.get_preferred_size_handler, cefp)
-		delete(window_delegate_handlers.get_minimum_size_handler, cefp)
-		delete(window_delegate_handlers.get_maximum_size_handler, cefp)
-		delete(window_delegate_handlers.get_height_for_width_handler, cefp)
-		delete(window_delegate_handlers.on_parent_view_changed_handler, cefp)
-		delete(window_delegate_handlers.on_child_view_changed_handler, cefp)
-		delete(window_delegate_handlers.on_focus_handler, cefp)
-		delete(window_delegate_handlers.on_blur_handler, cefp)
+		delete(window_delegate_handlers.handler, cgop)
+		delete(window_delegate_handlers.on_window_created_handler, cgop)
+		delete(window_delegate_handlers.on_window_destroyed_handler, cgop)
+		delete(window_delegate_handlers.get_parent_window_handler, cgop)
+		delete(window_delegate_handlers.get_initial_bounds_handler, cgop)
+		delete(window_delegate_handlers.is_frameless_handler, cgop)
+		delete(window_delegate_handlers.can_resize_handler, cgop)
+		delete(window_delegate_handlers.can_maximize_handler, cgop)
+		delete(window_delegate_handlers.can_minimize_handler, cgop)
+		delete(window_delegate_handlers.can_close_handler, cgop)
+		delete(window_delegate_handlers.on_accelerator_handler, cgop)
+		delete(window_delegate_handlers.on_key_event_handler, cgop)
+		delete(window_delegate_handlers.get_preferred_size_handler, cgop)
+		delete(window_delegate_handlers.get_minimum_size_handler, cgop)
+		delete(window_delegate_handlers.get_maximum_size_handler, cgop)
+		delete(window_delegate_handlers.get_height_for_width_handler, cgop)
+		delete(window_delegate_handlers.on_parent_view_changed_handler, cgop)
+		delete(window_delegate_handlers.on_child_view_changed_handler, cgop)
+		delete(window_delegate_handlers.on_focus_handler, cgop)
+		delete(window_delegate_handlers.on_blur_handler, cgop)
 	}))
 
 	return newCWindowDelegateT(cefp)
@@ -29375,7 +29845,7 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := window_delegate.p_window_delegate
+	cp := window_delegate.pc_window_delegate
 	window_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(OnWindowCreatedHandler); ok {
@@ -29464,7 +29934,7 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 
 func (window_delegate *CWindowDelegateT) UnbindAll() {
 
-	cp := window_delegate.p_window_delegate
+	cp := window_delegate.pc_window_delegate
 	delete(window_delegate_handlers.handler, cp)
 
 	delete(window_delegate_handlers.on_window_created_handler, cp)
@@ -29493,7 +29963,7 @@ func (window_delegate *CWindowDelegateT) Handler() interface{} {
 	cefingoIfaceAccess.Lock()
 	defer cefingoIfaceAccess.Unlock()
 
-	cp := window_delegate.p_window_delegate
+	cp := window_delegate.pc_window_delegate
 	return window_delegate_handlers.handler[cp]
 }
 
@@ -29503,10 +29973,12 @@ func (window_delegate *CWindowDelegateT) Handler() interface{} {
 // Structure representing the issuer or subject field of an X.509 certificate.
 ///
 
+type cCX509certPrincipalT C.cef_x509cert_principal_t
+
 // Go type for cef_x509cert_principal_t
 type CX509certPrincipalT struct {
-	noCopy               noCopy
-	p_x509cert_principal *C.cef_x509cert_principal_t
+	noCopy                noCopy
+	pc_x509cert_principal *cCX509certPrincipalT
 }
 
 type RefToCX509certPrincipalT struct {
@@ -29532,21 +30004,22 @@ func newCX509certPrincipalT(p *C.cef_x509cert_principal_t) *CX509certPrincipalT 
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T233.1:")
-	BaseAddRef(p)
-	go_x509cert_principal := CX509certPrincipalT{noCopy{}, p}
+	pc := (*cCX509certPrincipalT)(p)
+	BaseAddRef(pc)
+	go_x509cert_principal := CX509certPrincipalT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_x509cert_principal, func(g *CX509certPrincipalT) {
-		Tracef(unsafe.Pointer(g.p_x509cert_principal), "T233.2:")
-		BaseRelease(g.p_x509cert_principal)
+		Tracef(unsafe.Pointer(g.pc_x509cert_principal), "T233.2:")
+		BaseRelease(g.pc_x509cert_principal)
 	})
 	return &go_x509cert_principal
 }
 
 // *C.cef_x509cert_principal_t has refCounted interface
 func (x509cert_principal *CX509certPrincipalT) HasOneRef() bool {
-	return BaseHasOneRef(x509cert_principal.p_x509cert_principal)
+	return BaseHasOneRef(x509cert_principal.pc_x509cert_principal)
 }
 
-func (p *C.cef_x509cert_principal_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCX509certPrincipalT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -29558,7 +30031,7 @@ func (p *C.cef_x509cert_principal_t) cast_to_p_base_ref_counted_t() *C.cef_base_
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetDisplayName() (ret string) {
 
-	cRet := C.cefingo_x509cert_principal_get_display_name(self.p_x509cert_principal)
+	cRet := C.cefingo_x509cert_principal_get_display_name((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -29574,7 +30047,7 @@ func (self *CX509certPrincipalT) GetDisplayName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetCommonName() (ret string) {
 
-	cRet := C.cefingo_x509cert_principal_get_common_name(self.p_x509cert_principal)
+	cRet := C.cefingo_x509cert_principal_get_common_name((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -29590,7 +30063,7 @@ func (self *CX509certPrincipalT) GetCommonName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetLocalityName() (ret string) {
 
-	cRet := C.cefingo_x509cert_principal_get_locality_name(self.p_x509cert_principal)
+	cRet := C.cefingo_x509cert_principal_get_locality_name((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -29606,7 +30079,7 @@ func (self *CX509certPrincipalT) GetLocalityName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetStateOrProvinceName() (ret string) {
 
-	cRet := C.cefingo_x509cert_principal_get_state_or_province_name(self.p_x509cert_principal)
+	cRet := C.cefingo_x509cert_principal_get_state_or_province_name((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -29622,7 +30095,7 @@ func (self *CX509certPrincipalT) GetStateOrProvinceName() (ret string) {
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetCountryName() (ret string) {
 
-	cRet := C.cefingo_x509cert_principal_get_country_name(self.p_x509cert_principal)
+	cRet := C.cefingo_x509cert_principal_get_country_name((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -29639,7 +30112,7 @@ func (self *CX509certPrincipalT) GetStreetAddresses(
 	addresses CStringListT,
 ) {
 
-	C.cefingo_x509cert_principal_get_street_addresses(self.p_x509cert_principal, (C.cef_string_list_t)(addresses))
+	C.cefingo_x509cert_principal_get_street_addresses((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal), (C.cef_string_list_t)(addresses))
 
 }
 
@@ -29650,7 +30123,7 @@ func (self *CX509certPrincipalT) GetOrganizationNames(
 	names CStringListT,
 ) {
 
-	C.cefingo_x509cert_principal_get_organization_names(self.p_x509cert_principal, (C.cef_string_list_t)(names))
+	C.cefingo_x509cert_principal_get_organization_names((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal), (C.cef_string_list_t)(names))
 
 }
 
@@ -29661,7 +30134,7 @@ func (self *CX509certPrincipalT) GetOrganizationUnitNames(
 	names CStringListT,
 ) {
 
-	C.cefingo_x509cert_principal_get_organization_unit_names(self.p_x509cert_principal, (C.cef_string_list_t)(names))
+	C.cefingo_x509cert_principal_get_organization_unit_names((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal), (C.cef_string_list_t)(names))
 
 }
 
@@ -29672,7 +30145,7 @@ func (self *CX509certPrincipalT) GetDomainComponents(
 	components CStringListT,
 ) {
 
-	C.cefingo_x509cert_principal_get_domain_components(self.p_x509cert_principal, (C.cef_string_list_t)(components))
+	C.cefingo_x509cert_principal_get_domain_components((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal), (C.cef_string_list_t)(components))
 
 }
 
@@ -29680,10 +30153,12 @@ func (self *CX509certPrincipalT) GetDomainComponents(
 // Structure representing a X.509 certificate.
 ///
 
+type cCX509certificateT C.cef_x509certificate_t
+
 // Go type for cef_x509certificate_t
 type CX509certificateT struct {
-	noCopy            noCopy
-	p_x509certificate *C.cef_x509certificate_t
+	noCopy             noCopy
+	pc_x509certificate *cCX509certificateT
 }
 
 type RefToCX509certificateT struct {
@@ -29709,21 +30184,22 @@ func newCX509certificateT(p *C.cef_x509certificate_t) *CX509certificateT {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T234.1:")
-	BaseAddRef(p)
-	go_x509certificate := CX509certificateT{noCopy{}, p}
+	pc := (*cCX509certificateT)(p)
+	BaseAddRef(pc)
+	go_x509certificate := CX509certificateT{noCopy{}, pc}
 	runtime.SetFinalizer(&go_x509certificate, func(g *CX509certificateT) {
-		Tracef(unsafe.Pointer(g.p_x509certificate), "T234.2:")
-		BaseRelease(g.p_x509certificate)
+		Tracef(unsafe.Pointer(g.pc_x509certificate), "T234.2:")
+		BaseRelease(g.pc_x509certificate)
 	})
 	return &go_x509certificate
 }
 
 // *C.cef_x509certificate_t has refCounted interface
 func (x509certificate *CX509certificateT) HasOneRef() bool {
-	return BaseHasOneRef(x509certificate.p_x509certificate)
+	return BaseHasOneRef(x509certificate.pc_x509certificate)
 }
 
-func (p *C.cef_x509certificate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+func (p *cCX509certificateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
@@ -29734,7 +30210,7 @@ func (p *C.cef_x509certificate_t) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 ///
 func (self *CX509certificateT) GetSubject() (ret *CX509certPrincipalT) {
 
-	cRet := C.cefingo_x509certificate_get_subject(self.p_x509certificate)
+	cRet := C.cefingo_x509certificate_get_subject((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
 	ret = newCX509certPrincipalT(cRet)
 	return ret
@@ -29745,7 +30221,7 @@ func (self *CX509certificateT) GetSubject() (ret *CX509certPrincipalT) {
 ///
 func (self *CX509certificateT) GetIssuer() (ret *CX509certPrincipalT) {
 
-	cRet := C.cefingo_x509certificate_get_issuer(self.p_x509certificate)
+	cRet := C.cefingo_x509certificate_get_issuer((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
 	ret = newCX509certPrincipalT(cRet)
 	return ret
@@ -29757,7 +30233,7 @@ func (self *CX509certificateT) GetIssuer() (ret *CX509certPrincipalT) {
 ///
 func (self *CX509certificateT) GetSerialNumber() (ret *CBinaryValueT) {
 
-	cRet := C.cefingo_x509certificate_get_serial_number(self.p_x509certificate)
+	cRet := C.cefingo_x509certificate_get_serial_number((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
 	ret = newCBinaryValueT(cRet)
 	return ret
@@ -29769,7 +30245,7 @@ func (self *CX509certificateT) GetSerialNumber() (ret *CBinaryValueT) {
 ///
 func (self *CX509certificateT) GetValidStart() (ret CTimeT) {
 
-	cRet := C.cefingo_x509certificate_get_valid_start(self.p_x509certificate)
+	cRet := C.cefingo_x509certificate_get_valid_start((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
 	ret = (CTimeT)(cRet)
 	return ret
@@ -29781,7 +30257,7 @@ func (self *CX509certificateT) GetValidStart() (ret CTimeT) {
 ///
 func (self *CX509certificateT) GetValidExpiry() (ret CTimeT) {
 
-	cRet := C.cefingo_x509certificate_get_valid_expiry(self.p_x509certificate)
+	cRet := C.cefingo_x509certificate_get_valid_expiry((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
 	ret = (CTimeT)(cRet)
 	return ret
@@ -29792,7 +30268,7 @@ func (self *CX509certificateT) GetValidExpiry() (ret CTimeT) {
 ///
 func (self *CX509certificateT) GetDerencoded() (ret *CBinaryValueT) {
 
-	cRet := C.cefingo_x509certificate_get_derencoded(self.p_x509certificate)
+	cRet := C.cefingo_x509certificate_get_derencoded((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
 	ret = newCBinaryValueT(cRet)
 	return ret
@@ -29803,7 +30279,7 @@ func (self *CX509certificateT) GetDerencoded() (ret *CBinaryValueT) {
 ///
 func (self *CX509certificateT) GetPemencoded() (ret *CBinaryValueT) {
 
-	cRet := C.cefingo_x509certificate_get_pemencoded(self.p_x509certificate)
+	cRet := C.cefingo_x509certificate_get_pemencoded((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
 	ret = newCBinaryValueT(cRet)
 	return ret
@@ -29815,7 +30291,7 @@ func (self *CX509certificateT) GetPemencoded() (ret *CBinaryValueT) {
 ///
 func (self *CX509certificateT) GetIssuerChainSize() (ret int64) {
 
-	cRet := C.cefingo_x509certificate_get_issuer_chain_size(self.p_x509certificate)
+	cRet := C.cefingo_x509certificate_get_issuer_chain_size((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
 	ret = (int64)(cRet)
 	return ret
@@ -29831,7 +30307,7 @@ func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValue
 	chainCount := &_chainCount
 	var tmpchain *C.cef_binary_value_t
 
-	C.cefingo_x509certificate_get_derencoded_issuer_chain(self.p_x509certificate, (*C.size_t)(chainCount), &tmpchain)
+	C.cefingo_x509certificate_get_derencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), &tmpchain)
 
 	chain = make([]*CBinaryValueT, *chainCount)
 	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
@@ -29851,7 +30327,7 @@ func (self *CX509certificateT) GetPemencodedIssuerChain() (chain []*CBinaryValue
 	chainCount := &_chainCount
 	var tmpchain *C.cef_binary_value_t
 
-	C.cefingo_x509certificate_get_pemencoded_issuer_chain(self.p_x509certificate, (*C.size_t)(chainCount), &tmpchain)
+	C.cefingo_x509certificate_get_pemencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), &tmpchain)
 
 	chain = make([]*CBinaryValueT, *chainCount)
 	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]

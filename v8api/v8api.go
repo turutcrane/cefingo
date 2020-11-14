@@ -49,12 +49,12 @@ func NewString(s string) Value {
 	return NewValue(capi.V8valueCreateString(s))
 }
 
-func GetContext() (c *Context, err error) {
+func GetContext() (c Context, err error) {
 	v8c := capi.V8contextGetCurrentContext()
 	g := NewValue(v8c.GetGlobal())
 	d, err := g.GetValueBykey("document")
 	if err == nil {
-		c = &Context{
+		c = Context{
 			V8context: v8c,
 			Global:    g,
 			Document:  d,
@@ -63,15 +63,19 @@ func GetContext() (c *Context, err error) {
 	return c, err
 }
 
-func (c *Context) GetBrowser() *capi.CBrowserT {
+func (c Context) IsValid() bool {
+	return c.V8context != nil
+}
+
+func (c Context) GetBrowser() *capi.CBrowserT {
 	return c.V8context.GetBrowser()
 }
 
-func (c *Context) GetFrame() *capi.CFrameT {
+func (c Context) GetFrame() *capi.CFrameT {
 	return c.V8context.GetFrame()
 }
 
-func (c *Context) GetElementById(id string) (value Value, err error) {
+func (c Context) GetElementById(id string) (value Value, err error) {
 	val, err := c.Document.GetValueBykey("getElementById")
 	if err != nil {
 		return value, err
@@ -96,7 +100,7 @@ func (c *Context) GetElementById(id string) (value Value, err error) {
 	return v8v, err
 }
 
-func (c *Context) GetElementsByClassName(cls string) (elements Value, err error) {
+func (c Context) GetElementsByClassName(cls string) (elements Value, err error) {
 	v1 := CreateString(cls)
 	args := []Value{v1}
 
@@ -107,12 +111,12 @@ func (c *Context) GetElementsByClassName(cls string) (elements Value, err error)
 	return elements, err
 }
 
-func EnterContext(c *capi.CV8contextT) (ctx *Context, err error) {
+func EnterContext(c *capi.CV8contextT) (ctx Context, err error) {
 	runtime.LockOSThread() // UnlockOSThread at ExitContext()
 	if c.Enter() {
 		return GetContext()
 	}
-	return nil, fmt.Errorf("E105: Enter Error")
+	return Context{}, fmt.Errorf("E105: Enter Error")
 }
 
 func ExitContext(c *capi.CV8contextT) error {
@@ -283,59 +287,102 @@ func (f HandlerFunction) Execute(
 }
 
 func (v Value) IsValid() bool {
-	return v.v8v.IsValid()
+	if v.v8v != nil {
+		return v.v8v.IsValid()
+	}
+	return false
 }
 
 func (v Value) IsUndefined() bool {
-	return v.v8v.IsUndefined()
+	if v.IsValid() {
+		return v.v8v.IsUndefined()
+	} else {
+		return false
+	}
 }
 
 func (v Value) IsNull() bool {
-	return v.v8v.IsNull()
+	if v.IsValid() {
+		return v.v8v.IsNull()
+	}
+	return false
 }
 
 func (v Value) IsBool() bool {
-	return v.v8v.IsBool()
+	if v.IsValid() {
+		return v.v8v.IsBool()
+	}
+	return false
 }
 
 func (v Value) IsInt() bool {
-	return v.v8v.IsInt()
+	if v.IsValid() {
+		return v.v8v.IsInt()
+	}
+	return false
 }
 
 func (v Value) IsUnt() bool {
-	return v.v8v.IsUint()
+	if v.IsValid() {
+		return v.v8v.IsUint()
+	}
+	return false
 }
 
 func (v Value) IsDouble() bool {
-	return v.v8v.IsUint()
+	if v.IsValid() {
+		return v.v8v.IsUint()
+	}
+	return false
 }
 
 func (v Value) IsDate() bool {
-	return v.v8v.IsUint()
+	if v.IsValid() {
+		return v.v8v.IsUint()
+	}
+	return false
 }
 
 func (v Value) IsString() bool {
-	return v.v8v.IsString()
+	if v.IsValid() {
+		return v.v8v.IsString()
+	}
+	return false
 }
 
 func (v Value) IsObject() bool {
-	return v.v8v.IsObject()
+	if v.IsValid() {
+		return v.v8v.IsObject()
+	}
+	return false
 }
 
 func (v Value) IsFunction() bool {
-	return v.v8v.IsFunction()
+	if v.IsValid() {
+		return v.v8v.IsFunction()
+	}
+	return false
 }
 
 func (v Value) IsArray() bool {
-	return v.v8v.IsArray()
+	if v.IsValid() {
+		return v.v8v.IsArray()
+	}
+	return false
 }
 
 func (v Value) IsArrayBuffer() bool {
-	return v.v8v.IsArrayBuffer()
+	if v.IsValid() {
+		return v.v8v.IsArrayBuffer()
+	}
+	return false
 }
 
 func (v Value) IsSame(v1 Value) bool {
-	return v.v8v.IsSame(v1.v8v)
+	if v.IsValid() && v1.IsValid() {
+		return v.v8v.IsSame(v1.v8v)
+	}
+	return false
 }
 
 func (v Value) GetBoolValue() bool {
@@ -495,7 +542,16 @@ func CreateStringFromByteArray(b []byte) Value {
 	return Value{capi.V8valueCreateStringFromByteArray(b)}
 }
 
-func (c *Context) Eval(code string) (v Value, err error) {
+func CreateBool(b bool) (v Value) {
+	if b {
+		v = Value{capi.V8valueCreateBool(1)}
+	} else {
+		v = Value{capi.V8valueCreateBool(0)}
+	}
+	return v
+}
+
+func (c Context) Eval(code string) (v Value, err error) {
 	var ok bool
 	var v8v *capi.CV8valueT
 	var e *capi.CV8exceptionT
@@ -507,7 +563,7 @@ func (c *Context) Eval(code string) (v Value, err error) {
 	return v, err
 }
 
-func (c *Context) Alertf(message string, v ...interface{}) (err error) {
+func (c Context) Alertf(message string, v ...interface{}) (err error) {
 
 	f, err := c.Global.GetValueBykey("alert")
 	if err != nil {
@@ -533,7 +589,7 @@ func (v Value) ToString() (s string, err error) {
 	return s, e
 }
 
-func (c *Context) NewArray(elems ...Value) Value {
+func (c Context) NewArray(elems ...Value) Value {
 	arrayClass, err := c.Global.GetValueBykey("Array")
 	if err != nil {
 		capi.Panicf("E412: No Array")

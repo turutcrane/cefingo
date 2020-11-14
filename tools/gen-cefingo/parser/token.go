@@ -49,6 +49,9 @@ func (t Token) TitleCase() string {
 func (t Token) GoName() string {
 	return "C" + t.TitleCase()
 }
+func (t Token) CgoName() string {
+	return "cC" + t.TitleCase()
+}
 
 func (t Token) Line() int {
 	return xc.FileSet.Position(xc.Token(t).Pos()).Line
