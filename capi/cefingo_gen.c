@@ -654,26 +654,6 @@ void cefingo_browser_host_get_navigation_entries(
 	);
 }
 
-void cefingo_browser_host_set_mouse_cursor_change_disabled(
-	struct _cef_browser_host_t* self,
-	int disabled
-)
-{
-	self->set_mouse_cursor_change_disabled(
-		self,
-		disabled
-	);
-}
-
-int cefingo_browser_host_is_mouse_cursor_change_disabled(
-	struct _cef_browser_host_t* self
-)
-{
-	return	self->is_mouse_cursor_change_disabled(
-			self
-		);
-}
-
 void cefingo_browser_host_replace_misspelling(
 	struct _cef_browser_host_t* self,
 	const cef_string_t* word
@@ -1077,6 +1057,8 @@ cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo
 		(cef_base_ref_counted_t*) browser_process_handler);
 
 	// callbacks
+	browser_process_handler->body.get_cookieable_schemes =
+		cefingo_browser_process_handler_get_cookieable_schemes;
 	browser_process_handler->body.on_context_initialized =
 		cefingo_browser_process_handler_on_context_initialized;
 	browser_process_handler->body.on_before_child_process_launch =
@@ -1085,6 +1067,8 @@ cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo
 		cefingo_browser_process_handler_get_print_handler;
 	browser_process_handler->body.on_schedule_message_pump_work =
 		cefingo_browser_process_handler_on_schedule_message_pump_work;
+	browser_process_handler->body.get_default_client =
+		cefingo_browser_process_handler_get_default_client;
 
 	return (cef_browser_process_handler_t*)browser_process_handler;
 }
@@ -2059,6 +2043,13 @@ typedef int (*T_CEF_DISPLAY_HANDLER_T_ON_AUTO_RESIZE)(
 	struct _cef_browser_t*,
 	const cef_size_t*
 );
+typedef int (*T_CEF_DISPLAY_HANDLER_T_ON_CURSOR_CHANGE)(
+	struct _cef_display_handler_t*,
+	struct _cef_browser_t*,
+	cef_cursor_handle_t,
+	cef_cursor_type_t,
+	const struct _cef_cursor_info_t*
+);
 
 cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler_wrapper_t* display_handler)
 {
@@ -2085,6 +2076,8 @@ cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler
 		(T_CEF_DISPLAY_HANDLER_T_ON_AUTO_RESIZE)cefingo_display_handler_on_auto_resize;
 	display_handler->body.on_loading_progress_change =
 		cefingo_display_handler_on_loading_progress_change;
+	display_handler->body.on_cursor_change =
+		(T_CEF_DISPLAY_HANDLER_T_ON_CURSOR_CHANGE)cefingo_display_handler_on_cursor_change;
 
 	return (cef_display_handler_t*)display_handler;
 }
@@ -5535,13 +5528,6 @@ typedef void (*T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT)(
 	const cef_rect_t*,
 	void*
 );
-typedef void (*T_CEF_RENDER_HANDLER_T_ON_CURSOR_CHANGE)(
-	struct _cef_render_handler_t*,
-	struct _cef_browser_t*,
-	cef_cursor_handle_t,
-	cef_cursor_type_t,
-	const struct _cef_cursor_info_t*
-);
 typedef void (*T_CEF_RENDER_HANDLER_T_ON_IME_COMPOSITION_RANGE_CHANGED)(
 	struct _cef_render_handler_t*,
 	struct _cef_browser_t*,
@@ -5581,8 +5567,6 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 		(T_CEF_RENDER_HANDLER_T_ON_PAINT)cefingo_render_handler_on_paint;
 	render_handler->body.on_accelerated_paint =
 		(T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT)cefingo_render_handler_on_accelerated_paint;
-	render_handler->body.on_cursor_change =
-		(T_CEF_RENDER_HANDLER_T_ON_CURSOR_CHANGE)cefingo_render_handler_on_cursor_change;
 	render_handler->body.start_dragging =
 		cefingo_render_handler_start_dragging;
 	render_handler->body.update_drag_cursor =

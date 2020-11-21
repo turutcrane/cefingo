@@ -2137,32 +2137,6 @@ func (self *CBrowserHostT) GetNavigationEntries(
 }
 
 ///
-// Set whether mouse cursor change is disabled.
-///
-func (self *CBrowserHostT) SetMouseCursorChangeDisabled(
-	disabled bool,
-) {
-	var tmpdisabled int
-	if disabled {
-		tmpdisabled = 1
-	}
-
-	C.cefingo_browser_host_set_mouse_cursor_change_disabled((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpdisabled))
-
-}
-
-///
-// Returns true (1) if mouse cursor change is disabled.
-///
-func (self *CBrowserHostT) IsMouseCursorChangeDisabled() (ret bool) {
-
-	cRet := C.cefingo_browser_host_is_mouse_cursor_change_disabled((*C.cef_browser_host_t)(self.pc_browser_host))
-
-	ret = cRet == 1
-	return ret
-}
-
-///
 // If a misspelled word is currently selected in an editable node calling this
 // function will replace it with the specified |word|.
 ///
@@ -2782,7 +2756,7 @@ func BrowserHostCreateBrowserSync(
 	return ret
 }
 
-// cef_browser_process_handler_capi.h, include/capi/cef_browser_process_handler_capi.h:104:3,
+// cef_browser_process_handler_capi.h, include/capi/cef_browser_process_handler_capi.h:134:3,
 
 ///
 // Structure used to implement browser process callbacks. The functions of this
@@ -2841,6 +2815,27 @@ func (p *cCBrowserProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 }
 
 ///
+// Called on the browser process UI thread to retrieve the list of schemes
+// that should support cookies. If |include_defaults| is true (1) the default
+// schemes (&quot;http&quot;, &quot;https&quot;, &quot;ws&quot; and &quot;wss&quot;) will also be supported. Providing
+// an NULL |schemes| value and setting |include_defaults| to false (0) will
+// disable all loading and saving of cookies.
+//
+// This state will apply to the cef_cookie_manager_t associated with the
+// global cef_request_context_t. It will also be used as the initial state for
+// any new cef_request_context_ts created by the client. After creating a new
+// cef_request_context_t the cef_cookie_manager_t::SetSupportedSchemes
+// function may be called on the associated cef_cookie_manager_t to futher
+// override these values.
+///
+type GetCookieableSchemesHandler interface {
+	GetCookieableSchemes(
+		self *CBrowserProcessHandlerT,
+		schemes CStringListT,
+	) (include_defaults int)
+}
+
+///
 // Called on the browser process UI thread immediately after the CEF context
 // has been initialized.
 ///
@@ -2894,18 +2889,35 @@ type OnScheduleMessagePumpWorkHandler interface {
 	)
 }
 
+///
+// Return the default client for use with a newly created browser window. If
+// null is returned the browser will be unmanaged (no callbacks will be
+// executed for that browser) and application shutdown will be blocked until
+// the browser window is closed manually. This function is currently only used
+// with the chrome runtime.
+///
+type GetDefaultClientHandler interface {
+	GetDefaultClient(
+		self *CBrowserProcessHandlerT,
+	) (ret *CClientT)
+}
+
 var browser_process_handler_handlers = struct {
 	handler                                map[*cCBrowserProcessHandlerT]interface{}
+	get_cookieable_schemes_handler         map[*cCBrowserProcessHandlerT]GetCookieableSchemesHandler
 	on_context_initialized_handler         map[*cCBrowserProcessHandlerT]OnContextInitializedHandler
 	on_before_child_process_launch_handler map[*cCBrowserProcessHandlerT]OnBeforeChildProcessLaunchHandler
 	get_print_handler_handler              map[*cCBrowserProcessHandlerT]GetPrintHandlerHandler
 	on_schedule_message_pump_work_handler  map[*cCBrowserProcessHandlerT]OnScheduleMessagePumpWorkHandler
+	get_default_client_handler             map[*cCBrowserProcessHandlerT]GetDefaultClientHandler
 }{
 	map[*cCBrowserProcessHandlerT]interface{}{},
+	map[*cCBrowserProcessHandlerT]GetCookieableSchemesHandler{},
 	map[*cCBrowserProcessHandlerT]OnContextInitializedHandler{},
 	map[*cCBrowserProcessHandlerT]OnBeforeChildProcessLaunchHandler{},
 	map[*cCBrowserProcessHandlerT]GetPrintHandlerHandler{},
 	map[*cCBrowserProcessHandlerT]OnScheduleMessagePumpWorkHandler{},
+	map[*cCBrowserProcessHandlerT]GetDefaultClientHandler{},
 }
 
 // AllocCBrowserProcessHandlerT allocates CBrowserProcessHandlerT and construct it
@@ -2922,10 +2934,12 @@ func AllocCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
 		cefingoIfaceAccess.Lock()
 		defer cefingoIfaceAccess.Unlock()
 		delete(browser_process_handler_handlers.handler, cgop)
+		delete(browser_process_handler_handlers.get_cookieable_schemes_handler, cgop)
 		delete(browser_process_handler_handlers.on_context_initialized_handler, cgop)
 		delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cgop)
 		delete(browser_process_handler_handlers.get_print_handler_handler, cgop)
 		delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cgop)
+		delete(browser_process_handler_handlers.get_default_client_handler, cgop)
 	}))
 
 	return newCBrowserProcessHandlerT(cefp)
@@ -2937,6 +2951,10 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 
 	cp := browser_process_handler.pc_browser_process_handler
 	browser_process_handler_handlers.handler[cp] = a
+
+	if h, ok := a.(GetCookieableSchemesHandler); ok {
+		browser_process_handler_handlers.get_cookieable_schemes_handler[cp] = h
+	}
 
 	if h, ok := a.(OnContextInitializedHandler); ok {
 		browser_process_handler_handlers.on_context_initialized_handler[cp] = h
@@ -2954,6 +2972,10 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 		browser_process_handler_handlers.on_schedule_message_pump_work_handler[cp] = h
 	}
 
+	if h, ok := a.(GetDefaultClientHandler); ok {
+		browser_process_handler_handlers.get_default_client_handler[cp] = h
+	}
+
 	if accessor, ok := a.(CBrowserProcessHandlerTAccessor); ok {
 		accessor.SetCBrowserProcessHandlerT(browser_process_handler)
 		Logf("T112.5:")
@@ -2967,10 +2989,12 @@ func (browser_process_handler *CBrowserProcessHandlerT) UnbindAll() {
 	cp := browser_process_handler.pc_browser_process_handler
 	delete(browser_process_handler_handlers.handler, cp)
 
+	delete(browser_process_handler_handlers.get_cookieable_schemes_handler, cp)
 	delete(browser_process_handler_handlers.on_context_initialized_handler, cp)
 	delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cp)
 	delete(browser_process_handler_handlers.get_print_handler_handler, cp)
 	delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cp)
+	delete(browser_process_handler_handlers.get_default_client_handler, cp)
 
 }
 
@@ -6684,7 +6708,7 @@ func DisplayGetAlls() (displays []*CDisplayT) {
 	return displays
 }
 
-// cef_display_handler_capi.h, include/capi/cef_display_handler_capi.h:144:3,
+// cef_display_handler_capi.h, include/capi/cef_display_handler_capi.h:157:3,
 
 ///
 // Implement this structure to handle events related to browser display state.
@@ -6859,6 +6883,22 @@ type OnLoadingProgressChangeHandler interface {
 	)
 }
 
+///
+// Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
+// |custom_cursor_info| will be populated with the custom cursor information.
+// Return true (1) if the cursor change was handled or false (0) for default
+// handling.
+///
+type OnCursorChangeHandler interface {
+	OnCursorChange(
+		self *CDisplayHandlerT,
+		browser *CBrowserT,
+		cursor CCursorHandleT,
+		ctype CCursorTypeT,
+		custom_cursor_info *CCursorInfoT,
+	) (ret bool)
+}
+
 var display_handler_handlers = struct {
 	handler                            map[*cCDisplayHandlerT]interface{}
 	on_address_change_handler          map[*cCDisplayHandlerT]OnAddressChangeHandler
@@ -6870,6 +6910,7 @@ var display_handler_handlers = struct {
 	on_console_message_handler         map[*cCDisplayHandlerT]OnConsoleMessageHandler
 	on_auto_resize_handler             map[*cCDisplayHandlerT]OnAutoResizeHandler
 	on_loading_progress_change_handler map[*cCDisplayHandlerT]OnLoadingProgressChangeHandler
+	on_cursor_change_handler           map[*cCDisplayHandlerT]OnCursorChangeHandler
 }{
 	map[*cCDisplayHandlerT]interface{}{},
 	map[*cCDisplayHandlerT]OnAddressChangeHandler{},
@@ -6881,6 +6922,7 @@ var display_handler_handlers = struct {
 	map[*cCDisplayHandlerT]OnConsoleMessageHandler{},
 	map[*cCDisplayHandlerT]OnAutoResizeHandler{},
 	map[*cCDisplayHandlerT]OnLoadingProgressChangeHandler{},
+	map[*cCDisplayHandlerT]OnCursorChangeHandler{},
 }
 
 // AllocCDisplayHandlerT allocates CDisplayHandlerT and construct it
@@ -6906,6 +6948,7 @@ func AllocCDisplayHandlerT() *CDisplayHandlerT {
 		delete(display_handler_handlers.on_console_message_handler, cgop)
 		delete(display_handler_handlers.on_auto_resize_handler, cgop)
 		delete(display_handler_handlers.on_loading_progress_change_handler, cgop)
+		delete(display_handler_handlers.on_cursor_change_handler, cgop)
 	}))
 
 	return newCDisplayHandlerT(cefp)
@@ -6954,6 +6997,10 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 		display_handler_handlers.on_loading_progress_change_handler[cp] = h
 	}
 
+	if h, ok := a.(OnCursorChangeHandler); ok {
+		display_handler_handlers.on_cursor_change_handler[cp] = h
+	}
+
 	if accessor, ok := a.(CDisplayHandlerTAccessor); ok {
 		accessor.SetCDisplayHandlerT(display_handler)
 		Logf("T132.5:")
@@ -6976,6 +7023,7 @@ func (display_handler *CDisplayHandlerT) UnbindAll() {
 	delete(display_handler_handlers.on_console_message_handler, cp)
 	delete(display_handler_handlers.on_auto_resize_handler, cp)
 	delete(display_handler_handlers.on_loading_progress_change_handler, cp)
+	delete(display_handler_handlers.on_cursor_change_handler, cp)
 
 }
 
@@ -16101,7 +16149,7 @@ func (p *cCRegistrationT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-// cef_render_handler_capi.h, include/capi/cef_render_handler_capi.h:245:3,
+// cef_render_handler_capi.h, include/capi/cef_render_handler_capi.h:234:3,
 
 ///
 // Implement this structure to handle events when window rendering is disabled.
@@ -16289,20 +16337,6 @@ type OnAcceleratedPaintHandler interface {
 }
 
 ///
-// Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
-// |custom_cursor_info| will be populated with the custom cursor information.
-///
-type OnCursorChangeHandler interface {
-	OnCursorChange(
-		self *CRenderHandlerT,
-		browser *CBrowserT,
-		cursor CCursorHandleT,
-		ctype CCursorTypeT,
-		custom_cursor_info *CCursorInfoT,
-	)
-}
-
-///
 // Called when the user starts dragging content in the web view. Contextual
 // information about the dragged content is supplied by |drag_data|. (|x|,
 // |y|) is the drag start location in screen coordinates. OS APIs that run a
@@ -16406,7 +16440,6 @@ var render_handler_handlers = struct {
 	on_popup_size_handler                    map[*cCRenderHandlerT]OnPopupSizeHandler
 	on_paint_handler                         map[*cCRenderHandlerT]OnPaintHandler
 	on_accelerated_paint_handler             map[*cCRenderHandlerT]OnAcceleratedPaintHandler
-	on_cursor_change_handler                 map[*cCRenderHandlerT]OnCursorChangeHandler
 	start_dragging_handler                   map[*cCRenderHandlerT]StartDraggingHandler
 	update_drag_cursor_handler               map[*cCRenderHandlerT]UpdateDragCursorHandler
 	on_scroll_offset_changed_handler         map[*cCRenderHandlerT]OnScrollOffsetChangedHandler
@@ -16424,7 +16457,6 @@ var render_handler_handlers = struct {
 	map[*cCRenderHandlerT]OnPopupSizeHandler{},
 	map[*cCRenderHandlerT]OnPaintHandler{},
 	map[*cCRenderHandlerT]OnAcceleratedPaintHandler{},
-	map[*cCRenderHandlerT]OnCursorChangeHandler{},
 	map[*cCRenderHandlerT]StartDraggingHandler{},
 	map[*cCRenderHandlerT]UpdateDragCursorHandler{},
 	map[*cCRenderHandlerT]OnScrollOffsetChangedHandler{},
@@ -16456,7 +16488,6 @@ func AllocCRenderHandlerT() *CRenderHandlerT {
 		delete(render_handler_handlers.on_popup_size_handler, cgop)
 		delete(render_handler_handlers.on_paint_handler, cgop)
 		delete(render_handler_handlers.on_accelerated_paint_handler, cgop)
-		delete(render_handler_handlers.on_cursor_change_handler, cgop)
 		delete(render_handler_handlers.start_dragging_handler, cgop)
 		delete(render_handler_handlers.update_drag_cursor_handler, cgop)
 		delete(render_handler_handlers.on_scroll_offset_changed_handler, cgop)
@@ -16511,10 +16542,6 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 		render_handler_handlers.on_accelerated_paint_handler[cp] = h
 	}
 
-	if h, ok := a.(OnCursorChangeHandler); ok {
-		render_handler_handlers.on_cursor_change_handler[cp] = h
-	}
-
 	if h, ok := a.(StartDraggingHandler); ok {
 		render_handler_handlers.start_dragging_handler[cp] = h
 	}
@@ -16561,7 +16588,6 @@ func (render_handler *CRenderHandlerT) UnbindAll() {
 	delete(render_handler_handlers.on_popup_size_handler, cp)
 	delete(render_handler_handlers.on_paint_handler, cp)
 	delete(render_handler_handlers.on_accelerated_paint_handler, cp)
-	delete(render_handler_handlers.on_cursor_change_handler, cp)
 	delete(render_handler_handlers.start_dragging_handler, cp)
 	delete(render_handler_handlers.update_drag_cursor_handler, cp)
 	delete(render_handler_handlers.on_scroll_offset_changed_handler, cp)
@@ -18683,8 +18709,8 @@ type OnBeforeBrowseHandler interface {
 		browser *CBrowserT,
 		frame *CFrameT,
 		request *CRequestT,
-		user_gesture int,
-		is_redirect int,
+		user_gesture bool,
+		is_redirect bool,
 	) (ret bool)
 }
 

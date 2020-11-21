@@ -451,6 +451,47 @@ func cefingo_navigation_entry_visitor_visit(
 }
 
 ///
+// Called on the browser process UI thread to retrieve the list of schemes
+// that should support cookies. If |include_defaults| is true (1) the default
+// schemes (&quot;http&quot;, &quot;https&quot;, &quot;ws&quot; and &quot;wss&quot;) will also be supported. Providing
+// an NULL |schemes| value and setting |include_defaults| to false (0) will
+// disable all loading and saving of cookies.
+//
+// This state will apply to the cef_cookie_manager_t associated with the
+// global cef_request_context_t. It will also be used as the initial state for
+// any new cef_request_context_ts created by the client. After creating a new
+// cef_request_context_t the cef_cookie_manager_t::SetSupportedSchemes
+// function may be called on the associated cef_cookie_manager_t to futher
+// override these values.
+///
+//export cefingo_browser_process_handler_get_cookieable_schemes
+func cefingo_browser_process_handler_get_cookieable_schemes(
+	self *C.cef_browser_process_handler_t,
+	schemes C.cef_string_list_t,
+	include_defaults *C.int,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T112.6:")
+	cefingoIfaceAccess.Lock()
+	f := browser_process_handler_handlers.get_cookieable_schemes_handler[(*cCBrowserProcessHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCBrowserProcessHandlerT(self)
+		goTmpschemes := (CStringListT)(schemes)
+
+		goTmpinclude_defaultsOut := f.GetCookieableSchemes(goTmpself, goTmpschemes)
+		*include_defaults = (C.int)(goTmpinclude_defaultsOut)
+
+	} else {
+		Logf("T112.7: get_cookieable_schemes: Noo!")
+	}
+
+}
+
+///
 // Called on the browser process UI thread immediately after the CEF context
 // has been initialized.
 ///
@@ -461,7 +502,7 @@ func cefingo_browser_process_handler_on_context_initialized(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T112.6:")
+	Tracef(unsafe.Pointer(self), "T112.8:")
 	cefingoIfaceAccess.Lock()
 	f := browser_process_handler_handlers.on_context_initialized_handler[(*cCBrowserProcessHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -472,7 +513,7 @@ func cefingo_browser_process_handler_on_context_initialized(
 		f.OnContextInitialized(goTmpself)
 
 	} else {
-		Logf("T112.7: on_context_initialized: Noo!")
+		Logf("T112.9: on_context_initialized: Noo!")
 	}
 
 }
@@ -492,7 +533,7 @@ func cefingo_browser_process_handler_on_before_child_process_launch(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T112.8:")
+	Tracef(unsafe.Pointer(self), "T112.10:")
 	cefingoIfaceAccess.Lock()
 	f := browser_process_handler_handlers.on_before_child_process_launch_handler[(*cCBrowserProcessHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -505,7 +546,7 @@ func cefingo_browser_process_handler_on_before_child_process_launch(
 		BaseRelease(goTmpcommand_line.pc_command_line)
 
 	} else {
-		Logf("T112.9: on_before_child_process_launch: Noo!")
+		Logf("T112.11: on_before_child_process_launch: Noo!")
 	}
 
 }
@@ -521,7 +562,7 @@ func cefingo_browser_process_handler_get_print_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T112.10:")
+	Tracef(unsafe.Pointer(self), "T112.12:")
 	cefingoIfaceAccess.Lock()
 	f := browser_process_handler_handlers.get_print_handler_handler[(*cCBrowserProcessHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -536,7 +577,7 @@ func cefingo_browser_process_handler_get_print_handler(
 			cRet = (*C.cef_print_handler_t)(goRet.pc_print_handler)
 		}
 	} else {
-		Logf("T112.11: get_print_handler: Noo!")
+		Logf("T112.13: get_print_handler: Noo!")
 	}
 	return cRet
 }
@@ -562,7 +603,7 @@ func cefingo_browser_process_handler_on_schedule_message_pump_work(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T112.12:")
+	Tracef(unsafe.Pointer(self), "T112.14:")
 	cefingoIfaceAccess.Lock()
 	f := browser_process_handler_handlers.on_schedule_message_pump_work_handler[(*cCBrowserProcessHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -574,9 +615,43 @@ func cefingo_browser_process_handler_on_schedule_message_pump_work(
 		f.OnScheduleMessagePumpWork(goTmpself, goTmpdelay_ms)
 
 	} else {
-		Logf("T112.13: on_schedule_message_pump_work: Noo!")
+		Logf("T112.15: on_schedule_message_pump_work: Noo!")
 	}
 
+}
+
+///
+// Return the default client for use with a newly created browser window. If
+// null is returned the browser will be unmanaged (no callbacks will be
+// executed for that browser) and application shutdown will be blocked until
+// the browser window is closed manually. This function is currently only used
+// with the chrome runtime.
+///
+//export cefingo_browser_process_handler_get_default_client
+func cefingo_browser_process_handler_get_default_client(
+	self *C.cef_browser_process_handler_t,
+) (cRet *C.cef_client_t) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T112.16:")
+	cefingoIfaceAccess.Lock()
+	f := browser_process_handler_handlers.get_default_client_handler[(*cCBrowserProcessHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCBrowserProcessHandlerT(self)
+
+		goRet := f.GetDefaultClient(goTmpself)
+
+		if goRet != nil {
+			BaseAddRef(goRet.pc_client)
+			cRet = (*C.cef_client_t)(goRet.pc_client)
+		}
+	} else {
+		Logf("T112.17: get_default_client: Noo!")
+	}
+	return cRet
 }
 
 ///
@@ -2551,6 +2626,47 @@ func cefingo_display_handler_on_loading_progress_change(
 		Logf("T132.23: on_loading_progress_change: Noo!")
 	}
 
+}
+
+///
+// Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
+// |custom_cursor_info| will be populated with the custom cursor information.
+// Return true (1) if the cursor change was handled or false (0) for default
+// handling.
+///
+//export cefingo_display_handler_on_cursor_change
+func cefingo_display_handler_on_cursor_change(
+	self *C.cef_display_handler_t,
+	browser *C.cef_browser_t,
+	cursor C.HCURSOR,
+	ctype C.cef_cursor_type_t,
+	custom_cursor_info *C.cef_cursor_info_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T132.24:")
+	cefingoIfaceAccess.Lock()
+	f := display_handler_handlers.on_cursor_change_handler[(*cCDisplayHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCDisplayHandlerT(self)
+		goTmpbrowser := newCBrowserT(browser)
+		goTmpcursor := (CCursorHandleT)(cursor)
+		goTmptype := CCursorTypeT(ctype)
+		goTmpcustom_cursor_info := (*CCursorInfoT)(custom_cursor_info)
+
+		goRet := f.OnCursorChange(goTmpself, goTmpbrowser, goTmpcursor, goTmptype, goTmpcustom_cursor_info)
+		BaseRelease(goTmpbrowser.pc_browser)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T132.25: on_cursor_change: Noo!")
+	}
+	return cRet
 }
 
 ///
@@ -5374,42 +5490,6 @@ func cefingo_render_handler_on_accelerated_paint(
 }
 
 ///
-// Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
-// |custom_cursor_info| will be populated with the custom cursor information.
-///
-//export cefingo_render_handler_on_cursor_change
-func cefingo_render_handler_on_cursor_change(
-	self *C.cef_render_handler_t,
-	browser *C.cef_browser_t,
-	cursor C.HCURSOR,
-	ctype C.cef_cursor_type_t,
-	custom_cursor_info *C.cef_cursor_info_t,
-) {
-	runtime.LockOSThread()
-	defer runtime.UnlockOSThread()
-
-	Tracef(unsafe.Pointer(self), "T177.24:")
-	cefingoIfaceAccess.Lock()
-	f := render_handler_handlers.on_cursor_change_handler[(*cCRenderHandlerT)(self)]
-	cefingoIfaceAccess.Unlock()
-
-	if f != nil {
-		goTmpself := newCRenderHandlerT(self)
-		goTmpbrowser := newCBrowserT(browser)
-		goTmpcursor := (CCursorHandleT)(cursor)
-		goTmptype := CCursorTypeT(ctype)
-		goTmpcustom_cursor_info := (*CCursorInfoT)(custom_cursor_info)
-
-		f.OnCursorChange(goTmpself, goTmpbrowser, goTmpcursor, goTmptype, goTmpcustom_cursor_info)
-		BaseRelease(goTmpbrowser.pc_browser)
-
-	} else {
-		Logf("T177.25: on_cursor_change: Noo!")
-	}
-
-}
-
-///
 // Called when the user starts dragging content in the web view. Contextual
 // information about the dragged content is supplied by |drag_data|. (|x|,
 // |y|) is the drag start location in screen coordinates. OS APIs that run a
@@ -5435,7 +5515,7 @@ func cefingo_render_handler_start_dragging(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.26:")
+	Tracef(unsafe.Pointer(self), "T177.24:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.start_dragging_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -5456,7 +5536,7 @@ func cefingo_render_handler_start_dragging(
 			cRet = 1
 		}
 	} else {
-		Logf("T177.27: start_dragging: Noo!")
+		Logf("T177.25: start_dragging: Noo!")
 	}
 	return cRet
 }
@@ -5475,7 +5555,7 @@ func cefingo_render_handler_update_drag_cursor(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.28:")
+	Tracef(unsafe.Pointer(self), "T177.26:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.update_drag_cursor_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -5489,7 +5569,7 @@ func cefingo_render_handler_update_drag_cursor(
 		BaseRelease(goTmpbrowser.pc_browser)
 
 	} else {
-		Logf("T177.29: update_drag_cursor: Noo!")
+		Logf("T177.27: update_drag_cursor: Noo!")
 	}
 
 }
@@ -5507,7 +5587,7 @@ func cefingo_render_handler_on_scroll_offset_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.30:")
+	Tracef(unsafe.Pointer(self), "T177.28:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_scroll_offset_changed_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -5522,7 +5602,7 @@ func cefingo_render_handler_on_scroll_offset_changed(
 		BaseRelease(goTmpbrowser.pc_browser)
 
 	} else {
-		Logf("T177.31: on_scroll_offset_changed: Noo!")
+		Logf("T177.29: on_scroll_offset_changed: Noo!")
 	}
 
 }
@@ -5543,7 +5623,7 @@ func cefingo_render_handler_on_ime_composition_range_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.32:")
+	Tracef(unsafe.Pointer(self), "T177.30:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_ime_composition_range_changed_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -5559,7 +5639,7 @@ func cefingo_render_handler_on_ime_composition_range_changed(
 		BaseRelease(goTmpbrowser.pc_browser)
 
 	} else {
-		Logf("T177.33: on_ime_composition_range_changed: Noo!")
+		Logf("T177.31: on_ime_composition_range_changed: Noo!")
 	}
 
 }
@@ -5579,7 +5659,7 @@ func cefingo_render_handler_on_text_selection_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.34:")
+	Tracef(unsafe.Pointer(self), "T177.32:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_text_selection_changed_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -5594,7 +5674,7 @@ func cefingo_render_handler_on_text_selection_changed(
 		BaseRelease(goTmpbrowser.pc_browser)
 
 	} else {
-		Logf("T177.35: on_text_selection_changed: Noo!")
+		Logf("T177.33: on_text_selection_changed: Noo!")
 	}
 
 }
@@ -5614,7 +5694,7 @@ func cefingo_render_handler_on_virtual_keyboard_requested(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.36:")
+	Tracef(unsafe.Pointer(self), "T177.34:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_virtual_keyboard_requested_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -5628,7 +5708,7 @@ func cefingo_render_handler_on_virtual_keyboard_requested(
 		BaseRelease(goTmpbrowser.pc_browser)
 
 	} else {
-		Logf("T177.37: on_virtual_keyboard_requested: Noo!")
+		Logf("T177.35: on_virtual_keyboard_requested: Noo!")
 	}
 
 }
@@ -6144,8 +6224,8 @@ func cefingo_request_handler_on_before_browse(
 		goTmpbrowser := newCBrowserT(browser)
 		goTmpframe := newCFrameT(frame)
 		goTmprequest := newCRequestT(request)
-		goTmpuser_gesture := (int)(user_gesture)
-		goTmpis_redirect := (int)(is_redirect)
+		goTmpuser_gesture := user_gesture != 0
+		goTmpis_redirect := is_redirect != 0
 
 		goRet := f.OnBeforeBrowse(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpuser_gesture, goTmpis_redirect)
 		BaseRelease(goTmpbrowser.pc_browser)

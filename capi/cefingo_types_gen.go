@@ -1860,63 +1860,95 @@ const (
 	ErrHttp2PushedResponseDoesNotMatch       CErrorcodeT = C.ERR_HTTP2_PUSHED_RESPONSE_DOES_NOT_MATCH
 	ErrHttpResponseCodeFailure               CErrorcodeT = C.ERR_HTTP_RESPONSE_CODE_FAILURE
 	ErrQuicCertRootNotKnown                  CErrorcodeT = C.ERR_QUIC_CERT_ROOT_NOT_KNOWN
+	ErrQuicGoawayRequestCanBeRetried         CErrorcodeT = C.ERR_QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED
 	ErrCacheMiss                             CErrorcodeT = C.ERR_CACHE_MISS
 	ErrCacheReadFailure                      CErrorcodeT = C.ERR_CACHE_READ_FAILURE
 	ErrCacheWriteFailure                     CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
-	ErrCacheOperationNotSupported            CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
-	ErrCacheOpenFailure                      CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
-	ErrCacheCreateFailure                    CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
-	ErrCacheRace                             CErrorcodeT = C.ERR_CACHE_RACE
-	ErrCacheChecksumReadFailure              CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
-	ErrCacheChecksumMismatch                 CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
-	ErrCacheLockTimeout                      CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
+
+	///
+	// The cookie expiration date is only valid if |has_expires| is true.
+	///
+	ErrCacheOperationNotSupported CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
+	ErrCacheOpenFailure           CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
+
+	///
+	// Same site.
+	///
+	ErrCacheCreateFailure       CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
+	ErrCacheRace                CErrorcodeT = C.ERR_CACHE_RACE
+	ErrCacheChecksumReadFailure CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
+	ErrCacheChecksumMismatch    CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
 
 	///
 	// SIGKILL or task manager kill.
 	///
+	ErrCacheLockTimeout          CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
 	ErrCacheAuthFailureAfterRead CErrorcodeT = C.ERR_CACHE_AUTH_FAILURE_AFTER_READ
+	ErrCacheEntryNotSuitable     CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
+	ErrCacheDoomFailure          CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
+	ErrCacheOpenOrCreateFailure  CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
+	ErrInsecureResponse          CErrorcodeT = C.ERR_INSECURE_RESPONSE
+	ErrNoPrivateKeyForCert       CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
 
 	///
-	// Segmentation fault.
+	// Directory containing PK_FILE_EXE.
 	///
-	ErrCacheEntryNotSuitable       CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
-	ErrCacheDoomFailure            CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
-	ErrCacheOpenOrCreateFailure    CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
-	ErrInsecureResponse            CErrorcodeT = C.ERR_INSECURE_RESPONSE
-	ErrNoPrivateKeyForCert         CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
-	ErrAddUserCertFailed           CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
-	ErrInvalidSignedExchange       CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
-	ErrInvalidWebBundle            CErrorcodeT = C.ERR_INVALID_WEB_BUNDLE
-	ErrTrustTokenOperationFailed   CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
+	ErrAddUserCertFailed     CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
+	ErrInvalidSignedExchange CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
+	ErrInvalidWebBundle      CErrorcodeT = C.ERR_INVALID_WEB_BUNDLE
+
+	///
+	// Temporary directory.
+	///
+	ErrTrustTokenOperationFailed CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
+
+	///
+	// Path and filename of the current executable.
+	///
 	ErrTrustTokenOperationCacheHit CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_CACHE_HIT
-	ErrFtpFailed                   CErrorcodeT = C.ERR_FTP_FAILED
-	ErrFtpServiceUnavailable       CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
-	ErrFtpTransferAborted          CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
-	ErrFtpFileBusy                 CErrorcodeT = C.ERR_FTP_FILE_BUSY
-	ErrFtpSyntaxError              CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
+
+	///
+	// Path and filename of the module containing the CEF code (usually the libcef
+	// module).
+	///
+	ErrFtpFailed             CErrorcodeT = C.ERR_FTP_FAILED
+	ErrFtpServiceUnavailable CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
+	ErrFtpTransferAborted    CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
+	ErrFtpFileBusy           CErrorcodeT = C.ERR_FTP_FILE_BUSY
 
 	///
 	// Directory containing application resources. Can be configured via
 	// CefSettings.resources_dir_path.
 	///
+	ErrFtpSyntaxError          CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
 	ErrFtpCommandNotSupported  CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
 	ErrFtpBadCommandSequence   CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
 	ErrPkcs12ImportBadPassword CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
 	ErrPkcs12ImportFailed      CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
+	ErrImportCaCertNotCa       CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
+	ErrImportCertAlreadyExists CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
+	ErrImportCaCertFailed      CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
 
 	///
-	// Supported error code values.
+	// Supported certificate status code values. See net\cert\cert_status_flags.h
+	// for more information. CERT_STATUS_NONE is new in CEF because we use an
+	// enum while cert_status_flags.h uses a typedef and static const variables.
 	///
-	ErrImportCaCertNotCa                         CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
-	ErrImportCertAlreadyExists                   CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
-	ErrImportCaCertFailed                        CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
-	ErrImportServerCertFailed                    CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
-	ErrPkcs12ImportInvalidMac                    CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
-	ErrPkcs12ImportInvalidFile                   CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
-	ErrPkcs12ImportUnsupported                   CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
-	ErrKeyGenerationFailed                       CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
-	ErrPrivateKeyExportFailed                    CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
-	ErrSelfSignedCertGenerationFailed            CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
+	ErrImportServerCertFailed CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
+	ErrPkcs12ImportInvalidMac CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
+
+	// 1 << 3 is reserved for ERR_CERT_CONTAINS_ERRORS (not useful with WinHTTP).
+	ErrPkcs12ImportInvalidFile CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
+	ErrPkcs12ImportUnsupported CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
+
+	// 1 << 9 was used for CERT_STATUS_NOT_IN_DNS
+	ErrKeyGenerationFailed    CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
+	ErrPrivateKeyExportFailed CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
+
+	// Bits 16 to 31 are for non-error statuses.
+	ErrSelfSignedCertGenerationFailed CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
+
+	// Bit 18 was CERT_STATUS_IS_DNSSEC
 	ErrCertDatabaseChanged                       CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
 	ErrDnsMalformedResponse                      CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
 	ErrDnsServerRequiresTcp                      CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
@@ -3808,24 +3840,6 @@ const (
 	// Allows commas to exist after the last element in structures.
 	///
 	JsonParserAllowTrailingCommas CJsonParserOptionsT = C.JSON_PARSER_ALLOW_TRAILING_COMMAS
-)
-
-///
-// Error codes that can be returned from CefParseJSONAndReturnError.
-///
-type CJsonParserErrorT C.cef_json_parser_error_t
-
-const (
-	JsonNoError                 CJsonParserErrorT = C.JSON_NO_ERROR
-	JsonInvalidEscape           CJsonParserErrorT = C.JSON_INVALID_ESCAPE
-	JsonSyntaxError             CJsonParserErrorT = C.JSON_SYNTAX_ERROR
-	JsonUnexpectedToken         CJsonParserErrorT = C.JSON_UNEXPECTED_TOKEN
-	JsonTrailingComma           CJsonParserErrorT = C.JSON_TRAILING_COMMA
-	JsonTooMuchNesting          CJsonParserErrorT = C.JSON_TOO_MUCH_NESTING
-	JsonUnexpectedDataAfterRoot CJsonParserErrorT = C.JSON_UNEXPECTED_DATA_AFTER_ROOT
-	JsonUnsupportedEncoding     CJsonParserErrorT = C.JSON_UNSUPPORTED_ENCODING
-	JsonUnquotedDictionaryKey   CJsonParserErrorT = C.JSON_UNQUOTED_DICTIONARY_KEY
-	JsonParseErrorCount         CJsonParserErrorT = C.JSON_PARSE_ERROR_COUNT
 )
 
 ///

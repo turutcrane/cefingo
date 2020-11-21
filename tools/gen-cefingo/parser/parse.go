@@ -128,6 +128,7 @@ var duplicatedHandler = map[string]void{
 
 var outParameter = map[string]void{
 	"cef_cookie_visitor_t::visit::deleteCookie":                                             setElement,
+	"cef_browser_process_handler_t::get_cookieable_schemes::include_defaults":               setElement,
 	"cef_image_t::get_representation_info::actual_scale_factor":                             setElement,
 	"cef_image_t::get_representation_info::pixel_height":                                    setElement,
 	"cef_image_t::get_representation_info::pixel_width":                                     setElement,
@@ -300,6 +301,8 @@ var boolParameter = map[string]void{
 	"cef_navigation_entry_visitor_t::visit::current":                                        setElement,
 	"cef_pdf_print_callback_t::on_pdf_print_finished::ok":                                   setElement,
 	"cef_request_handler_t::get_resource_request_handler::disable_default_handling":         setElement,
+	"cef_request_handler_t::on_before_browse::user_gesture":                                 setElement,
+	"cef_request_handler_t::on_before_browse::is_redirect":                                  setElement,
 	"cef_request_handler_t::on_open_urlfrom_tab::user_gesture":                              setElement,
 	"cef_request_context_handler_t::get_resource_request_handler::disable_default_handling": setElement,
 	"cef_resource_handler_t::open::handle_request":                                          setElement,
@@ -1951,7 +1954,7 @@ func (t Type) GoType() (ret string) {
 }
 
 func (t Type) CgoType() string {
-	if (t.Ty != TyStructRefCounted) {
+	if t.Ty != TyStructRefCounted {
 		log.Panicln("T1945:", t.Ty, t.Token)
 	}
 	return "*" + t.Token.CgoName()

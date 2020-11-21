@@ -267,15 +267,6 @@ extern void cefingo_browser_host_get_navigation_entries(
 	int current_only
 );
 
-extern void cefingo_browser_host_set_mouse_cursor_change_disabled(
-	struct _cef_browser_host_t* self,
-	int disabled
-);
-
-extern int cefingo_browser_host_is_mouse_cursor_change_disabled(
-	struct _cef_browser_host_t* self
-);
-
 extern void cefingo_browser_host_replace_misspelling(
 	struct _cef_browser_host_t* self,
 	const cef_string_t* word
