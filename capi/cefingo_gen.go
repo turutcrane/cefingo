@@ -51,12 +51,12 @@ func newCAccessibilityHandlerT(p *C.cef_accessibility_handler_t) *CAccessibility
 	Tracef(unsafe.Pointer(p), "T101.1:")
 	pc := (*cCAccessibilityHandlerT)(p)
 	BaseAddRef(pc)
-	go_accessibility_handler := CAccessibilityHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_accessibility_handler, func(g *CAccessibilityHandlerT) {
+	go_accessibility_handler := &CAccessibilityHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_accessibility_handler, func(g *CAccessibilityHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_accessibility_handler), "T101.2:")
 		BaseRelease(g.pc_accessibility_handler)
 	})
-	return &go_accessibility_handler
+	return go_accessibility_handler
 }
 
 // *C.cef_accessibility_handler_t has refCounted interface
@@ -202,12 +202,12 @@ func newCAppT(p *C.cef_app_t) *CAppT {
 	Tracef(unsafe.Pointer(p), "T102.1:")
 	pc := (*cCAppT)(p)
 	BaseAddRef(pc)
-	go_app := CAppT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_app, func(g *CAppT) {
+	go_app := &CAppT{noCopy{}, pc}
+	runtime.SetFinalizer(go_app, func(g *CAppT) {
 		Tracef(unsafe.Pointer(g.pc_app), "T102.2:")
 		BaseRelease(g.pc_app)
 	})
-	return &go_app
+	return go_app
 }
 
 // *C.cef_app_t has refCounted interface
@@ -555,12 +555,12 @@ func newCAudioHandlerT(p *C.cef_audio_handler_t) *CAudioHandlerT {
 	Tracef(unsafe.Pointer(p), "T103.1:")
 	pc := (*cCAudioHandlerT)(p)
 	BaseAddRef(pc)
-	go_audio_handler := CAudioHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_audio_handler, func(g *CAudioHandlerT) {
+	go_audio_handler := &CAudioHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_audio_handler, func(g *CAudioHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_audio_handler), "T103.2:")
 		BaseRelease(g.pc_audio_handler)
 	})
-	return &go_audio_handler
+	return go_audio_handler
 }
 
 // *C.cef_audio_handler_t has refCounted interface
@@ -756,12 +756,12 @@ func newCAuthCallbackT(p *C.cef_auth_callback_t) *CAuthCallbackT {
 	Tracef(unsafe.Pointer(p), "T104.1:")
 	pc := (*cCAuthCallbackT)(p)
 	BaseAddRef(pc)
-	go_auth_callback := CAuthCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_auth_callback, func(g *CAuthCallbackT) {
+	go_auth_callback := &CAuthCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_auth_callback, func(g *CAuthCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_auth_callback), "T104.2:")
 		BaseRelease(g.pc_auth_callback)
 	})
-	return &go_auth_callback
+	return go_auth_callback
 }
 
 // *C.cef_auth_callback_t has refCounted interface
@@ -840,12 +840,12 @@ func newCBoxLayoutT(p *C.cef_box_layout_t) *CBoxLayoutT {
 	Tracef(unsafe.Pointer(p), "T105.1:")
 	pc := (*cCBoxLayoutT)(p)
 	BaseAddRef(pc)
-	go_box_layout := CBoxLayoutT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_box_layout, func(g *CBoxLayoutT) {
+	go_box_layout := &CBoxLayoutT{noCopy{}, pc}
+	runtime.SetFinalizer(go_box_layout, func(g *CBoxLayoutT) {
 		Tracef(unsafe.Pointer(g.pc_box_layout), "T105.2:")
 		BaseRelease(g.pc_box_layout)
 	})
-	return &go_box_layout
+	return go_box_layout
 }
 
 // *C.cef_box_layout_t has refCounted interface
@@ -943,12 +943,12 @@ func newCBrowserT(p *C.cef_browser_t) *CBrowserT {
 	Tracef(unsafe.Pointer(p), "T106.1:")
 	pc := (*cCBrowserT)(p)
 	BaseAddRef(pc)
-	go_browser := CBrowserT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_browser, func(g *CBrowserT) {
+	go_browser := &CBrowserT{noCopy{}, pc}
+	runtime.SetFinalizer(go_browser, func(g *CBrowserT) {
 		Tracef(unsafe.Pointer(g.pc_browser), "T106.2:")
 		BaseRelease(g.pc_browser)
 	})
-	return &go_browser
+	return go_browser
 }
 
 // *C.cef_browser_t has refCounted interface
@@ -1212,12 +1212,12 @@ func newCRunFileDialogCallbackT(p *C.cef_run_file_dialog_callback_t) *CRunFileDi
 	Tracef(unsafe.Pointer(p), "T107.1:")
 	pc := (*cCRunFileDialogCallbackT)(p)
 	BaseAddRef(pc)
-	go_run_file_dialog_callback := CRunFileDialogCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_run_file_dialog_callback, func(g *CRunFileDialogCallbackT) {
+	go_run_file_dialog_callback := &CRunFileDialogCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_run_file_dialog_callback, func(g *CRunFileDialogCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_run_file_dialog_callback), "T107.2:")
 		BaseRelease(g.pc_run_file_dialog_callback)
 	})
-	return &go_run_file_dialog_callback
+	return go_run_file_dialog_callback
 }
 
 // *C.cef_run_file_dialog_callback_t has refCounted interface
@@ -1346,12 +1346,12 @@ func newCNavigationEntryVisitorT(p *C.cef_navigation_entry_visitor_t) *CNavigati
 	Tracef(unsafe.Pointer(p), "T108.1:")
 	pc := (*cCNavigationEntryVisitorT)(p)
 	BaseAddRef(pc)
-	go_navigation_entry_visitor := CNavigationEntryVisitorT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_navigation_entry_visitor, func(g *CNavigationEntryVisitorT) {
+	go_navigation_entry_visitor := &CNavigationEntryVisitorT{noCopy{}, pc}
+	runtime.SetFinalizer(go_navigation_entry_visitor, func(g *CNavigationEntryVisitorT) {
 		Tracef(unsafe.Pointer(g.pc_navigation_entry_visitor), "T108.2:")
 		BaseRelease(g.pc_navigation_entry_visitor)
 	})
-	return &go_navigation_entry_visitor
+	return go_navigation_entry_visitor
 }
 
 // *C.cef_navigation_entry_visitor_t has refCounted interface
@@ -1482,12 +1482,12 @@ func newCPdfPrintCallbackT(p *C.cef_pdf_print_callback_t) *CPdfPrintCallbackT {
 	Tracef(unsafe.Pointer(p), "T109.1:")
 	pc := (*cCPdfPrintCallbackT)(p)
 	BaseAddRef(pc)
-	go_pdf_print_callback := CPdfPrintCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_pdf_print_callback, func(g *CPdfPrintCallbackT) {
+	go_pdf_print_callback := &CPdfPrintCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_pdf_print_callback, func(g *CPdfPrintCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_pdf_print_callback), "T109.2:")
 		BaseRelease(g.pc_pdf_print_callback)
 	})
-	return &go_pdf_print_callback
+	return go_pdf_print_callback
 }
 
 // *C.cef_pdf_print_callback_t has refCounted interface
@@ -1556,12 +1556,12 @@ func newCDownloadImageCallbackT(p *C.cef_download_image_callback_t) *CDownloadIm
 	Tracef(unsafe.Pointer(p), "T110.1:")
 	pc := (*cCDownloadImageCallbackT)(p)
 	BaseAddRef(pc)
-	go_download_image_callback := CDownloadImageCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_download_image_callback, func(g *CDownloadImageCallbackT) {
+	go_download_image_callback := &CDownloadImageCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_download_image_callback, func(g *CDownloadImageCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_download_image_callback), "T110.2:")
 		BaseRelease(g.pc_download_image_callback)
 	})
-	return &go_download_image_callback
+	return go_download_image_callback
 }
 
 // *C.cef_download_image_callback_t has refCounted interface
@@ -1635,12 +1635,12 @@ func newCBrowserHostT(p *C.cef_browser_host_t) *CBrowserHostT {
 	Tracef(unsafe.Pointer(p), "T111.1:")
 	pc := (*cCBrowserHostT)(p)
 	BaseAddRef(pc)
-	go_browser_host := CBrowserHostT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_browser_host, func(g *CBrowserHostT) {
+	go_browser_host := &CBrowserHostT{noCopy{}, pc}
+	runtime.SetFinalizer(go_browser_host, func(g *CBrowserHostT) {
 		Tracef(unsafe.Pointer(g.pc_browser_host), "T111.2:")
 		BaseRelease(g.pc_browser_host)
 	})
-	return &go_browser_host
+	return go_browser_host
 }
 
 // *C.cef_browser_host_t has refCounted interface
@@ -2797,12 +2797,12 @@ func newCBrowserProcessHandlerT(p *C.cef_browser_process_handler_t) *CBrowserPro
 	Tracef(unsafe.Pointer(p), "T112.1:")
 	pc := (*cCBrowserProcessHandlerT)(p)
 	BaseAddRef(pc)
-	go_browser_process_handler := CBrowserProcessHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_browser_process_handler, func(g *CBrowserProcessHandlerT) {
+	go_browser_process_handler := &CBrowserProcessHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_browser_process_handler, func(g *CBrowserProcessHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_browser_process_handler), "T112.2:")
 		BaseRelease(g.pc_browser_process_handler)
 	})
-	return &go_browser_process_handler
+	return go_browser_process_handler
 }
 
 // *C.cef_browser_process_handler_t has refCounted interface
@@ -3046,12 +3046,12 @@ func newCBrowserViewT(p *C.cef_browser_view_t) *CBrowserViewT {
 	Tracef(unsafe.Pointer(p), "T113.1:")
 	pc := (*cCBrowserViewT)(p)
 	BaseAddRef(pc)
-	go_browser_view := CBrowserViewT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_browser_view, func(g *CBrowserViewT) {
+	go_browser_view := &CBrowserViewT{noCopy{}, pc}
+	runtime.SetFinalizer(go_browser_view, func(g *CBrowserViewT) {
 		Tracef(unsafe.Pointer(g.pc_browser_view), "T113.2:")
 		BaseRelease(g.pc_browser_view)
 	})
-	return &go_browser_view
+	return go_browser_view
 }
 
 // *C.cef_browser_view_t has refCounted interface
@@ -3204,12 +3204,12 @@ func newCBrowserViewDelegateT(p *C.cef_browser_view_delegate_t) *CBrowserViewDel
 	Tracef(unsafe.Pointer(p), "T114.1:")
 	pc := (*cCBrowserViewDelegateT)(p)
 	BaseAddRef(pc)
-	go_browser_view_delegate := CBrowserViewDelegateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_browser_view_delegate, func(g *CBrowserViewDelegateT) {
+	go_browser_view_delegate := &CBrowserViewDelegateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_browser_view_delegate, func(g *CBrowserViewDelegateT) {
 		Tracef(unsafe.Pointer(g.pc_browser_view_delegate), "T114.2:")
 		BaseRelease(g.pc_browser_view_delegate)
 	})
-	return &go_browser_view_delegate
+	return go_browser_view_delegate
 }
 
 // *C.cef_browser_view_delegate_t has refCounted interface
@@ -3483,12 +3483,12 @@ func newCButtonT(p *C.cef_button_t) *CButtonT {
 	Tracef(unsafe.Pointer(p), "T115.1:")
 	pc := (*cCButtonT)(p)
 	BaseAddRef(pc)
-	go_button := CButtonT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_button, func(g *CButtonT) {
+	go_button := &CButtonT{noCopy{}, pc}
+	runtime.SetFinalizer(go_button, func(g *CButtonT) {
 		Tracef(unsafe.Pointer(g.pc_button), "T115.2:")
 		BaseRelease(g.pc_button)
 	})
-	return &go_button
+	return go_button
 }
 
 // *C.cef_button_t has refCounted interface
@@ -3616,12 +3616,12 @@ func newCButtonDelegateT(p *C.cef_button_delegate_t) *CButtonDelegateT {
 	Tracef(unsafe.Pointer(p), "T116.1:")
 	pc := (*cCButtonDelegateT)(p)
 	BaseAddRef(pc)
-	go_button_delegate := CButtonDelegateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_button_delegate, func(g *CButtonDelegateT) {
+	go_button_delegate := &CButtonDelegateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_button_delegate, func(g *CButtonDelegateT) {
 		Tracef(unsafe.Pointer(g.pc_button_delegate), "T116.2:")
 		BaseRelease(g.pc_button_delegate)
 	})
-	return &go_button_delegate
+	return go_button_delegate
 }
 
 // *C.cef_button_delegate_t has refCounted interface
@@ -3834,12 +3834,12 @@ func newCCallbackT(p *C.cef_callback_t) *CCallbackT {
 	Tracef(unsafe.Pointer(p), "T117.1:")
 	pc := (*cCCallbackT)(p)
 	BaseAddRef(pc)
-	go_callback := CCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_callback, func(g *CCallbackT) {
+	go_callback := &CCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_callback, func(g *CCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_callback), "T117.2:")
 		BaseRelease(g.pc_callback)
 	})
-	return &go_callback
+	return go_callback
 }
 
 // *C.cef_callback_t has refCounted interface
@@ -3906,12 +3906,12 @@ func newCCompletionCallbackT(p *C.cef_completion_callback_t) *CCompletionCallbac
 	Tracef(unsafe.Pointer(p), "T118.1:")
 	pc := (*cCCompletionCallbackT)(p)
 	BaseAddRef(pc)
-	go_completion_callback := CCompletionCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_completion_callback, func(g *CCompletionCallbackT) {
+	go_completion_callback := &CCompletionCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_completion_callback, func(g *CCompletionCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_completion_callback), "T118.2:")
 		BaseRelease(g.pc_completion_callback)
 	})
-	return &go_completion_callback
+	return go_completion_callback
 }
 
 // *C.cef_completion_callback_t has refCounted interface
@@ -3971,12 +3971,12 @@ func newCClientT(p *C.cef_client_t) *CClientT {
 	Tracef(unsafe.Pointer(p), "T119.1:")
 	pc := (*cCClientT)(p)
 	BaseAddRef(pc)
-	go_client := CClientT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_client, func(g *CClientT) {
+	go_client := &CClientT{noCopy{}, pc}
+	runtime.SetFinalizer(go_client, func(g *CClientT) {
 		Tracef(unsafe.Pointer(g.pc_client), "T119.2:")
 		BaseRelease(g.pc_client)
 	})
-	return &go_client
+	return go_client
 }
 
 // *C.cef_client_t has refCounted interface
@@ -4355,12 +4355,12 @@ func newCCommandLineT(p *C.cef_command_line_t) *CCommandLineT {
 	Tracef(unsafe.Pointer(p), "T120.1:")
 	pc := (*cCCommandLineT)(p)
 	BaseAddRef(pc)
-	go_command_line := CCommandLineT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_command_line, func(g *CCommandLineT) {
+	go_command_line := &CCommandLineT{noCopy{}, pc}
+	runtime.SetFinalizer(go_command_line, func(g *CCommandLineT) {
 		Tracef(unsafe.Pointer(g.pc_command_line), "T120.2:")
 		BaseRelease(g.pc_command_line)
 	})
-	return &go_command_line
+	return go_command_line
 }
 
 // *C.cef_command_line_t has refCounted interface
@@ -4680,12 +4680,12 @@ func newCRunContextMenuCallbackT(p *C.cef_run_context_menu_callback_t) *CRunCont
 	Tracef(unsafe.Pointer(p), "T121.1:")
 	pc := (*cCRunContextMenuCallbackT)(p)
 	BaseAddRef(pc)
-	go_run_context_menu_callback := CRunContextMenuCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_run_context_menu_callback, func(g *CRunContextMenuCallbackT) {
+	go_run_context_menu_callback := &CRunContextMenuCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_run_context_menu_callback, func(g *CRunContextMenuCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_run_context_menu_callback), "T121.2:")
 		BaseRelease(g.pc_run_context_menu_callback)
 	})
-	return &go_run_context_menu_callback
+	return go_run_context_menu_callback
 }
 
 // *C.cef_run_context_menu_callback_t has refCounted interface
@@ -4757,12 +4757,12 @@ func newCContextMenuHandlerT(p *C.cef_context_menu_handler_t) *CContextMenuHandl
 	Tracef(unsafe.Pointer(p), "T122.1:")
 	pc := (*cCContextMenuHandlerT)(p)
 	BaseAddRef(pc)
-	go_context_menu_handler := CContextMenuHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_context_menu_handler, func(g *CContextMenuHandlerT) {
+	go_context_menu_handler := &CContextMenuHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_context_menu_handler, func(g *CContextMenuHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_context_menu_handler), "T122.2:")
 		BaseRelease(g.pc_context_menu_handler)
 	})
-	return &go_context_menu_handler
+	return go_context_menu_handler
 }
 
 // *C.cef_context_menu_handler_t has refCounted interface
@@ -4968,12 +4968,12 @@ func newCContextMenuParamsT(p *C.cef_context_menu_params_t) *CContextMenuParamsT
 	Tracef(unsafe.Pointer(p), "T123.1:")
 	pc := (*cCContextMenuParamsT)(p)
 	BaseAddRef(pc)
-	go_context_menu_params := CContextMenuParamsT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_context_menu_params, func(g *CContextMenuParamsT) {
+	go_context_menu_params := &CContextMenuParamsT{noCopy{}, pc}
+	runtime.SetFinalizer(go_context_menu_params, func(g *CContextMenuParamsT) {
 		Tracef(unsafe.Pointer(g.pc_context_menu_params), "T123.2:")
 		BaseRelease(g.pc_context_menu_params)
 	})
-	return &go_context_menu_params
+	return go_context_menu_params
 }
 
 // *C.cef_context_menu_params_t has refCounted interface
@@ -5321,12 +5321,12 @@ func newCCookieManagerT(p *C.cef_cookie_manager_t) *CCookieManagerT {
 	Tracef(unsafe.Pointer(p), "T124.1:")
 	pc := (*cCCookieManagerT)(p)
 	BaseAddRef(pc)
-	go_cookie_manager := CCookieManagerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_cookie_manager, func(g *CCookieManagerT) {
+	go_cookie_manager := &CCookieManagerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_cookie_manager, func(g *CCookieManagerT) {
 		Tracef(unsafe.Pointer(g.pc_cookie_manager), "T124.2:")
 		BaseRelease(g.pc_cookie_manager)
 	})
-	return &go_cookie_manager
+	return go_cookie_manager
 }
 
 // *C.cef_cookie_manager_t has refCounted interface
@@ -5545,12 +5545,12 @@ func newCCookieVisitorT(p *C.cef_cookie_visitor_t) *CCookieVisitorT {
 	Tracef(unsafe.Pointer(p), "T125.1:")
 	pc := (*cCCookieVisitorT)(p)
 	BaseAddRef(pc)
-	go_cookie_visitor := CCookieVisitorT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_cookie_visitor, func(g *CCookieVisitorT) {
+	go_cookie_visitor := &CCookieVisitorT{noCopy{}, pc}
+	runtime.SetFinalizer(go_cookie_visitor, func(g *CCookieVisitorT) {
 		Tracef(unsafe.Pointer(g.pc_cookie_visitor), "T125.2:")
 		BaseRelease(g.pc_cookie_visitor)
 	})
-	return &go_cookie_visitor
+	return go_cookie_visitor
 }
 
 // *C.cef_cookie_visitor_t has refCounted interface
@@ -5680,12 +5680,12 @@ func newCSetCookieCallbackT(p *C.cef_set_cookie_callback_t) *CSetCookieCallbackT
 	Tracef(unsafe.Pointer(p), "T126.1:")
 	pc := (*cCSetCookieCallbackT)(p)
 	BaseAddRef(pc)
-	go_set_cookie_callback := CSetCookieCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_set_cookie_callback, func(g *CSetCookieCallbackT) {
+	go_set_cookie_callback := &CSetCookieCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_set_cookie_callback, func(g *CSetCookieCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_set_cookie_callback), "T126.2:")
 		BaseRelease(g.pc_set_cookie_callback)
 	})
-	return &go_set_cookie_callback
+	return go_set_cookie_callback
 }
 
 // *C.cef_set_cookie_callback_t has refCounted interface
@@ -5810,12 +5810,12 @@ func newCDeleteCookiesCallbackT(p *C.cef_delete_cookies_callback_t) *CDeleteCook
 	Tracef(unsafe.Pointer(p), "T127.1:")
 	pc := (*cCDeleteCookiesCallbackT)(p)
 	BaseAddRef(pc)
-	go_delete_cookies_callback := CDeleteCookiesCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_delete_cookies_callback, func(g *CDeleteCookiesCallbackT) {
+	go_delete_cookies_callback := &CDeleteCookiesCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_delete_cookies_callback, func(g *CDeleteCookiesCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_delete_cookies_callback), "T127.2:")
 		BaseRelease(g.pc_delete_cookies_callback)
 	})
-	return &go_delete_cookies_callback
+	return go_delete_cookies_callback
 }
 
 // *C.cef_delete_cookies_callback_t has refCounted interface
@@ -6056,12 +6056,12 @@ func newCDevToolsMessageObserverT(p *C.cef_dev_tools_message_observer_t) *CDevTo
 	Tracef(unsafe.Pointer(p), "T128.1:")
 	pc := (*cCDevToolsMessageObserverT)(p)
 	BaseAddRef(pc)
-	go_dev_tools_message_observer := CDevToolsMessageObserverT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_dev_tools_message_observer, func(g *CDevToolsMessageObserverT) {
+	go_dev_tools_message_observer := &CDevToolsMessageObserverT{noCopy{}, pc}
+	runtime.SetFinalizer(go_dev_tools_message_observer, func(g *CDevToolsMessageObserverT) {
 		Tracef(unsafe.Pointer(g.pc_dev_tools_message_observer), "T128.2:")
 		BaseRelease(g.pc_dev_tools_message_observer)
 	})
-	return &go_dev_tools_message_observer
+	return go_dev_tools_message_observer
 }
 
 // *C.cef_dev_tools_message_observer_t has refCounted interface
@@ -6301,12 +6301,12 @@ func newCFileDialogCallbackT(p *C.cef_file_dialog_callback_t) *CFileDialogCallba
 	Tracef(unsafe.Pointer(p), "T129.1:")
 	pc := (*cCFileDialogCallbackT)(p)
 	BaseAddRef(pc)
-	go_file_dialog_callback := CFileDialogCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_file_dialog_callback, func(g *CFileDialogCallbackT) {
+	go_file_dialog_callback := &CFileDialogCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_file_dialog_callback, func(g *CFileDialogCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_file_dialog_callback), "T129.2:")
 		BaseRelease(g.pc_file_dialog_callback)
 	})
-	return &go_file_dialog_callback
+	return go_file_dialog_callback
 }
 
 // *C.cef_file_dialog_callback_t has refCounted interface
@@ -6381,12 +6381,12 @@ func newCDialogHandlerT(p *C.cef_dialog_handler_t) *CDialogHandlerT {
 	Tracef(unsafe.Pointer(p), "T130.1:")
 	pc := (*cCDialogHandlerT)(p)
 	BaseAddRef(pc)
-	go_dialog_handler := CDialogHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_dialog_handler, func(g *CDialogHandlerT) {
+	go_dialog_handler := &CDialogHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_dialog_handler, func(g *CDialogHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_dialog_handler), "T130.2:")
 		BaseRelease(g.pc_dialog_handler)
 	})
-	return &go_dialog_handler
+	return go_dialog_handler
 }
 
 // *C.cef_dialog_handler_t has refCounted interface
@@ -6534,12 +6534,12 @@ func newCDisplayT(p *C.cef_display_t) *CDisplayT {
 	Tracef(unsafe.Pointer(p), "T131.1:")
 	pc := (*cCDisplayT)(p)
 	BaseAddRef(pc)
-	go_display := CDisplayT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_display, func(g *CDisplayT) {
+	go_display := &CDisplayT{noCopy{}, pc}
+	runtime.SetFinalizer(go_display, func(g *CDisplayT) {
 		Tracef(unsafe.Pointer(g.pc_display), "T131.2:")
 		BaseRelease(g.pc_display)
 	})
-	return &go_display
+	return go_display
 }
 
 // *C.cef_display_t has refCounted interface
@@ -6748,12 +6748,12 @@ func newCDisplayHandlerT(p *C.cef_display_handler_t) *CDisplayHandlerT {
 	Tracef(unsafe.Pointer(p), "T132.1:")
 	pc := (*cCDisplayHandlerT)(p)
 	BaseAddRef(pc)
-	go_display_handler := CDisplayHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_display_handler, func(g *CDisplayHandlerT) {
+	go_display_handler := &CDisplayHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_display_handler, func(g *CDisplayHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_display_handler), "T132.2:")
 		BaseRelease(g.pc_display_handler)
 	})
-	return &go_display_handler
+	return go_display_handler
 }
 
 // *C.cef_display_handler_t has refCounted interface
@@ -7075,12 +7075,12 @@ func newCDomvisitorT(p *C.cef_domvisitor_t) *CDomvisitorT {
 	Tracef(unsafe.Pointer(p), "T133.1:")
 	pc := (*cCDomvisitorT)(p)
 	BaseAddRef(pc)
-	go_domvisitor := CDomvisitorT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_domvisitor, func(g *CDomvisitorT) {
+	go_domvisitor := &CDomvisitorT{noCopy{}, pc}
+	runtime.SetFinalizer(go_domvisitor, func(g *CDomvisitorT) {
 		Tracef(unsafe.Pointer(g.pc_domvisitor), "T133.2:")
 		BaseRelease(g.pc_domvisitor)
 	})
-	return &go_domvisitor
+	return go_domvisitor
 }
 
 // *C.cef_domvisitor_t has refCounted interface
@@ -7208,12 +7208,12 @@ func newCDomdocumentT(p *C.cef_domdocument_t) *CDomdocumentT {
 	Tracef(unsafe.Pointer(p), "T134.1:")
 	pc := (*cCDomdocumentT)(p)
 	BaseAddRef(pc)
-	go_domdocument := CDomdocumentT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_domdocument, func(g *CDomdocumentT) {
+	go_domdocument := &CDomdocumentT{noCopy{}, pc}
+	runtime.SetFinalizer(go_domdocument, func(g *CDomdocumentT) {
 		Tracef(unsafe.Pointer(g.pc_domdocument), "T134.2:")
 		BaseRelease(g.pc_domdocument)
 	})
-	return &go_domdocument
+	return go_domdocument
 }
 
 // *C.cef_domdocument_t has refCounted interface
@@ -7449,12 +7449,12 @@ func newCDomnodeT(p *C.cef_domnode_t) *CDomnodeT {
 	Tracef(unsafe.Pointer(p), "T135.1:")
 	pc := (*cCDomnodeT)(p)
 	BaseAddRef(pc)
-	go_domnode := CDomnodeT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_domnode, func(g *CDomnodeT) {
+	go_domnode := &CDomnodeT{noCopy{}, pc}
+	runtime.SetFinalizer(go_domnode, func(g *CDomnodeT) {
 		Tracef(unsafe.Pointer(g.pc_domnode), "T135.2:")
 		BaseRelease(g.pc_domnode)
 	})
-	return &go_domnode
+	return go_domnode
 }
 
 // *C.cef_domnode_t has refCounted interface
@@ -7849,12 +7849,12 @@ func newCBeforeDownloadCallbackT(p *C.cef_before_download_callback_t) *CBeforeDo
 	Tracef(unsafe.Pointer(p), "T136.1:")
 	pc := (*cCBeforeDownloadCallbackT)(p)
 	BaseAddRef(pc)
-	go_before_download_callback := CBeforeDownloadCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_before_download_callback, func(g *CBeforeDownloadCallbackT) {
+	go_before_download_callback := &CBeforeDownloadCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_before_download_callback, func(g *CBeforeDownloadCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_before_download_callback), "T136.2:")
 		BaseRelease(g.pc_before_download_callback)
 	})
-	return &go_before_download_callback
+	return go_before_download_callback
 }
 
 // *C.cef_before_download_callback_t has refCounted interface
@@ -7919,12 +7919,12 @@ func newCDownloadItemCallbackT(p *C.cef_download_item_callback_t) *CDownloadItem
 	Tracef(unsafe.Pointer(p), "T137.1:")
 	pc := (*cCDownloadItemCallbackT)(p)
 	BaseAddRef(pc)
-	go_download_item_callback := CDownloadItemCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_download_item_callback, func(g *CDownloadItemCallbackT) {
+	go_download_item_callback := &CDownloadItemCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_download_item_callback, func(g *CDownloadItemCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_download_item_callback), "T137.2:")
 		BaseRelease(g.pc_download_item_callback)
 	})
-	return &go_download_item_callback
+	return go_download_item_callback
 }
 
 // *C.cef_download_item_callback_t has refCounted interface
@@ -8001,12 +8001,12 @@ func newCDownloadHandlerT(p *C.cef_download_handler_t) *CDownloadHandlerT {
 	Tracef(unsafe.Pointer(p), "T138.1:")
 	pc := (*cCDownloadHandlerT)(p)
 	BaseAddRef(pc)
-	go_download_handler := CDownloadHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_download_handler, func(g *CDownloadHandlerT) {
+	go_download_handler := &CDownloadHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_download_handler, func(g *CDownloadHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_download_handler), "T138.2:")
 		BaseRelease(g.pc_download_handler)
 	})
-	return &go_download_handler
+	return go_download_handler
 }
 
 // *C.cef_download_handler_t has refCounted interface
@@ -8162,12 +8162,12 @@ func newCDownloadItemT(p *C.cef_download_item_t) *CDownloadItemT {
 	Tracef(unsafe.Pointer(p), "T139.1:")
 	pc := (*cCDownloadItemT)(p)
 	BaseAddRef(pc)
-	go_download_item := CDownloadItemT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_download_item, func(g *CDownloadItemT) {
+	go_download_item := &CDownloadItemT{noCopy{}, pc}
+	runtime.SetFinalizer(go_download_item, func(g *CDownloadItemT) {
 		Tracef(unsafe.Pointer(g.pc_download_item), "T139.2:")
 		BaseRelease(g.pc_download_item)
 	})
-	return &go_download_item
+	return go_download_item
 }
 
 // *C.cef_download_item_t has refCounted interface
@@ -8438,12 +8438,12 @@ func newCDragDataT(p *C.cef_drag_data_t) *CDragDataT {
 	Tracef(unsafe.Pointer(p), "T140.1:")
 	pc := (*cCDragDataT)(p)
 	BaseAddRef(pc)
-	go_drag_data := CDragDataT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_drag_data, func(g *CDragDataT) {
+	go_drag_data := &CDragDataT{noCopy{}, pc}
+	runtime.SetFinalizer(go_drag_data, func(g *CDragDataT) {
 		Tracef(unsafe.Pointer(g.pc_drag_data), "T140.2:")
 		BaseRelease(g.pc_drag_data)
 	})
-	return &go_drag_data
+	return go_drag_data
 }
 
 // *C.cef_drag_data_t has refCounted interface
@@ -8840,12 +8840,12 @@ func newCDragHandlerT(p *C.cef_drag_handler_t) *CDragHandlerT {
 	Tracef(unsafe.Pointer(p), "T141.1:")
 	pc := (*cCDragHandlerT)(p)
 	BaseAddRef(pc)
-	go_drag_handler := CDragHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_drag_handler, func(g *CDragHandlerT) {
+	go_drag_handler := &CDragHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_drag_handler, func(g *CDragHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_drag_handler), "T141.2:")
 		BaseRelease(g.pc_drag_handler)
 	})
-	return &go_drag_handler
+	return go_drag_handler
 }
 
 // *C.cef_drag_handler_t has refCounted interface
@@ -9001,12 +9001,12 @@ func newCExtensionT(p *C.cef_extension_t) *CExtensionT {
 	Tracef(unsafe.Pointer(p), "T142.1:")
 	pc := (*cCExtensionT)(p)
 	BaseAddRef(pc)
-	go_extension := CExtensionT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_extension, func(g *CExtensionT) {
+	go_extension := &CExtensionT{noCopy{}, pc}
+	runtime.SetFinalizer(go_extension, func(g *CExtensionT) {
 		Tracef(unsafe.Pointer(g.pc_extension), "T142.2:")
 		BaseRelease(g.pc_extension)
 	})
-	return &go_extension
+	return go_extension
 }
 
 // *C.cef_extension_t has refCounted interface
@@ -9176,12 +9176,12 @@ func newCGetExtensionResourceCallbackT(p *C.cef_get_extension_resource_callback_
 	Tracef(unsafe.Pointer(p), "T143.1:")
 	pc := (*cCGetExtensionResourceCallbackT)(p)
 	BaseAddRef(pc)
-	go_get_extension_resource_callback := CGetExtensionResourceCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_get_extension_resource_callback, func(g *CGetExtensionResourceCallbackT) {
+	go_get_extension_resource_callback := &CGetExtensionResourceCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_get_extension_resource_callback, func(g *CGetExtensionResourceCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_get_extension_resource_callback), "T143.2:")
 		BaseRelease(g.pc_get_extension_resource_callback)
 	})
-	return &go_get_extension_resource_callback
+	return go_get_extension_resource_callback
 }
 
 // *C.cef_get_extension_resource_callback_t has refCounted interface
@@ -9257,12 +9257,12 @@ func newCExtensionHandlerT(p *C.cef_extension_handler_t) *CExtensionHandlerT {
 	Tracef(unsafe.Pointer(p), "T144.1:")
 	pc := (*cCExtensionHandlerT)(p)
 	BaseAddRef(pc)
-	go_extension_handler := CExtensionHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_extension_handler, func(g *CExtensionHandlerT) {
+	go_extension_handler := &CExtensionHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_extension_handler, func(g *CExtensionHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_extension_handler), "T144.2:")
 		BaseRelease(g.pc_extension_handler)
 	})
-	return &go_extension_handler
+	return go_extension_handler
 }
 
 // *C.cef_extension_handler_t has refCounted interface
@@ -9732,12 +9732,12 @@ func newCFillLayoutT(p *C.cef_fill_layout_t) *CFillLayoutT {
 	Tracef(unsafe.Pointer(p), "T145.1:")
 	pc := (*cCFillLayoutT)(p)
 	BaseAddRef(pc)
-	go_fill_layout := CFillLayoutT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_fill_layout, func(g *CFillLayoutT) {
+	go_fill_layout := &CFillLayoutT{noCopy{}, pc}
+	runtime.SetFinalizer(go_fill_layout, func(g *CFillLayoutT) {
 		Tracef(unsafe.Pointer(g.pc_fill_layout), "T145.2:")
 		BaseRelease(g.pc_fill_layout)
 	})
-	return &go_fill_layout
+	return go_fill_layout
 }
 
 // *C.cef_fill_layout_t has refCounted interface
@@ -9795,12 +9795,12 @@ func newCFindHandlerT(p *C.cef_find_handler_t) *CFindHandlerT {
 	Tracef(unsafe.Pointer(p), "T146.1:")
 	pc := (*cCFindHandlerT)(p)
 	BaseAddRef(pc)
-	go_find_handler := CFindHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_find_handler, func(g *CFindHandlerT) {
+	go_find_handler := &CFindHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_find_handler, func(g *CFindHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_find_handler), "T146.2:")
 		BaseRelease(g.pc_find_handler)
 	})
-	return &go_find_handler
+	return go_find_handler
 }
 
 // *C.cef_find_handler_t has refCounted interface
@@ -9936,12 +9936,12 @@ func newCFocusHandlerT(p *C.cef_focus_handler_t) *CFocusHandlerT {
 	Tracef(unsafe.Pointer(p), "T147.1:")
 	pc := (*cCFocusHandlerT)(p)
 	BaseAddRef(pc)
-	go_focus_handler := CFocusHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_focus_handler, func(g *CFocusHandlerT) {
+	go_focus_handler := &CFocusHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_focus_handler, func(g *CFocusHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_focus_handler), "T147.2:")
 		BaseRelease(g.pc_focus_handler)
 	})
-	return &go_focus_handler
+	return go_focus_handler
 }
 
 // *C.cef_focus_handler_t has refCounted interface
@@ -10112,12 +10112,12 @@ func newCFrameT(p *C.cef_frame_t) *CFrameT {
 	Tracef(unsafe.Pointer(p), "T148.1:")
 	pc := (*cCFrameT)(p)
 	BaseAddRef(pc)
-	go_frame := CFrameT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_frame, func(g *CFrameT) {
+	go_frame := &CFrameT{noCopy{}, pc}
+	runtime.SetFinalizer(go_frame, func(g *CFrameT) {
 		Tracef(unsafe.Pointer(g.pc_frame), "T148.2:")
 		BaseRelease(g.pc_frame)
 	})
-	return &go_frame
+	return go_frame
 }
 
 // *C.cef_frame_t has refCounted interface
@@ -10528,12 +10528,12 @@ func newCImageT(p *C.cef_image_t) *CImageT {
 	Tracef(unsafe.Pointer(p), "T149.1:")
 	pc := (*cCImageT)(p)
 	BaseAddRef(pc)
-	go_image := CImageT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_image, func(g *CImageT) {
+	go_image := &CImageT{noCopy{}, pc}
+	runtime.SetFinalizer(go_image, func(g *CImageT) {
 		Tracef(unsafe.Pointer(g.pc_image), "T149.2:")
 		BaseRelease(g.pc_image)
 	})
-	return &go_image
+	return go_image
 }
 
 // *C.cef_image_t has refCounted interface
@@ -10836,12 +10836,12 @@ func newCJsdialogCallbackT(p *C.cef_jsdialog_callback_t) *CJsdialogCallbackT {
 	Tracef(unsafe.Pointer(p), "T150.1:")
 	pc := (*cCJsdialogCallbackT)(p)
 	BaseAddRef(pc)
-	go_jsdialog_callback := CJsdialogCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_jsdialog_callback, func(g *CJsdialogCallbackT) {
+	go_jsdialog_callback := &CJsdialogCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_jsdialog_callback, func(g *CJsdialogCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_jsdialog_callback), "T150.2:")
 		BaseRelease(g.pc_jsdialog_callback)
 	})
-	return &go_jsdialog_callback
+	return go_jsdialog_callback
 }
 
 // *C.cef_jsdialog_callback_t has refCounted interface
@@ -10905,12 +10905,12 @@ func newCJsdialogHandlerT(p *C.cef_jsdialog_handler_t) *CJsdialogHandlerT {
 	Tracef(unsafe.Pointer(p), "T151.1:")
 	pc := (*cCJsdialogHandlerT)(p)
 	BaseAddRef(pc)
-	go_jsdialog_handler := CJsdialogHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_jsdialog_handler, func(g *CJsdialogHandlerT) {
+	go_jsdialog_handler := &CJsdialogHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_jsdialog_handler, func(g *CJsdialogHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_jsdialog_handler), "T151.2:")
 		BaseRelease(g.pc_jsdialog_handler)
 	})
-	return &go_jsdialog_handler
+	return go_jsdialog_handler
 }
 
 // *C.cef_jsdialog_handler_t has refCounted interface
@@ -11119,12 +11119,12 @@ func newCKeyboardHandlerT(p *C.cef_keyboard_handler_t) *CKeyboardHandlerT {
 	Tracef(unsafe.Pointer(p), "T152.1:")
 	pc := (*cCKeyboardHandlerT)(p)
 	BaseAddRef(pc)
-	go_keyboard_handler := CKeyboardHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_keyboard_handler, func(g *CKeyboardHandlerT) {
+	go_keyboard_handler := &CKeyboardHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_keyboard_handler, func(g *CKeyboardHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_keyboard_handler), "T152.2:")
 		BaseRelease(g.pc_keyboard_handler)
 	})
-	return &go_keyboard_handler
+	return go_keyboard_handler
 }
 
 // *C.cef_keyboard_handler_t has refCounted interface
@@ -11279,12 +11279,12 @@ func newCLabelButtonT(p *C.cef_label_button_t) *CLabelButtonT {
 	Tracef(unsafe.Pointer(p), "T153.1:")
 	pc := (*cCLabelButtonT)(p)
 	BaseAddRef(pc)
-	go_label_button := CLabelButtonT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_label_button, func(g *CLabelButtonT) {
+	go_label_button := &CLabelButtonT{noCopy{}, pc}
+	runtime.SetFinalizer(go_label_button, func(g *CLabelButtonT) {
 		Tracef(unsafe.Pointer(g.pc_label_button), "T153.2:")
 		BaseRelease(g.pc_label_button)
 	})
-	return &go_label_button
+	return go_label_button
 }
 
 // *C.cef_label_button_t has refCounted interface
@@ -11515,12 +11515,12 @@ func newCLayoutT(p *C.cef_layout_t) *CLayoutT {
 	Tracef(unsafe.Pointer(p), "T154.1:")
 	pc := (*cCLayoutT)(p)
 	BaseAddRef(pc)
-	go_layout := CLayoutT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_layout, func(g *CLayoutT) {
+	go_layout := &CLayoutT{noCopy{}, pc}
+	runtime.SetFinalizer(go_layout, func(g *CLayoutT) {
 		Tracef(unsafe.Pointer(g.pc_layout), "T154.2:")
 		BaseRelease(g.pc_layout)
 	})
-	return &go_layout
+	return go_layout
 }
 
 // *C.cef_layout_t has refCounted interface
@@ -11606,12 +11606,12 @@ func newCLifeSpanHandlerT(p *C.cef_life_span_handler_t) *CLifeSpanHandlerT {
 	Tracef(unsafe.Pointer(p), "T155.1:")
 	pc := (*cCLifeSpanHandlerT)(p)
 	BaseAddRef(pc)
-	go_life_span_handler := CLifeSpanHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_life_span_handler, func(g *CLifeSpanHandlerT) {
+	go_life_span_handler := &CLifeSpanHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_life_span_handler, func(g *CLifeSpanHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_life_span_handler), "T155.2:")
 		BaseRelease(g.pc_life_span_handler)
 	})
-	return &go_life_span_handler
+	return go_life_span_handler
 }
 
 // *C.cef_life_span_handler_t has refCounted interface
@@ -11919,12 +11919,12 @@ func newCLoadHandlerT(p *C.cef_load_handler_t) *CLoadHandlerT {
 	Tracef(unsafe.Pointer(p), "T156.1:")
 	pc := (*cCLoadHandlerT)(p)
 	BaseAddRef(pc)
-	go_load_handler := CLoadHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_load_handler, func(g *CLoadHandlerT) {
+	go_load_handler := &CLoadHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_load_handler, func(g *CLoadHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_load_handler), "T156.2:")
 		BaseRelease(g.pc_load_handler)
 	})
-	return &go_load_handler
+	return go_load_handler
 }
 
 // *C.cef_load_handler_t has refCounted interface
@@ -12140,12 +12140,12 @@ func newCMediaRouterT(p *C.cef_media_router_t) *CMediaRouterT {
 	Tracef(unsafe.Pointer(p), "T157.1:")
 	pc := (*cCMediaRouterT)(p)
 	BaseAddRef(pc)
-	go_media_router := CMediaRouterT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_media_router, func(g *CMediaRouterT) {
+	go_media_router := &CMediaRouterT{noCopy{}, pc}
+	runtime.SetFinalizer(go_media_router, func(g *CMediaRouterT) {
 		Tracef(unsafe.Pointer(g.pc_media_router), "T157.2:")
 		BaseRelease(g.pc_media_router)
 	})
-	return &go_media_router
+	return go_media_router
 }
 
 // *C.cef_media_router_t has refCounted interface
@@ -12297,12 +12297,12 @@ func newCMediaObserverT(p *C.cef_media_observer_t) *CMediaObserverT {
 	Tracef(unsafe.Pointer(p), "T158.1:")
 	pc := (*cCMediaObserverT)(p)
 	BaseAddRef(pc)
-	go_media_observer := CMediaObserverT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_media_observer, func(g *CMediaObserverT) {
+	go_media_observer := &CMediaObserverT{noCopy{}, pc}
+	runtime.SetFinalizer(go_media_observer, func(g *CMediaObserverT) {
 		Tracef(unsafe.Pointer(g.pc_media_observer), "T158.2:")
 		BaseRelease(g.pc_media_observer)
 	})
-	return &go_media_observer
+	return go_media_observer
 }
 
 // *C.cef_media_observer_t has refCounted interface
@@ -12488,12 +12488,12 @@ func newCMediaRouteT(p *C.cef_media_route_t) *CMediaRouteT {
 	Tracef(unsafe.Pointer(p), "T159.1:")
 	pc := (*cCMediaRouteT)(p)
 	BaseAddRef(pc)
-	go_media_route := CMediaRouteT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_media_route, func(g *CMediaRouteT) {
+	go_media_route := &CMediaRouteT{noCopy{}, pc}
+	runtime.SetFinalizer(go_media_route, func(g *CMediaRouteT) {
 		Tracef(unsafe.Pointer(g.pc_media_route), "T159.2:")
 		BaseRelease(g.pc_media_route)
 	})
-	return &go_media_route
+	return go_media_route
 }
 
 // *C.cef_media_route_t has refCounted interface
@@ -12605,12 +12605,12 @@ func newCMediaRouteCreateCallbackT(p *C.cef_media_route_create_callback_t) *CMed
 	Tracef(unsafe.Pointer(p), "T160.1:")
 	pc := (*cCMediaRouteCreateCallbackT)(p)
 	BaseAddRef(pc)
-	go_media_route_create_callback := CMediaRouteCreateCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_media_route_create_callback, func(g *CMediaRouteCreateCallbackT) {
+	go_media_route_create_callback := &CMediaRouteCreateCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_media_route_create_callback, func(g *CMediaRouteCreateCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_media_route_create_callback), "T160.2:")
 		BaseRelease(g.pc_media_route_create_callback)
 	})
-	return &go_media_route_create_callback
+	return go_media_route_create_callback
 }
 
 // *C.cef_media_route_create_callback_t has refCounted interface
@@ -12683,12 +12683,12 @@ func newCMediaSinkT(p *C.cef_media_sink_t) *CMediaSinkT {
 	Tracef(unsafe.Pointer(p), "T161.1:")
 	pc := (*cCMediaSinkT)(p)
 	BaseAddRef(pc)
-	go_media_sink := CMediaSinkT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_media_sink, func(g *CMediaSinkT) {
+	go_media_sink := &CMediaSinkT{noCopy{}, pc}
+	runtime.SetFinalizer(go_media_sink, func(g *CMediaSinkT) {
 		Tracef(unsafe.Pointer(g.pc_media_sink), "T161.2:")
 		BaseRelease(g.pc_media_sink)
 	})
-	return &go_media_sink
+	return go_media_sink
 }
 
 // *C.cef_media_sink_t has refCounted interface
@@ -12853,12 +12853,12 @@ func newCMediaSinkDeviceInfoCallbackT(p *C.cef_media_sink_device_info_callback_t
 	Tracef(unsafe.Pointer(p), "T338.1:")
 	pc := (*cCMediaSinkDeviceInfoCallbackT)(p)
 	BaseAddRef(pc)
-	go_media_sink_device_info_callback := CMediaSinkDeviceInfoCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_media_sink_device_info_callback, func(g *CMediaSinkDeviceInfoCallbackT) {
+	go_media_sink_device_info_callback := &CMediaSinkDeviceInfoCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_media_sink_device_info_callback, func(g *CMediaSinkDeviceInfoCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_media_sink_device_info_callback), "T338.2:")
 		BaseRelease(g.pc_media_sink_device_info_callback)
 	})
-	return &go_media_sink_device_info_callback
+	return go_media_sink_device_info_callback
 }
 
 // *C.cef_media_sink_device_info_callback_t has refCounted interface
@@ -12922,12 +12922,12 @@ func newCMediaSourceT(p *C.cef_media_source_t) *CMediaSourceT {
 	Tracef(unsafe.Pointer(p), "T162.1:")
 	pc := (*cCMediaSourceT)(p)
 	BaseAddRef(pc)
-	go_media_source := CMediaSourceT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_media_source, func(g *CMediaSourceT) {
+	go_media_source := &CMediaSourceT{noCopy{}, pc}
+	runtime.SetFinalizer(go_media_source, func(g *CMediaSourceT) {
 		Tracef(unsafe.Pointer(g.pc_media_source), "T162.2:")
 		BaseRelease(g.pc_media_source)
 	})
-	return &go_media_source
+	return go_media_source
 }
 
 // *C.cef_media_source_t has refCounted interface
@@ -13019,12 +13019,12 @@ func newCMenuButtonT(p *C.cef_menu_button_t) *CMenuButtonT {
 	Tracef(unsafe.Pointer(p), "T163.1:")
 	pc := (*cCMenuButtonT)(p)
 	BaseAddRef(pc)
-	go_menu_button := CMenuButtonT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_menu_button, func(g *CMenuButtonT) {
+	go_menu_button := &CMenuButtonT{noCopy{}, pc}
+	runtime.SetFinalizer(go_menu_button, func(g *CMenuButtonT) {
 		Tracef(unsafe.Pointer(g.pc_menu_button), "T163.2:")
 		BaseRelease(g.pc_menu_button)
 	})
-	return &go_menu_button
+	return go_menu_button
 }
 
 // *C.cef_menu_button_t has refCounted interface
@@ -13138,12 +13138,12 @@ func newCMenuButtonPressedLockT(p *C.cef_menu_button_pressed_lock_t) *CMenuButto
 	Tracef(unsafe.Pointer(p), "T164.1:")
 	pc := (*cCMenuButtonPressedLockT)(p)
 	BaseAddRef(pc)
-	go_menu_button_pressed_lock := CMenuButtonPressedLockT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_menu_button_pressed_lock, func(g *CMenuButtonPressedLockT) {
+	go_menu_button_pressed_lock := &CMenuButtonPressedLockT{noCopy{}, pc}
+	runtime.SetFinalizer(go_menu_button_pressed_lock, func(g *CMenuButtonPressedLockT) {
 		Tracef(unsafe.Pointer(g.pc_menu_button_pressed_lock), "T164.2:")
 		BaseRelease(g.pc_menu_button_pressed_lock)
 	})
-	return &go_menu_button_pressed_lock
+	return go_menu_button_pressed_lock
 }
 
 // *C.cef_menu_button_pressed_lock_t has refCounted interface
@@ -13194,12 +13194,12 @@ func newCMenuButtonDelegateT(p *C.cef_menu_button_delegate_t) *CMenuButtonDelega
 	Tracef(unsafe.Pointer(p), "T165.1:")
 	pc := (*cCMenuButtonDelegateT)(p)
 	BaseAddRef(pc)
-	go_menu_button_delegate := CMenuButtonDelegateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_menu_button_delegate, func(g *CMenuButtonDelegateT) {
+	go_menu_button_delegate := &CMenuButtonDelegateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_menu_button_delegate, func(g *CMenuButtonDelegateT) {
 		Tracef(unsafe.Pointer(g.pc_menu_button_delegate), "T165.2:")
 		BaseRelease(g.pc_menu_button_delegate)
 	})
-	return &go_menu_button_delegate
+	return go_menu_button_delegate
 }
 
 // *C.cef_menu_button_delegate_t has refCounted interface
@@ -13418,12 +13418,12 @@ func newCMenuModelT(p *C.cef_menu_model_t) *CMenuModelT {
 	Tracef(unsafe.Pointer(p), "T166.1:")
 	pc := (*cCMenuModelT)(p)
 	BaseAddRef(pc)
-	go_menu_model := CMenuModelT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_menu_model, func(g *CMenuModelT) {
+	go_menu_model := &CMenuModelT{noCopy{}, pc}
+	runtime.SetFinalizer(go_menu_model, func(g *CMenuModelT) {
 		Tracef(unsafe.Pointer(g.pc_menu_model), "T166.2:")
 		BaseRelease(g.pc_menu_model)
 	})
-	return &go_menu_model
+	return go_menu_model
 }
 
 // *C.cef_menu_model_t has refCounted interface
@@ -14356,12 +14356,12 @@ func newCMenuModelDelegateT(p *C.cef_menu_model_delegate_t) *CMenuModelDelegateT
 	Tracef(unsafe.Pointer(p), "T167.1:")
 	pc := (*cCMenuModelDelegateT)(p)
 	BaseAddRef(pc)
-	go_menu_model_delegate := CMenuModelDelegateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_menu_model_delegate, func(g *CMenuModelDelegateT) {
+	go_menu_model_delegate := &CMenuModelDelegateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_menu_model_delegate, func(g *CMenuModelDelegateT) {
 		Tracef(unsafe.Pointer(g.pc_menu_model_delegate), "T167.2:")
 		BaseRelease(g.pc_menu_model_delegate)
 	})
-	return &go_menu_model_delegate
+	return go_menu_model_delegate
 }
 
 // *C.cef_menu_model_delegate_t has refCounted interface
@@ -14605,12 +14605,12 @@ func newCNavigationEntryT(p *C.cef_navigation_entry_t) *CNavigationEntryT {
 	Tracef(unsafe.Pointer(p), "T168.1:")
 	pc := (*cCNavigationEntryT)(p)
 	BaseAddRef(pc)
-	go_navigation_entry := CNavigationEntryT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_navigation_entry, func(g *CNavigationEntryT) {
+	go_navigation_entry := &CNavigationEntryT{noCopy{}, pc}
+	runtime.SetFinalizer(go_navigation_entry, func(g *CNavigationEntryT) {
 		Tracef(unsafe.Pointer(g.pc_navigation_entry), "T168.2:")
 		BaseRelease(g.pc_navigation_entry)
 	})
-	return &go_navigation_entry
+	return go_navigation_entry
 }
 
 // *C.cef_navigation_entry_t has refCounted interface
@@ -14886,12 +14886,12 @@ func newCPanelT(p *C.cef_panel_t) *CPanelT {
 	Tracef(unsafe.Pointer(p), "T169.1:")
 	pc := (*cCPanelT)(p)
 	BaseAddRef(pc)
-	go_panel := CPanelT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_panel, func(g *CPanelT) {
+	go_panel := &CPanelT{noCopy{}, pc}
+	runtime.SetFinalizer(go_panel, func(g *CPanelT) {
 		Tracef(unsafe.Pointer(g.pc_panel), "T169.2:")
 		BaseRelease(g.pc_panel)
 	})
-	return &go_panel
+	return go_panel
 }
 
 // *C.cef_panel_t has refCounted interface
@@ -15126,12 +15126,12 @@ func newCPanelDelegateT(p *C.cef_panel_delegate_t) *CPanelDelegateT {
 	Tracef(unsafe.Pointer(p), "T170.1:")
 	pc := (*cCPanelDelegateT)(p)
 	BaseAddRef(pc)
-	go_panel_delegate := CPanelDelegateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_panel_delegate, func(g *CPanelDelegateT) {
+	go_panel_delegate := &CPanelDelegateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_panel_delegate, func(g *CPanelDelegateT) {
 		Tracef(unsafe.Pointer(g.pc_panel_delegate), "T170.2:")
 		BaseRelease(g.pc_panel_delegate)
 	})
-	return &go_panel_delegate
+	return go_panel_delegate
 }
 
 // *C.cef_panel_delegate_t has refCounted interface
@@ -15308,12 +15308,12 @@ func newCPrintDialogCallbackT(p *C.cef_print_dialog_callback_t) *CPrintDialogCal
 	Tracef(unsafe.Pointer(p), "T171.1:")
 	pc := (*cCPrintDialogCallbackT)(p)
 	BaseAddRef(pc)
-	go_print_dialog_callback := CPrintDialogCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_print_dialog_callback, func(g *CPrintDialogCallbackT) {
+	go_print_dialog_callback := &CPrintDialogCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_print_dialog_callback, func(g *CPrintDialogCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_print_dialog_callback), "T171.2:")
 		BaseRelease(g.pc_print_dialog_callback)
 	})
-	return &go_print_dialog_callback
+	return go_print_dialog_callback
 }
 
 // *C.cef_print_dialog_callback_t has refCounted interface
@@ -15387,12 +15387,12 @@ func newCPrintJobCallbackT(p *C.cef_print_job_callback_t) *CPrintJobCallbackT {
 	Tracef(unsafe.Pointer(p), "T172.1:")
 	pc := (*cCPrintJobCallbackT)(p)
 	BaseAddRef(pc)
-	go_print_job_callback := CPrintJobCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_print_job_callback, func(g *CPrintJobCallbackT) {
+	go_print_job_callback := &CPrintJobCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_print_job_callback, func(g *CPrintJobCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_print_job_callback), "T172.2:")
 		BaseRelease(g.pc_print_job_callback)
 	})
-	return &go_print_job_callback
+	return go_print_job_callback
 }
 
 // *C.cef_print_job_callback_t has refCounted interface
@@ -15452,12 +15452,12 @@ func newCPrintHandlerT(p *C.cef_print_handler_t) *CPrintHandlerT {
 	Tracef(unsafe.Pointer(p), "T173.1:")
 	pc := (*cCPrintHandlerT)(p)
 	BaseAddRef(pc)
-	go_print_handler := CPrintHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_print_handler, func(g *CPrintHandlerT) {
+	go_print_handler := &CPrintHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_print_handler, func(g *CPrintHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_print_handler), "T173.2:")
 		BaseRelease(g.pc_print_handler)
 	})
-	return &go_print_handler
+	return go_print_handler
 }
 
 // *C.cef_print_handler_t has refCounted interface
@@ -15689,12 +15689,12 @@ func newCPrintSettingsT(p *C.cef_print_settings_t) *CPrintSettingsT {
 	Tracef(unsafe.Pointer(p), "T174.1:")
 	pc := (*cCPrintSettingsT)(p)
 	BaseAddRef(pc)
-	go_print_settings := CPrintSettingsT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_print_settings, func(g *CPrintSettingsT) {
+	go_print_settings := &CPrintSettingsT{noCopy{}, pc}
+	runtime.SetFinalizer(go_print_settings, func(g *CPrintSettingsT) {
 		Tracef(unsafe.Pointer(g.pc_print_settings), "T174.2:")
 		BaseRelease(g.pc_print_settings)
 	})
-	return &go_print_settings
+	return go_print_settings
 }
 
 // *C.cef_print_settings_t has refCounted interface
@@ -16000,12 +16000,12 @@ func newCProcessMessageT(p *C.cef_process_message_t) *CProcessMessageT {
 	Tracef(unsafe.Pointer(p), "T175.1:")
 	pc := (*cCProcessMessageT)(p)
 	BaseAddRef(pc)
-	go_process_message := CProcessMessageT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_process_message, func(g *CProcessMessageT) {
+	go_process_message := &CProcessMessageT{noCopy{}, pc}
+	runtime.SetFinalizer(go_process_message, func(g *CProcessMessageT) {
 		Tracef(unsafe.Pointer(g.pc_process_message), "T175.2:")
 		BaseRelease(g.pc_process_message)
 	})
-	return &go_process_message
+	return go_process_message
 }
 
 // *C.cef_process_message_t has refCounted interface
@@ -16132,12 +16132,12 @@ func newCRegistrationT(p *C.cef_registration_t) *CRegistrationT {
 	Tracef(unsafe.Pointer(p), "T176.1:")
 	pc := (*cCRegistrationT)(p)
 	BaseAddRef(pc)
-	go_registration := CRegistrationT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_registration, func(g *CRegistrationT) {
+	go_registration := &CRegistrationT{noCopy{}, pc}
+	runtime.SetFinalizer(go_registration, func(g *CRegistrationT) {
 		Tracef(unsafe.Pointer(g.pc_registration), "T176.2:")
 		BaseRelease(g.pc_registration)
 	})
-	return &go_registration
+	return go_registration
 }
 
 // *C.cef_registration_t has refCounted interface
@@ -16189,12 +16189,12 @@ func newCRenderHandlerT(p *C.cef_render_handler_t) *CRenderHandlerT {
 	Tracef(unsafe.Pointer(p), "T177.1:")
 	pc := (*cCRenderHandlerT)(p)
 	BaseAddRef(pc)
-	go_render_handler := CRenderHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_render_handler, func(g *CRenderHandlerT) {
+	go_render_handler := &CRenderHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_render_handler, func(g *CRenderHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_render_handler), "T177.2:")
 		BaseRelease(g.pc_render_handler)
 	})
-	return &go_render_handler
+	return go_render_handler
 }
 
 // *C.cef_render_handler_t has refCounted interface
@@ -16646,12 +16646,12 @@ func newCRenderProcessHandlerT(p *C.cef_render_process_handler_t) *CRenderProces
 	Tracef(unsafe.Pointer(p), "T178.1:")
 	pc := (*cCRenderProcessHandlerT)(p)
 	BaseAddRef(pc)
-	go_render_process_handler := CRenderProcessHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_render_process_handler, func(g *CRenderProcessHandlerT) {
+	go_render_process_handler := &CRenderProcessHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_render_process_handler, func(g *CRenderProcessHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_render_process_handler), "T178.2:")
 		BaseRelease(g.pc_render_process_handler)
 	})
-	return &go_render_process_handler
+	return go_render_process_handler
 }
 
 // *C.cef_render_process_handler_t has refCounted interface
@@ -16953,12 +16953,12 @@ func newCRequestCallbackT(p *C.cef_request_callback_t) *CRequestCallbackT {
 	Tracef(unsafe.Pointer(p), "T179.1:")
 	pc := (*cCRequestCallbackT)(p)
 	BaseAddRef(pc)
-	go_request_callback := CRequestCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_request_callback, func(g *CRequestCallbackT) {
+	go_request_callback := &CRequestCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_request_callback, func(g *CRequestCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_request_callback), "T179.2:")
 		BaseRelease(g.pc_request_callback)
 	})
-	return &go_request_callback
+	return go_request_callback
 }
 
 // *C.cef_request_callback_t has refCounted interface
@@ -17031,12 +17031,12 @@ func newCRequestT(p *C.cef_request_t) *CRequestT {
 	Tracef(unsafe.Pointer(p), "T180.1:")
 	pc := (*cCRequestT)(p)
 	BaseAddRef(pc)
-	go_request := CRequestT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_request, func(g *CRequestT) {
+	go_request := &CRequestT{noCopy{}, pc}
+	runtime.SetFinalizer(go_request, func(g *CRequestT) {
 		Tracef(unsafe.Pointer(g.pc_request), "T180.2:")
 		BaseRelease(g.pc_request)
 	})
-	return &go_request
+	return go_request
 }
 
 // *C.cef_request_t has refCounted interface
@@ -17409,12 +17409,12 @@ func newCPostDataT(p *C.cef_post_data_t) *CPostDataT {
 	Tracef(unsafe.Pointer(p), "T181.1:")
 	pc := (*cCPostDataT)(p)
 	BaseAddRef(pc)
-	go_post_data := CPostDataT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_post_data, func(g *CPostDataT) {
+	go_post_data := &CPostDataT{noCopy{}, pc}
+	runtime.SetFinalizer(go_post_data, func(g *CPostDataT) {
 		Tracef(unsafe.Pointer(g.pc_post_data), "T181.2:")
 		BaseRelease(g.pc_post_data)
 	})
-	return &go_post_data
+	return go_post_data
 }
 
 // *C.cef_post_data_t has refCounted interface
@@ -17557,12 +17557,12 @@ func newCPostDataElementT(p *C.cef_post_data_element_t) *CPostDataElementT {
 	Tracef(unsafe.Pointer(p), "T182.1:")
 	pc := (*cCPostDataElementT)(p)
 	BaseAddRef(pc)
-	go_post_data_element := CPostDataElementT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_post_data_element, func(g *CPostDataElementT) {
+	go_post_data_element := &CPostDataElementT{noCopy{}, pc}
+	runtime.SetFinalizer(go_post_data_element, func(g *CPostDataElementT) {
 		Tracef(unsafe.Pointer(g.pc_post_data_element), "T182.2:")
 		BaseRelease(g.pc_post_data_element)
 	})
-	return &go_post_data_element
+	return go_post_data_element
 }
 
 // *C.cef_post_data_element_t has refCounted interface
@@ -17724,12 +17724,12 @@ func newCResolveCallbackT(p *C.cef_resolve_callback_t) *CResolveCallbackT {
 	Tracef(unsafe.Pointer(p), "T183.1:")
 	pc := (*cCResolveCallbackT)(p)
 	BaseAddRef(pc)
-	go_resolve_callback := CResolveCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_resolve_callback, func(g *CResolveCallbackT) {
+	go_resolve_callback := &CResolveCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_resolve_callback, func(g *CResolveCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_resolve_callback), "T183.2:")
 		BaseRelease(g.pc_resolve_callback)
 	})
-	return &go_resolve_callback
+	return go_resolve_callback
 }
 
 // *C.cef_resolve_callback_t has refCounted interface
@@ -17805,12 +17805,12 @@ func newCRequestContextT(p *C.cef_request_context_t) *CRequestContextT {
 	Tracef(unsafe.Pointer(p), "T184.1:")
 	pc := (*cCRequestContextT)(p)
 	BaseAddRef(pc)
-	go_request_context := CRequestContextT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_request_context, func(g *CRequestContextT) {
+	go_request_context := &CRequestContextT{noCopy{}, pc}
+	runtime.SetFinalizer(go_request_context, func(g *CRequestContextT) {
 		Tracef(unsafe.Pointer(g.pc_request_context), "T184.2:")
 		BaseRelease(g.pc_request_context)
 	})
-	return &go_request_context
+	return go_request_context
 }
 
 // *C.cef_request_context_t has refCounted interface
@@ -18395,12 +18395,12 @@ func newCRequestContextHandlerT(p *C.cef_request_context_handler_t) *CRequestCon
 	Tracef(unsafe.Pointer(p), "T185.1:")
 	pc := (*cCRequestContextHandlerT)(p)
 	BaseAddRef(pc)
-	go_request_context_handler := CRequestContextHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_request_context_handler, func(g *CRequestContextHandlerT) {
+	go_request_context_handler := &CRequestContextHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_request_context_handler, func(g *CRequestContextHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_request_context_handler), "T185.2:")
 		BaseRelease(g.pc_request_context_handler)
 	})
-	return &go_request_context_handler
+	return go_request_context_handler
 }
 
 // *C.cef_request_context_handler_t has refCounted interface
@@ -18602,12 +18602,12 @@ func newCSelectClientCertificateCallbackT(p *C.cef_select_client_certificate_cal
 	Tracef(unsafe.Pointer(p), "T186.1:")
 	pc := (*cCSelectClientCertificateCallbackT)(p)
 	BaseAddRef(pc)
-	go_select_client_certificate_callback := CSelectClientCertificateCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_select_client_certificate_callback, func(g *CSelectClientCertificateCallbackT) {
+	go_select_client_certificate_callback := &CSelectClientCertificateCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_select_client_certificate_callback, func(g *CSelectClientCertificateCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_select_client_certificate_callback), "T186.2:")
 		BaseRelease(g.pc_select_client_certificate_callback)
 	})
-	return &go_select_client_certificate_callback
+	return go_select_client_certificate_callback
 }
 
 // *C.cef_select_client_certificate_callback_t has refCounted interface
@@ -18674,12 +18674,12 @@ func newCRequestHandlerT(p *C.cef_request_handler_t) *CRequestHandlerT {
 	Tracef(unsafe.Pointer(p), "T187.1:")
 	pc := (*cCRequestHandlerT)(p)
 	BaseAddRef(pc)
-	go_request_handler := CRequestHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_request_handler, func(g *CRequestHandlerT) {
+	go_request_handler := &CRequestHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_request_handler, func(g *CRequestHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_request_handler), "T187.2:")
 		BaseRelease(g.pc_request_handler)
 	})
-	return &go_request_handler
+	return go_request_handler
 }
 
 // *C.cef_request_handler_t has refCounted interface
@@ -19090,12 +19090,12 @@ func newCResourceBundleHandlerT(p *C.cef_resource_bundle_handler_t) *CResourceBu
 	Tracef(unsafe.Pointer(p), "T188.1:")
 	pc := (*cCResourceBundleHandlerT)(p)
 	BaseAddRef(pc)
-	go_resource_bundle_handler := CResourceBundleHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_resource_bundle_handler, func(g *CResourceBundleHandlerT) {
+	go_resource_bundle_handler := &CResourceBundleHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_resource_bundle_handler, func(g *CResourceBundleHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_resource_bundle_handler), "T188.2:")
 		BaseRelease(g.pc_resource_bundle_handler)
 	})
-	return &go_resource_bundle_handler
+	return go_resource_bundle_handler
 }
 
 // *C.cef_resource_bundle_handler_t has refCounted interface
@@ -19270,12 +19270,12 @@ func newCResourceSkipCallbackT(p *C.cef_resource_skip_callback_t) *CResourceSkip
 	Tracef(unsafe.Pointer(p), "T189.1:")
 	pc := (*cCResourceSkipCallbackT)(p)
 	BaseAddRef(pc)
-	go_resource_skip_callback := CResourceSkipCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_resource_skip_callback, func(g *CResourceSkipCallbackT) {
+	go_resource_skip_callback := &CResourceSkipCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_resource_skip_callback, func(g *CResourceSkipCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_resource_skip_callback), "T189.2:")
 		BaseRelease(g.pc_resource_skip_callback)
 	})
-	return &go_resource_skip_callback
+	return go_resource_skip_callback
 }
 
 // *C.cef_resource_skip_callback_t has refCounted interface
@@ -19338,12 +19338,12 @@ func newCResourceReadCallbackT(p *C.cef_resource_read_callback_t) *CResourceRead
 	Tracef(unsafe.Pointer(p), "T190.1:")
 	pc := (*cCResourceReadCallbackT)(p)
 	BaseAddRef(pc)
-	go_resource_read_callback := CResourceReadCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_resource_read_callback, func(g *CResourceReadCallbackT) {
+	go_resource_read_callback := &CResourceReadCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_resource_read_callback, func(g *CResourceReadCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_resource_read_callback), "T190.2:")
 		BaseRelease(g.pc_resource_read_callback)
 	})
-	return &go_resource_read_callback
+	return go_resource_read_callback
 }
 
 // *C.cef_resource_read_callback_t has refCounted interface
@@ -19408,12 +19408,12 @@ func newCResourceHandlerT(p *C.cef_resource_handler_t) *CResourceHandlerT {
 	Tracef(unsafe.Pointer(p), "T191.1:")
 	pc := (*cCResourceHandlerT)(p)
 	BaseAddRef(pc)
-	go_resource_handler := CResourceHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_resource_handler, func(g *CResourceHandlerT) {
+	go_resource_handler := &CResourceHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_resource_handler, func(g *CResourceHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_resource_handler), "T191.2:")
 		BaseRelease(g.pc_resource_handler)
 	})
-	return &go_resource_handler
+	return go_resource_handler
 }
 
 // *C.cef_resource_handler_t has refCounted interface
@@ -19699,12 +19699,12 @@ func newCResourceRequestHandlerT(p *C.cef_resource_request_handler_t) *CResource
 	Tracef(unsafe.Pointer(p), "T192.1:")
 	pc := (*cCResourceRequestHandlerT)(p)
 	BaseAddRef(pc)
-	go_resource_request_handler := CResourceRequestHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_resource_request_handler, func(g *CResourceRequestHandlerT) {
+	go_resource_request_handler := &CResourceRequestHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_resource_request_handler, func(g *CResourceRequestHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_resource_request_handler), "T192.2:")
 		BaseRelease(g.pc_resource_request_handler)
 	})
-	return &go_resource_request_handler
+	return go_resource_request_handler
 }
 
 // *C.cef_resource_request_handler_t has refCounted interface
@@ -20037,12 +20037,12 @@ func newCCookieAccessFilterT(p *C.cef_cookie_access_filter_t) *CCookieAccessFilt
 	Tracef(unsafe.Pointer(p), "T193.1:")
 	pc := (*cCCookieAccessFilterT)(p)
 	BaseAddRef(pc)
-	go_cookie_access_filter := CCookieAccessFilterT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_cookie_access_filter, func(g *CCookieAccessFilterT) {
+	go_cookie_access_filter := &CCookieAccessFilterT{noCopy{}, pc}
+	runtime.SetFinalizer(go_cookie_access_filter, func(g *CCookieAccessFilterT) {
 		Tracef(unsafe.Pointer(g.pc_cookie_access_filter), "T193.2:")
 		BaseRelease(g.pc_cookie_access_filter)
 	})
-	return &go_cookie_access_filter
+	return go_cookie_access_filter
 }
 
 // *C.cef_cookie_access_filter_t has refCounted interface
@@ -20202,12 +20202,12 @@ func newCResponseT(p *C.cef_response_t) *CResponseT {
 	Tracef(unsafe.Pointer(p), "T194.1:")
 	pc := (*cCResponseT)(p)
 	BaseAddRef(pc)
-	go_response := CResponseT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_response, func(g *CResponseT) {
+	go_response := &CResponseT{noCopy{}, pc}
+	runtime.SetFinalizer(go_response, func(g *CResponseT) {
 		Tracef(unsafe.Pointer(g.pc_response), "T194.2:")
 		BaseRelease(g.pc_response)
 	})
-	return &go_response
+	return go_response
 }
 
 // *C.cef_response_t has refCounted interface
@@ -20496,12 +20496,12 @@ func newCResponseFilterT(p *C.cef_response_filter_t) *CResponseFilterT {
 	Tracef(unsafe.Pointer(p), "T195.1:")
 	pc := (*cCResponseFilterT)(p)
 	BaseAddRef(pc)
-	go_response_filter := CResponseFilterT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_response_filter, func(g *CResponseFilterT) {
+	go_response_filter := &CResponseFilterT{noCopy{}, pc}
+	runtime.SetFinalizer(go_response_filter, func(g *CResponseFilterT) {
 		Tracef(unsafe.Pointer(g.pc_response_filter), "T195.2:")
 		BaseRelease(g.pc_response_filter)
 	})
-	return &go_response_filter
+	return go_response_filter
 }
 
 // *C.cef_response_filter_t has refCounted interface
@@ -20672,8 +20672,8 @@ func newCSchemeRegistrarT(p *C.cef_scheme_registrar_t) *CSchemeRegistrarT {
 	}
 	Tracef(unsafe.Pointer(p), "T196.1:")
 	pc := (*cCSchemeRegistrarT)(p)
-	go_scheme_registrar := CSchemeRegistrarT{noCopy{}, pc}
-	return &go_scheme_registrar
+	go_scheme_registrar := &CSchemeRegistrarT{noCopy{}, pc}
+	return go_scheme_registrar
 }
 
 ///
@@ -20737,12 +20737,12 @@ func newCSchemeHandlerFactoryT(p *C.cef_scheme_handler_factory_t) *CSchemeHandle
 	Tracef(unsafe.Pointer(p), "T197.1:")
 	pc := (*cCSchemeHandlerFactoryT)(p)
 	BaseAddRef(pc)
-	go_scheme_handler_factory := CSchemeHandlerFactoryT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_scheme_handler_factory, func(g *CSchemeHandlerFactoryT) {
+	go_scheme_handler_factory := &CSchemeHandlerFactoryT{noCopy{}, pc}
+	runtime.SetFinalizer(go_scheme_handler_factory, func(g *CSchemeHandlerFactoryT) {
 		Tracef(unsafe.Pointer(g.pc_scheme_handler_factory), "T197.2:")
 		BaseRelease(g.pc_scheme_handler_factory)
 	})
-	return &go_scheme_handler_factory
+	return go_scheme_handler_factory
 }
 
 // *C.cef_scheme_handler_factory_t has refCounted interface
@@ -20926,12 +20926,12 @@ func newCScrollViewT(p *C.cef_scroll_view_t) *CScrollViewT {
 	Tracef(unsafe.Pointer(p), "T198.1:")
 	pc := (*cCScrollViewT)(p)
 	BaseAddRef(pc)
-	go_scroll_view := CScrollViewT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_scroll_view, func(g *CScrollViewT) {
+	go_scroll_view := &CScrollViewT{noCopy{}, pc}
+	runtime.SetFinalizer(go_scroll_view, func(g *CScrollViewT) {
 		Tracef(unsafe.Pointer(g.pc_scroll_view), "T198.2:")
 		BaseRelease(g.pc_scroll_view)
 	})
-	return &go_scroll_view
+	return go_scroll_view
 }
 
 // *C.cef_scroll_view_t has refCounted interface
@@ -21089,12 +21089,12 @@ func newCSslinfoT(p *C.cef_sslinfo_t) *CSslinfoT {
 	Tracef(unsafe.Pointer(p), "T199.1:")
 	pc := (*cCSslinfoT)(p)
 	BaseAddRef(pc)
-	go_sslinfo := CSslinfoT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_sslinfo, func(g *CSslinfoT) {
+	go_sslinfo := &CSslinfoT{noCopy{}, pc}
+	runtime.SetFinalizer(go_sslinfo, func(g *CSslinfoT) {
 		Tracef(unsafe.Pointer(g.pc_sslinfo), "T199.2:")
 		BaseRelease(g.pc_sslinfo)
 	})
-	return &go_sslinfo
+	return go_sslinfo
 }
 
 // *C.cef_sslinfo_t has refCounted interface
@@ -21181,12 +21181,12 @@ func newCSslstatusT(p *C.cef_sslstatus_t) *CSslstatusT {
 	Tracef(unsafe.Pointer(p), "T200.1:")
 	pc := (*cCSslstatusT)(p)
 	BaseAddRef(pc)
-	go_sslstatus := CSslstatusT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_sslstatus, func(g *CSslstatusT) {
+	go_sslstatus := &CSslstatusT{noCopy{}, pc}
+	runtime.SetFinalizer(go_sslstatus, func(g *CSslstatusT) {
 		Tracef(unsafe.Pointer(g.pc_sslstatus), "T200.2:")
 		BaseRelease(g.pc_sslstatus)
 	})
-	return &go_sslstatus
+	return go_sslstatus
 }
 
 // *C.cef_sslstatus_t has refCounted interface
@@ -21294,12 +21294,12 @@ func newCReadHandlerT(p *C.cef_read_handler_t) *CReadHandlerT {
 	Tracef(unsafe.Pointer(p), "T201.1:")
 	pc := (*cCReadHandlerT)(p)
 	BaseAddRef(pc)
-	go_read_handler := CReadHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_read_handler, func(g *CReadHandlerT) {
+	go_read_handler := &CReadHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_read_handler, func(g *CReadHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_read_handler), "T201.2:")
 		BaseRelease(g.pc_read_handler)
 	})
-	return &go_read_handler
+	return go_read_handler
 }
 
 // *C.cef_read_handler_t has refCounted interface
@@ -21498,12 +21498,12 @@ func newCStreamReaderT(p *C.cef_stream_reader_t) *CStreamReaderT {
 	Tracef(unsafe.Pointer(p), "T202.1:")
 	pc := (*cCStreamReaderT)(p)
 	BaseAddRef(pc)
-	go_stream_reader := CStreamReaderT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_stream_reader, func(g *CStreamReaderT) {
+	go_stream_reader := &CStreamReaderT{noCopy{}, pc}
+	runtime.SetFinalizer(go_stream_reader, func(g *CStreamReaderT) {
 		Tracef(unsafe.Pointer(g.pc_stream_reader), "T202.2:")
 		BaseRelease(g.pc_stream_reader)
 	})
-	return &go_stream_reader
+	return go_stream_reader
 }
 
 // *C.cef_stream_reader_t has refCounted interface
@@ -21666,12 +21666,12 @@ func newCWriteHandlerT(p *C.cef_write_handler_t) *CWriteHandlerT {
 	Tracef(unsafe.Pointer(p), "T203.1:")
 	pc := (*cCWriteHandlerT)(p)
 	BaseAddRef(pc)
-	go_write_handler := CWriteHandlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_write_handler, func(g *CWriteHandlerT) {
+	go_write_handler := &CWriteHandlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_write_handler, func(g *CWriteHandlerT) {
 		Tracef(unsafe.Pointer(g.pc_write_handler), "T203.2:")
 		BaseRelease(g.pc_write_handler)
 	})
-	return &go_write_handler
+	return go_write_handler
 }
 
 // *C.cef_write_handler_t has refCounted interface
@@ -21870,12 +21870,12 @@ func newCStreamWriterT(p *C.cef_stream_writer_t) *CStreamWriterT {
 	Tracef(unsafe.Pointer(p), "T204.1:")
 	pc := (*cCStreamWriterT)(p)
 	BaseAddRef(pc)
-	go_stream_writer := CStreamWriterT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_stream_writer, func(g *CStreamWriterT) {
+	go_stream_writer := &CStreamWriterT{noCopy{}, pc}
+	runtime.SetFinalizer(go_stream_writer, func(g *CStreamWriterT) {
 		Tracef(unsafe.Pointer(g.pc_stream_writer), "T204.2:")
 		BaseRelease(g.pc_stream_writer)
 	})
-	return &go_stream_writer
+	return go_stream_writer
 }
 
 // *C.cef_stream_writer_t has refCounted interface
@@ -22023,12 +22023,12 @@ func newCStringVisitorT(p *C.cef_string_visitor_t) *CStringVisitorT {
 	Tracef(unsafe.Pointer(p), "T205.1:")
 	pc := (*cCStringVisitorT)(p)
 	BaseAddRef(pc)
-	go_string_visitor := CStringVisitorT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_string_visitor, func(g *CStringVisitorT) {
+	go_string_visitor := &CStringVisitorT{noCopy{}, pc}
+	runtime.SetFinalizer(go_string_visitor, func(g *CStringVisitorT) {
 		Tracef(unsafe.Pointer(g.pc_string_visitor), "T205.2:")
 		BaseRelease(g.pc_string_visitor)
 	})
-	return &go_string_visitor
+	return go_string_visitor
 }
 
 // *C.cef_string_visitor_t has refCounted interface
@@ -22158,12 +22158,12 @@ func newCTaskT(p *C.cef_task_t) *CTaskT {
 	Tracef(unsafe.Pointer(p), "T206.1:")
 	pc := (*cCTaskT)(p)
 	BaseAddRef(pc)
-	go_task := CTaskT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_task, func(g *CTaskT) {
+	go_task := &CTaskT{noCopy{}, pc}
+	runtime.SetFinalizer(go_task, func(g *CTaskT) {
 		Tracef(unsafe.Pointer(g.pc_task), "T206.2:")
 		BaseRelease(g.pc_task)
 	})
-	return &go_task
+	return go_task
 }
 
 // *C.cef_task_t has refCounted interface
@@ -22291,12 +22291,12 @@ func newCTaskRunnerT(p *C.cef_task_runner_t) *CTaskRunnerT {
 	Tracef(unsafe.Pointer(p), "T207.1:")
 	pc := (*cCTaskRunnerT)(p)
 	BaseAddRef(pc)
-	go_task_runner := CTaskRunnerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_task_runner, func(g *CTaskRunnerT) {
+	go_task_runner := &CTaskRunnerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_task_runner, func(g *CTaskRunnerT) {
 		Tracef(unsafe.Pointer(g.pc_task_runner), "T207.2:")
 		BaseRelease(g.pc_task_runner)
 	})
-	return &go_task_runner
+	return go_task_runner
 }
 
 // *C.cef_task_runner_t has refCounted interface
@@ -22515,12 +22515,12 @@ func newCTextfieldT(p *C.cef_textfield_t) *CTextfieldT {
 	Tracef(unsafe.Pointer(p), "T208.1:")
 	pc := (*cCTextfieldT)(p)
 	BaseAddRef(pc)
-	go_textfield := CTextfieldT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_textfield, func(g *CTextfieldT) {
+	go_textfield := &CTextfieldT{noCopy{}, pc}
+	runtime.SetFinalizer(go_textfield, func(g *CTextfieldT) {
 		Tracef(unsafe.Pointer(g.pc_textfield), "T208.2:")
 		BaseRelease(g.pc_textfield)
 	})
-	return &go_textfield
+	return go_textfield
 }
 
 // *C.cef_textfield_t has refCounted interface
@@ -22978,12 +22978,12 @@ func newCTextfieldDelegateT(p *C.cef_textfield_delegate_t) *CTextfieldDelegateT 
 	Tracef(unsafe.Pointer(p), "T209.1:")
 	pc := (*cCTextfieldDelegateT)(p)
 	BaseAddRef(pc)
-	go_textfield_delegate := CTextfieldDelegateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_textfield_delegate, func(g *CTextfieldDelegateT) {
+	go_textfield_delegate := &CTextfieldDelegateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_textfield_delegate, func(g *CTextfieldDelegateT) {
 		Tracef(unsafe.Pointer(g.pc_textfield_delegate), "T209.2:")
 		BaseRelease(g.pc_textfield_delegate)
 	})
-	return &go_textfield_delegate
+	return go_textfield_delegate
 }
 
 // *C.cef_textfield_delegate_t has refCounted interface
@@ -23203,12 +23203,12 @@ func newCUrlrequestT(p *C.cef_urlrequest_t) *CUrlrequestT {
 	Tracef(unsafe.Pointer(p), "T210.1:")
 	pc := (*cCUrlrequestT)(p)
 	BaseAddRef(pc)
-	go_urlrequest := CUrlrequestT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_urlrequest, func(g *CUrlrequestT) {
+	go_urlrequest := &CUrlrequestT{noCopy{}, pc}
+	runtime.SetFinalizer(go_urlrequest, func(g *CUrlrequestT) {
 		Tracef(unsafe.Pointer(g.pc_urlrequest), "T210.2:")
 		BaseRelease(g.pc_urlrequest)
 	})
-	return &go_urlrequest
+	return go_urlrequest
 }
 
 // *C.cef_urlrequest_t has refCounted interface
@@ -23380,12 +23380,12 @@ func newCUrlrequestClientT(p *C.cef_urlrequest_client_t) *CUrlrequestClientT {
 	Tracef(unsafe.Pointer(p), "T211.1:")
 	pc := (*cCUrlrequestClientT)(p)
 	BaseAddRef(pc)
-	go_urlrequest_client := CUrlrequestClientT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_urlrequest_client, func(g *CUrlrequestClientT) {
+	go_urlrequest_client := &CUrlrequestClientT{noCopy{}, pc}
+	runtime.SetFinalizer(go_urlrequest_client, func(g *CUrlrequestClientT) {
 		Tracef(unsafe.Pointer(g.pc_urlrequest_client), "T211.2:")
 		BaseRelease(g.pc_urlrequest_client)
 	})
-	return &go_urlrequest_client
+	return go_urlrequest_client
 }
 
 // *C.cef_urlrequest_client_t has refCounted interface
@@ -23613,12 +23613,12 @@ func newCV8contextT(p *C.cef_v8context_t) *CV8contextT {
 	Tracef(unsafe.Pointer(p), "T212.1:")
 	pc := (*cCV8contextT)(p)
 	BaseAddRef(pc)
-	go_v8context := CV8contextT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8context, func(g *CV8contextT) {
+	go_v8context := &CV8contextT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8context, func(g *CV8contextT) {
 		Tracef(unsafe.Pointer(g.pc_v8context), "T212.2:")
 		BaseRelease(g.pc_v8context)
 	})
-	return &go_v8context
+	return go_v8context
 }
 
 // *C.cef_v8context_t has refCounted interface
@@ -23837,12 +23837,12 @@ func newCV8handlerT(p *C.cef_v8handler_t) *CV8handlerT {
 	Tracef(unsafe.Pointer(p), "T213.1:")
 	pc := (*cCV8handlerT)(p)
 	BaseAddRef(pc)
-	go_v8handler := CV8handlerT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8handler, func(g *CV8handlerT) {
+	go_v8handler := &CV8handlerT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8handler, func(g *CV8handlerT) {
 		Tracef(unsafe.Pointer(g.pc_v8handler), "T213.2:")
 		BaseRelease(g.pc_v8handler)
 	})
-	return &go_v8handler
+	return go_v8handler
 }
 
 // *C.cef_v8handler_t has refCounted interface
@@ -23974,12 +23974,12 @@ func newCV8accessorT(p *C.cef_v8accessor_t) *CV8accessorT {
 	Tracef(unsafe.Pointer(p), "T214.1:")
 	pc := (*cCV8accessorT)(p)
 	BaseAddRef(pc)
-	go_v8accessor := CV8accessorT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8accessor, func(g *CV8accessorT) {
+	go_v8accessor := &CV8accessorT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8accessor, func(g *CV8accessorT) {
 		Tracef(unsafe.Pointer(g.pc_v8accessor), "T214.2:")
 		BaseRelease(g.pc_v8accessor)
 	})
-	return &go_v8accessor
+	return go_v8accessor
 }
 
 // *C.cef_v8accessor_t has refCounted interface
@@ -24136,12 +24136,12 @@ func newCV8interceptorT(p *C.cef_v8interceptor_t) *CV8interceptorT {
 	Tracef(unsafe.Pointer(p), "T215.1:")
 	pc := (*cCV8interceptorT)(p)
 	BaseAddRef(pc)
-	go_v8interceptor := CV8interceptorT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8interceptor, func(g *CV8interceptorT) {
+	go_v8interceptor := &CV8interceptorT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8interceptor, func(g *CV8interceptorT) {
 		Tracef(unsafe.Pointer(g.pc_v8interceptor), "T215.2:")
 		BaseRelease(g.pc_v8interceptor)
 	})
-	return &go_v8interceptor
+	return go_v8interceptor
 }
 
 // *C.cef_v8interceptor_t has refCounted interface
@@ -24317,12 +24317,12 @@ func newCV8exceptionT(p *C.cef_v8exception_t) *CV8exceptionT {
 	Tracef(unsafe.Pointer(p), "T216.1:")
 	pc := (*cCV8exceptionT)(p)
 	BaseAddRef(pc)
-	go_v8exception := CV8exceptionT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8exception, func(g *CV8exceptionT) {
+	go_v8exception := &CV8exceptionT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8exception, func(g *CV8exceptionT) {
 		Tracef(unsafe.Pointer(g.pc_v8exception), "T216.2:")
 		BaseRelease(g.pc_v8exception)
 	})
-	return &go_v8exception
+	return go_v8exception
 }
 
 // *C.cef_v8exception_t has refCounted interface
@@ -24480,12 +24480,12 @@ func newCV8arrayBufferReleaseCallbackT(p *C.cef_v8array_buffer_release_callback_
 	Tracef(unsafe.Pointer(p), "T217.1:")
 	pc := (*cCV8arrayBufferReleaseCallbackT)(p)
 	BaseAddRef(pc)
-	go_v8array_buffer_release_callback := CV8arrayBufferReleaseCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8array_buffer_release_callback, func(g *CV8arrayBufferReleaseCallbackT) {
+	go_v8array_buffer_release_callback := &CV8arrayBufferReleaseCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8array_buffer_release_callback, func(g *CV8arrayBufferReleaseCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_v8array_buffer_release_callback), "T217.2:")
 		BaseRelease(g.pc_v8array_buffer_release_callback)
 	})
-	return &go_v8array_buffer_release_callback
+	return go_v8array_buffer_release_callback
 }
 
 // *C.cef_v8array_buffer_release_callback_t has refCounted interface
@@ -24614,12 +24614,12 @@ func newCV8valueT(p *C.cef_v8value_t) *CV8valueT {
 	Tracef(unsafe.Pointer(p), "T218.1:")
 	pc := (*cCV8valueT)(p)
 	BaseAddRef(pc)
-	go_v8value := CV8valueT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8value, func(g *CV8valueT) {
+	go_v8value := &CV8valueT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8value, func(g *CV8valueT) {
 		Tracef(unsafe.Pointer(g.pc_v8value), "T218.2:")
 		BaseRelease(g.pc_v8value)
 	})
-	return &go_v8value
+	return go_v8value
 }
 
 // *C.cef_v8value_t has refCounted interface
@@ -25526,12 +25526,12 @@ func newCV8stackTraceT(p *C.cef_v8stack_trace_t) *CV8stackTraceT {
 	Tracef(unsafe.Pointer(p), "T219.1:")
 	pc := (*cCV8stackTraceT)(p)
 	BaseAddRef(pc)
-	go_v8stack_trace := CV8stackTraceT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8stack_trace, func(g *CV8stackTraceT) {
+	go_v8stack_trace := &CV8stackTraceT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8stack_trace, func(g *CV8stackTraceT) {
 		Tracef(unsafe.Pointer(g.pc_v8stack_trace), "T219.2:")
 		BaseRelease(g.pc_v8stack_trace)
 	})
-	return &go_v8stack_trace
+	return go_v8stack_trace
 }
 
 // *C.cef_v8stack_trace_t has refCounted interface
@@ -25635,12 +25635,12 @@ func newCV8stackFrameT(p *C.cef_v8stack_frame_t) *CV8stackFrameT {
 	Tracef(unsafe.Pointer(p), "T220.1:")
 	pc := (*cCV8stackFrameT)(p)
 	BaseAddRef(pc)
-	go_v8stack_frame := CV8stackFrameT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_v8stack_frame, func(g *CV8stackFrameT) {
+	go_v8stack_frame := &CV8stackFrameT{noCopy{}, pc}
+	runtime.SetFinalizer(go_v8stack_frame, func(g *CV8stackFrameT) {
 		Tracef(unsafe.Pointer(g.pc_v8stack_frame), "T220.2:")
 		BaseRelease(g.pc_v8stack_frame)
 	})
-	return &go_v8stack_frame
+	return go_v8stack_frame
 }
 
 // *C.cef_v8stack_frame_t has refCounted interface
@@ -25876,12 +25876,12 @@ func newCValueT(p *C.cef_value_t) *CValueT {
 	Tracef(unsafe.Pointer(p), "T221.1:")
 	pc := (*cCValueT)(p)
 	BaseAddRef(pc)
-	go_value := CValueT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_value, func(g *CValueT) {
+	go_value := &CValueT{noCopy{}, pc}
+	runtime.SetFinalizer(go_value, func(g *CValueT) {
 		Tracef(unsafe.Pointer(g.pc_value), "T221.2:")
 		BaseRelease(g.pc_value)
 	})
-	return &go_value
+	return go_value
 }
 
 // *C.cef_value_t has refCounted interface
@@ -26271,12 +26271,12 @@ func newCBinaryValueT(p *C.cef_binary_value_t) *CBinaryValueT {
 	Tracef(unsafe.Pointer(p), "T222.1:")
 	pc := (*cCBinaryValueT)(p)
 	BaseAddRef(pc)
-	go_binary_value := CBinaryValueT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_binary_value, func(g *CBinaryValueT) {
+	go_binary_value := &CBinaryValueT{noCopy{}, pc}
+	runtime.SetFinalizer(go_binary_value, func(g *CBinaryValueT) {
 		Tracef(unsafe.Pointer(g.pc_binary_value), "T222.2:")
 		BaseRelease(g.pc_binary_value)
 	})
-	return &go_binary_value
+	return go_binary_value
 }
 
 // *C.cef_binary_value_t has refCounted interface
@@ -26444,12 +26444,12 @@ func newCDictionaryValueT(p *C.cef_dictionary_value_t) *CDictionaryValueT {
 	Tracef(unsafe.Pointer(p), "T223.1:")
 	pc := (*cCDictionaryValueT)(p)
 	BaseAddRef(pc)
-	go_dictionary_value := CDictionaryValueT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_dictionary_value, func(g *CDictionaryValueT) {
+	go_dictionary_value := &CDictionaryValueT{noCopy{}, pc}
+	runtime.SetFinalizer(go_dictionary_value, func(g *CDictionaryValueT) {
 		Tracef(unsafe.Pointer(g.pc_dictionary_value), "T223.2:")
 		BaseRelease(g.pc_dictionary_value)
 	})
-	return &go_dictionary_value
+	return go_dictionary_value
 }
 
 // *C.cef_dictionary_value_t has refCounted interface
@@ -26984,12 +26984,12 @@ func newCListValueT(p *C.cef_list_value_t) *CListValueT {
 	Tracef(unsafe.Pointer(p), "T224.1:")
 	pc := (*cCListValueT)(p)
 	BaseAddRef(pc)
-	go_list_value := CListValueT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_list_value, func(g *CListValueT) {
+	go_list_value := &CListValueT{noCopy{}, pc}
+	runtime.SetFinalizer(go_list_value, func(g *CListValueT) {
 		Tracef(unsafe.Pointer(g.pc_list_value), "T224.2:")
 		BaseRelease(g.pc_list_value)
 	})
-	return &go_list_value
+	return go_list_value
 }
 
 // *C.cef_list_value_t has refCounted interface
@@ -27493,12 +27493,12 @@ func newCViewT(p *C.cef_view_t) *CViewT {
 	Tracef(unsafe.Pointer(p), "T225.1:")
 	pc := (*cCViewT)(p)
 	BaseAddRef(pc)
-	go_view := CViewT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_view, func(g *CViewT) {
+	go_view := &CViewT{noCopy{}, pc}
+	runtime.SetFinalizer(go_view, func(g *CViewT) {
 		Tracef(unsafe.Pointer(g.pc_view), "T225.2:")
 		BaseRelease(g.pc_view)
 	})
-	return &go_view
+	return go_view
 }
 
 // *C.cef_view_t has refCounted interface
@@ -28186,12 +28186,12 @@ func newCViewDelegateT(p *C.cef_view_delegate_t) *CViewDelegateT {
 	Tracef(unsafe.Pointer(p), "T226.1:")
 	pc := (*cCViewDelegateT)(p)
 	BaseAddRef(pc)
-	go_view_delegate := CViewDelegateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_view_delegate, func(g *CViewDelegateT) {
+	go_view_delegate := &CViewDelegateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_view_delegate, func(g *CViewDelegateT) {
 		Tracef(unsafe.Pointer(g.pc_view_delegate), "T226.2:")
 		BaseRelease(g.pc_view_delegate)
 	})
-	return &go_view_delegate
+	return go_view_delegate
 }
 
 // *C.cef_view_delegate_t has refCounted interface
@@ -28460,12 +28460,12 @@ func newCWebPluginInfoT(p *C.cef_web_plugin_info_t) *CWebPluginInfoT {
 	Tracef(unsafe.Pointer(p), "T227.1:")
 	pc := (*cCWebPluginInfoT)(p)
 	BaseAddRef(pc)
-	go_web_plugin_info := CWebPluginInfoT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_web_plugin_info, func(g *CWebPluginInfoT) {
+	go_web_plugin_info := &CWebPluginInfoT{noCopy{}, pc}
+	runtime.SetFinalizer(go_web_plugin_info, func(g *CWebPluginInfoT) {
 		Tracef(unsafe.Pointer(g.pc_web_plugin_info), "T227.2:")
 		BaseRelease(g.pc_web_plugin_info)
 	})
-	return &go_web_plugin_info
+	return go_web_plugin_info
 }
 
 // *C.cef_web_plugin_info_t has refCounted interface
@@ -28579,12 +28579,12 @@ func newCWebPluginInfoVisitorT(p *C.cef_web_plugin_info_visitor_t) *CWebPluginIn
 	Tracef(unsafe.Pointer(p), "T228.1:")
 	pc := (*cCWebPluginInfoVisitorT)(p)
 	BaseAddRef(pc)
-	go_web_plugin_info_visitor := CWebPluginInfoVisitorT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_web_plugin_info_visitor, func(g *CWebPluginInfoVisitorT) {
+	go_web_plugin_info_visitor := &CWebPluginInfoVisitorT{noCopy{}, pc}
+	runtime.SetFinalizer(go_web_plugin_info_visitor, func(g *CWebPluginInfoVisitorT) {
 		Tracef(unsafe.Pointer(g.pc_web_plugin_info_visitor), "T228.2:")
 		BaseRelease(g.pc_web_plugin_info_visitor)
 	})
-	return &go_web_plugin_info_visitor
+	return go_web_plugin_info_visitor
 }
 
 // *C.cef_web_plugin_info_visitor_t has refCounted interface
@@ -28713,12 +28713,12 @@ func newCWebPluginUnstableCallbackT(p *C.cef_web_plugin_unstable_callback_t) *CW
 	Tracef(unsafe.Pointer(p), "T229.1:")
 	pc := (*cCWebPluginUnstableCallbackT)(p)
 	BaseAddRef(pc)
-	go_web_plugin_unstable_callback := CWebPluginUnstableCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_web_plugin_unstable_callback, func(g *CWebPluginUnstableCallbackT) {
+	go_web_plugin_unstable_callback := &CWebPluginUnstableCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_web_plugin_unstable_callback, func(g *CWebPluginUnstableCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_web_plugin_unstable_callback), "T229.2:")
 		BaseRelease(g.pc_web_plugin_unstable_callback)
 	})
-	return &go_web_plugin_unstable_callback
+	return go_web_plugin_unstable_callback
 }
 
 // *C.cef_web_plugin_unstable_callback_t has refCounted interface
@@ -28846,12 +28846,12 @@ func newCRegisterCdmCallbackT(p *C.cef_register_cdm_callback_t) *CRegisterCdmCal
 	Tracef(unsafe.Pointer(p), "T230.1:")
 	pc := (*cCRegisterCdmCallbackT)(p)
 	BaseAddRef(pc)
-	go_register_cdm_callback := CRegisterCdmCallbackT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_register_cdm_callback, func(g *CRegisterCdmCallbackT) {
+	go_register_cdm_callback := &CRegisterCdmCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_register_cdm_callback, func(g *CRegisterCdmCallbackT) {
 		Tracef(unsafe.Pointer(g.pc_register_cdm_callback), "T230.2:")
 		BaseRelease(g.pc_register_cdm_callback)
 	})
-	return &go_register_cdm_callback
+	return go_register_cdm_callback
 }
 
 // *C.cef_register_cdm_callback_t has refCounted interface
@@ -29115,12 +29115,12 @@ func newCWindowT(p *C.cef_window_t) *CWindowT {
 	Tracef(unsafe.Pointer(p), "T231.1:")
 	pc := (*cCWindowT)(p)
 	BaseAddRef(pc)
-	go_window := CWindowT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_window, func(g *CWindowT) {
+	go_window := &CWindowT{noCopy{}, pc}
+	runtime.SetFinalizer(go_window, func(g *CWindowT) {
 		Tracef(unsafe.Pointer(g.pc_window), "T231.2:")
 		BaseRelease(g.pc_window)
 	})
-	return &go_window
+	return go_window
 }
 
 // *C.cef_window_t has refCounted interface
@@ -29631,12 +29631,12 @@ func newCWindowDelegateT(p *C.cef_window_delegate_t) *CWindowDelegateT {
 	Tracef(unsafe.Pointer(p), "T232.1:")
 	pc := (*cCWindowDelegateT)(p)
 	BaseAddRef(pc)
-	go_window_delegate := CWindowDelegateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_window_delegate, func(g *CWindowDelegateT) {
+	go_window_delegate := &CWindowDelegateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_window_delegate, func(g *CWindowDelegateT) {
 		Tracef(unsafe.Pointer(g.pc_window_delegate), "T232.2:")
 		BaseRelease(g.pc_window_delegate)
 	})
-	return &go_window_delegate
+	return go_window_delegate
 }
 
 // *C.cef_window_delegate_t has refCounted interface
@@ -30032,12 +30032,12 @@ func newCX509certPrincipalT(p *C.cef_x509cert_principal_t) *CX509certPrincipalT 
 	Tracef(unsafe.Pointer(p), "T233.1:")
 	pc := (*cCX509certPrincipalT)(p)
 	BaseAddRef(pc)
-	go_x509cert_principal := CX509certPrincipalT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_x509cert_principal, func(g *CX509certPrincipalT) {
+	go_x509cert_principal := &CX509certPrincipalT{noCopy{}, pc}
+	runtime.SetFinalizer(go_x509cert_principal, func(g *CX509certPrincipalT) {
 		Tracef(unsafe.Pointer(g.pc_x509cert_principal), "T233.2:")
 		BaseRelease(g.pc_x509cert_principal)
 	})
-	return &go_x509cert_principal
+	return go_x509cert_principal
 }
 
 // *C.cef_x509cert_principal_t has refCounted interface
@@ -30212,12 +30212,12 @@ func newCX509certificateT(p *C.cef_x509certificate_t) *CX509certificateT {
 	Tracef(unsafe.Pointer(p), "T234.1:")
 	pc := (*cCX509certificateT)(p)
 	BaseAddRef(pc)
-	go_x509certificate := CX509certificateT{noCopy{}, pc}
-	runtime.SetFinalizer(&go_x509certificate, func(g *CX509certificateT) {
+	go_x509certificate := &CX509certificateT{noCopy{}, pc}
+	runtime.SetFinalizer(go_x509certificate, func(g *CX509certificateT) {
 		Tracef(unsafe.Pointer(g.pc_x509certificate), "T234.2:")
 		BaseRelease(g.pc_x509certificate)
 	})
-	return &go_x509certificate
+	return go_x509certificate
 }
 
 // *C.cef_x509certificate_t has refCounted interface

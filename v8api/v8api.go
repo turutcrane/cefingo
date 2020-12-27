@@ -49,7 +49,7 @@ func NewString(s string) Value {
 	return NewValue(capi.V8valueCreateString(s))
 }
 
-func GetContext() (c Context, err error) {
+func GetCurrentContext() (c Context, err error) {
 	v8c := capi.V8contextGetCurrentContext()
 	g := NewValue(v8c.GetGlobal())
 	d, err := g.GetValueBykey("document")
@@ -63,8 +63,25 @@ func GetContext() (c Context, err error) {
 	return c, err
 }
 
+func GetV8Context(v8c *capi.CV8contextT) (c Context, err error) {
+	g := NewValue(v8c.GetGlobal())
+	d, err := g.GetValueBykey("document")
+	if err == nil {
+		c = Context{
+			V8context: v8c,
+			Global:    g,
+			Document:  d,
+		}
+	}
+	return c, err
+}
+
 func (c Context) IsValid() bool {
-	return c.V8context != nil
+	return c.V8context != nil && c.V8context.IsValid()
+}
+
+func (c Context) IsSame(c1 Context) bool {
+	return c.IsValid() && c1.IsValid() && c.V8context.IsSame(c1.V8context)
 }
 
 func (c Context) GetBrowser() *capi.CBrowserT {
@@ -114,7 +131,7 @@ func (c Context) GetElementsByClassName(cls string) (elements Value, err error) 
 func EnterContext(c *capi.CV8contextT) (ctx Context, err error) {
 	runtime.LockOSThread() // UnlockOSThread at ExitContext()
 	if c.Enter() {
-		return GetContext()
+		return GetCurrentContext()
 	}
 	return Context{}, fmt.Errorf("E105: Enter Error")
 }

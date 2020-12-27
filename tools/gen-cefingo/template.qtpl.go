@@ -3589,7 +3589,7 @@ func new`)
 //line template.qtpl:668
 	qw422016.E().S(d.BaseName())
 //line template.qtpl:668
-	qw422016.N().S(` := `)
+	qw422016.N().S(` := &`)
 //line template.qtpl:668
 	qw422016.E().S(d.GoName())
 //line template.qtpl:668
@@ -3598,7 +3598,7 @@ func new`)
 //line template.qtpl:669
 	if d.St == parser.StRefCounted {
 //line template.qtpl:669
-		qw422016.N().S(`	runtime.SetFinalizer(&go_`)
+		qw422016.N().S(`	runtime.SetFinalizer(go_`)
 //line template.qtpl:670
 		qw422016.E().S(d.BaseName())
 //line template.qtpl:670
@@ -3626,7 +3626,7 @@ func new`)
 //line template.qtpl:674
 	}
 //line template.qtpl:674
-	qw422016.N().S(`	return &go_`)
+	qw422016.N().S(`	return go_`)
 //line template.qtpl:675
 	qw422016.E().S(d.BaseName())
 //line template.qtpl:675

@@ -50,12 +50,34 @@ func Logf(message string, v ...interface{}) {
 	}
 }
 
+func Logln(v ...interface{}) {
+	if Logger != nil {
+		fn := caller_name(0)
+		v1 := []interface{}{}
+		v1 = append(v1, "("+fn+")\n")
+		v1 = append(v1, v...)
+		Logger.Println(v1...)
+	}
+}
+
 func Panicf(message string, v ...interface{}) {
 	fn := caller_name(0)
 	if Logger != nil {
 		Logger.Panicf("("+fn+") "+message+"\n", v...)
 	} else {
 		log.Panicf("("+fn+") "+message+"\n", v...)
+	}
+}
+
+func Panicln(v ...interface{}) {
+	fn := caller_name(0)
+	v1 := []interface{}{}
+	v1 = append(v1, "("+fn+")")
+	v1 = append(v1, v...)
+	if Logger != nil {
+		Logger.Panicln(v...)
+	} else {
+		log.Panicln(v...)
 	}
 }
 

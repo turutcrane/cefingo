@@ -665,14 +665,14 @@ func new{%s d.GoName() %}(p {%s d.GoCType() %}) {%s d.GoType() %} {
 	{%- if d.St == parser.StRefCounted -%}
 	BaseAddRef(pc)
 	{%- endif -%}
-	go_{%s d.BaseName() %} := {%s d.GoName() %}{noCopy{}, pc}
+	go_{%s d.BaseName() %} := &{%s d.GoName() %}{noCopy{}, pc}
 	{%- if d.St == parser.StRefCounted -%}
-	runtime.SetFinalizer(&go_{%s d.BaseName() %}, func(g {%s d.GoType() %}) {
+	runtime.SetFinalizer(go_{%s d.BaseName() %}, func(g {%s d.GoType() %}) {
 		Tracef(unsafe.Pointer(g.pc_{%s d.BaseName() %}), "{%s lt.NextTag() %}:")
 		BaseRelease(g.pc_{%s d.BaseName() %})
 	})
 	{%- endif -%}
-	return &go_{%s d.BaseName() %}
+	return go_{%s d.BaseName() %}
 }
 {% if d.St == parser.StRefCounted -%}
 // {%s d.GoCType() %} has refCounted interface
