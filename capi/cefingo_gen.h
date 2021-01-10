@@ -2909,6 +2909,9 @@ extern void cefingo_textfield_set_accessible_name(
 CEFINGO_REF_COUNTER_WRAPPER(cef_textfield_delegate_t, cefingo_textfield_delegate_wrapper_t);
 extern cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield_delegate_wrapper_t* textfield_delegate);
 
+CEFINGO_REF_COUNTER_WRAPPER(cef_end_tracing_callback_t, cefingo_end_tracing_callback_wrapper_t);
+extern cef_end_tracing_callback_t *cefingo_construct_end_tracing_callback(cefingo_end_tracing_callback_wrapper_t* end_tracing_callback);
+
 extern struct _cef_request_t* cefingo_urlrequest_get_request(
 	struct _cef_urlrequest_t* self
 );

@@ -644,15 +644,17 @@ type RefTo{%s d.GoName() %} struct {
 
 type {%s d.GoName() %}Accessor interface {
 	Get{%s d.GoName() %}() {%s d.GoType() %}
-	Set{%s d.GoName() %}({%s d.GoType() %})
+	Set{%s d.GoName() %}({%s d.GoType() %}) (oldValue {%s d.GoType() %})
 }
 
 func (r RefTo{%s d.GoName() %}) Get{%s d.GoName() %}() {%s d.GoType() %} {
 	return r.p_{%s d.BaseName() %}
 }
 
-func (r *RefTo{%s d.GoName() %}) Set{%s d.GoName() %}(p {%s d.GoType() %}) {
+func (r *RefTo{%s d.GoName() %}) Set{%s d.GoName() %}(p {%s d.GoType() %}) (prevValue {%s d.GoType() %}) {
+	prevValue = r.p_{%s d.BaseName() %}
 	r.p_{%s d.BaseName() %} = p
+	return prevValue
 }
 
 // Go type {%s d.GoName() %} wraps cef type {%s d.GoCType() %}

@@ -8367,6 +8367,36 @@ func cefingo_textfield_delegate_on_blur(
 }
 
 ///
+// Called after all processes have sent their trace data. |tracing_file| is
+// the path at which tracing data was written. The client is responsible for
+// deleting |tracing_file|.
+///
+//export cefingo_end_tracing_callback_on_end_tracing_complete
+func cefingo_end_tracing_callback_on_end_tracing_complete(
+	self *C.cef_end_tracing_callback_t,
+	tracing_file *C.cef_string_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T381.6:")
+	cefingoIfaceAccess.Lock()
+	f := end_tracing_callback_handlers.on_end_tracing_complete_handler[(*cCEndTracingCallbackT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCEndTracingCallbackT(self)
+		goTmptracing_file := string_from_cef_string(tracing_file)
+
+		f.OnEndTracingComplete(goTmpself, goTmptracing_file)
+
+	} else {
+		Logf("T381.7: on_end_tracing_complete: Noo!")
+	}
+
+}
+
+///
 // Notifies the client that the request has completed. Use the
 // cef_urlrequest_t::GetRequestStatus function to determine if the request was
 // successful or not.

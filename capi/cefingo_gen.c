@@ -7512,6 +7512,24 @@ cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield
 	return (cef_textfield_delegate_t*)textfield_delegate;
 }
 
+typedef void (*T_CEF_END_TRACING_CALLBACK_T_ON_END_TRACING_COMPLETE)(
+	struct _cef_end_tracing_callback_t*,
+	const cef_string_t*
+);
+
+cef_end_tracing_callback_t *cefingo_construct_end_tracing_callback(cefingo_end_tracing_callback_wrapper_t* end_tracing_callback)
+{
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*end_tracing_callback), counter),
+		(cef_base_ref_counted_t*) end_tracing_callback);
+
+	// callbacks
+	end_tracing_callback->body.on_end_tracing_complete =
+		(T_CEF_END_TRACING_CALLBACK_T_ON_END_TRACING_COMPLETE)cefingo_end_tracing_callback_on_end_tracing_complete;
+
+	return (cef_end_tracing_callback_t*)end_tracing_callback;
+}
+
 struct _cef_request_t* cefingo_urlrequest_get_request(
 	struct _cef_urlrequest_t* self
 )

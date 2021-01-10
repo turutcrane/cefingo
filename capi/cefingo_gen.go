@@ -32,15 +32,17 @@ type RefToCAccessibilityHandlerT struct {
 
 type CAccessibilityHandlerTAccessor interface {
 	GetCAccessibilityHandlerT() *CAccessibilityHandlerT
-	SetCAccessibilityHandlerT(*CAccessibilityHandlerT)
+	SetCAccessibilityHandlerT(*CAccessibilityHandlerT) (oldValue *CAccessibilityHandlerT)
 }
 
 func (r RefToCAccessibilityHandlerT) GetCAccessibilityHandlerT() *CAccessibilityHandlerT {
 	return r.p_accessibility_handler
 }
 
-func (r *RefToCAccessibilityHandlerT) SetCAccessibilityHandlerT(p *CAccessibilityHandlerT) {
+func (r *RefToCAccessibilityHandlerT) SetCAccessibilityHandlerT(p *CAccessibilityHandlerT) (prevValue *CAccessibilityHandlerT) {
+	prevValue = r.p_accessibility_handler
 	r.p_accessibility_handler = p
+	return prevValue
 }
 
 // Go type CAccessibilityHandlerT wraps cef type *C.cef_accessibility_handler_t
@@ -183,15 +185,17 @@ type RefToCAppT struct {
 
 type CAppTAccessor interface {
 	GetCAppT() *CAppT
-	SetCAppT(*CAppT)
+	SetCAppT(*CAppT) (oldValue *CAppT)
 }
 
 func (r RefToCAppT) GetCAppT() *CAppT {
 	return r.p_app
 }
 
-func (r *RefToCAppT) SetCAppT(p *CAppT) {
+func (r *RefToCAppT) SetCAppT(p *CAppT) (prevValue *CAppT) {
+	prevValue = r.p_app
 	r.p_app = p
+	return prevValue
 }
 
 // Go type CAppT wraps cef type *C.cef_app_t
@@ -536,15 +540,17 @@ type RefToCAudioHandlerT struct {
 
 type CAudioHandlerTAccessor interface {
 	GetCAudioHandlerT() *CAudioHandlerT
-	SetCAudioHandlerT(*CAudioHandlerT)
+	SetCAudioHandlerT(*CAudioHandlerT) (oldValue *CAudioHandlerT)
 }
 
 func (r RefToCAudioHandlerT) GetCAudioHandlerT() *CAudioHandlerT {
 	return r.p_audio_handler
 }
 
-func (r *RefToCAudioHandlerT) SetCAudioHandlerT(p *CAudioHandlerT) {
+func (r *RefToCAudioHandlerT) SetCAudioHandlerT(p *CAudioHandlerT) (prevValue *CAudioHandlerT) {
+	prevValue = r.p_audio_handler
 	r.p_audio_handler = p
+	return prevValue
 }
 
 // Go type CAudioHandlerT wraps cef type *C.cef_audio_handler_t
@@ -737,15 +743,17 @@ type RefToCAuthCallbackT struct {
 
 type CAuthCallbackTAccessor interface {
 	GetCAuthCallbackT() *CAuthCallbackT
-	SetCAuthCallbackT(*CAuthCallbackT)
+	SetCAuthCallbackT(*CAuthCallbackT) (oldValue *CAuthCallbackT)
 }
 
 func (r RefToCAuthCallbackT) GetCAuthCallbackT() *CAuthCallbackT {
 	return r.p_auth_callback
 }
 
-func (r *RefToCAuthCallbackT) SetCAuthCallbackT(p *CAuthCallbackT) {
+func (r *RefToCAuthCallbackT) SetCAuthCallbackT(p *CAuthCallbackT) (prevValue *CAuthCallbackT) {
+	prevValue = r.p_auth_callback
 	r.p_auth_callback = p
+	return prevValue
 }
 
 // Go type CAuthCallbackT wraps cef type *C.cef_auth_callback_t
@@ -821,15 +829,17 @@ type RefToCBoxLayoutT struct {
 
 type CBoxLayoutTAccessor interface {
 	GetCBoxLayoutT() *CBoxLayoutT
-	SetCBoxLayoutT(*CBoxLayoutT)
+	SetCBoxLayoutT(*CBoxLayoutT) (oldValue *CBoxLayoutT)
 }
 
 func (r RefToCBoxLayoutT) GetCBoxLayoutT() *CBoxLayoutT {
 	return r.p_box_layout
 }
 
-func (r *RefToCBoxLayoutT) SetCBoxLayoutT(p *CBoxLayoutT) {
+func (r *RefToCBoxLayoutT) SetCBoxLayoutT(p *CBoxLayoutT) (prevValue *CBoxLayoutT) {
+	prevValue = r.p_box_layout
 	r.p_box_layout = p
+	return prevValue
 }
 
 // Go type CBoxLayoutT wraps cef type *C.cef_box_layout_t
@@ -924,15 +934,17 @@ type RefToCBrowserT struct {
 
 type CBrowserTAccessor interface {
 	GetCBrowserT() *CBrowserT
-	SetCBrowserT(*CBrowserT)
+	SetCBrowserT(*CBrowserT) (oldValue *CBrowserT)
 }
 
 func (r RefToCBrowserT) GetCBrowserT() *CBrowserT {
 	return r.p_browser
 }
 
-func (r *RefToCBrowserT) SetCBrowserT(p *CBrowserT) {
+func (r *RefToCBrowserT) SetCBrowserT(p *CBrowserT) (prevValue *CBrowserT) {
+	prevValue = r.p_browser
 	r.p_browser = p
+	return prevValue
 }
 
 // Go type CBrowserT wraps cef type *C.cef_browser_t
@@ -1193,15 +1205,17 @@ type RefToCRunFileDialogCallbackT struct {
 
 type CRunFileDialogCallbackTAccessor interface {
 	GetCRunFileDialogCallbackT() *CRunFileDialogCallbackT
-	SetCRunFileDialogCallbackT(*CRunFileDialogCallbackT)
+	SetCRunFileDialogCallbackT(*CRunFileDialogCallbackT) (oldValue *CRunFileDialogCallbackT)
 }
 
 func (r RefToCRunFileDialogCallbackT) GetCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
 	return r.p_run_file_dialog_callback
 }
 
-func (r *RefToCRunFileDialogCallbackT) SetCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) {
+func (r *RefToCRunFileDialogCallbackT) SetCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) (prevValue *CRunFileDialogCallbackT) {
+	prevValue = r.p_run_file_dialog_callback
 	r.p_run_file_dialog_callback = p
+	return prevValue
 }
 
 // Go type CRunFileDialogCallbackT wraps cef type *C.cef_run_file_dialog_callback_t
@@ -1327,15 +1341,17 @@ type RefToCNavigationEntryVisitorT struct {
 
 type CNavigationEntryVisitorTAccessor interface {
 	GetCNavigationEntryVisitorT() *CNavigationEntryVisitorT
-	SetCNavigationEntryVisitorT(*CNavigationEntryVisitorT)
+	SetCNavigationEntryVisitorT(*CNavigationEntryVisitorT) (oldValue *CNavigationEntryVisitorT)
 }
 
 func (r RefToCNavigationEntryVisitorT) GetCNavigationEntryVisitorT() *CNavigationEntryVisitorT {
 	return r.p_navigation_entry_visitor
 }
 
-func (r *RefToCNavigationEntryVisitorT) SetCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) {
+func (r *RefToCNavigationEntryVisitorT) SetCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) (prevValue *CNavigationEntryVisitorT) {
+	prevValue = r.p_navigation_entry_visitor
 	r.p_navigation_entry_visitor = p
+	return prevValue
 }
 
 // Go type CNavigationEntryVisitorT wraps cef type *C.cef_navigation_entry_visitor_t
@@ -1463,15 +1479,17 @@ type RefToCPdfPrintCallbackT struct {
 
 type CPdfPrintCallbackTAccessor interface {
 	GetCPdfPrintCallbackT() *CPdfPrintCallbackT
-	SetCPdfPrintCallbackT(*CPdfPrintCallbackT)
+	SetCPdfPrintCallbackT(*CPdfPrintCallbackT) (oldValue *CPdfPrintCallbackT)
 }
 
 func (r RefToCPdfPrintCallbackT) GetCPdfPrintCallbackT() *CPdfPrintCallbackT {
 	return r.p_pdf_print_callback
 }
 
-func (r *RefToCPdfPrintCallbackT) SetCPdfPrintCallbackT(p *CPdfPrintCallbackT) {
+func (r *RefToCPdfPrintCallbackT) SetCPdfPrintCallbackT(p *CPdfPrintCallbackT) (prevValue *CPdfPrintCallbackT) {
+	prevValue = r.p_pdf_print_callback
 	r.p_pdf_print_callback = p
+	return prevValue
 }
 
 // Go type CPdfPrintCallbackT wraps cef type *C.cef_pdf_print_callback_t
@@ -1537,15 +1555,17 @@ type RefToCDownloadImageCallbackT struct {
 
 type CDownloadImageCallbackTAccessor interface {
 	GetCDownloadImageCallbackT() *CDownloadImageCallbackT
-	SetCDownloadImageCallbackT(*CDownloadImageCallbackT)
+	SetCDownloadImageCallbackT(*CDownloadImageCallbackT) (oldValue *CDownloadImageCallbackT)
 }
 
 func (r RefToCDownloadImageCallbackT) GetCDownloadImageCallbackT() *CDownloadImageCallbackT {
 	return r.p_download_image_callback
 }
 
-func (r *RefToCDownloadImageCallbackT) SetCDownloadImageCallbackT(p *CDownloadImageCallbackT) {
+func (r *RefToCDownloadImageCallbackT) SetCDownloadImageCallbackT(p *CDownloadImageCallbackT) (prevValue *CDownloadImageCallbackT) {
+	prevValue = r.p_download_image_callback
 	r.p_download_image_callback = p
+	return prevValue
 }
 
 // Go type CDownloadImageCallbackT wraps cef type *C.cef_download_image_callback_t
@@ -1616,15 +1636,17 @@ type RefToCBrowserHostT struct {
 
 type CBrowserHostTAccessor interface {
 	GetCBrowserHostT() *CBrowserHostT
-	SetCBrowserHostT(*CBrowserHostT)
+	SetCBrowserHostT(*CBrowserHostT) (oldValue *CBrowserHostT)
 }
 
 func (r RefToCBrowserHostT) GetCBrowserHostT() *CBrowserHostT {
 	return r.p_browser_host
 }
 
-func (r *RefToCBrowserHostT) SetCBrowserHostT(p *CBrowserHostT) {
+func (r *RefToCBrowserHostT) SetCBrowserHostT(p *CBrowserHostT) (prevValue *CBrowserHostT) {
+	prevValue = r.p_browser_host
 	r.p_browser_host = p
+	return prevValue
 }
 
 // Go type CBrowserHostT wraps cef type *C.cef_browser_host_t
@@ -2778,15 +2800,17 @@ type RefToCBrowserProcessHandlerT struct {
 
 type CBrowserProcessHandlerTAccessor interface {
 	GetCBrowserProcessHandlerT() *CBrowserProcessHandlerT
-	SetCBrowserProcessHandlerT(*CBrowserProcessHandlerT)
+	SetCBrowserProcessHandlerT(*CBrowserProcessHandlerT) (oldValue *CBrowserProcessHandlerT)
 }
 
 func (r RefToCBrowserProcessHandlerT) GetCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
 	return r.p_browser_process_handler
 }
 
-func (r *RefToCBrowserProcessHandlerT) SetCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) {
+func (r *RefToCBrowserProcessHandlerT) SetCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) (prevValue *CBrowserProcessHandlerT) {
+	prevValue = r.p_browser_process_handler
 	r.p_browser_process_handler = p
+	return prevValue
 }
 
 // Go type CBrowserProcessHandlerT wraps cef type *C.cef_browser_process_handler_t
@@ -3027,15 +3051,17 @@ type RefToCBrowserViewT struct {
 
 type CBrowserViewTAccessor interface {
 	GetCBrowserViewT() *CBrowserViewT
-	SetCBrowserViewT(*CBrowserViewT)
+	SetCBrowserViewT(*CBrowserViewT) (oldValue *CBrowserViewT)
 }
 
 func (r RefToCBrowserViewT) GetCBrowserViewT() *CBrowserViewT {
 	return r.p_browser_view
 }
 
-func (r *RefToCBrowserViewT) SetCBrowserViewT(p *CBrowserViewT) {
+func (r *RefToCBrowserViewT) SetCBrowserViewT(p *CBrowserViewT) (prevValue *CBrowserViewT) {
+	prevValue = r.p_browser_view
 	r.p_browser_view = p
+	return prevValue
 }
 
 // Go type CBrowserViewT wraps cef type *C.cef_browser_view_t
@@ -3185,15 +3211,17 @@ type RefToCBrowserViewDelegateT struct {
 
 type CBrowserViewDelegateTAccessor interface {
 	GetCBrowserViewDelegateT() *CBrowserViewDelegateT
-	SetCBrowserViewDelegateT(*CBrowserViewDelegateT)
+	SetCBrowserViewDelegateT(*CBrowserViewDelegateT) (oldValue *CBrowserViewDelegateT)
 }
 
 func (r RefToCBrowserViewDelegateT) GetCBrowserViewDelegateT() *CBrowserViewDelegateT {
 	return r.p_browser_view_delegate
 }
 
-func (r *RefToCBrowserViewDelegateT) SetCBrowserViewDelegateT(p *CBrowserViewDelegateT) {
+func (r *RefToCBrowserViewDelegateT) SetCBrowserViewDelegateT(p *CBrowserViewDelegateT) (prevValue *CBrowserViewDelegateT) {
+	prevValue = r.p_browser_view_delegate
 	r.p_browser_view_delegate = p
+	return prevValue
 }
 
 // Go type CBrowserViewDelegateT wraps cef type *C.cef_browser_view_delegate_t
@@ -3464,15 +3492,17 @@ type RefToCButtonT struct {
 
 type CButtonTAccessor interface {
 	GetCButtonT() *CButtonT
-	SetCButtonT(*CButtonT)
+	SetCButtonT(*CButtonT) (oldValue *CButtonT)
 }
 
 func (r RefToCButtonT) GetCButtonT() *CButtonT {
 	return r.p_button
 }
 
-func (r *RefToCButtonT) SetCButtonT(p *CButtonT) {
+func (r *RefToCButtonT) SetCButtonT(p *CButtonT) (prevValue *CButtonT) {
+	prevValue = r.p_button
 	r.p_button = p
+	return prevValue
 }
 
 // Go type CButtonT wraps cef type *C.cef_button_t
@@ -3597,15 +3627,17 @@ type RefToCButtonDelegateT struct {
 
 type CButtonDelegateTAccessor interface {
 	GetCButtonDelegateT() *CButtonDelegateT
-	SetCButtonDelegateT(*CButtonDelegateT)
+	SetCButtonDelegateT(*CButtonDelegateT) (oldValue *CButtonDelegateT)
 }
 
 func (r RefToCButtonDelegateT) GetCButtonDelegateT() *CButtonDelegateT {
 	return r.p_button_delegate
 }
 
-func (r *RefToCButtonDelegateT) SetCButtonDelegateT(p *CButtonDelegateT) {
+func (r *RefToCButtonDelegateT) SetCButtonDelegateT(p *CButtonDelegateT) (prevValue *CButtonDelegateT) {
+	prevValue = r.p_button_delegate
 	r.p_button_delegate = p
+	return prevValue
 }
 
 // Go type CButtonDelegateT wraps cef type *C.cef_button_delegate_t
@@ -3815,15 +3847,17 @@ type RefToCCallbackT struct {
 
 type CCallbackTAccessor interface {
 	GetCCallbackT() *CCallbackT
-	SetCCallbackT(*CCallbackT)
+	SetCCallbackT(*CCallbackT) (oldValue *CCallbackT)
 }
 
 func (r RefToCCallbackT) GetCCallbackT() *CCallbackT {
 	return r.p_callback
 }
 
-func (r *RefToCCallbackT) SetCCallbackT(p *CCallbackT) {
+func (r *RefToCCallbackT) SetCCallbackT(p *CCallbackT) (prevValue *CCallbackT) {
+	prevValue = r.p_callback
 	r.p_callback = p
+	return prevValue
 }
 
 // Go type CCallbackT wraps cef type *C.cef_callback_t
@@ -3887,15 +3921,17 @@ type RefToCCompletionCallbackT struct {
 
 type CCompletionCallbackTAccessor interface {
 	GetCCompletionCallbackT() *CCompletionCallbackT
-	SetCCompletionCallbackT(*CCompletionCallbackT)
+	SetCCompletionCallbackT(*CCompletionCallbackT) (oldValue *CCompletionCallbackT)
 }
 
 func (r RefToCCompletionCallbackT) GetCCompletionCallbackT() *CCompletionCallbackT {
 	return r.p_completion_callback
 }
 
-func (r *RefToCCompletionCallbackT) SetCCompletionCallbackT(p *CCompletionCallbackT) {
+func (r *RefToCCompletionCallbackT) SetCCompletionCallbackT(p *CCompletionCallbackT) (prevValue *CCompletionCallbackT) {
+	prevValue = r.p_completion_callback
 	r.p_completion_callback = p
+	return prevValue
 }
 
 // Go type CCompletionCallbackT wraps cef type *C.cef_completion_callback_t
@@ -3952,15 +3988,17 @@ type RefToCClientT struct {
 
 type CClientTAccessor interface {
 	GetCClientT() *CClientT
-	SetCClientT(*CClientT)
+	SetCClientT(*CClientT) (oldValue *CClientT)
 }
 
 func (r RefToCClientT) GetCClientT() *CClientT {
 	return r.p_client
 }
 
-func (r *RefToCClientT) SetCClientT(p *CClientT) {
+func (r *RefToCClientT) SetCClientT(p *CClientT) (prevValue *CClientT) {
+	prevValue = r.p_client
 	r.p_client = p
+	return prevValue
 }
 
 // Go type CClientT wraps cef type *C.cef_client_t
@@ -4336,15 +4374,17 @@ type RefToCCommandLineT struct {
 
 type CCommandLineTAccessor interface {
 	GetCCommandLineT() *CCommandLineT
-	SetCCommandLineT(*CCommandLineT)
+	SetCCommandLineT(*CCommandLineT) (oldValue *CCommandLineT)
 }
 
 func (r RefToCCommandLineT) GetCCommandLineT() *CCommandLineT {
 	return r.p_command_line
 }
 
-func (r *RefToCCommandLineT) SetCCommandLineT(p *CCommandLineT) {
+func (r *RefToCCommandLineT) SetCCommandLineT(p *CCommandLineT) (prevValue *CCommandLineT) {
+	prevValue = r.p_command_line
 	r.p_command_line = p
+	return prevValue
 }
 
 // Go type CCommandLineT wraps cef type *C.cef_command_line_t
@@ -4661,15 +4701,17 @@ type RefToCRunContextMenuCallbackT struct {
 
 type CRunContextMenuCallbackTAccessor interface {
 	GetCRunContextMenuCallbackT() *CRunContextMenuCallbackT
-	SetCRunContextMenuCallbackT(*CRunContextMenuCallbackT)
+	SetCRunContextMenuCallbackT(*CRunContextMenuCallbackT) (oldValue *CRunContextMenuCallbackT)
 }
 
 func (r RefToCRunContextMenuCallbackT) GetCRunContextMenuCallbackT() *CRunContextMenuCallbackT {
 	return r.p_run_context_menu_callback
 }
 
-func (r *RefToCRunContextMenuCallbackT) SetCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) {
+func (r *RefToCRunContextMenuCallbackT) SetCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) (prevValue *CRunContextMenuCallbackT) {
+	prevValue = r.p_run_context_menu_callback
 	r.p_run_context_menu_callback = p
+	return prevValue
 }
 
 // Go type CRunContextMenuCallbackT wraps cef type *C.cef_run_context_menu_callback_t
@@ -4738,15 +4780,17 @@ type RefToCContextMenuHandlerT struct {
 
 type CContextMenuHandlerTAccessor interface {
 	GetCContextMenuHandlerT() *CContextMenuHandlerT
-	SetCContextMenuHandlerT(*CContextMenuHandlerT)
+	SetCContextMenuHandlerT(*CContextMenuHandlerT) (oldValue *CContextMenuHandlerT)
 }
 
 func (r RefToCContextMenuHandlerT) GetCContextMenuHandlerT() *CContextMenuHandlerT {
 	return r.p_context_menu_handler
 }
 
-func (r *RefToCContextMenuHandlerT) SetCContextMenuHandlerT(p *CContextMenuHandlerT) {
+func (r *RefToCContextMenuHandlerT) SetCContextMenuHandlerT(p *CContextMenuHandlerT) (prevValue *CContextMenuHandlerT) {
+	prevValue = r.p_context_menu_handler
 	r.p_context_menu_handler = p
+	return prevValue
 }
 
 // Go type CContextMenuHandlerT wraps cef type *C.cef_context_menu_handler_t
@@ -4949,15 +4993,17 @@ type RefToCContextMenuParamsT struct {
 
 type CContextMenuParamsTAccessor interface {
 	GetCContextMenuParamsT() *CContextMenuParamsT
-	SetCContextMenuParamsT(*CContextMenuParamsT)
+	SetCContextMenuParamsT(*CContextMenuParamsT) (oldValue *CContextMenuParamsT)
 }
 
 func (r RefToCContextMenuParamsT) GetCContextMenuParamsT() *CContextMenuParamsT {
 	return r.p_context_menu_params
 }
 
-func (r *RefToCContextMenuParamsT) SetCContextMenuParamsT(p *CContextMenuParamsT) {
+func (r *RefToCContextMenuParamsT) SetCContextMenuParamsT(p *CContextMenuParamsT) (prevValue *CContextMenuParamsT) {
+	prevValue = r.p_context_menu_params
 	r.p_context_menu_params = p
+	return prevValue
 }
 
 // Go type CContextMenuParamsT wraps cef type *C.cef_context_menu_params_t
@@ -5302,15 +5348,17 @@ type RefToCCookieManagerT struct {
 
 type CCookieManagerTAccessor interface {
 	GetCCookieManagerT() *CCookieManagerT
-	SetCCookieManagerT(*CCookieManagerT)
+	SetCCookieManagerT(*CCookieManagerT) (oldValue *CCookieManagerT)
 }
 
 func (r RefToCCookieManagerT) GetCCookieManagerT() *CCookieManagerT {
 	return r.p_cookie_manager
 }
 
-func (r *RefToCCookieManagerT) SetCCookieManagerT(p *CCookieManagerT) {
+func (r *RefToCCookieManagerT) SetCCookieManagerT(p *CCookieManagerT) (prevValue *CCookieManagerT) {
+	prevValue = r.p_cookie_manager
 	r.p_cookie_manager = p
+	return prevValue
 }
 
 // Go type CCookieManagerT wraps cef type *C.cef_cookie_manager_t
@@ -5526,15 +5574,17 @@ type RefToCCookieVisitorT struct {
 
 type CCookieVisitorTAccessor interface {
 	GetCCookieVisitorT() *CCookieVisitorT
-	SetCCookieVisitorT(*CCookieVisitorT)
+	SetCCookieVisitorT(*CCookieVisitorT) (oldValue *CCookieVisitorT)
 }
 
 func (r RefToCCookieVisitorT) GetCCookieVisitorT() *CCookieVisitorT {
 	return r.p_cookie_visitor
 }
 
-func (r *RefToCCookieVisitorT) SetCCookieVisitorT(p *CCookieVisitorT) {
+func (r *RefToCCookieVisitorT) SetCCookieVisitorT(p *CCookieVisitorT) (prevValue *CCookieVisitorT) {
+	prevValue = r.p_cookie_visitor
 	r.p_cookie_visitor = p
+	return prevValue
 }
 
 // Go type CCookieVisitorT wraps cef type *C.cef_cookie_visitor_t
@@ -5661,15 +5711,17 @@ type RefToCSetCookieCallbackT struct {
 
 type CSetCookieCallbackTAccessor interface {
 	GetCSetCookieCallbackT() *CSetCookieCallbackT
-	SetCSetCookieCallbackT(*CSetCookieCallbackT)
+	SetCSetCookieCallbackT(*CSetCookieCallbackT) (oldValue *CSetCookieCallbackT)
 }
 
 func (r RefToCSetCookieCallbackT) GetCSetCookieCallbackT() *CSetCookieCallbackT {
 	return r.p_set_cookie_callback
 }
 
-func (r *RefToCSetCookieCallbackT) SetCSetCookieCallbackT(p *CSetCookieCallbackT) {
+func (r *RefToCSetCookieCallbackT) SetCSetCookieCallbackT(p *CSetCookieCallbackT) (prevValue *CSetCookieCallbackT) {
+	prevValue = r.p_set_cookie_callback
 	r.p_set_cookie_callback = p
+	return prevValue
 }
 
 // Go type CSetCookieCallbackT wraps cef type *C.cef_set_cookie_callback_t
@@ -5791,15 +5843,17 @@ type RefToCDeleteCookiesCallbackT struct {
 
 type CDeleteCookiesCallbackTAccessor interface {
 	GetCDeleteCookiesCallbackT() *CDeleteCookiesCallbackT
-	SetCDeleteCookiesCallbackT(*CDeleteCookiesCallbackT)
+	SetCDeleteCookiesCallbackT(*CDeleteCookiesCallbackT) (oldValue *CDeleteCookiesCallbackT)
 }
 
 func (r RefToCDeleteCookiesCallbackT) GetCDeleteCookiesCallbackT() *CDeleteCookiesCallbackT {
 	return r.p_delete_cookies_callback
 }
 
-func (r *RefToCDeleteCookiesCallbackT) SetCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) {
+func (r *RefToCDeleteCookiesCallbackT) SetCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) (prevValue *CDeleteCookiesCallbackT) {
+	prevValue = r.p_delete_cookies_callback
 	r.p_delete_cookies_callback = p
+	return prevValue
 }
 
 // Go type CDeleteCookiesCallbackT wraps cef type *C.cef_delete_cookies_callback_t
@@ -6037,15 +6091,17 @@ type RefToCDevToolsMessageObserverT struct {
 
 type CDevToolsMessageObserverTAccessor interface {
 	GetCDevToolsMessageObserverT() *CDevToolsMessageObserverT
-	SetCDevToolsMessageObserverT(*CDevToolsMessageObserverT)
+	SetCDevToolsMessageObserverT(*CDevToolsMessageObserverT) (oldValue *CDevToolsMessageObserverT)
 }
 
 func (r RefToCDevToolsMessageObserverT) GetCDevToolsMessageObserverT() *CDevToolsMessageObserverT {
 	return r.p_dev_tools_message_observer
 }
 
-func (r *RefToCDevToolsMessageObserverT) SetCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) {
+func (r *RefToCDevToolsMessageObserverT) SetCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) (prevValue *CDevToolsMessageObserverT) {
+	prevValue = r.p_dev_tools_message_observer
 	r.p_dev_tools_message_observer = p
+	return prevValue
 }
 
 // Go type CDevToolsMessageObserverT wraps cef type *C.cef_dev_tools_message_observer_t
@@ -6282,15 +6338,17 @@ type RefToCFileDialogCallbackT struct {
 
 type CFileDialogCallbackTAccessor interface {
 	GetCFileDialogCallbackT() *CFileDialogCallbackT
-	SetCFileDialogCallbackT(*CFileDialogCallbackT)
+	SetCFileDialogCallbackT(*CFileDialogCallbackT) (oldValue *CFileDialogCallbackT)
 }
 
 func (r RefToCFileDialogCallbackT) GetCFileDialogCallbackT() *CFileDialogCallbackT {
 	return r.p_file_dialog_callback
 }
 
-func (r *RefToCFileDialogCallbackT) SetCFileDialogCallbackT(p *CFileDialogCallbackT) {
+func (r *RefToCFileDialogCallbackT) SetCFileDialogCallbackT(p *CFileDialogCallbackT) (prevValue *CFileDialogCallbackT) {
+	prevValue = r.p_file_dialog_callback
 	r.p_file_dialog_callback = p
+	return prevValue
 }
 
 // Go type CFileDialogCallbackT wraps cef type *C.cef_file_dialog_callback_t
@@ -6362,15 +6420,17 @@ type RefToCDialogHandlerT struct {
 
 type CDialogHandlerTAccessor interface {
 	GetCDialogHandlerT() *CDialogHandlerT
-	SetCDialogHandlerT(*CDialogHandlerT)
+	SetCDialogHandlerT(*CDialogHandlerT) (oldValue *CDialogHandlerT)
 }
 
 func (r RefToCDialogHandlerT) GetCDialogHandlerT() *CDialogHandlerT {
 	return r.p_dialog_handler
 }
 
-func (r *RefToCDialogHandlerT) SetCDialogHandlerT(p *CDialogHandlerT) {
+func (r *RefToCDialogHandlerT) SetCDialogHandlerT(p *CDialogHandlerT) (prevValue *CDialogHandlerT) {
+	prevValue = r.p_dialog_handler
 	r.p_dialog_handler = p
+	return prevValue
 }
 
 // Go type CDialogHandlerT wraps cef type *C.cef_dialog_handler_t
@@ -6515,15 +6575,17 @@ type RefToCDisplayT struct {
 
 type CDisplayTAccessor interface {
 	GetCDisplayT() *CDisplayT
-	SetCDisplayT(*CDisplayT)
+	SetCDisplayT(*CDisplayT) (oldValue *CDisplayT)
 }
 
 func (r RefToCDisplayT) GetCDisplayT() *CDisplayT {
 	return r.p_display
 }
 
-func (r *RefToCDisplayT) SetCDisplayT(p *CDisplayT) {
+func (r *RefToCDisplayT) SetCDisplayT(p *CDisplayT) (prevValue *CDisplayT) {
+	prevValue = r.p_display
 	r.p_display = p
+	return prevValue
 }
 
 // Go type CDisplayT wraps cef type *C.cef_display_t
@@ -6729,15 +6791,17 @@ type RefToCDisplayHandlerT struct {
 
 type CDisplayHandlerTAccessor interface {
 	GetCDisplayHandlerT() *CDisplayHandlerT
-	SetCDisplayHandlerT(*CDisplayHandlerT)
+	SetCDisplayHandlerT(*CDisplayHandlerT) (oldValue *CDisplayHandlerT)
 }
 
 func (r RefToCDisplayHandlerT) GetCDisplayHandlerT() *CDisplayHandlerT {
 	return r.p_display_handler
 }
 
-func (r *RefToCDisplayHandlerT) SetCDisplayHandlerT(p *CDisplayHandlerT) {
+func (r *RefToCDisplayHandlerT) SetCDisplayHandlerT(p *CDisplayHandlerT) (prevValue *CDisplayHandlerT) {
+	prevValue = r.p_display_handler
 	r.p_display_handler = p
+	return prevValue
 }
 
 // Go type CDisplayHandlerT wraps cef type *C.cef_display_handler_t
@@ -7056,15 +7120,17 @@ type RefToCDomvisitorT struct {
 
 type CDomvisitorTAccessor interface {
 	GetCDomvisitorT() *CDomvisitorT
-	SetCDomvisitorT(*CDomvisitorT)
+	SetCDomvisitorT(*CDomvisitorT) (oldValue *CDomvisitorT)
 }
 
 func (r RefToCDomvisitorT) GetCDomvisitorT() *CDomvisitorT {
 	return r.p_domvisitor
 }
 
-func (r *RefToCDomvisitorT) SetCDomvisitorT(p *CDomvisitorT) {
+func (r *RefToCDomvisitorT) SetCDomvisitorT(p *CDomvisitorT) (prevValue *CDomvisitorT) {
+	prevValue = r.p_domvisitor
 	r.p_domvisitor = p
+	return prevValue
 }
 
 // Go type CDomvisitorT wraps cef type *C.cef_domvisitor_t
@@ -7189,15 +7255,17 @@ type RefToCDomdocumentT struct {
 
 type CDomdocumentTAccessor interface {
 	GetCDomdocumentT() *CDomdocumentT
-	SetCDomdocumentT(*CDomdocumentT)
+	SetCDomdocumentT(*CDomdocumentT) (oldValue *CDomdocumentT)
 }
 
 func (r RefToCDomdocumentT) GetCDomdocumentT() *CDomdocumentT {
 	return r.p_domdocument
 }
 
-func (r *RefToCDomdocumentT) SetCDomdocumentT(p *CDomdocumentT) {
+func (r *RefToCDomdocumentT) SetCDomdocumentT(p *CDomdocumentT) (prevValue *CDomdocumentT) {
+	prevValue = r.p_domdocument
 	r.p_domdocument = p
+	return prevValue
 }
 
 // Go type CDomdocumentT wraps cef type *C.cef_domdocument_t
@@ -7430,15 +7498,17 @@ type RefToCDomnodeT struct {
 
 type CDomnodeTAccessor interface {
 	GetCDomnodeT() *CDomnodeT
-	SetCDomnodeT(*CDomnodeT)
+	SetCDomnodeT(*CDomnodeT) (oldValue *CDomnodeT)
 }
 
 func (r RefToCDomnodeT) GetCDomnodeT() *CDomnodeT {
 	return r.p_domnode
 }
 
-func (r *RefToCDomnodeT) SetCDomnodeT(p *CDomnodeT) {
+func (r *RefToCDomnodeT) SetCDomnodeT(p *CDomnodeT) (prevValue *CDomnodeT) {
+	prevValue = r.p_domnode
 	r.p_domnode = p
+	return prevValue
 }
 
 // Go type CDomnodeT wraps cef type *C.cef_domnode_t
@@ -7830,15 +7900,17 @@ type RefToCBeforeDownloadCallbackT struct {
 
 type CBeforeDownloadCallbackTAccessor interface {
 	GetCBeforeDownloadCallbackT() *CBeforeDownloadCallbackT
-	SetCBeforeDownloadCallbackT(*CBeforeDownloadCallbackT)
+	SetCBeforeDownloadCallbackT(*CBeforeDownloadCallbackT) (oldValue *CBeforeDownloadCallbackT)
 }
 
 func (r RefToCBeforeDownloadCallbackT) GetCBeforeDownloadCallbackT() *CBeforeDownloadCallbackT {
 	return r.p_before_download_callback
 }
 
-func (r *RefToCBeforeDownloadCallbackT) SetCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) {
+func (r *RefToCBeforeDownloadCallbackT) SetCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) (prevValue *CBeforeDownloadCallbackT) {
+	prevValue = r.p_before_download_callback
 	r.p_before_download_callback = p
+	return prevValue
 }
 
 // Go type CBeforeDownloadCallbackT wraps cef type *C.cef_before_download_callback_t
@@ -7900,15 +7972,17 @@ type RefToCDownloadItemCallbackT struct {
 
 type CDownloadItemCallbackTAccessor interface {
 	GetCDownloadItemCallbackT() *CDownloadItemCallbackT
-	SetCDownloadItemCallbackT(*CDownloadItemCallbackT)
+	SetCDownloadItemCallbackT(*CDownloadItemCallbackT) (oldValue *CDownloadItemCallbackT)
 }
 
 func (r RefToCDownloadItemCallbackT) GetCDownloadItemCallbackT() *CDownloadItemCallbackT {
 	return r.p_download_item_callback
 }
 
-func (r *RefToCDownloadItemCallbackT) SetCDownloadItemCallbackT(p *CDownloadItemCallbackT) {
+func (r *RefToCDownloadItemCallbackT) SetCDownloadItemCallbackT(p *CDownloadItemCallbackT) (prevValue *CDownloadItemCallbackT) {
+	prevValue = r.p_download_item_callback
 	r.p_download_item_callback = p
+	return prevValue
 }
 
 // Go type CDownloadItemCallbackT wraps cef type *C.cef_download_item_callback_t
@@ -7982,15 +8056,17 @@ type RefToCDownloadHandlerT struct {
 
 type CDownloadHandlerTAccessor interface {
 	GetCDownloadHandlerT() *CDownloadHandlerT
-	SetCDownloadHandlerT(*CDownloadHandlerT)
+	SetCDownloadHandlerT(*CDownloadHandlerT) (oldValue *CDownloadHandlerT)
 }
 
 func (r RefToCDownloadHandlerT) GetCDownloadHandlerT() *CDownloadHandlerT {
 	return r.p_download_handler
 }
 
-func (r *RefToCDownloadHandlerT) SetCDownloadHandlerT(p *CDownloadHandlerT) {
+func (r *RefToCDownloadHandlerT) SetCDownloadHandlerT(p *CDownloadHandlerT) (prevValue *CDownloadHandlerT) {
+	prevValue = r.p_download_handler
 	r.p_download_handler = p
+	return prevValue
 }
 
 // Go type CDownloadHandlerT wraps cef type *C.cef_download_handler_t
@@ -8143,15 +8219,17 @@ type RefToCDownloadItemT struct {
 
 type CDownloadItemTAccessor interface {
 	GetCDownloadItemT() *CDownloadItemT
-	SetCDownloadItemT(*CDownloadItemT)
+	SetCDownloadItemT(*CDownloadItemT) (oldValue *CDownloadItemT)
 }
 
 func (r RefToCDownloadItemT) GetCDownloadItemT() *CDownloadItemT {
 	return r.p_download_item
 }
 
-func (r *RefToCDownloadItemT) SetCDownloadItemT(p *CDownloadItemT) {
+func (r *RefToCDownloadItemT) SetCDownloadItemT(p *CDownloadItemT) (prevValue *CDownloadItemT) {
+	prevValue = r.p_download_item
 	r.p_download_item = p
+	return prevValue
 }
 
 // Go type CDownloadItemT wraps cef type *C.cef_download_item_t
@@ -8419,15 +8497,17 @@ type RefToCDragDataT struct {
 
 type CDragDataTAccessor interface {
 	GetCDragDataT() *CDragDataT
-	SetCDragDataT(*CDragDataT)
+	SetCDragDataT(*CDragDataT) (oldValue *CDragDataT)
 }
 
 func (r RefToCDragDataT) GetCDragDataT() *CDragDataT {
 	return r.p_drag_data
 }
 
-func (r *RefToCDragDataT) SetCDragDataT(p *CDragDataT) {
+func (r *RefToCDragDataT) SetCDragDataT(p *CDragDataT) (prevValue *CDragDataT) {
+	prevValue = r.p_drag_data
 	r.p_drag_data = p
+	return prevValue
 }
 
 // Go type CDragDataT wraps cef type *C.cef_drag_data_t
@@ -8821,15 +8901,17 @@ type RefToCDragHandlerT struct {
 
 type CDragHandlerTAccessor interface {
 	GetCDragHandlerT() *CDragHandlerT
-	SetCDragHandlerT(*CDragHandlerT)
+	SetCDragHandlerT(*CDragHandlerT) (oldValue *CDragHandlerT)
 }
 
 func (r RefToCDragHandlerT) GetCDragHandlerT() *CDragHandlerT {
 	return r.p_drag_handler
 }
 
-func (r *RefToCDragHandlerT) SetCDragHandlerT(p *CDragHandlerT) {
+func (r *RefToCDragHandlerT) SetCDragHandlerT(p *CDragHandlerT) (prevValue *CDragHandlerT) {
+	prevValue = r.p_drag_handler
 	r.p_drag_handler = p
+	return prevValue
 }
 
 // Go type CDragHandlerT wraps cef type *C.cef_drag_handler_t
@@ -8982,15 +9064,17 @@ type RefToCExtensionT struct {
 
 type CExtensionTAccessor interface {
 	GetCExtensionT() *CExtensionT
-	SetCExtensionT(*CExtensionT)
+	SetCExtensionT(*CExtensionT) (oldValue *CExtensionT)
 }
 
 func (r RefToCExtensionT) GetCExtensionT() *CExtensionT {
 	return r.p_extension
 }
 
-func (r *RefToCExtensionT) SetCExtensionT(p *CExtensionT) {
+func (r *RefToCExtensionT) SetCExtensionT(p *CExtensionT) (prevValue *CExtensionT) {
+	prevValue = r.p_extension
 	r.p_extension = p
+	return prevValue
 }
 
 // Go type CExtensionT wraps cef type *C.cef_extension_t
@@ -9157,15 +9241,17 @@ type RefToCGetExtensionResourceCallbackT struct {
 
 type CGetExtensionResourceCallbackTAccessor interface {
 	GetCGetExtensionResourceCallbackT() *CGetExtensionResourceCallbackT
-	SetCGetExtensionResourceCallbackT(*CGetExtensionResourceCallbackT)
+	SetCGetExtensionResourceCallbackT(*CGetExtensionResourceCallbackT) (oldValue *CGetExtensionResourceCallbackT)
 }
 
 func (r RefToCGetExtensionResourceCallbackT) GetCGetExtensionResourceCallbackT() *CGetExtensionResourceCallbackT {
 	return r.p_get_extension_resource_callback
 }
 
-func (r *RefToCGetExtensionResourceCallbackT) SetCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) {
+func (r *RefToCGetExtensionResourceCallbackT) SetCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) (prevValue *CGetExtensionResourceCallbackT) {
+	prevValue = r.p_get_extension_resource_callback
 	r.p_get_extension_resource_callback = p
+	return prevValue
 }
 
 // Go type CGetExtensionResourceCallbackT wraps cef type *C.cef_get_extension_resource_callback_t
@@ -9238,15 +9324,17 @@ type RefToCExtensionHandlerT struct {
 
 type CExtensionHandlerTAccessor interface {
 	GetCExtensionHandlerT() *CExtensionHandlerT
-	SetCExtensionHandlerT(*CExtensionHandlerT)
+	SetCExtensionHandlerT(*CExtensionHandlerT) (oldValue *CExtensionHandlerT)
 }
 
 func (r RefToCExtensionHandlerT) GetCExtensionHandlerT() *CExtensionHandlerT {
 	return r.p_extension_handler
 }
 
-func (r *RefToCExtensionHandlerT) SetCExtensionHandlerT(p *CExtensionHandlerT) {
+func (r *RefToCExtensionHandlerT) SetCExtensionHandlerT(p *CExtensionHandlerT) (prevValue *CExtensionHandlerT) {
+	prevValue = r.p_extension_handler
 	r.p_extension_handler = p
+	return prevValue
 }
 
 // Go type CExtensionHandlerT wraps cef type *C.cef_extension_handler_t
@@ -9713,15 +9801,17 @@ type RefToCFillLayoutT struct {
 
 type CFillLayoutTAccessor interface {
 	GetCFillLayoutT() *CFillLayoutT
-	SetCFillLayoutT(*CFillLayoutT)
+	SetCFillLayoutT(*CFillLayoutT) (oldValue *CFillLayoutT)
 }
 
 func (r RefToCFillLayoutT) GetCFillLayoutT() *CFillLayoutT {
 	return r.p_fill_layout
 }
 
-func (r *RefToCFillLayoutT) SetCFillLayoutT(p *CFillLayoutT) {
+func (r *RefToCFillLayoutT) SetCFillLayoutT(p *CFillLayoutT) (prevValue *CFillLayoutT) {
+	prevValue = r.p_fill_layout
 	r.p_fill_layout = p
+	return prevValue
 }
 
 // Go type CFillLayoutT wraps cef type *C.cef_fill_layout_t
@@ -9776,15 +9866,17 @@ type RefToCFindHandlerT struct {
 
 type CFindHandlerTAccessor interface {
 	GetCFindHandlerT() *CFindHandlerT
-	SetCFindHandlerT(*CFindHandlerT)
+	SetCFindHandlerT(*CFindHandlerT) (oldValue *CFindHandlerT)
 }
 
 func (r RefToCFindHandlerT) GetCFindHandlerT() *CFindHandlerT {
 	return r.p_find_handler
 }
 
-func (r *RefToCFindHandlerT) SetCFindHandlerT(p *CFindHandlerT) {
+func (r *RefToCFindHandlerT) SetCFindHandlerT(p *CFindHandlerT) (prevValue *CFindHandlerT) {
+	prevValue = r.p_find_handler
 	r.p_find_handler = p
+	return prevValue
 }
 
 // Go type CFindHandlerT wraps cef type *C.cef_find_handler_t
@@ -9917,15 +10009,17 @@ type RefToCFocusHandlerT struct {
 
 type CFocusHandlerTAccessor interface {
 	GetCFocusHandlerT() *CFocusHandlerT
-	SetCFocusHandlerT(*CFocusHandlerT)
+	SetCFocusHandlerT(*CFocusHandlerT) (oldValue *CFocusHandlerT)
 }
 
 func (r RefToCFocusHandlerT) GetCFocusHandlerT() *CFocusHandlerT {
 	return r.p_focus_handler
 }
 
-func (r *RefToCFocusHandlerT) SetCFocusHandlerT(p *CFocusHandlerT) {
+func (r *RefToCFocusHandlerT) SetCFocusHandlerT(p *CFocusHandlerT) (prevValue *CFocusHandlerT) {
+	prevValue = r.p_focus_handler
 	r.p_focus_handler = p
+	return prevValue
 }
 
 // Go type CFocusHandlerT wraps cef type *C.cef_focus_handler_t
@@ -10093,15 +10187,17 @@ type RefToCFrameT struct {
 
 type CFrameTAccessor interface {
 	GetCFrameT() *CFrameT
-	SetCFrameT(*CFrameT)
+	SetCFrameT(*CFrameT) (oldValue *CFrameT)
 }
 
 func (r RefToCFrameT) GetCFrameT() *CFrameT {
 	return r.p_frame
 }
 
-func (r *RefToCFrameT) SetCFrameT(p *CFrameT) {
+func (r *RefToCFrameT) SetCFrameT(p *CFrameT) (prevValue *CFrameT) {
+	prevValue = r.p_frame
 	r.p_frame = p
+	return prevValue
 }
 
 // Go type CFrameT wraps cef type *C.cef_frame_t
@@ -10509,15 +10605,17 @@ type RefToCImageT struct {
 
 type CImageTAccessor interface {
 	GetCImageT() *CImageT
-	SetCImageT(*CImageT)
+	SetCImageT(*CImageT) (oldValue *CImageT)
 }
 
 func (r RefToCImageT) GetCImageT() *CImageT {
 	return r.p_image
 }
 
-func (r *RefToCImageT) SetCImageT(p *CImageT) {
+func (r *RefToCImageT) SetCImageT(p *CImageT) (prevValue *CImageT) {
+	prevValue = r.p_image
 	r.p_image = p
+	return prevValue
 }
 
 // Go type CImageT wraps cef type *C.cef_image_t
@@ -10817,15 +10915,17 @@ type RefToCJsdialogCallbackT struct {
 
 type CJsdialogCallbackTAccessor interface {
 	GetCJsdialogCallbackT() *CJsdialogCallbackT
-	SetCJsdialogCallbackT(*CJsdialogCallbackT)
+	SetCJsdialogCallbackT(*CJsdialogCallbackT) (oldValue *CJsdialogCallbackT)
 }
 
 func (r RefToCJsdialogCallbackT) GetCJsdialogCallbackT() *CJsdialogCallbackT {
 	return r.p_jsdialog_callback
 }
 
-func (r *RefToCJsdialogCallbackT) SetCJsdialogCallbackT(p *CJsdialogCallbackT) {
+func (r *RefToCJsdialogCallbackT) SetCJsdialogCallbackT(p *CJsdialogCallbackT) (prevValue *CJsdialogCallbackT) {
+	prevValue = r.p_jsdialog_callback
 	r.p_jsdialog_callback = p
+	return prevValue
 }
 
 // Go type CJsdialogCallbackT wraps cef type *C.cef_jsdialog_callback_t
@@ -10886,15 +10986,17 @@ type RefToCJsdialogHandlerT struct {
 
 type CJsdialogHandlerTAccessor interface {
 	GetCJsdialogHandlerT() *CJsdialogHandlerT
-	SetCJsdialogHandlerT(*CJsdialogHandlerT)
+	SetCJsdialogHandlerT(*CJsdialogHandlerT) (oldValue *CJsdialogHandlerT)
 }
 
 func (r RefToCJsdialogHandlerT) GetCJsdialogHandlerT() *CJsdialogHandlerT {
 	return r.p_jsdialog_handler
 }
 
-func (r *RefToCJsdialogHandlerT) SetCJsdialogHandlerT(p *CJsdialogHandlerT) {
+func (r *RefToCJsdialogHandlerT) SetCJsdialogHandlerT(p *CJsdialogHandlerT) (prevValue *CJsdialogHandlerT) {
+	prevValue = r.p_jsdialog_handler
 	r.p_jsdialog_handler = p
+	return prevValue
 }
 
 // Go type CJsdialogHandlerT wraps cef type *C.cef_jsdialog_handler_t
@@ -11100,15 +11202,17 @@ type RefToCKeyboardHandlerT struct {
 
 type CKeyboardHandlerTAccessor interface {
 	GetCKeyboardHandlerT() *CKeyboardHandlerT
-	SetCKeyboardHandlerT(*CKeyboardHandlerT)
+	SetCKeyboardHandlerT(*CKeyboardHandlerT) (oldValue *CKeyboardHandlerT)
 }
 
 func (r RefToCKeyboardHandlerT) GetCKeyboardHandlerT() *CKeyboardHandlerT {
 	return r.p_keyboard_handler
 }
 
-func (r *RefToCKeyboardHandlerT) SetCKeyboardHandlerT(p *CKeyboardHandlerT) {
+func (r *RefToCKeyboardHandlerT) SetCKeyboardHandlerT(p *CKeyboardHandlerT) (prevValue *CKeyboardHandlerT) {
+	prevValue = r.p_keyboard_handler
 	r.p_keyboard_handler = p
+	return prevValue
 }
 
 // Go type CKeyboardHandlerT wraps cef type *C.cef_keyboard_handler_t
@@ -11260,15 +11364,17 @@ type RefToCLabelButtonT struct {
 
 type CLabelButtonTAccessor interface {
 	GetCLabelButtonT() *CLabelButtonT
-	SetCLabelButtonT(*CLabelButtonT)
+	SetCLabelButtonT(*CLabelButtonT) (oldValue *CLabelButtonT)
 }
 
 func (r RefToCLabelButtonT) GetCLabelButtonT() *CLabelButtonT {
 	return r.p_label_button
 }
 
-func (r *RefToCLabelButtonT) SetCLabelButtonT(p *CLabelButtonT) {
+func (r *RefToCLabelButtonT) SetCLabelButtonT(p *CLabelButtonT) (prevValue *CLabelButtonT) {
+	prevValue = r.p_label_button
 	r.p_label_button = p
+	return prevValue
 }
 
 // Go type CLabelButtonT wraps cef type *C.cef_label_button_t
@@ -11496,15 +11602,17 @@ type RefToCLayoutT struct {
 
 type CLayoutTAccessor interface {
 	GetCLayoutT() *CLayoutT
-	SetCLayoutT(*CLayoutT)
+	SetCLayoutT(*CLayoutT) (oldValue *CLayoutT)
 }
 
 func (r RefToCLayoutT) GetCLayoutT() *CLayoutT {
 	return r.p_layout
 }
 
-func (r *RefToCLayoutT) SetCLayoutT(p *CLayoutT) {
+func (r *RefToCLayoutT) SetCLayoutT(p *CLayoutT) (prevValue *CLayoutT) {
+	prevValue = r.p_layout
 	r.p_layout = p
+	return prevValue
 }
 
 // Go type CLayoutT wraps cef type *C.cef_layout_t
@@ -11587,15 +11695,17 @@ type RefToCLifeSpanHandlerT struct {
 
 type CLifeSpanHandlerTAccessor interface {
 	GetCLifeSpanHandlerT() *CLifeSpanHandlerT
-	SetCLifeSpanHandlerT(*CLifeSpanHandlerT)
+	SetCLifeSpanHandlerT(*CLifeSpanHandlerT) (oldValue *CLifeSpanHandlerT)
 }
 
 func (r RefToCLifeSpanHandlerT) GetCLifeSpanHandlerT() *CLifeSpanHandlerT {
 	return r.p_life_span_handler
 }
 
-func (r *RefToCLifeSpanHandlerT) SetCLifeSpanHandlerT(p *CLifeSpanHandlerT) {
+func (r *RefToCLifeSpanHandlerT) SetCLifeSpanHandlerT(p *CLifeSpanHandlerT) (prevValue *CLifeSpanHandlerT) {
+	prevValue = r.p_life_span_handler
 	r.p_life_span_handler = p
+	return prevValue
 }
 
 // Go type CLifeSpanHandlerT wraps cef type *C.cef_life_span_handler_t
@@ -11900,15 +12010,17 @@ type RefToCLoadHandlerT struct {
 
 type CLoadHandlerTAccessor interface {
 	GetCLoadHandlerT() *CLoadHandlerT
-	SetCLoadHandlerT(*CLoadHandlerT)
+	SetCLoadHandlerT(*CLoadHandlerT) (oldValue *CLoadHandlerT)
 }
 
 func (r RefToCLoadHandlerT) GetCLoadHandlerT() *CLoadHandlerT {
 	return r.p_load_handler
 }
 
-func (r *RefToCLoadHandlerT) SetCLoadHandlerT(p *CLoadHandlerT) {
+func (r *RefToCLoadHandlerT) SetCLoadHandlerT(p *CLoadHandlerT) (prevValue *CLoadHandlerT) {
+	prevValue = r.p_load_handler
 	r.p_load_handler = p
+	return prevValue
 }
 
 // Go type CLoadHandlerT wraps cef type *C.cef_load_handler_t
@@ -12121,15 +12233,17 @@ type RefToCMediaRouterT struct {
 
 type CMediaRouterTAccessor interface {
 	GetCMediaRouterT() *CMediaRouterT
-	SetCMediaRouterT(*CMediaRouterT)
+	SetCMediaRouterT(*CMediaRouterT) (oldValue *CMediaRouterT)
 }
 
 func (r RefToCMediaRouterT) GetCMediaRouterT() *CMediaRouterT {
 	return r.p_media_router
 }
 
-func (r *RefToCMediaRouterT) SetCMediaRouterT(p *CMediaRouterT) {
+func (r *RefToCMediaRouterT) SetCMediaRouterT(p *CMediaRouterT) (prevValue *CMediaRouterT) {
+	prevValue = r.p_media_router
 	r.p_media_router = p
+	return prevValue
 }
 
 // Go type CMediaRouterT wraps cef type *C.cef_media_router_t
@@ -12278,15 +12392,17 @@ type RefToCMediaObserverT struct {
 
 type CMediaObserverTAccessor interface {
 	GetCMediaObserverT() *CMediaObserverT
-	SetCMediaObserverT(*CMediaObserverT)
+	SetCMediaObserverT(*CMediaObserverT) (oldValue *CMediaObserverT)
 }
 
 func (r RefToCMediaObserverT) GetCMediaObserverT() *CMediaObserverT {
 	return r.p_media_observer
 }
 
-func (r *RefToCMediaObserverT) SetCMediaObserverT(p *CMediaObserverT) {
+func (r *RefToCMediaObserverT) SetCMediaObserverT(p *CMediaObserverT) (prevValue *CMediaObserverT) {
+	prevValue = r.p_media_observer
 	r.p_media_observer = p
+	return prevValue
 }
 
 // Go type CMediaObserverT wraps cef type *C.cef_media_observer_t
@@ -12469,15 +12585,17 @@ type RefToCMediaRouteT struct {
 
 type CMediaRouteTAccessor interface {
 	GetCMediaRouteT() *CMediaRouteT
-	SetCMediaRouteT(*CMediaRouteT)
+	SetCMediaRouteT(*CMediaRouteT) (oldValue *CMediaRouteT)
 }
 
 func (r RefToCMediaRouteT) GetCMediaRouteT() *CMediaRouteT {
 	return r.p_media_route
 }
 
-func (r *RefToCMediaRouteT) SetCMediaRouteT(p *CMediaRouteT) {
+func (r *RefToCMediaRouteT) SetCMediaRouteT(p *CMediaRouteT) (prevValue *CMediaRouteT) {
+	prevValue = r.p_media_route
 	r.p_media_route = p
+	return prevValue
 }
 
 // Go type CMediaRouteT wraps cef type *C.cef_media_route_t
@@ -12586,15 +12704,17 @@ type RefToCMediaRouteCreateCallbackT struct {
 
 type CMediaRouteCreateCallbackTAccessor interface {
 	GetCMediaRouteCreateCallbackT() *CMediaRouteCreateCallbackT
-	SetCMediaRouteCreateCallbackT(*CMediaRouteCreateCallbackT)
+	SetCMediaRouteCreateCallbackT(*CMediaRouteCreateCallbackT) (oldValue *CMediaRouteCreateCallbackT)
 }
 
 func (r RefToCMediaRouteCreateCallbackT) GetCMediaRouteCreateCallbackT() *CMediaRouteCreateCallbackT {
 	return r.p_media_route_create_callback
 }
 
-func (r *RefToCMediaRouteCreateCallbackT) SetCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) {
+func (r *RefToCMediaRouteCreateCallbackT) SetCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) (prevValue *CMediaRouteCreateCallbackT) {
+	prevValue = r.p_media_route_create_callback
 	r.p_media_route_create_callback = p
+	return prevValue
 }
 
 // Go type CMediaRouteCreateCallbackT wraps cef type *C.cef_media_route_create_callback_t
@@ -12664,15 +12784,17 @@ type RefToCMediaSinkT struct {
 
 type CMediaSinkTAccessor interface {
 	GetCMediaSinkT() *CMediaSinkT
-	SetCMediaSinkT(*CMediaSinkT)
+	SetCMediaSinkT(*CMediaSinkT) (oldValue *CMediaSinkT)
 }
 
 func (r RefToCMediaSinkT) GetCMediaSinkT() *CMediaSinkT {
 	return r.p_media_sink
 }
 
-func (r *RefToCMediaSinkT) SetCMediaSinkT(p *CMediaSinkT) {
+func (r *RefToCMediaSinkT) SetCMediaSinkT(p *CMediaSinkT) (prevValue *CMediaSinkT) {
+	prevValue = r.p_media_sink
 	r.p_media_sink = p
+	return prevValue
 }
 
 // Go type CMediaSinkT wraps cef type *C.cef_media_sink_t
@@ -12834,15 +12956,17 @@ type RefToCMediaSinkDeviceInfoCallbackT struct {
 
 type CMediaSinkDeviceInfoCallbackTAccessor interface {
 	GetCMediaSinkDeviceInfoCallbackT() *CMediaSinkDeviceInfoCallbackT
-	SetCMediaSinkDeviceInfoCallbackT(*CMediaSinkDeviceInfoCallbackT)
+	SetCMediaSinkDeviceInfoCallbackT(*CMediaSinkDeviceInfoCallbackT) (oldValue *CMediaSinkDeviceInfoCallbackT)
 }
 
 func (r RefToCMediaSinkDeviceInfoCallbackT) GetCMediaSinkDeviceInfoCallbackT() *CMediaSinkDeviceInfoCallbackT {
 	return r.p_media_sink_device_info_callback
 }
 
-func (r *RefToCMediaSinkDeviceInfoCallbackT) SetCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) {
+func (r *RefToCMediaSinkDeviceInfoCallbackT) SetCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) (prevValue *CMediaSinkDeviceInfoCallbackT) {
+	prevValue = r.p_media_sink_device_info_callback
 	r.p_media_sink_device_info_callback = p
+	return prevValue
 }
 
 // Go type CMediaSinkDeviceInfoCallbackT wraps cef type *C.cef_media_sink_device_info_callback_t
@@ -12903,15 +13027,17 @@ type RefToCMediaSourceT struct {
 
 type CMediaSourceTAccessor interface {
 	GetCMediaSourceT() *CMediaSourceT
-	SetCMediaSourceT(*CMediaSourceT)
+	SetCMediaSourceT(*CMediaSourceT) (oldValue *CMediaSourceT)
 }
 
 func (r RefToCMediaSourceT) GetCMediaSourceT() *CMediaSourceT {
 	return r.p_media_source
 }
 
-func (r *RefToCMediaSourceT) SetCMediaSourceT(p *CMediaSourceT) {
+func (r *RefToCMediaSourceT) SetCMediaSourceT(p *CMediaSourceT) (prevValue *CMediaSourceT) {
+	prevValue = r.p_media_source
 	r.p_media_source = p
+	return prevValue
 }
 
 // Go type CMediaSourceT wraps cef type *C.cef_media_source_t
@@ -13000,15 +13126,17 @@ type RefToCMenuButtonT struct {
 
 type CMenuButtonTAccessor interface {
 	GetCMenuButtonT() *CMenuButtonT
-	SetCMenuButtonT(*CMenuButtonT)
+	SetCMenuButtonT(*CMenuButtonT) (oldValue *CMenuButtonT)
 }
 
 func (r RefToCMenuButtonT) GetCMenuButtonT() *CMenuButtonT {
 	return r.p_menu_button
 }
 
-func (r *RefToCMenuButtonT) SetCMenuButtonT(p *CMenuButtonT) {
+func (r *RefToCMenuButtonT) SetCMenuButtonT(p *CMenuButtonT) (prevValue *CMenuButtonT) {
+	prevValue = r.p_menu_button
 	r.p_menu_button = p
+	return prevValue
 }
 
 // Go type CMenuButtonT wraps cef type *C.cef_menu_button_t
@@ -13119,15 +13247,17 @@ type RefToCMenuButtonPressedLockT struct {
 
 type CMenuButtonPressedLockTAccessor interface {
 	GetCMenuButtonPressedLockT() *CMenuButtonPressedLockT
-	SetCMenuButtonPressedLockT(*CMenuButtonPressedLockT)
+	SetCMenuButtonPressedLockT(*CMenuButtonPressedLockT) (oldValue *CMenuButtonPressedLockT)
 }
 
 func (r RefToCMenuButtonPressedLockT) GetCMenuButtonPressedLockT() *CMenuButtonPressedLockT {
 	return r.p_menu_button_pressed_lock
 }
 
-func (r *RefToCMenuButtonPressedLockT) SetCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) {
+func (r *RefToCMenuButtonPressedLockT) SetCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) (prevValue *CMenuButtonPressedLockT) {
+	prevValue = r.p_menu_button_pressed_lock
 	r.p_menu_button_pressed_lock = p
+	return prevValue
 }
 
 // Go type CMenuButtonPressedLockT wraps cef type *C.cef_menu_button_pressed_lock_t
@@ -13175,15 +13305,17 @@ type RefToCMenuButtonDelegateT struct {
 
 type CMenuButtonDelegateTAccessor interface {
 	GetCMenuButtonDelegateT() *CMenuButtonDelegateT
-	SetCMenuButtonDelegateT(*CMenuButtonDelegateT)
+	SetCMenuButtonDelegateT(*CMenuButtonDelegateT) (oldValue *CMenuButtonDelegateT)
 }
 
 func (r RefToCMenuButtonDelegateT) GetCMenuButtonDelegateT() *CMenuButtonDelegateT {
 	return r.p_menu_button_delegate
 }
 
-func (r *RefToCMenuButtonDelegateT) SetCMenuButtonDelegateT(p *CMenuButtonDelegateT) {
+func (r *RefToCMenuButtonDelegateT) SetCMenuButtonDelegateT(p *CMenuButtonDelegateT) (prevValue *CMenuButtonDelegateT) {
+	prevValue = r.p_menu_button_delegate
 	r.p_menu_button_delegate = p
+	return prevValue
 }
 
 // Go type CMenuButtonDelegateT wraps cef type *C.cef_menu_button_delegate_t
@@ -13399,15 +13531,17 @@ type RefToCMenuModelT struct {
 
 type CMenuModelTAccessor interface {
 	GetCMenuModelT() *CMenuModelT
-	SetCMenuModelT(*CMenuModelT)
+	SetCMenuModelT(*CMenuModelT) (oldValue *CMenuModelT)
 }
 
 func (r RefToCMenuModelT) GetCMenuModelT() *CMenuModelT {
 	return r.p_menu_model
 }
 
-func (r *RefToCMenuModelT) SetCMenuModelT(p *CMenuModelT) {
+func (r *RefToCMenuModelT) SetCMenuModelT(p *CMenuModelT) (prevValue *CMenuModelT) {
+	prevValue = r.p_menu_model
 	r.p_menu_model = p
+	return prevValue
 }
 
 // Go type CMenuModelT wraps cef type *C.cef_menu_model_t
@@ -14337,15 +14471,17 @@ type RefToCMenuModelDelegateT struct {
 
 type CMenuModelDelegateTAccessor interface {
 	GetCMenuModelDelegateT() *CMenuModelDelegateT
-	SetCMenuModelDelegateT(*CMenuModelDelegateT)
+	SetCMenuModelDelegateT(*CMenuModelDelegateT) (oldValue *CMenuModelDelegateT)
 }
 
 func (r RefToCMenuModelDelegateT) GetCMenuModelDelegateT() *CMenuModelDelegateT {
 	return r.p_menu_model_delegate
 }
 
-func (r *RefToCMenuModelDelegateT) SetCMenuModelDelegateT(p *CMenuModelDelegateT) {
+func (r *RefToCMenuModelDelegateT) SetCMenuModelDelegateT(p *CMenuModelDelegateT) (prevValue *CMenuModelDelegateT) {
+	prevValue = r.p_menu_model_delegate
 	r.p_menu_model_delegate = p
+	return prevValue
 }
 
 // Go type CMenuModelDelegateT wraps cef type *C.cef_menu_model_delegate_t
@@ -14586,15 +14722,17 @@ type RefToCNavigationEntryT struct {
 
 type CNavigationEntryTAccessor interface {
 	GetCNavigationEntryT() *CNavigationEntryT
-	SetCNavigationEntryT(*CNavigationEntryT)
+	SetCNavigationEntryT(*CNavigationEntryT) (oldValue *CNavigationEntryT)
 }
 
 func (r RefToCNavigationEntryT) GetCNavigationEntryT() *CNavigationEntryT {
 	return r.p_navigation_entry
 }
 
-func (r *RefToCNavigationEntryT) SetCNavigationEntryT(p *CNavigationEntryT) {
+func (r *RefToCNavigationEntryT) SetCNavigationEntryT(p *CNavigationEntryT) (prevValue *CNavigationEntryT) {
+	prevValue = r.p_navigation_entry
 	r.p_navigation_entry = p
+	return prevValue
 }
 
 // Go type CNavigationEntryT wraps cef type *C.cef_navigation_entry_t
@@ -14867,15 +15005,17 @@ type RefToCPanelT struct {
 
 type CPanelTAccessor interface {
 	GetCPanelT() *CPanelT
-	SetCPanelT(*CPanelT)
+	SetCPanelT(*CPanelT) (oldValue *CPanelT)
 }
 
 func (r RefToCPanelT) GetCPanelT() *CPanelT {
 	return r.p_panel
 }
 
-func (r *RefToCPanelT) SetCPanelT(p *CPanelT) {
+func (r *RefToCPanelT) SetCPanelT(p *CPanelT) (prevValue *CPanelT) {
+	prevValue = r.p_panel
 	r.p_panel = p
+	return prevValue
 }
 
 // Go type CPanelT wraps cef type *C.cef_panel_t
@@ -15107,15 +15247,17 @@ type RefToCPanelDelegateT struct {
 
 type CPanelDelegateTAccessor interface {
 	GetCPanelDelegateT() *CPanelDelegateT
-	SetCPanelDelegateT(*CPanelDelegateT)
+	SetCPanelDelegateT(*CPanelDelegateT) (oldValue *CPanelDelegateT)
 }
 
 func (r RefToCPanelDelegateT) GetCPanelDelegateT() *CPanelDelegateT {
 	return r.p_panel_delegate
 }
 
-func (r *RefToCPanelDelegateT) SetCPanelDelegateT(p *CPanelDelegateT) {
+func (r *RefToCPanelDelegateT) SetCPanelDelegateT(p *CPanelDelegateT) (prevValue *CPanelDelegateT) {
+	prevValue = r.p_panel_delegate
 	r.p_panel_delegate = p
+	return prevValue
 }
 
 // Go type CPanelDelegateT wraps cef type *C.cef_panel_delegate_t
@@ -15289,15 +15431,17 @@ type RefToCPrintDialogCallbackT struct {
 
 type CPrintDialogCallbackTAccessor interface {
 	GetCPrintDialogCallbackT() *CPrintDialogCallbackT
-	SetCPrintDialogCallbackT(*CPrintDialogCallbackT)
+	SetCPrintDialogCallbackT(*CPrintDialogCallbackT) (oldValue *CPrintDialogCallbackT)
 }
 
 func (r RefToCPrintDialogCallbackT) GetCPrintDialogCallbackT() *CPrintDialogCallbackT {
 	return r.p_print_dialog_callback
 }
 
-func (r *RefToCPrintDialogCallbackT) SetCPrintDialogCallbackT(p *CPrintDialogCallbackT) {
+func (r *RefToCPrintDialogCallbackT) SetCPrintDialogCallbackT(p *CPrintDialogCallbackT) (prevValue *CPrintDialogCallbackT) {
+	prevValue = r.p_print_dialog_callback
 	r.p_print_dialog_callback = p
+	return prevValue
 }
 
 // Go type CPrintDialogCallbackT wraps cef type *C.cef_print_dialog_callback_t
@@ -15368,15 +15512,17 @@ type RefToCPrintJobCallbackT struct {
 
 type CPrintJobCallbackTAccessor interface {
 	GetCPrintJobCallbackT() *CPrintJobCallbackT
-	SetCPrintJobCallbackT(*CPrintJobCallbackT)
+	SetCPrintJobCallbackT(*CPrintJobCallbackT) (oldValue *CPrintJobCallbackT)
 }
 
 func (r RefToCPrintJobCallbackT) GetCPrintJobCallbackT() *CPrintJobCallbackT {
 	return r.p_print_job_callback
 }
 
-func (r *RefToCPrintJobCallbackT) SetCPrintJobCallbackT(p *CPrintJobCallbackT) {
+func (r *RefToCPrintJobCallbackT) SetCPrintJobCallbackT(p *CPrintJobCallbackT) (prevValue *CPrintJobCallbackT) {
+	prevValue = r.p_print_job_callback
 	r.p_print_job_callback = p
+	return prevValue
 }
 
 // Go type CPrintJobCallbackT wraps cef type *C.cef_print_job_callback_t
@@ -15433,15 +15579,17 @@ type RefToCPrintHandlerT struct {
 
 type CPrintHandlerTAccessor interface {
 	GetCPrintHandlerT() *CPrintHandlerT
-	SetCPrintHandlerT(*CPrintHandlerT)
+	SetCPrintHandlerT(*CPrintHandlerT) (oldValue *CPrintHandlerT)
 }
 
 func (r RefToCPrintHandlerT) GetCPrintHandlerT() *CPrintHandlerT {
 	return r.p_print_handler
 }
 
-func (r *RefToCPrintHandlerT) SetCPrintHandlerT(p *CPrintHandlerT) {
+func (r *RefToCPrintHandlerT) SetCPrintHandlerT(p *CPrintHandlerT) (prevValue *CPrintHandlerT) {
+	prevValue = r.p_print_handler
 	r.p_print_handler = p
+	return prevValue
 }
 
 // Go type CPrintHandlerT wraps cef type *C.cef_print_handler_t
@@ -15670,15 +15818,17 @@ type RefToCPrintSettingsT struct {
 
 type CPrintSettingsTAccessor interface {
 	GetCPrintSettingsT() *CPrintSettingsT
-	SetCPrintSettingsT(*CPrintSettingsT)
+	SetCPrintSettingsT(*CPrintSettingsT) (oldValue *CPrintSettingsT)
 }
 
 func (r RefToCPrintSettingsT) GetCPrintSettingsT() *CPrintSettingsT {
 	return r.p_print_settings
 }
 
-func (r *RefToCPrintSettingsT) SetCPrintSettingsT(p *CPrintSettingsT) {
+func (r *RefToCPrintSettingsT) SetCPrintSettingsT(p *CPrintSettingsT) (prevValue *CPrintSettingsT) {
+	prevValue = r.p_print_settings
 	r.p_print_settings = p
+	return prevValue
 }
 
 // Go type CPrintSettingsT wraps cef type *C.cef_print_settings_t
@@ -15981,15 +16131,17 @@ type RefToCProcessMessageT struct {
 
 type CProcessMessageTAccessor interface {
 	GetCProcessMessageT() *CProcessMessageT
-	SetCProcessMessageT(*CProcessMessageT)
+	SetCProcessMessageT(*CProcessMessageT) (oldValue *CProcessMessageT)
 }
 
 func (r RefToCProcessMessageT) GetCProcessMessageT() *CProcessMessageT {
 	return r.p_process_message
 }
 
-func (r *RefToCProcessMessageT) SetCProcessMessageT(p *CProcessMessageT) {
+func (r *RefToCProcessMessageT) SetCProcessMessageT(p *CProcessMessageT) (prevValue *CProcessMessageT) {
+	prevValue = r.p_process_message
 	r.p_process_message = p
+	return prevValue
 }
 
 // Go type CProcessMessageT wraps cef type *C.cef_process_message_t
@@ -16113,15 +16265,17 @@ type RefToCRegistrationT struct {
 
 type CRegistrationTAccessor interface {
 	GetCRegistrationT() *CRegistrationT
-	SetCRegistrationT(*CRegistrationT)
+	SetCRegistrationT(*CRegistrationT) (oldValue *CRegistrationT)
 }
 
 func (r RefToCRegistrationT) GetCRegistrationT() *CRegistrationT {
 	return r.p_registration
 }
 
-func (r *RefToCRegistrationT) SetCRegistrationT(p *CRegistrationT) {
+func (r *RefToCRegistrationT) SetCRegistrationT(p *CRegistrationT) (prevValue *CRegistrationT) {
+	prevValue = r.p_registration
 	r.p_registration = p
+	return prevValue
 }
 
 // Go type CRegistrationT wraps cef type *C.cef_registration_t
@@ -16170,15 +16324,17 @@ type RefToCRenderHandlerT struct {
 
 type CRenderHandlerTAccessor interface {
 	GetCRenderHandlerT() *CRenderHandlerT
-	SetCRenderHandlerT(*CRenderHandlerT)
+	SetCRenderHandlerT(*CRenderHandlerT) (oldValue *CRenderHandlerT)
 }
 
 func (r RefToCRenderHandlerT) GetCRenderHandlerT() *CRenderHandlerT {
 	return r.p_render_handler
 }
 
-func (r *RefToCRenderHandlerT) SetCRenderHandlerT(p *CRenderHandlerT) {
+func (r *RefToCRenderHandlerT) SetCRenderHandlerT(p *CRenderHandlerT) (prevValue *CRenderHandlerT) {
+	prevValue = r.p_render_handler
 	r.p_render_handler = p
+	return prevValue
 }
 
 // Go type CRenderHandlerT wraps cef type *C.cef_render_handler_t
@@ -16627,15 +16783,17 @@ type RefToCRenderProcessHandlerT struct {
 
 type CRenderProcessHandlerTAccessor interface {
 	GetCRenderProcessHandlerT() *CRenderProcessHandlerT
-	SetCRenderProcessHandlerT(*CRenderProcessHandlerT)
+	SetCRenderProcessHandlerT(*CRenderProcessHandlerT) (oldValue *CRenderProcessHandlerT)
 }
 
 func (r RefToCRenderProcessHandlerT) GetCRenderProcessHandlerT() *CRenderProcessHandlerT {
 	return r.p_render_process_handler
 }
 
-func (r *RefToCRenderProcessHandlerT) SetCRenderProcessHandlerT(p *CRenderProcessHandlerT) {
+func (r *RefToCRenderProcessHandlerT) SetCRenderProcessHandlerT(p *CRenderProcessHandlerT) (prevValue *CRenderProcessHandlerT) {
+	prevValue = r.p_render_process_handler
 	r.p_render_process_handler = p
+	return prevValue
 }
 
 // Go type CRenderProcessHandlerT wraps cef type *C.cef_render_process_handler_t
@@ -16934,15 +17092,17 @@ type RefToCRequestCallbackT struct {
 
 type CRequestCallbackTAccessor interface {
 	GetCRequestCallbackT() *CRequestCallbackT
-	SetCRequestCallbackT(*CRequestCallbackT)
+	SetCRequestCallbackT(*CRequestCallbackT) (oldValue *CRequestCallbackT)
 }
 
 func (r RefToCRequestCallbackT) GetCRequestCallbackT() *CRequestCallbackT {
 	return r.p_request_callback
 }
 
-func (r *RefToCRequestCallbackT) SetCRequestCallbackT(p *CRequestCallbackT) {
+func (r *RefToCRequestCallbackT) SetCRequestCallbackT(p *CRequestCallbackT) (prevValue *CRequestCallbackT) {
+	prevValue = r.p_request_callback
 	r.p_request_callback = p
+	return prevValue
 }
 
 // Go type CRequestCallbackT wraps cef type *C.cef_request_callback_t
@@ -17012,15 +17172,17 @@ type RefToCRequestT struct {
 
 type CRequestTAccessor interface {
 	GetCRequestT() *CRequestT
-	SetCRequestT(*CRequestT)
+	SetCRequestT(*CRequestT) (oldValue *CRequestT)
 }
 
 func (r RefToCRequestT) GetCRequestT() *CRequestT {
 	return r.p_request
 }
 
-func (r *RefToCRequestT) SetCRequestT(p *CRequestT) {
+func (r *RefToCRequestT) SetCRequestT(p *CRequestT) (prevValue *CRequestT) {
+	prevValue = r.p_request
 	r.p_request = p
+	return prevValue
 }
 
 // Go type CRequestT wraps cef type *C.cef_request_t
@@ -17390,15 +17552,17 @@ type RefToCPostDataT struct {
 
 type CPostDataTAccessor interface {
 	GetCPostDataT() *CPostDataT
-	SetCPostDataT(*CPostDataT)
+	SetCPostDataT(*CPostDataT) (oldValue *CPostDataT)
 }
 
 func (r RefToCPostDataT) GetCPostDataT() *CPostDataT {
 	return r.p_post_data
 }
 
-func (r *RefToCPostDataT) SetCPostDataT(p *CPostDataT) {
+func (r *RefToCPostDataT) SetCPostDataT(p *CPostDataT) (prevValue *CPostDataT) {
+	prevValue = r.p_post_data
 	r.p_post_data = p
+	return prevValue
 }
 
 // Go type CPostDataT wraps cef type *C.cef_post_data_t
@@ -17538,15 +17702,17 @@ type RefToCPostDataElementT struct {
 
 type CPostDataElementTAccessor interface {
 	GetCPostDataElementT() *CPostDataElementT
-	SetCPostDataElementT(*CPostDataElementT)
+	SetCPostDataElementT(*CPostDataElementT) (oldValue *CPostDataElementT)
 }
 
 func (r RefToCPostDataElementT) GetCPostDataElementT() *CPostDataElementT {
 	return r.p_post_data_element
 }
 
-func (r *RefToCPostDataElementT) SetCPostDataElementT(p *CPostDataElementT) {
+func (r *RefToCPostDataElementT) SetCPostDataElementT(p *CPostDataElementT) (prevValue *CPostDataElementT) {
+	prevValue = r.p_post_data_element
 	r.p_post_data_element = p
+	return prevValue
 }
 
 // Go type CPostDataElementT wraps cef type *C.cef_post_data_element_t
@@ -17705,15 +17871,17 @@ type RefToCResolveCallbackT struct {
 
 type CResolveCallbackTAccessor interface {
 	GetCResolveCallbackT() *CResolveCallbackT
-	SetCResolveCallbackT(*CResolveCallbackT)
+	SetCResolveCallbackT(*CResolveCallbackT) (oldValue *CResolveCallbackT)
 }
 
 func (r RefToCResolveCallbackT) GetCResolveCallbackT() *CResolveCallbackT {
 	return r.p_resolve_callback
 }
 
-func (r *RefToCResolveCallbackT) SetCResolveCallbackT(p *CResolveCallbackT) {
+func (r *RefToCResolveCallbackT) SetCResolveCallbackT(p *CResolveCallbackT) (prevValue *CResolveCallbackT) {
+	prevValue = r.p_resolve_callback
 	r.p_resolve_callback = p
+	return prevValue
 }
 
 // Go type CResolveCallbackT wraps cef type *C.cef_resolve_callback_t
@@ -17786,15 +17954,17 @@ type RefToCRequestContextT struct {
 
 type CRequestContextTAccessor interface {
 	GetCRequestContextT() *CRequestContextT
-	SetCRequestContextT(*CRequestContextT)
+	SetCRequestContextT(*CRequestContextT) (oldValue *CRequestContextT)
 }
 
 func (r RefToCRequestContextT) GetCRequestContextT() *CRequestContextT {
 	return r.p_request_context
 }
 
-func (r *RefToCRequestContextT) SetCRequestContextT(p *CRequestContextT) {
+func (r *RefToCRequestContextT) SetCRequestContextT(p *CRequestContextT) (prevValue *CRequestContextT) {
+	prevValue = r.p_request_context
 	r.p_request_context = p
+	return prevValue
 }
 
 // Go type CRequestContextT wraps cef type *C.cef_request_context_t
@@ -18376,15 +18546,17 @@ type RefToCRequestContextHandlerT struct {
 
 type CRequestContextHandlerTAccessor interface {
 	GetCRequestContextHandlerT() *CRequestContextHandlerT
-	SetCRequestContextHandlerT(*CRequestContextHandlerT)
+	SetCRequestContextHandlerT(*CRequestContextHandlerT) (oldValue *CRequestContextHandlerT)
 }
 
 func (r RefToCRequestContextHandlerT) GetCRequestContextHandlerT() *CRequestContextHandlerT {
 	return r.p_request_context_handler
 }
 
-func (r *RefToCRequestContextHandlerT) SetCRequestContextHandlerT(p *CRequestContextHandlerT) {
+func (r *RefToCRequestContextHandlerT) SetCRequestContextHandlerT(p *CRequestContextHandlerT) (prevValue *CRequestContextHandlerT) {
+	prevValue = r.p_request_context_handler
 	r.p_request_context_handler = p
+	return prevValue
 }
 
 // Go type CRequestContextHandlerT wraps cef type *C.cef_request_context_handler_t
@@ -18583,15 +18755,17 @@ type RefToCSelectClientCertificateCallbackT struct {
 
 type CSelectClientCertificateCallbackTAccessor interface {
 	GetCSelectClientCertificateCallbackT() *CSelectClientCertificateCallbackT
-	SetCSelectClientCertificateCallbackT(*CSelectClientCertificateCallbackT)
+	SetCSelectClientCertificateCallbackT(*CSelectClientCertificateCallbackT) (oldValue *CSelectClientCertificateCallbackT)
 }
 
 func (r RefToCSelectClientCertificateCallbackT) GetCSelectClientCertificateCallbackT() *CSelectClientCertificateCallbackT {
 	return r.p_select_client_certificate_callback
 }
 
-func (r *RefToCSelectClientCertificateCallbackT) SetCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT) {
+func (r *RefToCSelectClientCertificateCallbackT) SetCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT) (prevValue *CSelectClientCertificateCallbackT) {
+	prevValue = r.p_select_client_certificate_callback
 	r.p_select_client_certificate_callback = p
+	return prevValue
 }
 
 // Go type CSelectClientCertificateCallbackT wraps cef type *C.cef_select_client_certificate_callback_t
@@ -18655,15 +18829,17 @@ type RefToCRequestHandlerT struct {
 
 type CRequestHandlerTAccessor interface {
 	GetCRequestHandlerT() *CRequestHandlerT
-	SetCRequestHandlerT(*CRequestHandlerT)
+	SetCRequestHandlerT(*CRequestHandlerT) (oldValue *CRequestHandlerT)
 }
 
 func (r RefToCRequestHandlerT) GetCRequestHandlerT() *CRequestHandlerT {
 	return r.p_request_handler
 }
 
-func (r *RefToCRequestHandlerT) SetCRequestHandlerT(p *CRequestHandlerT) {
+func (r *RefToCRequestHandlerT) SetCRequestHandlerT(p *CRequestHandlerT) (prevValue *CRequestHandlerT) {
+	prevValue = r.p_request_handler
 	r.p_request_handler = p
+	return prevValue
 }
 
 // Go type CRequestHandlerT wraps cef type *C.cef_request_handler_t
@@ -19071,15 +19247,17 @@ type RefToCResourceBundleHandlerT struct {
 
 type CResourceBundleHandlerTAccessor interface {
 	GetCResourceBundleHandlerT() *CResourceBundleHandlerT
-	SetCResourceBundleHandlerT(*CResourceBundleHandlerT)
+	SetCResourceBundleHandlerT(*CResourceBundleHandlerT) (oldValue *CResourceBundleHandlerT)
 }
 
 func (r RefToCResourceBundleHandlerT) GetCResourceBundleHandlerT() *CResourceBundleHandlerT {
 	return r.p_resource_bundle_handler
 }
 
-func (r *RefToCResourceBundleHandlerT) SetCResourceBundleHandlerT(p *CResourceBundleHandlerT) {
+func (r *RefToCResourceBundleHandlerT) SetCResourceBundleHandlerT(p *CResourceBundleHandlerT) (prevValue *CResourceBundleHandlerT) {
+	prevValue = r.p_resource_bundle_handler
 	r.p_resource_bundle_handler = p
+	return prevValue
 }
 
 // Go type CResourceBundleHandlerT wraps cef type *C.cef_resource_bundle_handler_t
@@ -19251,15 +19429,17 @@ type RefToCResourceSkipCallbackT struct {
 
 type CResourceSkipCallbackTAccessor interface {
 	GetCResourceSkipCallbackT() *CResourceSkipCallbackT
-	SetCResourceSkipCallbackT(*CResourceSkipCallbackT)
+	SetCResourceSkipCallbackT(*CResourceSkipCallbackT) (oldValue *CResourceSkipCallbackT)
 }
 
 func (r RefToCResourceSkipCallbackT) GetCResourceSkipCallbackT() *CResourceSkipCallbackT {
 	return r.p_resource_skip_callback
 }
 
-func (r *RefToCResourceSkipCallbackT) SetCResourceSkipCallbackT(p *CResourceSkipCallbackT) {
+func (r *RefToCResourceSkipCallbackT) SetCResourceSkipCallbackT(p *CResourceSkipCallbackT) (prevValue *CResourceSkipCallbackT) {
+	prevValue = r.p_resource_skip_callback
 	r.p_resource_skip_callback = p
+	return prevValue
 }
 
 // Go type CResourceSkipCallbackT wraps cef type *C.cef_resource_skip_callback_t
@@ -19319,15 +19499,17 @@ type RefToCResourceReadCallbackT struct {
 
 type CResourceReadCallbackTAccessor interface {
 	GetCResourceReadCallbackT() *CResourceReadCallbackT
-	SetCResourceReadCallbackT(*CResourceReadCallbackT)
+	SetCResourceReadCallbackT(*CResourceReadCallbackT) (oldValue *CResourceReadCallbackT)
 }
 
 func (r RefToCResourceReadCallbackT) GetCResourceReadCallbackT() *CResourceReadCallbackT {
 	return r.p_resource_read_callback
 }
 
-func (r *RefToCResourceReadCallbackT) SetCResourceReadCallbackT(p *CResourceReadCallbackT) {
+func (r *RefToCResourceReadCallbackT) SetCResourceReadCallbackT(p *CResourceReadCallbackT) (prevValue *CResourceReadCallbackT) {
+	prevValue = r.p_resource_read_callback
 	r.p_resource_read_callback = p
+	return prevValue
 }
 
 // Go type CResourceReadCallbackT wraps cef type *C.cef_resource_read_callback_t
@@ -19389,15 +19571,17 @@ type RefToCResourceHandlerT struct {
 
 type CResourceHandlerTAccessor interface {
 	GetCResourceHandlerT() *CResourceHandlerT
-	SetCResourceHandlerT(*CResourceHandlerT)
+	SetCResourceHandlerT(*CResourceHandlerT) (oldValue *CResourceHandlerT)
 }
 
 func (r RefToCResourceHandlerT) GetCResourceHandlerT() *CResourceHandlerT {
 	return r.p_resource_handler
 }
 
-func (r *RefToCResourceHandlerT) SetCResourceHandlerT(p *CResourceHandlerT) {
+func (r *RefToCResourceHandlerT) SetCResourceHandlerT(p *CResourceHandlerT) (prevValue *CResourceHandlerT) {
+	prevValue = r.p_resource_handler
 	r.p_resource_handler = p
+	return prevValue
 }
 
 // Go type CResourceHandlerT wraps cef type *C.cef_resource_handler_t
@@ -19680,15 +19864,17 @@ type RefToCResourceRequestHandlerT struct {
 
 type CResourceRequestHandlerTAccessor interface {
 	GetCResourceRequestHandlerT() *CResourceRequestHandlerT
-	SetCResourceRequestHandlerT(*CResourceRequestHandlerT)
+	SetCResourceRequestHandlerT(*CResourceRequestHandlerT) (oldValue *CResourceRequestHandlerT)
 }
 
 func (r RefToCResourceRequestHandlerT) GetCResourceRequestHandlerT() *CResourceRequestHandlerT {
 	return r.p_resource_request_handler
 }
 
-func (r *RefToCResourceRequestHandlerT) SetCResourceRequestHandlerT(p *CResourceRequestHandlerT) {
+func (r *RefToCResourceRequestHandlerT) SetCResourceRequestHandlerT(p *CResourceRequestHandlerT) (prevValue *CResourceRequestHandlerT) {
+	prevValue = r.p_resource_request_handler
 	r.p_resource_request_handler = p
+	return prevValue
 }
 
 // Go type CResourceRequestHandlerT wraps cef type *C.cef_resource_request_handler_t
@@ -20018,15 +20204,17 @@ type RefToCCookieAccessFilterT struct {
 
 type CCookieAccessFilterTAccessor interface {
 	GetCCookieAccessFilterT() *CCookieAccessFilterT
-	SetCCookieAccessFilterT(*CCookieAccessFilterT)
+	SetCCookieAccessFilterT(*CCookieAccessFilterT) (oldValue *CCookieAccessFilterT)
 }
 
 func (r RefToCCookieAccessFilterT) GetCCookieAccessFilterT() *CCookieAccessFilterT {
 	return r.p_cookie_access_filter
 }
 
-func (r *RefToCCookieAccessFilterT) SetCCookieAccessFilterT(p *CCookieAccessFilterT) {
+func (r *RefToCCookieAccessFilterT) SetCCookieAccessFilterT(p *CCookieAccessFilterT) (prevValue *CCookieAccessFilterT) {
+	prevValue = r.p_cookie_access_filter
 	r.p_cookie_access_filter = p
+	return prevValue
 }
 
 // Go type CCookieAccessFilterT wraps cef type *C.cef_cookie_access_filter_t
@@ -20183,15 +20371,17 @@ type RefToCResponseT struct {
 
 type CResponseTAccessor interface {
 	GetCResponseT() *CResponseT
-	SetCResponseT(*CResponseT)
+	SetCResponseT(*CResponseT) (oldValue *CResponseT)
 }
 
 func (r RefToCResponseT) GetCResponseT() *CResponseT {
 	return r.p_response
 }
 
-func (r *RefToCResponseT) SetCResponseT(p *CResponseT) {
+func (r *RefToCResponseT) SetCResponseT(p *CResponseT) (prevValue *CResponseT) {
+	prevValue = r.p_response
 	r.p_response = p
+	return prevValue
 }
 
 // Go type CResponseT wraps cef type *C.cef_response_t
@@ -20477,15 +20667,17 @@ type RefToCResponseFilterT struct {
 
 type CResponseFilterTAccessor interface {
 	GetCResponseFilterT() *CResponseFilterT
-	SetCResponseFilterT(*CResponseFilterT)
+	SetCResponseFilterT(*CResponseFilterT) (oldValue *CResponseFilterT)
 }
 
 func (r RefToCResponseFilterT) GetCResponseFilterT() *CResponseFilterT {
 	return r.p_response_filter
 }
 
-func (r *RefToCResponseFilterT) SetCResponseFilterT(p *CResponseFilterT) {
+func (r *RefToCResponseFilterT) SetCResponseFilterT(p *CResponseFilterT) (prevValue *CResponseFilterT) {
+	prevValue = r.p_response_filter
 	r.p_response_filter = p
+	return prevValue
 }
 
 // Go type CResponseFilterT wraps cef type *C.cef_response_filter_t
@@ -20654,15 +20846,17 @@ type RefToCSchemeRegistrarT struct {
 
 type CSchemeRegistrarTAccessor interface {
 	GetCSchemeRegistrarT() *CSchemeRegistrarT
-	SetCSchemeRegistrarT(*CSchemeRegistrarT)
+	SetCSchemeRegistrarT(*CSchemeRegistrarT) (oldValue *CSchemeRegistrarT)
 }
 
 func (r RefToCSchemeRegistrarT) GetCSchemeRegistrarT() *CSchemeRegistrarT {
 	return r.p_scheme_registrar
 }
 
-func (r *RefToCSchemeRegistrarT) SetCSchemeRegistrarT(p *CSchemeRegistrarT) {
+func (r *RefToCSchemeRegistrarT) SetCSchemeRegistrarT(p *CSchemeRegistrarT) (prevValue *CSchemeRegistrarT) {
+	prevValue = r.p_scheme_registrar
 	r.p_scheme_registrar = p
+	return prevValue
 }
 
 // Go type CSchemeRegistrarT wraps cef type *C.cef_scheme_registrar_t
@@ -20718,15 +20912,17 @@ type RefToCSchemeHandlerFactoryT struct {
 
 type CSchemeHandlerFactoryTAccessor interface {
 	GetCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT
-	SetCSchemeHandlerFactoryT(*CSchemeHandlerFactoryT)
+	SetCSchemeHandlerFactoryT(*CSchemeHandlerFactoryT) (oldValue *CSchemeHandlerFactoryT)
 }
 
 func (r RefToCSchemeHandlerFactoryT) GetCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
 	return r.p_scheme_handler_factory
 }
 
-func (r *RefToCSchemeHandlerFactoryT) SetCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) {
+func (r *RefToCSchemeHandlerFactoryT) SetCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) (prevValue *CSchemeHandlerFactoryT) {
+	prevValue = r.p_scheme_handler_factory
 	r.p_scheme_handler_factory = p
+	return prevValue
 }
 
 // Go type CSchemeHandlerFactoryT wraps cef type *C.cef_scheme_handler_factory_t
@@ -20907,15 +21103,17 @@ type RefToCScrollViewT struct {
 
 type CScrollViewTAccessor interface {
 	GetCScrollViewT() *CScrollViewT
-	SetCScrollViewT(*CScrollViewT)
+	SetCScrollViewT(*CScrollViewT) (oldValue *CScrollViewT)
 }
 
 func (r RefToCScrollViewT) GetCScrollViewT() *CScrollViewT {
 	return r.p_scroll_view
 }
 
-func (r *RefToCScrollViewT) SetCScrollViewT(p *CScrollViewT) {
+func (r *RefToCScrollViewT) SetCScrollViewT(p *CScrollViewT) (prevValue *CScrollViewT) {
+	prevValue = r.p_scroll_view
 	r.p_scroll_view = p
+	return prevValue
 }
 
 // Go type CScrollViewT wraps cef type *C.cef_scroll_view_t
@@ -21070,15 +21268,17 @@ type RefToCSslinfoT struct {
 
 type CSslinfoTAccessor interface {
 	GetCSslinfoT() *CSslinfoT
-	SetCSslinfoT(*CSslinfoT)
+	SetCSslinfoT(*CSslinfoT) (oldValue *CSslinfoT)
 }
 
 func (r RefToCSslinfoT) GetCSslinfoT() *CSslinfoT {
 	return r.p_sslinfo
 }
 
-func (r *RefToCSslinfoT) SetCSslinfoT(p *CSslinfoT) {
+func (r *RefToCSslinfoT) SetCSslinfoT(p *CSslinfoT) (prevValue *CSslinfoT) {
+	prevValue = r.p_sslinfo
 	r.p_sslinfo = p
+	return prevValue
 }
 
 // Go type CSslinfoT wraps cef type *C.cef_sslinfo_t
@@ -21162,15 +21362,17 @@ type RefToCSslstatusT struct {
 
 type CSslstatusTAccessor interface {
 	GetCSslstatusT() *CSslstatusT
-	SetCSslstatusT(*CSslstatusT)
+	SetCSslstatusT(*CSslstatusT) (oldValue *CSslstatusT)
 }
 
 func (r RefToCSslstatusT) GetCSslstatusT() *CSslstatusT {
 	return r.p_sslstatus
 }
 
-func (r *RefToCSslstatusT) SetCSslstatusT(p *CSslstatusT) {
+func (r *RefToCSslstatusT) SetCSslstatusT(p *CSslstatusT) (prevValue *CSslstatusT) {
+	prevValue = r.p_sslstatus
 	r.p_sslstatus = p
+	return prevValue
 }
 
 // Go type CSslstatusT wraps cef type *C.cef_sslstatus_t
@@ -21275,15 +21477,17 @@ type RefToCReadHandlerT struct {
 
 type CReadHandlerTAccessor interface {
 	GetCReadHandlerT() *CReadHandlerT
-	SetCReadHandlerT(*CReadHandlerT)
+	SetCReadHandlerT(*CReadHandlerT) (oldValue *CReadHandlerT)
 }
 
 func (r RefToCReadHandlerT) GetCReadHandlerT() *CReadHandlerT {
 	return r.p_read_handler
 }
 
-func (r *RefToCReadHandlerT) SetCReadHandlerT(p *CReadHandlerT) {
+func (r *RefToCReadHandlerT) SetCReadHandlerT(p *CReadHandlerT) (prevValue *CReadHandlerT) {
+	prevValue = r.p_read_handler
 	r.p_read_handler = p
+	return prevValue
 }
 
 // Go type CReadHandlerT wraps cef type *C.cef_read_handler_t
@@ -21479,15 +21683,17 @@ type RefToCStreamReaderT struct {
 
 type CStreamReaderTAccessor interface {
 	GetCStreamReaderT() *CStreamReaderT
-	SetCStreamReaderT(*CStreamReaderT)
+	SetCStreamReaderT(*CStreamReaderT) (oldValue *CStreamReaderT)
 }
 
 func (r RefToCStreamReaderT) GetCStreamReaderT() *CStreamReaderT {
 	return r.p_stream_reader
 }
 
-func (r *RefToCStreamReaderT) SetCStreamReaderT(p *CStreamReaderT) {
+func (r *RefToCStreamReaderT) SetCStreamReaderT(p *CStreamReaderT) (prevValue *CStreamReaderT) {
+	prevValue = r.p_stream_reader
 	r.p_stream_reader = p
+	return prevValue
 }
 
 // Go type CStreamReaderT wraps cef type *C.cef_stream_reader_t
@@ -21647,15 +21853,17 @@ type RefToCWriteHandlerT struct {
 
 type CWriteHandlerTAccessor interface {
 	GetCWriteHandlerT() *CWriteHandlerT
-	SetCWriteHandlerT(*CWriteHandlerT)
+	SetCWriteHandlerT(*CWriteHandlerT) (oldValue *CWriteHandlerT)
 }
 
 func (r RefToCWriteHandlerT) GetCWriteHandlerT() *CWriteHandlerT {
 	return r.p_write_handler
 }
 
-func (r *RefToCWriteHandlerT) SetCWriteHandlerT(p *CWriteHandlerT) {
+func (r *RefToCWriteHandlerT) SetCWriteHandlerT(p *CWriteHandlerT) (prevValue *CWriteHandlerT) {
+	prevValue = r.p_write_handler
 	r.p_write_handler = p
+	return prevValue
 }
 
 // Go type CWriteHandlerT wraps cef type *C.cef_write_handler_t
@@ -21851,15 +22059,17 @@ type RefToCStreamWriterT struct {
 
 type CStreamWriterTAccessor interface {
 	GetCStreamWriterT() *CStreamWriterT
-	SetCStreamWriterT(*CStreamWriterT)
+	SetCStreamWriterT(*CStreamWriterT) (oldValue *CStreamWriterT)
 }
 
 func (r RefToCStreamWriterT) GetCStreamWriterT() *CStreamWriterT {
 	return r.p_stream_writer
 }
 
-func (r *RefToCStreamWriterT) SetCStreamWriterT(p *CStreamWriterT) {
+func (r *RefToCStreamWriterT) SetCStreamWriterT(p *CStreamWriterT) (prevValue *CStreamWriterT) {
+	prevValue = r.p_stream_writer
 	r.p_stream_writer = p
+	return prevValue
 }
 
 // Go type CStreamWriterT wraps cef type *C.cef_stream_writer_t
@@ -22004,15 +22214,17 @@ type RefToCStringVisitorT struct {
 
 type CStringVisitorTAccessor interface {
 	GetCStringVisitorT() *CStringVisitorT
-	SetCStringVisitorT(*CStringVisitorT)
+	SetCStringVisitorT(*CStringVisitorT) (oldValue *CStringVisitorT)
 }
 
 func (r RefToCStringVisitorT) GetCStringVisitorT() *CStringVisitorT {
 	return r.p_string_visitor
 }
 
-func (r *RefToCStringVisitorT) SetCStringVisitorT(p *CStringVisitorT) {
+func (r *RefToCStringVisitorT) SetCStringVisitorT(p *CStringVisitorT) (prevValue *CStringVisitorT) {
+	prevValue = r.p_string_visitor
 	r.p_string_visitor = p
+	return prevValue
 }
 
 // Go type CStringVisitorT wraps cef type *C.cef_string_visitor_t
@@ -22139,15 +22351,17 @@ type RefToCTaskT struct {
 
 type CTaskTAccessor interface {
 	GetCTaskT() *CTaskT
-	SetCTaskT(*CTaskT)
+	SetCTaskT(*CTaskT) (oldValue *CTaskT)
 }
 
 func (r RefToCTaskT) GetCTaskT() *CTaskT {
 	return r.p_task
 }
 
-func (r *RefToCTaskT) SetCTaskT(p *CTaskT) {
+func (r *RefToCTaskT) SetCTaskT(p *CTaskT) (prevValue *CTaskT) {
+	prevValue = r.p_task
 	r.p_task = p
+	return prevValue
 }
 
 // Go type CTaskT wraps cef type *C.cef_task_t
@@ -22272,15 +22486,17 @@ type RefToCTaskRunnerT struct {
 
 type CTaskRunnerTAccessor interface {
 	GetCTaskRunnerT() *CTaskRunnerT
-	SetCTaskRunnerT(*CTaskRunnerT)
+	SetCTaskRunnerT(*CTaskRunnerT) (oldValue *CTaskRunnerT)
 }
 
 func (r RefToCTaskRunnerT) GetCTaskRunnerT() *CTaskRunnerT {
 	return r.p_task_runner
 }
 
-func (r *RefToCTaskRunnerT) SetCTaskRunnerT(p *CTaskRunnerT) {
+func (r *RefToCTaskRunnerT) SetCTaskRunnerT(p *CTaskRunnerT) (prevValue *CTaskRunnerT) {
+	prevValue = r.p_task_runner
 	r.p_task_runner = p
+	return prevValue
 }
 
 // Go type CTaskRunnerT wraps cef type *C.cef_task_runner_t
@@ -22496,15 +22712,17 @@ type RefToCTextfieldT struct {
 
 type CTextfieldTAccessor interface {
 	GetCTextfieldT() *CTextfieldT
-	SetCTextfieldT(*CTextfieldT)
+	SetCTextfieldT(*CTextfieldT) (oldValue *CTextfieldT)
 }
 
 func (r RefToCTextfieldT) GetCTextfieldT() *CTextfieldT {
 	return r.p_textfield
 }
 
-func (r *RefToCTextfieldT) SetCTextfieldT(p *CTextfieldT) {
+func (r *RefToCTextfieldT) SetCTextfieldT(p *CTextfieldT) (prevValue *CTextfieldT) {
+	prevValue = r.p_textfield
 	r.p_textfield = p
+	return prevValue
 }
 
 // Go type CTextfieldT wraps cef type *C.cef_textfield_t
@@ -22959,15 +23177,17 @@ type RefToCTextfieldDelegateT struct {
 
 type CTextfieldDelegateTAccessor interface {
 	GetCTextfieldDelegateT() *CTextfieldDelegateT
-	SetCTextfieldDelegateT(*CTextfieldDelegateT)
+	SetCTextfieldDelegateT(*CTextfieldDelegateT) (oldValue *CTextfieldDelegateT)
 }
 
 func (r RefToCTextfieldDelegateT) GetCTextfieldDelegateT() *CTextfieldDelegateT {
 	return r.p_textfield_delegate
 }
 
-func (r *RefToCTextfieldDelegateT) SetCTextfieldDelegateT(p *CTextfieldDelegateT) {
+func (r *RefToCTextfieldDelegateT) SetCTextfieldDelegateT(p *CTextfieldDelegateT) (prevValue *CTextfieldDelegateT) {
+	prevValue = r.p_textfield_delegate
 	r.p_textfield_delegate = p
+	return prevValue
 }
 
 // Go type CTextfieldDelegateT wraps cef type *C.cef_textfield_delegate_t
@@ -23160,6 +23380,219 @@ func (textfield_delegate *CTextfieldDelegateT) Handler() interface{} {
 	return textfield_delegate_handlers.handler[cp]
 }
 
+// cef_trace_capi.h, include/capi/cef_trace_capi.h:69:3,
+
+///
+// Implement this structure to receive notification when tracing has completed.
+// The functions of this structure will be called on the browser process UI
+// thread.
+///
+
+type cCEndTracingCallbackT C.cef_end_tracing_callback_t
+
+// Go type for cef_end_tracing_callback_t
+type CEndTracingCallbackT struct {
+	noCopy                  noCopy
+	pc_end_tracing_callback *cCEndTracingCallbackT
+}
+
+type RefToCEndTracingCallbackT struct {
+	p_end_tracing_callback *CEndTracingCallbackT
+}
+
+type CEndTracingCallbackTAccessor interface {
+	GetCEndTracingCallbackT() *CEndTracingCallbackT
+	SetCEndTracingCallbackT(*CEndTracingCallbackT) (oldValue *CEndTracingCallbackT)
+}
+
+func (r RefToCEndTracingCallbackT) GetCEndTracingCallbackT() *CEndTracingCallbackT {
+	return r.p_end_tracing_callback
+}
+
+func (r *RefToCEndTracingCallbackT) SetCEndTracingCallbackT(p *CEndTracingCallbackT) (prevValue *CEndTracingCallbackT) {
+	prevValue = r.p_end_tracing_callback
+	r.p_end_tracing_callback = p
+	return prevValue
+}
+
+// Go type CEndTracingCallbackT wraps cef type *C.cef_end_tracing_callback_t
+func newCEndTracingCallbackT(p *C.cef_end_tracing_callback_t) *CEndTracingCallbackT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T381.1:")
+	pc := (*cCEndTracingCallbackT)(p)
+	BaseAddRef(pc)
+	go_end_tracing_callback := &CEndTracingCallbackT{noCopy{}, pc}
+	runtime.SetFinalizer(go_end_tracing_callback, func(g *CEndTracingCallbackT) {
+		Tracef(unsafe.Pointer(g.pc_end_tracing_callback), "T381.2:")
+		BaseRelease(g.pc_end_tracing_callback)
+	})
+	return go_end_tracing_callback
+}
+
+// *C.cef_end_tracing_callback_t has refCounted interface
+func (end_tracing_callback *CEndTracingCallbackT) HasOneRef() bool {
+	return BaseHasOneRef(end_tracing_callback.pc_end_tracing_callback)
+}
+
+func (p *cCEndTracingCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+///
+// Called after all processes have sent their trace data. |tracing_file| is
+// the path at which tracing data was written. The client is responsible for
+// deleting |tracing_file|.
+///
+type OnEndTracingCompleteHandler interface {
+	OnEndTracingComplete(
+		self *CEndTracingCallbackT,
+		tracing_file string,
+	)
+}
+
+var end_tracing_callback_handlers = struct {
+	handler                         map[*cCEndTracingCallbackT]interface{}
+	on_end_tracing_complete_handler map[*cCEndTracingCallbackT]OnEndTracingCompleteHandler
+}{
+	map[*cCEndTracingCallbackT]interface{}{},
+	map[*cCEndTracingCallbackT]OnEndTracingCompleteHandler{},
+}
+
+// AllocCEndTracingCallbackT allocates CEndTracingCallbackT and construct it
+func AllocCEndTracingCallbackT() *CEndTracingCallbackT {
+	up := c_calloc(1, C.sizeof_cefingo_end_tracing_callback_wrapper_t, "T381.3:")
+	cefp := C.cefingo_construct_end_tracing_callback((*C.cefingo_end_tracing_callback_wrapper_t)(up))
+	cgop := (*cCEndTracingCallbackT)(cefp)
+
+	registerDeassocer(up, DeassocFunc(func() {
+		// Do not have reference to cef_end_tracing_callback_t itself in DeassocFunc,
+		// or cef_end_tracing_callback_t is never GCed.
+		Tracef(up, "T381.4:")
+
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
+		delete(end_tracing_callback_handlers.handler, cgop)
+		delete(end_tracing_callback_handlers.on_end_tracing_complete_handler, cgop)
+	}))
+
+	return newCEndTracingCallbackT(cefp)
+}
+
+func (end_tracing_callback *CEndTracingCallbackT) Bind(a interface{}) *CEndTracingCallbackT {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
+
+	cp := end_tracing_callback.pc_end_tracing_callback
+	end_tracing_callback_handlers.handler[cp] = a
+
+	if h, ok := a.(OnEndTracingCompleteHandler); ok {
+		end_tracing_callback_handlers.on_end_tracing_complete_handler[cp] = h
+	}
+
+	if accessor, ok := a.(CEndTracingCallbackTAccessor); ok {
+		accessor.SetCEndTracingCallbackT(end_tracing_callback)
+		Logf("T381.5:")
+	}
+
+	return end_tracing_callback
+}
+
+func (end_tracing_callback *CEndTracingCallbackT) UnbindAll() {
+
+	cp := end_tracing_callback.pc_end_tracing_callback
+	delete(end_tracing_callback_handlers.handler, cp)
+
+	delete(end_tracing_callback_handlers.on_end_tracing_complete_handler, cp)
+
+}
+
+func (end_tracing_callback *CEndTracingCallbackT) Handler() interface{} {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
+
+	cp := end_tracing_callback.pc_end_tracing_callback
+	return end_tracing_callback_handlers.handler[cp]
+}
+
+///
+// Start tracing events on all processes. Tracing is initialized asynchronously
+// and |callback| will be executed on the UI thread after initialization is
+// complete.
+//
+// If CefBeginTracing was called previously, or if a CefEndTracingAsync call is
+// pending, CefBeginTracing will fail and return false (0).
+//
+// |categories| is a comma-delimited list of category wildcards. A category can
+// have an optional '-' prefix to make it an excluded category. Having both
+// included and excluded categories in the same list is not supported.
+//
+// Example: "test_MyTest*" Example: "test_MyTest*,test_OtherStuff" Example:
+// "-excluded_category1,-excluded_category2"
+//
+// This function must be called on the browser process UI thread.
+///
+func BeginTracing(
+	categories string,
+	callback *CCompletionCallbackT,
+) (ret bool) {
+	c_categories := create_cef_string(categories)
+	var goTmpcallback *C.cef_completion_callback_t
+	if callback != nil {
+		BaseAddRef(callback.pc_completion_callback)
+		goTmpcallback = (*C.cef_completion_callback_t)(callback.pc_completion_callback)
+	}
+
+	cRet := C.cef_begin_tracing(c_categories.p_cef_string_t, goTmpcallback)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Stop tracing events on all processes.
+//
+// This function will fail and return false (0) if a previous call to
+// CefEndTracingAsync is already pending or if CefBeginTracing was not called.
+//
+// |tracing_file| is the path at which tracing data will be written and
+// |callback| is the callback that will be executed once all processes have sent
+// their trace data. If |tracing_file| is NULL a new temporary file path will be
+// used. If |callback| is NULL no trace data will be written.
+//
+// This function must be called on the browser process UI thread.
+///
+func EndTracing(
+	tracing_file string,
+	callback *CEndTracingCallbackT,
+) (ret bool) {
+	c_tracing_file := create_cef_string(tracing_file)
+	var goTmpcallback *C.cef_end_tracing_callback_t
+	if callback != nil {
+		BaseAddRef(callback.pc_end_tracing_callback)
+		goTmpcallback = (*C.cef_end_tracing_callback_t)(callback.pc_end_tracing_callback)
+	}
+
+	cRet := C.cef_end_tracing(c_tracing_file.p_cef_string_t, goTmpcallback)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Returns the current system trace time or, if none is defined, the current
+// high-res time. Can be used by clients to synchronize with the time
+// information in trace events.
+///
+func NowFromSystemTraceTime() (ret int64) {
+
+	cRet := C.cef_now_from_system_trace_time()
+
+	ret = (int64)(cRet)
+	return ret
+}
+
 // cef_urlrequest_capi.h, include/capi/cef_urlrequest_capi.h:112:3,
 
 ///
@@ -23184,15 +23617,17 @@ type RefToCUrlrequestT struct {
 
 type CUrlrequestTAccessor interface {
 	GetCUrlrequestT() *CUrlrequestT
-	SetCUrlrequestT(*CUrlrequestT)
+	SetCUrlrequestT(*CUrlrequestT) (oldValue *CUrlrequestT)
 }
 
 func (r RefToCUrlrequestT) GetCUrlrequestT() *CUrlrequestT {
 	return r.p_urlrequest
 }
 
-func (r *RefToCUrlrequestT) SetCUrlrequestT(p *CUrlrequestT) {
+func (r *RefToCUrlrequestT) SetCUrlrequestT(p *CUrlrequestT) (prevValue *CUrlrequestT) {
+	prevValue = r.p_urlrequest
 	r.p_urlrequest = p
+	return prevValue
 }
 
 // Go type CUrlrequestT wraps cef type *C.cef_urlrequest_t
@@ -23361,15 +23796,17 @@ type RefToCUrlrequestClientT struct {
 
 type CUrlrequestClientTAccessor interface {
 	GetCUrlrequestClientT() *CUrlrequestClientT
-	SetCUrlrequestClientT(*CUrlrequestClientT)
+	SetCUrlrequestClientT(*CUrlrequestClientT) (oldValue *CUrlrequestClientT)
 }
 
 func (r RefToCUrlrequestClientT) GetCUrlrequestClientT() *CUrlrequestClientT {
 	return r.p_urlrequest_client
 }
 
-func (r *RefToCUrlrequestClientT) SetCUrlrequestClientT(p *CUrlrequestClientT) {
+func (r *RefToCUrlrequestClientT) SetCUrlrequestClientT(p *CUrlrequestClientT) (prevValue *CUrlrequestClientT) {
+	prevValue = r.p_urlrequest_client
 	r.p_urlrequest_client = p
+	return prevValue
 }
 
 // Go type CUrlrequestClientT wraps cef type *C.cef_urlrequest_client_t
@@ -23594,15 +24031,17 @@ type RefToCV8contextT struct {
 
 type CV8contextTAccessor interface {
 	GetCV8contextT() *CV8contextT
-	SetCV8contextT(*CV8contextT)
+	SetCV8contextT(*CV8contextT) (oldValue *CV8contextT)
 }
 
 func (r RefToCV8contextT) GetCV8contextT() *CV8contextT {
 	return r.p_v8context
 }
 
-func (r *RefToCV8contextT) SetCV8contextT(p *CV8contextT) {
+func (r *RefToCV8contextT) SetCV8contextT(p *CV8contextT) (prevValue *CV8contextT) {
+	prevValue = r.p_v8context
 	r.p_v8context = p
+	return prevValue
 }
 
 // Go type CV8contextT wraps cef type *C.cef_v8context_t
@@ -23818,15 +24257,17 @@ type RefToCV8handlerT struct {
 
 type CV8handlerTAccessor interface {
 	GetCV8handlerT() *CV8handlerT
-	SetCV8handlerT(*CV8handlerT)
+	SetCV8handlerT(*CV8handlerT) (oldValue *CV8handlerT)
 }
 
 func (r RefToCV8handlerT) GetCV8handlerT() *CV8handlerT {
 	return r.p_v8handler
 }
 
-func (r *RefToCV8handlerT) SetCV8handlerT(p *CV8handlerT) {
+func (r *RefToCV8handlerT) SetCV8handlerT(p *CV8handlerT) (prevValue *CV8handlerT) {
+	prevValue = r.p_v8handler
 	r.p_v8handler = p
+	return prevValue
 }
 
 // Go type CV8handlerT wraps cef type *C.cef_v8handler_t
@@ -23955,15 +24396,17 @@ type RefToCV8accessorT struct {
 
 type CV8accessorTAccessor interface {
 	GetCV8accessorT() *CV8accessorT
-	SetCV8accessorT(*CV8accessorT)
+	SetCV8accessorT(*CV8accessorT) (oldValue *CV8accessorT)
 }
 
 func (r RefToCV8accessorT) GetCV8accessorT() *CV8accessorT {
 	return r.p_v8accessor
 }
 
-func (r *RefToCV8accessorT) SetCV8accessorT(p *CV8accessorT) {
+func (r *RefToCV8accessorT) SetCV8accessorT(p *CV8accessorT) (prevValue *CV8accessorT) {
+	prevValue = r.p_v8accessor
 	r.p_v8accessor = p
+	return prevValue
 }
 
 // Go type CV8accessorT wraps cef type *C.cef_v8accessor_t
@@ -24117,15 +24560,17 @@ type RefToCV8interceptorT struct {
 
 type CV8interceptorTAccessor interface {
 	GetCV8interceptorT() *CV8interceptorT
-	SetCV8interceptorT(*CV8interceptorT)
+	SetCV8interceptorT(*CV8interceptorT) (oldValue *CV8interceptorT)
 }
 
 func (r RefToCV8interceptorT) GetCV8interceptorT() *CV8interceptorT {
 	return r.p_v8interceptor
 }
 
-func (r *RefToCV8interceptorT) SetCV8interceptorT(p *CV8interceptorT) {
+func (r *RefToCV8interceptorT) SetCV8interceptorT(p *CV8interceptorT) (prevValue *CV8interceptorT) {
+	prevValue = r.p_v8interceptor
 	r.p_v8interceptor = p
+	return prevValue
 }
 
 // Go type CV8interceptorT wraps cef type *C.cef_v8interceptor_t
@@ -24298,15 +24743,17 @@ type RefToCV8exceptionT struct {
 
 type CV8exceptionTAccessor interface {
 	GetCV8exceptionT() *CV8exceptionT
-	SetCV8exceptionT(*CV8exceptionT)
+	SetCV8exceptionT(*CV8exceptionT) (oldValue *CV8exceptionT)
 }
 
 func (r RefToCV8exceptionT) GetCV8exceptionT() *CV8exceptionT {
 	return r.p_v8exception
 }
 
-func (r *RefToCV8exceptionT) SetCV8exceptionT(p *CV8exceptionT) {
+func (r *RefToCV8exceptionT) SetCV8exceptionT(p *CV8exceptionT) (prevValue *CV8exceptionT) {
+	prevValue = r.p_v8exception
 	r.p_v8exception = p
+	return prevValue
 }
 
 // Go type CV8exceptionT wraps cef type *C.cef_v8exception_t
@@ -24461,15 +24908,17 @@ type RefToCV8arrayBufferReleaseCallbackT struct {
 
 type CV8arrayBufferReleaseCallbackTAccessor interface {
 	GetCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT
-	SetCV8arrayBufferReleaseCallbackT(*CV8arrayBufferReleaseCallbackT)
+	SetCV8arrayBufferReleaseCallbackT(*CV8arrayBufferReleaseCallbackT) (oldValue *CV8arrayBufferReleaseCallbackT)
 }
 
 func (r RefToCV8arrayBufferReleaseCallbackT) GetCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
 	return r.p_v8array_buffer_release_callback
 }
 
-func (r *RefToCV8arrayBufferReleaseCallbackT) SetCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) {
+func (r *RefToCV8arrayBufferReleaseCallbackT) SetCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) (prevValue *CV8arrayBufferReleaseCallbackT) {
+	prevValue = r.p_v8array_buffer_release_callback
 	r.p_v8array_buffer_release_callback = p
+	return prevValue
 }
 
 // Go type CV8arrayBufferReleaseCallbackT wraps cef type *C.cef_v8array_buffer_release_callback_t
@@ -24595,15 +25044,17 @@ type RefToCV8valueT struct {
 
 type CV8valueTAccessor interface {
 	GetCV8valueT() *CV8valueT
-	SetCV8valueT(*CV8valueT)
+	SetCV8valueT(*CV8valueT) (oldValue *CV8valueT)
 }
 
 func (r RefToCV8valueT) GetCV8valueT() *CV8valueT {
 	return r.p_v8value
 }
 
-func (r *RefToCV8valueT) SetCV8valueT(p *CV8valueT) {
+func (r *RefToCV8valueT) SetCV8valueT(p *CV8valueT) (prevValue *CV8valueT) {
+	prevValue = r.p_v8value
 	r.p_v8value = p
+	return prevValue
 }
 
 // Go type CV8valueT wraps cef type *C.cef_v8value_t
@@ -25507,15 +25958,17 @@ type RefToCV8stackTraceT struct {
 
 type CV8stackTraceTAccessor interface {
 	GetCV8stackTraceT() *CV8stackTraceT
-	SetCV8stackTraceT(*CV8stackTraceT)
+	SetCV8stackTraceT(*CV8stackTraceT) (oldValue *CV8stackTraceT)
 }
 
 func (r RefToCV8stackTraceT) GetCV8stackTraceT() *CV8stackTraceT {
 	return r.p_v8stack_trace
 }
 
-func (r *RefToCV8stackTraceT) SetCV8stackTraceT(p *CV8stackTraceT) {
+func (r *RefToCV8stackTraceT) SetCV8stackTraceT(p *CV8stackTraceT) (prevValue *CV8stackTraceT) {
+	prevValue = r.p_v8stack_trace
 	r.p_v8stack_trace = p
+	return prevValue
 }
 
 // Go type CV8stackTraceT wraps cef type *C.cef_v8stack_trace_t
@@ -25616,15 +26069,17 @@ type RefToCV8stackFrameT struct {
 
 type CV8stackFrameTAccessor interface {
 	GetCV8stackFrameT() *CV8stackFrameT
-	SetCV8stackFrameT(*CV8stackFrameT)
+	SetCV8stackFrameT(*CV8stackFrameT) (oldValue *CV8stackFrameT)
 }
 
 func (r RefToCV8stackFrameT) GetCV8stackFrameT() *CV8stackFrameT {
 	return r.p_v8stack_frame
 }
 
-func (r *RefToCV8stackFrameT) SetCV8stackFrameT(p *CV8stackFrameT) {
+func (r *RefToCV8stackFrameT) SetCV8stackFrameT(p *CV8stackFrameT) (prevValue *CV8stackFrameT) {
+	prevValue = r.p_v8stack_frame
 	r.p_v8stack_frame = p
+	return prevValue
 }
 
 // Go type CV8stackFrameT wraps cef type *C.cef_v8stack_frame_t
@@ -25857,15 +26312,17 @@ type RefToCValueT struct {
 
 type CValueTAccessor interface {
 	GetCValueT() *CValueT
-	SetCValueT(*CValueT)
+	SetCValueT(*CValueT) (oldValue *CValueT)
 }
 
 func (r RefToCValueT) GetCValueT() *CValueT {
 	return r.p_value
 }
 
-func (r *RefToCValueT) SetCValueT(p *CValueT) {
+func (r *RefToCValueT) SetCValueT(p *CValueT) (prevValue *CValueT) {
+	prevValue = r.p_value
 	r.p_value = p
+	return prevValue
 }
 
 // Go type CValueT wraps cef type *C.cef_value_t
@@ -26252,15 +26709,17 @@ type RefToCBinaryValueT struct {
 
 type CBinaryValueTAccessor interface {
 	GetCBinaryValueT() *CBinaryValueT
-	SetCBinaryValueT(*CBinaryValueT)
+	SetCBinaryValueT(*CBinaryValueT) (oldValue *CBinaryValueT)
 }
 
 func (r RefToCBinaryValueT) GetCBinaryValueT() *CBinaryValueT {
 	return r.p_binary_value
 }
 
-func (r *RefToCBinaryValueT) SetCBinaryValueT(p *CBinaryValueT) {
+func (r *RefToCBinaryValueT) SetCBinaryValueT(p *CBinaryValueT) (prevValue *CBinaryValueT) {
+	prevValue = r.p_binary_value
 	r.p_binary_value = p
+	return prevValue
 }
 
 // Go type CBinaryValueT wraps cef type *C.cef_binary_value_t
@@ -26425,15 +26884,17 @@ type RefToCDictionaryValueT struct {
 
 type CDictionaryValueTAccessor interface {
 	GetCDictionaryValueT() *CDictionaryValueT
-	SetCDictionaryValueT(*CDictionaryValueT)
+	SetCDictionaryValueT(*CDictionaryValueT) (oldValue *CDictionaryValueT)
 }
 
 func (r RefToCDictionaryValueT) GetCDictionaryValueT() *CDictionaryValueT {
 	return r.p_dictionary_value
 }
 
-func (r *RefToCDictionaryValueT) SetCDictionaryValueT(p *CDictionaryValueT) {
+func (r *RefToCDictionaryValueT) SetCDictionaryValueT(p *CDictionaryValueT) (prevValue *CDictionaryValueT) {
+	prevValue = r.p_dictionary_value
 	r.p_dictionary_value = p
+	return prevValue
 }
 
 // Go type CDictionaryValueT wraps cef type *C.cef_dictionary_value_t
@@ -26965,15 +27426,17 @@ type RefToCListValueT struct {
 
 type CListValueTAccessor interface {
 	GetCListValueT() *CListValueT
-	SetCListValueT(*CListValueT)
+	SetCListValueT(*CListValueT) (oldValue *CListValueT)
 }
 
 func (r RefToCListValueT) GetCListValueT() *CListValueT {
 	return r.p_list_value
 }
 
-func (r *RefToCListValueT) SetCListValueT(p *CListValueT) {
+func (r *RefToCListValueT) SetCListValueT(p *CListValueT) (prevValue *CListValueT) {
+	prevValue = r.p_list_value
 	r.p_list_value = p
+	return prevValue
 }
 
 // Go type CListValueT wraps cef type *C.cef_list_value_t
@@ -27474,15 +27937,17 @@ type RefToCViewT struct {
 
 type CViewTAccessor interface {
 	GetCViewT() *CViewT
-	SetCViewT(*CViewT)
+	SetCViewT(*CViewT) (oldValue *CViewT)
 }
 
 func (r RefToCViewT) GetCViewT() *CViewT {
 	return r.p_view
 }
 
-func (r *RefToCViewT) SetCViewT(p *CViewT) {
+func (r *RefToCViewT) SetCViewT(p *CViewT) (prevValue *CViewT) {
+	prevValue = r.p_view
 	r.p_view = p
+	return prevValue
 }
 
 // Go type CViewT wraps cef type *C.cef_view_t
@@ -28167,15 +28632,17 @@ type RefToCViewDelegateT struct {
 
 type CViewDelegateTAccessor interface {
 	GetCViewDelegateT() *CViewDelegateT
-	SetCViewDelegateT(*CViewDelegateT)
+	SetCViewDelegateT(*CViewDelegateT) (oldValue *CViewDelegateT)
 }
 
 func (r RefToCViewDelegateT) GetCViewDelegateT() *CViewDelegateT {
 	return r.p_view_delegate
 }
 
-func (r *RefToCViewDelegateT) SetCViewDelegateT(p *CViewDelegateT) {
+func (r *RefToCViewDelegateT) SetCViewDelegateT(p *CViewDelegateT) (prevValue *CViewDelegateT) {
+	prevValue = r.p_view_delegate
 	r.p_view_delegate = p
+	return prevValue
 }
 
 // Go type CViewDelegateT wraps cef type *C.cef_view_delegate_t
@@ -28441,15 +28908,17 @@ type RefToCWebPluginInfoT struct {
 
 type CWebPluginInfoTAccessor interface {
 	GetCWebPluginInfoT() *CWebPluginInfoT
-	SetCWebPluginInfoT(*CWebPluginInfoT)
+	SetCWebPluginInfoT(*CWebPluginInfoT) (oldValue *CWebPluginInfoT)
 }
 
 func (r RefToCWebPluginInfoT) GetCWebPluginInfoT() *CWebPluginInfoT {
 	return r.p_web_plugin_info
 }
 
-func (r *RefToCWebPluginInfoT) SetCWebPluginInfoT(p *CWebPluginInfoT) {
+func (r *RefToCWebPluginInfoT) SetCWebPluginInfoT(p *CWebPluginInfoT) (prevValue *CWebPluginInfoT) {
+	prevValue = r.p_web_plugin_info
 	r.p_web_plugin_info = p
+	return prevValue
 }
 
 // Go type CWebPluginInfoT wraps cef type *C.cef_web_plugin_info_t
@@ -28560,15 +29029,17 @@ type RefToCWebPluginInfoVisitorT struct {
 
 type CWebPluginInfoVisitorTAccessor interface {
 	GetCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT
-	SetCWebPluginInfoVisitorT(*CWebPluginInfoVisitorT)
+	SetCWebPluginInfoVisitorT(*CWebPluginInfoVisitorT) (oldValue *CWebPluginInfoVisitorT)
 }
 
 func (r RefToCWebPluginInfoVisitorT) GetCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT {
 	return r.p_web_plugin_info_visitor
 }
 
-func (r *RefToCWebPluginInfoVisitorT) SetCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) {
+func (r *RefToCWebPluginInfoVisitorT) SetCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) (prevValue *CWebPluginInfoVisitorT) {
+	prevValue = r.p_web_plugin_info_visitor
 	r.p_web_plugin_info_visitor = p
+	return prevValue
 }
 
 // Go type CWebPluginInfoVisitorT wraps cef type *C.cef_web_plugin_info_visitor_t
@@ -28694,15 +29165,17 @@ type RefToCWebPluginUnstableCallbackT struct {
 
 type CWebPluginUnstableCallbackTAccessor interface {
 	GetCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT
-	SetCWebPluginUnstableCallbackT(*CWebPluginUnstableCallbackT)
+	SetCWebPluginUnstableCallbackT(*CWebPluginUnstableCallbackT) (oldValue *CWebPluginUnstableCallbackT)
 }
 
 func (r RefToCWebPluginUnstableCallbackT) GetCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT {
 	return r.p_web_plugin_unstable_callback
 }
 
-func (r *RefToCWebPluginUnstableCallbackT) SetCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) {
+func (r *RefToCWebPluginUnstableCallbackT) SetCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) (prevValue *CWebPluginUnstableCallbackT) {
+	prevValue = r.p_web_plugin_unstable_callback
 	r.p_web_plugin_unstable_callback = p
+	return prevValue
 }
 
 // Go type CWebPluginUnstableCallbackT wraps cef type *C.cef_web_plugin_unstable_callback_t
@@ -28827,15 +29300,17 @@ type RefToCRegisterCdmCallbackT struct {
 
 type CRegisterCdmCallbackTAccessor interface {
 	GetCRegisterCdmCallbackT() *CRegisterCdmCallbackT
-	SetCRegisterCdmCallbackT(*CRegisterCdmCallbackT)
+	SetCRegisterCdmCallbackT(*CRegisterCdmCallbackT) (oldValue *CRegisterCdmCallbackT)
 }
 
 func (r RefToCRegisterCdmCallbackT) GetCRegisterCdmCallbackT() *CRegisterCdmCallbackT {
 	return r.p_register_cdm_callback
 }
 
-func (r *RefToCRegisterCdmCallbackT) SetCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) {
+func (r *RefToCRegisterCdmCallbackT) SetCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) (prevValue *CRegisterCdmCallbackT) {
+	prevValue = r.p_register_cdm_callback
 	r.p_register_cdm_callback = p
+	return prevValue
 }
 
 // Go type CRegisterCdmCallbackT wraps cef type *C.cef_register_cdm_callback_t
@@ -29096,15 +29571,17 @@ type RefToCWindowT struct {
 
 type CWindowTAccessor interface {
 	GetCWindowT() *CWindowT
-	SetCWindowT(*CWindowT)
+	SetCWindowT(*CWindowT) (oldValue *CWindowT)
 }
 
 func (r RefToCWindowT) GetCWindowT() *CWindowT {
 	return r.p_window
 }
 
-func (r *RefToCWindowT) SetCWindowT(p *CWindowT) {
+func (r *RefToCWindowT) SetCWindowT(p *CWindowT) (prevValue *CWindowT) {
+	prevValue = r.p_window
 	r.p_window = p
+	return prevValue
 }
 
 // Go type CWindowT wraps cef type *C.cef_window_t
@@ -29612,15 +30089,17 @@ type RefToCWindowDelegateT struct {
 
 type CWindowDelegateTAccessor interface {
 	GetCWindowDelegateT() *CWindowDelegateT
-	SetCWindowDelegateT(*CWindowDelegateT)
+	SetCWindowDelegateT(*CWindowDelegateT) (oldValue *CWindowDelegateT)
 }
 
 func (r RefToCWindowDelegateT) GetCWindowDelegateT() *CWindowDelegateT {
 	return r.p_window_delegate
 }
 
-func (r *RefToCWindowDelegateT) SetCWindowDelegateT(p *CWindowDelegateT) {
+func (r *RefToCWindowDelegateT) SetCWindowDelegateT(p *CWindowDelegateT) (prevValue *CWindowDelegateT) {
+	prevValue = r.p_window_delegate
 	r.p_window_delegate = p
+	return prevValue
 }
 
 // Go type CWindowDelegateT wraps cef type *C.cef_window_delegate_t
@@ -30013,15 +30492,17 @@ type RefToCX509certPrincipalT struct {
 
 type CX509certPrincipalTAccessor interface {
 	GetCX509certPrincipalT() *CX509certPrincipalT
-	SetCX509certPrincipalT(*CX509certPrincipalT)
+	SetCX509certPrincipalT(*CX509certPrincipalT) (oldValue *CX509certPrincipalT)
 }
 
 func (r RefToCX509certPrincipalT) GetCX509certPrincipalT() *CX509certPrincipalT {
 	return r.p_x509cert_principal
 }
 
-func (r *RefToCX509certPrincipalT) SetCX509certPrincipalT(p *CX509certPrincipalT) {
+func (r *RefToCX509certPrincipalT) SetCX509certPrincipalT(p *CX509certPrincipalT) (prevValue *CX509certPrincipalT) {
+	prevValue = r.p_x509cert_principal
 	r.p_x509cert_principal = p
+	return prevValue
 }
 
 // Go type CX509certPrincipalT wraps cef type *C.cef_x509cert_principal_t
@@ -30193,15 +30674,17 @@ type RefToCX509certificateT struct {
 
 type CX509certificateTAccessor interface {
 	GetCX509certificateT() *CX509certificateT
-	SetCX509certificateT(*CX509certificateT)
+	SetCX509certificateT(*CX509certificateT) (oldValue *CX509certificateT)
 }
 
 func (r RefToCX509certificateT) GetCX509certificateT() *CX509certificateT {
 	return r.p_x509certificate
 }
 
-func (r *RefToCX509certificateT) SetCX509certificateT(p *CX509certificateT) {
+func (r *RefToCX509certificateT) SetCX509certificateT(p *CX509certificateT) (prevValue *CX509certificateT) {
+	prevValue = r.p_x509certificate
 	r.p_x509certificate = p
+	return prevValue
 }
 
 // Go type CX509certificateT wraps cef type *C.cef_x509certificate_t
