@@ -118,11 +118,8 @@ extern cef_run_file_dialog_callback_t *cefingo_construct_run_file_dialog_callbac
 CEFINGO_REF_COUNTER_WRAPPER(cef_navigation_entry_visitor_t, cefingo_navigation_entry_visitor_wrapper_t);
 extern cef_navigation_entry_visitor_t *cefingo_construct_navigation_entry_visitor(cefingo_navigation_entry_visitor_wrapper_t* navigation_entry_visitor);
 
-extern void cefingo_pdf_print_callback_on_pdf_print_finished(
-	struct _cef_pdf_print_callback_t* self,
-	const cef_string_t* path,
-	int ok
-);
+CEFINGO_REF_COUNTER_WRAPPER(cef_pdf_print_callback_t, cefingo_pdf_print_callback_wrapper_t);
+extern cef_pdf_print_callback_t *cefingo_construct_pdf_print_callback(cefingo_pdf_print_callback_wrapper_t* pdf_print_callback);
 
 extern void cefingo_download_image_callback_on_download_image_finished(
 	struct _cef_download_image_callback_t* self,

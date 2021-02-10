@@ -329,17 +329,23 @@ cef_navigation_entry_visitor_t *cefingo_construct_navigation_entry_visitor(cefin
 	return (cef_navigation_entry_visitor_t*)navigation_entry_visitor;
 }
 
-void cefingo_pdf_print_callback_on_pdf_print_finished(
-	struct _cef_pdf_print_callback_t* self,
-	const cef_string_t* path,
-	int ok
-)
+typedef void (*T_CEF_PDF_PRINT_CALLBACK_T_ON_PDF_PRINT_FINISHED)(
+	struct _cef_pdf_print_callback_t*,
+	const cef_string_t*,
+	int
+);
+
+cef_pdf_print_callback_t *cefingo_construct_pdf_print_callback(cefingo_pdf_print_callback_wrapper_t* pdf_print_callback)
 {
-	self->on_pdf_print_finished(
-		self,
-		path,
-		ok
-	);
+	initialize_cefingo_base_ref_counted(
+		offsetof(__typeof__(*pdf_print_callback), counter),
+		(cef_base_ref_counted_t*) pdf_print_callback);
+
+	// callbacks
+	pdf_print_callback->body.on_pdf_print_finished =
+		(T_CEF_PDF_PRINT_CALLBACK_T_ON_PDF_PRINT_FINISHED)cefingo_pdf_print_callback_on_pdf_print_finished;
+
+	return (cef_pdf_print_callback_t*)pdf_print_callback;
 }
 
 void cefingo_download_image_callback_on_download_image_finished(

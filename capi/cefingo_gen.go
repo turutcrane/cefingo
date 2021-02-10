@@ -1522,18 +1522,76 @@ func (p *cCPdfPrintCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 // the output path. |ok| will be true (1) if the printing completed
 // successfully or false (0) otherwise.
 ///
-func (self *CPdfPrintCallbackT) OnPdfPrintFinished(
-	path string,
-	ok bool,
-) {
-	c_path := create_cef_string(path)
-	var tmpok int
-	if ok {
-		tmpok = 1
+type OnPdfPrintFinishedHandler interface {
+	OnPdfPrintFinished(
+		self *CPdfPrintCallbackT,
+		path string,
+		ok bool,
+	)
+}
+
+var pdf_print_callback_handlers = struct {
+	handler                       map[*cCPdfPrintCallbackT]interface{}
+	on_pdf_print_finished_handler map[*cCPdfPrintCallbackT]OnPdfPrintFinishedHandler
+}{
+	map[*cCPdfPrintCallbackT]interface{}{},
+	map[*cCPdfPrintCallbackT]OnPdfPrintFinishedHandler{},
+}
+
+// AllocCPdfPrintCallbackT allocates CPdfPrintCallbackT and construct it
+func AllocCPdfPrintCallbackT() *CPdfPrintCallbackT {
+	up := c_calloc(1, C.sizeof_cefingo_pdf_print_callback_wrapper_t, "T109.3:")
+	cefp := C.cefingo_construct_pdf_print_callback((*C.cefingo_pdf_print_callback_wrapper_t)(up))
+	cgop := (*cCPdfPrintCallbackT)(cefp)
+
+	registerDeassocer(up, DeassocFunc(func() {
+		// Do not have reference to cef_pdf_print_callback_t itself in DeassocFunc,
+		// or cef_pdf_print_callback_t is never GCed.
+		Tracef(up, "T109.4:")
+
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
+		delete(pdf_print_callback_handlers.handler, cgop)
+		delete(pdf_print_callback_handlers.on_pdf_print_finished_handler, cgop)
+	}))
+
+	return newCPdfPrintCallbackT(cefp)
+}
+
+func (pdf_print_callback *CPdfPrintCallbackT) Bind(a interface{}) *CPdfPrintCallbackT {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
+
+	cp := pdf_print_callback.pc_pdf_print_callback
+	pdf_print_callback_handlers.handler[cp] = a
+
+	if h, ok := a.(OnPdfPrintFinishedHandler); ok {
+		pdf_print_callback_handlers.on_pdf_print_finished_handler[cp] = h
 	}
 
-	C.cefingo_pdf_print_callback_on_pdf_print_finished((*C.cef_pdf_print_callback_t)(self.pc_pdf_print_callback), c_path.p_cef_string_t, C.int(tmpok))
+	if accessor, ok := a.(CPdfPrintCallbackTAccessor); ok {
+		accessor.SetCPdfPrintCallbackT(pdf_print_callback)
+		Logf("T109.5:")
+	}
 
+	return pdf_print_callback
+}
+
+func (pdf_print_callback *CPdfPrintCallbackT) UnbindAll() {
+
+	cp := pdf_print_callback.pc_pdf_print_callback
+	delete(pdf_print_callback_handlers.handler, cp)
+
+	delete(pdf_print_callback_handlers.on_pdf_print_finished_handler, cp)
+
+}
+
+func (pdf_print_callback *CPdfPrintCallbackT) Handler() interface{} {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
+
+	cp := pdf_print_callback.pc_pdf_print_callback
+	return pdf_print_callback_handlers.handler[cp]
 }
 
 ///
@@ -28947,7 +29005,7 @@ func (p *cCWebPluginInfoT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 ///
-// Returns the plugin name (i.e. Flash).
+// Returns the plugin name.
 ///
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CWebPluginInfoT) GetName() (ret string) {

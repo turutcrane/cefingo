@@ -57,6 +57,7 @@ var handlerClasses = map[string]void{
 	"cef_media_observer_t":                  setElement,
 	"cef_navigation_entry_visitor_t":        setElement,
 	"cef_print_handler_t":                   setElement,
+	"cef_pdf_print_callback_t":              setElement,
 	"cef_read_handler_t":                    setElement,
 	"cef_register_cdm_callback_t":           setElement,
 	"cef_render_handler_t":                  setElement,

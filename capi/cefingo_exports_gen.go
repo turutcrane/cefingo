@@ -451,6 +451,38 @@ func cefingo_navigation_entry_visitor_visit(
 }
 
 ///
+// Method that will be executed when the PDF printing has completed. |path| is
+// the output path. |ok| will be true (1) if the printing completed
+// successfully or false (0) otherwise.
+///
+//export cefingo_pdf_print_callback_on_pdf_print_finished
+func cefingo_pdf_print_callback_on_pdf_print_finished(
+	self *C.cef_pdf_print_callback_t,
+	path *C.cef_string_t,
+	ok C.int,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T109.6:")
+	cefingoIfaceAccess.Lock()
+	f := pdf_print_callback_handlers.on_pdf_print_finished_handler[(*cCPdfPrintCallbackT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		goTmpself := newCPdfPrintCallbackT(self)
+		goTmppath := string_from_cef_string(path)
+		goTmpok := ok != 0
+
+		f.OnPdfPrintFinished(goTmpself, goTmppath, goTmpok)
+
+	} else {
+		Logf("T109.7: on_pdf_print_finished: Noo!")
+	}
+
+}
+
+///
 // Called on the browser process UI thread to retrieve the list of schemes
 // that should support cookies. If |include_defaults| is true (1) the default
 // schemes (&quot;http&quot;, &quot;https&quot;, &quot;ws&quot; and &quot;wss&quot;) will also be supported. Providing
