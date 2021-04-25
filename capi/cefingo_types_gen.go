@@ -1903,23 +1903,23 @@ const (
 	///
 	// Directory containing PK_FILE_MODULE.
 	///
-	ErrTrustTokenOperationFailed                       CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
-	ErrTrustTokenOperationSuccessWithoutSendingRequest CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_SUCCESS_WITHOUT_SENDING_REQUEST
-	ErrFtpFailed                                       CErrorcodeT = C.ERR_FTP_FAILED
-	ErrFtpServiceUnavailable                           CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
+	ErrTrustTokenOperationFailed CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
 
 	///
-	// "Local Settings\Application Data" directory under the user profile
-	// directory on Windows.
+	// Temporary directory.
 	///
-	ErrFtpTransferAborted     CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
-	ErrFtpFileBusy            CErrorcodeT = C.ERR_FTP_FILE_BUSY
-	ErrFtpSyntaxError         CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
-	ErrFtpCommandNotSupported CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
+	ErrTrustTokenOperationCacheHit CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_CACHE_HIT
+	ErrFtpFailed                   CErrorcodeT = C.ERR_FTP_FAILED
 
 	///
-	// Storage types.
+	// Path and filename of the module containing the CEF code (usually the libcef
+	// module).
 	///
+	ErrFtpServiceUnavailable   CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
+	ErrFtpTransferAborted      CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
+	ErrFtpFileBusy             CErrorcodeT = C.ERR_FTP_FILE_BUSY
+	ErrFtpSyntaxError          CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
+	ErrFtpCommandNotSupported  CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
 	ErrFtpBadCommandSequence   CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
 	ErrPkcs12ImportBadPassword CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
 	ErrPkcs12ImportFailed      CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
@@ -1927,33 +1927,21 @@ const (
 	ErrImportCertAlreadyExists CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
 	ErrImportCaCertFailed      CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
 	ErrImportServerCertFailed  CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
-
-	///
-	// Supported certificate status code values. See net\cert\cert_status_flags.h
-	// for more information. CERT_STATUS_NONE is new in CEF because we use an
-	// enum while cert_status_flags.h uses a typedef and static const variables.
-	///
 	ErrPkcs12ImportInvalidMac  CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
 	ErrPkcs12ImportInvalidFile CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
+	ErrPkcs12ImportUnsupported CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
+	ErrKeyGenerationFailed     CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
 
-	// 1 << 3 is reserved for ERR_CERT_CONTAINS_ERRORS (not useful with WinHTTP).
-	ErrPkcs12ImportUnsupported        CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
-	ErrKeyGenerationFailed            CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
-	ErrPrivateKeyExportFailed         CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
-	ErrSelfSignedCertGenerationFailed CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
+	// 1 << 9 was used for CERT_STATUS_NOT_IN_DNS
+	ErrPrivateKeyExportFailed CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
 
-	// Bits 16 to 31 are for non-error statuses.
-	ErrCertDatabaseChanged  CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
-	ErrDnsMalformedResponse CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
-	ErrDnsServerRequiresTcp CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
-	ErrDnsServerFailed      CErrorcodeT = C.ERR_DNS_SERVER_FAILED
-	ErrDnsTimedOut          CErrorcodeT = C.ERR_DNS_TIMED_OUT
-
-	///
-	// "Verb" of a drag-and-drop operation as negotiated between the source and
-	// destination. These constants match their equivalents in WebCore's
-	// DragActions.h and should not be renumbered.
-	///
+	// 1 << 12 was used for CERT_STATUS_WEAK_DH_KEY
+	ErrSelfSignedCertGenerationFailed            CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
+	ErrCertDatabaseChanged                       CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
+	ErrDnsMalformedResponse                      CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
+	ErrDnsServerRequiresTcp                      CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
+	ErrDnsServerFailed                           CErrorcodeT = C.ERR_DNS_SERVER_FAILED
+	ErrDnsTimedOut                               CErrorcodeT = C.ERR_DNS_TIMED_OUT
 	ErrDnsCacheMiss                              CErrorcodeT = C.ERR_DNS_CACHE_MISS
 	ErrDnsSearchEmpty                            CErrorcodeT = C.ERR_DNS_SEARCH_EMPTY
 	ErrDnsSortError                              CErrorcodeT = C.ERR_DNS_SORT_ERROR
