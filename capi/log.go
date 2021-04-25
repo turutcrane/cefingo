@@ -54,7 +54,7 @@ func Logln(v ...interface{}) {
 	if Logger != nil {
 		fn := caller_name(0)
 		v1 := []interface{}{}
-		v1 = append(v1, "("+fn+")\n")
+		v1 = append(v1, "("+fn+")")
 		v1 = append(v1, v...)
 		Logger.Println(v1...)
 	}

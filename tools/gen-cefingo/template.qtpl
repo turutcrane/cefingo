@@ -222,11 +222,18 @@ func ({%s self %} {%s st.GoType() %}) Bind(a interface{}) {%s st.GoType() %} {
 }
 
 func ({%s self %} {%s st.GoType() %}) UnbindAll() {
+	cefingoIfaceAccess.Lock()
+	defer cefingoIfaceAccess.Unlock()
 	{%- code funcnum = 0 -%}
 	{%- for c := st; c != nil; c = c.GetBase() -%}
 	{%- for _, m := range c.Methods -%}
 	{%- if funcnum == 0 %}
 	cp := {%s self %}.pc_{%s baseName %}
+	if goHandler, ok := {%s baseName %}_handlers.handler[cp]; ok {
+		if accessor, ok1 := goHandler.({%s st.GoName() %}Accessor); ok1 {
+			accessor.Set{%s st.GoName() %}(nil)			
+		}
+	}
 	delete({%s baseName %}_handlers.handler, cp)
 
 	{%- endif -%}
