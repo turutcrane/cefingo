@@ -4,7 +4,6 @@ package parser
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path"
@@ -13,6 +12,8 @@ import (
 	"strings"
 
 	"modernc.org/cc"
+
+	"github.com/turutcrane/cefingo/tools/gen-cefingo/internal/log"
 )
 
 type void struct{}
@@ -782,8 +783,8 @@ func Parse() []*cc.TranslationUnit {
 		filepath.Clean(mingwPrefix + "/x86_64-w64-mingw32/include"),
 		filepath.Clean(cefdir),
 	}
-	// log.Printf("T259: CurrentDir: %s\n", GetCurrentDir())
-	// log.Printf("T260: Cef dir: %v\n", includePaths)
+	// log.Tracef("T259: CurrentDir: %s\n", GetCurrentDir())
+	// log.Tracef("T260: Cef dir: %v\n", includePaths)
 
 	sourcePaths := []string{GetCurrentDir() + "/../parser_c/parser_root.c"}
 	predefined := strings.Join([]string{
@@ -828,16 +829,16 @@ func ExternalDeclaration(i int, ed *cc.ExternalDeclaration) {
 	case 0: // FunctionDefinition
 		funcname := getFuncname(ed)
 		if in, _ := InTargetFile(funcname); in {
-			log.Printf("T73:Func: i:%d, Case:%d, %s, %s", i, ed.Case, funcname.Name(), funcname.Filename())
+			log.Tracef("T73:Func: i:%d, Case:%d, %s, %s", i, ed.Case, funcname.Name(), funcname.Filename())
 		}
 	case 1: // Declaration
 		d := ed.Declaration
-		// log.Printf("T76:Dcl: i:%d, Case:%d", i, ed.Case)
+		// log.Tracef("T76:Dcl: i:%d, Case:%d", i, ed.Case)
 		processDeclaration(d)
 	case 2: // BasicAssemblerStatement
-		log.Printf("T78:BAS: i:%d, Case:%d, %v", i, ed.Case, ed.BasicAssemblerStatement)
+		log.Tracef("T78:BAS: i:%d, Case:%d, %v", i, ed.Case, ed.BasicAssemblerStatement)
 	default:
-		log.Printf("T80:OTH: i:%d, Case:%d, %v", i, ed.Case, ed)
+		log.Tracef("T80:OTH: i:%d, Case:%d, %v", i, ed.Case, ed)
 	}
 }
 
@@ -858,7 +859,7 @@ func processDeclaration(d *cc.Declaration) {
 					nil,
 				}
 			}
-			log.Printf("T337: No InitDecl %s, %s;\n", tag.Name(), tag.FilePos())
+			log.Tracef("T337: No InitDecl %s, %s;\n", tag.Name(), tag.FilePos())
 		} else {
 			name := getDeclaratorIdent(getFirstDeclarator(d))
 			var decl Decl
@@ -888,7 +889,7 @@ func analyzeDecl(d *cc.Declaration) (decl Decl) {
 	case 0:
 		switch ds.StorageClassSpecifier.Case {
 		case 0: // typedef
-			log.Printf("T280: %s: %s, %s\n", kind.String(), name.Name(), base.FilePos())
+			log.Tracef("T280: %s: %s, %s\n", kind.String(), name.Name(), base.FilePos())
 			switch kind {
 			case IkName:
 				decl = handleTypedef(base)
@@ -1040,9 +1041,9 @@ func handleFunc(base DeclCommon) (decl Decl) {
 	fd := getFirstDeclarator(base.d)
 	dd := fd.DirectDeclarator
 	fname := getDirectDeclaratorToken(dd)
-	// log.Printf("T600: %v\n", base.d)
-	log.Printf("T327: func %v\n", fname.Name())
-	log.Printf("T235: Ret: %s\n", fd.Type.Result())
+	// log.Tracef("T600: %v\n", base.d)
+	log.Tracef("T327: func %v\n", fname.Name())
+	log.Tracef("T235: Ret: %s\n", fd.Type.Result())
 
 	f := &FuncDecl{base, fname, nil}
 	switch dd.Case {
@@ -1059,11 +1060,11 @@ func handleFunc(base DeclCommon) (decl Decl) {
 		log.Panicf("T335: %v\n", decl)
 	}
 	for i, p := range f.params {
-		log.Printf("T342:   p%d, %s", i, p)
+		log.Tracef("T342:   p%d, %s", i, p)
 	}
 
 	if _, nf := unGenerateMethod[f.CalleeName()]; nf {
-		log.Printf("T887: Skip: %s\n", fname.Name())
+		log.Tracef("T887: Skip: %s\n", fname.Name())
 		return nil
 	}
 	return f
@@ -1147,27 +1148,27 @@ func handleTypedef(base DeclCommon) (decl Decl) {
 	case 11: // StructOrUnionSpecifier
 		sdecl := handleStruct(base, ds.TypeSpecifier.StructOrUnionSpecifier)
 		if s, ok := sdecl.(*CefClassDecl); ok && s.St == StUnknown {
-			log.Printf("OUT-S: type %s C.%s", s.GoName(), name)
+			log.Tracef("OUT-S: type %s C.%s", s.GoName(), name)
 		}
 		decl = sdecl
 	case 12: // EnumSpecifier
 		base.Dk = DkEnum
 		edecl := EnumDecl{base, nil}
 		edecl.Enums = getEnumSpecifier(ds.TypeSpecifier.EnumSpecifier)
-		log.Printf("OUT-E: type %s C.%s", edecl.GoName(), name)
+		log.Tracef("OUT-E: type %s C.%s", edecl.GoName(), name)
 		decl = &edecl
 	case 13: // TYPEDEFNAME
 		typeDefName := Token(ds.TypeSpecifier.Token).Name()
 		sdecl := SimpleDecl{base}
 		if _, ok := primitiveTypeDef[name]; ok {
 			sdecl.Dk = DkSimple
-			log.Printf("OUT-Pri: type %s C.%s", sdecl.GoName(), name)
+			log.Tracef("OUT-Pri: type %s C.%s", sdecl.GoName(), name)
 		} else if isSimpleDefName(name) {
 			sdecl.Dk = DkSimple
-			log.Printf("OUT-S: type %s C.%s", sdecl.GoName(), name)
+			log.Tracef("OUT-S: type %s C.%s", sdecl.GoName(), name)
 		} else if isStructDefName(name) {
 			sdecl.Dk = DkStruct
-			log.Printf("OUT-St: type %s C.%s", sdecl.GoName(), name)
+			log.Tracef("OUT-St: type %s C.%s", sdecl.GoName(), name)
 		} else {
 			log.Panicf("T595: %s :%s, %s\n", name, typeDefName, base.Token().FilePos())
 		}
@@ -1191,8 +1192,8 @@ func handleTypedef(base DeclCommon) (decl Decl) {
 func handleStruct(base DeclCommon, st *cc.StructOrUnionSpecifier) (decl Decl) {
 	name := base.Token().Name()
 	tag := getStructTag(st)
-	log.Printf("T364: name:%s struct tag: %s\n", name, tag.Name())
-	// log.Printf("T355: Struct Def: %v\n", ds.TypeSpecifier)
+	log.Tracef("T364: name:%s struct tag: %s\n", name, tag.Name())
+	// log.Tracef("T355: Struct Def: %v\n", ds.TypeSpecifier)
 	sm := []cc.StructDeclaration{}
 	for m := st.StructDeclarationList; m != nil; m = m.StructDeclarationList {
 		member := *m.StructDeclaration
@@ -1230,25 +1231,25 @@ func handleStruct(base DeclCommon, st *cc.StructOrUnionSpecifier) (decl Decl) {
 				case StRefCounted:
 					sdecl.St = StRefCounted
 					sdecl.BaseType = stBase
-					log.Printf("T737: %s\n", name)
+					log.Tracef("T737: %s\n", name)
 				case StScoped:
 					sdecl.St = StScoped
 					sdecl.BaseType = stBase
-					log.Printf("T771: %s\n", name)
+					log.Tracef("T771: %s\n", name)
 				default:
-					log.Printf("T743: %s\n", name)
+					log.Tracef("T743: %s\n", name)
 					break MLOOP
 				}
 				Defs[name] = sdecl // for following method handling
 			} else {
 				fp := getFuncPointer(sdecl, m0)
 				if fp.Funcname != noToken {
-					log.Printf("T647: Fn: %s", fp.Funcname.Name())
+					log.Tracef("T647: Fn: %s", fp.Funcname.Name())
 					ts := getTypeSpecifier(m0)
 					ty := getTsType(ts)
-					log.Printf("T372:   Case %d, %s %t", ts.Case, ty.Token.Name(), ty.Typedef)
+					log.Tracef("T372:   Case %d, %s %t", ts.Case, ty.Token.Name(), ty.Typedef)
 					for i, p := range fp.params {
-						log.Printf("T378:   p%d, %s", i, p)
+						log.Tracef("T378:   p%d, %s", i, p)
 					}
 					sdecl.Methods = append(sdecl.Methods, fp)
 				}
@@ -1390,7 +1391,7 @@ func checkBase(sd cc.StructDeclaration) (stType StructType, stBase string) {
 	t := Token(tq.Token)
 	name := t.Name()
 	if tq.Case != 13 { // TYPEDEFNAME
-		log.Printf("T419:   Not Typedef Name, %v\n", name)
+		log.Tracef("T419:   Not Typedef Name, %v\n", name)
 		return stType, stBase
 	}
 	switch name {
@@ -1406,12 +1407,12 @@ func checkBase(sd cc.StructDeclaration) (stType StructType, stBase string) {
 			if c.St == StRefCounted {
 				stType = StRefCounted
 				stBase = name
-				log.Printf("T1362:   %s is base name\n", name)
+				log.Tracef("T1362:   %s is base name\n", name)
 			} else {
 				log.Panicf("T1364: Unpredicted baseL %s, %v\n", name, sd)
 			}
 		} else {
-			log.Printf("T1367: %s, %v\n", name, t.FilePos())
+			log.Tracef("T1367: %s, %v\n", name, t.FilePos())
 			return stType, stBase
 		}
 	}
@@ -1645,7 +1646,7 @@ func getFuncPointer(sdecl *CefClassDecl, sd cc.StructDeclaration) (methodP *Meth
 		}
 		m.Funcname = Token(f.Declarator.DirectDeclarator.Token)
 		if _, um := unGenerateMethod[m.CalleeName()]; um {
-			log.Printf("T1385: Skip: %s\n", m.CalleeName())
+			log.Tracef("T1385: Skip: %s\n", m.CalleeName())
 			return &MethodDecl{noToken, nil, sd, nil, sdecl}
 		}
 		for p := dd.ParameterTypeList.ParameterList; p != nil; p = p.ParameterList {
@@ -1746,7 +1747,7 @@ func (mp *MethodDecl) ClassBaseName() string {
 
 func (m MethodDecl) ReturnType() (retType Type) {
 	ts := getTypeSpecifier(m.sd)
-	// log.Printf("T811: %s\n", getDeclarator(m.sd).Type)
+	// log.Tracef("T811: %s\n", getDeclarator(m.sd).Type)
 	retType = getTsType(ts)
 
 	if m.sd.Case == 0 {

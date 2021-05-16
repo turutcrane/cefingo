@@ -1,9 +1,9 @@
 {% package main %}
 {% import (
-	"log"
 	"strings"
 
 	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
+	"github.com/turutcrane/cefingo/tools/gen-cefingo/internal/log"
 )%}
 
 Generate parameter name for Go func.
@@ -471,7 +471,7 @@ tmp{%= cName(p) -%}
 		{%-s= "&" + cName(p) -%}
 	{%- case "time.Time" -%}
 		{%-s "C.time_t(" + cName(p) + ")" -%}
-	{%- case "unsafe.Pointer" -%}{% code log.Printf("T335: %s::%s\n", p.CalleeName(), p.Name()) -%}
+	{%- case "unsafe.Pointer" -%}{% code log.Tracef("T335: %s::%s\n", p.CalleeName(), p.Name()) -%}
 		{%-s cName(p) -%}
 	{%- case "string" -%}
 		{%-s cName(p) -%}.{%s "p_cef_string_t" -%}

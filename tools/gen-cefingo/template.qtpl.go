@@ -6,9 +6,9 @@ package main
 
 //line template.qtpl:2
 import (
-	"log"
 	"strings"
 
+	"github.com/turutcrane/cefingo/tools/gen-cefingo/internal/log"
 	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
 )
 
@@ -2529,7 +2529,7 @@ func streamconvToC(qw422016 *qt422016.Writer, p parser.Param, lt *LogTag) {
 //line template.qtpl:474
 		case "unsafe.Pointer":
 //line template.qtpl:474
-			log.Printf("T335: %s::%s\n", p.CalleeName(), p.Name())
+			log.Tracef("T335: %s::%s\n", p.CalleeName(), p.Name())
 
 //line template.qtpl:475
 			qw422016.E().S(cName(p))

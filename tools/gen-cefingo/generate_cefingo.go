@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"go/format"
 	"io/ioutil"
-	"log"
+
 	"os"
 	"path/filepath"
 	"regexp"
@@ -18,17 +18,20 @@ import (
 	"strings"
 
 	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
+	"github.com/turutcrane/cefingo/tools/gen-cefingo/internal/log"
 )
 
 var (
 	goFormat     bool = true
 	fileComments map[int][]string
 	capiDir      = flag.String("capidir", "capi", "outpu directory")
+	traceOn      = flag.Bool("trace", false, "trace flag")
 	logTags      LogTag
 )
 
 func main() {
 	flag.Parse()
+	log.Trace(*traceOn)
 	tus := parser.Parse()
 	logTagFile := filepath.Join(*capiDir, "logtag.txt")
 	logTags.ReadTags(logTagFile)
@@ -62,7 +65,7 @@ func main() {
 	defer outFileGo(goGenFile)
 
 	for _, fname := range fn {
-		log.Printf("T35: Process %s\n", fname)
+		log.Tracef("T35: Process %s\n", fname)
 		if strings.HasSuffix(fname, "_capi.h") {
 			goFile = goGenFile // newFileGo(makeGoFileName(fname), parser.HasHandlerClass(fname))
 		} else if fname == "cef_types_win.h" {
@@ -70,7 +73,7 @@ func main() {
 		} else {
 			goFile = goTypeFile
 		}
-		log.Printf("T13: %s\n", fname)
+		log.Tracef("T13: %s\n", fname)
 		a := parser.FileDefs[fname]
 		first := true
 		for _, d := range a {
@@ -105,16 +108,16 @@ func main() {
 				f := d.(*parser.FuncDecl)
 				outGoFunction(goFile, f)
 			default:
-				log.Printf("T31: %s: %s\n", d.Common().Dk, token.Name())
+				log.Tracef("T31: %s: %s\n", d.Common().Dk, token.Name())
 			}
 		}
 		// if strings.HasSuffix(fname, "_capi.h") {
-		// 	log.Printf("T63: %s\n", fname)
+		// 	log.Tracef("T63: %s\n", fname)
 		// 	outFileGo(goFile)
 		// }
 	}
 
-	log.Printf("T10: End: %d Translation Units", len(tus))
+	log.Tracef("T10: End: %d Translation Units", len(tus))
 }
 
 func newFileGo(fname string, hasCallbackClass bool) (gf *Generator) {
@@ -277,7 +280,7 @@ func getComments(fname string) {
 }
 
 func outHandlerClass(gf, expf, cf, hf *Generator, d *parser.CefClassDecl) {
-	log.Printf("T226: Callback class: %s\n", d.Token())
+	log.Tracef("T226: Callback class: %s\n", d.Token())
 	logTags.ResetTag(d.Token().GoName())
 
 	outComment(gf, d.LineOfTypedef())
@@ -364,7 +367,7 @@ func genChConstructFunc(cf, hf *Generator, st *parser.CefClassDecl) {
 }
 
 func outCefObjectClass(gf, cf, hf *Generator, d *parser.CefClassDecl) {
-	log.Printf("T541: Cef object: %s\n", d.Token())
+	log.Tracef("T541: Cef object: %s\n", d.Token())
 	logTags.ResetTag(d.Token().GoName())
 
 	outComment(gf, d.LineOfTypedef())
@@ -373,7 +376,7 @@ func outCefObjectClass(gf, cf, hf *Generator, d *parser.CefClassDecl) {
 }
 
 func outGoFunction(gf *Generator, f *parser.FuncDecl) {
-	log.Printf("T350: Cef Function : %s\n", f.Token())
+	log.Tracef("T350: Cef Function : %s\n", f.Token())
 	logTags.ResetTag(f.Token().GoName())
 
 	outComment(gf, f.LineOfTypedef())
@@ -414,8 +417,8 @@ func (g *Generator) format() []byte {
 	if err != nil {
 		// Should never happen, but can arise when developing this code.
 		// The user can compile the output to see the error.
-		log.Printf("warning: internal error: invalid Go generated: %s", err)
-		log.Printf("warning: compile the package to analyze the error")
+		log.Tracef("warning: internal error: invalid Go generated: %s", err)
+		log.Tracef("warning: compile the package to analyze the error")
 		return g.buf.Bytes()
 	}
 	return src

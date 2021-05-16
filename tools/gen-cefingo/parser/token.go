@@ -1,12 +1,12 @@
 package parser
 
 import (
-	"log"
 	"path/filepath"
 	"regexp"
 	"strings"
 
 	strcase "github.com/stoewer/go-strcase"
+	"github.com/turutcrane/cefingo/tools/gen-cefingo/internal/log"
 	"modernc.org/xc"
 )
 
