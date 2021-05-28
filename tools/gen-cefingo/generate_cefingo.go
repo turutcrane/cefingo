@@ -5,6 +5,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	_ "embed"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -433,36 +434,42 @@ type LogTag struct {
 }
 
 // NextTag returns next tag string
-func (logTag *LogTag) NextTag() string {
-	logTag.subTag++
-	return fmt.Sprintf("T%d.%d", logTag.curTag, logTag.subTag)
+func (lt *LogTag) NextTag() string {
+	lt.subTag++
+	return fmt.Sprintf("T%d.%d", lt.curTag, lt.subTag)
 }
 
 // ResetTag set curTag and reset subTag
-func (logTag *LogTag) ResetTag(key string) {
-	if t, ok := logTag.TagMap[key]; ok {
-		logTag.curTag = t
+func (lt *LogTag) ResetTag(key string) {
+	if t, ok := lt.TagMap[key]; ok {
+		lt.curTag = t
 	} else {
-		logTag.MaxTag++
-		logTag.TagMap[key] = logTag.MaxTag
+		lt.MaxTag++
+		lt.TagMap[key] = lt.MaxTag
 	}
-	logTag.subTag = 0
+	lt.subTag = 0
 }
 
+//go:embed logtag.txt
+var logtag []byte
+
 // ReadTags reads tag number from file
-func (logTag *LogTag) ReadTags(fname string) {
-	logTag.TagMap = map[string]int{}
-	logTag.MaxTag = 100
-	if b, err := ioutil.ReadFile(fname); err == nil {
-		if err := json.Unmarshal(b, logTag); err != nil {
-			log.Panicln("T465:", err)
-		}
+func (lt *LogTag) ReadTags(fname string) {
+	lt.TagMap = map[string]int{}
+	lt.MaxTag = 100
+	var buf []byte
+	var err error
+	if buf, err = ioutil.ReadFile(fname); err != nil {
+		buf = logtag
+	}
+	if err := json.Unmarshal(buf, lt); err != nil {
+		log.Panicln("T465:", err)
 	}
 }
 
 // WriteWriteToFile writes tag number to file
-func (logTag *LogTag) WriteToFile(fname string) {
-	b, err := json.MarshalIndent(logTag, "", "\t")
+func (lt *LogTag) WriteToFile(fname string) {
+	b, err := json.MarshalIndent(lt, "", "\t")
 	if err != nil {
 		log.Panicln("T475:", err)
 	}
