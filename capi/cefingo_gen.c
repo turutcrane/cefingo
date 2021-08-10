@@ -122,6 +122,15 @@ void cefingo_box_layout_clear_flex_for_view(
 	);
 }
 
+int cefingo_browser_is_valid(
+	struct _cef_browser_t* self
+)
+{
+	return	self->is_valid(
+			self
+		);
+}
+
 struct _cef_browser_host_t* cefingo_browser_get_host(
 	struct _cef_browser_t* self
 )
@@ -1063,14 +1072,10 @@ cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo
 		(cef_base_ref_counted_t*) browser_process_handler);
 
 	// callbacks
-	browser_process_handler->body.get_cookieable_schemes =
-		cefingo_browser_process_handler_get_cookieable_schemes;
 	browser_process_handler->body.on_context_initialized =
 		cefingo_browser_process_handler_on_context_initialized;
 	browser_process_handler->body.on_before_child_process_launch =
 		cefingo_browser_process_handler_on_before_child_process_launch;
-	browser_process_handler->body.get_print_handler =
-		cefingo_browser_process_handler_get_print_handler;
 	browser_process_handler->body.on_schedule_message_pump_work =
 		cefingo_browser_process_handler_on_schedule_message_pump_work;
 	browser_process_handler->body.get_default_client =
@@ -1084,6 +1089,15 @@ struct _cef_browser_t* cefingo_browser_view_get_browser(
 )
 {
 	return	self->get_browser(
+			self
+		);
+}
+
+struct _cef_view_t* cefingo_browser_view_get_chrome_toolbar(
+	struct _cef_browser_view_t* self
+)
+{
+	return	self->get_chrome_toolbar(
 			self
 		);
 }
@@ -1122,6 +1136,8 @@ cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_bro
 		(T_CEF_BROWSER_VIEW_DELEGATE_T_GET_DELEGATE_FOR_POPUP_BROWSER_VIEW)cefingo_browser_view_delegate_get_delegate_for_popup_browser_view;
 	browser_view_delegate->body.on_popup_browser_view_created =
 		cefingo_browser_view_delegate_on_popup_browser_view_created;
+	browser_view_delegate->body.get_chrome_toolbar_type =
+		cefingo_browser_view_delegate_get_chrome_toolbar_type;
 	browser_view_delegate->body.base.get_preferred_size =
 		cefingo_browser_view_delegate_get_preferred_size;
 	browser_view_delegate->body.base.get_minimum_size =
@@ -1134,6 +1150,8 @@ cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_bro
 		cefingo_browser_view_delegate_on_parent_view_changed;
 	browser_view_delegate->body.base.on_child_view_changed =
 		cefingo_browser_view_delegate_on_child_view_changed;
+	browser_view_delegate->body.base.on_window_changed =
+		cefingo_browser_view_delegate_on_window_changed;
 	browser_view_delegate->body.base.on_focus =
 		cefingo_browser_view_delegate_on_focus;
 	browser_view_delegate->body.base.on_blur =
@@ -1228,6 +1246,8 @@ cef_button_delegate_t *cefingo_construct_button_delegate(cefingo_button_delegate
 		cefingo_button_delegate_on_parent_view_changed;
 	button_delegate->body.base.on_child_view_changed =
 		cefingo_button_delegate_on_child_view_changed;
+	button_delegate->body.base.on_window_changed =
+		cefingo_button_delegate_on_window_changed;
 	button_delegate->body.base.on_focus =
 		cefingo_button_delegate_on_focus;
 	button_delegate->body.base.on_blur =
@@ -1287,6 +1307,8 @@ cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 		cefingo_client_get_find_handler;
 	client->body.get_focus_handler =
 		cefingo_client_get_focus_handler;
+	client->body.get_frame_handler =
+		cefingo_client_get_frame_handler;
 	client->body.get_jsdialog_handler =
 		cefingo_client_get_jsdialog_handler;
 	client->body.get_keyboard_handler =
@@ -1295,6 +1317,8 @@ cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 		cefingo_client_get_life_span_handler;
 	client->body.get_load_handler =
 		cefingo_client_get_load_handler;
+	client->body.get_print_handler =
+		cefingo_client_get_print_handler;
 	client->body.get_render_handler =
 		cefingo_client_get_render_handler;
 	client->body.get_request_handler =
@@ -1722,30 +1746,6 @@ int cefingo_context_menu_params_is_custom_menu(
 	return	self->is_custom_menu(
 			self
 		);
-}
-
-int cefingo_context_menu_params_is_pepper_menu(
-	struct _cef_context_menu_params_t* self
-)
-{
-	return	self->is_pepper_menu(
-			self
-		);
-}
-
-void cefingo_cookie_manager_set_supported_schemes(
-	struct _cef_cookie_manager_t* self,
-	cef_string_list_t schemes,
-	int include_defaults,
-	struct _cef_completion_callback_t* callback
-)
-{
-	self->set_supported_schemes(
-		self,
-		schemes,
-		include_defaults,
-		callback
-	);
 }
 
 int cefingo_cookie_manager_visit_all_cookies(
@@ -3402,6 +3402,60 @@ void cefingo_frame_send_process_message(
 	);
 }
 
+void cefingo_frame_handler_on_frame_created(
+	struct _cef_frame_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame
+)
+{
+	self->on_frame_created(
+		self,
+		browser,
+		frame
+	);
+}
+
+void cefingo_frame_handler_on_frame_attached(
+	struct _cef_frame_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame
+)
+{
+	self->on_frame_attached(
+		self,
+		browser,
+		frame
+	);
+}
+
+void cefingo_frame_handler_on_frame_detached(
+	struct _cef_frame_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame
+)
+{
+	self->on_frame_detached(
+		self,
+		browser,
+		frame
+	);
+}
+
+void cefingo_frame_handler_on_main_frame_changed(
+	struct _cef_frame_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* old_frame,
+	struct _cef_frame_t* new_frame
+)
+{
+	self->on_main_frame_changed(
+		self,
+		browser,
+		old_frame,
+		new_frame
+	);
+}
+
 int cefingo_image_is_empty(
 	struct _cef_image_t* self
 )
@@ -4200,6 +4254,8 @@ cef_menu_button_delegate_t *cefingo_construct_menu_button_delegate(cefingo_menu_
 		cefingo_menu_button_delegate_on_parent_view_changed;
 	menu_button_delegate->body.base.base.on_child_view_changed =
 		cefingo_menu_button_delegate_on_child_view_changed;
+	menu_button_delegate->body.base.base.on_window_changed =
+		cefingo_menu_button_delegate_on_window_changed;
 	menu_button_delegate->body.base.base.on_focus =
 		cefingo_menu_button_delegate_on_focus;
 	menu_button_delegate->body.base.base.on_blur =
@@ -5183,6 +5239,8 @@ cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wr
 		cefingo_panel_delegate_on_parent_view_changed;
 	panel_delegate->body.base.on_child_view_changed =
 		cefingo_panel_delegate_on_child_view_changed;
+	panel_delegate->body.base.on_window_changed =
+		cefingo_panel_delegate_on_window_changed;
 	panel_delegate->body.base.on_focus =
 		cefingo_panel_delegate_on_focus;
 	panel_delegate->body.base.on_blur =
@@ -5898,6 +5956,19 @@ size_t cefingo_post_data_get_element_count(
 		);
 }
 
+void cefingo_post_data_get_elements(
+	struct _cef_post_data_t* self,
+	size_t* elementsCount,
+	struct _cef_post_data_element_t** elements
+)
+{
+	self->get_elements(
+		self,
+		elementsCount,
+		elements
+	);
+}
+
 int cefingo_post_data_remove_element(
 	struct _cef_post_data_t* self,
 	struct _cef_post_data_element_t* element
@@ -6284,11 +6355,13 @@ struct _cef_extension_t* cefingo_request_context_get_extension(
 }
 
 struct _cef_media_router_t* cefingo_request_context_get_media_router(
-	struct _cef_request_context_t* self
+	struct _cef_request_context_t* self,
+	struct _cef_completion_callback_t* callback
 )
 {
 	return	self->get_media_router(
-			self
+			self,
+			callback
 		);
 }
 
@@ -7510,6 +7583,8 @@ cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield
 		cefingo_textfield_delegate_on_parent_view_changed;
 	textfield_delegate->body.base.on_child_view_changed =
 		cefingo_textfield_delegate_on_child_view_changed;
+	textfield_delegate->body.base.on_window_changed =
+		cefingo_textfield_delegate_on_window_changed;
 	textfield_delegate->body.base.on_focus =
 		cefingo_textfield_delegate_on_focus;
 	textfield_delegate->body.base.on_blur =
@@ -9912,6 +9987,8 @@ cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapp
 		cefingo_view_delegate_on_parent_view_changed;
 	view_delegate->body.on_child_view_changed =
 		cefingo_view_delegate_on_child_view_changed;
+	view_delegate->body.on_window_changed =
+		cefingo_view_delegate_on_window_changed;
 	view_delegate->body.on_focus =
 		cefingo_view_delegate_on_focus;
 	view_delegate->body.on_blur =
@@ -10427,6 +10504,8 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 		cefingo_window_delegate_on_parent_view_changed;
 	window_delegate->body.base.base.on_child_view_changed =
 		cefingo_window_delegate_on_child_view_changed;
+	window_delegate->body.base.base.on_window_changed =
+		cefingo_window_delegate_on_window_changed;
 	window_delegate->body.base.base.on_focus =
 		cefingo_window_delegate_on_focus;
 	window_delegate->body.base.base.on_blur =

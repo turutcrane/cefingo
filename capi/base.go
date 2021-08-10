@@ -34,8 +34,12 @@ func BaseAddRef(rc refCounted) {
 // resulting reference count is 0.
 ///
 func BaseRelease(rc refCounted) (b bool) {
-	status := C.cefingo_base_release(rc.cast_to_p_base_ref_counted_t())
-	return status == 1
+	rcp := rc.cast_to_p_base_ref_counted_t()
+	if rcp != nil {
+		status := C.cefingo_base_release(rcp)
+		b = status == 1
+	}
+	return b
 }
 
 func BaseHasOneRef(rc refCounted) bool {

@@ -32,6 +32,10 @@ extern void cefingo_box_layout_clear_flex_for_view(
 	struct _cef_view_t* view
 );
 
+extern int cefingo_browser_is_valid(
+	struct _cef_browser_t* self
+);
+
 extern struct _cef_browser_host_t* cefingo_browser_get_host(
 	struct _cef_browser_t* self
 );
@@ -451,6 +455,10 @@ extern struct _cef_browser_t* cefingo_browser_view_get_browser(
 	struct _cef_browser_view_t* self
 );
 
+extern struct _cef_view_t* cefingo_browser_view_get_chrome_toolbar(
+	struct _cef_browser_view_t* self
+);
+
 extern void cefingo_browser_view_set_prefer_accelerators(
 	struct _cef_browser_view_t* self,
 	int prefer_accelerators
@@ -685,17 +693,6 @@ extern cef_context_menu_edit_state_flags_t cefingo_context_menu_params_get_edit_
 
 extern int cefingo_context_menu_params_is_custom_menu(
 	struct _cef_context_menu_params_t* self
-);
-
-extern int cefingo_context_menu_params_is_pepper_menu(
-	struct _cef_context_menu_params_t* self
-);
-
-extern void cefingo_cookie_manager_set_supported_schemes(
-	struct _cef_cookie_manager_t* self,
-	cef_string_list_t schemes,
-	int include_defaults,
-	struct _cef_completion_callback_t* callback
 );
 
 extern int cefingo_cookie_manager_visit_all_cookies(
@@ -1322,6 +1319,31 @@ extern void cefingo_frame_send_process_message(
 	struct _cef_frame_t* self,
 	cef_process_id_t target_process,
 	struct _cef_process_message_t* message
+);
+
+extern void cefingo_frame_handler_on_frame_created(
+	struct _cef_frame_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame
+);
+
+extern void cefingo_frame_handler_on_frame_attached(
+	struct _cef_frame_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame
+);
+
+extern void cefingo_frame_handler_on_frame_detached(
+	struct _cef_frame_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame
+);
+
+extern void cefingo_frame_handler_on_main_frame_changed(
+	struct _cef_frame_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* old_frame,
+	struct _cef_frame_t* new_frame
 );
 
 extern int cefingo_image_is_empty(
@@ -2310,6 +2332,12 @@ extern size_t cefingo_post_data_get_element_count(
 	struct _cef_post_data_t* self
 );
 
+extern void cefingo_post_data_get_elements(
+	struct _cef_post_data_t* self,
+	size_t* elementsCount,
+	struct _cef_post_data_element_t** elements
+);
+
 extern int cefingo_post_data_remove_element(
 	struct _cef_post_data_t* self,
 	struct _cef_post_data_element_t* element
@@ -2486,7 +2514,8 @@ extern struct _cef_extension_t* cefingo_request_context_get_extension(
 );
 
 extern struct _cef_media_router_t* cefingo_request_context_get_media_router(
-	struct _cef_request_context_t* self
+	struct _cef_request_context_t* self,
+	struct _cef_completion_callback_t* callback
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_request_context_handler_t, cefingo_request_context_handler_wrapper_t);

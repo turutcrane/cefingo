@@ -18,8 +18,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
 	"github.com/turutcrane/cefingo/tools/gen-cefingo/internal/log"
+	"github.com/turutcrane/cefingo/tools/gen-cefingo/parser"
 )
 
 var (
@@ -316,7 +316,7 @@ func genGoCallbackFunc(gf *Generator, st *parser.CefClassDecl) {
 	}
 }
 
-func ConvToGoTypeExp(t parser.Type, val string) (exp string) {
+func ConvToGoTypeExp(t parser.Type, val string, countUp bool) (exp string) {
 	switch t.Ty {
 	case parser.TyInt, parser.TyInt32, parser.TyInt64, parser.TyUint32, parser.TyUint64,
 		parser.TyFloat, parser.TyDouble,
@@ -324,7 +324,12 @@ func ConvToGoTypeExp(t parser.Type, val string) (exp string) {
 		exp = "(" + t.GoType() + ")(" + val + ")"
 	case parser.TyStructRefCounted:
 		if t.Pointer == 1 {
-			exp = "new" + t.Deref().GoType() + "(" + val + ")"
+			exp = "new" + t.Deref().GoType() + "(" + val
+			if countUp {
+				exp += ", true)"
+			} else {
+				exp += ", false)"
+			}
 		} else {
 			log.Panicf("T448: %s: %v, %t, %v\n", val, t.Ty, t.IsRefCountedClass(), t.GoType())
 		}

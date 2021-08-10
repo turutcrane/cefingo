@@ -93,9 +93,9 @@ var handlerClasses = map[string]void{
 }
 
 var unGenerateMethod = map[string]void{
-	"cef_command_line_t::init_from_argv":          setElement, // use char *
-	"cef_browser_t::get_frame_identifiers":        setElement, // parameter identifiers should be **int64 instead of *int64
-	"cef_post_data_t::get_elements":               setElement, // pre allocate slice with modifiable count currently can not support
+	"cef_command_line_t::init_from_argv":   setElement, // use char *
+	"cef_browser_t::get_frame_identifiers": setElement, // parameter identifiers should be **int64 instead of *int64
+	// "cef_post_data_t::get_elements":               setElement, // pre allocate slice with modifiable count currently can not support
 	"cef_print_settings_t::get_page_ranges":       setElement, // parameter ranges should be cef_range_t** instead of cef_range_t* (PageRangeList& ranges)
 	"cef_audio_handler_t::on_audio_stream_packet": setElement, // data parameter type **float shoud be *float (float[frame * length of channel_layout])
 	"cef_v8value_t::get_user_data":                setElement, // use struct _cef_base_ref_counted_t*
@@ -151,6 +151,7 @@ var outParameter = map[string]void{
 	"cef_menu_model_t::get_accelerator_at::shift_pressed":                                   setElement,
 	"cef_menu_model_t::get_accelerator_at::ctrl_pressed":                                    setElement,
 	"cef_menu_model_t::get_accelerator_at::alt_pressed":                                     setElement,
+	"cef_post_data_t::get_elements::elements":                                               setElement,
 	"cef_render_handler_t::get_view_rect::rect":                                             setElement,
 	"cef_render_handler_t::get_root_screen_rect::rect":                                      setElement,
 	"cef_render_handler_t::get_screen_point::screenX":                                       setElement,
@@ -246,6 +247,7 @@ var byteSliceParameter = map[string]string{
 var byteSliceLengthParameter = map[string]string{}
 
 var sliceParameter = map[string]string{
+	"cef_post_data_t::get_elements::elements":                           "elementsCount",
 	"cef_media_observer_t::on_sinks::sinks":                             "sinksCount",
 	"cef_media_observer_t::on_routes::routes":                           "routesCount",
 	"cef_render_handler_t::on_paint::dirtyRects":                        "dirtyRectsCount",

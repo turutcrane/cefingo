@@ -80,6 +80,7 @@
 		"CFindHandlerT": 146,
 		"CFocusHandlerT": 147,
 		"CFormatUrlForSecurityDisplay": 361,
+		"CFrameHandlerT": 391,
 		"CFrameT": 148,
 		"CGetCurrentPlatformThreadHandle": 380,
 		"CGetCurrentPlatformThreadId": 379,
@@ -291,5 +292,5 @@
 		"CZipReaderCreate": 390,
 		"CZipReaderT": 389
 	},
-	"MaxTag": 390
+	"MaxTag": 391
 }
