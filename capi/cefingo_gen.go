@@ -147,10 +147,14 @@ func (accessibility_handler *CAccessibilityHandlerT) Bind(a interface{}) *CAcces
 
 	if h, ok := a.(OnAccessibilityTreeChangeHandler); ok {
 		accessibility_handler_handlers.on_accessibility_tree_change_handler[cp] = h
+	} else {
+		delete(accessibility_handler_handlers.on_accessibility_tree_change_handler, cp)
 	}
 
 	if h, ok := a.(OnAccessibilityLocationChangeHandler); ok {
 		accessibility_handler_handlers.on_accessibility_location_change_handler[cp] = h
+	} else {
+		delete(accessibility_handler_handlers.on_accessibility_location_change_handler, cp)
 	}
 
 	if accessor, ok := a.(CAccessibilityHandlerTAccessor); ok {
@@ -373,22 +377,32 @@ func (app *CAppT) Bind(a interface{}) *CAppT {
 
 	if h, ok := a.(OnBeforeCommandLineProcessingHandler); ok {
 		app_handlers.on_before_command_line_processing_handler[cp] = h
+	} else {
+		delete(app_handlers.on_before_command_line_processing_handler, cp)
 	}
 
 	if h, ok := a.(OnRegisterCustomSchemesHandler); ok {
 		app_handlers.on_register_custom_schemes_handler[cp] = h
+	} else {
+		delete(app_handlers.on_register_custom_schemes_handler, cp)
 	}
 
 	if h, ok := a.(GetResourceBundleHandlerHandler); ok {
 		app_handlers.get_resource_bundle_handler_handler[cp] = h
+	} else {
+		delete(app_handlers.get_resource_bundle_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetBrowserProcessHandlerHandler); ok {
 		app_handlers.get_browser_process_handler_handler[cp] = h
+	} else {
+		delete(app_handlers.get_browser_process_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetRenderProcessHandlerHandler); ok {
 		app_handlers.get_render_process_handler_handler[cp] = h
+	} else {
+		delete(app_handlers.get_render_process_handler_handler, cp)
 	}
 
 	if accessor, ok := a.(CAppTAccessor); ok {
@@ -739,18 +753,26 @@ func (audio_handler *CAudioHandlerT) Bind(a interface{}) *CAudioHandlerT {
 
 	if h, ok := a.(GetAudioParametersHandler); ok {
 		audio_handler_handlers.get_audio_parameters_handler[cp] = h
+	} else {
+		delete(audio_handler_handlers.get_audio_parameters_handler, cp)
 	}
 
 	if h, ok := a.(OnAudioStreamStartedHandler); ok {
 		audio_handler_handlers.on_audio_stream_started_handler[cp] = h
+	} else {
+		delete(audio_handler_handlers.on_audio_stream_started_handler, cp)
 	}
 
 	if h, ok := a.(OnAudioStreamStoppedHandler); ok {
 		audio_handler_handlers.on_audio_stream_stopped_handler[cp] = h
+	} else {
+		delete(audio_handler_handlers.on_audio_stream_stopped_handler, cp)
 	}
 
 	if h, ok := a.(OnAudioStreamErrorHandler); ok {
 		audio_handler_handlers.on_audio_stream_error_handler[cp] = h
+	} else {
+		delete(audio_handler_handlers.on_audio_stream_error_handler, cp)
 	}
 
 	if accessor, ok := a.(CAudioHandlerTAccessor); ok {
@@ -1439,6 +1461,8 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CR
 
 	if h, ok := a.(OnFileDialogDismissedHandler); ok {
 		run_file_dialog_callback_handlers.on_file_dialog_dismissed_handler[cp] = h
+	} else {
+		delete(run_file_dialog_callback_handlers.on_file_dialog_dismissed_handler, cp)
 	}
 
 	if accessor, ok := a.(CRunFileDialogCallbackTAccessor); ok {
@@ -1599,6 +1623,8 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *C
 
 	if h, ok := a.(CNavigationEntryVisitorTVisitHandler); ok {
 		navigation_entry_visitor_handlers.visit_handler[cp] = h
+	} else {
+		delete(navigation_entry_visitor_handlers.visit_handler, cp)
 	}
 
 	if accessor, ok := a.(CNavigationEntryVisitorTAccessor); ok {
@@ -1755,6 +1781,8 @@ func (pdf_print_callback *CPdfPrintCallbackT) Bind(a interface{}) *CPdfPrintCall
 
 	if h, ok := a.(OnPdfPrintFinishedHandler); ok {
 		pdf_print_callback_handlers.on_pdf_print_finished_handler[cp] = h
+	} else {
+		delete(pdf_print_callback_handlers.on_pdf_print_finished_handler, cp)
 	}
 
 	if accessor, ok := a.(CPdfPrintCallbackTAccessor); ok {
@@ -3241,18 +3269,26 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 
 	if h, ok := a.(OnContextInitializedHandler); ok {
 		browser_process_handler_handlers.on_context_initialized_handler[cp] = h
+	} else {
+		delete(browser_process_handler_handlers.on_context_initialized_handler, cp)
 	}
 
 	if h, ok := a.(OnBeforeChildProcessLaunchHandler); ok {
 		browser_process_handler_handlers.on_before_child_process_launch_handler[cp] = h
+	} else {
+		delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cp)
 	}
 
 	if h, ok := a.(OnScheduleMessagePumpWorkHandler); ok {
 		browser_process_handler_handlers.on_schedule_message_pump_work_handler[cp] = h
+	} else {
+		delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cp)
 	}
 
 	if h, ok := a.(GetDefaultClientHandler); ok {
 		browser_process_handler_handlers.get_default_client_handler[cp] = h
+	} else {
+		delete(browser_process_handler_handlers.get_default_client_handler, cp)
 	}
 
 	if accessor, ok := a.(CBrowserProcessHandlerTAccessor); ok {
@@ -3711,58 +3747,86 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 
 	if h, ok := a.(CBrowserViewDelegateTOnBrowserCreatedHandler); ok {
 		browser_view_delegate_handlers.on_browser_created_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_browser_created_handler, cp)
 	}
 
 	if h, ok := a.(CBrowserViewDelegateTOnBrowserDestroyedHandler); ok {
 		browser_view_delegate_handlers.on_browser_destroyed_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_browser_destroyed_handler, cp)
 	}
 
 	if h, ok := a.(GetDelegateForPopupBrowserViewHandler); ok {
 		browser_view_delegate_handlers.get_delegate_for_popup_browser_view_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.get_delegate_for_popup_browser_view_handler, cp)
 	}
 
 	if h, ok := a.(OnPopupBrowserViewCreatedHandler); ok {
 		browser_view_delegate_handlers.on_popup_browser_view_created_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_popup_browser_view_created_handler, cp)
 	}
 
 	if h, ok := a.(GetChromeToolbarTypeHandler); ok {
 		browser_view_delegate_handlers.get_chrome_toolbar_type_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.get_chrome_toolbar_type_handler, cp)
 	}
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
 		browser_view_delegate_handlers.get_preferred_size_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.get_preferred_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMinimumSizeHandler); ok {
 		browser_view_delegate_handlers.get_minimum_size_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.get_minimum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMaximumSizeHandler); ok {
 		browser_view_delegate_handlers.get_maximum_size_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.get_maximum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetHeightForWidthHandler); ok {
 		browser_view_delegate_handlers.get_height_for_width_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.get_height_for_width_handler, cp)
 	}
 
 	if h, ok := a.(OnParentViewChangedHandler); ok {
 		browser_view_delegate_handlers.on_parent_view_changed_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_parent_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnChildViewChangedHandler); ok {
 		browser_view_delegate_handlers.on_child_view_changed_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_child_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnWindowChangedHandler); ok {
 		browser_view_delegate_handlers.on_window_changed_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_window_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnFocusHandler); ok {
 		browser_view_delegate_handlers.on_focus_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnBlurHandler); ok {
 		browser_view_delegate_handlers.on_blur_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_blur_handler, cp)
 	}
 
 	if accessor, ok := a.(CBrowserViewDelegateTAccessor); ok {
@@ -4128,46 +4192,68 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 
 	if h, ok := a.(OnButtonPressedHandler); ok {
 		button_delegate_handlers.on_button_pressed_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.on_button_pressed_handler, cp)
 	}
 
 	if h, ok := a.(OnButtonStateChangedHandler); ok {
 		button_delegate_handlers.on_button_state_changed_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.on_button_state_changed_handler, cp)
 	}
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
 		button_delegate_handlers.get_preferred_size_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.get_preferred_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMinimumSizeHandler); ok {
 		button_delegate_handlers.get_minimum_size_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.get_minimum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMaximumSizeHandler); ok {
 		button_delegate_handlers.get_maximum_size_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.get_maximum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetHeightForWidthHandler); ok {
 		button_delegate_handlers.get_height_for_width_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.get_height_for_width_handler, cp)
 	}
 
 	if h, ok := a.(OnParentViewChangedHandler); ok {
 		button_delegate_handlers.on_parent_view_changed_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.on_parent_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnChildViewChangedHandler); ok {
 		button_delegate_handlers.on_child_view_changed_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.on_child_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnWindowChangedHandler); ok {
 		button_delegate_handlers.on_window_changed_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.on_window_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnFocusHandler); ok {
 		button_delegate_handlers.on_focus_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.on_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnBlurHandler); ok {
 		button_delegate_handlers.on_blur_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.on_blur_handler, cp)
 	}
 
 	if accessor, ok := a.(CButtonDelegateTAccessor); ok {
@@ -4707,70 +4793,104 @@ func (client *CClientT) Bind(a interface{}) *CClientT {
 
 	if h, ok := a.(GetAudioHandlerHandler); ok {
 		client_handlers.get_audio_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_audio_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetContextMenuHandlerHandler); ok {
 		client_handlers.get_context_menu_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_context_menu_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetDialogHandlerHandler); ok {
 		client_handlers.get_dialog_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_dialog_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetDisplayHandlerHandler); ok {
 		client_handlers.get_display_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_display_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetDownloadHandlerHandler); ok {
 		client_handlers.get_download_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_download_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetDragHandlerHandler); ok {
 		client_handlers.get_drag_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_drag_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetFindHandlerHandler); ok {
 		client_handlers.get_find_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_find_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetFocusHandlerHandler); ok {
 		client_handlers.get_focus_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_focus_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetFrameHandlerHandler); ok {
 		client_handlers.get_frame_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_frame_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetJsdialogHandlerHandler); ok {
 		client_handlers.get_jsdialog_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_jsdialog_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetKeyboardHandlerHandler); ok {
 		client_handlers.get_keyboard_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_keyboard_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetLifeSpanHandlerHandler); ok {
 		client_handlers.get_life_span_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_life_span_handler_handler, cp)
 	}
 
 	if h, ok := a.(CClientTGetLoadHandlerHandler); ok {
 		client_handlers.get_load_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_load_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetPrintHandlerHandler); ok {
 		client_handlers.get_print_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_print_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetRenderHandlerHandler); ok {
 		client_handlers.get_render_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_render_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetRequestHandlerHandler); ok {
 		client_handlers.get_request_handler_handler[cp] = h
+	} else {
+		delete(client_handlers.get_request_handler_handler, cp)
 	}
 
 	if h, ok := a.(CClientTOnProcessMessageReceivedHandler); ok {
 		client_handlers.on_process_message_received_handler[cp] = h
+	} else {
+		delete(client_handlers.on_process_message_received_handler, cp)
 	}
 
 	if accessor, ok := a.(CClientTAccessor); ok {
@@ -5451,18 +5571,26 @@ func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextM
 
 	if h, ok := a.(OnBeforeContextMenuHandler); ok {
 		context_menu_handler_handlers.on_before_context_menu_handler[cp] = h
+	} else {
+		delete(context_menu_handler_handlers.on_before_context_menu_handler, cp)
 	}
 
 	if h, ok := a.(RunContextMenuHandler); ok {
 		context_menu_handler_handlers.run_context_menu_handler[cp] = h
+	} else {
+		delete(context_menu_handler_handlers.run_context_menu_handler, cp)
 	}
 
 	if h, ok := a.(OnContextMenuCommandHandler); ok {
 		context_menu_handler_handlers.on_context_menu_command_handler[cp] = h
+	} else {
+		delete(context_menu_handler_handlers.on_context_menu_command_handler, cp)
 	}
 
 	if h, ok := a.(OnContextMenuDismissedHandler); ok {
 		context_menu_handler_handlers.on_context_menu_dismissed_handler[cp] = h
+	} else {
+		delete(context_menu_handler_handlers.on_context_menu_dismissed_handler, cp)
 	}
 
 	if accessor, ok := a.(CContextMenuHandlerTAccessor); ok {
@@ -6201,6 +6329,8 @@ func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
 
 	if h, ok := a.(CCookieVisitorTVisitHandler); ok {
 		cookie_visitor_handlers.visit_handler[cp] = h
+	} else {
+		delete(cookie_visitor_handlers.visit_handler, cp)
 	}
 
 	if accessor, ok := a.(CCookieVisitorTAccessor); ok {
@@ -6355,6 +6485,8 @@ func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieC
 
 	if h, ok := a.(CSetCookieCallbackTOnCompleteHandler); ok {
 		set_cookie_callback_handlers.on_complete_handler[cp] = h
+	} else {
+		delete(set_cookie_callback_handlers.on_complete_handler, cp)
 	}
 
 	if accessor, ok := a.(CSetCookieCallbackTAccessor); ok {
@@ -6509,6 +6641,8 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDe
 
 	if h, ok := a.(CDeleteCookiesCallbackTOnCompleteHandler); ok {
 		delete_cookies_callback_handlers.on_complete_handler[cp] = h
+	} else {
+		delete(delete_cookies_callback_handlers.on_complete_handler, cp)
 	}
 
 	if accessor, ok := a.(CDeleteCookiesCallbackTAccessor); ok {
@@ -6873,22 +7007,32 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{})
 
 	if h, ok := a.(OnDevToolsMessageHandler); ok {
 		dev_tools_message_observer_handlers.on_dev_tools_message_handler[cp] = h
+	} else {
+		delete(dev_tools_message_observer_handlers.on_dev_tools_message_handler, cp)
 	}
 
 	if h, ok := a.(OnDevToolsMethodResultHandler); ok {
 		dev_tools_message_observer_handlers.on_dev_tools_method_result_handler[cp] = h
+	} else {
+		delete(dev_tools_message_observer_handlers.on_dev_tools_method_result_handler, cp)
 	}
 
 	if h, ok := a.(OnDevToolsEventHandler); ok {
 		dev_tools_message_observer_handlers.on_dev_tools_event_handler[cp] = h
+	} else {
+		delete(dev_tools_message_observer_handlers.on_dev_tools_event_handler, cp)
 	}
 
 	if h, ok := a.(OnDevToolsAgentAttachedHandler); ok {
 		dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler[cp] = h
+	} else {
+		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler, cp)
 	}
 
 	if h, ok := a.(OnDevToolsAgentDetachedHandler); ok {
 		dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler[cp] = h
+	} else {
+		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler, cp)
 	}
 
 	if accessor, ok := a.(CDevToolsMessageObserverTAccessor); ok {
@@ -7162,6 +7306,8 @@ func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
 
 	if h, ok := a.(OnFileDialogHandler); ok {
 		dialog_handler_handlers.on_file_dialog_handler[cp] = h
+	} else {
+		delete(dialog_handler_handlers.on_file_dialog_handler, cp)
 	}
 
 	if accessor, ok := a.(CDialogHandlerTAccessor); ok {
@@ -7703,42 +7849,62 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 
 	if h, ok := a.(OnAddressChangeHandler); ok {
 		display_handler_handlers.on_address_change_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_address_change_handler, cp)
 	}
 
 	if h, ok := a.(OnTitleChangeHandler); ok {
 		display_handler_handlers.on_title_change_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_title_change_handler, cp)
 	}
 
 	if h, ok := a.(OnFaviconUrlchangeHandler); ok {
 		display_handler_handlers.on_favicon_urlchange_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_favicon_urlchange_handler, cp)
 	}
 
 	if h, ok := a.(OnFullscreenModeChangeHandler); ok {
 		display_handler_handlers.on_fullscreen_mode_change_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_fullscreen_mode_change_handler, cp)
 	}
 
 	if h, ok := a.(OnTooltipHandler); ok {
 		display_handler_handlers.on_tooltip_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_tooltip_handler, cp)
 	}
 
 	if h, ok := a.(OnStatusMessageHandler); ok {
 		display_handler_handlers.on_status_message_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_status_message_handler, cp)
 	}
 
 	if h, ok := a.(OnConsoleMessageHandler); ok {
 		display_handler_handlers.on_console_message_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_console_message_handler, cp)
 	}
 
 	if h, ok := a.(OnAutoResizeHandler); ok {
 		display_handler_handlers.on_auto_resize_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_auto_resize_handler, cp)
 	}
 
 	if h, ok := a.(OnLoadingProgressChangeHandler); ok {
 		display_handler_handlers.on_loading_progress_change_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_loading_progress_change_handler, cp)
 	}
 
 	if h, ok := a.(OnCursorChangeHandler); ok {
 		display_handler_handlers.on_cursor_change_handler[cp] = h
+	} else {
+		delete(display_handler_handlers.on_cursor_change_handler, cp)
 	}
 
 	if accessor, ok := a.(CDisplayHandlerTAccessor); ok {
@@ -7907,6 +8073,8 @@ func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
 
 	if h, ok := a.(CDomvisitorTVisitHandler); ok {
 		domvisitor_handlers.visit_handler[cp] = h
+	} else {
+		delete(domvisitor_handlers.visit_handler, cp)
 	}
 
 	if accessor, ok := a.(CDomvisitorTAccessor); ok {
@@ -8947,10 +9115,14 @@ func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandler
 
 	if h, ok := a.(OnBeforeDownloadHandler); ok {
 		download_handler_handlers.on_before_download_handler[cp] = h
+	} else {
+		delete(download_handler_handlers.on_before_download_handler, cp)
 	}
 
 	if h, ok := a.(OnDownloadUpdatedHandler); ok {
 		download_handler_handlers.on_download_updated_handler[cp] = h
+	} else {
+		delete(download_handler_handlers.on_download_updated_handler, cp)
 	}
 
 	if accessor, ok := a.(CDownloadHandlerTAccessor); ok {
@@ -9843,10 +10015,14 @@ func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
 
 	if h, ok := a.(OnDragEnterHandler); ok {
 		drag_handler_handlers.on_drag_enter_handler[cp] = h
+	} else {
+		delete(drag_handler_handlers.on_drag_enter_handler, cp)
 	}
 
 	if h, ok := a.(OnDraggableRegionsChangedHandler); ok {
 		drag_handler_handlers.on_draggable_regions_changed_handler[cp] = h
+	} else {
+		delete(drag_handler_handlers.on_draggable_regions_changed_handler, cp)
 	}
 
 	if accessor, ok := a.(CDragHandlerTAccessor); ok {
@@ -10447,34 +10623,50 @@ func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHand
 
 	if h, ok := a.(OnExtensionLoadFailedHandler); ok {
 		extension_handler_handlers.on_extension_load_failed_handler[cp] = h
+	} else {
+		delete(extension_handler_handlers.on_extension_load_failed_handler, cp)
 	}
 
 	if h, ok := a.(OnExtensionLoadedHandler); ok {
 		extension_handler_handlers.on_extension_loaded_handler[cp] = h
+	} else {
+		delete(extension_handler_handlers.on_extension_loaded_handler, cp)
 	}
 
 	if h, ok := a.(OnExtensionUnloadedHandler); ok {
 		extension_handler_handlers.on_extension_unloaded_handler[cp] = h
+	} else {
+		delete(extension_handler_handlers.on_extension_unloaded_handler, cp)
 	}
 
 	if h, ok := a.(OnBeforeBackgroundBrowserHandler); ok {
 		extension_handler_handlers.on_before_background_browser_handler[cp] = h
+	} else {
+		delete(extension_handler_handlers.on_before_background_browser_handler, cp)
 	}
 
 	if h, ok := a.(OnBeforeBrowserHandler); ok {
 		extension_handler_handlers.on_before_browser_handler[cp] = h
+	} else {
+		delete(extension_handler_handlers.on_before_browser_handler, cp)
 	}
 
 	if h, ok := a.(GetActiveBrowserHandler); ok {
 		extension_handler_handlers.get_active_browser_handler[cp] = h
+	} else {
+		delete(extension_handler_handlers.get_active_browser_handler, cp)
 	}
 
 	if h, ok := a.(CanAccessBrowserHandler); ok {
 		extension_handler_handlers.can_access_browser_handler[cp] = h
+	} else {
+		delete(extension_handler_handlers.can_access_browser_handler, cp)
 	}
 
 	if h, ok := a.(GetExtensionResourceHandler); ok {
 		extension_handler_handlers.get_extension_resource_handler[cp] = h
+	} else {
+		delete(extension_handler_handlers.get_extension_resource_handler, cp)
 	}
 
 	if accessor, ok := a.(CExtensionHandlerTAccessor); ok {
@@ -10882,6 +11074,8 @@ func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
 
 	if h, ok := a.(OnFindResultHandler); ok {
 		find_handler_handlers.on_find_result_handler[cp] = h
+	} else {
+		delete(find_handler_handlers.on_find_result_handler, cp)
 	}
 
 	if accessor, ok := a.(CFindHandlerTAccessor); ok {
@@ -11070,14 +11264,20 @@ func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
 
 	if h, ok := a.(OnTakeFocusHandler); ok {
 		focus_handler_handlers.on_take_focus_handler[cp] = h
+	} else {
+		delete(focus_handler_handlers.on_take_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnSetFocusHandler); ok {
 		focus_handler_handlers.on_set_focus_handler[cp] = h
+	} else {
+		delete(focus_handler_handlers.on_set_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnGotFocusHandler); ok {
 		focus_handler_handlers.on_got_focus_handler[cp] = h
+	} else {
+		delete(focus_handler_handlers.on_got_focus_handler, cp)
 	}
 
 	if accessor, ok := a.(CFocusHandlerTAccessor); ok {
@@ -12415,18 +12615,26 @@ func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandler
 
 	if h, ok := a.(OnJsdialogHandler); ok {
 		jsdialog_handler_handlers.on_jsdialog_handler[cp] = h
+	} else {
+		delete(jsdialog_handler_handlers.on_jsdialog_handler, cp)
 	}
 
 	if h, ok := a.(OnBeforeUnloadDialogHandler); ok {
 		jsdialog_handler_handlers.on_before_unload_dialog_handler[cp] = h
+	} else {
+		delete(jsdialog_handler_handlers.on_before_unload_dialog_handler, cp)
 	}
 
 	if h, ok := a.(OnResetDialogStateHandler); ok {
 		jsdialog_handler_handlers.on_reset_dialog_state_handler[cp] = h
+	} else {
+		delete(jsdialog_handler_handlers.on_reset_dialog_state_handler, cp)
 	}
 
 	if h, ok := a.(OnDialogClosedHandler); ok {
 		jsdialog_handler_handlers.on_dialog_closed_handler[cp] = h
+	} else {
+		delete(jsdialog_handler_handlers.on_dialog_closed_handler, cp)
 	}
 
 	if accessor, ok := a.(CJsdialogHandlerTAccessor); ok {
@@ -12609,10 +12817,14 @@ func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandler
 
 	if h, ok := a.(OnPreKeyEventHandler); ok {
 		keyboard_handler_handlers.on_pre_key_event_handler[cp] = h
+	} else {
+		delete(keyboard_handler_handlers.on_pre_key_event_handler, cp)
 	}
 
 	if h, ok := a.(CKeyboardHandlerTOnKeyEventHandler); ok {
 		keyboard_handler_handlers.on_key_event_handler[cp] = h
+	} else {
+		delete(keyboard_handler_handlers.on_key_event_handler, cp)
 	}
 
 	if accessor, ok := a.(CKeyboardHandlerTAccessor); ok {
@@ -13299,18 +13511,26 @@ func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandle
 
 	if h, ok := a.(OnBeforePopupHandler); ok {
 		life_span_handler_handlers.on_before_popup_handler[cp] = h
+	} else {
+		delete(life_span_handler_handlers.on_before_popup_handler, cp)
 	}
 
 	if h, ok := a.(OnAfterCreatedHandler); ok {
 		life_span_handler_handlers.on_after_created_handler[cp] = h
+	} else {
+		delete(life_span_handler_handlers.on_after_created_handler, cp)
 	}
 
 	if h, ok := a.(DoCloseHandler); ok {
 		life_span_handler_handlers.do_close_handler[cp] = h
+	} else {
+		delete(life_span_handler_handlers.do_close_handler, cp)
 	}
 
 	if h, ok := a.(OnBeforeCloseHandler); ok {
 		life_span_handler_handlers.on_before_close_handler[cp] = h
+	} else {
+		delete(life_span_handler_handlers.on_before_close_handler, cp)
 	}
 
 	if accessor, ok := a.(CLifeSpanHandlerTAccessor); ok {
@@ -13544,18 +13764,26 @@ func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
 
 	if h, ok := a.(OnLoadingStateChangeHandler); ok {
 		load_handler_handlers.on_loading_state_change_handler[cp] = h
+	} else {
+		delete(load_handler_handlers.on_loading_state_change_handler, cp)
 	}
 
 	if h, ok := a.(OnLoadStartHandler); ok {
 		load_handler_handlers.on_load_start_handler[cp] = h
+	} else {
+		delete(load_handler_handlers.on_load_start_handler, cp)
 	}
 
 	if h, ok := a.(OnLoadEndHandler); ok {
 		load_handler_handlers.on_load_end_handler[cp] = h
+	} else {
+		delete(load_handler_handlers.on_load_end_handler, cp)
 	}
 
 	if h, ok := a.(OnLoadErrorHandler); ok {
 		load_handler_handlers.on_load_error_handler[cp] = h
+	} else {
+		delete(load_handler_handlers.on_load_error_handler, cp)
 	}
 
 	if accessor, ok := a.(CLoadHandlerTAccessor); ok {
@@ -13942,18 +14170,26 @@ func (media_observer *CMediaObserverT) Bind(a interface{}) *CMediaObserverT {
 
 	if h, ok := a.(OnSinksHandler); ok {
 		media_observer_handlers.on_sinks_handler[cp] = h
+	} else {
+		delete(media_observer_handlers.on_sinks_handler, cp)
 	}
 
 	if h, ok := a.(OnRoutesHandler); ok {
 		media_observer_handlers.on_routes_handler[cp] = h
+	} else {
+		delete(media_observer_handlers.on_routes_handler, cp)
 	}
 
 	if h, ok := a.(OnRouteStateChangedHandler); ok {
 		media_observer_handlers.on_route_state_changed_handler[cp] = h
+	} else {
+		delete(media_observer_handlers.on_route_state_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnRouteMessageReceivedHandler); ok {
 		media_observer_handlers.on_route_message_received_handler[cp] = h
+	} else {
+		delete(media_observer_handlers.on_route_message_received_handler, cp)
 	}
 
 	if accessor, ok := a.(CMediaObserverTAccessor); ok {
@@ -14982,50 +15218,74 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 
 	if h, ok := a.(OnMenuButtonPressedHandler); ok {
 		menu_button_delegate_handlers.on_menu_button_pressed_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_menu_button_pressed_handler, cp)
 	}
 
 	if h, ok := a.(OnButtonPressedHandler); ok {
 		menu_button_delegate_handlers.on_button_pressed_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_button_pressed_handler, cp)
 	}
 
 	if h, ok := a.(OnButtonStateChangedHandler); ok {
 		menu_button_delegate_handlers.on_button_state_changed_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_button_state_changed_handler, cp)
 	}
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
 		menu_button_delegate_handlers.get_preferred_size_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.get_preferred_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMinimumSizeHandler); ok {
 		menu_button_delegate_handlers.get_minimum_size_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.get_minimum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMaximumSizeHandler); ok {
 		menu_button_delegate_handlers.get_maximum_size_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.get_maximum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetHeightForWidthHandler); ok {
 		menu_button_delegate_handlers.get_height_for_width_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.get_height_for_width_handler, cp)
 	}
 
 	if h, ok := a.(OnParentViewChangedHandler); ok {
 		menu_button_delegate_handlers.on_parent_view_changed_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_parent_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnChildViewChangedHandler); ok {
 		menu_button_delegate_handlers.on_child_view_changed_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_child_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnWindowChangedHandler); ok {
 		menu_button_delegate_handlers.on_window_changed_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_window_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnFocusHandler); ok {
 		menu_button_delegate_handlers.on_focus_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnBlurHandler); ok {
 		menu_button_delegate_handlers.on_blur_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_blur_handler, cp)
 	}
 
 	if accessor, ok := a.(CMenuButtonDelegateTAccessor); ok {
@@ -16238,30 +16498,44 @@ func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelD
 
 	if h, ok := a.(ExecuteCommandHandler); ok {
 		menu_model_delegate_handlers.execute_command_handler[cp] = h
+	} else {
+		delete(menu_model_delegate_handlers.execute_command_handler, cp)
 	}
 
 	if h, ok := a.(MouseOutsideMenuHandler); ok {
 		menu_model_delegate_handlers.mouse_outside_menu_handler[cp] = h
+	} else {
+		delete(menu_model_delegate_handlers.mouse_outside_menu_handler, cp)
 	}
 
 	if h, ok := a.(UnhandledOpenSubmenuHandler); ok {
 		menu_model_delegate_handlers.unhandled_open_submenu_handler[cp] = h
+	} else {
+		delete(menu_model_delegate_handlers.unhandled_open_submenu_handler, cp)
 	}
 
 	if h, ok := a.(UnhandledCloseSubmenuHandler); ok {
 		menu_model_delegate_handlers.unhandled_close_submenu_handler[cp] = h
+	} else {
+		delete(menu_model_delegate_handlers.unhandled_close_submenu_handler, cp)
 	}
 
 	if h, ok := a.(MenuWillShowHandler); ok {
 		menu_model_delegate_handlers.menu_will_show_handler[cp] = h
+	} else {
+		delete(menu_model_delegate_handlers.menu_will_show_handler, cp)
 	}
 
 	if h, ok := a.(MenuClosedHandler); ok {
 		menu_model_delegate_handlers.menu_closed_handler[cp] = h
+	} else {
+		delete(menu_model_delegate_handlers.menu_closed_handler, cp)
 	}
 
 	if h, ok := a.(FormatLabelHandler); ok {
 		menu_model_delegate_handlers.format_label_handler[cp] = h
+	} else {
+		delete(menu_model_delegate_handlers.format_label_handler, cp)
 	}
 
 	if accessor, ok := a.(CMenuModelDelegateTAccessor); ok {
@@ -16997,38 +17271,56 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
 		panel_delegate_handlers.get_preferred_size_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.get_preferred_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMinimumSizeHandler); ok {
 		panel_delegate_handlers.get_minimum_size_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.get_minimum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMaximumSizeHandler); ok {
 		panel_delegate_handlers.get_maximum_size_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.get_maximum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetHeightForWidthHandler); ok {
 		panel_delegate_handlers.get_height_for_width_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.get_height_for_width_handler, cp)
 	}
 
 	if h, ok := a.(OnParentViewChangedHandler); ok {
 		panel_delegate_handlers.on_parent_view_changed_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.on_parent_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnChildViewChangedHandler); ok {
 		panel_delegate_handlers.on_child_view_changed_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.on_child_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnWindowChangedHandler); ok {
 		panel_delegate_handlers.on_window_changed_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.on_window_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnFocusHandler); ok {
 		panel_delegate_handlers.on_focus_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.on_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnBlurHandler); ok {
 		panel_delegate_handlers.on_blur_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.on_blur_handler, cp)
 	}
 
 	if accessor, ok := a.(CPanelDelegateTAccessor); ok {
@@ -17452,26 +17744,38 @@ func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
 
 	if h, ok := a.(OnPrintStartHandler); ok {
 		print_handler_handlers.on_print_start_handler[cp] = h
+	} else {
+		delete(print_handler_handlers.on_print_start_handler, cp)
 	}
 
 	if h, ok := a.(OnPrintSettingsHandler); ok {
 		print_handler_handlers.on_print_settings_handler[cp] = h
+	} else {
+		delete(print_handler_handlers.on_print_settings_handler, cp)
 	}
 
 	if h, ok := a.(OnPrintDialogHandler); ok {
 		print_handler_handlers.on_print_dialog_handler[cp] = h
+	} else {
+		delete(print_handler_handlers.on_print_dialog_handler, cp)
 	}
 
 	if h, ok := a.(OnPrintJobHandler); ok {
 		print_handler_handlers.on_print_job_handler[cp] = h
+	} else {
+		delete(print_handler_handlers.on_print_job_handler, cp)
 	}
 
 	if h, ok := a.(OnPrintResetHandler); ok {
 		print_handler_handlers.on_print_reset_handler[cp] = h
+	} else {
+		delete(print_handler_handlers.on_print_reset_handler, cp)
 	}
 
 	if h, ok := a.(GetPdfPaperSizeHandler); ok {
 		print_handler_handlers.get_pdf_paper_size_handler[cp] = h
+	} else {
+		delete(print_handler_handlers.get_pdf_paper_size_handler, cp)
 	}
 
 	if accessor, ok := a.(CPrintHandlerTAccessor); ok {
@@ -18437,62 +18741,92 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 
 	if h, ok := a.(GetAccessibilityHandlerHandler); ok {
 		render_handler_handlers.get_accessibility_handler_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.get_accessibility_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetRootScreenRectHandler); ok {
 		render_handler_handlers.get_root_screen_rect_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.get_root_screen_rect_handler, cp)
 	}
 
 	if h, ok := a.(GetViewRectHandler); ok {
 		render_handler_handlers.get_view_rect_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.get_view_rect_handler, cp)
 	}
 
 	if h, ok := a.(GetScreenPointHandler); ok {
 		render_handler_handlers.get_screen_point_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.get_screen_point_handler, cp)
 	}
 
 	if h, ok := a.(GetScreenInfoHandler); ok {
 		render_handler_handlers.get_screen_info_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.get_screen_info_handler, cp)
 	}
 
 	if h, ok := a.(OnPopupShowHandler); ok {
 		render_handler_handlers.on_popup_show_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.on_popup_show_handler, cp)
 	}
 
 	if h, ok := a.(OnPopupSizeHandler); ok {
 		render_handler_handlers.on_popup_size_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.on_popup_size_handler, cp)
 	}
 
 	if h, ok := a.(OnPaintHandler); ok {
 		render_handler_handlers.on_paint_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.on_paint_handler, cp)
 	}
 
 	if h, ok := a.(OnAcceleratedPaintHandler); ok {
 		render_handler_handlers.on_accelerated_paint_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.on_accelerated_paint_handler, cp)
 	}
 
 	if h, ok := a.(StartDraggingHandler); ok {
 		render_handler_handlers.start_dragging_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.start_dragging_handler, cp)
 	}
 
 	if h, ok := a.(UpdateDragCursorHandler); ok {
 		render_handler_handlers.update_drag_cursor_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.update_drag_cursor_handler, cp)
 	}
 
 	if h, ok := a.(OnScrollOffsetChangedHandler); ok {
 		render_handler_handlers.on_scroll_offset_changed_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.on_scroll_offset_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnImeCompositionRangeChangedHandler); ok {
 		render_handler_handlers.on_ime_composition_range_changed_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.on_ime_composition_range_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnTextSelectionChangedHandler); ok {
 		render_handler_handlers.on_text_selection_changed_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.on_text_selection_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnVirtualKeyboardRequestedHandler); ok {
 		render_handler_handlers.on_virtual_keyboard_requested_handler[cp] = h
+	} else {
+		delete(render_handler_handlers.on_virtual_keyboard_requested_handler, cp)
 	}
 
 	if accessor, ok := a.(CRenderHandlerTAccessor); ok {
@@ -18800,38 +19134,56 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 
 	if h, ok := a.(OnWebKitInitializedHandler); ok {
 		render_process_handler_handlers.on_web_kit_initialized_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.on_web_kit_initialized_handler, cp)
 	}
 
 	if h, ok := a.(CRenderProcessHandlerTOnBrowserCreatedHandler); ok {
 		render_process_handler_handlers.on_browser_created_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.on_browser_created_handler, cp)
 	}
 
 	if h, ok := a.(CRenderProcessHandlerTOnBrowserDestroyedHandler); ok {
 		render_process_handler_handlers.on_browser_destroyed_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.on_browser_destroyed_handler, cp)
 	}
 
 	if h, ok := a.(CRenderProcessHandlerTGetLoadHandlerHandler); ok {
 		render_process_handler_handlers.get_load_handler_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.get_load_handler_handler, cp)
 	}
 
 	if h, ok := a.(OnContextCreatedHandler); ok {
 		render_process_handler_handlers.on_context_created_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.on_context_created_handler, cp)
 	}
 
 	if h, ok := a.(OnContextReleasedHandler); ok {
 		render_process_handler_handlers.on_context_released_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.on_context_released_handler, cp)
 	}
 
 	if h, ok := a.(OnUncaughtExceptionHandler); ok {
 		render_process_handler_handlers.on_uncaught_exception_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.on_uncaught_exception_handler, cp)
 	}
 
 	if h, ok := a.(OnFocusedNodeChangedHandler); ok {
 		render_process_handler_handlers.on_focused_node_changed_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.on_focused_node_changed_handler, cp)
 	}
 
 	if h, ok := a.(CRenderProcessHandlerTOnProcessMessageReceivedHandler); ok {
 		render_process_handler_handlers.on_process_message_received_handler[cp] = h
+	} else {
+		delete(render_process_handler_handlers.on_process_message_received_handler, cp)
 	}
 
 	if accessor, ok := a.(CRenderProcessHandlerTAccessor); ok {
@@ -20632,14 +20984,20 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 
 	if h, ok := a.(OnRequestContextInitializedHandler); ok {
 		request_context_handler_handlers.on_request_context_initialized_handler[cp] = h
+	} else {
+		delete(request_context_handler_handlers.on_request_context_initialized_handler, cp)
 	}
 
 	if h, ok := a.(OnBeforePluginLoadHandler); ok {
 		request_context_handler_handlers.on_before_plugin_load_handler[cp] = h
+	} else {
+		delete(request_context_handler_handlers.on_before_plugin_load_handler, cp)
 	}
 
 	if h, ok := a.(CRequestContextHandlerTGetResourceRequestHandlerHandler); ok {
 		request_context_handler_handlers.get_resource_request_handler_handler[cp] = h
+	} else {
+		delete(request_context_handler_handlers.get_resource_request_handler_handler, cp)
 	}
 
 	if accessor, ok := a.(CRequestContextHandlerTAccessor); ok {
@@ -21119,46 +21477,68 @@ func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
 
 	if h, ok := a.(OnBeforeBrowseHandler); ok {
 		request_handler_handlers.on_before_browse_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_before_browse_handler, cp)
 	}
 
 	if h, ok := a.(OnOpenUrlfromTabHandler); ok {
 		request_handler_handlers.on_open_urlfrom_tab_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_open_urlfrom_tab_handler, cp)
 	}
 
 	if h, ok := a.(CRequestHandlerTGetResourceRequestHandlerHandler); ok {
 		request_handler_handlers.get_resource_request_handler_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.get_resource_request_handler_handler, cp)
 	}
 
 	if h, ok := a.(CRequestHandlerTGetAuthCredentialsHandler); ok {
 		request_handler_handlers.get_auth_credentials_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.get_auth_credentials_handler, cp)
 	}
 
 	if h, ok := a.(OnQuotaRequestHandler); ok {
 		request_handler_handlers.on_quota_request_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_quota_request_handler, cp)
 	}
 
 	if h, ok := a.(OnCertificateErrorHandler); ok {
 		request_handler_handlers.on_certificate_error_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_certificate_error_handler, cp)
 	}
 
 	if h, ok := a.(OnSelectClientCertificateHandler); ok {
 		request_handler_handlers.on_select_client_certificate_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_select_client_certificate_handler, cp)
 	}
 
 	if h, ok := a.(OnPluginCrashedHandler); ok {
 		request_handler_handlers.on_plugin_crashed_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_plugin_crashed_handler, cp)
 	}
 
 	if h, ok := a.(OnRenderViewReadyHandler); ok {
 		request_handler_handlers.on_render_view_ready_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_render_view_ready_handler, cp)
 	}
 
 	if h, ok := a.(OnRenderProcessTerminatedHandler); ok {
 		request_handler_handlers.on_render_process_terminated_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_render_process_terminated_handler, cp)
 	}
 
 	if h, ok := a.(OnDocumentAvailableInMainFrameHandler); ok {
 		request_handler_handlers.on_document_available_in_main_frame_handler[cp] = h
+	} else {
+		delete(request_handler_handlers.on_document_available_in_main_frame_handler, cp)
 	}
 
 	if accessor, ok := a.(CRequestHandlerTAccessor); ok {
@@ -21365,14 +21745,20 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CRe
 
 	if h, ok := a.(GetLocalizedStringHandler); ok {
 		resource_bundle_handler_handlers.get_localized_string_handler[cp] = h
+	} else {
+		delete(resource_bundle_handler_handlers.get_localized_string_handler, cp)
 	}
 
 	if h, ok := a.(GetDataResourceHandler); ok {
 		resource_bundle_handler_handlers.get_data_resource_handler[cp] = h
+	} else {
+		delete(resource_bundle_handler_handlers.get_data_resource_handler, cp)
 	}
 
 	if h, ok := a.(GetDataResourceForScaleHandler); ok {
 		resource_bundle_handler_handlers.get_data_resource_for_scale_handler[cp] = h
+	} else {
+		delete(resource_bundle_handler_handlers.get_data_resource_for_scale_handler, cp)
 	}
 
 	if accessor, ok := a.(CResourceBundleHandlerTAccessor); ok {
@@ -21830,30 +22216,44 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 
 	if h, ok := a.(OpenHandler); ok {
 		resource_handler_handlers.open_handler[cp] = h
+	} else {
+		delete(resource_handler_handlers.open_handler, cp)
 	}
 
 	if h, ok := a.(ProcessRequestHandler); ok {
 		resource_handler_handlers.process_request_handler[cp] = h
+	} else {
+		delete(resource_handler_handlers.process_request_handler, cp)
 	}
 
 	if h, ok := a.(GetResponseHeadersHandler); ok {
 		resource_handler_handlers.get_response_headers_handler[cp] = h
+	} else {
+		delete(resource_handler_handlers.get_response_headers_handler, cp)
 	}
 
 	if h, ok := a.(SkipHandler); ok {
 		resource_handler_handlers.skip_handler[cp] = h
+	} else {
+		delete(resource_handler_handlers.skip_handler, cp)
 	}
 
 	if h, ok := a.(CResourceHandlerTReadHandler); ok {
 		resource_handler_handlers.read_handler[cp] = h
+	} else {
+		delete(resource_handler_handlers.read_handler, cp)
 	}
 
 	if h, ok := a.(ReadResponseHandler); ok {
 		resource_handler_handlers.read_response_handler[cp] = h
+	} else {
+		delete(resource_handler_handlers.read_response_handler, cp)
 	}
 
 	if h, ok := a.(CancelHandler); ok {
 		resource_handler_handlers.cancel_handler[cp] = h
+	} else {
+		delete(resource_handler_handlers.cancel_handler, cp)
 	}
 
 	if accessor, ok := a.(CResourceHandlerTAccessor); ok {
@@ -22189,34 +22589,50 @@ func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *C
 
 	if h, ok := a.(GetCookieAccessFilterHandler); ok {
 		resource_request_handler_handlers.get_cookie_access_filter_handler[cp] = h
+	} else {
+		delete(resource_request_handler_handlers.get_cookie_access_filter_handler, cp)
 	}
 
 	if h, ok := a.(OnBeforeResourceLoadHandler); ok {
 		resource_request_handler_handlers.on_before_resource_load_handler[cp] = h
+	} else {
+		delete(resource_request_handler_handlers.on_before_resource_load_handler, cp)
 	}
 
 	if h, ok := a.(GetResourceHandlerHandler); ok {
 		resource_request_handler_handlers.get_resource_handler_handler[cp] = h
+	} else {
+		delete(resource_request_handler_handlers.get_resource_handler_handler, cp)
 	}
 
 	if h, ok := a.(OnResourceRedirectHandler); ok {
 		resource_request_handler_handlers.on_resource_redirect_handler[cp] = h
+	} else {
+		delete(resource_request_handler_handlers.on_resource_redirect_handler, cp)
 	}
 
 	if h, ok := a.(OnResourceResponseHandler); ok {
 		resource_request_handler_handlers.on_resource_response_handler[cp] = h
+	} else {
+		delete(resource_request_handler_handlers.on_resource_response_handler, cp)
 	}
 
 	if h, ok := a.(GetResourceResponseFilterHandler); ok {
 		resource_request_handler_handlers.get_resource_response_filter_handler[cp] = h
+	} else {
+		delete(resource_request_handler_handlers.get_resource_response_filter_handler, cp)
 	}
 
 	if h, ok := a.(OnResourceLoadCompleteHandler); ok {
 		resource_request_handler_handlers.on_resource_load_complete_handler[cp] = h
+	} else {
+		delete(resource_request_handler_handlers.on_resource_load_complete_handler, cp)
 	}
 
 	if h, ok := a.(OnProtocolExecutionHandler); ok {
 		resource_request_handler_handlers.on_protocol_execution_handler[cp] = h
+	} else {
+		delete(resource_request_handler_handlers.on_protocol_execution_handler, cp)
 	}
 
 	if accessor, ok := a.(CResourceRequestHandlerTAccessor); ok {
@@ -22407,10 +22823,14 @@ func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAc
 
 	if h, ok := a.(CanSendCookieHandler); ok {
 		cookie_access_filter_handlers.can_send_cookie_handler[cp] = h
+	} else {
+		delete(cookie_access_filter_handlers.can_send_cookie_handler, cp)
 	}
 
 	if h, ok := a.(CanSaveCookieHandler); ok {
 		cookie_access_filter_handlers.can_save_cookie_handler[cp] = h
+	} else {
+		delete(cookie_access_filter_handlers.can_save_cookie_handler, cp)
 	}
 
 	if accessor, ok := a.(CCookieAccessFilterTAccessor); ok {
@@ -22920,10 +23340,14 @@ func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
 
 	if h, ok := a.(InitFilterHandler); ok {
 		response_filter_handlers.init_filter_handler[cp] = h
+	} else {
+		delete(response_filter_handlers.init_filter_handler, cp)
 	}
 
 	if h, ok := a.(FilterHandler); ok {
 		response_filter_handlers.filter_handler[cp] = h
+	} else {
+		delete(response_filter_handlers.filter_handler, cp)
 	}
 
 	if accessor, ok := a.(CResponseFilterTAccessor); ok {
@@ -23153,6 +23577,8 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 
 	if h, ok := a.(CreateHandler); ok {
 		scheme_handler_factory_handlers.create_handler[cp] = h
+	} else {
+		delete(scheme_handler_factory_handlers.create_handler, cp)
 	}
 
 	if accessor, ok := a.(CSchemeHandlerFactoryTAccessor); ok {
@@ -23832,22 +24258,32 @@ func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
 
 	if h, ok := a.(CReadHandlerTReadHandler); ok {
 		read_handler_handlers.read_handler[cp] = h
+	} else {
+		delete(read_handler_handlers.read_handler, cp)
 	}
 
 	if h, ok := a.(CReadHandlerTSeekHandler); ok {
 		read_handler_handlers.seek_handler[cp] = h
+	} else {
+		delete(read_handler_handlers.seek_handler, cp)
 	}
 
 	if h, ok := a.(CReadHandlerTTellHandler); ok {
 		read_handler_handlers.tell_handler[cp] = h
+	} else {
+		delete(read_handler_handlers.tell_handler, cp)
 	}
 
 	if h, ok := a.(EofHandler); ok {
 		read_handler_handlers.eof_handler[cp] = h
+	} else {
+		delete(read_handler_handlers.eof_handler, cp)
 	}
 
 	if h, ok := a.(CReadHandlerTMayBlockHandler); ok {
 		read_handler_handlers.may_block_handler[cp] = h
+	} else {
+		delete(read_handler_handlers.may_block_handler, cp)
 	}
 
 	if accessor, ok := a.(CReadHandlerTAccessor); ok {
@@ -24245,22 +24681,32 @@ func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
 
 	if h, ok := a.(WriteHandler); ok {
 		write_handler_handlers.write_handler[cp] = h
+	} else {
+		delete(write_handler_handlers.write_handler, cp)
 	}
 
 	if h, ok := a.(CWriteHandlerTSeekHandler); ok {
 		write_handler_handlers.seek_handler[cp] = h
+	} else {
+		delete(write_handler_handlers.seek_handler, cp)
 	}
 
 	if h, ok := a.(CWriteHandlerTTellHandler); ok {
 		write_handler_handlers.tell_handler[cp] = h
+	} else {
+		delete(write_handler_handlers.tell_handler, cp)
 	}
 
 	if h, ok := a.(FlushHandler); ok {
 		write_handler_handlers.flush_handler[cp] = h
+	} else {
+		delete(write_handler_handlers.flush_handler, cp)
 	}
 
 	if h, ok := a.(CWriteHandlerTMayBlockHandler); ok {
 		write_handler_handlers.may_block_handler[cp] = h
+	} else {
+		delete(write_handler_handlers.may_block_handler, cp)
 	}
 
 	if accessor, ok := a.(CWriteHandlerTAccessor); ok {
@@ -24588,6 +25034,8 @@ func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
 
 	if h, ok := a.(CStringVisitorTVisitHandler); ok {
 		string_visitor_handlers.visit_handler[cp] = h
+	} else {
+		delete(string_visitor_handlers.visit_handler, cp)
 	}
 
 	if accessor, ok := a.(CStringVisitorTAccessor); ok {
@@ -24746,6 +25194,8 @@ func (task *CTaskT) Bind(a interface{}) *CTaskT {
 
 	if h, ok := a.(CTaskTExecuteHandler); ok {
 		task_handlers.execute_handler[cp] = h
+	} else {
+		delete(task_handlers.execute_handler, cp)
 	}
 
 	if accessor, ok := a.(CTaskTAccessor); ok {
@@ -25674,46 +26124,68 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 
 	if h, ok := a.(CTextfieldDelegateTOnKeyEventHandler); ok {
 		textfield_delegate_handlers.on_key_event_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.on_key_event_handler, cp)
 	}
 
 	if h, ok := a.(OnAfterUserActionHandler); ok {
 		textfield_delegate_handlers.on_after_user_action_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.on_after_user_action_handler, cp)
 	}
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
 		textfield_delegate_handlers.get_preferred_size_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.get_preferred_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMinimumSizeHandler); ok {
 		textfield_delegate_handlers.get_minimum_size_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.get_minimum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMaximumSizeHandler); ok {
 		textfield_delegate_handlers.get_maximum_size_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.get_maximum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetHeightForWidthHandler); ok {
 		textfield_delegate_handlers.get_height_for_width_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.get_height_for_width_handler, cp)
 	}
 
 	if h, ok := a.(OnParentViewChangedHandler); ok {
 		textfield_delegate_handlers.on_parent_view_changed_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.on_parent_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnChildViewChangedHandler); ok {
 		textfield_delegate_handlers.on_child_view_changed_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.on_child_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnWindowChangedHandler); ok {
 		textfield_delegate_handlers.on_window_changed_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.on_window_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnFocusHandler); ok {
 		textfield_delegate_handlers.on_focus_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.on_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnBlurHandler); ok {
 		textfield_delegate_handlers.on_blur_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.on_blur_handler, cp)
 	}
 
 	if accessor, ok := a.(CTextfieldDelegateTAccessor); ok {
@@ -25882,6 +26354,8 @@ func (end_tracing_callback *CEndTracingCallbackT) Bind(a interface{}) *CEndTraci
 
 	if h, ok := a.(OnEndTracingCompleteHandler); ok {
 		end_tracing_callback_handlers.on_end_tracing_complete_handler[cp] = h
+	} else {
+		delete(end_tracing_callback_handlers.on_end_tracing_complete_handler, cp)
 	}
 
 	if accessor, ok := a.(CEndTracingCallbackTAccessor); ok {
@@ -26390,22 +26864,32 @@ func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestCli
 
 	if h, ok := a.(OnRequestCompleteHandler); ok {
 		urlrequest_client_handlers.on_request_complete_handler[cp] = h
+	} else {
+		delete(urlrequest_client_handlers.on_request_complete_handler, cp)
 	}
 
 	if h, ok := a.(OnUploadProgressHandler); ok {
 		urlrequest_client_handlers.on_upload_progress_handler[cp] = h
+	} else {
+		delete(urlrequest_client_handlers.on_upload_progress_handler, cp)
 	}
 
 	if h, ok := a.(OnDownloadProgressHandler); ok {
 		urlrequest_client_handlers.on_download_progress_handler[cp] = h
+	} else {
+		delete(urlrequest_client_handlers.on_download_progress_handler, cp)
 	}
 
 	if h, ok := a.(OnDownloadDataHandler); ok {
 		urlrequest_client_handlers.on_download_data_handler[cp] = h
+	} else {
+		delete(urlrequest_client_handlers.on_download_data_handler, cp)
 	}
 
 	if h, ok := a.(CUrlrequestClientTGetAuthCredentialsHandler); ok {
 		urlrequest_client_handlers.get_auth_credentials_handler[cp] = h
+	} else {
+		delete(urlrequest_client_handlers.get_auth_credentials_handler, cp)
 	}
 
 	if accessor, ok := a.(CUrlrequestClientTAccessor); ok {
@@ -26815,6 +27299,8 @@ func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
 
 	if h, ok := a.(CV8handlerTExecuteHandler); ok {
 		v8handler_handlers.execute_handler[cp] = h
+	} else {
+		delete(v8handler_handlers.execute_handler, cp)
 	}
 
 	if accessor, ok := a.(CV8handlerTAccessor); ok {
@@ -26994,10 +27480,14 @@ func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
 
 	if h, ok := a.(GetHandler); ok {
 		v8accessor_handlers.get_handler[cp] = h
+	} else {
+		delete(v8accessor_handlers.get_handler, cp)
 	}
 
 	if h, ok := a.(SetHandler); ok {
 		v8accessor_handlers.set_handler[cp] = h
+	} else {
+		delete(v8accessor_handlers.set_handler, cp)
 	}
 
 	if accessor, ok := a.(CV8accessorTAccessor); ok {
@@ -27536,6 +28026,8 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a in
 
 	if h, ok := a.(ReleaseBufferHandler); ok {
 		v8array_buffer_release_callback_handlers.release_buffer_handler[cp] = h
+	} else {
+		delete(v8array_buffer_release_callback_handlers.release_buffer_handler, cp)
 	}
 
 	if accessor, ok := a.(CV8arrayBufferReleaseCallbackTAccessor); ok {
@@ -31523,38 +32015,56 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
 		view_delegate_handlers.get_preferred_size_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.get_preferred_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMinimumSizeHandler); ok {
 		view_delegate_handlers.get_minimum_size_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.get_minimum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMaximumSizeHandler); ok {
 		view_delegate_handlers.get_maximum_size_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.get_maximum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetHeightForWidthHandler); ok {
 		view_delegate_handlers.get_height_for_width_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.get_height_for_width_handler, cp)
 	}
 
 	if h, ok := a.(OnParentViewChangedHandler); ok {
 		view_delegate_handlers.on_parent_view_changed_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.on_parent_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnChildViewChangedHandler); ok {
 		view_delegate_handlers.on_child_view_changed_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.on_child_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnWindowChangedHandler); ok {
 		view_delegate_handlers.on_window_changed_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.on_window_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnFocusHandler); ok {
 		view_delegate_handlers.on_focus_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.on_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnBlurHandler); ok {
 		view_delegate_handlers.on_blur_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.on_blur_handler, cp)
 	}
 
 	if accessor, ok := a.(CViewDelegateTAccessor); ok {
@@ -31858,6 +32368,8 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWeb
 
 	if h, ok := a.(CWebPluginInfoVisitorTVisitHandler); ok {
 		web_plugin_info_visitor_handlers.visit_handler[cp] = h
+	} else {
+		delete(web_plugin_info_visitor_handlers.visit_handler, cp)
 	}
 
 	if accessor, ok := a.(CWebPluginInfoVisitorTAccessor); ok {
@@ -32014,6 +32526,8 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interfac
 
 	if h, ok := a.(IsUnstableHandler); ok {
 		web_plugin_unstable_callback_handlers.is_unstable_handler[cp] = h
+	} else {
+		delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cp)
 	}
 
 	if accessor, ok := a.(CWebPluginUnstableCallbackTAccessor); ok {
@@ -32172,6 +32686,8 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegist
 
 	if h, ok := a.(OnCdmRegistrationCompleteHandler); ok {
 		register_cdm_callback_handlers.on_cdm_registration_complete_handler[cp] = h
+	} else {
+		delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cp)
 	}
 
 	if accessor, ok := a.(CRegisterCdmCallbackTAccessor); ok {
@@ -33178,82 +33694,122 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 
 	if h, ok := a.(OnWindowCreatedHandler); ok {
 		window_delegate_handlers.on_window_created_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_window_created_handler, cp)
 	}
 
 	if h, ok := a.(OnWindowDestroyedHandler); ok {
 		window_delegate_handlers.on_window_destroyed_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_window_destroyed_handler, cp)
 	}
 
 	if h, ok := a.(GetParentWindowHandler); ok {
 		window_delegate_handlers.get_parent_window_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.get_parent_window_handler, cp)
 	}
 
 	if h, ok := a.(GetInitialBoundsHandler); ok {
 		window_delegate_handlers.get_initial_bounds_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.get_initial_bounds_handler, cp)
 	}
 
 	if h, ok := a.(IsFramelessHandler); ok {
 		window_delegate_handlers.is_frameless_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.is_frameless_handler, cp)
 	}
 
 	if h, ok := a.(CanResizeHandler); ok {
 		window_delegate_handlers.can_resize_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.can_resize_handler, cp)
 	}
 
 	if h, ok := a.(CanMaximizeHandler); ok {
 		window_delegate_handlers.can_maximize_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.can_maximize_handler, cp)
 	}
 
 	if h, ok := a.(CanMinimizeHandler); ok {
 		window_delegate_handlers.can_minimize_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.can_minimize_handler, cp)
 	}
 
 	if h, ok := a.(CanCloseHandler); ok {
 		window_delegate_handlers.can_close_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.can_close_handler, cp)
 	}
 
 	if h, ok := a.(OnAcceleratorHandler); ok {
 		window_delegate_handlers.on_accelerator_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_accelerator_handler, cp)
 	}
 
 	if h, ok := a.(CWindowDelegateTOnKeyEventHandler); ok {
 		window_delegate_handlers.on_key_event_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_key_event_handler, cp)
 	}
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
 		window_delegate_handlers.get_preferred_size_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.get_preferred_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMinimumSizeHandler); ok {
 		window_delegate_handlers.get_minimum_size_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.get_minimum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetMaximumSizeHandler); ok {
 		window_delegate_handlers.get_maximum_size_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.get_maximum_size_handler, cp)
 	}
 
 	if h, ok := a.(GetHeightForWidthHandler); ok {
 		window_delegate_handlers.get_height_for_width_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.get_height_for_width_handler, cp)
 	}
 
 	if h, ok := a.(OnParentViewChangedHandler); ok {
 		window_delegate_handlers.on_parent_view_changed_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_parent_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnChildViewChangedHandler); ok {
 		window_delegate_handlers.on_child_view_changed_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_child_view_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnWindowChangedHandler); ok {
 		window_delegate_handlers.on_window_changed_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_window_changed_handler, cp)
 	}
 
 	if h, ok := a.(OnFocusHandler); ok {
 		window_delegate_handlers.on_focus_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_focus_handler, cp)
 	}
 
 	if h, ok := a.(OnBlurHandler); ok {
 		window_delegate_handlers.on_blur_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_blur_handler, cp)
 	}
 
 	if accessor, ok := a.(CWindowDelegateTAccessor); ok {

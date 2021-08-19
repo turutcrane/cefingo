@@ -210,6 +210,8 @@ func ({%s self %} {%s st.GoType() %}) Bind(a interface{}) {%s st.GoType() %} {
 	{%- code funcnum += 1 -%}
 	if h, ok := a.({%s m.IfName() %}); ok {
 		{%s baseName %}_handlers.{%= memberName(m) %}[cp] = h
+	} else {
+		delete({%s baseName %}_handlers.{%= memberName(m) %}, cp)
 	}
 	{%- endfor -%}
 	{%- endfor %}
