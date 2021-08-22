@@ -143,6 +143,11 @@ func (accessibility_handler *CAccessibilityHandlerT) Bind(a interface{}) *CAcces
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := accessibility_handler.pc_accessibility_handler
+	if oldGoObj, ok := accessibility_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CAccessibilityHandlerTAccessor); ok {
+			oldAcc.SetCAccessibilityHandlerT(nil)
+		}
+	}
 	accessibility_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnAccessibilityTreeChangeHandler); ok {
@@ -373,6 +378,11 @@ func (app *CAppT) Bind(a interface{}) *CAppT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := app.pc_app
+	if oldGoObj, ok := app_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CAppTAccessor); ok {
+			oldAcc.SetCAppT(nil)
+		}
+	}
 	app_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforeCommandLineProcessingHandler); ok {
@@ -749,6 +759,11 @@ func (audio_handler *CAudioHandlerT) Bind(a interface{}) *CAudioHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := audio_handler.pc_audio_handler
+	if oldGoObj, ok := audio_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CAudioHandlerTAccessor); ok {
+			oldAcc.SetCAudioHandlerT(nil)
+		}
+	}
 	audio_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(GetAudioParametersHandler); ok {
@@ -1457,6 +1472,11 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CR
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := run_file_dialog_callback.pc_run_file_dialog_callback
+	if oldGoObj, ok := run_file_dialog_callback_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CRunFileDialogCallbackTAccessor); ok {
+			oldAcc.SetCRunFileDialogCallbackT(nil)
+		}
+	}
 	run_file_dialog_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(OnFileDialogDismissedHandler); ok {
@@ -1619,6 +1639,11 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *C
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := navigation_entry_visitor.pc_navigation_entry_visitor
+	if oldGoObj, ok := navigation_entry_visitor_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CNavigationEntryVisitorTAccessor); ok {
+			oldAcc.SetCNavigationEntryVisitorT(nil)
+		}
+	}
 	navigation_entry_visitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CNavigationEntryVisitorTVisitHandler); ok {
@@ -1777,6 +1802,11 @@ func (pdf_print_callback *CPdfPrintCallbackT) Bind(a interface{}) *CPdfPrintCall
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := pdf_print_callback.pc_pdf_print_callback
+	if oldGoObj, ok := pdf_print_callback_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CPdfPrintCallbackTAccessor); ok {
+			oldAcc.SetCPdfPrintCallbackT(nil)
+		}
+	}
 	pdf_print_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(OnPdfPrintFinishedHandler); ok {
@@ -3265,6 +3295,11 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := browser_process_handler.pc_browser_process_handler
+	if oldGoObj, ok := browser_process_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CBrowserProcessHandlerTAccessor); ok {
+			oldAcc.SetCBrowserProcessHandlerT(nil)
+		}
+	}
 	browser_process_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnContextInitializedHandler); ok {
@@ -3743,6 +3778,11 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := browser_view_delegate.pc_browser_view_delegate
+	if oldGoObj, ok := browser_view_delegate_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CBrowserViewDelegateTAccessor); ok {
+			oldAcc.SetCBrowserViewDelegateT(nil)
+		}
+	}
 	browser_view_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(CBrowserViewDelegateTOnBrowserCreatedHandler); ok {
@@ -4188,6 +4228,11 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := button_delegate.pc_button_delegate
+	if oldGoObj, ok := button_delegate_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CButtonDelegateTAccessor); ok {
+			oldAcc.SetCButtonDelegateT(nil)
+		}
+	}
 	button_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(OnButtonPressedHandler); ok {
@@ -4789,6 +4834,11 @@ func (client *CClientT) Bind(a interface{}) *CClientT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := client.pc_client
+	if oldGoObj, ok := client_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CClientTAccessor); ok {
+			oldAcc.SetCClientT(nil)
+		}
+	}
 	client_handlers.handler[cp] = a
 
 	if h, ok := a.(GetAudioHandlerHandler); ok {
@@ -5567,6 +5617,11 @@ func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextM
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := context_menu_handler.pc_context_menu_handler
+	if oldGoObj, ok := context_menu_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CContextMenuHandlerTAccessor); ok {
+			oldAcc.SetCContextMenuHandlerT(nil)
+		}
+	}
 	context_menu_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforeContextMenuHandler); ok {
@@ -6325,6 +6380,11 @@ func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := cookie_visitor.pc_cookie_visitor
+	if oldGoObj, ok := cookie_visitor_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CCookieVisitorTAccessor); ok {
+			oldAcc.SetCCookieVisitorT(nil)
+		}
+	}
 	cookie_visitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CCookieVisitorTVisitHandler); ok {
@@ -6481,6 +6541,11 @@ func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieC
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := set_cookie_callback.pc_set_cookie_callback
+	if oldGoObj, ok := set_cookie_callback_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CSetCookieCallbackTAccessor); ok {
+			oldAcc.SetCSetCookieCallbackT(nil)
+		}
+	}
 	set_cookie_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(CSetCookieCallbackTOnCompleteHandler); ok {
@@ -6637,6 +6702,11 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDe
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := delete_cookies_callback.pc_delete_cookies_callback
+	if oldGoObj, ok := delete_cookies_callback_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CDeleteCookiesCallbackTAccessor); ok {
+			oldAcc.SetCDeleteCookiesCallbackT(nil)
+		}
+	}
 	delete_cookies_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(CDeleteCookiesCallbackTOnCompleteHandler); ok {
@@ -7003,6 +7073,11 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{})
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := dev_tools_message_observer.pc_dev_tools_message_observer
+	if oldGoObj, ok := dev_tools_message_observer_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CDevToolsMessageObserverTAccessor); ok {
+			oldAcc.SetCDevToolsMessageObserverT(nil)
+		}
+	}
 	dev_tools_message_observer_handlers.handler[cp] = a
 
 	if h, ok := a.(OnDevToolsMessageHandler); ok {
@@ -7302,6 +7377,11 @@ func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := dialog_handler.pc_dialog_handler
+	if oldGoObj, ok := dialog_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CDialogHandlerTAccessor); ok {
+			oldAcc.SetCDialogHandlerT(nil)
+		}
+	}
 	dialog_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnFileDialogHandler); ok {
@@ -7845,6 +7925,11 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := display_handler.pc_display_handler
+	if oldGoObj, ok := display_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CDisplayHandlerTAccessor); ok {
+			oldAcc.SetCDisplayHandlerT(nil)
+		}
+	}
 	display_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnAddressChangeHandler); ok {
@@ -8069,6 +8154,11 @@ func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := domvisitor.pc_domvisitor
+	if oldGoObj, ok := domvisitor_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CDomvisitorTAccessor); ok {
+			oldAcc.SetCDomvisitorT(nil)
+		}
+	}
 	domvisitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CDomvisitorTVisitHandler); ok {
@@ -9111,6 +9201,11 @@ func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandler
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := download_handler.pc_download_handler
+	if oldGoObj, ok := download_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CDownloadHandlerTAccessor); ok {
+			oldAcc.SetCDownloadHandlerT(nil)
+		}
+	}
 	download_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforeDownloadHandler); ok {
@@ -10011,6 +10106,11 @@ func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := drag_handler.pc_drag_handler
+	if oldGoObj, ok := drag_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CDragHandlerTAccessor); ok {
+			oldAcc.SetCDragHandlerT(nil)
+		}
+	}
 	drag_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnDragEnterHandler); ok {
@@ -10619,6 +10719,11 @@ func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHand
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := extension_handler.pc_extension_handler
+	if oldGoObj, ok := extension_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CExtensionHandlerTAccessor); ok {
+			oldAcc.SetCExtensionHandlerT(nil)
+		}
+	}
 	extension_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnExtensionLoadFailedHandler); ok {
@@ -11070,6 +11175,11 @@ func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := find_handler.pc_find_handler
+	if oldGoObj, ok := find_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CFindHandlerTAccessor); ok {
+			oldAcc.SetCFindHandlerT(nil)
+		}
+	}
 	find_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnFindResultHandler); ok {
@@ -11260,6 +11370,11 @@ func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := focus_handler.pc_focus_handler
+	if oldGoObj, ok := focus_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CFocusHandlerTAccessor); ok {
+			oldAcc.SetCFocusHandlerT(nil)
+		}
+	}
 	focus_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnTakeFocusHandler); ok {
@@ -12611,6 +12726,11 @@ func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandler
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := jsdialog_handler.pc_jsdialog_handler
+	if oldGoObj, ok := jsdialog_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CJsdialogHandlerTAccessor); ok {
+			oldAcc.SetCJsdialogHandlerT(nil)
+		}
+	}
 	jsdialog_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnJsdialogHandler); ok {
@@ -12813,6 +12933,11 @@ func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandler
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := keyboard_handler.pc_keyboard_handler
+	if oldGoObj, ok := keyboard_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CKeyboardHandlerTAccessor); ok {
+			oldAcc.SetCKeyboardHandlerT(nil)
+		}
+	}
 	keyboard_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnPreKeyEventHandler); ok {
@@ -13507,6 +13632,11 @@ func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandle
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := life_span_handler.pc_life_span_handler
+	if oldGoObj, ok := life_span_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CLifeSpanHandlerTAccessor); ok {
+			oldAcc.SetCLifeSpanHandlerT(nil)
+		}
+	}
 	life_span_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforePopupHandler); ok {
@@ -13760,6 +13890,11 @@ func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := load_handler.pc_load_handler
+	if oldGoObj, ok := load_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CLoadHandlerTAccessor); ok {
+			oldAcc.SetCLoadHandlerT(nil)
+		}
+	}
 	load_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnLoadingStateChangeHandler); ok {
@@ -14166,6 +14301,11 @@ func (media_observer *CMediaObserverT) Bind(a interface{}) *CMediaObserverT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := media_observer.pc_media_observer
+	if oldGoObj, ok := media_observer_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CMediaObserverTAccessor); ok {
+			oldAcc.SetCMediaObserverT(nil)
+		}
+	}
 	media_observer_handlers.handler[cp] = a
 
 	if h, ok := a.(OnSinksHandler); ok {
@@ -15214,6 +15354,11 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := menu_button_delegate.pc_menu_button_delegate
+	if oldGoObj, ok := menu_button_delegate_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CMenuButtonDelegateTAccessor); ok {
+			oldAcc.SetCMenuButtonDelegateT(nil)
+		}
+	}
 	menu_button_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(OnMenuButtonPressedHandler); ok {
@@ -16494,6 +16639,11 @@ func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelD
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := menu_model_delegate.pc_menu_model_delegate
+	if oldGoObj, ok := menu_model_delegate_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CMenuModelDelegateTAccessor); ok {
+			oldAcc.SetCMenuModelDelegateT(nil)
+		}
+	}
 	menu_model_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(ExecuteCommandHandler); ok {
@@ -17267,6 +17417,11 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := panel_delegate.pc_panel_delegate
+	if oldGoObj, ok := panel_delegate_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CPanelDelegateTAccessor); ok {
+			oldAcc.SetCPanelDelegateT(nil)
+		}
+	}
 	panel_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
@@ -17740,6 +17895,11 @@ func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := print_handler.pc_print_handler
+	if oldGoObj, ok := print_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CPrintHandlerTAccessor); ok {
+			oldAcc.SetCPrintHandlerT(nil)
+		}
+	}
 	print_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnPrintStartHandler); ok {
@@ -18737,6 +18897,11 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := render_handler.pc_render_handler
+	if oldGoObj, ok := render_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CRenderHandlerTAccessor); ok {
+			oldAcc.SetCRenderHandlerT(nil)
+		}
+	}
 	render_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(GetAccessibilityHandlerHandler); ok {
@@ -19130,6 +19295,11 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := render_process_handler.pc_render_process_handler
+	if oldGoObj, ok := render_process_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CRenderProcessHandlerTAccessor); ok {
+			oldAcc.SetCRenderProcessHandlerT(nil)
+		}
+	}
 	render_process_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnWebKitInitializedHandler); ok {
@@ -20980,6 +21150,11 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := request_context_handler.pc_request_context_handler
+	if oldGoObj, ok := request_context_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CRequestContextHandlerTAccessor); ok {
+			oldAcc.SetCRequestContextHandlerT(nil)
+		}
+	}
 	request_context_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnRequestContextInitializedHandler); ok {
@@ -21473,6 +21648,11 @@ func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := request_handler.pc_request_handler
+	if oldGoObj, ok := request_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CRequestHandlerTAccessor); ok {
+			oldAcc.SetCRequestHandlerT(nil)
+		}
+	}
 	request_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OnBeforeBrowseHandler); ok {
@@ -21741,6 +21921,11 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CRe
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := resource_bundle_handler.pc_resource_bundle_handler
+	if oldGoObj, ok := resource_bundle_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CResourceBundleHandlerTAccessor); ok {
+			oldAcc.SetCResourceBundleHandlerT(nil)
+		}
+	}
 	resource_bundle_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(GetLocalizedStringHandler); ok {
@@ -22212,6 +22397,11 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := resource_handler.pc_resource_handler
+	if oldGoObj, ok := resource_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CResourceHandlerTAccessor); ok {
+			oldAcc.SetCResourceHandlerT(nil)
+		}
+	}
 	resource_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(OpenHandler); ok {
@@ -22585,6 +22775,11 @@ func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *C
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := resource_request_handler.pc_resource_request_handler
+	if oldGoObj, ok := resource_request_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CResourceRequestHandlerTAccessor); ok {
+			oldAcc.SetCResourceRequestHandlerT(nil)
+		}
+	}
 	resource_request_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(GetCookieAccessFilterHandler); ok {
@@ -22819,6 +23014,11 @@ func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAc
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := cookie_access_filter.pc_cookie_access_filter
+	if oldGoObj, ok := cookie_access_filter_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CCookieAccessFilterTAccessor); ok {
+			oldAcc.SetCCookieAccessFilterT(nil)
+		}
+	}
 	cookie_access_filter_handlers.handler[cp] = a
 
 	if h, ok := a.(CanSendCookieHandler); ok {
@@ -23336,6 +23536,11 @@ func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := response_filter.pc_response_filter
+	if oldGoObj, ok := response_filter_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CResponseFilterTAccessor); ok {
+			oldAcc.SetCResponseFilterT(nil)
+		}
+	}
 	response_filter_handlers.handler[cp] = a
 
 	if h, ok := a.(InitFilterHandler); ok {
@@ -23573,6 +23778,11 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := scheme_handler_factory.pc_scheme_handler_factory
+	if oldGoObj, ok := scheme_handler_factory_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CSchemeHandlerFactoryTAccessor); ok {
+			oldAcc.SetCSchemeHandlerFactoryT(nil)
+		}
+	}
 	scheme_handler_factory_handlers.handler[cp] = a
 
 	if h, ok := a.(CreateHandler); ok {
@@ -24254,6 +24464,11 @@ func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := read_handler.pc_read_handler
+	if oldGoObj, ok := read_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CReadHandlerTAccessor); ok {
+			oldAcc.SetCReadHandlerT(nil)
+		}
+	}
 	read_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(CReadHandlerTReadHandler); ok {
@@ -24677,6 +24892,11 @@ func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := write_handler.pc_write_handler
+	if oldGoObj, ok := write_handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CWriteHandlerTAccessor); ok {
+			oldAcc.SetCWriteHandlerT(nil)
+		}
+	}
 	write_handler_handlers.handler[cp] = a
 
 	if h, ok := a.(WriteHandler); ok {
@@ -25030,6 +25250,11 @@ func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := string_visitor.pc_string_visitor
+	if oldGoObj, ok := string_visitor_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CStringVisitorTAccessor); ok {
+			oldAcc.SetCStringVisitorT(nil)
+		}
+	}
 	string_visitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CStringVisitorTVisitHandler); ok {
@@ -25190,6 +25415,11 @@ func (task *CTaskT) Bind(a interface{}) *CTaskT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := task.pc_task
+	if oldGoObj, ok := task_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CTaskTAccessor); ok {
+			oldAcc.SetCTaskT(nil)
+		}
+	}
 	task_handlers.handler[cp] = a
 
 	if h, ok := a.(CTaskTExecuteHandler); ok {
@@ -26120,6 +26350,11 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := textfield_delegate.pc_textfield_delegate
+	if oldGoObj, ok := textfield_delegate_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CTextfieldDelegateTAccessor); ok {
+			oldAcc.SetCTextfieldDelegateT(nil)
+		}
+	}
 	textfield_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(CTextfieldDelegateTOnKeyEventHandler); ok {
@@ -26350,6 +26585,11 @@ func (end_tracing_callback *CEndTracingCallbackT) Bind(a interface{}) *CEndTraci
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := end_tracing_callback.pc_end_tracing_callback
+	if oldGoObj, ok := end_tracing_callback_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CEndTracingCallbackTAccessor); ok {
+			oldAcc.SetCEndTracingCallbackT(nil)
+		}
+	}
 	end_tracing_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(OnEndTracingCompleteHandler); ok {
@@ -26860,6 +27100,11 @@ func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestCli
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := urlrequest_client.pc_urlrequest_client
+	if oldGoObj, ok := urlrequest_client_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CUrlrequestClientTAccessor); ok {
+			oldAcc.SetCUrlrequestClientT(nil)
+		}
+	}
 	urlrequest_client_handlers.handler[cp] = a
 
 	if h, ok := a.(OnRequestCompleteHandler); ok {
@@ -27295,6 +27540,11 @@ func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := v8handler.pc_v8handler
+	if oldGoObj, ok := v8handler_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CV8handlerTAccessor); ok {
+			oldAcc.SetCV8handlerT(nil)
+		}
+	}
 	v8handler_handlers.handler[cp] = a
 
 	if h, ok := a.(CV8handlerTExecuteHandler); ok {
@@ -27476,6 +27726,11 @@ func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := v8accessor.pc_v8accessor
+	if oldGoObj, ok := v8accessor_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CV8accessorTAccessor); ok {
+			oldAcc.SetCV8accessorT(nil)
+		}
+	}
 	v8accessor_handlers.handler[cp] = a
 
 	if h, ok := a.(GetHandler); ok {
@@ -28022,6 +28277,11 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a in
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := v8array_buffer_release_callback.pc_v8array_buffer_release_callback
+	if oldGoObj, ok := v8array_buffer_release_callback_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CV8arrayBufferReleaseCallbackTAccessor); ok {
+			oldAcc.SetCV8arrayBufferReleaseCallbackT(nil)
+		}
+	}
 	v8array_buffer_release_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(ReleaseBufferHandler); ok {
@@ -32011,6 +32271,11 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := view_delegate.pc_view_delegate
+	if oldGoObj, ok := view_delegate_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CViewDelegateTAccessor); ok {
+			oldAcc.SetCViewDelegateT(nil)
+		}
+	}
 	view_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
@@ -32364,6 +32629,11 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWeb
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
+	if oldGoObj, ok := web_plugin_info_visitor_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CWebPluginInfoVisitorTAccessor); ok {
+			oldAcc.SetCWebPluginInfoVisitorT(nil)
+		}
+	}
 	web_plugin_info_visitor_handlers.handler[cp] = a
 
 	if h, ok := a.(CWebPluginInfoVisitorTVisitHandler); ok {
@@ -32522,6 +32792,11 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interfac
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
+	if oldGoObj, ok := web_plugin_unstable_callback_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CWebPluginUnstableCallbackTAccessor); ok {
+			oldAcc.SetCWebPluginUnstableCallbackT(nil)
+		}
+	}
 	web_plugin_unstable_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(IsUnstableHandler); ok {
@@ -32682,6 +32957,11 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegist
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := register_cdm_callback.pc_register_cdm_callback
+	if oldGoObj, ok := register_cdm_callback_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CRegisterCdmCallbackTAccessor); ok {
+			oldAcc.SetCRegisterCdmCallbackT(nil)
+		}
+	}
 	register_cdm_callback_handlers.handler[cp] = a
 
 	if h, ok := a.(OnCdmRegistrationCompleteHandler); ok {
@@ -33690,6 +33970,11 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 	defer cefingoIfaceAccess.Unlock()
 
 	cp := window_delegate.pc_window_delegate
+	if oldGoObj, ok := window_delegate_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.(CWindowDelegateTAccessor); ok {
+			oldAcc.SetCWindowDelegateT(nil)
+		}
+	}
 	window_delegate_handlers.handler[cp] = a
 
 	if h, ok := a.(OnWindowCreatedHandler); ok {

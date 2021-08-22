@@ -204,6 +204,11 @@ func ({%s self %} {%s st.GoType() %}) Bind(a interface{}) {%s st.GoType() %} {
 	{%- for _, m := range c.Methods %}
 	{%- if funcnum == 0 -%}
 	cp := {%s self %}.pc_{%s baseName %}
+	if oldGoObj, ok := {%s baseName %}_handlers.handler[cp]; ok {
+		if oldAcc, ok := oldGoObj.({%s st.GoName() %}Accessor); ok {
+			oldAcc.Set{%s st.GoName() %}(nil)
+		}
+	}
 	{%s baseName %}_handlers.handler[cp] = a
 
 	{%- endif -%}
