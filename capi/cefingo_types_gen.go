@@ -27,7 +27,7 @@ func StringListAlloc() (ret CStringListT) {
 
 	cRet := C.cef_string_list_alloc()
 
-	ret = (CStringListT)(cRet)
+	ret = (CStringListT)(cRet) // return GoObj
 	return ret
 }
 
@@ -40,7 +40,7 @@ func StringListSize(
 
 	cRet := C.cef_string_list_size((C.cef_string_list_t)(list))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -106,7 +106,7 @@ func StringListCopy(
 
 	cRet := C.cef_string_list_copy((C.cef_string_list_t)(list))
 
-	ret = (CStringListT)(cRet)
+	ret = (CStringListT)(cRet) // return GoObj
 	return ret
 }
 
@@ -124,7 +124,7 @@ func StringMapAlloc() (ret CStringMapT) {
 
 	cRet := C.cef_string_map_alloc()
 
-	ret = (CStringMapT)(cRet)
+	ret = (CStringMapT)(cRet) // return GoObj
 	return ret
 }
 
@@ -137,7 +137,7 @@ func StringMapSize(
 
 	cRet := C.cef_string_map_size((C.cef_string_map_t)(cmap))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -247,7 +247,7 @@ func StringMultimapAlloc() (ret CStringMultimapT) {
 
 	cRet := C.cef_string_multimap_alloc()
 
-	ret = (CStringMultimapT)(cRet)
+	ret = (CStringMultimapT)(cRet) // return GoObj
 	return ret
 }
 
@@ -260,7 +260,7 @@ func StringMultimapSize(
 
 	cRet := C.cef_string_multimap_size((C.cef_string_multimap_t)(cmap))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -275,7 +275,7 @@ func StringMultimapFindCount(
 
 	cRet := C.cef_string_multimap_find_count((C.cef_string_multimap_t)(cmap), c_key.p_cef_string_t)
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 

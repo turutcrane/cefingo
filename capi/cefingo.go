@@ -66,6 +66,16 @@ type noCopy struct{}
 func (*noCopy) Lock()   {}
 func (*noCopy) UNlock() {}
 
+type unrefedBy int
+
+const (
+	byApp unrefedBy = iota + 1 // alloc returned takeOvered
+	byApi                      // inParam
+	byCef                      // passed
+	self
+	unrefed
+)
+
 type cef_string_t struct {
 	noCopy         noCopy
 	p_cef_string_t *C.cef_string_t

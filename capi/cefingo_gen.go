@@ -24,6 +24,8 @@ type cCAccessibilityHandlerT C.cef_accessibility_handler_t
 type CAccessibilityHandlerT struct {
 	noCopy                   noCopy
 	pc_accessibility_handler *cCAccessibilityHandlerT
+	needsUnref               bool
+	beUnrefed                unrefedBy
 }
 
 type RefToCAccessibilityHandlerT struct {
@@ -32,36 +34,82 @@ type RefToCAccessibilityHandlerT struct {
 
 type CAccessibilityHandlerTAccessor interface {
 	GetCAccessibilityHandlerT() *CAccessibilityHandlerT
-	SetCAccessibilityHandlerT(*CAccessibilityHandlerT) (oldValue *CAccessibilityHandlerT)
+	setCAccessibilityHandlerT(*CAccessibilityHandlerT)
+	// TakeOverCAccessibilityHandlerT(*CAccessibilityHandlerT)
+	// NewRefCAccessibilityHandlerT(*CAccessibilityHandlerT)
 }
 
 func (r RefToCAccessibilityHandlerT) GetCAccessibilityHandlerT() *CAccessibilityHandlerT {
 	return r.p_accessibility_handler
 }
 
-func (r *RefToCAccessibilityHandlerT) SetCAccessibilityHandlerT(p *CAccessibilityHandlerT) (prevValue *CAccessibilityHandlerT) {
-	prevValue = r.p_accessibility_handler
+func (r *RefToCAccessibilityHandlerT) setCAccessibilityHandlerT(p *CAccessibilityHandlerT) {
+	// prevValue = r.p_accessibility_handler
+	r.p_accessibility_handler.ForceUnref()
 	r.p_accessibility_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCAccessibilityHandlerT) TakeOverCAccessibilityHandlerT(src *CAccessibilityHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_accessibility_handler.ForceUnref()
+	gop := src.pc_accessibility_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_accessibility_handler = newCAccessibilityHandlerT((*C.cef_accessibility_handler_t)(gop), byApp, true)
+}
+
+func PassCAccessibilityHandlerT(p *CAccessibilityHandlerT) (ret *CAccessibilityHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_accessibility_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCAccessibilityHandlerT((*C.cef_accessibility_handler_t)(p.pc_accessibility_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCAccessibilityHandlerT) NewRefCAccessibilityHandlerT(p *CAccessibilityHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_accessibility_handler.ForceUnref()
+	gop := p.pc_accessibility_handler
+	BaseAddRef(gop)
+	r.p_accessibility_handler = newCAccessibilityHandlerT((*C.cef_accessibility_handler_t)(gop), byApp, true)
 }
 
 // Go type CAccessibilityHandlerT wraps cef type *C.cef_accessibility_handler_t
-func newCAccessibilityHandlerT(p *C.cef_accessibility_handler_t, countUp bool) *CAccessibilityHandlerT {
+func newCAccessibilityHandlerT(p *C.cef_accessibility_handler_t, unrefedBy unrefedBy, needsUnref bool) *CAccessibilityHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T101.1:")
 	pc := (*cCAccessibilityHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_accessibility_handler := &CAccessibilityHandlerT{noCopy{}, pc}
+	go_accessibility_handler := &CAccessibilityHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_accessibility_handler, func(g *CAccessibilityHandlerT) {
-		if g.pc_accessibility_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_accessibility_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_accessibility_handler), "T101.2:")
 			BaseRelease(g.pc_accessibility_handler)
 		}
 	})
+
 	return go_accessibility_handler
 }
 
@@ -75,13 +123,15 @@ func (p *cCAccessibilityHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 }
 
 func (accessibility_handler *CAccessibilityHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(accessibility_handler.pc_accessibility_handler)
+	if accessibility_handler == nil {
+		return
+	}
+	if accessibility_handler.needsUnref && accessibility_handler.beUnrefed == byApp {
+		ret = BaseRelease(accessibility_handler.pc_accessibility_handler)
+		accessibility_handler.beUnrefed = unrefed
+		accessibility_handler.needsUnref = false
+	}
 	accessibility_handler.pc_accessibility_handler = nil
-	return ret
-}
-
-func (accessibility_handler *CAccessibilityHandlerT) release() (ret bool) {
-	ret = BaseRelease(accessibility_handler.pc_accessibility_handler)
 	return ret
 }
 
@@ -135,7 +185,13 @@ func AllocCAccessibilityHandlerT() *CAccessibilityHandlerT {
 		delete(accessibility_handler_handlers.on_accessibility_location_change_handler, cgop)
 	}))
 
-	return newCAccessibilityHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCAccessibilityHandlerT(cefp, byApp, true)
+}
+
+// BindCAccessibilityHandlerT allocates CAccessibilityHandlerT, construct and bind it
+func BindCAccessibilityHandlerT(a interface{}) *CAccessibilityHandlerT {
+	return AllocCAccessibilityHandlerT().Bind(a)
 }
 
 func (accessibility_handler *CAccessibilityHandlerT) Bind(a interface{}) *CAccessibilityHandlerT {
@@ -145,7 +201,7 @@ func (accessibility_handler *CAccessibilityHandlerT) Bind(a interface{}) *CAcces
 	cp := accessibility_handler.pc_accessibility_handler
 	if oldGoObj, ok := accessibility_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CAccessibilityHandlerTAccessor); ok {
-			oldAcc.SetCAccessibilityHandlerT(nil)
+			oldAcc.setCAccessibilityHandlerT(nil)
 		}
 	}
 	accessibility_handler_handlers.handler[cp] = a
@@ -163,7 +219,7 @@ func (accessibility_handler *CAccessibilityHandlerT) Bind(a interface{}) *CAcces
 	}
 
 	if accessor, ok := a.(CAccessibilityHandlerTAccessor); ok {
-		accessor.SetCAccessibilityHandlerT(accessibility_handler)
+		accessor.setCAccessibilityHandlerT(accessibility_handler)
 		Logf("T101.5:")
 	}
 
@@ -171,20 +227,25 @@ func (accessibility_handler *CAccessibilityHandlerT) Bind(a interface{}) *CAcces
 }
 
 func (accessibility_handler *CAccessibilityHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CAccessibilityHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := accessibility_handler.pc_accessibility_handler
-	if goHandler, ok := accessibility_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CAccessibilityHandlerTAccessor); ok1 {
-			accessor.SetCAccessibilityHandlerT(nil)
+		cp := accessibility_handler.pc_accessibility_handler
+		if goHandler, ok := accessibility_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CAccessibilityHandlerTAccessor)
 		}
+		delete(accessibility_handler_handlers.handler, cp)
+
+		delete(accessibility_handler_handlers.on_accessibility_tree_change_handler, cp)
+		delete(accessibility_handler_handlers.on_accessibility_location_change_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCAccessibilityHandlerT(nil)
 	}
-	delete(accessibility_handler_handlers.handler, cp)
-
-	delete(accessibility_handler_handlers.on_accessibility_tree_change_handler, cp)
-	delete(accessibility_handler_handlers.on_accessibility_location_change_handler, cp)
-
 }
 
 func (accessibility_handler *CAccessibilityHandlerT) Handler() interface{} {
@@ -206,8 +267,10 @@ type cCAppT C.cef_app_t
 
 // Go type for cef_app_t
 type CAppT struct {
-	noCopy noCopy
-	pc_app *cCAppT
+	noCopy     noCopy
+	pc_app     *cCAppT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCAppT struct {
@@ -216,36 +279,82 @@ type RefToCAppT struct {
 
 type CAppTAccessor interface {
 	GetCAppT() *CAppT
-	SetCAppT(*CAppT) (oldValue *CAppT)
+	setCAppT(*CAppT)
+	// TakeOverCAppT(*CAppT)
+	// NewRefCAppT(*CAppT)
 }
 
 func (r RefToCAppT) GetCAppT() *CAppT {
 	return r.p_app
 }
 
-func (r *RefToCAppT) SetCAppT(p *CAppT) (prevValue *CAppT) {
-	prevValue = r.p_app
+func (r *RefToCAppT) setCAppT(p *CAppT) {
+	// prevValue = r.p_app
+	r.p_app.ForceUnref()
 	r.p_app = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCAppT) TakeOverCAppT(src *CAppT) {
+	if r == nil {
+		return
+	}
+	r.p_app.ForceUnref()
+	gop := src.pc_app
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_app = newCAppT((*C.cef_app_t)(gop), byApp, true)
+}
+
+func PassCAppT(p *CAppT) (ret *CAppT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_app)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCAppT((*C.cef_app_t)(p.pc_app), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCAppT) NewRefCAppT(p *CAppT) {
+	if r == nil {
+		return
+	}
+	r.p_app.ForceUnref()
+	gop := p.pc_app
+	BaseAddRef(gop)
+	r.p_app = newCAppT((*C.cef_app_t)(gop), byApp, true)
 }
 
 // Go type CAppT wraps cef type *C.cef_app_t
-func newCAppT(p *C.cef_app_t, countUp bool) *CAppT {
+func newCAppT(p *C.cef_app_t, unrefedBy unrefedBy, needsUnref bool) *CAppT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T102.1:")
 	pc := (*cCAppT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_app := &CAppT{noCopy{}, pc}
+	go_app := &CAppT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_app, func(g *CAppT) {
-		if g.pc_app != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_app != nil {
 			Tracef(unsafe.Pointer(g.pc_app), "T102.2:")
 			BaseRelease(g.pc_app)
 		}
 	})
+
 	return go_app
 }
 
@@ -259,13 +368,15 @@ func (p *cCAppT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (app *CAppT) ForceUnref() (ret bool) {
-	ret = BaseRelease(app.pc_app)
+	if app == nil {
+		return
+	}
+	if app.needsUnref && app.beUnrefed == byApp {
+		ret = BaseRelease(app.pc_app)
+		app.beUnrefed = unrefed
+		app.needsUnref = false
+	}
 	app.pc_app = nil
-	return ret
-}
-
-func (app *CAppT) release() (ret bool) {
-	ret = BaseRelease(app.pc_app)
 	return ret
 }
 
@@ -370,7 +481,13 @@ func AllocCAppT() *CAppT {
 		delete(app_handlers.get_render_process_handler_handler, cgop)
 	}))
 
-	return newCAppT(cefp, true)
+	BaseAddRef(cgop)
+	return newCAppT(cefp, byApp, true)
+}
+
+// BindCAppT allocates CAppT, construct and bind it
+func BindCAppT(a interface{}) *CAppT {
+	return AllocCAppT().Bind(a)
 }
 
 func (app *CAppT) Bind(a interface{}) *CAppT {
@@ -380,7 +497,7 @@ func (app *CAppT) Bind(a interface{}) *CAppT {
 	cp := app.pc_app
 	if oldGoObj, ok := app_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CAppTAccessor); ok {
-			oldAcc.SetCAppT(nil)
+			oldAcc.setCAppT(nil)
 		}
 	}
 	app_handlers.handler[cp] = a
@@ -416,7 +533,7 @@ func (app *CAppT) Bind(a interface{}) *CAppT {
 	}
 
 	if accessor, ok := a.(CAppTAccessor); ok {
-		accessor.SetCAppT(app)
+		accessor.setCAppT(app)
 		Logf("T102.5:")
 	}
 
@@ -424,23 +541,28 @@ func (app *CAppT) Bind(a interface{}) *CAppT {
 }
 
 func (app *CAppT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CAppTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := app.pc_app
-	if goHandler, ok := app_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CAppTAccessor); ok1 {
-			accessor.SetCAppT(nil)
+		cp := app.pc_app
+		if goHandler, ok := app_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CAppTAccessor)
 		}
+		delete(app_handlers.handler, cp)
+
+		delete(app_handlers.on_before_command_line_processing_handler, cp)
+		delete(app_handlers.on_register_custom_schemes_handler, cp)
+		delete(app_handlers.get_resource_bundle_handler_handler, cp)
+		delete(app_handlers.get_browser_process_handler_handler, cp)
+		delete(app_handlers.get_render_process_handler_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCAppT(nil)
 	}
-	delete(app_handlers.handler, cp)
-
-	delete(app_handlers.on_before_command_line_processing_handler, cp)
-	delete(app_handlers.on_register_custom_schemes_handler, cp)
-	delete(app_handlers.get_resource_bundle_handler_handler, cp)
-	delete(app_handlers.get_browser_process_handler_handler, cp)
-	delete(app_handlers.get_render_process_handler_handler, cp)
-
 }
 
 func (app *CAppT) Handler() interface{} {
@@ -476,7 +598,7 @@ func ExecuteProcess(
 
 	cRet := C.cef_execute_process((*C.cef_main_args_t)(args), goTmpapplication, windows_sandbox_info)
 
-	ret = (int)(cRet)
+	ret = (int)(cRet) // return GoObj
 	return ret
 }
 
@@ -600,6 +722,8 @@ type cCAudioHandlerT C.cef_audio_handler_t
 type CAudioHandlerT struct {
 	noCopy           noCopy
 	pc_audio_handler *cCAudioHandlerT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCAudioHandlerT struct {
@@ -608,36 +732,82 @@ type RefToCAudioHandlerT struct {
 
 type CAudioHandlerTAccessor interface {
 	GetCAudioHandlerT() *CAudioHandlerT
-	SetCAudioHandlerT(*CAudioHandlerT) (oldValue *CAudioHandlerT)
+	setCAudioHandlerT(*CAudioHandlerT)
+	// TakeOverCAudioHandlerT(*CAudioHandlerT)
+	// NewRefCAudioHandlerT(*CAudioHandlerT)
 }
 
 func (r RefToCAudioHandlerT) GetCAudioHandlerT() *CAudioHandlerT {
 	return r.p_audio_handler
 }
 
-func (r *RefToCAudioHandlerT) SetCAudioHandlerT(p *CAudioHandlerT) (prevValue *CAudioHandlerT) {
-	prevValue = r.p_audio_handler
+func (r *RefToCAudioHandlerT) setCAudioHandlerT(p *CAudioHandlerT) {
+	// prevValue = r.p_audio_handler
+	r.p_audio_handler.ForceUnref()
 	r.p_audio_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCAudioHandlerT) TakeOverCAudioHandlerT(src *CAudioHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_audio_handler.ForceUnref()
+	gop := src.pc_audio_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_audio_handler = newCAudioHandlerT((*C.cef_audio_handler_t)(gop), byApp, true)
+}
+
+func PassCAudioHandlerT(p *CAudioHandlerT) (ret *CAudioHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_audio_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCAudioHandlerT((*C.cef_audio_handler_t)(p.pc_audio_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCAudioHandlerT) NewRefCAudioHandlerT(p *CAudioHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_audio_handler.ForceUnref()
+	gop := p.pc_audio_handler
+	BaseAddRef(gop)
+	r.p_audio_handler = newCAudioHandlerT((*C.cef_audio_handler_t)(gop), byApp, true)
 }
 
 // Go type CAudioHandlerT wraps cef type *C.cef_audio_handler_t
-func newCAudioHandlerT(p *C.cef_audio_handler_t, countUp bool) *CAudioHandlerT {
+func newCAudioHandlerT(p *C.cef_audio_handler_t, unrefedBy unrefedBy, needsUnref bool) *CAudioHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T103.1:")
 	pc := (*cCAudioHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_audio_handler := &CAudioHandlerT{noCopy{}, pc}
+	go_audio_handler := &CAudioHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_audio_handler, func(g *CAudioHandlerT) {
-		if g.pc_audio_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_audio_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_audio_handler), "T103.2:")
 			BaseRelease(g.pc_audio_handler)
 		}
 	})
+
 	return go_audio_handler
 }
 
@@ -651,13 +821,15 @@ func (p *cCAudioHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (audio_handler *CAudioHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(audio_handler.pc_audio_handler)
+	if audio_handler == nil {
+		return
+	}
+	if audio_handler.needsUnref && audio_handler.beUnrefed == byApp {
+		ret = BaseRelease(audio_handler.pc_audio_handler)
+		audio_handler.beUnrefed = unrefed
+		audio_handler.needsUnref = false
+	}
 	audio_handler.pc_audio_handler = nil
-	return ret
-}
-
-func (audio_handler *CAudioHandlerT) release() (ret bool) {
-	ret = BaseRelease(audio_handler.pc_audio_handler)
 	return ret
 }
 
@@ -751,7 +923,13 @@ func AllocCAudioHandlerT() *CAudioHandlerT {
 		delete(audio_handler_handlers.on_audio_stream_error_handler, cgop)
 	}))
 
-	return newCAudioHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCAudioHandlerT(cefp, byApp, true)
+}
+
+// BindCAudioHandlerT allocates CAudioHandlerT, construct and bind it
+func BindCAudioHandlerT(a interface{}) *CAudioHandlerT {
+	return AllocCAudioHandlerT().Bind(a)
 }
 
 func (audio_handler *CAudioHandlerT) Bind(a interface{}) *CAudioHandlerT {
@@ -761,7 +939,7 @@ func (audio_handler *CAudioHandlerT) Bind(a interface{}) *CAudioHandlerT {
 	cp := audio_handler.pc_audio_handler
 	if oldGoObj, ok := audio_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CAudioHandlerTAccessor); ok {
-			oldAcc.SetCAudioHandlerT(nil)
+			oldAcc.setCAudioHandlerT(nil)
 		}
 	}
 	audio_handler_handlers.handler[cp] = a
@@ -791,7 +969,7 @@ func (audio_handler *CAudioHandlerT) Bind(a interface{}) *CAudioHandlerT {
 	}
 
 	if accessor, ok := a.(CAudioHandlerTAccessor); ok {
-		accessor.SetCAudioHandlerT(audio_handler)
+		accessor.setCAudioHandlerT(audio_handler)
 		Logf("T103.5:")
 	}
 
@@ -799,22 +977,27 @@ func (audio_handler *CAudioHandlerT) Bind(a interface{}) *CAudioHandlerT {
 }
 
 func (audio_handler *CAudioHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CAudioHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := audio_handler.pc_audio_handler
-	if goHandler, ok := audio_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CAudioHandlerTAccessor); ok1 {
-			accessor.SetCAudioHandlerT(nil)
+		cp := audio_handler.pc_audio_handler
+		if goHandler, ok := audio_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CAudioHandlerTAccessor)
 		}
+		delete(audio_handler_handlers.handler, cp)
+
+		delete(audio_handler_handlers.get_audio_parameters_handler, cp)
+		delete(audio_handler_handlers.on_audio_stream_started_handler, cp)
+		delete(audio_handler_handlers.on_audio_stream_stopped_handler, cp)
+		delete(audio_handler_handlers.on_audio_stream_error_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCAudioHandlerT(nil)
 	}
-	delete(audio_handler_handlers.handler, cp)
-
-	delete(audio_handler_handlers.get_audio_parameters_handler, cp)
-	delete(audio_handler_handlers.on_audio_stream_started_handler, cp)
-	delete(audio_handler_handlers.on_audio_stream_stopped_handler, cp)
-	delete(audio_handler_handlers.on_audio_stream_error_handler, cp)
-
 }
 
 func (audio_handler *CAudioHandlerT) Handler() interface{} {
@@ -838,6 +1021,8 @@ type cCAuthCallbackT C.cef_auth_callback_t
 type CAuthCallbackT struct {
 	noCopy           noCopy
 	pc_auth_callback *cCAuthCallbackT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCAuthCallbackT struct {
@@ -846,36 +1031,82 @@ type RefToCAuthCallbackT struct {
 
 type CAuthCallbackTAccessor interface {
 	GetCAuthCallbackT() *CAuthCallbackT
-	SetCAuthCallbackT(*CAuthCallbackT) (oldValue *CAuthCallbackT)
+	setCAuthCallbackT(*CAuthCallbackT)
+	// TakeOverCAuthCallbackT(*CAuthCallbackT)
+	// NewRefCAuthCallbackT(*CAuthCallbackT)
 }
 
 func (r RefToCAuthCallbackT) GetCAuthCallbackT() *CAuthCallbackT {
 	return r.p_auth_callback
 }
 
-func (r *RefToCAuthCallbackT) SetCAuthCallbackT(p *CAuthCallbackT) (prevValue *CAuthCallbackT) {
-	prevValue = r.p_auth_callback
+func (r *RefToCAuthCallbackT) setCAuthCallbackT(p *CAuthCallbackT) {
+	// prevValue = r.p_auth_callback
+	r.p_auth_callback.ForceUnref()
 	r.p_auth_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCAuthCallbackT) TakeOverCAuthCallbackT(src *CAuthCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_auth_callback.ForceUnref()
+	gop := src.pc_auth_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_auth_callback = newCAuthCallbackT((*C.cef_auth_callback_t)(gop), byApp, true)
+}
+
+func PassCAuthCallbackT(p *CAuthCallbackT) (ret *CAuthCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_auth_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCAuthCallbackT((*C.cef_auth_callback_t)(p.pc_auth_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCAuthCallbackT) NewRefCAuthCallbackT(p *CAuthCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_auth_callback.ForceUnref()
+	gop := p.pc_auth_callback
+	BaseAddRef(gop)
+	r.p_auth_callback = newCAuthCallbackT((*C.cef_auth_callback_t)(gop), byApp, true)
 }
 
 // Go type CAuthCallbackT wraps cef type *C.cef_auth_callback_t
-func newCAuthCallbackT(p *C.cef_auth_callback_t, countUp bool) *CAuthCallbackT {
+func newCAuthCallbackT(p *C.cef_auth_callback_t, unrefedBy unrefedBy, needsUnref bool) *CAuthCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T104.1:")
 	pc := (*cCAuthCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_auth_callback := &CAuthCallbackT{noCopy{}, pc}
+	go_auth_callback := &CAuthCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_auth_callback, func(g *CAuthCallbackT) {
-		if g.pc_auth_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_auth_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_auth_callback), "T104.2:")
 			BaseRelease(g.pc_auth_callback)
 		}
 	})
+
 	return go_auth_callback
 }
 
@@ -889,13 +1120,15 @@ func (p *cCAuthCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (auth_callback *CAuthCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(auth_callback.pc_auth_callback)
+	if auth_callback == nil {
+		return
+	}
+	if auth_callback.needsUnref && auth_callback.beUnrefed == byApp {
+		ret = BaseRelease(auth_callback.pc_auth_callback)
+		auth_callback.beUnrefed = unrefed
+		auth_callback.needsUnref = false
+	}
 	auth_callback.pc_auth_callback = nil
-	return ret
-}
-
-func (auth_callback *CAuthCallbackT) release() (ret bool) {
-	ret = BaseRelease(auth_callback.pc_auth_callback)
 	return ret
 }
 
@@ -939,6 +1172,8 @@ type cCBoxLayoutT C.cef_box_layout_t
 type CBoxLayoutT struct {
 	noCopy        noCopy
 	pc_box_layout *cCBoxLayoutT
+	needsUnref    bool
+	beUnrefed     unrefedBy
 }
 
 type RefToCBoxLayoutT struct {
@@ -947,36 +1182,82 @@ type RefToCBoxLayoutT struct {
 
 type CBoxLayoutTAccessor interface {
 	GetCBoxLayoutT() *CBoxLayoutT
-	SetCBoxLayoutT(*CBoxLayoutT) (oldValue *CBoxLayoutT)
+	setCBoxLayoutT(*CBoxLayoutT)
+	// TakeOverCBoxLayoutT(*CBoxLayoutT)
+	// NewRefCBoxLayoutT(*CBoxLayoutT)
 }
 
 func (r RefToCBoxLayoutT) GetCBoxLayoutT() *CBoxLayoutT {
 	return r.p_box_layout
 }
 
-func (r *RefToCBoxLayoutT) SetCBoxLayoutT(p *CBoxLayoutT) (prevValue *CBoxLayoutT) {
-	prevValue = r.p_box_layout
+func (r *RefToCBoxLayoutT) setCBoxLayoutT(p *CBoxLayoutT) {
+	// prevValue = r.p_box_layout
+	r.p_box_layout.ForceUnref()
 	r.p_box_layout = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCBoxLayoutT) TakeOverCBoxLayoutT(src *CBoxLayoutT) {
+	if r == nil {
+		return
+	}
+	r.p_box_layout.ForceUnref()
+	gop := src.pc_box_layout
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_box_layout = newCBoxLayoutT((*C.cef_box_layout_t)(gop), byApp, true)
+}
+
+func PassCBoxLayoutT(p *CBoxLayoutT) (ret *CBoxLayoutT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_box_layout)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCBoxLayoutT((*C.cef_box_layout_t)(p.pc_box_layout), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCBoxLayoutT) NewRefCBoxLayoutT(p *CBoxLayoutT) {
+	if r == nil {
+		return
+	}
+	r.p_box_layout.ForceUnref()
+	gop := p.pc_box_layout
+	BaseAddRef(gop)
+	r.p_box_layout = newCBoxLayoutT((*C.cef_box_layout_t)(gop), byApp, true)
 }
 
 // Go type CBoxLayoutT wraps cef type *C.cef_box_layout_t
-func newCBoxLayoutT(p *C.cef_box_layout_t, countUp bool) *CBoxLayoutT {
+func newCBoxLayoutT(p *C.cef_box_layout_t, unrefedBy unrefedBy, needsUnref bool) *CBoxLayoutT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T105.1:")
 	pc := (*cCBoxLayoutT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_box_layout := &CBoxLayoutT{noCopy{}, pc}
+	go_box_layout := &CBoxLayoutT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_box_layout, func(g *CBoxLayoutT) {
-		if g.pc_box_layout != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_box_layout != nil {
 			Tracef(unsafe.Pointer(g.pc_box_layout), "T105.2:")
 			BaseRelease(g.pc_box_layout)
 		}
 	})
+
 	return go_box_layout
 }
 
@@ -990,20 +1271,23 @@ func (p *cCBoxLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (box_layout *CBoxLayoutT) ForceUnref() (ret bool) {
-	ret = BaseRelease(box_layout.pc_box_layout)
+	if box_layout == nil {
+		return
+	}
+	if box_layout.needsUnref && box_layout.beUnrefed == byApp {
+		ret = BaseRelease(box_layout.pc_box_layout)
+		box_layout.beUnrefed = unrefed
+		box_layout.needsUnref = false
+	}
 	box_layout.pc_box_layout = nil
-	return ret
-}
-
-func (box_layout *CBoxLayoutT) release() (ret bool) {
-	ret = BaseRelease(box_layout.pc_box_layout)
 	return ret
 }
 
 // Convert to Base Class Pointer *CLayoutT
 func (box_layout *CBoxLayoutT) ToCLayoutT() *CLayoutT {
 	p := (*C.cef_layout_t)(unsafe.Pointer(box_layout.pc_box_layout))
-	return newCLayoutT(p, true)
+	BaseAddRef(box_layout.pc_box_layout)
+	return newCLayoutT(p, byApp, true)
 }
 
 ///
@@ -1059,6 +1343,8 @@ type cCBrowserT C.cef_browser_t
 type CBrowserT struct {
 	noCopy     noCopy
 	pc_browser *cCBrowserT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCBrowserT struct {
@@ -1067,36 +1353,82 @@ type RefToCBrowserT struct {
 
 type CBrowserTAccessor interface {
 	GetCBrowserT() *CBrowserT
-	SetCBrowserT(*CBrowserT) (oldValue *CBrowserT)
+	setCBrowserT(*CBrowserT)
+	// TakeOverCBrowserT(*CBrowserT)
+	// NewRefCBrowserT(*CBrowserT)
 }
 
 func (r RefToCBrowserT) GetCBrowserT() *CBrowserT {
 	return r.p_browser
 }
 
-func (r *RefToCBrowserT) SetCBrowserT(p *CBrowserT) (prevValue *CBrowserT) {
-	prevValue = r.p_browser
+func (r *RefToCBrowserT) setCBrowserT(p *CBrowserT) {
+	// prevValue = r.p_browser
+	r.p_browser.ForceUnref()
 	r.p_browser = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCBrowserT) TakeOverCBrowserT(src *CBrowserT) {
+	if r == nil {
+		return
+	}
+	r.p_browser.ForceUnref()
+	gop := src.pc_browser
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_browser = newCBrowserT((*C.cef_browser_t)(gop), byApp, true)
+}
+
+func PassCBrowserT(p *CBrowserT) (ret *CBrowserT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_browser)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCBrowserT((*C.cef_browser_t)(p.pc_browser), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCBrowserT) NewRefCBrowserT(p *CBrowserT) {
+	if r == nil {
+		return
+	}
+	r.p_browser.ForceUnref()
+	gop := p.pc_browser
+	BaseAddRef(gop)
+	r.p_browser = newCBrowserT((*C.cef_browser_t)(gop), byApp, true)
 }
 
 // Go type CBrowserT wraps cef type *C.cef_browser_t
-func newCBrowserT(p *C.cef_browser_t, countUp bool) *CBrowserT {
+func newCBrowserT(p *C.cef_browser_t, unrefedBy unrefedBy, needsUnref bool) *CBrowserT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T106.1:")
 	pc := (*cCBrowserT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_browser := &CBrowserT{noCopy{}, pc}
+	go_browser := &CBrowserT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_browser, func(g *CBrowserT) {
-		if g.pc_browser != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_browser != nil {
 			Tracef(unsafe.Pointer(g.pc_browser), "T106.2:")
 			BaseRelease(g.pc_browser)
 		}
 	})
+
 	return go_browser
 }
 
@@ -1110,13 +1442,15 @@ func (p *cCBrowserT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (browser *CBrowserT) ForceUnref() (ret bool) {
-	ret = BaseRelease(browser.pc_browser)
+	if browser == nil {
+		return
+	}
+	if browser.needsUnref && browser.beUnrefed == byApp {
+		ret = BaseRelease(browser.pc_browser)
+		browser.beUnrefed = unrefed
+		browser.needsUnref = false
+	}
 	browser.pc_browser = nil
-	return ret
-}
-
-func (browser *CBrowserT) release() (ret bool) {
-	ret = BaseRelease(browser.pc_browser)
 	return ret
 }
 
@@ -1140,7 +1474,7 @@ func (self *CBrowserT) GetHost() (ret *CBrowserHostT) {
 
 	cRet := C.cefingo_browser_get_host((*C.cef_browser_t)(self.pc_browser))
 
-	ret = newCBrowserHostT(cRet, false)
+	ret = newCBrowserHostT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -1230,7 +1564,7 @@ func (self *CBrowserT) GetIdentifier() (ret int) {
 
 	cRet := C.cefingo_browser_get_identifier((*C.cef_browser_t)(self.pc_browser))
 
-	ret = (int)(cRet)
+	ret = (int)(cRet) // return GoObj
 	return ret
 }
 
@@ -1288,7 +1622,7 @@ func (self *CBrowserT) GetMainFrame() (ret *CFrameT) {
 
 	cRet := C.cefingo_browser_get_main_frame((*C.cef_browser_t)(self.pc_browser))
 
-	ret = newCFrameT(cRet, false)
+	ret = newCFrameT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -1299,7 +1633,7 @@ func (self *CBrowserT) GetFocusedFrame() (ret *CFrameT) {
 
 	cRet := C.cefingo_browser_get_focused_frame((*C.cef_browser_t)(self.pc_browser))
 
-	ret = newCFrameT(cRet, false)
+	ret = newCFrameT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -1312,7 +1646,7 @@ func (self *CBrowserT) GetFrameByident(
 
 	cRet := C.cefingo_browser_get_frame_byident((*C.cef_browser_t)(self.pc_browser), (C.int64)(identifier))
 
-	ret = newCFrameT(cRet, false)
+	ret = newCFrameT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -1326,7 +1660,7 @@ func (self *CBrowserT) GetFrame(
 
 	cRet := C.cefingo_browser_get_frame((*C.cef_browser_t)(self.pc_browser), c_name.p_cef_string_t)
 
-	ret = newCFrameT(cRet, false)
+	ret = newCFrameT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -1337,7 +1671,7 @@ func (self *CBrowserT) GetFrameCount() (ret int64) {
 
 	cRet := C.cefingo_browser_get_frame_count((*C.cef_browser_t)(self.pc_browser))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -1363,6 +1697,8 @@ type cCRunFileDialogCallbackT C.cef_run_file_dialog_callback_t
 type CRunFileDialogCallbackT struct {
 	noCopy                      noCopy
 	pc_run_file_dialog_callback *cCRunFileDialogCallbackT
+	needsUnref                  bool
+	beUnrefed                   unrefedBy
 }
 
 type RefToCRunFileDialogCallbackT struct {
@@ -1371,36 +1707,82 @@ type RefToCRunFileDialogCallbackT struct {
 
 type CRunFileDialogCallbackTAccessor interface {
 	GetCRunFileDialogCallbackT() *CRunFileDialogCallbackT
-	SetCRunFileDialogCallbackT(*CRunFileDialogCallbackT) (oldValue *CRunFileDialogCallbackT)
+	setCRunFileDialogCallbackT(*CRunFileDialogCallbackT)
+	// TakeOverCRunFileDialogCallbackT(*CRunFileDialogCallbackT)
+	// NewRefCRunFileDialogCallbackT(*CRunFileDialogCallbackT)
 }
 
 func (r RefToCRunFileDialogCallbackT) GetCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
 	return r.p_run_file_dialog_callback
 }
 
-func (r *RefToCRunFileDialogCallbackT) SetCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) (prevValue *CRunFileDialogCallbackT) {
-	prevValue = r.p_run_file_dialog_callback
+func (r *RefToCRunFileDialogCallbackT) setCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) {
+	// prevValue = r.p_run_file_dialog_callback
+	r.p_run_file_dialog_callback.ForceUnref()
 	r.p_run_file_dialog_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRunFileDialogCallbackT) TakeOverCRunFileDialogCallbackT(src *CRunFileDialogCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_run_file_dialog_callback.ForceUnref()
+	gop := src.pc_run_file_dialog_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_run_file_dialog_callback = newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(gop), byApp, true)
+}
+
+func PassCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) (ret *CRunFileDialogCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_run_file_dialog_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(p.pc_run_file_dialog_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRunFileDialogCallbackT) NewRefCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_run_file_dialog_callback.ForceUnref()
+	gop := p.pc_run_file_dialog_callback
+	BaseAddRef(gop)
+	r.p_run_file_dialog_callback = newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(gop), byApp, true)
 }
 
 // Go type CRunFileDialogCallbackT wraps cef type *C.cef_run_file_dialog_callback_t
-func newCRunFileDialogCallbackT(p *C.cef_run_file_dialog_callback_t, countUp bool) *CRunFileDialogCallbackT {
+func newCRunFileDialogCallbackT(p *C.cef_run_file_dialog_callback_t, unrefedBy unrefedBy, needsUnref bool) *CRunFileDialogCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T107.1:")
 	pc := (*cCRunFileDialogCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_run_file_dialog_callback := &CRunFileDialogCallbackT{noCopy{}, pc}
+	go_run_file_dialog_callback := &CRunFileDialogCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_run_file_dialog_callback, func(g *CRunFileDialogCallbackT) {
-		if g.pc_run_file_dialog_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_run_file_dialog_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_run_file_dialog_callback), "T107.2:")
 			BaseRelease(g.pc_run_file_dialog_callback)
 		}
 	})
+
 	return go_run_file_dialog_callback
 }
 
@@ -1414,13 +1796,15 @@ func (p *cCRunFileDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 }
 
 func (run_file_dialog_callback *CRunFileDialogCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(run_file_dialog_callback.pc_run_file_dialog_callback)
+	if run_file_dialog_callback == nil {
+		return
+	}
+	if run_file_dialog_callback.needsUnref && run_file_dialog_callback.beUnrefed == byApp {
+		ret = BaseRelease(run_file_dialog_callback.pc_run_file_dialog_callback)
+		run_file_dialog_callback.beUnrefed = unrefed
+		run_file_dialog_callback.needsUnref = false
+	}
 	run_file_dialog_callback.pc_run_file_dialog_callback = nil
-	return ret
-}
-
-func (run_file_dialog_callback *CRunFileDialogCallbackT) release() (ret bool) {
-	ret = BaseRelease(run_file_dialog_callback.pc_run_file_dialog_callback)
 	return ret
 }
 
@@ -1464,7 +1848,13 @@ func AllocCRunFileDialogCallbackT() *CRunFileDialogCallbackT {
 		delete(run_file_dialog_callback_handlers.on_file_dialog_dismissed_handler, cgop)
 	}))
 
-	return newCRunFileDialogCallbackT(cefp, true)
+	BaseAddRef(cgop)
+	return newCRunFileDialogCallbackT(cefp, byApp, true)
+}
+
+// BindCRunFileDialogCallbackT allocates CRunFileDialogCallbackT, construct and bind it
+func BindCRunFileDialogCallbackT(a interface{}) *CRunFileDialogCallbackT {
+	return AllocCRunFileDialogCallbackT().Bind(a)
 }
 
 func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CRunFileDialogCallbackT {
@@ -1474,7 +1864,7 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CR
 	cp := run_file_dialog_callback.pc_run_file_dialog_callback
 	if oldGoObj, ok := run_file_dialog_callback_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CRunFileDialogCallbackTAccessor); ok {
-			oldAcc.SetCRunFileDialogCallbackT(nil)
+			oldAcc.setCRunFileDialogCallbackT(nil)
 		}
 	}
 	run_file_dialog_callback_handlers.handler[cp] = a
@@ -1486,7 +1876,7 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CR
 	}
 
 	if accessor, ok := a.(CRunFileDialogCallbackTAccessor); ok {
-		accessor.SetCRunFileDialogCallbackT(run_file_dialog_callback)
+		accessor.setCRunFileDialogCallbackT(run_file_dialog_callback)
 		Logf("T107.5:")
 	}
 
@@ -1494,19 +1884,24 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Bind(a interface{}) *CR
 }
 
 func (run_file_dialog_callback *CRunFileDialogCallbackT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CRunFileDialogCallbackTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := run_file_dialog_callback.pc_run_file_dialog_callback
-	if goHandler, ok := run_file_dialog_callback_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CRunFileDialogCallbackTAccessor); ok1 {
-			accessor.SetCRunFileDialogCallbackT(nil)
+		cp := run_file_dialog_callback.pc_run_file_dialog_callback
+		if goHandler, ok := run_file_dialog_callback_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CRunFileDialogCallbackTAccessor)
 		}
+		delete(run_file_dialog_callback_handlers.handler, cp)
+
+		delete(run_file_dialog_callback_handlers.on_file_dialog_dismissed_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCRunFileDialogCallbackT(nil)
 	}
-	delete(run_file_dialog_callback_handlers.handler, cp)
-
-	delete(run_file_dialog_callback_handlers.on_file_dialog_dismissed_handler, cp)
-
 }
 
 func (run_file_dialog_callback *CRunFileDialogCallbackT) Handler() interface{} {
@@ -1528,6 +1923,8 @@ type cCNavigationEntryVisitorT C.cef_navigation_entry_visitor_t
 type CNavigationEntryVisitorT struct {
 	noCopy                      noCopy
 	pc_navigation_entry_visitor *cCNavigationEntryVisitorT
+	needsUnref                  bool
+	beUnrefed                   unrefedBy
 }
 
 type RefToCNavigationEntryVisitorT struct {
@@ -1536,36 +1933,82 @@ type RefToCNavigationEntryVisitorT struct {
 
 type CNavigationEntryVisitorTAccessor interface {
 	GetCNavigationEntryVisitorT() *CNavigationEntryVisitorT
-	SetCNavigationEntryVisitorT(*CNavigationEntryVisitorT) (oldValue *CNavigationEntryVisitorT)
+	setCNavigationEntryVisitorT(*CNavigationEntryVisitorT)
+	// TakeOverCNavigationEntryVisitorT(*CNavigationEntryVisitorT)
+	// NewRefCNavigationEntryVisitorT(*CNavigationEntryVisitorT)
 }
 
 func (r RefToCNavigationEntryVisitorT) GetCNavigationEntryVisitorT() *CNavigationEntryVisitorT {
 	return r.p_navigation_entry_visitor
 }
 
-func (r *RefToCNavigationEntryVisitorT) SetCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) (prevValue *CNavigationEntryVisitorT) {
-	prevValue = r.p_navigation_entry_visitor
+func (r *RefToCNavigationEntryVisitorT) setCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) {
+	// prevValue = r.p_navigation_entry_visitor
+	r.p_navigation_entry_visitor.ForceUnref()
 	r.p_navigation_entry_visitor = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCNavigationEntryVisitorT) TakeOverCNavigationEntryVisitorT(src *CNavigationEntryVisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_navigation_entry_visitor.ForceUnref()
+	gop := src.pc_navigation_entry_visitor
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_navigation_entry_visitor = newCNavigationEntryVisitorT((*C.cef_navigation_entry_visitor_t)(gop), byApp, true)
+}
+
+func PassCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) (ret *CNavigationEntryVisitorT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_navigation_entry_visitor)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCNavigationEntryVisitorT((*C.cef_navigation_entry_visitor_t)(p.pc_navigation_entry_visitor), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCNavigationEntryVisitorT) NewRefCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_navigation_entry_visitor.ForceUnref()
+	gop := p.pc_navigation_entry_visitor
+	BaseAddRef(gop)
+	r.p_navigation_entry_visitor = newCNavigationEntryVisitorT((*C.cef_navigation_entry_visitor_t)(gop), byApp, true)
 }
 
 // Go type CNavigationEntryVisitorT wraps cef type *C.cef_navigation_entry_visitor_t
-func newCNavigationEntryVisitorT(p *C.cef_navigation_entry_visitor_t, countUp bool) *CNavigationEntryVisitorT {
+func newCNavigationEntryVisitorT(p *C.cef_navigation_entry_visitor_t, unrefedBy unrefedBy, needsUnref bool) *CNavigationEntryVisitorT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T108.1:")
 	pc := (*cCNavigationEntryVisitorT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_navigation_entry_visitor := &CNavigationEntryVisitorT{noCopy{}, pc}
+	go_navigation_entry_visitor := &CNavigationEntryVisitorT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_navigation_entry_visitor, func(g *CNavigationEntryVisitorT) {
-		if g.pc_navigation_entry_visitor != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_navigation_entry_visitor != nil {
 			Tracef(unsafe.Pointer(g.pc_navigation_entry_visitor), "T108.2:")
 			BaseRelease(g.pc_navigation_entry_visitor)
 		}
 	})
+
 	return go_navigation_entry_visitor
 }
 
@@ -1579,13 +2022,15 @@ func (p *cCNavigationEntryVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_r
 }
 
 func (navigation_entry_visitor *CNavigationEntryVisitorT) ForceUnref() (ret bool) {
-	ret = BaseRelease(navigation_entry_visitor.pc_navigation_entry_visitor)
+	if navigation_entry_visitor == nil {
+		return
+	}
+	if navigation_entry_visitor.needsUnref && navigation_entry_visitor.beUnrefed == byApp {
+		ret = BaseRelease(navigation_entry_visitor.pc_navigation_entry_visitor)
+		navigation_entry_visitor.beUnrefed = unrefed
+		navigation_entry_visitor.needsUnref = false
+	}
 	navigation_entry_visitor.pc_navigation_entry_visitor = nil
-	return ret
-}
-
-func (navigation_entry_visitor *CNavigationEntryVisitorT) release() (ret bool) {
-	ret = BaseRelease(navigation_entry_visitor.pc_navigation_entry_visitor)
 	return ret
 }
 
@@ -1631,7 +2076,13 @@ func AllocCNavigationEntryVisitorT() *CNavigationEntryVisitorT {
 		delete(navigation_entry_visitor_handlers.visit_handler, cgop)
 	}))
 
-	return newCNavigationEntryVisitorT(cefp, true)
+	BaseAddRef(cgop)
+	return newCNavigationEntryVisitorT(cefp, byApp, true)
+}
+
+// BindCNavigationEntryVisitorT allocates CNavigationEntryVisitorT, construct and bind it
+func BindCNavigationEntryVisitorT(a interface{}) *CNavigationEntryVisitorT {
+	return AllocCNavigationEntryVisitorT().Bind(a)
 }
 
 func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *CNavigationEntryVisitorT {
@@ -1641,7 +2092,7 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *C
 	cp := navigation_entry_visitor.pc_navigation_entry_visitor
 	if oldGoObj, ok := navigation_entry_visitor_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CNavigationEntryVisitorTAccessor); ok {
-			oldAcc.SetCNavigationEntryVisitorT(nil)
+			oldAcc.setCNavigationEntryVisitorT(nil)
 		}
 	}
 	navigation_entry_visitor_handlers.handler[cp] = a
@@ -1653,7 +2104,7 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *C
 	}
 
 	if accessor, ok := a.(CNavigationEntryVisitorTAccessor); ok {
-		accessor.SetCNavigationEntryVisitorT(navigation_entry_visitor)
+		accessor.setCNavigationEntryVisitorT(navigation_entry_visitor)
 		Logf("T108.5:")
 	}
 
@@ -1661,19 +2112,24 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Bind(a interface{}) *C
 }
 
 func (navigation_entry_visitor *CNavigationEntryVisitorT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CNavigationEntryVisitorTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := navigation_entry_visitor.pc_navigation_entry_visitor
-	if goHandler, ok := navigation_entry_visitor_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CNavigationEntryVisitorTAccessor); ok1 {
-			accessor.SetCNavigationEntryVisitorT(nil)
+		cp := navigation_entry_visitor.pc_navigation_entry_visitor
+		if goHandler, ok := navigation_entry_visitor_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CNavigationEntryVisitorTAccessor)
 		}
+		delete(navigation_entry_visitor_handlers.handler, cp)
+
+		delete(navigation_entry_visitor_handlers.visit_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCNavigationEntryVisitorT(nil)
 	}
-	delete(navigation_entry_visitor_handlers.handler, cp)
-
-	delete(navigation_entry_visitor_handlers.visit_handler, cp)
-
 }
 
 func (navigation_entry_visitor *CNavigationEntryVisitorT) Handler() interface{} {
@@ -1695,6 +2151,8 @@ type cCPdfPrintCallbackT C.cef_pdf_print_callback_t
 type CPdfPrintCallbackT struct {
 	noCopy                noCopy
 	pc_pdf_print_callback *cCPdfPrintCallbackT
+	needsUnref            bool
+	beUnrefed             unrefedBy
 }
 
 type RefToCPdfPrintCallbackT struct {
@@ -1703,36 +2161,82 @@ type RefToCPdfPrintCallbackT struct {
 
 type CPdfPrintCallbackTAccessor interface {
 	GetCPdfPrintCallbackT() *CPdfPrintCallbackT
-	SetCPdfPrintCallbackT(*CPdfPrintCallbackT) (oldValue *CPdfPrintCallbackT)
+	setCPdfPrintCallbackT(*CPdfPrintCallbackT)
+	// TakeOverCPdfPrintCallbackT(*CPdfPrintCallbackT)
+	// NewRefCPdfPrintCallbackT(*CPdfPrintCallbackT)
 }
 
 func (r RefToCPdfPrintCallbackT) GetCPdfPrintCallbackT() *CPdfPrintCallbackT {
 	return r.p_pdf_print_callback
 }
 
-func (r *RefToCPdfPrintCallbackT) SetCPdfPrintCallbackT(p *CPdfPrintCallbackT) (prevValue *CPdfPrintCallbackT) {
-	prevValue = r.p_pdf_print_callback
+func (r *RefToCPdfPrintCallbackT) setCPdfPrintCallbackT(p *CPdfPrintCallbackT) {
+	// prevValue = r.p_pdf_print_callback
+	r.p_pdf_print_callback.ForceUnref()
 	r.p_pdf_print_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPdfPrintCallbackT) TakeOverCPdfPrintCallbackT(src *CPdfPrintCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_pdf_print_callback.ForceUnref()
+	gop := src.pc_pdf_print_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_pdf_print_callback = newCPdfPrintCallbackT((*C.cef_pdf_print_callback_t)(gop), byApp, true)
+}
+
+func PassCPdfPrintCallbackT(p *CPdfPrintCallbackT) (ret *CPdfPrintCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_pdf_print_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPdfPrintCallbackT((*C.cef_pdf_print_callback_t)(p.pc_pdf_print_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPdfPrintCallbackT) NewRefCPdfPrintCallbackT(p *CPdfPrintCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_pdf_print_callback.ForceUnref()
+	gop := p.pc_pdf_print_callback
+	BaseAddRef(gop)
+	r.p_pdf_print_callback = newCPdfPrintCallbackT((*C.cef_pdf_print_callback_t)(gop), byApp, true)
 }
 
 // Go type CPdfPrintCallbackT wraps cef type *C.cef_pdf_print_callback_t
-func newCPdfPrintCallbackT(p *C.cef_pdf_print_callback_t, countUp bool) *CPdfPrintCallbackT {
+func newCPdfPrintCallbackT(p *C.cef_pdf_print_callback_t, unrefedBy unrefedBy, needsUnref bool) *CPdfPrintCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T109.1:")
 	pc := (*cCPdfPrintCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_pdf_print_callback := &CPdfPrintCallbackT{noCopy{}, pc}
+	go_pdf_print_callback := &CPdfPrintCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_pdf_print_callback, func(g *CPdfPrintCallbackT) {
-		if g.pc_pdf_print_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_pdf_print_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_pdf_print_callback), "T109.2:")
 			BaseRelease(g.pc_pdf_print_callback)
 		}
 	})
+
 	return go_pdf_print_callback
 }
 
@@ -1746,13 +2250,15 @@ func (p *cCPdfPrintCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 }
 
 func (pdf_print_callback *CPdfPrintCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(pdf_print_callback.pc_pdf_print_callback)
+	if pdf_print_callback == nil {
+		return
+	}
+	if pdf_print_callback.needsUnref && pdf_print_callback.beUnrefed == byApp {
+		ret = BaseRelease(pdf_print_callback.pc_pdf_print_callback)
+		pdf_print_callback.beUnrefed = unrefed
+		pdf_print_callback.needsUnref = false
+	}
 	pdf_print_callback.pc_pdf_print_callback = nil
-	return ret
-}
-
-func (pdf_print_callback *CPdfPrintCallbackT) release() (ret bool) {
-	ret = BaseRelease(pdf_print_callback.pc_pdf_print_callback)
 	return ret
 }
 
@@ -1794,7 +2300,13 @@ func AllocCPdfPrintCallbackT() *CPdfPrintCallbackT {
 		delete(pdf_print_callback_handlers.on_pdf_print_finished_handler, cgop)
 	}))
 
-	return newCPdfPrintCallbackT(cefp, true)
+	BaseAddRef(cgop)
+	return newCPdfPrintCallbackT(cefp, byApp, true)
+}
+
+// BindCPdfPrintCallbackT allocates CPdfPrintCallbackT, construct and bind it
+func BindCPdfPrintCallbackT(a interface{}) *CPdfPrintCallbackT {
+	return AllocCPdfPrintCallbackT().Bind(a)
 }
 
 func (pdf_print_callback *CPdfPrintCallbackT) Bind(a interface{}) *CPdfPrintCallbackT {
@@ -1804,7 +2316,7 @@ func (pdf_print_callback *CPdfPrintCallbackT) Bind(a interface{}) *CPdfPrintCall
 	cp := pdf_print_callback.pc_pdf_print_callback
 	if oldGoObj, ok := pdf_print_callback_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CPdfPrintCallbackTAccessor); ok {
-			oldAcc.SetCPdfPrintCallbackT(nil)
+			oldAcc.setCPdfPrintCallbackT(nil)
 		}
 	}
 	pdf_print_callback_handlers.handler[cp] = a
@@ -1816,7 +2328,7 @@ func (pdf_print_callback *CPdfPrintCallbackT) Bind(a interface{}) *CPdfPrintCall
 	}
 
 	if accessor, ok := a.(CPdfPrintCallbackTAccessor); ok {
-		accessor.SetCPdfPrintCallbackT(pdf_print_callback)
+		accessor.setCPdfPrintCallbackT(pdf_print_callback)
 		Logf("T109.5:")
 	}
 
@@ -1824,19 +2336,24 @@ func (pdf_print_callback *CPdfPrintCallbackT) Bind(a interface{}) *CPdfPrintCall
 }
 
 func (pdf_print_callback *CPdfPrintCallbackT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CPdfPrintCallbackTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := pdf_print_callback.pc_pdf_print_callback
-	if goHandler, ok := pdf_print_callback_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CPdfPrintCallbackTAccessor); ok1 {
-			accessor.SetCPdfPrintCallbackT(nil)
+		cp := pdf_print_callback.pc_pdf_print_callback
+		if goHandler, ok := pdf_print_callback_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CPdfPrintCallbackTAccessor)
 		}
+		delete(pdf_print_callback_handlers.handler, cp)
+
+		delete(pdf_print_callback_handlers.on_pdf_print_finished_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCPdfPrintCallbackT(nil)
 	}
-	delete(pdf_print_callback_handlers.handler, cp)
-
-	delete(pdf_print_callback_handlers.on_pdf_print_finished_handler, cp)
-
 }
 
 func (pdf_print_callback *CPdfPrintCallbackT) Handler() interface{} {
@@ -1858,6 +2375,8 @@ type cCDownloadImageCallbackT C.cef_download_image_callback_t
 type CDownloadImageCallbackT struct {
 	noCopy                     noCopy
 	pc_download_image_callback *cCDownloadImageCallbackT
+	needsUnref                 bool
+	beUnrefed                  unrefedBy
 }
 
 type RefToCDownloadImageCallbackT struct {
@@ -1866,36 +2385,82 @@ type RefToCDownloadImageCallbackT struct {
 
 type CDownloadImageCallbackTAccessor interface {
 	GetCDownloadImageCallbackT() *CDownloadImageCallbackT
-	SetCDownloadImageCallbackT(*CDownloadImageCallbackT) (oldValue *CDownloadImageCallbackT)
+	setCDownloadImageCallbackT(*CDownloadImageCallbackT)
+	// TakeOverCDownloadImageCallbackT(*CDownloadImageCallbackT)
+	// NewRefCDownloadImageCallbackT(*CDownloadImageCallbackT)
 }
 
 func (r RefToCDownloadImageCallbackT) GetCDownloadImageCallbackT() *CDownloadImageCallbackT {
 	return r.p_download_image_callback
 }
 
-func (r *RefToCDownloadImageCallbackT) SetCDownloadImageCallbackT(p *CDownloadImageCallbackT) (prevValue *CDownloadImageCallbackT) {
-	prevValue = r.p_download_image_callback
+func (r *RefToCDownloadImageCallbackT) setCDownloadImageCallbackT(p *CDownloadImageCallbackT) {
+	// prevValue = r.p_download_image_callback
+	r.p_download_image_callback.ForceUnref()
 	r.p_download_image_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDownloadImageCallbackT) TakeOverCDownloadImageCallbackT(src *CDownloadImageCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_download_image_callback.ForceUnref()
+	gop := src.pc_download_image_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_download_image_callback = newCDownloadImageCallbackT((*C.cef_download_image_callback_t)(gop), byApp, true)
+}
+
+func PassCDownloadImageCallbackT(p *CDownloadImageCallbackT) (ret *CDownloadImageCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_download_image_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDownloadImageCallbackT((*C.cef_download_image_callback_t)(p.pc_download_image_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDownloadImageCallbackT) NewRefCDownloadImageCallbackT(p *CDownloadImageCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_download_image_callback.ForceUnref()
+	gop := p.pc_download_image_callback
+	BaseAddRef(gop)
+	r.p_download_image_callback = newCDownloadImageCallbackT((*C.cef_download_image_callback_t)(gop), byApp, true)
 }
 
 // Go type CDownloadImageCallbackT wraps cef type *C.cef_download_image_callback_t
-func newCDownloadImageCallbackT(p *C.cef_download_image_callback_t, countUp bool) *CDownloadImageCallbackT {
+func newCDownloadImageCallbackT(p *C.cef_download_image_callback_t, unrefedBy unrefedBy, needsUnref bool) *CDownloadImageCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T110.1:")
 	pc := (*cCDownloadImageCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_download_image_callback := &CDownloadImageCallbackT{noCopy{}, pc}
+	go_download_image_callback := &CDownloadImageCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_download_image_callback, func(g *CDownloadImageCallbackT) {
-		if g.pc_download_image_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_download_image_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_download_image_callback), "T110.2:")
 			BaseRelease(g.pc_download_image_callback)
 		}
 	})
+
 	return go_download_image_callback
 }
 
@@ -1909,13 +2474,15 @@ func (p *cCDownloadImageCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 }
 
 func (download_image_callback *CDownloadImageCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(download_image_callback.pc_download_image_callback)
+	if download_image_callback == nil {
+		return
+	}
+	if download_image_callback.needsUnref && download_image_callback.beUnrefed == byApp {
+		ret = BaseRelease(download_image_callback.pc_download_image_callback)
+		download_image_callback.beUnrefed = unrefed
+		download_image_callback.needsUnref = false
+	}
 	download_image_callback.pc_download_image_callback = nil
-	return ret
-}
-
-func (download_image_callback *CDownloadImageCallbackT) release() (ret bool) {
-	ret = BaseRelease(download_image_callback.pc_download_image_callback)
 	return ret
 }
 
@@ -1954,6 +2521,8 @@ type cCBrowserHostT C.cef_browser_host_t
 type CBrowserHostT struct {
 	noCopy          noCopy
 	pc_browser_host *cCBrowserHostT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCBrowserHostT struct {
@@ -1962,36 +2531,82 @@ type RefToCBrowserHostT struct {
 
 type CBrowserHostTAccessor interface {
 	GetCBrowserHostT() *CBrowserHostT
-	SetCBrowserHostT(*CBrowserHostT) (oldValue *CBrowserHostT)
+	setCBrowserHostT(*CBrowserHostT)
+	// TakeOverCBrowserHostT(*CBrowserHostT)
+	// NewRefCBrowserHostT(*CBrowserHostT)
 }
 
 func (r RefToCBrowserHostT) GetCBrowserHostT() *CBrowserHostT {
 	return r.p_browser_host
 }
 
-func (r *RefToCBrowserHostT) SetCBrowserHostT(p *CBrowserHostT) (prevValue *CBrowserHostT) {
-	prevValue = r.p_browser_host
+func (r *RefToCBrowserHostT) setCBrowserHostT(p *CBrowserHostT) {
+	// prevValue = r.p_browser_host
+	r.p_browser_host.ForceUnref()
 	r.p_browser_host = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCBrowserHostT) TakeOverCBrowserHostT(src *CBrowserHostT) {
+	if r == nil {
+		return
+	}
+	r.p_browser_host.ForceUnref()
+	gop := src.pc_browser_host
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_browser_host = newCBrowserHostT((*C.cef_browser_host_t)(gop), byApp, true)
+}
+
+func PassCBrowserHostT(p *CBrowserHostT) (ret *CBrowserHostT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_browser_host)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCBrowserHostT((*C.cef_browser_host_t)(p.pc_browser_host), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCBrowserHostT) NewRefCBrowserHostT(p *CBrowserHostT) {
+	if r == nil {
+		return
+	}
+	r.p_browser_host.ForceUnref()
+	gop := p.pc_browser_host
+	BaseAddRef(gop)
+	r.p_browser_host = newCBrowserHostT((*C.cef_browser_host_t)(gop), byApp, true)
 }
 
 // Go type CBrowserHostT wraps cef type *C.cef_browser_host_t
-func newCBrowserHostT(p *C.cef_browser_host_t, countUp bool) *CBrowserHostT {
+func newCBrowserHostT(p *C.cef_browser_host_t, unrefedBy unrefedBy, needsUnref bool) *CBrowserHostT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T111.1:")
 	pc := (*cCBrowserHostT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_browser_host := &CBrowserHostT{noCopy{}, pc}
+	go_browser_host := &CBrowserHostT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_browser_host, func(g *CBrowserHostT) {
-		if g.pc_browser_host != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_browser_host != nil {
 			Tracef(unsafe.Pointer(g.pc_browser_host), "T111.2:")
 			BaseRelease(g.pc_browser_host)
 		}
 	})
+
 	return go_browser_host
 }
 
@@ -2005,13 +2620,15 @@ func (p *cCBrowserHostT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (browser_host *CBrowserHostT) ForceUnref() (ret bool) {
-	ret = BaseRelease(browser_host.pc_browser_host)
+	if browser_host == nil {
+		return
+	}
+	if browser_host.needsUnref && browser_host.beUnrefed == byApp {
+		ret = BaseRelease(browser_host.pc_browser_host)
+		browser_host.beUnrefed = unrefed
+		browser_host.needsUnref = false
+	}
 	browser_host.pc_browser_host = nil
-	return ret
-}
-
-func (browser_host *CBrowserHostT) release() (ret bool) {
-	ret = BaseRelease(browser_host.pc_browser_host)
 	return ret
 }
 
@@ -2022,7 +2639,7 @@ func (self *CBrowserHostT) GetBrowser() (ret *CBrowserT) {
 
 	cRet := C.cefingo_browser_host_get_browser((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = newCBrowserT(cRet, false)
+	ret = newCBrowserT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -2090,7 +2707,7 @@ func (self *CBrowserHostT) GetWindowHandle() (ret CWindowHandleT) {
 
 	cRet := C.cefingo_browser_host_get_window_handle((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = (CWindowHandleT)(cRet)
+	ret = (CWindowHandleT)(cRet) // return GoObj
 	return ret
 }
 
@@ -2104,7 +2721,7 @@ func (self *CBrowserHostT) GetOpenerWindowHandle() (ret CWindowHandleT) {
 
 	cRet := C.cefingo_browser_host_get_opener_window_handle((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = (CWindowHandleT)(cRet)
+	ret = (CWindowHandleT)(cRet) // return GoObj
 	return ret
 }
 
@@ -2126,7 +2743,7 @@ func (self *CBrowserHostT) GetClient() (ret *CClientT) {
 
 	cRet := C.cefingo_browser_host_get_client((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = newCClientT(cRet, false)
+	ret = newCClientT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -2137,7 +2754,7 @@ func (self *CBrowserHostT) GetRequestContext() (ret *CRequestContextT) {
 
 	cRet := C.cefingo_browser_host_get_request_context((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = newCRequestContextT(cRet, false)
+	ret = newCRequestContextT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -2149,7 +2766,7 @@ func (self *CBrowserHostT) GetZoomLevel() (ret float64) {
 
 	cRet := C.cefingo_browser_host_get_zoom_level((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = (float64)(cRet)
+	ret = (float64)(cRet) // return GoObj
 	return ret
 }
 
@@ -2473,7 +3090,7 @@ func (self *CBrowserHostT) AddDevToolsMessageObserver(
 
 	cRet := C.cefingo_browser_host_add_dev_tools_message_observer((*C.cef_browser_host_t)(self.pc_browser_host), goTmpobserver)
 
-	ret = newCRegistrationT(cRet, false)
+	ret = newCRegistrationT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -2723,7 +3340,7 @@ func (self *CBrowserHostT) GetWindowlessFrameRate() (ret int) {
 
 	cRet := C.cefingo_browser_host_get_windowless_frame_rate((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = (int)(cRet)
+	ret = (int)(cRet) // return GoObj
 	return ret
 }
 
@@ -2933,7 +3550,7 @@ func (self *CBrowserHostT) GetVisibleNavigationEntry() (ret *CNavigationEntryT) 
 
 	cRet := C.cefingo_browser_host_get_visible_navigation_entry((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = newCNavigationEntryT(cRet, false)
+	ret = newCNavigationEntryT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -2997,7 +3614,7 @@ func (self *CBrowserHostT) GetExtension() (ret *CExtensionT) {
 
 	cRet := C.cefingo_browser_host_get_extension((*C.cef_browser_host_t)(self.pc_browser_host))
 
-	ret = newCExtensionT(cRet, false)
+	ret = newCExtensionT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -3117,7 +3734,7 @@ func BrowserHostCreateBrowserSync(
 
 	cRet := C.cef_browser_host_create_browser_sync((*C.cef_window_info_t)(windowInfo), goTmpclient, c_url.p_cef_string_t, (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context)
 
-	ret = newCBrowserT(cRet, false)
+	ret = newCBrowserT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -3135,6 +3752,8 @@ type cCBrowserProcessHandlerT C.cef_browser_process_handler_t
 type CBrowserProcessHandlerT struct {
 	noCopy                     noCopy
 	pc_browser_process_handler *cCBrowserProcessHandlerT
+	needsUnref                 bool
+	beUnrefed                  unrefedBy
 }
 
 type RefToCBrowserProcessHandlerT struct {
@@ -3143,36 +3762,82 @@ type RefToCBrowserProcessHandlerT struct {
 
 type CBrowserProcessHandlerTAccessor interface {
 	GetCBrowserProcessHandlerT() *CBrowserProcessHandlerT
-	SetCBrowserProcessHandlerT(*CBrowserProcessHandlerT) (oldValue *CBrowserProcessHandlerT)
+	setCBrowserProcessHandlerT(*CBrowserProcessHandlerT)
+	// TakeOverCBrowserProcessHandlerT(*CBrowserProcessHandlerT)
+	// NewRefCBrowserProcessHandlerT(*CBrowserProcessHandlerT)
 }
 
 func (r RefToCBrowserProcessHandlerT) GetCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
 	return r.p_browser_process_handler
 }
 
-func (r *RefToCBrowserProcessHandlerT) SetCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) (prevValue *CBrowserProcessHandlerT) {
-	prevValue = r.p_browser_process_handler
+func (r *RefToCBrowserProcessHandlerT) setCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) {
+	// prevValue = r.p_browser_process_handler
+	r.p_browser_process_handler.ForceUnref()
 	r.p_browser_process_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCBrowserProcessHandlerT) TakeOverCBrowserProcessHandlerT(src *CBrowserProcessHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_browser_process_handler.ForceUnref()
+	gop := src.pc_browser_process_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_browser_process_handler = newCBrowserProcessHandlerT((*C.cef_browser_process_handler_t)(gop), byApp, true)
+}
+
+func PassCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) (ret *CBrowserProcessHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_browser_process_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCBrowserProcessHandlerT((*C.cef_browser_process_handler_t)(p.pc_browser_process_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCBrowserProcessHandlerT) NewRefCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_browser_process_handler.ForceUnref()
+	gop := p.pc_browser_process_handler
+	BaseAddRef(gop)
+	r.p_browser_process_handler = newCBrowserProcessHandlerT((*C.cef_browser_process_handler_t)(gop), byApp, true)
 }
 
 // Go type CBrowserProcessHandlerT wraps cef type *C.cef_browser_process_handler_t
-func newCBrowserProcessHandlerT(p *C.cef_browser_process_handler_t, countUp bool) *CBrowserProcessHandlerT {
+func newCBrowserProcessHandlerT(p *C.cef_browser_process_handler_t, unrefedBy unrefedBy, needsUnref bool) *CBrowserProcessHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T112.1:")
 	pc := (*cCBrowserProcessHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_browser_process_handler := &CBrowserProcessHandlerT{noCopy{}, pc}
+	go_browser_process_handler := &CBrowserProcessHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_browser_process_handler, func(g *CBrowserProcessHandlerT) {
-		if g.pc_browser_process_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_browser_process_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_browser_process_handler), "T112.2:")
 			BaseRelease(g.pc_browser_process_handler)
 		}
 	})
+
 	return go_browser_process_handler
 }
 
@@ -3186,13 +3851,15 @@ func (p *cCBrowserProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 }
 
 func (browser_process_handler *CBrowserProcessHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(browser_process_handler.pc_browser_process_handler)
+	if browser_process_handler == nil {
+		return
+	}
+	if browser_process_handler.needsUnref && browser_process_handler.beUnrefed == byApp {
+		ret = BaseRelease(browser_process_handler.pc_browser_process_handler)
+		browser_process_handler.beUnrefed = unrefed
+		browser_process_handler.needsUnref = false
+	}
 	browser_process_handler.pc_browser_process_handler = nil
-	return ret
-}
-
-func (browser_process_handler *CBrowserProcessHandlerT) release() (ret bool) {
-	ret = BaseRelease(browser_process_handler.pc_browser_process_handler)
 	return ret
 }
 
@@ -3287,7 +3954,13 @@ func AllocCBrowserProcessHandlerT() *CBrowserProcessHandlerT {
 		delete(browser_process_handler_handlers.get_default_client_handler, cgop)
 	}))
 
-	return newCBrowserProcessHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCBrowserProcessHandlerT(cefp, byApp, true)
+}
+
+// BindCBrowserProcessHandlerT allocates CBrowserProcessHandlerT, construct and bind it
+func BindCBrowserProcessHandlerT(a interface{}) *CBrowserProcessHandlerT {
+	return AllocCBrowserProcessHandlerT().Bind(a)
 }
 
 func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBrowserProcessHandlerT {
@@ -3297,7 +3970,7 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 	cp := browser_process_handler.pc_browser_process_handler
 	if oldGoObj, ok := browser_process_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CBrowserProcessHandlerTAccessor); ok {
-			oldAcc.SetCBrowserProcessHandlerT(nil)
+			oldAcc.setCBrowserProcessHandlerT(nil)
 		}
 	}
 	browser_process_handler_handlers.handler[cp] = a
@@ -3327,7 +4000,7 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 	}
 
 	if accessor, ok := a.(CBrowserProcessHandlerTAccessor); ok {
-		accessor.SetCBrowserProcessHandlerT(browser_process_handler)
+		accessor.setCBrowserProcessHandlerT(browser_process_handler)
 		Logf("T112.5:")
 	}
 
@@ -3335,22 +4008,27 @@ func (browser_process_handler *CBrowserProcessHandlerT) Bind(a interface{}) *CBr
 }
 
 func (browser_process_handler *CBrowserProcessHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CBrowserProcessHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := browser_process_handler.pc_browser_process_handler
-	if goHandler, ok := browser_process_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CBrowserProcessHandlerTAccessor); ok1 {
-			accessor.SetCBrowserProcessHandlerT(nil)
+		cp := browser_process_handler.pc_browser_process_handler
+		if goHandler, ok := browser_process_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CBrowserProcessHandlerTAccessor)
 		}
+		delete(browser_process_handler_handlers.handler, cp)
+
+		delete(browser_process_handler_handlers.on_context_initialized_handler, cp)
+		delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cp)
+		delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cp)
+		delete(browser_process_handler_handlers.get_default_client_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCBrowserProcessHandlerT(nil)
 	}
-	delete(browser_process_handler_handlers.handler, cp)
-
-	delete(browser_process_handler_handlers.on_context_initialized_handler, cp)
-	delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cp)
-	delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cp)
-	delete(browser_process_handler_handlers.get_default_client_handler, cp)
-
 }
 
 func (browser_process_handler *CBrowserProcessHandlerT) Handler() interface{} {
@@ -3374,6 +4052,8 @@ type cCBrowserViewT C.cef_browser_view_t
 type CBrowserViewT struct {
 	noCopy          noCopy
 	pc_browser_view *cCBrowserViewT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCBrowserViewT struct {
@@ -3382,36 +4062,82 @@ type RefToCBrowserViewT struct {
 
 type CBrowserViewTAccessor interface {
 	GetCBrowserViewT() *CBrowserViewT
-	SetCBrowserViewT(*CBrowserViewT) (oldValue *CBrowserViewT)
+	setCBrowserViewT(*CBrowserViewT)
+	// TakeOverCBrowserViewT(*CBrowserViewT)
+	// NewRefCBrowserViewT(*CBrowserViewT)
 }
 
 func (r RefToCBrowserViewT) GetCBrowserViewT() *CBrowserViewT {
 	return r.p_browser_view
 }
 
-func (r *RefToCBrowserViewT) SetCBrowserViewT(p *CBrowserViewT) (prevValue *CBrowserViewT) {
-	prevValue = r.p_browser_view
+func (r *RefToCBrowserViewT) setCBrowserViewT(p *CBrowserViewT) {
+	// prevValue = r.p_browser_view
+	r.p_browser_view.ForceUnref()
 	r.p_browser_view = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCBrowserViewT) TakeOverCBrowserViewT(src *CBrowserViewT) {
+	if r == nil {
+		return
+	}
+	r.p_browser_view.ForceUnref()
+	gop := src.pc_browser_view
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_browser_view = newCBrowserViewT((*C.cef_browser_view_t)(gop), byApp, true)
+}
+
+func PassCBrowserViewT(p *CBrowserViewT) (ret *CBrowserViewT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_browser_view)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCBrowserViewT((*C.cef_browser_view_t)(p.pc_browser_view), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCBrowserViewT) NewRefCBrowserViewT(p *CBrowserViewT) {
+	if r == nil {
+		return
+	}
+	r.p_browser_view.ForceUnref()
+	gop := p.pc_browser_view
+	BaseAddRef(gop)
+	r.p_browser_view = newCBrowserViewT((*C.cef_browser_view_t)(gop), byApp, true)
 }
 
 // Go type CBrowserViewT wraps cef type *C.cef_browser_view_t
-func newCBrowserViewT(p *C.cef_browser_view_t, countUp bool) *CBrowserViewT {
+func newCBrowserViewT(p *C.cef_browser_view_t, unrefedBy unrefedBy, needsUnref bool) *CBrowserViewT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T113.1:")
 	pc := (*cCBrowserViewT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_browser_view := &CBrowserViewT{noCopy{}, pc}
+	go_browser_view := &CBrowserViewT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_browser_view, func(g *CBrowserViewT) {
-		if g.pc_browser_view != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_browser_view != nil {
 			Tracef(unsafe.Pointer(g.pc_browser_view), "T113.2:")
 			BaseRelease(g.pc_browser_view)
 		}
 	})
+
 	return go_browser_view
 }
 
@@ -3425,20 +4151,23 @@ func (p *cCBrowserViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (browser_view *CBrowserViewT) ForceUnref() (ret bool) {
-	ret = BaseRelease(browser_view.pc_browser_view)
+	if browser_view == nil {
+		return
+	}
+	if browser_view.needsUnref && browser_view.beUnrefed == byApp {
+		ret = BaseRelease(browser_view.pc_browser_view)
+		browser_view.beUnrefed = unrefed
+		browser_view.needsUnref = false
+	}
 	browser_view.pc_browser_view = nil
-	return ret
-}
-
-func (browser_view *CBrowserViewT) release() (ret bool) {
-	ret = BaseRelease(browser_view.pc_browser_view)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewT
 func (browser_view *CBrowserViewT) ToCViewT() *CViewT {
 	p := (*C.cef_view_t)(unsafe.Pointer(browser_view.pc_browser_view))
-	return newCViewT(p, true)
+	BaseAddRef(browser_view.pc_browser_view)
+	return newCViewT(p, byApp, true)
 }
 
 ///
@@ -3449,7 +4178,7 @@ func (self *CBrowserViewT) GetBrowser() (ret *CBrowserT) {
 
 	cRet := C.cefingo_browser_view_get_browser((*C.cef_browser_view_t)(self.pc_browser_view))
 
-	ret = newCBrowserT(cRet, false)
+	ret = newCBrowserT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -3465,7 +4194,7 @@ func (self *CBrowserViewT) GetChromeToolbar() (ret *CViewT) {
 
 	cRet := C.cefingo_browser_view_get_chrome_toolbar((*C.cef_browser_view_t)(self.pc_browser_view))
 
-	ret = newCViewT(cRet, false)
+	ret = newCViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -3529,7 +4258,7 @@ func BrowserViewCreate(
 
 	cRet := C.cef_browser_view_create(goTmpclient, c_url.p_cef_string_t, (*C.cef_browser_settings_t)(settings), goTmpextra_info, goTmprequest_context, goTmpdelegate)
 
-	ret = newCBrowserViewT(cRet, false)
+	ret = newCBrowserViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -3547,7 +4276,7 @@ func BrowserViewGetForBrowser(
 
 	cRet := C.cef_browser_view_get_for_browser(goTmpbrowser)
 
-	ret = newCBrowserViewT(cRet, false)
+	ret = newCBrowserViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -3565,6 +4294,8 @@ type cCBrowserViewDelegateT C.cef_browser_view_delegate_t
 type CBrowserViewDelegateT struct {
 	noCopy                   noCopy
 	pc_browser_view_delegate *cCBrowserViewDelegateT
+	needsUnref               bool
+	beUnrefed                unrefedBy
 }
 
 type RefToCBrowserViewDelegateT struct {
@@ -3573,36 +4304,82 @@ type RefToCBrowserViewDelegateT struct {
 
 type CBrowserViewDelegateTAccessor interface {
 	GetCBrowserViewDelegateT() *CBrowserViewDelegateT
-	SetCBrowserViewDelegateT(*CBrowserViewDelegateT) (oldValue *CBrowserViewDelegateT)
+	setCBrowserViewDelegateT(*CBrowserViewDelegateT)
+	// TakeOverCBrowserViewDelegateT(*CBrowserViewDelegateT)
+	// NewRefCBrowserViewDelegateT(*CBrowserViewDelegateT)
 }
 
 func (r RefToCBrowserViewDelegateT) GetCBrowserViewDelegateT() *CBrowserViewDelegateT {
 	return r.p_browser_view_delegate
 }
 
-func (r *RefToCBrowserViewDelegateT) SetCBrowserViewDelegateT(p *CBrowserViewDelegateT) (prevValue *CBrowserViewDelegateT) {
-	prevValue = r.p_browser_view_delegate
+func (r *RefToCBrowserViewDelegateT) setCBrowserViewDelegateT(p *CBrowserViewDelegateT) {
+	// prevValue = r.p_browser_view_delegate
+	r.p_browser_view_delegate.ForceUnref()
 	r.p_browser_view_delegate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCBrowserViewDelegateT) TakeOverCBrowserViewDelegateT(src *CBrowserViewDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_browser_view_delegate.ForceUnref()
+	gop := src.pc_browser_view_delegate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_browser_view_delegate = newCBrowserViewDelegateT((*C.cef_browser_view_delegate_t)(gop), byApp, true)
+}
+
+func PassCBrowserViewDelegateT(p *CBrowserViewDelegateT) (ret *CBrowserViewDelegateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_browser_view_delegate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCBrowserViewDelegateT((*C.cef_browser_view_delegate_t)(p.pc_browser_view_delegate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCBrowserViewDelegateT) NewRefCBrowserViewDelegateT(p *CBrowserViewDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_browser_view_delegate.ForceUnref()
+	gop := p.pc_browser_view_delegate
+	BaseAddRef(gop)
+	r.p_browser_view_delegate = newCBrowserViewDelegateT((*C.cef_browser_view_delegate_t)(gop), byApp, true)
 }
 
 // Go type CBrowserViewDelegateT wraps cef type *C.cef_browser_view_delegate_t
-func newCBrowserViewDelegateT(p *C.cef_browser_view_delegate_t, countUp bool) *CBrowserViewDelegateT {
+func newCBrowserViewDelegateT(p *C.cef_browser_view_delegate_t, unrefedBy unrefedBy, needsUnref bool) *CBrowserViewDelegateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T114.1:")
 	pc := (*cCBrowserViewDelegateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_browser_view_delegate := &CBrowserViewDelegateT{noCopy{}, pc}
+	go_browser_view_delegate := &CBrowserViewDelegateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_browser_view_delegate, func(g *CBrowserViewDelegateT) {
-		if g.pc_browser_view_delegate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_browser_view_delegate != nil {
 			Tracef(unsafe.Pointer(g.pc_browser_view_delegate), "T114.2:")
 			BaseRelease(g.pc_browser_view_delegate)
 		}
 	})
+
 	return go_browser_view_delegate
 }
 
@@ -3616,20 +4393,23 @@ func (p *cCBrowserViewDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_
 }
 
 func (browser_view_delegate *CBrowserViewDelegateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(browser_view_delegate.pc_browser_view_delegate)
+	if browser_view_delegate == nil {
+		return
+	}
+	if browser_view_delegate.needsUnref && browser_view_delegate.beUnrefed == byApp {
+		ret = BaseRelease(browser_view_delegate.pc_browser_view_delegate)
+		browser_view_delegate.beUnrefed = unrefed
+		browser_view_delegate.needsUnref = false
+	}
 	browser_view_delegate.pc_browser_view_delegate = nil
-	return ret
-}
-
-func (browser_view_delegate *CBrowserViewDelegateT) release() (ret bool) {
-	ret = BaseRelease(browser_view_delegate.pc_browser_view_delegate)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewDelegateT
 func (browser_view_delegate *CBrowserViewDelegateT) ToCViewDelegateT() *CViewDelegateT {
 	p := (*C.cef_view_delegate_t)(unsafe.Pointer(browser_view_delegate.pc_browser_view_delegate))
-	return newCViewDelegateT(p, true)
+	BaseAddRef(browser_view_delegate.pc_browser_view_delegate)
+	return newCViewDelegateT(p, byApp, true)
 }
 
 ///
@@ -3770,7 +4550,13 @@ func AllocCBrowserViewDelegateT() *CBrowserViewDelegateT {
 		delete(browser_view_delegate_handlers.on_blur_handler, cgop)
 	}))
 
-	return newCBrowserViewDelegateT(cefp, true)
+	BaseAddRef(cgop)
+	return newCBrowserViewDelegateT(cefp, byApp, true)
+}
+
+// BindCBrowserViewDelegateT allocates CBrowserViewDelegateT, construct and bind it
+func BindCBrowserViewDelegateT(a interface{}) *CBrowserViewDelegateT {
+	return AllocCBrowserViewDelegateT().Bind(a)
 }
 
 func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowserViewDelegateT {
@@ -3780,7 +4566,7 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 	cp := browser_view_delegate.pc_browser_view_delegate
 	if oldGoObj, ok := browser_view_delegate_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CBrowserViewDelegateTAccessor); ok {
-			oldAcc.SetCBrowserViewDelegateT(nil)
+			oldAcc.setCBrowserViewDelegateT(nil)
 		}
 	}
 	browser_view_delegate_handlers.handler[cp] = a
@@ -3870,7 +4656,7 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 	}
 
 	if accessor, ok := a.(CBrowserViewDelegateTAccessor); ok {
-		accessor.SetCBrowserViewDelegateT(browser_view_delegate)
+		accessor.setCBrowserViewDelegateT(browser_view_delegate)
 		Logf("T114.5:")
 	}
 
@@ -3878,32 +4664,37 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 }
 
 func (browser_view_delegate *CBrowserViewDelegateT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CBrowserViewDelegateTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := browser_view_delegate.pc_browser_view_delegate
-	if goHandler, ok := browser_view_delegate_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CBrowserViewDelegateTAccessor); ok1 {
-			accessor.SetCBrowserViewDelegateT(nil)
+		cp := browser_view_delegate.pc_browser_view_delegate
+		if goHandler, ok := browser_view_delegate_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CBrowserViewDelegateTAccessor)
 		}
+		delete(browser_view_delegate_handlers.handler, cp)
+
+		delete(browser_view_delegate_handlers.on_browser_created_handler, cp)
+		delete(browser_view_delegate_handlers.on_browser_destroyed_handler, cp)
+		delete(browser_view_delegate_handlers.get_delegate_for_popup_browser_view_handler, cp)
+		delete(browser_view_delegate_handlers.on_popup_browser_view_created_handler, cp)
+		delete(browser_view_delegate_handlers.get_chrome_toolbar_type_handler, cp)
+		delete(browser_view_delegate_handlers.get_preferred_size_handler, cp)
+		delete(browser_view_delegate_handlers.get_minimum_size_handler, cp)
+		delete(browser_view_delegate_handlers.get_maximum_size_handler, cp)
+		delete(browser_view_delegate_handlers.get_height_for_width_handler, cp)
+		delete(browser_view_delegate_handlers.on_parent_view_changed_handler, cp)
+		delete(browser_view_delegate_handlers.on_child_view_changed_handler, cp)
+		delete(browser_view_delegate_handlers.on_window_changed_handler, cp)
+		delete(browser_view_delegate_handlers.on_focus_handler, cp)
+		delete(browser_view_delegate_handlers.on_blur_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCBrowserViewDelegateT(nil)
 	}
-	delete(browser_view_delegate_handlers.handler, cp)
-
-	delete(browser_view_delegate_handlers.on_browser_created_handler, cp)
-	delete(browser_view_delegate_handlers.on_browser_destroyed_handler, cp)
-	delete(browser_view_delegate_handlers.get_delegate_for_popup_browser_view_handler, cp)
-	delete(browser_view_delegate_handlers.on_popup_browser_view_created_handler, cp)
-	delete(browser_view_delegate_handlers.get_chrome_toolbar_type_handler, cp)
-	delete(browser_view_delegate_handlers.get_preferred_size_handler, cp)
-	delete(browser_view_delegate_handlers.get_minimum_size_handler, cp)
-	delete(browser_view_delegate_handlers.get_maximum_size_handler, cp)
-	delete(browser_view_delegate_handlers.get_height_for_width_handler, cp)
-	delete(browser_view_delegate_handlers.on_parent_view_changed_handler, cp)
-	delete(browser_view_delegate_handlers.on_child_view_changed_handler, cp)
-	delete(browser_view_delegate_handlers.on_window_changed_handler, cp)
-	delete(browser_view_delegate_handlers.on_focus_handler, cp)
-	delete(browser_view_delegate_handlers.on_blur_handler, cp)
-
 }
 
 func (browser_view_delegate *CBrowserViewDelegateT) Handler() interface{} {
@@ -3926,8 +4717,10 @@ type cCButtonT C.cef_button_t
 
 // Go type for cef_button_t
 type CButtonT struct {
-	noCopy    noCopy
-	pc_button *cCButtonT
+	noCopy     noCopy
+	pc_button  *cCButtonT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCButtonT struct {
@@ -3936,36 +4729,82 @@ type RefToCButtonT struct {
 
 type CButtonTAccessor interface {
 	GetCButtonT() *CButtonT
-	SetCButtonT(*CButtonT) (oldValue *CButtonT)
+	setCButtonT(*CButtonT)
+	// TakeOverCButtonT(*CButtonT)
+	// NewRefCButtonT(*CButtonT)
 }
 
 func (r RefToCButtonT) GetCButtonT() *CButtonT {
 	return r.p_button
 }
 
-func (r *RefToCButtonT) SetCButtonT(p *CButtonT) (prevValue *CButtonT) {
-	prevValue = r.p_button
+func (r *RefToCButtonT) setCButtonT(p *CButtonT) {
+	// prevValue = r.p_button
+	r.p_button.ForceUnref()
 	r.p_button = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCButtonT) TakeOverCButtonT(src *CButtonT) {
+	if r == nil {
+		return
+	}
+	r.p_button.ForceUnref()
+	gop := src.pc_button
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_button = newCButtonT((*C.cef_button_t)(gop), byApp, true)
+}
+
+func PassCButtonT(p *CButtonT) (ret *CButtonT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_button)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCButtonT((*C.cef_button_t)(p.pc_button), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCButtonT) NewRefCButtonT(p *CButtonT) {
+	if r == nil {
+		return
+	}
+	r.p_button.ForceUnref()
+	gop := p.pc_button
+	BaseAddRef(gop)
+	r.p_button = newCButtonT((*C.cef_button_t)(gop), byApp, true)
 }
 
 // Go type CButtonT wraps cef type *C.cef_button_t
-func newCButtonT(p *C.cef_button_t, countUp bool) *CButtonT {
+func newCButtonT(p *C.cef_button_t, unrefedBy unrefedBy, needsUnref bool) *CButtonT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T115.1:")
 	pc := (*cCButtonT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_button := &CButtonT{noCopy{}, pc}
+	go_button := &CButtonT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_button, func(g *CButtonT) {
-		if g.pc_button != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_button != nil {
 			Tracef(unsafe.Pointer(g.pc_button), "T115.2:")
 			BaseRelease(g.pc_button)
 		}
 	})
+
 	return go_button
 }
 
@@ -3979,20 +4818,23 @@ func (p *cCButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (button *CButtonT) ForceUnref() (ret bool) {
-	ret = BaseRelease(button.pc_button)
+	if button == nil {
+		return
+	}
+	if button.needsUnref && button.beUnrefed == byApp {
+		ret = BaseRelease(button.pc_button)
+		button.beUnrefed = unrefed
+		button.needsUnref = false
+	}
 	button.pc_button = nil
-	return ret
-}
-
-func (button *CButtonT) release() (ret bool) {
-	ret = BaseRelease(button.pc_button)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewT
 func (button *CButtonT) ToCViewT() *CViewT {
 	p := (*C.cef_view_t)(unsafe.Pointer(button.pc_button))
-	return newCViewT(p, true)
+	BaseAddRef(button.pc_button)
+	return newCViewT(p, byApp, true)
 }
 
 ///
@@ -4002,7 +4844,7 @@ func (self *CButtonT) AsLabelButton() (ret *CLabelButtonT) {
 
 	cRet := C.cefingo_button_as_label_button((*C.cef_button_t)(self.pc_button))
 
-	ret = newCLabelButtonT(cRet, false)
+	ret = newCLabelButtonT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -4024,7 +4866,7 @@ func (self *CButtonT) GetState() (ret CButtonStateT) {
 
 	cRet := C.cefingo_button_get_state((*C.cef_button_t)(self.pc_button))
 
-	ret = CButtonStateT(cRet)
+	ret = CButtonStateT(cRet) // return GoObj
 	return ret
 }
 
@@ -4078,6 +4920,8 @@ type cCButtonDelegateT C.cef_button_delegate_t
 type CButtonDelegateT struct {
 	noCopy             noCopy
 	pc_button_delegate *cCButtonDelegateT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCButtonDelegateT struct {
@@ -4086,36 +4930,82 @@ type RefToCButtonDelegateT struct {
 
 type CButtonDelegateTAccessor interface {
 	GetCButtonDelegateT() *CButtonDelegateT
-	SetCButtonDelegateT(*CButtonDelegateT) (oldValue *CButtonDelegateT)
+	setCButtonDelegateT(*CButtonDelegateT)
+	// TakeOverCButtonDelegateT(*CButtonDelegateT)
+	// NewRefCButtonDelegateT(*CButtonDelegateT)
 }
 
 func (r RefToCButtonDelegateT) GetCButtonDelegateT() *CButtonDelegateT {
 	return r.p_button_delegate
 }
 
-func (r *RefToCButtonDelegateT) SetCButtonDelegateT(p *CButtonDelegateT) (prevValue *CButtonDelegateT) {
-	prevValue = r.p_button_delegate
+func (r *RefToCButtonDelegateT) setCButtonDelegateT(p *CButtonDelegateT) {
+	// prevValue = r.p_button_delegate
+	r.p_button_delegate.ForceUnref()
 	r.p_button_delegate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCButtonDelegateT) TakeOverCButtonDelegateT(src *CButtonDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_button_delegate.ForceUnref()
+	gop := src.pc_button_delegate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_button_delegate = newCButtonDelegateT((*C.cef_button_delegate_t)(gop), byApp, true)
+}
+
+func PassCButtonDelegateT(p *CButtonDelegateT) (ret *CButtonDelegateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_button_delegate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCButtonDelegateT((*C.cef_button_delegate_t)(p.pc_button_delegate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCButtonDelegateT) NewRefCButtonDelegateT(p *CButtonDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_button_delegate.ForceUnref()
+	gop := p.pc_button_delegate
+	BaseAddRef(gop)
+	r.p_button_delegate = newCButtonDelegateT((*C.cef_button_delegate_t)(gop), byApp, true)
 }
 
 // Go type CButtonDelegateT wraps cef type *C.cef_button_delegate_t
-func newCButtonDelegateT(p *C.cef_button_delegate_t, countUp bool) *CButtonDelegateT {
+func newCButtonDelegateT(p *C.cef_button_delegate_t, unrefedBy unrefedBy, needsUnref bool) *CButtonDelegateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T116.1:")
 	pc := (*cCButtonDelegateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_button_delegate := &CButtonDelegateT{noCopy{}, pc}
+	go_button_delegate := &CButtonDelegateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_button_delegate, func(g *CButtonDelegateT) {
-		if g.pc_button_delegate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_button_delegate != nil {
 			Tracef(unsafe.Pointer(g.pc_button_delegate), "T116.2:")
 			BaseRelease(g.pc_button_delegate)
 		}
 	})
+
 	return go_button_delegate
 }
 
@@ -4129,20 +5019,23 @@ func (p *cCButtonDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 }
 
 func (button_delegate *CButtonDelegateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(button_delegate.pc_button_delegate)
+	if button_delegate == nil {
+		return
+	}
+	if button_delegate.needsUnref && button_delegate.beUnrefed == byApp {
+		ret = BaseRelease(button_delegate.pc_button_delegate)
+		button_delegate.beUnrefed = unrefed
+		button_delegate.needsUnref = false
+	}
 	button_delegate.pc_button_delegate = nil
-	return ret
-}
-
-func (button_delegate *CButtonDelegateT) release() (ret bool) {
-	ret = BaseRelease(button_delegate.pc_button_delegate)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewDelegateT
 func (button_delegate *CButtonDelegateT) ToCViewDelegateT() *CViewDelegateT {
 	p := (*C.cef_view_delegate_t)(unsafe.Pointer(button_delegate.pc_button_delegate))
-	return newCViewDelegateT(p, true)
+	BaseAddRef(button_delegate.pc_button_delegate)
+	return newCViewDelegateT(p, byApp, true)
 }
 
 ///
@@ -4220,7 +5113,13 @@ func AllocCButtonDelegateT() *CButtonDelegateT {
 		delete(button_delegate_handlers.on_blur_handler, cgop)
 	}))
 
-	return newCButtonDelegateT(cefp, true)
+	BaseAddRef(cgop)
+	return newCButtonDelegateT(cefp, byApp, true)
+}
+
+// BindCButtonDelegateT allocates CButtonDelegateT, construct and bind it
+func BindCButtonDelegateT(a interface{}) *CButtonDelegateT {
+	return AllocCButtonDelegateT().Bind(a)
 }
 
 func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
@@ -4230,7 +5129,7 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 	cp := button_delegate.pc_button_delegate
 	if oldGoObj, ok := button_delegate_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CButtonDelegateTAccessor); ok {
-			oldAcc.SetCButtonDelegateT(nil)
+			oldAcc.setCButtonDelegateT(nil)
 		}
 	}
 	button_delegate_handlers.handler[cp] = a
@@ -4302,7 +5201,7 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 	}
 
 	if accessor, ok := a.(CButtonDelegateTAccessor); ok {
-		accessor.SetCButtonDelegateT(button_delegate)
+		accessor.setCButtonDelegateT(button_delegate)
 		Logf("T116.5:")
 	}
 
@@ -4310,29 +5209,34 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 }
 
 func (button_delegate *CButtonDelegateT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CButtonDelegateTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := button_delegate.pc_button_delegate
-	if goHandler, ok := button_delegate_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CButtonDelegateTAccessor); ok1 {
-			accessor.SetCButtonDelegateT(nil)
+		cp := button_delegate.pc_button_delegate
+		if goHandler, ok := button_delegate_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CButtonDelegateTAccessor)
 		}
+		delete(button_delegate_handlers.handler, cp)
+
+		delete(button_delegate_handlers.on_button_pressed_handler, cp)
+		delete(button_delegate_handlers.on_button_state_changed_handler, cp)
+		delete(button_delegate_handlers.get_preferred_size_handler, cp)
+		delete(button_delegate_handlers.get_minimum_size_handler, cp)
+		delete(button_delegate_handlers.get_maximum_size_handler, cp)
+		delete(button_delegate_handlers.get_height_for_width_handler, cp)
+		delete(button_delegate_handlers.on_parent_view_changed_handler, cp)
+		delete(button_delegate_handlers.on_child_view_changed_handler, cp)
+		delete(button_delegate_handlers.on_window_changed_handler, cp)
+		delete(button_delegate_handlers.on_focus_handler, cp)
+		delete(button_delegate_handlers.on_blur_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCButtonDelegateT(nil)
 	}
-	delete(button_delegate_handlers.handler, cp)
-
-	delete(button_delegate_handlers.on_button_pressed_handler, cp)
-	delete(button_delegate_handlers.on_button_state_changed_handler, cp)
-	delete(button_delegate_handlers.get_preferred_size_handler, cp)
-	delete(button_delegate_handlers.get_minimum_size_handler, cp)
-	delete(button_delegate_handlers.get_maximum_size_handler, cp)
-	delete(button_delegate_handlers.get_height_for_width_handler, cp)
-	delete(button_delegate_handlers.on_parent_view_changed_handler, cp)
-	delete(button_delegate_handlers.on_child_view_changed_handler, cp)
-	delete(button_delegate_handlers.on_window_changed_handler, cp)
-	delete(button_delegate_handlers.on_focus_handler, cp)
-	delete(button_delegate_handlers.on_blur_handler, cp)
-
 }
 
 func (button_delegate *CButtonDelegateT) Handler() interface{} {
@@ -4355,6 +5259,8 @@ type cCCallbackT C.cef_callback_t
 type CCallbackT struct {
 	noCopy      noCopy
 	pc_callback *cCCallbackT
+	needsUnref  bool
+	beUnrefed   unrefedBy
 }
 
 type RefToCCallbackT struct {
@@ -4363,36 +5269,82 @@ type RefToCCallbackT struct {
 
 type CCallbackTAccessor interface {
 	GetCCallbackT() *CCallbackT
-	SetCCallbackT(*CCallbackT) (oldValue *CCallbackT)
+	setCCallbackT(*CCallbackT)
+	// TakeOverCCallbackT(*CCallbackT)
+	// NewRefCCallbackT(*CCallbackT)
 }
 
 func (r RefToCCallbackT) GetCCallbackT() *CCallbackT {
 	return r.p_callback
 }
 
-func (r *RefToCCallbackT) SetCCallbackT(p *CCallbackT) (prevValue *CCallbackT) {
-	prevValue = r.p_callback
+func (r *RefToCCallbackT) setCCallbackT(p *CCallbackT) {
+	// prevValue = r.p_callback
+	r.p_callback.ForceUnref()
 	r.p_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCCallbackT) TakeOverCCallbackT(src *CCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_callback.ForceUnref()
+	gop := src.pc_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_callback = newCCallbackT((*C.cef_callback_t)(gop), byApp, true)
+}
+
+func PassCCallbackT(p *CCallbackT) (ret *CCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCCallbackT((*C.cef_callback_t)(p.pc_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCCallbackT) NewRefCCallbackT(p *CCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_callback.ForceUnref()
+	gop := p.pc_callback
+	BaseAddRef(gop)
+	r.p_callback = newCCallbackT((*C.cef_callback_t)(gop), byApp, true)
 }
 
 // Go type CCallbackT wraps cef type *C.cef_callback_t
-func newCCallbackT(p *C.cef_callback_t, countUp bool) *CCallbackT {
+func newCCallbackT(p *C.cef_callback_t, unrefedBy unrefedBy, needsUnref bool) *CCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T117.1:")
 	pc := (*cCCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_callback := &CCallbackT{noCopy{}, pc}
+	go_callback := &CCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_callback, func(g *CCallbackT) {
-		if g.pc_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_callback), "T117.2:")
 			BaseRelease(g.pc_callback)
 		}
 	})
+
 	return go_callback
 }
 
@@ -4406,13 +5358,15 @@ func (p *cCCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (callback *CCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(callback.pc_callback)
+	if callback == nil {
+		return
+	}
+	if callback.needsUnref && callback.beUnrefed == byApp {
+		ret = BaseRelease(callback.pc_callback)
+		callback.beUnrefed = unrefed
+		callback.needsUnref = false
+	}
 	callback.pc_callback = nil
-	return ret
-}
-
-func (callback *CCallbackT) release() (ret bool) {
-	ret = BaseRelease(callback.pc_callback)
 	return ret
 }
 
@@ -4444,6 +5398,8 @@ type cCCompletionCallbackT C.cef_completion_callback_t
 type CCompletionCallbackT struct {
 	noCopy                 noCopy
 	pc_completion_callback *cCCompletionCallbackT
+	needsUnref             bool
+	beUnrefed              unrefedBy
 }
 
 type RefToCCompletionCallbackT struct {
@@ -4452,36 +5408,82 @@ type RefToCCompletionCallbackT struct {
 
 type CCompletionCallbackTAccessor interface {
 	GetCCompletionCallbackT() *CCompletionCallbackT
-	SetCCompletionCallbackT(*CCompletionCallbackT) (oldValue *CCompletionCallbackT)
+	setCCompletionCallbackT(*CCompletionCallbackT)
+	// TakeOverCCompletionCallbackT(*CCompletionCallbackT)
+	// NewRefCCompletionCallbackT(*CCompletionCallbackT)
 }
 
 func (r RefToCCompletionCallbackT) GetCCompletionCallbackT() *CCompletionCallbackT {
 	return r.p_completion_callback
 }
 
-func (r *RefToCCompletionCallbackT) SetCCompletionCallbackT(p *CCompletionCallbackT) (prevValue *CCompletionCallbackT) {
-	prevValue = r.p_completion_callback
+func (r *RefToCCompletionCallbackT) setCCompletionCallbackT(p *CCompletionCallbackT) {
+	// prevValue = r.p_completion_callback
+	r.p_completion_callback.ForceUnref()
 	r.p_completion_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCCompletionCallbackT) TakeOverCCompletionCallbackT(src *CCompletionCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_completion_callback.ForceUnref()
+	gop := src.pc_completion_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_completion_callback = newCCompletionCallbackT((*C.cef_completion_callback_t)(gop), byApp, true)
+}
+
+func PassCCompletionCallbackT(p *CCompletionCallbackT) (ret *CCompletionCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_completion_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCCompletionCallbackT((*C.cef_completion_callback_t)(p.pc_completion_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCCompletionCallbackT) NewRefCCompletionCallbackT(p *CCompletionCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_completion_callback.ForceUnref()
+	gop := p.pc_completion_callback
+	BaseAddRef(gop)
+	r.p_completion_callback = newCCompletionCallbackT((*C.cef_completion_callback_t)(gop), byApp, true)
 }
 
 // Go type CCompletionCallbackT wraps cef type *C.cef_completion_callback_t
-func newCCompletionCallbackT(p *C.cef_completion_callback_t, countUp bool) *CCompletionCallbackT {
+func newCCompletionCallbackT(p *C.cef_completion_callback_t, unrefedBy unrefedBy, needsUnref bool) *CCompletionCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T118.1:")
 	pc := (*cCCompletionCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_completion_callback := &CCompletionCallbackT{noCopy{}, pc}
+	go_completion_callback := &CCompletionCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_completion_callback, func(g *CCompletionCallbackT) {
-		if g.pc_completion_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_completion_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_completion_callback), "T118.2:")
 			BaseRelease(g.pc_completion_callback)
 		}
 	})
+
 	return go_completion_callback
 }
 
@@ -4495,13 +5497,15 @@ func (p *cCCompletionCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 }
 
 func (completion_callback *CCompletionCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(completion_callback.pc_completion_callback)
+	if completion_callback == nil {
+		return
+	}
+	if completion_callback.needsUnref && completion_callback.beUnrefed == byApp {
+		ret = BaseRelease(completion_callback.pc_completion_callback)
+		completion_callback.beUnrefed = unrefed
+		completion_callback.needsUnref = false
+	}
 	completion_callback.pc_completion_callback = nil
-	return ret
-}
-
-func (completion_callback *CCompletionCallbackT) release() (ret bool) {
-	ret = BaseRelease(completion_callback.pc_completion_callback)
 	return ret
 }
 
@@ -4524,8 +5528,10 @@ type cCClientT C.cef_client_t
 
 // Go type for cef_client_t
 type CClientT struct {
-	noCopy    noCopy
-	pc_client *cCClientT
+	noCopy     noCopy
+	pc_client  *cCClientT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCClientT struct {
@@ -4534,36 +5540,82 @@ type RefToCClientT struct {
 
 type CClientTAccessor interface {
 	GetCClientT() *CClientT
-	SetCClientT(*CClientT) (oldValue *CClientT)
+	setCClientT(*CClientT)
+	// TakeOverCClientT(*CClientT)
+	// NewRefCClientT(*CClientT)
 }
 
 func (r RefToCClientT) GetCClientT() *CClientT {
 	return r.p_client
 }
 
-func (r *RefToCClientT) SetCClientT(p *CClientT) (prevValue *CClientT) {
-	prevValue = r.p_client
+func (r *RefToCClientT) setCClientT(p *CClientT) {
+	// prevValue = r.p_client
+	r.p_client.ForceUnref()
 	r.p_client = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCClientT) TakeOverCClientT(src *CClientT) {
+	if r == nil {
+		return
+	}
+	r.p_client.ForceUnref()
+	gop := src.pc_client
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_client = newCClientT((*C.cef_client_t)(gop), byApp, true)
+}
+
+func PassCClientT(p *CClientT) (ret *CClientT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_client)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCClientT((*C.cef_client_t)(p.pc_client), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCClientT) NewRefCClientT(p *CClientT) {
+	if r == nil {
+		return
+	}
+	r.p_client.ForceUnref()
+	gop := p.pc_client
+	BaseAddRef(gop)
+	r.p_client = newCClientT((*C.cef_client_t)(gop), byApp, true)
 }
 
 // Go type CClientT wraps cef type *C.cef_client_t
-func newCClientT(p *C.cef_client_t, countUp bool) *CClientT {
+func newCClientT(p *C.cef_client_t, unrefedBy unrefedBy, needsUnref bool) *CClientT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T119.1:")
 	pc := (*cCClientT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_client := &CClientT{noCopy{}, pc}
+	go_client := &CClientT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_client, func(g *CClientT) {
-		if g.pc_client != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_client != nil {
 			Tracef(unsafe.Pointer(g.pc_client), "T119.2:")
 			BaseRelease(g.pc_client)
 		}
 	})
+
 	return go_client
 }
 
@@ -4577,13 +5629,15 @@ func (p *cCClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (client *CClientT) ForceUnref() (ret bool) {
-	ret = BaseRelease(client.pc_client)
+	if client == nil {
+		return
+	}
+	if client.needsUnref && client.beUnrefed == byApp {
+		ret = BaseRelease(client.pc_client)
+		client.beUnrefed = unrefed
+		client.needsUnref = false
+	}
 	client.pc_client = nil
-	return ret
-}
-
-func (client *CClientT) release() (ret bool) {
-	ret = BaseRelease(client.pc_client)
 	return ret
 }
 
@@ -4826,7 +5880,13 @@ func AllocCClientT() *CClientT {
 		delete(client_handlers.on_process_message_received_handler, cgop)
 	}))
 
-	return newCClientT(cefp, true)
+	BaseAddRef(cgop)
+	return newCClientT(cefp, byApp, true)
+}
+
+// BindCClientT allocates CClientT, construct and bind it
+func BindCClientT(a interface{}) *CClientT {
+	return AllocCClientT().Bind(a)
 }
 
 func (client *CClientT) Bind(a interface{}) *CClientT {
@@ -4836,7 +5896,7 @@ func (client *CClientT) Bind(a interface{}) *CClientT {
 	cp := client.pc_client
 	if oldGoObj, ok := client_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CClientTAccessor); ok {
-			oldAcc.SetCClientT(nil)
+			oldAcc.setCClientT(nil)
 		}
 	}
 	client_handlers.handler[cp] = a
@@ -4944,7 +6004,7 @@ func (client *CClientT) Bind(a interface{}) *CClientT {
 	}
 
 	if accessor, ok := a.(CClientTAccessor); ok {
-		accessor.SetCClientT(client)
+		accessor.setCClientT(client)
 		Logf("T119.5:")
 	}
 
@@ -4952,35 +6012,40 @@ func (client *CClientT) Bind(a interface{}) *CClientT {
 }
 
 func (client *CClientT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CClientTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := client.pc_client
-	if goHandler, ok := client_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CClientTAccessor); ok1 {
-			accessor.SetCClientT(nil)
+		cp := client.pc_client
+		if goHandler, ok := client_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CClientTAccessor)
 		}
+		delete(client_handlers.handler, cp)
+
+		delete(client_handlers.get_audio_handler_handler, cp)
+		delete(client_handlers.get_context_menu_handler_handler, cp)
+		delete(client_handlers.get_dialog_handler_handler, cp)
+		delete(client_handlers.get_display_handler_handler, cp)
+		delete(client_handlers.get_download_handler_handler, cp)
+		delete(client_handlers.get_drag_handler_handler, cp)
+		delete(client_handlers.get_find_handler_handler, cp)
+		delete(client_handlers.get_focus_handler_handler, cp)
+		delete(client_handlers.get_frame_handler_handler, cp)
+		delete(client_handlers.get_jsdialog_handler_handler, cp)
+		delete(client_handlers.get_keyboard_handler_handler, cp)
+		delete(client_handlers.get_life_span_handler_handler, cp)
+		delete(client_handlers.get_load_handler_handler, cp)
+		delete(client_handlers.get_print_handler_handler, cp)
+		delete(client_handlers.get_render_handler_handler, cp)
+		delete(client_handlers.get_request_handler_handler, cp)
+		delete(client_handlers.on_process_message_received_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCClientT(nil)
 	}
-	delete(client_handlers.handler, cp)
-
-	delete(client_handlers.get_audio_handler_handler, cp)
-	delete(client_handlers.get_context_menu_handler_handler, cp)
-	delete(client_handlers.get_dialog_handler_handler, cp)
-	delete(client_handlers.get_display_handler_handler, cp)
-	delete(client_handlers.get_download_handler_handler, cp)
-	delete(client_handlers.get_drag_handler_handler, cp)
-	delete(client_handlers.get_find_handler_handler, cp)
-	delete(client_handlers.get_focus_handler_handler, cp)
-	delete(client_handlers.get_frame_handler_handler, cp)
-	delete(client_handlers.get_jsdialog_handler_handler, cp)
-	delete(client_handlers.get_keyboard_handler_handler, cp)
-	delete(client_handlers.get_life_span_handler_handler, cp)
-	delete(client_handlers.get_load_handler_handler, cp)
-	delete(client_handlers.get_print_handler_handler, cp)
-	delete(client_handlers.get_render_handler_handler, cp)
-	delete(client_handlers.get_request_handler_handler, cp)
-	delete(client_handlers.on_process_message_received_handler, cp)
-
 }
 
 func (client *CClientT) Handler() interface{} {
@@ -5010,6 +6075,8 @@ type cCCommandLineT C.cef_command_line_t
 type CCommandLineT struct {
 	noCopy          noCopy
 	pc_command_line *cCCommandLineT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCCommandLineT struct {
@@ -5018,36 +6085,82 @@ type RefToCCommandLineT struct {
 
 type CCommandLineTAccessor interface {
 	GetCCommandLineT() *CCommandLineT
-	SetCCommandLineT(*CCommandLineT) (oldValue *CCommandLineT)
+	setCCommandLineT(*CCommandLineT)
+	// TakeOverCCommandLineT(*CCommandLineT)
+	// NewRefCCommandLineT(*CCommandLineT)
 }
 
 func (r RefToCCommandLineT) GetCCommandLineT() *CCommandLineT {
 	return r.p_command_line
 }
 
-func (r *RefToCCommandLineT) SetCCommandLineT(p *CCommandLineT) (prevValue *CCommandLineT) {
-	prevValue = r.p_command_line
+func (r *RefToCCommandLineT) setCCommandLineT(p *CCommandLineT) {
+	// prevValue = r.p_command_line
+	r.p_command_line.ForceUnref()
 	r.p_command_line = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCCommandLineT) TakeOverCCommandLineT(src *CCommandLineT) {
+	if r == nil {
+		return
+	}
+	r.p_command_line.ForceUnref()
+	gop := src.pc_command_line
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_command_line = newCCommandLineT((*C.cef_command_line_t)(gop), byApp, true)
+}
+
+func PassCCommandLineT(p *CCommandLineT) (ret *CCommandLineT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_command_line)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCCommandLineT((*C.cef_command_line_t)(p.pc_command_line), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCCommandLineT) NewRefCCommandLineT(p *CCommandLineT) {
+	if r == nil {
+		return
+	}
+	r.p_command_line.ForceUnref()
+	gop := p.pc_command_line
+	BaseAddRef(gop)
+	r.p_command_line = newCCommandLineT((*C.cef_command_line_t)(gop), byApp, true)
 }
 
 // Go type CCommandLineT wraps cef type *C.cef_command_line_t
-func newCCommandLineT(p *C.cef_command_line_t, countUp bool) *CCommandLineT {
+func newCCommandLineT(p *C.cef_command_line_t, unrefedBy unrefedBy, needsUnref bool) *CCommandLineT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T120.1:")
 	pc := (*cCCommandLineT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_command_line := &CCommandLineT{noCopy{}, pc}
+	go_command_line := &CCommandLineT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_command_line, func(g *CCommandLineT) {
-		if g.pc_command_line != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_command_line != nil {
 			Tracef(unsafe.Pointer(g.pc_command_line), "T120.2:")
 			BaseRelease(g.pc_command_line)
 		}
 	})
+
 	return go_command_line
 }
 
@@ -5061,13 +6174,15 @@ func (p *cCCommandLineT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (command_line *CCommandLineT) ForceUnref() (ret bool) {
-	ret = BaseRelease(command_line.pc_command_line)
+	if command_line == nil {
+		return
+	}
+	if command_line.needsUnref && command_line.beUnrefed == byApp {
+		ret = BaseRelease(command_line.pc_command_line)
+		command_line.beUnrefed = unrefed
+		command_line.needsUnref = false
+	}
 	command_line.pc_command_line = nil
-	return ret
-}
-
-func (command_line *CCommandLineT) release() (ret bool) {
-	ret = BaseRelease(command_line.pc_command_line)
 	return ret
 }
 
@@ -5102,7 +6217,7 @@ func (self *CCommandLineT) Copy() (ret *CCommandLineT) {
 
 	cRet := C.cefingo_command_line_copy((*C.cef_command_line_t)(self.pc_command_line))
 
-	ret = newCCommandLineT(cRet, false)
+	ret = newCCommandLineT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -5324,7 +6439,7 @@ func CommandLineCreate() (ret *CCommandLineT) {
 
 	cRet := C.cef_command_line_create()
 
-	ret = newCCommandLineT(cRet, false)
+	ret = newCCommandLineT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -5336,7 +6451,7 @@ func CommandLineGetGlobal() (ret *CCommandLineT) {
 
 	cRet := C.cef_command_line_get_global()
 
-	ret = newCCommandLineT(cRet, false)
+	ret = newCCommandLineT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -5352,6 +6467,8 @@ type cCRunContextMenuCallbackT C.cef_run_context_menu_callback_t
 type CRunContextMenuCallbackT struct {
 	noCopy                       noCopy
 	pc_run_context_menu_callback *cCRunContextMenuCallbackT
+	needsUnref                   bool
+	beUnrefed                    unrefedBy
 }
 
 type RefToCRunContextMenuCallbackT struct {
@@ -5360,36 +6477,82 @@ type RefToCRunContextMenuCallbackT struct {
 
 type CRunContextMenuCallbackTAccessor interface {
 	GetCRunContextMenuCallbackT() *CRunContextMenuCallbackT
-	SetCRunContextMenuCallbackT(*CRunContextMenuCallbackT) (oldValue *CRunContextMenuCallbackT)
+	setCRunContextMenuCallbackT(*CRunContextMenuCallbackT)
+	// TakeOverCRunContextMenuCallbackT(*CRunContextMenuCallbackT)
+	// NewRefCRunContextMenuCallbackT(*CRunContextMenuCallbackT)
 }
 
 func (r RefToCRunContextMenuCallbackT) GetCRunContextMenuCallbackT() *CRunContextMenuCallbackT {
 	return r.p_run_context_menu_callback
 }
 
-func (r *RefToCRunContextMenuCallbackT) SetCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) (prevValue *CRunContextMenuCallbackT) {
-	prevValue = r.p_run_context_menu_callback
+func (r *RefToCRunContextMenuCallbackT) setCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) {
+	// prevValue = r.p_run_context_menu_callback
+	r.p_run_context_menu_callback.ForceUnref()
 	r.p_run_context_menu_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRunContextMenuCallbackT) TakeOverCRunContextMenuCallbackT(src *CRunContextMenuCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_run_context_menu_callback.ForceUnref()
+	gop := src.pc_run_context_menu_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_run_context_menu_callback = newCRunContextMenuCallbackT((*C.cef_run_context_menu_callback_t)(gop), byApp, true)
+}
+
+func PassCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) (ret *CRunContextMenuCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_run_context_menu_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRunContextMenuCallbackT((*C.cef_run_context_menu_callback_t)(p.pc_run_context_menu_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRunContextMenuCallbackT) NewRefCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_run_context_menu_callback.ForceUnref()
+	gop := p.pc_run_context_menu_callback
+	BaseAddRef(gop)
+	r.p_run_context_menu_callback = newCRunContextMenuCallbackT((*C.cef_run_context_menu_callback_t)(gop), byApp, true)
 }
 
 // Go type CRunContextMenuCallbackT wraps cef type *C.cef_run_context_menu_callback_t
-func newCRunContextMenuCallbackT(p *C.cef_run_context_menu_callback_t, countUp bool) *CRunContextMenuCallbackT {
+func newCRunContextMenuCallbackT(p *C.cef_run_context_menu_callback_t, unrefedBy unrefedBy, needsUnref bool) *CRunContextMenuCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T121.1:")
 	pc := (*cCRunContextMenuCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_run_context_menu_callback := &CRunContextMenuCallbackT{noCopy{}, pc}
+	go_run_context_menu_callback := &CRunContextMenuCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_run_context_menu_callback, func(g *CRunContextMenuCallbackT) {
-		if g.pc_run_context_menu_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_run_context_menu_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_run_context_menu_callback), "T121.2:")
 			BaseRelease(g.pc_run_context_menu_callback)
 		}
 	})
+
 	return go_run_context_menu_callback
 }
 
@@ -5403,13 +6566,15 @@ func (p *cCRunContextMenuCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_r
 }
 
 func (run_context_menu_callback *CRunContextMenuCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(run_context_menu_callback.pc_run_context_menu_callback)
+	if run_context_menu_callback == nil {
+		return
+	}
+	if run_context_menu_callback.needsUnref && run_context_menu_callback.beUnrefed == byApp {
+		ret = BaseRelease(run_context_menu_callback.pc_run_context_menu_callback)
+		run_context_menu_callback.beUnrefed = unrefed
+		run_context_menu_callback.needsUnref = false
+	}
 	run_context_menu_callback.pc_run_context_menu_callback = nil
-	return ret
-}
-
-func (run_context_menu_callback *CRunContextMenuCallbackT) release() (ret bool) {
-	ret = BaseRelease(run_context_menu_callback.pc_run_context_menu_callback)
 	return ret
 }
 
@@ -5446,6 +6611,8 @@ type cCContextMenuHandlerT C.cef_context_menu_handler_t
 type CContextMenuHandlerT struct {
 	noCopy                  noCopy
 	pc_context_menu_handler *cCContextMenuHandlerT
+	needsUnref              bool
+	beUnrefed               unrefedBy
 }
 
 type RefToCContextMenuHandlerT struct {
@@ -5454,36 +6621,82 @@ type RefToCContextMenuHandlerT struct {
 
 type CContextMenuHandlerTAccessor interface {
 	GetCContextMenuHandlerT() *CContextMenuHandlerT
-	SetCContextMenuHandlerT(*CContextMenuHandlerT) (oldValue *CContextMenuHandlerT)
+	setCContextMenuHandlerT(*CContextMenuHandlerT)
+	// TakeOverCContextMenuHandlerT(*CContextMenuHandlerT)
+	// NewRefCContextMenuHandlerT(*CContextMenuHandlerT)
 }
 
 func (r RefToCContextMenuHandlerT) GetCContextMenuHandlerT() *CContextMenuHandlerT {
 	return r.p_context_menu_handler
 }
 
-func (r *RefToCContextMenuHandlerT) SetCContextMenuHandlerT(p *CContextMenuHandlerT) (prevValue *CContextMenuHandlerT) {
-	prevValue = r.p_context_menu_handler
+func (r *RefToCContextMenuHandlerT) setCContextMenuHandlerT(p *CContextMenuHandlerT) {
+	// prevValue = r.p_context_menu_handler
+	r.p_context_menu_handler.ForceUnref()
 	r.p_context_menu_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCContextMenuHandlerT) TakeOverCContextMenuHandlerT(src *CContextMenuHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_context_menu_handler.ForceUnref()
+	gop := src.pc_context_menu_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_context_menu_handler = newCContextMenuHandlerT((*C.cef_context_menu_handler_t)(gop), byApp, true)
+}
+
+func PassCContextMenuHandlerT(p *CContextMenuHandlerT) (ret *CContextMenuHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_context_menu_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCContextMenuHandlerT((*C.cef_context_menu_handler_t)(p.pc_context_menu_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCContextMenuHandlerT) NewRefCContextMenuHandlerT(p *CContextMenuHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_context_menu_handler.ForceUnref()
+	gop := p.pc_context_menu_handler
+	BaseAddRef(gop)
+	r.p_context_menu_handler = newCContextMenuHandlerT((*C.cef_context_menu_handler_t)(gop), byApp, true)
 }
 
 // Go type CContextMenuHandlerT wraps cef type *C.cef_context_menu_handler_t
-func newCContextMenuHandlerT(p *C.cef_context_menu_handler_t, countUp bool) *CContextMenuHandlerT {
+func newCContextMenuHandlerT(p *C.cef_context_menu_handler_t, unrefedBy unrefedBy, needsUnref bool) *CContextMenuHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T122.1:")
 	pc := (*cCContextMenuHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_context_menu_handler := &CContextMenuHandlerT{noCopy{}, pc}
+	go_context_menu_handler := &CContextMenuHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_context_menu_handler, func(g *CContextMenuHandlerT) {
-		if g.pc_context_menu_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_context_menu_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_context_menu_handler), "T122.2:")
 			BaseRelease(g.pc_context_menu_handler)
 		}
 	})
+
 	return go_context_menu_handler
 }
 
@@ -5497,13 +6710,15 @@ func (p *cCContextMenuHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 }
 
 func (context_menu_handler *CContextMenuHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(context_menu_handler.pc_context_menu_handler)
+	if context_menu_handler == nil {
+		return
+	}
+	if context_menu_handler.needsUnref && context_menu_handler.beUnrefed == byApp {
+		ret = BaseRelease(context_menu_handler.pc_context_menu_handler)
+		context_menu_handler.beUnrefed = unrefed
+		context_menu_handler.needsUnref = false
+	}
 	context_menu_handler.pc_context_menu_handler = nil
-	return ret
-}
-
-func (context_menu_handler *CContextMenuHandlerT) release() (ret bool) {
-	ret = BaseRelease(context_menu_handler.pc_context_menu_handler)
 	return ret
 }
 
@@ -5609,7 +6824,13 @@ func AllocCContextMenuHandlerT() *CContextMenuHandlerT {
 		delete(context_menu_handler_handlers.on_context_menu_dismissed_handler, cgop)
 	}))
 
-	return newCContextMenuHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCContextMenuHandlerT(cefp, byApp, true)
+}
+
+// BindCContextMenuHandlerT allocates CContextMenuHandlerT, construct and bind it
+func BindCContextMenuHandlerT(a interface{}) *CContextMenuHandlerT {
+	return AllocCContextMenuHandlerT().Bind(a)
 }
 
 func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextMenuHandlerT {
@@ -5619,7 +6840,7 @@ func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextM
 	cp := context_menu_handler.pc_context_menu_handler
 	if oldGoObj, ok := context_menu_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CContextMenuHandlerTAccessor); ok {
-			oldAcc.SetCContextMenuHandlerT(nil)
+			oldAcc.setCContextMenuHandlerT(nil)
 		}
 	}
 	context_menu_handler_handlers.handler[cp] = a
@@ -5649,7 +6870,7 @@ func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextM
 	}
 
 	if accessor, ok := a.(CContextMenuHandlerTAccessor); ok {
-		accessor.SetCContextMenuHandlerT(context_menu_handler)
+		accessor.setCContextMenuHandlerT(context_menu_handler)
 		Logf("T122.5:")
 	}
 
@@ -5657,22 +6878,27 @@ func (context_menu_handler *CContextMenuHandlerT) Bind(a interface{}) *CContextM
 }
 
 func (context_menu_handler *CContextMenuHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CContextMenuHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := context_menu_handler.pc_context_menu_handler
-	if goHandler, ok := context_menu_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CContextMenuHandlerTAccessor); ok1 {
-			accessor.SetCContextMenuHandlerT(nil)
+		cp := context_menu_handler.pc_context_menu_handler
+		if goHandler, ok := context_menu_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CContextMenuHandlerTAccessor)
 		}
+		delete(context_menu_handler_handlers.handler, cp)
+
+		delete(context_menu_handler_handlers.on_before_context_menu_handler, cp)
+		delete(context_menu_handler_handlers.run_context_menu_handler, cp)
+		delete(context_menu_handler_handlers.on_context_menu_command_handler, cp)
+		delete(context_menu_handler_handlers.on_context_menu_dismissed_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCContextMenuHandlerT(nil)
 	}
-	delete(context_menu_handler_handlers.handler, cp)
-
-	delete(context_menu_handler_handlers.on_before_context_menu_handler, cp)
-	delete(context_menu_handler_handlers.run_context_menu_handler, cp)
-	delete(context_menu_handler_handlers.on_context_menu_command_handler, cp)
-	delete(context_menu_handler_handlers.on_context_menu_dismissed_handler, cp)
-
 }
 
 func (context_menu_handler *CContextMenuHandlerT) Handler() interface{} {
@@ -5694,6 +6920,8 @@ type cCContextMenuParamsT C.cef_context_menu_params_t
 type CContextMenuParamsT struct {
 	noCopy                 noCopy
 	pc_context_menu_params *cCContextMenuParamsT
+	needsUnref             bool
+	beUnrefed              unrefedBy
 }
 
 type RefToCContextMenuParamsT struct {
@@ -5702,36 +6930,82 @@ type RefToCContextMenuParamsT struct {
 
 type CContextMenuParamsTAccessor interface {
 	GetCContextMenuParamsT() *CContextMenuParamsT
-	SetCContextMenuParamsT(*CContextMenuParamsT) (oldValue *CContextMenuParamsT)
+	setCContextMenuParamsT(*CContextMenuParamsT)
+	// TakeOverCContextMenuParamsT(*CContextMenuParamsT)
+	// NewRefCContextMenuParamsT(*CContextMenuParamsT)
 }
 
 func (r RefToCContextMenuParamsT) GetCContextMenuParamsT() *CContextMenuParamsT {
 	return r.p_context_menu_params
 }
 
-func (r *RefToCContextMenuParamsT) SetCContextMenuParamsT(p *CContextMenuParamsT) (prevValue *CContextMenuParamsT) {
-	prevValue = r.p_context_menu_params
+func (r *RefToCContextMenuParamsT) setCContextMenuParamsT(p *CContextMenuParamsT) {
+	// prevValue = r.p_context_menu_params
+	r.p_context_menu_params.ForceUnref()
 	r.p_context_menu_params = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCContextMenuParamsT) TakeOverCContextMenuParamsT(src *CContextMenuParamsT) {
+	if r == nil {
+		return
+	}
+	r.p_context_menu_params.ForceUnref()
+	gop := src.pc_context_menu_params
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_context_menu_params = newCContextMenuParamsT((*C.cef_context_menu_params_t)(gop), byApp, true)
+}
+
+func PassCContextMenuParamsT(p *CContextMenuParamsT) (ret *CContextMenuParamsT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_context_menu_params)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCContextMenuParamsT((*C.cef_context_menu_params_t)(p.pc_context_menu_params), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCContextMenuParamsT) NewRefCContextMenuParamsT(p *CContextMenuParamsT) {
+	if r == nil {
+		return
+	}
+	r.p_context_menu_params.ForceUnref()
+	gop := p.pc_context_menu_params
+	BaseAddRef(gop)
+	r.p_context_menu_params = newCContextMenuParamsT((*C.cef_context_menu_params_t)(gop), byApp, true)
 }
 
 // Go type CContextMenuParamsT wraps cef type *C.cef_context_menu_params_t
-func newCContextMenuParamsT(p *C.cef_context_menu_params_t, countUp bool) *CContextMenuParamsT {
+func newCContextMenuParamsT(p *C.cef_context_menu_params_t, unrefedBy unrefedBy, needsUnref bool) *CContextMenuParamsT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T123.1:")
 	pc := (*cCContextMenuParamsT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_context_menu_params := &CContextMenuParamsT{noCopy{}, pc}
+	go_context_menu_params := &CContextMenuParamsT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_context_menu_params, func(g *CContextMenuParamsT) {
-		if g.pc_context_menu_params != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_context_menu_params != nil {
 			Tracef(unsafe.Pointer(g.pc_context_menu_params), "T123.2:")
 			BaseRelease(g.pc_context_menu_params)
 		}
 	})
+
 	return go_context_menu_params
 }
 
@@ -5745,13 +7019,15 @@ func (p *cCContextMenuParamsT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 }
 
 func (context_menu_params *CContextMenuParamsT) ForceUnref() (ret bool) {
-	ret = BaseRelease(context_menu_params.pc_context_menu_params)
+	if context_menu_params == nil {
+		return
+	}
+	if context_menu_params.needsUnref && context_menu_params.beUnrefed == byApp {
+		ret = BaseRelease(context_menu_params.pc_context_menu_params)
+		context_menu_params.beUnrefed = unrefed
+		context_menu_params.needsUnref = false
+	}
 	context_menu_params.pc_context_menu_params = nil
-	return ret
-}
-
-func (context_menu_params *CContextMenuParamsT) release() (ret bool) {
-	ret = BaseRelease(context_menu_params.pc_context_menu_params)
 	return ret
 }
 
@@ -5787,7 +7063,7 @@ func (self *CContextMenuParamsT) GetTypeFlags() (ret CContextMenuTypeFlagsT) {
 
 	cRet := C.cefingo_context_menu_params_get_type_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
-	ret = CContextMenuTypeFlagsT(cRet)
+	ret = CContextMenuTypeFlagsT(cRet) // return GoObj
 	return ret
 }
 
@@ -5927,7 +7203,7 @@ func (self *CContextMenuParamsT) GetMediaType() (ret CContextMenuMediaTypeT) {
 
 	cRet := C.cefingo_context_menu_params_get_media_type((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
-	ret = CContextMenuMediaTypeT(cRet)
+	ret = CContextMenuMediaTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -5939,7 +7215,7 @@ func (self *CContextMenuParamsT) GetMediaStateFlags() (ret CContextMenuMediaStat
 
 	cRet := C.cefingo_context_menu_params_get_media_state_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
-	ret = CContextMenuMediaStateFlagsT(cRet)
+	ret = CContextMenuMediaStateFlagsT(cRet) // return GoObj
 	return ret
 }
 
@@ -6023,7 +7299,7 @@ func (self *CContextMenuParamsT) GetEditStateFlags() (ret CContextMenuEditStateF
 
 	cRet := C.cefingo_context_menu_params_get_edit_state_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
 
-	ret = CContextMenuEditStateFlagsT(cRet)
+	ret = CContextMenuEditStateFlagsT(cRet) // return GoObj
 	return ret
 }
 
@@ -6053,6 +7329,8 @@ type cCCookieManagerT C.cef_cookie_manager_t
 type CCookieManagerT struct {
 	noCopy            noCopy
 	pc_cookie_manager *cCCookieManagerT
+	needsUnref        bool
+	beUnrefed         unrefedBy
 }
 
 type RefToCCookieManagerT struct {
@@ -6061,36 +7339,82 @@ type RefToCCookieManagerT struct {
 
 type CCookieManagerTAccessor interface {
 	GetCCookieManagerT() *CCookieManagerT
-	SetCCookieManagerT(*CCookieManagerT) (oldValue *CCookieManagerT)
+	setCCookieManagerT(*CCookieManagerT)
+	// TakeOverCCookieManagerT(*CCookieManagerT)
+	// NewRefCCookieManagerT(*CCookieManagerT)
 }
 
 func (r RefToCCookieManagerT) GetCCookieManagerT() *CCookieManagerT {
 	return r.p_cookie_manager
 }
 
-func (r *RefToCCookieManagerT) SetCCookieManagerT(p *CCookieManagerT) (prevValue *CCookieManagerT) {
-	prevValue = r.p_cookie_manager
+func (r *RefToCCookieManagerT) setCCookieManagerT(p *CCookieManagerT) {
+	// prevValue = r.p_cookie_manager
+	r.p_cookie_manager.ForceUnref()
 	r.p_cookie_manager = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCCookieManagerT) TakeOverCCookieManagerT(src *CCookieManagerT) {
+	if r == nil {
+		return
+	}
+	r.p_cookie_manager.ForceUnref()
+	gop := src.pc_cookie_manager
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_cookie_manager = newCCookieManagerT((*C.cef_cookie_manager_t)(gop), byApp, true)
+}
+
+func PassCCookieManagerT(p *CCookieManagerT) (ret *CCookieManagerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_cookie_manager)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCCookieManagerT((*C.cef_cookie_manager_t)(p.pc_cookie_manager), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCCookieManagerT) NewRefCCookieManagerT(p *CCookieManagerT) {
+	if r == nil {
+		return
+	}
+	r.p_cookie_manager.ForceUnref()
+	gop := p.pc_cookie_manager
+	BaseAddRef(gop)
+	r.p_cookie_manager = newCCookieManagerT((*C.cef_cookie_manager_t)(gop), byApp, true)
 }
 
 // Go type CCookieManagerT wraps cef type *C.cef_cookie_manager_t
-func newCCookieManagerT(p *C.cef_cookie_manager_t, countUp bool) *CCookieManagerT {
+func newCCookieManagerT(p *C.cef_cookie_manager_t, unrefedBy unrefedBy, needsUnref bool) *CCookieManagerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T124.1:")
 	pc := (*cCCookieManagerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_cookie_manager := &CCookieManagerT{noCopy{}, pc}
+	go_cookie_manager := &CCookieManagerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_cookie_manager, func(g *CCookieManagerT) {
-		if g.pc_cookie_manager != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_cookie_manager != nil {
 			Tracef(unsafe.Pointer(g.pc_cookie_manager), "T124.2:")
 			BaseRelease(g.pc_cookie_manager)
 		}
 	})
+
 	return go_cookie_manager
 }
 
@@ -6104,13 +7428,15 @@ func (p *cCCookieManagerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (cookie_manager *CCookieManagerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(cookie_manager.pc_cookie_manager)
+	if cookie_manager == nil {
+		return
+	}
+	if cookie_manager.needsUnref && cookie_manager.beUnrefed == byApp {
+		ret = BaseRelease(cookie_manager.pc_cookie_manager)
+		cookie_manager.beUnrefed = unrefed
+		cookie_manager.needsUnref = false
+	}
 	cookie_manager.pc_cookie_manager = nil
-	return ret
-}
-
-func (cookie_manager *CCookieManagerT) release() (ret bool) {
-	ret = BaseRelease(cookie_manager.pc_cookie_manager)
 	return ret
 }
 
@@ -6255,7 +7581,7 @@ func CookieManagerGetGlobalManager(
 
 	cRet := C.cef_cookie_manager_get_global_manager(goTmpcallback)
 
-	ret = newCCookieManagerT(cRet, false)
+	ret = newCCookieManagerT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -6270,6 +7596,8 @@ type cCCookieVisitorT C.cef_cookie_visitor_t
 type CCookieVisitorT struct {
 	noCopy            noCopy
 	pc_cookie_visitor *cCCookieVisitorT
+	needsUnref        bool
+	beUnrefed         unrefedBy
 }
 
 type RefToCCookieVisitorT struct {
@@ -6278,36 +7606,82 @@ type RefToCCookieVisitorT struct {
 
 type CCookieVisitorTAccessor interface {
 	GetCCookieVisitorT() *CCookieVisitorT
-	SetCCookieVisitorT(*CCookieVisitorT) (oldValue *CCookieVisitorT)
+	setCCookieVisitorT(*CCookieVisitorT)
+	// TakeOverCCookieVisitorT(*CCookieVisitorT)
+	// NewRefCCookieVisitorT(*CCookieVisitorT)
 }
 
 func (r RefToCCookieVisitorT) GetCCookieVisitorT() *CCookieVisitorT {
 	return r.p_cookie_visitor
 }
 
-func (r *RefToCCookieVisitorT) SetCCookieVisitorT(p *CCookieVisitorT) (prevValue *CCookieVisitorT) {
-	prevValue = r.p_cookie_visitor
+func (r *RefToCCookieVisitorT) setCCookieVisitorT(p *CCookieVisitorT) {
+	// prevValue = r.p_cookie_visitor
+	r.p_cookie_visitor.ForceUnref()
 	r.p_cookie_visitor = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCCookieVisitorT) TakeOverCCookieVisitorT(src *CCookieVisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_cookie_visitor.ForceUnref()
+	gop := src.pc_cookie_visitor
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_cookie_visitor = newCCookieVisitorT((*C.cef_cookie_visitor_t)(gop), byApp, true)
+}
+
+func PassCCookieVisitorT(p *CCookieVisitorT) (ret *CCookieVisitorT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_cookie_visitor)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCCookieVisitorT((*C.cef_cookie_visitor_t)(p.pc_cookie_visitor), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCCookieVisitorT) NewRefCCookieVisitorT(p *CCookieVisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_cookie_visitor.ForceUnref()
+	gop := p.pc_cookie_visitor
+	BaseAddRef(gop)
+	r.p_cookie_visitor = newCCookieVisitorT((*C.cef_cookie_visitor_t)(gop), byApp, true)
 }
 
 // Go type CCookieVisitorT wraps cef type *C.cef_cookie_visitor_t
-func newCCookieVisitorT(p *C.cef_cookie_visitor_t, countUp bool) *CCookieVisitorT {
+func newCCookieVisitorT(p *C.cef_cookie_visitor_t, unrefedBy unrefedBy, needsUnref bool) *CCookieVisitorT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T125.1:")
 	pc := (*cCCookieVisitorT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_cookie_visitor := &CCookieVisitorT{noCopy{}, pc}
+	go_cookie_visitor := &CCookieVisitorT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_cookie_visitor, func(g *CCookieVisitorT) {
-		if g.pc_cookie_visitor != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_cookie_visitor != nil {
 			Tracef(unsafe.Pointer(g.pc_cookie_visitor), "T125.2:")
 			BaseRelease(g.pc_cookie_visitor)
 		}
 	})
+
 	return go_cookie_visitor
 }
 
@@ -6321,13 +7695,15 @@ func (p *cCCookieVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (cookie_visitor *CCookieVisitorT) ForceUnref() (ret bool) {
-	ret = BaseRelease(cookie_visitor.pc_cookie_visitor)
+	if cookie_visitor == nil {
+		return
+	}
+	if cookie_visitor.needsUnref && cookie_visitor.beUnrefed == byApp {
+		ret = BaseRelease(cookie_visitor.pc_cookie_visitor)
+		cookie_visitor.beUnrefed = unrefed
+		cookie_visitor.needsUnref = false
+	}
 	cookie_visitor.pc_cookie_visitor = nil
-	return ret
-}
-
-func (cookie_visitor *CCookieVisitorT) release() (ret bool) {
-	ret = BaseRelease(cookie_visitor.pc_cookie_visitor)
 	return ret
 }
 
@@ -6372,7 +7748,13 @@ func AllocCCookieVisitorT() *CCookieVisitorT {
 		delete(cookie_visitor_handlers.visit_handler, cgop)
 	}))
 
-	return newCCookieVisitorT(cefp, true)
+	BaseAddRef(cgop)
+	return newCCookieVisitorT(cefp, byApp, true)
+}
+
+// BindCCookieVisitorT allocates CCookieVisitorT, construct and bind it
+func BindCCookieVisitorT(a interface{}) *CCookieVisitorT {
+	return AllocCCookieVisitorT().Bind(a)
 }
 
 func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
@@ -6382,7 +7764,7 @@ func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
 	cp := cookie_visitor.pc_cookie_visitor
 	if oldGoObj, ok := cookie_visitor_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CCookieVisitorTAccessor); ok {
-			oldAcc.SetCCookieVisitorT(nil)
+			oldAcc.setCCookieVisitorT(nil)
 		}
 	}
 	cookie_visitor_handlers.handler[cp] = a
@@ -6394,7 +7776,7 @@ func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
 	}
 
 	if accessor, ok := a.(CCookieVisitorTAccessor); ok {
-		accessor.SetCCookieVisitorT(cookie_visitor)
+		accessor.setCCookieVisitorT(cookie_visitor)
 		Logf("T125.5:")
 	}
 
@@ -6402,19 +7784,24 @@ func (cookie_visitor *CCookieVisitorT) Bind(a interface{}) *CCookieVisitorT {
 }
 
 func (cookie_visitor *CCookieVisitorT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CCookieVisitorTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := cookie_visitor.pc_cookie_visitor
-	if goHandler, ok := cookie_visitor_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CCookieVisitorTAccessor); ok1 {
-			accessor.SetCCookieVisitorT(nil)
+		cp := cookie_visitor.pc_cookie_visitor
+		if goHandler, ok := cookie_visitor_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CCookieVisitorTAccessor)
 		}
+		delete(cookie_visitor_handlers.handler, cp)
+
+		delete(cookie_visitor_handlers.visit_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCCookieVisitorT(nil)
 	}
-	delete(cookie_visitor_handlers.handler, cp)
-
-	delete(cookie_visitor_handlers.visit_handler, cp)
-
 }
 
 func (cookie_visitor *CCookieVisitorT) Handler() interface{} {
@@ -6436,6 +7823,8 @@ type cCSetCookieCallbackT C.cef_set_cookie_callback_t
 type CSetCookieCallbackT struct {
 	noCopy                 noCopy
 	pc_set_cookie_callback *cCSetCookieCallbackT
+	needsUnref             bool
+	beUnrefed              unrefedBy
 }
 
 type RefToCSetCookieCallbackT struct {
@@ -6444,36 +7833,82 @@ type RefToCSetCookieCallbackT struct {
 
 type CSetCookieCallbackTAccessor interface {
 	GetCSetCookieCallbackT() *CSetCookieCallbackT
-	SetCSetCookieCallbackT(*CSetCookieCallbackT) (oldValue *CSetCookieCallbackT)
+	setCSetCookieCallbackT(*CSetCookieCallbackT)
+	// TakeOverCSetCookieCallbackT(*CSetCookieCallbackT)
+	// NewRefCSetCookieCallbackT(*CSetCookieCallbackT)
 }
 
 func (r RefToCSetCookieCallbackT) GetCSetCookieCallbackT() *CSetCookieCallbackT {
 	return r.p_set_cookie_callback
 }
 
-func (r *RefToCSetCookieCallbackT) SetCSetCookieCallbackT(p *CSetCookieCallbackT) (prevValue *CSetCookieCallbackT) {
-	prevValue = r.p_set_cookie_callback
+func (r *RefToCSetCookieCallbackT) setCSetCookieCallbackT(p *CSetCookieCallbackT) {
+	// prevValue = r.p_set_cookie_callback
+	r.p_set_cookie_callback.ForceUnref()
 	r.p_set_cookie_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCSetCookieCallbackT) TakeOverCSetCookieCallbackT(src *CSetCookieCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_set_cookie_callback.ForceUnref()
+	gop := src.pc_set_cookie_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_set_cookie_callback = newCSetCookieCallbackT((*C.cef_set_cookie_callback_t)(gop), byApp, true)
+}
+
+func PassCSetCookieCallbackT(p *CSetCookieCallbackT) (ret *CSetCookieCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_set_cookie_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCSetCookieCallbackT((*C.cef_set_cookie_callback_t)(p.pc_set_cookie_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCSetCookieCallbackT) NewRefCSetCookieCallbackT(p *CSetCookieCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_set_cookie_callback.ForceUnref()
+	gop := p.pc_set_cookie_callback
+	BaseAddRef(gop)
+	r.p_set_cookie_callback = newCSetCookieCallbackT((*C.cef_set_cookie_callback_t)(gop), byApp, true)
 }
 
 // Go type CSetCookieCallbackT wraps cef type *C.cef_set_cookie_callback_t
-func newCSetCookieCallbackT(p *C.cef_set_cookie_callback_t, countUp bool) *CSetCookieCallbackT {
+func newCSetCookieCallbackT(p *C.cef_set_cookie_callback_t, unrefedBy unrefedBy, needsUnref bool) *CSetCookieCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T126.1:")
 	pc := (*cCSetCookieCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_set_cookie_callback := &CSetCookieCallbackT{noCopy{}, pc}
+	go_set_cookie_callback := &CSetCookieCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_set_cookie_callback, func(g *CSetCookieCallbackT) {
-		if g.pc_set_cookie_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_set_cookie_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_set_cookie_callback), "T126.2:")
 			BaseRelease(g.pc_set_cookie_callback)
 		}
 	})
+
 	return go_set_cookie_callback
 }
 
@@ -6487,13 +7922,15 @@ func (p *cCSetCookieCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 }
 
 func (set_cookie_callback *CSetCookieCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(set_cookie_callback.pc_set_cookie_callback)
+	if set_cookie_callback == nil {
+		return
+	}
+	if set_cookie_callback.needsUnref && set_cookie_callback.beUnrefed == byApp {
+		ret = BaseRelease(set_cookie_callback.pc_set_cookie_callback)
+		set_cookie_callback.beUnrefed = unrefed
+		set_cookie_callback.needsUnref = false
+	}
 	set_cookie_callback.pc_set_cookie_callback = nil
-	return ret
-}
-
-func (set_cookie_callback *CSetCookieCallbackT) release() (ret bool) {
-	ret = BaseRelease(set_cookie_callback.pc_set_cookie_callback)
 	return ret
 }
 
@@ -6533,7 +7970,13 @@ func AllocCSetCookieCallbackT() *CSetCookieCallbackT {
 		delete(set_cookie_callback_handlers.on_complete_handler, cgop)
 	}))
 
-	return newCSetCookieCallbackT(cefp, true)
+	BaseAddRef(cgop)
+	return newCSetCookieCallbackT(cefp, byApp, true)
+}
+
+// BindCSetCookieCallbackT allocates CSetCookieCallbackT, construct and bind it
+func BindCSetCookieCallbackT(a interface{}) *CSetCookieCallbackT {
+	return AllocCSetCookieCallbackT().Bind(a)
 }
 
 func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieCallbackT {
@@ -6543,7 +7986,7 @@ func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieC
 	cp := set_cookie_callback.pc_set_cookie_callback
 	if oldGoObj, ok := set_cookie_callback_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CSetCookieCallbackTAccessor); ok {
-			oldAcc.SetCSetCookieCallbackT(nil)
+			oldAcc.setCSetCookieCallbackT(nil)
 		}
 	}
 	set_cookie_callback_handlers.handler[cp] = a
@@ -6555,7 +7998,7 @@ func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieC
 	}
 
 	if accessor, ok := a.(CSetCookieCallbackTAccessor); ok {
-		accessor.SetCSetCookieCallbackT(set_cookie_callback)
+		accessor.setCSetCookieCallbackT(set_cookie_callback)
 		Logf("T126.5:")
 	}
 
@@ -6563,19 +8006,24 @@ func (set_cookie_callback *CSetCookieCallbackT) Bind(a interface{}) *CSetCookieC
 }
 
 func (set_cookie_callback *CSetCookieCallbackT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CSetCookieCallbackTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := set_cookie_callback.pc_set_cookie_callback
-	if goHandler, ok := set_cookie_callback_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CSetCookieCallbackTAccessor); ok1 {
-			accessor.SetCSetCookieCallbackT(nil)
+		cp := set_cookie_callback.pc_set_cookie_callback
+		if goHandler, ok := set_cookie_callback_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CSetCookieCallbackTAccessor)
 		}
+		delete(set_cookie_callback_handlers.handler, cp)
+
+		delete(set_cookie_callback_handlers.on_complete_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCSetCookieCallbackT(nil)
 	}
-	delete(set_cookie_callback_handlers.handler, cp)
-
-	delete(set_cookie_callback_handlers.on_complete_handler, cp)
-
 }
 
 func (set_cookie_callback *CSetCookieCallbackT) Handler() interface{} {
@@ -6597,6 +8045,8 @@ type cCDeleteCookiesCallbackT C.cef_delete_cookies_callback_t
 type CDeleteCookiesCallbackT struct {
 	noCopy                     noCopy
 	pc_delete_cookies_callback *cCDeleteCookiesCallbackT
+	needsUnref                 bool
+	beUnrefed                  unrefedBy
 }
 
 type RefToCDeleteCookiesCallbackT struct {
@@ -6605,36 +8055,82 @@ type RefToCDeleteCookiesCallbackT struct {
 
 type CDeleteCookiesCallbackTAccessor interface {
 	GetCDeleteCookiesCallbackT() *CDeleteCookiesCallbackT
-	SetCDeleteCookiesCallbackT(*CDeleteCookiesCallbackT) (oldValue *CDeleteCookiesCallbackT)
+	setCDeleteCookiesCallbackT(*CDeleteCookiesCallbackT)
+	// TakeOverCDeleteCookiesCallbackT(*CDeleteCookiesCallbackT)
+	// NewRefCDeleteCookiesCallbackT(*CDeleteCookiesCallbackT)
 }
 
 func (r RefToCDeleteCookiesCallbackT) GetCDeleteCookiesCallbackT() *CDeleteCookiesCallbackT {
 	return r.p_delete_cookies_callback
 }
 
-func (r *RefToCDeleteCookiesCallbackT) SetCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) (prevValue *CDeleteCookiesCallbackT) {
-	prevValue = r.p_delete_cookies_callback
+func (r *RefToCDeleteCookiesCallbackT) setCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) {
+	// prevValue = r.p_delete_cookies_callback
+	r.p_delete_cookies_callback.ForceUnref()
 	r.p_delete_cookies_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDeleteCookiesCallbackT) TakeOverCDeleteCookiesCallbackT(src *CDeleteCookiesCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_delete_cookies_callback.ForceUnref()
+	gop := src.pc_delete_cookies_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_delete_cookies_callback = newCDeleteCookiesCallbackT((*C.cef_delete_cookies_callback_t)(gop), byApp, true)
+}
+
+func PassCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) (ret *CDeleteCookiesCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_delete_cookies_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDeleteCookiesCallbackT((*C.cef_delete_cookies_callback_t)(p.pc_delete_cookies_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDeleteCookiesCallbackT) NewRefCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_delete_cookies_callback.ForceUnref()
+	gop := p.pc_delete_cookies_callback
+	BaseAddRef(gop)
+	r.p_delete_cookies_callback = newCDeleteCookiesCallbackT((*C.cef_delete_cookies_callback_t)(gop), byApp, true)
 }
 
 // Go type CDeleteCookiesCallbackT wraps cef type *C.cef_delete_cookies_callback_t
-func newCDeleteCookiesCallbackT(p *C.cef_delete_cookies_callback_t, countUp bool) *CDeleteCookiesCallbackT {
+func newCDeleteCookiesCallbackT(p *C.cef_delete_cookies_callback_t, unrefedBy unrefedBy, needsUnref bool) *CDeleteCookiesCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T127.1:")
 	pc := (*cCDeleteCookiesCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_delete_cookies_callback := &CDeleteCookiesCallbackT{noCopy{}, pc}
+	go_delete_cookies_callback := &CDeleteCookiesCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_delete_cookies_callback, func(g *CDeleteCookiesCallbackT) {
-		if g.pc_delete_cookies_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_delete_cookies_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_delete_cookies_callback), "T127.2:")
 			BaseRelease(g.pc_delete_cookies_callback)
 		}
 	})
+
 	return go_delete_cookies_callback
 }
 
@@ -6648,13 +8144,15 @@ func (p *cCDeleteCookiesCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 }
 
 func (delete_cookies_callback *CDeleteCookiesCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(delete_cookies_callback.pc_delete_cookies_callback)
+	if delete_cookies_callback == nil {
+		return
+	}
+	if delete_cookies_callback.needsUnref && delete_cookies_callback.beUnrefed == byApp {
+		ret = BaseRelease(delete_cookies_callback.pc_delete_cookies_callback)
+		delete_cookies_callback.beUnrefed = unrefed
+		delete_cookies_callback.needsUnref = false
+	}
 	delete_cookies_callback.pc_delete_cookies_callback = nil
-	return ret
-}
-
-func (delete_cookies_callback *CDeleteCookiesCallbackT) release() (ret bool) {
-	ret = BaseRelease(delete_cookies_callback.pc_delete_cookies_callback)
 	return ret
 }
 
@@ -6694,7 +8192,13 @@ func AllocCDeleteCookiesCallbackT() *CDeleteCookiesCallbackT {
 		delete(delete_cookies_callback_handlers.on_complete_handler, cgop)
 	}))
 
-	return newCDeleteCookiesCallbackT(cefp, true)
+	BaseAddRef(cgop)
+	return newCDeleteCookiesCallbackT(cefp, byApp, true)
+}
+
+// BindCDeleteCookiesCallbackT allocates CDeleteCookiesCallbackT, construct and bind it
+func BindCDeleteCookiesCallbackT(a interface{}) *CDeleteCookiesCallbackT {
+	return AllocCDeleteCookiesCallbackT().Bind(a)
 }
 
 func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDeleteCookiesCallbackT {
@@ -6704,7 +8208,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDe
 	cp := delete_cookies_callback.pc_delete_cookies_callback
 	if oldGoObj, ok := delete_cookies_callback_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CDeleteCookiesCallbackTAccessor); ok {
-			oldAcc.SetCDeleteCookiesCallbackT(nil)
+			oldAcc.setCDeleteCookiesCallbackT(nil)
 		}
 	}
 	delete_cookies_callback_handlers.handler[cp] = a
@@ -6716,7 +8220,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDe
 	}
 
 	if accessor, ok := a.(CDeleteCookiesCallbackTAccessor); ok {
-		accessor.SetCDeleteCookiesCallbackT(delete_cookies_callback)
+		accessor.setCDeleteCookiesCallbackT(delete_cookies_callback)
 		Logf("T127.5:")
 	}
 
@@ -6724,19 +8228,24 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Bind(a interface{}) *CDe
 }
 
 func (delete_cookies_callback *CDeleteCookiesCallbackT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CDeleteCookiesCallbackTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := delete_cookies_callback.pc_delete_cookies_callback
-	if goHandler, ok := delete_cookies_callback_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CDeleteCookiesCallbackTAccessor); ok1 {
-			accessor.SetCDeleteCookiesCallbackT(nil)
+		cp := delete_cookies_callback.pc_delete_cookies_callback
+		if goHandler, ok := delete_cookies_callback_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CDeleteCookiesCallbackTAccessor)
 		}
+		delete(delete_cookies_callback_handlers.handler, cp)
+
+		delete(delete_cookies_callback_handlers.on_complete_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCDeleteCookiesCallbackT(nil)
 	}
-	delete(delete_cookies_callback_handlers.handler, cp)
-
-	delete(delete_cookies_callback_handlers.on_complete_handler, cp)
-
 }
 
 func (delete_cookies_callback *CDeleteCookiesCallbackT) Handler() interface{} {
@@ -6874,6 +8383,8 @@ type cCDevToolsMessageObserverT C.cef_dev_tools_message_observer_t
 type CDevToolsMessageObserverT struct {
 	noCopy                        noCopy
 	pc_dev_tools_message_observer *cCDevToolsMessageObserverT
+	needsUnref                    bool
+	beUnrefed                     unrefedBy
 }
 
 type RefToCDevToolsMessageObserverT struct {
@@ -6882,36 +8393,82 @@ type RefToCDevToolsMessageObserverT struct {
 
 type CDevToolsMessageObserverTAccessor interface {
 	GetCDevToolsMessageObserverT() *CDevToolsMessageObserverT
-	SetCDevToolsMessageObserverT(*CDevToolsMessageObserverT) (oldValue *CDevToolsMessageObserverT)
+	setCDevToolsMessageObserverT(*CDevToolsMessageObserverT)
+	// TakeOverCDevToolsMessageObserverT(*CDevToolsMessageObserverT)
+	// NewRefCDevToolsMessageObserverT(*CDevToolsMessageObserverT)
 }
 
 func (r RefToCDevToolsMessageObserverT) GetCDevToolsMessageObserverT() *CDevToolsMessageObserverT {
 	return r.p_dev_tools_message_observer
 }
 
-func (r *RefToCDevToolsMessageObserverT) SetCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) (prevValue *CDevToolsMessageObserverT) {
-	prevValue = r.p_dev_tools_message_observer
+func (r *RefToCDevToolsMessageObserverT) setCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) {
+	// prevValue = r.p_dev_tools_message_observer
+	r.p_dev_tools_message_observer.ForceUnref()
 	r.p_dev_tools_message_observer = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDevToolsMessageObserverT) TakeOverCDevToolsMessageObserverT(src *CDevToolsMessageObserverT) {
+	if r == nil {
+		return
+	}
+	r.p_dev_tools_message_observer.ForceUnref()
+	gop := src.pc_dev_tools_message_observer
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_dev_tools_message_observer = newCDevToolsMessageObserverT((*C.cef_dev_tools_message_observer_t)(gop), byApp, true)
+}
+
+func PassCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) (ret *CDevToolsMessageObserverT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_dev_tools_message_observer)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDevToolsMessageObserverT((*C.cef_dev_tools_message_observer_t)(p.pc_dev_tools_message_observer), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDevToolsMessageObserverT) NewRefCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) {
+	if r == nil {
+		return
+	}
+	r.p_dev_tools_message_observer.ForceUnref()
+	gop := p.pc_dev_tools_message_observer
+	BaseAddRef(gop)
+	r.p_dev_tools_message_observer = newCDevToolsMessageObserverT((*C.cef_dev_tools_message_observer_t)(gop), byApp, true)
 }
 
 // Go type CDevToolsMessageObserverT wraps cef type *C.cef_dev_tools_message_observer_t
-func newCDevToolsMessageObserverT(p *C.cef_dev_tools_message_observer_t, countUp bool) *CDevToolsMessageObserverT {
+func newCDevToolsMessageObserverT(p *C.cef_dev_tools_message_observer_t, unrefedBy unrefedBy, needsUnref bool) *CDevToolsMessageObserverT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T128.1:")
 	pc := (*cCDevToolsMessageObserverT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_dev_tools_message_observer := &CDevToolsMessageObserverT{noCopy{}, pc}
+	go_dev_tools_message_observer := &CDevToolsMessageObserverT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_dev_tools_message_observer, func(g *CDevToolsMessageObserverT) {
-		if g.pc_dev_tools_message_observer != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_dev_tools_message_observer != nil {
 			Tracef(unsafe.Pointer(g.pc_dev_tools_message_observer), "T128.2:")
 			BaseRelease(g.pc_dev_tools_message_observer)
 		}
 	})
+
 	return go_dev_tools_message_observer
 }
 
@@ -6925,13 +8482,15 @@ func (p *cCDevToolsMessageObserverT) cast_to_p_base_ref_counted_t() *C.cef_base_
 }
 
 func (dev_tools_message_observer *CDevToolsMessageObserverT) ForceUnref() (ret bool) {
-	ret = BaseRelease(dev_tools_message_observer.pc_dev_tools_message_observer)
+	if dev_tools_message_observer == nil {
+		return
+	}
+	if dev_tools_message_observer.needsUnref && dev_tools_message_observer.beUnrefed == byApp {
+		ret = BaseRelease(dev_tools_message_observer.pc_dev_tools_message_observer)
+		dev_tools_message_observer.beUnrefed = unrefed
+		dev_tools_message_observer.needsUnref = false
+	}
 	dev_tools_message_observer.pc_dev_tools_message_observer = nil
-	return ret
-}
-
-func (dev_tools_message_observer *CDevToolsMessageObserverT) release() (ret bool) {
-	ret = BaseRelease(dev_tools_message_observer.pc_dev_tools_message_observer)
 	return ret
 }
 
@@ -7065,7 +8624,13 @@ func AllocCDevToolsMessageObserverT() *CDevToolsMessageObserverT {
 		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler, cgop)
 	}))
 
-	return newCDevToolsMessageObserverT(cefp, true)
+	BaseAddRef(cgop)
+	return newCDevToolsMessageObserverT(cefp, byApp, true)
+}
+
+// BindCDevToolsMessageObserverT allocates CDevToolsMessageObserverT, construct and bind it
+func BindCDevToolsMessageObserverT(a interface{}) *CDevToolsMessageObserverT {
+	return AllocCDevToolsMessageObserverT().Bind(a)
 }
 
 func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{}) *CDevToolsMessageObserverT {
@@ -7075,7 +8640,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{})
 	cp := dev_tools_message_observer.pc_dev_tools_message_observer
 	if oldGoObj, ok := dev_tools_message_observer_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CDevToolsMessageObserverTAccessor); ok {
-			oldAcc.SetCDevToolsMessageObserverT(nil)
+			oldAcc.setCDevToolsMessageObserverT(nil)
 		}
 	}
 	dev_tools_message_observer_handlers.handler[cp] = a
@@ -7111,7 +8676,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{})
 	}
 
 	if accessor, ok := a.(CDevToolsMessageObserverTAccessor); ok {
-		accessor.SetCDevToolsMessageObserverT(dev_tools_message_observer)
+		accessor.setCDevToolsMessageObserverT(dev_tools_message_observer)
 		Logf("T128.5:")
 	}
 
@@ -7119,23 +8684,28 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Bind(a interface{})
 }
 
 func (dev_tools_message_observer *CDevToolsMessageObserverT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CDevToolsMessageObserverTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := dev_tools_message_observer.pc_dev_tools_message_observer
-	if goHandler, ok := dev_tools_message_observer_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CDevToolsMessageObserverTAccessor); ok1 {
-			accessor.SetCDevToolsMessageObserverT(nil)
+		cp := dev_tools_message_observer.pc_dev_tools_message_observer
+		if goHandler, ok := dev_tools_message_observer_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CDevToolsMessageObserverTAccessor)
 		}
+		delete(dev_tools_message_observer_handlers.handler, cp)
+
+		delete(dev_tools_message_observer_handlers.on_dev_tools_message_handler, cp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_method_result_handler, cp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_event_handler, cp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler, cp)
+		delete(dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCDevToolsMessageObserverT(nil)
 	}
-	delete(dev_tools_message_observer_handlers.handler, cp)
-
-	delete(dev_tools_message_observer_handlers.on_dev_tools_message_handler, cp)
-	delete(dev_tools_message_observer_handlers.on_dev_tools_method_result_handler, cp)
-	delete(dev_tools_message_observer_handlers.on_dev_tools_event_handler, cp)
-	delete(dev_tools_message_observer_handlers.on_dev_tools_agent_attached_handler, cp)
-	delete(dev_tools_message_observer_handlers.on_dev_tools_agent_detached_handler, cp)
-
 }
 
 func (dev_tools_message_observer *CDevToolsMessageObserverT) Handler() interface{} {
@@ -7158,6 +8728,8 @@ type cCFileDialogCallbackT C.cef_file_dialog_callback_t
 type CFileDialogCallbackT struct {
 	noCopy                  noCopy
 	pc_file_dialog_callback *cCFileDialogCallbackT
+	needsUnref              bool
+	beUnrefed               unrefedBy
 }
 
 type RefToCFileDialogCallbackT struct {
@@ -7166,36 +8738,82 @@ type RefToCFileDialogCallbackT struct {
 
 type CFileDialogCallbackTAccessor interface {
 	GetCFileDialogCallbackT() *CFileDialogCallbackT
-	SetCFileDialogCallbackT(*CFileDialogCallbackT) (oldValue *CFileDialogCallbackT)
+	setCFileDialogCallbackT(*CFileDialogCallbackT)
+	// TakeOverCFileDialogCallbackT(*CFileDialogCallbackT)
+	// NewRefCFileDialogCallbackT(*CFileDialogCallbackT)
 }
 
 func (r RefToCFileDialogCallbackT) GetCFileDialogCallbackT() *CFileDialogCallbackT {
 	return r.p_file_dialog_callback
 }
 
-func (r *RefToCFileDialogCallbackT) SetCFileDialogCallbackT(p *CFileDialogCallbackT) (prevValue *CFileDialogCallbackT) {
-	prevValue = r.p_file_dialog_callback
+func (r *RefToCFileDialogCallbackT) setCFileDialogCallbackT(p *CFileDialogCallbackT) {
+	// prevValue = r.p_file_dialog_callback
+	r.p_file_dialog_callback.ForceUnref()
 	r.p_file_dialog_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCFileDialogCallbackT) TakeOverCFileDialogCallbackT(src *CFileDialogCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_file_dialog_callback.ForceUnref()
+	gop := src.pc_file_dialog_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_file_dialog_callback = newCFileDialogCallbackT((*C.cef_file_dialog_callback_t)(gop), byApp, true)
+}
+
+func PassCFileDialogCallbackT(p *CFileDialogCallbackT) (ret *CFileDialogCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_file_dialog_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCFileDialogCallbackT((*C.cef_file_dialog_callback_t)(p.pc_file_dialog_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCFileDialogCallbackT) NewRefCFileDialogCallbackT(p *CFileDialogCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_file_dialog_callback.ForceUnref()
+	gop := p.pc_file_dialog_callback
+	BaseAddRef(gop)
+	r.p_file_dialog_callback = newCFileDialogCallbackT((*C.cef_file_dialog_callback_t)(gop), byApp, true)
 }
 
 // Go type CFileDialogCallbackT wraps cef type *C.cef_file_dialog_callback_t
-func newCFileDialogCallbackT(p *C.cef_file_dialog_callback_t, countUp bool) *CFileDialogCallbackT {
+func newCFileDialogCallbackT(p *C.cef_file_dialog_callback_t, unrefedBy unrefedBy, needsUnref bool) *CFileDialogCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T129.1:")
 	pc := (*cCFileDialogCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_file_dialog_callback := &CFileDialogCallbackT{noCopy{}, pc}
+	go_file_dialog_callback := &CFileDialogCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_file_dialog_callback, func(g *CFileDialogCallbackT) {
-		if g.pc_file_dialog_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_file_dialog_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_file_dialog_callback), "T129.2:")
 			BaseRelease(g.pc_file_dialog_callback)
 		}
 	})
+
 	return go_file_dialog_callback
 }
 
@@ -7209,13 +8827,15 @@ func (p *cCFileDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 }
 
 func (file_dialog_callback *CFileDialogCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(file_dialog_callback.pc_file_dialog_callback)
+	if file_dialog_callback == nil {
+		return
+	}
+	if file_dialog_callback.needsUnref && file_dialog_callback.beUnrefed == byApp {
+		ret = BaseRelease(file_dialog_callback.pc_file_dialog_callback)
+		file_dialog_callback.beUnrefed = unrefed
+		file_dialog_callback.needsUnref = false
+	}
 	file_dialog_callback.pc_file_dialog_callback = nil
-	return ret
-}
-
-func (file_dialog_callback *CFileDialogCallbackT) release() (ret bool) {
-	ret = BaseRelease(file_dialog_callback.pc_file_dialog_callback)
 	return ret
 }
 
@@ -7255,6 +8875,8 @@ type cCDialogHandlerT C.cef_dialog_handler_t
 type CDialogHandlerT struct {
 	noCopy            noCopy
 	pc_dialog_handler *cCDialogHandlerT
+	needsUnref        bool
+	beUnrefed         unrefedBy
 }
 
 type RefToCDialogHandlerT struct {
@@ -7263,36 +8885,82 @@ type RefToCDialogHandlerT struct {
 
 type CDialogHandlerTAccessor interface {
 	GetCDialogHandlerT() *CDialogHandlerT
-	SetCDialogHandlerT(*CDialogHandlerT) (oldValue *CDialogHandlerT)
+	setCDialogHandlerT(*CDialogHandlerT)
+	// TakeOverCDialogHandlerT(*CDialogHandlerT)
+	// NewRefCDialogHandlerT(*CDialogHandlerT)
 }
 
 func (r RefToCDialogHandlerT) GetCDialogHandlerT() *CDialogHandlerT {
 	return r.p_dialog_handler
 }
 
-func (r *RefToCDialogHandlerT) SetCDialogHandlerT(p *CDialogHandlerT) (prevValue *CDialogHandlerT) {
-	prevValue = r.p_dialog_handler
+func (r *RefToCDialogHandlerT) setCDialogHandlerT(p *CDialogHandlerT) {
+	// prevValue = r.p_dialog_handler
+	r.p_dialog_handler.ForceUnref()
 	r.p_dialog_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDialogHandlerT) TakeOverCDialogHandlerT(src *CDialogHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_dialog_handler.ForceUnref()
+	gop := src.pc_dialog_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_dialog_handler = newCDialogHandlerT((*C.cef_dialog_handler_t)(gop), byApp, true)
+}
+
+func PassCDialogHandlerT(p *CDialogHandlerT) (ret *CDialogHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_dialog_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDialogHandlerT((*C.cef_dialog_handler_t)(p.pc_dialog_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDialogHandlerT) NewRefCDialogHandlerT(p *CDialogHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_dialog_handler.ForceUnref()
+	gop := p.pc_dialog_handler
+	BaseAddRef(gop)
+	r.p_dialog_handler = newCDialogHandlerT((*C.cef_dialog_handler_t)(gop), byApp, true)
 }
 
 // Go type CDialogHandlerT wraps cef type *C.cef_dialog_handler_t
-func newCDialogHandlerT(p *C.cef_dialog_handler_t, countUp bool) *CDialogHandlerT {
+func newCDialogHandlerT(p *C.cef_dialog_handler_t, unrefedBy unrefedBy, needsUnref bool) *CDialogHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T130.1:")
 	pc := (*cCDialogHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_dialog_handler := &CDialogHandlerT{noCopy{}, pc}
+	go_dialog_handler := &CDialogHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_dialog_handler, func(g *CDialogHandlerT) {
-		if g.pc_dialog_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_dialog_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_dialog_handler), "T130.2:")
 			BaseRelease(g.pc_dialog_handler)
 		}
 	})
+
 	return go_dialog_handler
 }
 
@@ -7306,13 +8974,15 @@ func (p *cCDialogHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (dialog_handler *CDialogHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(dialog_handler.pc_dialog_handler)
+	if dialog_handler == nil {
+		return
+	}
+	if dialog_handler.needsUnref && dialog_handler.beUnrefed == byApp {
+		ret = BaseRelease(dialog_handler.pc_dialog_handler)
+		dialog_handler.beUnrefed = unrefed
+		dialog_handler.needsUnref = false
+	}
 	dialog_handler.pc_dialog_handler = nil
-	return ret
-}
-
-func (dialog_handler *CDialogHandlerT) release() (ret bool) {
-	ret = BaseRelease(dialog_handler.pc_dialog_handler)
 	return ret
 }
 
@@ -7369,7 +9039,13 @@ func AllocCDialogHandlerT() *CDialogHandlerT {
 		delete(dialog_handler_handlers.on_file_dialog_handler, cgop)
 	}))
 
-	return newCDialogHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCDialogHandlerT(cefp, byApp, true)
+}
+
+// BindCDialogHandlerT allocates CDialogHandlerT, construct and bind it
+func BindCDialogHandlerT(a interface{}) *CDialogHandlerT {
+	return AllocCDialogHandlerT().Bind(a)
 }
 
 func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
@@ -7379,7 +9055,7 @@ func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
 	cp := dialog_handler.pc_dialog_handler
 	if oldGoObj, ok := dialog_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CDialogHandlerTAccessor); ok {
-			oldAcc.SetCDialogHandlerT(nil)
+			oldAcc.setCDialogHandlerT(nil)
 		}
 	}
 	dialog_handler_handlers.handler[cp] = a
@@ -7391,7 +9067,7 @@ func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
 	}
 
 	if accessor, ok := a.(CDialogHandlerTAccessor); ok {
-		accessor.SetCDialogHandlerT(dialog_handler)
+		accessor.setCDialogHandlerT(dialog_handler)
 		Logf("T130.5:")
 	}
 
@@ -7399,19 +9075,24 @@ func (dialog_handler *CDialogHandlerT) Bind(a interface{}) *CDialogHandlerT {
 }
 
 func (dialog_handler *CDialogHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CDialogHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := dialog_handler.pc_dialog_handler
-	if goHandler, ok := dialog_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CDialogHandlerTAccessor); ok1 {
-			accessor.SetCDialogHandlerT(nil)
+		cp := dialog_handler.pc_dialog_handler
+		if goHandler, ok := dialog_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CDialogHandlerTAccessor)
 		}
+		delete(dialog_handler_handlers.handler, cp)
+
+		delete(dialog_handler_handlers.on_file_dialog_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCDialogHandlerT(nil)
 	}
-	delete(dialog_handler_handlers.handler, cp)
-
-	delete(dialog_handler_handlers.on_file_dialog_handler, cp)
-
 }
 
 func (dialog_handler *CDialogHandlerT) Handler() interface{} {
@@ -7439,6 +9120,8 @@ type cCDisplayT C.cef_display_t
 type CDisplayT struct {
 	noCopy     noCopy
 	pc_display *cCDisplayT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCDisplayT struct {
@@ -7447,36 +9130,82 @@ type RefToCDisplayT struct {
 
 type CDisplayTAccessor interface {
 	GetCDisplayT() *CDisplayT
-	SetCDisplayT(*CDisplayT) (oldValue *CDisplayT)
+	setCDisplayT(*CDisplayT)
+	// TakeOverCDisplayT(*CDisplayT)
+	// NewRefCDisplayT(*CDisplayT)
 }
 
 func (r RefToCDisplayT) GetCDisplayT() *CDisplayT {
 	return r.p_display
 }
 
-func (r *RefToCDisplayT) SetCDisplayT(p *CDisplayT) (prevValue *CDisplayT) {
-	prevValue = r.p_display
+func (r *RefToCDisplayT) setCDisplayT(p *CDisplayT) {
+	// prevValue = r.p_display
+	r.p_display.ForceUnref()
 	r.p_display = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDisplayT) TakeOverCDisplayT(src *CDisplayT) {
+	if r == nil {
+		return
+	}
+	r.p_display.ForceUnref()
+	gop := src.pc_display
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_display = newCDisplayT((*C.cef_display_t)(gop), byApp, true)
+}
+
+func PassCDisplayT(p *CDisplayT) (ret *CDisplayT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_display)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDisplayT((*C.cef_display_t)(p.pc_display), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDisplayT) NewRefCDisplayT(p *CDisplayT) {
+	if r == nil {
+		return
+	}
+	r.p_display.ForceUnref()
+	gop := p.pc_display
+	BaseAddRef(gop)
+	r.p_display = newCDisplayT((*C.cef_display_t)(gop), byApp, true)
 }
 
 // Go type CDisplayT wraps cef type *C.cef_display_t
-func newCDisplayT(p *C.cef_display_t, countUp bool) *CDisplayT {
+func newCDisplayT(p *C.cef_display_t, unrefedBy unrefedBy, needsUnref bool) *CDisplayT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T131.1:")
 	pc := (*cCDisplayT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_display := &CDisplayT{noCopy{}, pc}
+	go_display := &CDisplayT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_display, func(g *CDisplayT) {
-		if g.pc_display != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_display != nil {
 			Tracef(unsafe.Pointer(g.pc_display), "T131.2:")
 			BaseRelease(g.pc_display)
 		}
 	})
+
 	return go_display
 }
 
@@ -7490,13 +9219,15 @@ func (p *cCDisplayT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (display *CDisplayT) ForceUnref() (ret bool) {
-	ret = BaseRelease(display.pc_display)
+	if display == nil {
+		return
+	}
+	if display.needsUnref && display.beUnrefed == byApp {
+		ret = BaseRelease(display.pc_display)
+		display.beUnrefed = unrefed
+		display.needsUnref = false
+	}
 	display.pc_display = nil
-	return ret
-}
-
-func (display *CDisplayT) release() (ret bool) {
-	ret = BaseRelease(display.pc_display)
 	return ret
 }
 
@@ -7507,7 +9238,7 @@ func (self *CDisplayT) GetId() (ret int64) {
 
 	cRet := C.cefingo_display_get_id((*C.cef_display_t)(self.pc_display))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -7521,7 +9252,7 @@ func (self *CDisplayT) GetDeviceScaleFactor() (ret float32) {
 
 	cRet := C.cefingo_display_get_device_scale_factor((*C.cef_display_t)(self.pc_display))
 
-	ret = (float32)(cRet)
+	ret = (float32)(cRet) // return GoObj
 	return ret
 }
 
@@ -7557,7 +9288,7 @@ func (self *CDisplayT) GetBounds() (ret CRectT) {
 
 	cRet := C.cefingo_display_get_bounds((*C.cef_display_t)(self.pc_display))
 
-	ret = (CRectT)(cRet)
+	ret = (CRectT)(cRet) // return GoObj
 	return ret
 }
 
@@ -7569,7 +9300,7 @@ func (self *CDisplayT) GetWorkArea() (ret CRectT) {
 
 	cRet := C.cefingo_display_get_work_area((*C.cef_display_t)(self.pc_display))
 
-	ret = (CRectT)(cRet)
+	ret = (CRectT)(cRet) // return GoObj
 	return ret
 }
 
@@ -7591,7 +9322,7 @@ func DisplayGetPrimary() (ret *CDisplayT) {
 
 	cRet := C.cef_display_get_primary()
 
-	ret = newCDisplayT(cRet, false)
+	ret = newCDisplayT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -7606,7 +9337,7 @@ func DisplayGetNearestPoint(
 
 	cRet := C.cef_display_get_nearest_point((*C.cef_point_t)(point), (C.int)(input_pixel_coords))
 
-	ret = newCDisplayT(cRet, false)
+	ret = newCDisplayT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -7622,7 +9353,7 @@ func DisplayGetMatchingBounds(
 
 	cRet := C.cef_display_get_matching_bounds((*C.cef_rect_t)(bounds), (C.int)(input_pixel_coords))
 
-	ret = newCDisplayT(cRet, false)
+	ret = newCDisplayT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -7634,7 +9365,7 @@ func DisplayGetCount() (ret int64) {
 
 	cRet := C.cef_display_get_count()
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -7652,7 +9383,7 @@ func DisplayGetAlls() (displays []*CDisplayT) {
 	displays = make([]*CDisplayT, *displaysCount)
 	_tmpdisplays := (*[1 << 30](*C.cef_display_t))(unsafe.Pointer(tmpdisplays))[:*displaysCount:*displaysCount]
 	for i := C.size_t(0); i < *displaysCount; i++ {
-		displays[i] = newCDisplayT(_tmpdisplays[i], false) // Out Slice Param
+		displays[i] = newCDisplayT(_tmpdisplays[i], byApp, true) // Out Slice Param
 	}
 	return displays
 }
@@ -7670,6 +9401,8 @@ type cCDisplayHandlerT C.cef_display_handler_t
 type CDisplayHandlerT struct {
 	noCopy             noCopy
 	pc_display_handler *cCDisplayHandlerT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCDisplayHandlerT struct {
@@ -7678,36 +9411,82 @@ type RefToCDisplayHandlerT struct {
 
 type CDisplayHandlerTAccessor interface {
 	GetCDisplayHandlerT() *CDisplayHandlerT
-	SetCDisplayHandlerT(*CDisplayHandlerT) (oldValue *CDisplayHandlerT)
+	setCDisplayHandlerT(*CDisplayHandlerT)
+	// TakeOverCDisplayHandlerT(*CDisplayHandlerT)
+	// NewRefCDisplayHandlerT(*CDisplayHandlerT)
 }
 
 func (r RefToCDisplayHandlerT) GetCDisplayHandlerT() *CDisplayHandlerT {
 	return r.p_display_handler
 }
 
-func (r *RefToCDisplayHandlerT) SetCDisplayHandlerT(p *CDisplayHandlerT) (prevValue *CDisplayHandlerT) {
-	prevValue = r.p_display_handler
+func (r *RefToCDisplayHandlerT) setCDisplayHandlerT(p *CDisplayHandlerT) {
+	// prevValue = r.p_display_handler
+	r.p_display_handler.ForceUnref()
 	r.p_display_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDisplayHandlerT) TakeOverCDisplayHandlerT(src *CDisplayHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_display_handler.ForceUnref()
+	gop := src.pc_display_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_display_handler = newCDisplayHandlerT((*C.cef_display_handler_t)(gop), byApp, true)
+}
+
+func PassCDisplayHandlerT(p *CDisplayHandlerT) (ret *CDisplayHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_display_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDisplayHandlerT((*C.cef_display_handler_t)(p.pc_display_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDisplayHandlerT) NewRefCDisplayHandlerT(p *CDisplayHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_display_handler.ForceUnref()
+	gop := p.pc_display_handler
+	BaseAddRef(gop)
+	r.p_display_handler = newCDisplayHandlerT((*C.cef_display_handler_t)(gop), byApp, true)
 }
 
 // Go type CDisplayHandlerT wraps cef type *C.cef_display_handler_t
-func newCDisplayHandlerT(p *C.cef_display_handler_t, countUp bool) *CDisplayHandlerT {
+func newCDisplayHandlerT(p *C.cef_display_handler_t, unrefedBy unrefedBy, needsUnref bool) *CDisplayHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T132.1:")
 	pc := (*cCDisplayHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_display_handler := &CDisplayHandlerT{noCopy{}, pc}
+	go_display_handler := &CDisplayHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_display_handler, func(g *CDisplayHandlerT) {
-		if g.pc_display_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_display_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_display_handler), "T132.2:")
 			BaseRelease(g.pc_display_handler)
 		}
 	})
+
 	return go_display_handler
 }
 
@@ -7721,13 +9500,15 @@ func (p *cCDisplayHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 }
 
 func (display_handler *CDisplayHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(display_handler.pc_display_handler)
+	if display_handler == nil {
+		return
+	}
+	if display_handler.needsUnref && display_handler.beUnrefed == byApp {
+		ret = BaseRelease(display_handler.pc_display_handler)
+		display_handler.beUnrefed = unrefed
+		display_handler.needsUnref = false
+	}
 	display_handler.pc_display_handler = nil
-	return ret
-}
-
-func (display_handler *CDisplayHandlerT) release() (ret bool) {
-	ret = BaseRelease(display_handler.pc_display_handler)
 	return ret
 }
 
@@ -7917,7 +9698,13 @@ func AllocCDisplayHandlerT() *CDisplayHandlerT {
 		delete(display_handler_handlers.on_cursor_change_handler, cgop)
 	}))
 
-	return newCDisplayHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCDisplayHandlerT(cefp, byApp, true)
+}
+
+// BindCDisplayHandlerT allocates CDisplayHandlerT, construct and bind it
+func BindCDisplayHandlerT(a interface{}) *CDisplayHandlerT {
+	return AllocCDisplayHandlerT().Bind(a)
 }
 
 func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
@@ -7927,7 +9714,7 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 	cp := display_handler.pc_display_handler
 	if oldGoObj, ok := display_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CDisplayHandlerTAccessor); ok {
-			oldAcc.SetCDisplayHandlerT(nil)
+			oldAcc.setCDisplayHandlerT(nil)
 		}
 	}
 	display_handler_handlers.handler[cp] = a
@@ -7993,7 +9780,7 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 	}
 
 	if accessor, ok := a.(CDisplayHandlerTAccessor); ok {
-		accessor.SetCDisplayHandlerT(display_handler)
+		accessor.setCDisplayHandlerT(display_handler)
 		Logf("T132.5:")
 	}
 
@@ -8001,28 +9788,33 @@ func (display_handler *CDisplayHandlerT) Bind(a interface{}) *CDisplayHandlerT {
 }
 
 func (display_handler *CDisplayHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CDisplayHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := display_handler.pc_display_handler
-	if goHandler, ok := display_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CDisplayHandlerTAccessor); ok1 {
-			accessor.SetCDisplayHandlerT(nil)
+		cp := display_handler.pc_display_handler
+		if goHandler, ok := display_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CDisplayHandlerTAccessor)
 		}
+		delete(display_handler_handlers.handler, cp)
+
+		delete(display_handler_handlers.on_address_change_handler, cp)
+		delete(display_handler_handlers.on_title_change_handler, cp)
+		delete(display_handler_handlers.on_favicon_urlchange_handler, cp)
+		delete(display_handler_handlers.on_fullscreen_mode_change_handler, cp)
+		delete(display_handler_handlers.on_tooltip_handler, cp)
+		delete(display_handler_handlers.on_status_message_handler, cp)
+		delete(display_handler_handlers.on_console_message_handler, cp)
+		delete(display_handler_handlers.on_auto_resize_handler, cp)
+		delete(display_handler_handlers.on_loading_progress_change_handler, cp)
+		delete(display_handler_handlers.on_cursor_change_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCDisplayHandlerT(nil)
 	}
-	delete(display_handler_handlers.handler, cp)
-
-	delete(display_handler_handlers.on_address_change_handler, cp)
-	delete(display_handler_handlers.on_title_change_handler, cp)
-	delete(display_handler_handlers.on_favicon_urlchange_handler, cp)
-	delete(display_handler_handlers.on_fullscreen_mode_change_handler, cp)
-	delete(display_handler_handlers.on_tooltip_handler, cp)
-	delete(display_handler_handlers.on_status_message_handler, cp)
-	delete(display_handler_handlers.on_console_message_handler, cp)
-	delete(display_handler_handlers.on_auto_resize_handler, cp)
-	delete(display_handler_handlers.on_loading_progress_change_handler, cp)
-	delete(display_handler_handlers.on_cursor_change_handler, cp)
-
 }
 
 func (display_handler *CDisplayHandlerT) Handler() interface{} {
@@ -8046,6 +9838,8 @@ type cCDomvisitorT C.cef_domvisitor_t
 type CDomvisitorT struct {
 	noCopy        noCopy
 	pc_domvisitor *cCDomvisitorT
+	needsUnref    bool
+	beUnrefed     unrefedBy
 }
 
 type RefToCDomvisitorT struct {
@@ -8054,36 +9848,82 @@ type RefToCDomvisitorT struct {
 
 type CDomvisitorTAccessor interface {
 	GetCDomvisitorT() *CDomvisitorT
-	SetCDomvisitorT(*CDomvisitorT) (oldValue *CDomvisitorT)
+	setCDomvisitorT(*CDomvisitorT)
+	// TakeOverCDomvisitorT(*CDomvisitorT)
+	// NewRefCDomvisitorT(*CDomvisitorT)
 }
 
 func (r RefToCDomvisitorT) GetCDomvisitorT() *CDomvisitorT {
 	return r.p_domvisitor
 }
 
-func (r *RefToCDomvisitorT) SetCDomvisitorT(p *CDomvisitorT) (prevValue *CDomvisitorT) {
-	prevValue = r.p_domvisitor
+func (r *RefToCDomvisitorT) setCDomvisitorT(p *CDomvisitorT) {
+	// prevValue = r.p_domvisitor
+	r.p_domvisitor.ForceUnref()
 	r.p_domvisitor = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDomvisitorT) TakeOverCDomvisitorT(src *CDomvisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_domvisitor.ForceUnref()
+	gop := src.pc_domvisitor
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_domvisitor = newCDomvisitorT((*C.cef_domvisitor_t)(gop), byApp, true)
+}
+
+func PassCDomvisitorT(p *CDomvisitorT) (ret *CDomvisitorT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_domvisitor)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDomvisitorT((*C.cef_domvisitor_t)(p.pc_domvisitor), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDomvisitorT) NewRefCDomvisitorT(p *CDomvisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_domvisitor.ForceUnref()
+	gop := p.pc_domvisitor
+	BaseAddRef(gop)
+	r.p_domvisitor = newCDomvisitorT((*C.cef_domvisitor_t)(gop), byApp, true)
 }
 
 // Go type CDomvisitorT wraps cef type *C.cef_domvisitor_t
-func newCDomvisitorT(p *C.cef_domvisitor_t, countUp bool) *CDomvisitorT {
+func newCDomvisitorT(p *C.cef_domvisitor_t, unrefedBy unrefedBy, needsUnref bool) *CDomvisitorT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T133.1:")
 	pc := (*cCDomvisitorT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_domvisitor := &CDomvisitorT{noCopy{}, pc}
+	go_domvisitor := &CDomvisitorT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_domvisitor, func(g *CDomvisitorT) {
-		if g.pc_domvisitor != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_domvisitor != nil {
 			Tracef(unsafe.Pointer(g.pc_domvisitor), "T133.2:")
 			BaseRelease(g.pc_domvisitor)
 		}
 	})
+
 	return go_domvisitor
 }
 
@@ -8097,13 +9937,15 @@ func (p *cCDomvisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }
 
 func (domvisitor *CDomvisitorT) ForceUnref() (ret bool) {
-	ret = BaseRelease(domvisitor.pc_domvisitor)
+	if domvisitor == nil {
+		return
+	}
+	if domvisitor.needsUnref && domvisitor.beUnrefed == byApp {
+		ret = BaseRelease(domvisitor.pc_domvisitor)
+		domvisitor.beUnrefed = unrefed
+		domvisitor.needsUnref = false
+	}
 	domvisitor.pc_domvisitor = nil
-	return ret
-}
-
-func (domvisitor *CDomvisitorT) release() (ret bool) {
-	ret = BaseRelease(domvisitor.pc_domvisitor)
 	return ret
 }
 
@@ -8146,7 +9988,13 @@ func AllocCDomvisitorT() *CDomvisitorT {
 		delete(domvisitor_handlers.visit_handler, cgop)
 	}))
 
-	return newCDomvisitorT(cefp, true)
+	BaseAddRef(cgop)
+	return newCDomvisitorT(cefp, byApp, true)
+}
+
+// BindCDomvisitorT allocates CDomvisitorT, construct and bind it
+func BindCDomvisitorT(a interface{}) *CDomvisitorT {
+	return AllocCDomvisitorT().Bind(a)
 }
 
 func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
@@ -8156,7 +10004,7 @@ func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
 	cp := domvisitor.pc_domvisitor
 	if oldGoObj, ok := domvisitor_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CDomvisitorTAccessor); ok {
-			oldAcc.SetCDomvisitorT(nil)
+			oldAcc.setCDomvisitorT(nil)
 		}
 	}
 	domvisitor_handlers.handler[cp] = a
@@ -8168,7 +10016,7 @@ func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
 	}
 
 	if accessor, ok := a.(CDomvisitorTAccessor); ok {
-		accessor.SetCDomvisitorT(domvisitor)
+		accessor.setCDomvisitorT(domvisitor)
 		Logf("T133.5:")
 	}
 
@@ -8176,19 +10024,24 @@ func (domvisitor *CDomvisitorT) Bind(a interface{}) *CDomvisitorT {
 }
 
 func (domvisitor *CDomvisitorT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CDomvisitorTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := domvisitor.pc_domvisitor
-	if goHandler, ok := domvisitor_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CDomvisitorTAccessor); ok1 {
-			accessor.SetCDomvisitorT(nil)
+		cp := domvisitor.pc_domvisitor
+		if goHandler, ok := domvisitor_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CDomvisitorTAccessor)
 		}
+		delete(domvisitor_handlers.handler, cp)
+
+		delete(domvisitor_handlers.visit_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCDomvisitorT(nil)
 	}
-	delete(domvisitor_handlers.handler, cp)
-
-	delete(domvisitor_handlers.visit_handler, cp)
-
 }
 
 func (domvisitor *CDomvisitorT) Handler() interface{} {
@@ -8210,6 +10063,8 @@ type cCDomdocumentT C.cef_domdocument_t
 type CDomdocumentT struct {
 	noCopy         noCopy
 	pc_domdocument *cCDomdocumentT
+	needsUnref     bool
+	beUnrefed      unrefedBy
 }
 
 type RefToCDomdocumentT struct {
@@ -8218,36 +10073,82 @@ type RefToCDomdocumentT struct {
 
 type CDomdocumentTAccessor interface {
 	GetCDomdocumentT() *CDomdocumentT
-	SetCDomdocumentT(*CDomdocumentT) (oldValue *CDomdocumentT)
+	setCDomdocumentT(*CDomdocumentT)
+	// TakeOverCDomdocumentT(*CDomdocumentT)
+	// NewRefCDomdocumentT(*CDomdocumentT)
 }
 
 func (r RefToCDomdocumentT) GetCDomdocumentT() *CDomdocumentT {
 	return r.p_domdocument
 }
 
-func (r *RefToCDomdocumentT) SetCDomdocumentT(p *CDomdocumentT) (prevValue *CDomdocumentT) {
-	prevValue = r.p_domdocument
+func (r *RefToCDomdocumentT) setCDomdocumentT(p *CDomdocumentT) {
+	// prevValue = r.p_domdocument
+	r.p_domdocument.ForceUnref()
 	r.p_domdocument = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDomdocumentT) TakeOverCDomdocumentT(src *CDomdocumentT) {
+	if r == nil {
+		return
+	}
+	r.p_domdocument.ForceUnref()
+	gop := src.pc_domdocument
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_domdocument = newCDomdocumentT((*C.cef_domdocument_t)(gop), byApp, true)
+}
+
+func PassCDomdocumentT(p *CDomdocumentT) (ret *CDomdocumentT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_domdocument)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDomdocumentT((*C.cef_domdocument_t)(p.pc_domdocument), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDomdocumentT) NewRefCDomdocumentT(p *CDomdocumentT) {
+	if r == nil {
+		return
+	}
+	r.p_domdocument.ForceUnref()
+	gop := p.pc_domdocument
+	BaseAddRef(gop)
+	r.p_domdocument = newCDomdocumentT((*C.cef_domdocument_t)(gop), byApp, true)
 }
 
 // Go type CDomdocumentT wraps cef type *C.cef_domdocument_t
-func newCDomdocumentT(p *C.cef_domdocument_t, countUp bool) *CDomdocumentT {
+func newCDomdocumentT(p *C.cef_domdocument_t, unrefedBy unrefedBy, needsUnref bool) *CDomdocumentT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T134.1:")
 	pc := (*cCDomdocumentT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_domdocument := &CDomdocumentT{noCopy{}, pc}
+	go_domdocument := &CDomdocumentT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_domdocument, func(g *CDomdocumentT) {
-		if g.pc_domdocument != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_domdocument != nil {
 			Tracef(unsafe.Pointer(g.pc_domdocument), "T134.2:")
 			BaseRelease(g.pc_domdocument)
 		}
 	})
+
 	return go_domdocument
 }
 
@@ -8261,13 +10162,15 @@ func (p *cCDomdocumentT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (domdocument *CDomdocumentT) ForceUnref() (ret bool) {
-	ret = BaseRelease(domdocument.pc_domdocument)
+	if domdocument == nil {
+		return
+	}
+	if domdocument.needsUnref && domdocument.beUnrefed == byApp {
+		ret = BaseRelease(domdocument.pc_domdocument)
+		domdocument.beUnrefed = unrefed
+		domdocument.needsUnref = false
+	}
 	domdocument.pc_domdocument = nil
-	return ret
-}
-
-func (domdocument *CDomdocumentT) release() (ret bool) {
-	ret = BaseRelease(domdocument.pc_domdocument)
 	return ret
 }
 
@@ -8278,7 +10181,7 @@ func (self *CDomdocumentT) GetType() (ret CDomDocumentTypeT) {
 
 	cRet := C.cefingo_domdocument_get_type((*C.cef_domdocument_t)(self.pc_domdocument))
 
-	ret = CDomDocumentTypeT(cRet)
+	ret = CDomDocumentTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -8289,7 +10192,7 @@ func (self *CDomdocumentT) GetDocument() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domdocument_get_document((*C.cef_domdocument_t)(self.pc_domdocument))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8300,7 +10203,7 @@ func (self *CDomdocumentT) GetBody() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domdocument_get_body((*C.cef_domdocument_t)(self.pc_domdocument))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8311,7 +10214,7 @@ func (self *CDomdocumentT) GetHead() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domdocument_get_head((*C.cef_domdocument_t)(self.pc_domdocument))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8341,7 +10244,7 @@ func (self *CDomdocumentT) GetElementById(
 
 	cRet := C.cefingo_domdocument_get_element_by_id((*C.cef_domdocument_t)(self.pc_domdocument), c_id.p_cef_string_t)
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8352,7 +10255,7 @@ func (self *CDomdocumentT) GetFocusedNode() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domdocument_get_focused_node((*C.cef_domdocument_t)(self.pc_domdocument))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8468,6 +10371,8 @@ type cCDomnodeT C.cef_domnode_t
 type CDomnodeT struct {
 	noCopy     noCopy
 	pc_domnode *cCDomnodeT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCDomnodeT struct {
@@ -8476,36 +10381,82 @@ type RefToCDomnodeT struct {
 
 type CDomnodeTAccessor interface {
 	GetCDomnodeT() *CDomnodeT
-	SetCDomnodeT(*CDomnodeT) (oldValue *CDomnodeT)
+	setCDomnodeT(*CDomnodeT)
+	// TakeOverCDomnodeT(*CDomnodeT)
+	// NewRefCDomnodeT(*CDomnodeT)
 }
 
 func (r RefToCDomnodeT) GetCDomnodeT() *CDomnodeT {
 	return r.p_domnode
 }
 
-func (r *RefToCDomnodeT) SetCDomnodeT(p *CDomnodeT) (prevValue *CDomnodeT) {
-	prevValue = r.p_domnode
+func (r *RefToCDomnodeT) setCDomnodeT(p *CDomnodeT) {
+	// prevValue = r.p_domnode
+	r.p_domnode.ForceUnref()
 	r.p_domnode = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDomnodeT) TakeOverCDomnodeT(src *CDomnodeT) {
+	if r == nil {
+		return
+	}
+	r.p_domnode.ForceUnref()
+	gop := src.pc_domnode
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_domnode = newCDomnodeT((*C.cef_domnode_t)(gop), byApp, true)
+}
+
+func PassCDomnodeT(p *CDomnodeT) (ret *CDomnodeT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_domnode)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDomnodeT((*C.cef_domnode_t)(p.pc_domnode), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDomnodeT) NewRefCDomnodeT(p *CDomnodeT) {
+	if r == nil {
+		return
+	}
+	r.p_domnode.ForceUnref()
+	gop := p.pc_domnode
+	BaseAddRef(gop)
+	r.p_domnode = newCDomnodeT((*C.cef_domnode_t)(gop), byApp, true)
 }
 
 // Go type CDomnodeT wraps cef type *C.cef_domnode_t
-func newCDomnodeT(p *C.cef_domnode_t, countUp bool) *CDomnodeT {
+func newCDomnodeT(p *C.cef_domnode_t, unrefedBy unrefedBy, needsUnref bool) *CDomnodeT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T135.1:")
 	pc := (*cCDomnodeT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_domnode := &CDomnodeT{noCopy{}, pc}
+	go_domnode := &CDomnodeT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_domnode, func(g *CDomnodeT) {
-		if g.pc_domnode != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_domnode != nil {
 			Tracef(unsafe.Pointer(g.pc_domnode), "T135.2:")
 			BaseRelease(g.pc_domnode)
 		}
 	})
+
 	return go_domnode
 }
 
@@ -8519,13 +10470,15 @@ func (p *cCDomnodeT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (domnode *CDomnodeT) ForceUnref() (ret bool) {
-	ret = BaseRelease(domnode.pc_domnode)
+	if domnode == nil {
+		return
+	}
+	if domnode.needsUnref && domnode.beUnrefed == byApp {
+		ret = BaseRelease(domnode.pc_domnode)
+		domnode.beUnrefed = unrefed
+		domnode.needsUnref = false
+	}
 	domnode.pc_domnode = nil
-	return ret
-}
-
-func (domnode *CDomnodeT) release() (ret bool) {
-	ret = BaseRelease(domnode.pc_domnode)
 	return ret
 }
 
@@ -8536,7 +10489,7 @@ func (self *CDomnodeT) GetType() (ret CDomNodeTypeT) {
 
 	cRet := C.cefingo_domnode_get_type((*C.cef_domnode_t)(self.pc_domnode))
 
-	ret = CDomNodeTypeT(cRet)
+	ret = CDomNodeTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -8688,7 +10641,7 @@ func (self *CDomnodeT) GetDocument() (ret *CDomdocumentT) {
 
 	cRet := C.cefingo_domnode_get_document((*C.cef_domnode_t)(self.pc_domnode))
 
-	ret = newCDomdocumentT(cRet, false)
+	ret = newCDomdocumentT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8699,7 +10652,7 @@ func (self *CDomnodeT) GetParent() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_parent((*C.cef_domnode_t)(self.pc_domnode))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8710,7 +10663,7 @@ func (self *CDomnodeT) GetPreviousSibling() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_previous_sibling((*C.cef_domnode_t)(self.pc_domnode))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8721,7 +10674,7 @@ func (self *CDomnodeT) GetNextSibling() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_next_sibling((*C.cef_domnode_t)(self.pc_domnode))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8743,7 +10696,7 @@ func (self *CDomnodeT) GetFirstChild() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_first_child((*C.cef_domnode_t)(self.pc_domnode))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8754,7 +10707,7 @@ func (self *CDomnodeT) GetLastChild() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_last_child((*C.cef_domnode_t)(self.pc_domnode))
 
-	ret = newCDomnodeT(cRet, false)
+	ret = newCDomnodeT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -8869,7 +10822,7 @@ func (self *CDomnodeT) GetElementBounds() (ret CRectT) {
 
 	cRet := C.cefingo_domnode_get_element_bounds((*C.cef_domnode_t)(self.pc_domnode))
 
-	ret = (CRectT)(cRet)
+	ret = (CRectT)(cRet) // return GoObj
 	return ret
 }
 
@@ -8885,6 +10838,8 @@ type cCBeforeDownloadCallbackT C.cef_before_download_callback_t
 type CBeforeDownloadCallbackT struct {
 	noCopy                      noCopy
 	pc_before_download_callback *cCBeforeDownloadCallbackT
+	needsUnref                  bool
+	beUnrefed                   unrefedBy
 }
 
 type RefToCBeforeDownloadCallbackT struct {
@@ -8893,36 +10848,82 @@ type RefToCBeforeDownloadCallbackT struct {
 
 type CBeforeDownloadCallbackTAccessor interface {
 	GetCBeforeDownloadCallbackT() *CBeforeDownloadCallbackT
-	SetCBeforeDownloadCallbackT(*CBeforeDownloadCallbackT) (oldValue *CBeforeDownloadCallbackT)
+	setCBeforeDownloadCallbackT(*CBeforeDownloadCallbackT)
+	// TakeOverCBeforeDownloadCallbackT(*CBeforeDownloadCallbackT)
+	// NewRefCBeforeDownloadCallbackT(*CBeforeDownloadCallbackT)
 }
 
 func (r RefToCBeforeDownloadCallbackT) GetCBeforeDownloadCallbackT() *CBeforeDownloadCallbackT {
 	return r.p_before_download_callback
 }
 
-func (r *RefToCBeforeDownloadCallbackT) SetCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) (prevValue *CBeforeDownloadCallbackT) {
-	prevValue = r.p_before_download_callback
+func (r *RefToCBeforeDownloadCallbackT) setCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) {
+	// prevValue = r.p_before_download_callback
+	r.p_before_download_callback.ForceUnref()
 	r.p_before_download_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCBeforeDownloadCallbackT) TakeOverCBeforeDownloadCallbackT(src *CBeforeDownloadCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_before_download_callback.ForceUnref()
+	gop := src.pc_before_download_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_before_download_callback = newCBeforeDownloadCallbackT((*C.cef_before_download_callback_t)(gop), byApp, true)
+}
+
+func PassCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) (ret *CBeforeDownloadCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_before_download_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCBeforeDownloadCallbackT((*C.cef_before_download_callback_t)(p.pc_before_download_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCBeforeDownloadCallbackT) NewRefCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_before_download_callback.ForceUnref()
+	gop := p.pc_before_download_callback
+	BaseAddRef(gop)
+	r.p_before_download_callback = newCBeforeDownloadCallbackT((*C.cef_before_download_callback_t)(gop), byApp, true)
 }
 
 // Go type CBeforeDownloadCallbackT wraps cef type *C.cef_before_download_callback_t
-func newCBeforeDownloadCallbackT(p *C.cef_before_download_callback_t, countUp bool) *CBeforeDownloadCallbackT {
+func newCBeforeDownloadCallbackT(p *C.cef_before_download_callback_t, unrefedBy unrefedBy, needsUnref bool) *CBeforeDownloadCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T136.1:")
 	pc := (*cCBeforeDownloadCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_before_download_callback := &CBeforeDownloadCallbackT{noCopy{}, pc}
+	go_before_download_callback := &CBeforeDownloadCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_before_download_callback, func(g *CBeforeDownloadCallbackT) {
-		if g.pc_before_download_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_before_download_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_before_download_callback), "T136.2:")
 			BaseRelease(g.pc_before_download_callback)
 		}
 	})
+
 	return go_before_download_callback
 }
 
@@ -8936,13 +10937,15 @@ func (p *cCBeforeDownloadCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_r
 }
 
 func (before_download_callback *CBeforeDownloadCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(before_download_callback.pc_before_download_callback)
+	if before_download_callback == nil {
+		return
+	}
+	if before_download_callback.needsUnref && before_download_callback.beUnrefed == byApp {
+		ret = BaseRelease(before_download_callback.pc_before_download_callback)
+		before_download_callback.beUnrefed = unrefed
+		before_download_callback.needsUnref = false
+	}
 	before_download_callback.pc_before_download_callback = nil
-	return ret
-}
-
-func (before_download_callback *CBeforeDownloadCallbackT) release() (ret bool) {
-	ret = BaseRelease(before_download_callback.pc_before_download_callback)
 	return ret
 }
 
@@ -8972,6 +10975,8 @@ type cCDownloadItemCallbackT C.cef_download_item_callback_t
 type CDownloadItemCallbackT struct {
 	noCopy                    noCopy
 	pc_download_item_callback *cCDownloadItemCallbackT
+	needsUnref                bool
+	beUnrefed                 unrefedBy
 }
 
 type RefToCDownloadItemCallbackT struct {
@@ -8980,36 +10985,82 @@ type RefToCDownloadItemCallbackT struct {
 
 type CDownloadItemCallbackTAccessor interface {
 	GetCDownloadItemCallbackT() *CDownloadItemCallbackT
-	SetCDownloadItemCallbackT(*CDownloadItemCallbackT) (oldValue *CDownloadItemCallbackT)
+	setCDownloadItemCallbackT(*CDownloadItemCallbackT)
+	// TakeOverCDownloadItemCallbackT(*CDownloadItemCallbackT)
+	// NewRefCDownloadItemCallbackT(*CDownloadItemCallbackT)
 }
 
 func (r RefToCDownloadItemCallbackT) GetCDownloadItemCallbackT() *CDownloadItemCallbackT {
 	return r.p_download_item_callback
 }
 
-func (r *RefToCDownloadItemCallbackT) SetCDownloadItemCallbackT(p *CDownloadItemCallbackT) (prevValue *CDownloadItemCallbackT) {
-	prevValue = r.p_download_item_callback
+func (r *RefToCDownloadItemCallbackT) setCDownloadItemCallbackT(p *CDownloadItemCallbackT) {
+	// prevValue = r.p_download_item_callback
+	r.p_download_item_callback.ForceUnref()
 	r.p_download_item_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDownloadItemCallbackT) TakeOverCDownloadItemCallbackT(src *CDownloadItemCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_download_item_callback.ForceUnref()
+	gop := src.pc_download_item_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_download_item_callback = newCDownloadItemCallbackT((*C.cef_download_item_callback_t)(gop), byApp, true)
+}
+
+func PassCDownloadItemCallbackT(p *CDownloadItemCallbackT) (ret *CDownloadItemCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_download_item_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDownloadItemCallbackT((*C.cef_download_item_callback_t)(p.pc_download_item_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDownloadItemCallbackT) NewRefCDownloadItemCallbackT(p *CDownloadItemCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_download_item_callback.ForceUnref()
+	gop := p.pc_download_item_callback
+	BaseAddRef(gop)
+	r.p_download_item_callback = newCDownloadItemCallbackT((*C.cef_download_item_callback_t)(gop), byApp, true)
 }
 
 // Go type CDownloadItemCallbackT wraps cef type *C.cef_download_item_callback_t
-func newCDownloadItemCallbackT(p *C.cef_download_item_callback_t, countUp bool) *CDownloadItemCallbackT {
+func newCDownloadItemCallbackT(p *C.cef_download_item_callback_t, unrefedBy unrefedBy, needsUnref bool) *CDownloadItemCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T137.1:")
 	pc := (*cCDownloadItemCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_download_item_callback := &CDownloadItemCallbackT{noCopy{}, pc}
+	go_download_item_callback := &CDownloadItemCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_download_item_callback, func(g *CDownloadItemCallbackT) {
-		if g.pc_download_item_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_download_item_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_download_item_callback), "T137.2:")
 			BaseRelease(g.pc_download_item_callback)
 		}
 	})
+
 	return go_download_item_callback
 }
 
@@ -9023,13 +11074,15 @@ func (p *cCDownloadItemCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 }
 
 func (download_item_callback *CDownloadItemCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(download_item_callback.pc_download_item_callback)
+	if download_item_callback == nil {
+		return
+	}
+	if download_item_callback.needsUnref && download_item_callback.beUnrefed == byApp {
+		ret = BaseRelease(download_item_callback.pc_download_item_callback)
+		download_item_callback.beUnrefed = unrefed
+		download_item_callback.needsUnref = false
+	}
 	download_item_callback.pc_download_item_callback = nil
-	return ret
-}
-
-func (download_item_callback *CDownloadItemCallbackT) release() (ret bool) {
-	ret = BaseRelease(download_item_callback.pc_download_item_callback)
 	return ret
 }
 
@@ -9071,6 +11124,8 @@ type cCDownloadHandlerT C.cef_download_handler_t
 type CDownloadHandlerT struct {
 	noCopy              noCopy
 	pc_download_handler *cCDownloadHandlerT
+	needsUnref          bool
+	beUnrefed           unrefedBy
 }
 
 type RefToCDownloadHandlerT struct {
@@ -9079,36 +11134,82 @@ type RefToCDownloadHandlerT struct {
 
 type CDownloadHandlerTAccessor interface {
 	GetCDownloadHandlerT() *CDownloadHandlerT
-	SetCDownloadHandlerT(*CDownloadHandlerT) (oldValue *CDownloadHandlerT)
+	setCDownloadHandlerT(*CDownloadHandlerT)
+	// TakeOverCDownloadHandlerT(*CDownloadHandlerT)
+	// NewRefCDownloadHandlerT(*CDownloadHandlerT)
 }
 
 func (r RefToCDownloadHandlerT) GetCDownloadHandlerT() *CDownloadHandlerT {
 	return r.p_download_handler
 }
 
-func (r *RefToCDownloadHandlerT) SetCDownloadHandlerT(p *CDownloadHandlerT) (prevValue *CDownloadHandlerT) {
-	prevValue = r.p_download_handler
+func (r *RefToCDownloadHandlerT) setCDownloadHandlerT(p *CDownloadHandlerT) {
+	// prevValue = r.p_download_handler
+	r.p_download_handler.ForceUnref()
 	r.p_download_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDownloadHandlerT) TakeOverCDownloadHandlerT(src *CDownloadHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_download_handler.ForceUnref()
+	gop := src.pc_download_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_download_handler = newCDownloadHandlerT((*C.cef_download_handler_t)(gop), byApp, true)
+}
+
+func PassCDownloadHandlerT(p *CDownloadHandlerT) (ret *CDownloadHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_download_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDownloadHandlerT((*C.cef_download_handler_t)(p.pc_download_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDownloadHandlerT) NewRefCDownloadHandlerT(p *CDownloadHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_download_handler.ForceUnref()
+	gop := p.pc_download_handler
+	BaseAddRef(gop)
+	r.p_download_handler = newCDownloadHandlerT((*C.cef_download_handler_t)(gop), byApp, true)
 }
 
 // Go type CDownloadHandlerT wraps cef type *C.cef_download_handler_t
-func newCDownloadHandlerT(p *C.cef_download_handler_t, countUp bool) *CDownloadHandlerT {
+func newCDownloadHandlerT(p *C.cef_download_handler_t, unrefedBy unrefedBy, needsUnref bool) *CDownloadHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T138.1:")
 	pc := (*cCDownloadHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_download_handler := &CDownloadHandlerT{noCopy{}, pc}
+	go_download_handler := &CDownloadHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_download_handler, func(g *CDownloadHandlerT) {
-		if g.pc_download_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_download_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_download_handler), "T138.2:")
 			BaseRelease(g.pc_download_handler)
 		}
 	})
+
 	return go_download_handler
 }
 
@@ -9122,13 +11223,15 @@ func (p *cCDownloadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (download_handler *CDownloadHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(download_handler.pc_download_handler)
+	if download_handler == nil {
+		return
+	}
+	if download_handler.needsUnref && download_handler.beUnrefed == byApp {
+		ret = BaseRelease(download_handler.pc_download_handler)
+		download_handler.beUnrefed = unrefed
+		download_handler.needsUnref = false
+	}
 	download_handler.pc_download_handler = nil
-	return ret
-}
-
-func (download_handler *CDownloadHandlerT) release() (ret bool) {
-	ret = BaseRelease(download_handler.pc_download_handler)
 	return ret
 }
 
@@ -9193,7 +11296,13 @@ func AllocCDownloadHandlerT() *CDownloadHandlerT {
 		delete(download_handler_handlers.on_download_updated_handler, cgop)
 	}))
 
-	return newCDownloadHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCDownloadHandlerT(cefp, byApp, true)
+}
+
+// BindCDownloadHandlerT allocates CDownloadHandlerT, construct and bind it
+func BindCDownloadHandlerT(a interface{}) *CDownloadHandlerT {
+	return AllocCDownloadHandlerT().Bind(a)
 }
 
 func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandlerT {
@@ -9203,7 +11312,7 @@ func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandler
 	cp := download_handler.pc_download_handler
 	if oldGoObj, ok := download_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CDownloadHandlerTAccessor); ok {
-			oldAcc.SetCDownloadHandlerT(nil)
+			oldAcc.setCDownloadHandlerT(nil)
 		}
 	}
 	download_handler_handlers.handler[cp] = a
@@ -9221,7 +11330,7 @@ func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandler
 	}
 
 	if accessor, ok := a.(CDownloadHandlerTAccessor); ok {
-		accessor.SetCDownloadHandlerT(download_handler)
+		accessor.setCDownloadHandlerT(download_handler)
 		Logf("T138.5:")
 	}
 
@@ -9229,20 +11338,25 @@ func (download_handler *CDownloadHandlerT) Bind(a interface{}) *CDownloadHandler
 }
 
 func (download_handler *CDownloadHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CDownloadHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := download_handler.pc_download_handler
-	if goHandler, ok := download_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CDownloadHandlerTAccessor); ok1 {
-			accessor.SetCDownloadHandlerT(nil)
+		cp := download_handler.pc_download_handler
+		if goHandler, ok := download_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CDownloadHandlerTAccessor)
 		}
+		delete(download_handler_handlers.handler, cp)
+
+		delete(download_handler_handlers.on_before_download_handler, cp)
+		delete(download_handler_handlers.on_download_updated_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCDownloadHandlerT(nil)
 	}
-	delete(download_handler_handlers.handler, cp)
-
-	delete(download_handler_handlers.on_before_download_handler, cp)
-	delete(download_handler_handlers.on_download_updated_handler, cp)
-
 }
 
 func (download_handler *CDownloadHandlerT) Handler() interface{} {
@@ -9265,6 +11379,8 @@ type cCDownloadItemT C.cef_download_item_t
 type CDownloadItemT struct {
 	noCopy           noCopy
 	pc_download_item *cCDownloadItemT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCDownloadItemT struct {
@@ -9273,36 +11389,82 @@ type RefToCDownloadItemT struct {
 
 type CDownloadItemTAccessor interface {
 	GetCDownloadItemT() *CDownloadItemT
-	SetCDownloadItemT(*CDownloadItemT) (oldValue *CDownloadItemT)
+	setCDownloadItemT(*CDownloadItemT)
+	// TakeOverCDownloadItemT(*CDownloadItemT)
+	// NewRefCDownloadItemT(*CDownloadItemT)
 }
 
 func (r RefToCDownloadItemT) GetCDownloadItemT() *CDownloadItemT {
 	return r.p_download_item
 }
 
-func (r *RefToCDownloadItemT) SetCDownloadItemT(p *CDownloadItemT) (prevValue *CDownloadItemT) {
-	prevValue = r.p_download_item
+func (r *RefToCDownloadItemT) setCDownloadItemT(p *CDownloadItemT) {
+	// prevValue = r.p_download_item
+	r.p_download_item.ForceUnref()
 	r.p_download_item = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDownloadItemT) TakeOverCDownloadItemT(src *CDownloadItemT) {
+	if r == nil {
+		return
+	}
+	r.p_download_item.ForceUnref()
+	gop := src.pc_download_item
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_download_item = newCDownloadItemT((*C.cef_download_item_t)(gop), byApp, true)
+}
+
+func PassCDownloadItemT(p *CDownloadItemT) (ret *CDownloadItemT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_download_item)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDownloadItemT((*C.cef_download_item_t)(p.pc_download_item), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDownloadItemT) NewRefCDownloadItemT(p *CDownloadItemT) {
+	if r == nil {
+		return
+	}
+	r.p_download_item.ForceUnref()
+	gop := p.pc_download_item
+	BaseAddRef(gop)
+	r.p_download_item = newCDownloadItemT((*C.cef_download_item_t)(gop), byApp, true)
 }
 
 // Go type CDownloadItemT wraps cef type *C.cef_download_item_t
-func newCDownloadItemT(p *C.cef_download_item_t, countUp bool) *CDownloadItemT {
+func newCDownloadItemT(p *C.cef_download_item_t, unrefedBy unrefedBy, needsUnref bool) *CDownloadItemT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T139.1:")
 	pc := (*cCDownloadItemT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_download_item := &CDownloadItemT{noCopy{}, pc}
+	go_download_item := &CDownloadItemT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_download_item, func(g *CDownloadItemT) {
-		if g.pc_download_item != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_download_item != nil {
 			Tracef(unsafe.Pointer(g.pc_download_item), "T139.2:")
 			BaseRelease(g.pc_download_item)
 		}
 	})
+
 	return go_download_item
 }
 
@@ -9316,13 +11478,15 @@ func (p *cCDownloadItemT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (download_item *CDownloadItemT) ForceUnref() (ret bool) {
-	ret = BaseRelease(download_item.pc_download_item)
+	if download_item == nil {
+		return
+	}
+	if download_item.needsUnref && download_item.beUnrefed == byApp {
+		ret = BaseRelease(download_item.pc_download_item)
+		download_item.beUnrefed = unrefed
+		download_item.needsUnref = false
+	}
 	download_item.pc_download_item = nil
-	return ret
-}
-
-func (download_item *CDownloadItemT) release() (ret bool) {
-	ret = BaseRelease(download_item.pc_download_item)
 	return ret
 }
 
@@ -9378,7 +11542,7 @@ func (self *CDownloadItemT) GetCurrentSpeed() (ret int64) {
 
 	cRet := C.cefingo_download_item_get_current_speed((*C.cef_download_item_t)(self.pc_download_item))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -9401,7 +11565,7 @@ func (self *CDownloadItemT) GetTotalBytes() (ret int64) {
 
 	cRet := C.cefingo_download_item_get_total_bytes((*C.cef_download_item_t)(self.pc_download_item))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -9412,7 +11576,7 @@ func (self *CDownloadItemT) GetReceivedBytes() (ret int64) {
 
 	cRet := C.cefingo_download_item_get_received_bytes((*C.cef_download_item_t)(self.pc_download_item))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -9423,7 +11587,7 @@ func (self *CDownloadItemT) GetStartTime() (ret CTimeT) {
 
 	cRet := C.cefingo_download_item_get_start_time((*C.cef_download_item_t)(self.pc_download_item))
 
-	ret = (CTimeT)(cRet)
+	ret = (CTimeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -9434,7 +11598,7 @@ func (self *CDownloadItemT) GetEndTime() (ret CTimeT) {
 
 	cRet := C.cefingo_download_item_get_end_time((*C.cef_download_item_t)(self.pc_download_item))
 
-	ret = (CTimeT)(cRet)
+	ret = (CTimeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -9461,7 +11625,7 @@ func (self *CDownloadItemT) GetId() (ret uint32) {
 
 	cRet := C.cefingo_download_item_get_id((*C.cef_download_item_t)(self.pc_download_item))
 
-	ret = (uint32)(cRet)
+	ret = (uint32)(cRet) // return GoObj
 	return ret
 }
 
@@ -9558,6 +11722,8 @@ type cCDragDataT C.cef_drag_data_t
 type CDragDataT struct {
 	noCopy       noCopy
 	pc_drag_data *cCDragDataT
+	needsUnref   bool
+	beUnrefed    unrefedBy
 }
 
 type RefToCDragDataT struct {
@@ -9566,36 +11732,82 @@ type RefToCDragDataT struct {
 
 type CDragDataTAccessor interface {
 	GetCDragDataT() *CDragDataT
-	SetCDragDataT(*CDragDataT) (oldValue *CDragDataT)
+	setCDragDataT(*CDragDataT)
+	// TakeOverCDragDataT(*CDragDataT)
+	// NewRefCDragDataT(*CDragDataT)
 }
 
 func (r RefToCDragDataT) GetCDragDataT() *CDragDataT {
 	return r.p_drag_data
 }
 
-func (r *RefToCDragDataT) SetCDragDataT(p *CDragDataT) (prevValue *CDragDataT) {
-	prevValue = r.p_drag_data
+func (r *RefToCDragDataT) setCDragDataT(p *CDragDataT) {
+	// prevValue = r.p_drag_data
+	r.p_drag_data.ForceUnref()
 	r.p_drag_data = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDragDataT) TakeOverCDragDataT(src *CDragDataT) {
+	if r == nil {
+		return
+	}
+	r.p_drag_data.ForceUnref()
+	gop := src.pc_drag_data
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_drag_data = newCDragDataT((*C.cef_drag_data_t)(gop), byApp, true)
+}
+
+func PassCDragDataT(p *CDragDataT) (ret *CDragDataT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_drag_data)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDragDataT((*C.cef_drag_data_t)(p.pc_drag_data), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDragDataT) NewRefCDragDataT(p *CDragDataT) {
+	if r == nil {
+		return
+	}
+	r.p_drag_data.ForceUnref()
+	gop := p.pc_drag_data
+	BaseAddRef(gop)
+	r.p_drag_data = newCDragDataT((*C.cef_drag_data_t)(gop), byApp, true)
 }
 
 // Go type CDragDataT wraps cef type *C.cef_drag_data_t
-func newCDragDataT(p *C.cef_drag_data_t, countUp bool) *CDragDataT {
+func newCDragDataT(p *C.cef_drag_data_t, unrefedBy unrefedBy, needsUnref bool) *CDragDataT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T140.1:")
 	pc := (*cCDragDataT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_drag_data := &CDragDataT{noCopy{}, pc}
+	go_drag_data := &CDragDataT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_drag_data, func(g *CDragDataT) {
-		if g.pc_drag_data != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_drag_data != nil {
 			Tracef(unsafe.Pointer(g.pc_drag_data), "T140.2:")
 			BaseRelease(g.pc_drag_data)
 		}
 	})
+
 	return go_drag_data
 }
 
@@ -9609,13 +11821,15 @@ func (p *cCDragDataT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (drag_data *CDragDataT) ForceUnref() (ret bool) {
-	ret = BaseRelease(drag_data.pc_drag_data)
+	if drag_data == nil {
+		return
+	}
+	if drag_data.needsUnref && drag_data.beUnrefed == byApp {
+		ret = BaseRelease(drag_data.pc_drag_data)
+		drag_data.beUnrefed = unrefed
+		drag_data.needsUnref = false
+	}
 	drag_data.pc_drag_data = nil
-	return ret
-}
-
-func (drag_data *CDragDataT) release() (ret bool) {
-	ret = BaseRelease(drag_data.pc_drag_data)
 	return ret
 }
 
@@ -9626,7 +11840,7 @@ func (self *CDragDataT) Clone() (ret *CDragDataT) {
 
 	cRet := C.cefingo_drag_data_clone((*C.cef_drag_data_t)(self.pc_drag_data))
 
-	ret = newCDragDataT(cRet, false)
+	ret = newCDragDataT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -9804,7 +12018,7 @@ func (self *CDragDataT) GetFileContents(
 
 	cRet := C.cefingo_drag_data_get_file_contents((*C.cef_drag_data_t)(self.pc_drag_data), goTmpwriter)
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -9927,7 +12141,7 @@ func (self *CDragDataT) GetImage() (ret *CImageT) {
 
 	cRet := C.cefingo_drag_data_get_image((*C.cef_drag_data_t)(self.pc_drag_data))
 
-	ret = newCImageT(cRet, false)
+	ret = newCImageT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -9938,7 +12152,7 @@ func (self *CDragDataT) GetImageHotspot() (ret CPointT) {
 
 	cRet := C.cefingo_drag_data_get_image_hotspot((*C.cef_drag_data_t)(self.pc_drag_data))
 
-	ret = (CPointT)(cRet)
+	ret = (CPointT)(cRet) // return GoObj
 	return ret
 }
 
@@ -9960,7 +12174,7 @@ func DragDataCreate() (ret *CDragDataT) {
 
 	cRet := C.cef_drag_data_create()
 
-	ret = newCDragDataT(cRet, false)
+	ret = newCDragDataT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -9977,6 +12191,8 @@ type cCDragHandlerT C.cef_drag_handler_t
 type CDragHandlerT struct {
 	noCopy          noCopy
 	pc_drag_handler *cCDragHandlerT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCDragHandlerT struct {
@@ -9985,36 +12201,82 @@ type RefToCDragHandlerT struct {
 
 type CDragHandlerTAccessor interface {
 	GetCDragHandlerT() *CDragHandlerT
-	SetCDragHandlerT(*CDragHandlerT) (oldValue *CDragHandlerT)
+	setCDragHandlerT(*CDragHandlerT)
+	// TakeOverCDragHandlerT(*CDragHandlerT)
+	// NewRefCDragHandlerT(*CDragHandlerT)
 }
 
 func (r RefToCDragHandlerT) GetCDragHandlerT() *CDragHandlerT {
 	return r.p_drag_handler
 }
 
-func (r *RefToCDragHandlerT) SetCDragHandlerT(p *CDragHandlerT) (prevValue *CDragHandlerT) {
-	prevValue = r.p_drag_handler
+func (r *RefToCDragHandlerT) setCDragHandlerT(p *CDragHandlerT) {
+	// prevValue = r.p_drag_handler
+	r.p_drag_handler.ForceUnref()
 	r.p_drag_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDragHandlerT) TakeOverCDragHandlerT(src *CDragHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_drag_handler.ForceUnref()
+	gop := src.pc_drag_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_drag_handler = newCDragHandlerT((*C.cef_drag_handler_t)(gop), byApp, true)
+}
+
+func PassCDragHandlerT(p *CDragHandlerT) (ret *CDragHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_drag_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDragHandlerT((*C.cef_drag_handler_t)(p.pc_drag_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDragHandlerT) NewRefCDragHandlerT(p *CDragHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_drag_handler.ForceUnref()
+	gop := p.pc_drag_handler
+	BaseAddRef(gop)
+	r.p_drag_handler = newCDragHandlerT((*C.cef_drag_handler_t)(gop), byApp, true)
 }
 
 // Go type CDragHandlerT wraps cef type *C.cef_drag_handler_t
-func newCDragHandlerT(p *C.cef_drag_handler_t, countUp bool) *CDragHandlerT {
+func newCDragHandlerT(p *C.cef_drag_handler_t, unrefedBy unrefedBy, needsUnref bool) *CDragHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T141.1:")
 	pc := (*cCDragHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_drag_handler := &CDragHandlerT{noCopy{}, pc}
+	go_drag_handler := &CDragHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_drag_handler, func(g *CDragHandlerT) {
-		if g.pc_drag_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_drag_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_drag_handler), "T141.2:")
 			BaseRelease(g.pc_drag_handler)
 		}
 	})
+
 	return go_drag_handler
 }
 
@@ -10028,13 +12290,15 @@ func (p *cCDragHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (drag_handler *CDragHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(drag_handler.pc_drag_handler)
+	if drag_handler == nil {
+		return
+	}
+	if drag_handler.needsUnref && drag_handler.beUnrefed == byApp {
+		ret = BaseRelease(drag_handler.pc_drag_handler)
+		drag_handler.beUnrefed = unrefed
+		drag_handler.needsUnref = false
+	}
 	drag_handler.pc_drag_handler = nil
-	return ret
-}
-
-func (drag_handler *CDragHandlerT) release() (ret bool) {
-	ret = BaseRelease(drag_handler.pc_drag_handler)
 	return ret
 }
 
@@ -10098,7 +12362,13 @@ func AllocCDragHandlerT() *CDragHandlerT {
 		delete(drag_handler_handlers.on_draggable_regions_changed_handler, cgop)
 	}))
 
-	return newCDragHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCDragHandlerT(cefp, byApp, true)
+}
+
+// BindCDragHandlerT allocates CDragHandlerT, construct and bind it
+func BindCDragHandlerT(a interface{}) *CDragHandlerT {
+	return AllocCDragHandlerT().Bind(a)
 }
 
 func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
@@ -10108,7 +12378,7 @@ func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
 	cp := drag_handler.pc_drag_handler
 	if oldGoObj, ok := drag_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CDragHandlerTAccessor); ok {
-			oldAcc.SetCDragHandlerT(nil)
+			oldAcc.setCDragHandlerT(nil)
 		}
 	}
 	drag_handler_handlers.handler[cp] = a
@@ -10126,7 +12396,7 @@ func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
 	}
 
 	if accessor, ok := a.(CDragHandlerTAccessor); ok {
-		accessor.SetCDragHandlerT(drag_handler)
+		accessor.setCDragHandlerT(drag_handler)
 		Logf("T141.5:")
 	}
 
@@ -10134,20 +12404,25 @@ func (drag_handler *CDragHandlerT) Bind(a interface{}) *CDragHandlerT {
 }
 
 func (drag_handler *CDragHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CDragHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := drag_handler.pc_drag_handler
-	if goHandler, ok := drag_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CDragHandlerTAccessor); ok1 {
-			accessor.SetCDragHandlerT(nil)
+		cp := drag_handler.pc_drag_handler
+		if goHandler, ok := drag_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CDragHandlerTAccessor)
 		}
+		delete(drag_handler_handlers.handler, cp)
+
+		delete(drag_handler_handlers.on_drag_enter_handler, cp)
+		delete(drag_handler_handlers.on_draggable_regions_changed_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCDragHandlerT(nil)
 	}
-	delete(drag_handler_handlers.handler, cp)
-
-	delete(drag_handler_handlers.on_drag_enter_handler, cp)
-	delete(drag_handler_handlers.on_draggable_regions_changed_handler, cp)
-
 }
 
 func (drag_handler *CDragHandlerT) Handler() interface{} {
@@ -10171,6 +12446,8 @@ type cCExtensionT C.cef_extension_t
 type CExtensionT struct {
 	noCopy       noCopy
 	pc_extension *cCExtensionT
+	needsUnref   bool
+	beUnrefed    unrefedBy
 }
 
 type RefToCExtensionT struct {
@@ -10179,36 +12456,82 @@ type RefToCExtensionT struct {
 
 type CExtensionTAccessor interface {
 	GetCExtensionT() *CExtensionT
-	SetCExtensionT(*CExtensionT) (oldValue *CExtensionT)
+	setCExtensionT(*CExtensionT)
+	// TakeOverCExtensionT(*CExtensionT)
+	// NewRefCExtensionT(*CExtensionT)
 }
 
 func (r RefToCExtensionT) GetCExtensionT() *CExtensionT {
 	return r.p_extension
 }
 
-func (r *RefToCExtensionT) SetCExtensionT(p *CExtensionT) (prevValue *CExtensionT) {
-	prevValue = r.p_extension
+func (r *RefToCExtensionT) setCExtensionT(p *CExtensionT) {
+	// prevValue = r.p_extension
+	r.p_extension.ForceUnref()
 	r.p_extension = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCExtensionT) TakeOverCExtensionT(src *CExtensionT) {
+	if r == nil {
+		return
+	}
+	r.p_extension.ForceUnref()
+	gop := src.pc_extension
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_extension = newCExtensionT((*C.cef_extension_t)(gop), byApp, true)
+}
+
+func PassCExtensionT(p *CExtensionT) (ret *CExtensionT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_extension)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCExtensionT((*C.cef_extension_t)(p.pc_extension), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCExtensionT) NewRefCExtensionT(p *CExtensionT) {
+	if r == nil {
+		return
+	}
+	r.p_extension.ForceUnref()
+	gop := p.pc_extension
+	BaseAddRef(gop)
+	r.p_extension = newCExtensionT((*C.cef_extension_t)(gop), byApp, true)
 }
 
 // Go type CExtensionT wraps cef type *C.cef_extension_t
-func newCExtensionT(p *C.cef_extension_t, countUp bool) *CExtensionT {
+func newCExtensionT(p *C.cef_extension_t, unrefedBy unrefedBy, needsUnref bool) *CExtensionT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T142.1:")
 	pc := (*cCExtensionT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_extension := &CExtensionT{noCopy{}, pc}
+	go_extension := &CExtensionT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_extension, func(g *CExtensionT) {
-		if g.pc_extension != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_extension != nil {
 			Tracef(unsafe.Pointer(g.pc_extension), "T142.2:")
 			BaseRelease(g.pc_extension)
 		}
 	})
+
 	return go_extension
 }
 
@@ -10222,13 +12545,15 @@ func (p *cCExtensionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (extension *CExtensionT) ForceUnref() (ret bool) {
-	ret = BaseRelease(extension.pc_extension)
+	if extension == nil {
+		return
+	}
+	if extension.needsUnref && extension.beUnrefed == byApp {
+		ret = BaseRelease(extension.pc_extension)
+		extension.beUnrefed = unrefed
+		extension.needsUnref = false
+	}
 	extension.pc_extension = nil
-	return ret
-}
-
-func (extension *CExtensionT) release() (ret bool) {
-	ret = BaseRelease(extension.pc_extension)
 	return ret
 }
 
@@ -10276,7 +12601,7 @@ func (self *CExtensionT) GetManifest() (ret *CDictionaryValueT) {
 
 	cRet := C.cefingo_extension_get_manifest((*C.cef_extension_t)(self.pc_extension))
 
-	ret = newCDictionaryValueT(cRet, false)
+	ret = newCDictionaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -10309,7 +12634,7 @@ func (self *CExtensionT) GetHandler() (ret *CExtensionHandlerT) {
 
 	cRet := C.cefingo_extension_get_handler((*C.cef_extension_t)(self.pc_extension))
 
-	ret = newCExtensionHandlerT(cRet, false)
+	ret = newCExtensionHandlerT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -10323,7 +12648,7 @@ func (self *CExtensionT) GetLoaderContext() (ret *CRequestContextT) {
 
 	cRet := C.cefingo_extension_get_loader_context((*C.cef_extension_t)(self.pc_extension))
 
-	ret = newCRequestContextT(cRet, false)
+	ret = newCRequestContextT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -10363,6 +12688,8 @@ type cCGetExtensionResourceCallbackT C.cef_get_extension_resource_callback_t
 type CGetExtensionResourceCallbackT struct {
 	noCopy                             noCopy
 	pc_get_extension_resource_callback *cCGetExtensionResourceCallbackT
+	needsUnref                         bool
+	beUnrefed                          unrefedBy
 }
 
 type RefToCGetExtensionResourceCallbackT struct {
@@ -10371,36 +12698,82 @@ type RefToCGetExtensionResourceCallbackT struct {
 
 type CGetExtensionResourceCallbackTAccessor interface {
 	GetCGetExtensionResourceCallbackT() *CGetExtensionResourceCallbackT
-	SetCGetExtensionResourceCallbackT(*CGetExtensionResourceCallbackT) (oldValue *CGetExtensionResourceCallbackT)
+	setCGetExtensionResourceCallbackT(*CGetExtensionResourceCallbackT)
+	// TakeOverCGetExtensionResourceCallbackT(*CGetExtensionResourceCallbackT)
+	// NewRefCGetExtensionResourceCallbackT(*CGetExtensionResourceCallbackT)
 }
 
 func (r RefToCGetExtensionResourceCallbackT) GetCGetExtensionResourceCallbackT() *CGetExtensionResourceCallbackT {
 	return r.p_get_extension_resource_callback
 }
 
-func (r *RefToCGetExtensionResourceCallbackT) SetCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) (prevValue *CGetExtensionResourceCallbackT) {
-	prevValue = r.p_get_extension_resource_callback
+func (r *RefToCGetExtensionResourceCallbackT) setCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) {
+	// prevValue = r.p_get_extension_resource_callback
+	r.p_get_extension_resource_callback.ForceUnref()
 	r.p_get_extension_resource_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCGetExtensionResourceCallbackT) TakeOverCGetExtensionResourceCallbackT(src *CGetExtensionResourceCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_get_extension_resource_callback.ForceUnref()
+	gop := src.pc_get_extension_resource_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_get_extension_resource_callback = newCGetExtensionResourceCallbackT((*C.cef_get_extension_resource_callback_t)(gop), byApp, true)
+}
+
+func PassCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) (ret *CGetExtensionResourceCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_get_extension_resource_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCGetExtensionResourceCallbackT((*C.cef_get_extension_resource_callback_t)(p.pc_get_extension_resource_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCGetExtensionResourceCallbackT) NewRefCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_get_extension_resource_callback.ForceUnref()
+	gop := p.pc_get_extension_resource_callback
+	BaseAddRef(gop)
+	r.p_get_extension_resource_callback = newCGetExtensionResourceCallbackT((*C.cef_get_extension_resource_callback_t)(gop), byApp, true)
 }
 
 // Go type CGetExtensionResourceCallbackT wraps cef type *C.cef_get_extension_resource_callback_t
-func newCGetExtensionResourceCallbackT(p *C.cef_get_extension_resource_callback_t, countUp bool) *CGetExtensionResourceCallbackT {
+func newCGetExtensionResourceCallbackT(p *C.cef_get_extension_resource_callback_t, unrefedBy unrefedBy, needsUnref bool) *CGetExtensionResourceCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T143.1:")
 	pc := (*cCGetExtensionResourceCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_get_extension_resource_callback := &CGetExtensionResourceCallbackT{noCopy{}, pc}
+	go_get_extension_resource_callback := &CGetExtensionResourceCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_get_extension_resource_callback, func(g *CGetExtensionResourceCallbackT) {
-		if g.pc_get_extension_resource_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_get_extension_resource_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_get_extension_resource_callback), "T143.2:")
 			BaseRelease(g.pc_get_extension_resource_callback)
 		}
 	})
+
 	return go_get_extension_resource_callback
 }
 
@@ -10414,13 +12787,15 @@ func (p *cCGetExtensionResourceCallbackT) cast_to_p_base_ref_counted_t() *C.cef_
 }
 
 func (get_extension_resource_callback *CGetExtensionResourceCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(get_extension_resource_callback.pc_get_extension_resource_callback)
+	if get_extension_resource_callback == nil {
+		return
+	}
+	if get_extension_resource_callback.needsUnref && get_extension_resource_callback.beUnrefed == byApp {
+		ret = BaseRelease(get_extension_resource_callback.pc_get_extension_resource_callback)
+		get_extension_resource_callback.beUnrefed = unrefed
+		get_extension_resource_callback.needsUnref = false
+	}
 	get_extension_resource_callback.pc_get_extension_resource_callback = nil
-	return ret
-}
-
-func (get_extension_resource_callback *CGetExtensionResourceCallbackT) release() (ret bool) {
-	ret = BaseRelease(get_extension_resource_callback.pc_get_extension_resource_callback)
 	return ret
 }
 
@@ -10461,6 +12836,8 @@ type cCExtensionHandlerT C.cef_extension_handler_t
 type CExtensionHandlerT struct {
 	noCopy               noCopy
 	pc_extension_handler *cCExtensionHandlerT
+	needsUnref           bool
+	beUnrefed            unrefedBy
 }
 
 type RefToCExtensionHandlerT struct {
@@ -10469,36 +12846,82 @@ type RefToCExtensionHandlerT struct {
 
 type CExtensionHandlerTAccessor interface {
 	GetCExtensionHandlerT() *CExtensionHandlerT
-	SetCExtensionHandlerT(*CExtensionHandlerT) (oldValue *CExtensionHandlerT)
+	setCExtensionHandlerT(*CExtensionHandlerT)
+	// TakeOverCExtensionHandlerT(*CExtensionHandlerT)
+	// NewRefCExtensionHandlerT(*CExtensionHandlerT)
 }
 
 func (r RefToCExtensionHandlerT) GetCExtensionHandlerT() *CExtensionHandlerT {
 	return r.p_extension_handler
 }
 
-func (r *RefToCExtensionHandlerT) SetCExtensionHandlerT(p *CExtensionHandlerT) (prevValue *CExtensionHandlerT) {
-	prevValue = r.p_extension_handler
+func (r *RefToCExtensionHandlerT) setCExtensionHandlerT(p *CExtensionHandlerT) {
+	// prevValue = r.p_extension_handler
+	r.p_extension_handler.ForceUnref()
 	r.p_extension_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCExtensionHandlerT) TakeOverCExtensionHandlerT(src *CExtensionHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_extension_handler.ForceUnref()
+	gop := src.pc_extension_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_extension_handler = newCExtensionHandlerT((*C.cef_extension_handler_t)(gop), byApp, true)
+}
+
+func PassCExtensionHandlerT(p *CExtensionHandlerT) (ret *CExtensionHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_extension_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCExtensionHandlerT((*C.cef_extension_handler_t)(p.pc_extension_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCExtensionHandlerT) NewRefCExtensionHandlerT(p *CExtensionHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_extension_handler.ForceUnref()
+	gop := p.pc_extension_handler
+	BaseAddRef(gop)
+	r.p_extension_handler = newCExtensionHandlerT((*C.cef_extension_handler_t)(gop), byApp, true)
 }
 
 // Go type CExtensionHandlerT wraps cef type *C.cef_extension_handler_t
-func newCExtensionHandlerT(p *C.cef_extension_handler_t, countUp bool) *CExtensionHandlerT {
+func newCExtensionHandlerT(p *C.cef_extension_handler_t, unrefedBy unrefedBy, needsUnref bool) *CExtensionHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T144.1:")
 	pc := (*cCExtensionHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_extension_handler := &CExtensionHandlerT{noCopy{}, pc}
+	go_extension_handler := &CExtensionHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_extension_handler, func(g *CExtensionHandlerT) {
-		if g.pc_extension_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_extension_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_extension_handler), "T144.2:")
 			BaseRelease(g.pc_extension_handler)
 		}
 	})
+
 	return go_extension_handler
 }
 
@@ -10512,13 +12935,15 @@ func (p *cCExtensionHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 }
 
 func (extension_handler *CExtensionHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(extension_handler.pc_extension_handler)
+	if extension_handler == nil {
+		return
+	}
+	if extension_handler.needsUnref && extension_handler.beUnrefed == byApp {
+		ret = BaseRelease(extension_handler.pc_extension_handler)
+		extension_handler.beUnrefed = unrefed
+		extension_handler.needsUnref = false
+	}
 	extension_handler.pc_extension_handler = nil
-	return ret
-}
-
-func (extension_handler *CExtensionHandlerT) release() (ret bool) {
-	ret = BaseRelease(extension_handler.pc_extension_handler)
 	return ret
 }
 
@@ -10711,7 +13136,13 @@ func AllocCExtensionHandlerT() *CExtensionHandlerT {
 		delete(extension_handler_handlers.get_extension_resource_handler, cgop)
 	}))
 
-	return newCExtensionHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCExtensionHandlerT(cefp, byApp, true)
+}
+
+// BindCExtensionHandlerT allocates CExtensionHandlerT, construct and bind it
+func BindCExtensionHandlerT(a interface{}) *CExtensionHandlerT {
+	return AllocCExtensionHandlerT().Bind(a)
 }
 
 func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHandlerT {
@@ -10721,7 +13152,7 @@ func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHand
 	cp := extension_handler.pc_extension_handler
 	if oldGoObj, ok := extension_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CExtensionHandlerTAccessor); ok {
-			oldAcc.SetCExtensionHandlerT(nil)
+			oldAcc.setCExtensionHandlerT(nil)
 		}
 	}
 	extension_handler_handlers.handler[cp] = a
@@ -10775,7 +13206,7 @@ func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHand
 	}
 
 	if accessor, ok := a.(CExtensionHandlerTAccessor); ok {
-		accessor.SetCExtensionHandlerT(extension_handler)
+		accessor.setCExtensionHandlerT(extension_handler)
 		Logf("T144.5:")
 	}
 
@@ -10783,26 +13214,31 @@ func (extension_handler *CExtensionHandlerT) Bind(a interface{}) *CExtensionHand
 }
 
 func (extension_handler *CExtensionHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CExtensionHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := extension_handler.pc_extension_handler
-	if goHandler, ok := extension_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CExtensionHandlerTAccessor); ok1 {
-			accessor.SetCExtensionHandlerT(nil)
+		cp := extension_handler.pc_extension_handler
+		if goHandler, ok := extension_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CExtensionHandlerTAccessor)
 		}
+		delete(extension_handler_handlers.handler, cp)
+
+		delete(extension_handler_handlers.on_extension_load_failed_handler, cp)
+		delete(extension_handler_handlers.on_extension_loaded_handler, cp)
+		delete(extension_handler_handlers.on_extension_unloaded_handler, cp)
+		delete(extension_handler_handlers.on_before_background_browser_handler, cp)
+		delete(extension_handler_handlers.on_before_browser_handler, cp)
+		delete(extension_handler_handlers.get_active_browser_handler, cp)
+		delete(extension_handler_handlers.can_access_browser_handler, cp)
+		delete(extension_handler_handlers.get_extension_resource_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCExtensionHandlerT(nil)
 	}
-	delete(extension_handler_handlers.handler, cp)
-
-	delete(extension_handler_handlers.on_extension_load_failed_handler, cp)
-	delete(extension_handler_handlers.on_extension_loaded_handler, cp)
-	delete(extension_handler_handlers.on_extension_unloaded_handler, cp)
-	delete(extension_handler_handlers.on_before_background_browser_handler, cp)
-	delete(extension_handler_handlers.on_before_browser_handler, cp)
-	delete(extension_handler_handlers.get_active_browser_handler, cp)
-	delete(extension_handler_handlers.can_access_browser_handler, cp)
-	delete(extension_handler_handlers.get_extension_resource_handler, cp)
-
 }
 
 func (extension_handler *CExtensionHandlerT) Handler() interface{} {
@@ -10981,6 +13417,8 @@ type cCFillLayoutT C.cef_fill_layout_t
 type CFillLayoutT struct {
 	noCopy         noCopy
 	pc_fill_layout *cCFillLayoutT
+	needsUnref     bool
+	beUnrefed      unrefedBy
 }
 
 type RefToCFillLayoutT struct {
@@ -10989,36 +13427,82 @@ type RefToCFillLayoutT struct {
 
 type CFillLayoutTAccessor interface {
 	GetCFillLayoutT() *CFillLayoutT
-	SetCFillLayoutT(*CFillLayoutT) (oldValue *CFillLayoutT)
+	setCFillLayoutT(*CFillLayoutT)
+	// TakeOverCFillLayoutT(*CFillLayoutT)
+	// NewRefCFillLayoutT(*CFillLayoutT)
 }
 
 func (r RefToCFillLayoutT) GetCFillLayoutT() *CFillLayoutT {
 	return r.p_fill_layout
 }
 
-func (r *RefToCFillLayoutT) SetCFillLayoutT(p *CFillLayoutT) (prevValue *CFillLayoutT) {
-	prevValue = r.p_fill_layout
+func (r *RefToCFillLayoutT) setCFillLayoutT(p *CFillLayoutT) {
+	// prevValue = r.p_fill_layout
+	r.p_fill_layout.ForceUnref()
 	r.p_fill_layout = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCFillLayoutT) TakeOverCFillLayoutT(src *CFillLayoutT) {
+	if r == nil {
+		return
+	}
+	r.p_fill_layout.ForceUnref()
+	gop := src.pc_fill_layout
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_fill_layout = newCFillLayoutT((*C.cef_fill_layout_t)(gop), byApp, true)
+}
+
+func PassCFillLayoutT(p *CFillLayoutT) (ret *CFillLayoutT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_fill_layout)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCFillLayoutT((*C.cef_fill_layout_t)(p.pc_fill_layout), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCFillLayoutT) NewRefCFillLayoutT(p *CFillLayoutT) {
+	if r == nil {
+		return
+	}
+	r.p_fill_layout.ForceUnref()
+	gop := p.pc_fill_layout
+	BaseAddRef(gop)
+	r.p_fill_layout = newCFillLayoutT((*C.cef_fill_layout_t)(gop), byApp, true)
 }
 
 // Go type CFillLayoutT wraps cef type *C.cef_fill_layout_t
-func newCFillLayoutT(p *C.cef_fill_layout_t, countUp bool) *CFillLayoutT {
+func newCFillLayoutT(p *C.cef_fill_layout_t, unrefedBy unrefedBy, needsUnref bool) *CFillLayoutT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T145.1:")
 	pc := (*cCFillLayoutT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_fill_layout := &CFillLayoutT{noCopy{}, pc}
+	go_fill_layout := &CFillLayoutT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_fill_layout, func(g *CFillLayoutT) {
-		if g.pc_fill_layout != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_fill_layout != nil {
 			Tracef(unsafe.Pointer(g.pc_fill_layout), "T145.2:")
 			BaseRelease(g.pc_fill_layout)
 		}
 	})
+
 	return go_fill_layout
 }
 
@@ -11032,20 +13516,23 @@ func (p *cCFillLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }
 
 func (fill_layout *CFillLayoutT) ForceUnref() (ret bool) {
-	ret = BaseRelease(fill_layout.pc_fill_layout)
+	if fill_layout == nil {
+		return
+	}
+	if fill_layout.needsUnref && fill_layout.beUnrefed == byApp {
+		ret = BaseRelease(fill_layout.pc_fill_layout)
+		fill_layout.beUnrefed = unrefed
+		fill_layout.needsUnref = false
+	}
 	fill_layout.pc_fill_layout = nil
-	return ret
-}
-
-func (fill_layout *CFillLayoutT) release() (ret bool) {
-	ret = BaseRelease(fill_layout.pc_fill_layout)
 	return ret
 }
 
 // Convert to Base Class Pointer *CLayoutT
 func (fill_layout *CFillLayoutT) ToCLayoutT() *CLayoutT {
 	p := (*C.cef_layout_t)(unsafe.Pointer(fill_layout.pc_fill_layout))
-	return newCLayoutT(p, true)
+	BaseAddRef(fill_layout.pc_fill_layout)
+	return newCLayoutT(p, byApp, true)
 }
 
 // cef_find_handler_capi.h, include/capi/cef_find_handler_capi.h:75:3,
@@ -11061,6 +13548,8 @@ type cCFindHandlerT C.cef_find_handler_t
 type CFindHandlerT struct {
 	noCopy          noCopy
 	pc_find_handler *cCFindHandlerT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCFindHandlerT struct {
@@ -11069,36 +13558,82 @@ type RefToCFindHandlerT struct {
 
 type CFindHandlerTAccessor interface {
 	GetCFindHandlerT() *CFindHandlerT
-	SetCFindHandlerT(*CFindHandlerT) (oldValue *CFindHandlerT)
+	setCFindHandlerT(*CFindHandlerT)
+	// TakeOverCFindHandlerT(*CFindHandlerT)
+	// NewRefCFindHandlerT(*CFindHandlerT)
 }
 
 func (r RefToCFindHandlerT) GetCFindHandlerT() *CFindHandlerT {
 	return r.p_find_handler
 }
 
-func (r *RefToCFindHandlerT) SetCFindHandlerT(p *CFindHandlerT) (prevValue *CFindHandlerT) {
-	prevValue = r.p_find_handler
+func (r *RefToCFindHandlerT) setCFindHandlerT(p *CFindHandlerT) {
+	// prevValue = r.p_find_handler
+	r.p_find_handler.ForceUnref()
 	r.p_find_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCFindHandlerT) TakeOverCFindHandlerT(src *CFindHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_find_handler.ForceUnref()
+	gop := src.pc_find_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_find_handler = newCFindHandlerT((*C.cef_find_handler_t)(gop), byApp, true)
+}
+
+func PassCFindHandlerT(p *CFindHandlerT) (ret *CFindHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_find_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCFindHandlerT((*C.cef_find_handler_t)(p.pc_find_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCFindHandlerT) NewRefCFindHandlerT(p *CFindHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_find_handler.ForceUnref()
+	gop := p.pc_find_handler
+	BaseAddRef(gop)
+	r.p_find_handler = newCFindHandlerT((*C.cef_find_handler_t)(gop), byApp, true)
 }
 
 // Go type CFindHandlerT wraps cef type *C.cef_find_handler_t
-func newCFindHandlerT(p *C.cef_find_handler_t, countUp bool) *CFindHandlerT {
+func newCFindHandlerT(p *C.cef_find_handler_t, unrefedBy unrefedBy, needsUnref bool) *CFindHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T146.1:")
 	pc := (*cCFindHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_find_handler := &CFindHandlerT{noCopy{}, pc}
+	go_find_handler := &CFindHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_find_handler, func(g *CFindHandlerT) {
-		if g.pc_find_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_find_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_find_handler), "T146.2:")
 			BaseRelease(g.pc_find_handler)
 		}
 	})
+
 	return go_find_handler
 }
 
@@ -11112,13 +13647,15 @@ func (p *cCFindHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (find_handler *CFindHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(find_handler.pc_find_handler)
+	if find_handler == nil {
+		return
+	}
+	if find_handler.needsUnref && find_handler.beUnrefed == byApp {
+		ret = BaseRelease(find_handler.pc_find_handler)
+		find_handler.beUnrefed = unrefed
+		find_handler.needsUnref = false
+	}
 	find_handler.pc_find_handler = nil
-	return ret
-}
-
-func (find_handler *CFindHandlerT) release() (ret bool) {
-	ret = BaseRelease(find_handler.pc_find_handler)
 	return ret
 }
 
@@ -11167,7 +13704,13 @@ func AllocCFindHandlerT() *CFindHandlerT {
 		delete(find_handler_handlers.on_find_result_handler, cgop)
 	}))
 
-	return newCFindHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCFindHandlerT(cefp, byApp, true)
+}
+
+// BindCFindHandlerT allocates CFindHandlerT, construct and bind it
+func BindCFindHandlerT(a interface{}) *CFindHandlerT {
+	return AllocCFindHandlerT().Bind(a)
 }
 
 func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
@@ -11177,7 +13720,7 @@ func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
 	cp := find_handler.pc_find_handler
 	if oldGoObj, ok := find_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CFindHandlerTAccessor); ok {
-			oldAcc.SetCFindHandlerT(nil)
+			oldAcc.setCFindHandlerT(nil)
 		}
 	}
 	find_handler_handlers.handler[cp] = a
@@ -11189,7 +13732,7 @@ func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
 	}
 
 	if accessor, ok := a.(CFindHandlerTAccessor); ok {
-		accessor.SetCFindHandlerT(find_handler)
+		accessor.setCFindHandlerT(find_handler)
 		Logf("T146.5:")
 	}
 
@@ -11197,19 +13740,24 @@ func (find_handler *CFindHandlerT) Bind(a interface{}) *CFindHandlerT {
 }
 
 func (find_handler *CFindHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CFindHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := find_handler.pc_find_handler
-	if goHandler, ok := find_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CFindHandlerTAccessor); ok1 {
-			accessor.SetCFindHandlerT(nil)
+		cp := find_handler.pc_find_handler
+		if goHandler, ok := find_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CFindHandlerTAccessor)
 		}
+		delete(find_handler_handlers.handler, cp)
+
+		delete(find_handler_handlers.on_find_result_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCFindHandlerT(nil)
 	}
-	delete(find_handler_handlers.handler, cp)
-
-	delete(find_handler_handlers.on_find_result_handler, cp)
-
 }
 
 func (find_handler *CFindHandlerT) Handler() interface{} {
@@ -11233,6 +13781,8 @@ type cCFocusHandlerT C.cef_focus_handler_t
 type CFocusHandlerT struct {
 	noCopy           noCopy
 	pc_focus_handler *cCFocusHandlerT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCFocusHandlerT struct {
@@ -11241,36 +13791,82 @@ type RefToCFocusHandlerT struct {
 
 type CFocusHandlerTAccessor interface {
 	GetCFocusHandlerT() *CFocusHandlerT
-	SetCFocusHandlerT(*CFocusHandlerT) (oldValue *CFocusHandlerT)
+	setCFocusHandlerT(*CFocusHandlerT)
+	// TakeOverCFocusHandlerT(*CFocusHandlerT)
+	// NewRefCFocusHandlerT(*CFocusHandlerT)
 }
 
 func (r RefToCFocusHandlerT) GetCFocusHandlerT() *CFocusHandlerT {
 	return r.p_focus_handler
 }
 
-func (r *RefToCFocusHandlerT) SetCFocusHandlerT(p *CFocusHandlerT) (prevValue *CFocusHandlerT) {
-	prevValue = r.p_focus_handler
+func (r *RefToCFocusHandlerT) setCFocusHandlerT(p *CFocusHandlerT) {
+	// prevValue = r.p_focus_handler
+	r.p_focus_handler.ForceUnref()
 	r.p_focus_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCFocusHandlerT) TakeOverCFocusHandlerT(src *CFocusHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_focus_handler.ForceUnref()
+	gop := src.pc_focus_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_focus_handler = newCFocusHandlerT((*C.cef_focus_handler_t)(gop), byApp, true)
+}
+
+func PassCFocusHandlerT(p *CFocusHandlerT) (ret *CFocusHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_focus_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCFocusHandlerT((*C.cef_focus_handler_t)(p.pc_focus_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCFocusHandlerT) NewRefCFocusHandlerT(p *CFocusHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_focus_handler.ForceUnref()
+	gop := p.pc_focus_handler
+	BaseAddRef(gop)
+	r.p_focus_handler = newCFocusHandlerT((*C.cef_focus_handler_t)(gop), byApp, true)
 }
 
 // Go type CFocusHandlerT wraps cef type *C.cef_focus_handler_t
-func newCFocusHandlerT(p *C.cef_focus_handler_t, countUp bool) *CFocusHandlerT {
+func newCFocusHandlerT(p *C.cef_focus_handler_t, unrefedBy unrefedBy, needsUnref bool) *CFocusHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T147.1:")
 	pc := (*cCFocusHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_focus_handler := &CFocusHandlerT{noCopy{}, pc}
+	go_focus_handler := &CFocusHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_focus_handler, func(g *CFocusHandlerT) {
-		if g.pc_focus_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_focus_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_focus_handler), "T147.2:")
 			BaseRelease(g.pc_focus_handler)
 		}
 	})
+
 	return go_focus_handler
 }
 
@@ -11284,13 +13880,15 @@ func (p *cCFocusHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (focus_handler *CFocusHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(focus_handler.pc_focus_handler)
+	if focus_handler == nil {
+		return
+	}
+	if focus_handler.needsUnref && focus_handler.beUnrefed == byApp {
+		ret = BaseRelease(focus_handler.pc_focus_handler)
+		focus_handler.beUnrefed = unrefed
+		focus_handler.needsUnref = false
+	}
 	focus_handler.pc_focus_handler = nil
-	return ret
-}
-
-func (focus_handler *CFocusHandlerT) release() (ret bool) {
-	ret = BaseRelease(focus_handler.pc_focus_handler)
 	return ret
 }
 
@@ -11362,7 +13960,13 @@ func AllocCFocusHandlerT() *CFocusHandlerT {
 		delete(focus_handler_handlers.on_got_focus_handler, cgop)
 	}))
 
-	return newCFocusHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCFocusHandlerT(cefp, byApp, true)
+}
+
+// BindCFocusHandlerT allocates CFocusHandlerT, construct and bind it
+func BindCFocusHandlerT(a interface{}) *CFocusHandlerT {
+	return AllocCFocusHandlerT().Bind(a)
 }
 
 func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
@@ -11372,7 +13976,7 @@ func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
 	cp := focus_handler.pc_focus_handler
 	if oldGoObj, ok := focus_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CFocusHandlerTAccessor); ok {
-			oldAcc.SetCFocusHandlerT(nil)
+			oldAcc.setCFocusHandlerT(nil)
 		}
 	}
 	focus_handler_handlers.handler[cp] = a
@@ -11396,7 +14000,7 @@ func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
 	}
 
 	if accessor, ok := a.(CFocusHandlerTAccessor); ok {
-		accessor.SetCFocusHandlerT(focus_handler)
+		accessor.setCFocusHandlerT(focus_handler)
 		Logf("T147.5:")
 	}
 
@@ -11404,21 +14008,26 @@ func (focus_handler *CFocusHandlerT) Bind(a interface{}) *CFocusHandlerT {
 }
 
 func (focus_handler *CFocusHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CFocusHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := focus_handler.pc_focus_handler
-	if goHandler, ok := focus_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CFocusHandlerTAccessor); ok1 {
-			accessor.SetCFocusHandlerT(nil)
+		cp := focus_handler.pc_focus_handler
+		if goHandler, ok := focus_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CFocusHandlerTAccessor)
 		}
+		delete(focus_handler_handlers.handler, cp)
+
+		delete(focus_handler_handlers.on_take_focus_handler, cp)
+		delete(focus_handler_handlers.on_set_focus_handler, cp)
+		delete(focus_handler_handlers.on_got_focus_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCFocusHandlerT(nil)
 	}
-	delete(focus_handler_handlers.handler, cp)
-
-	delete(focus_handler_handlers.on_take_focus_handler, cp)
-	delete(focus_handler_handlers.on_set_focus_handler, cp)
-	delete(focus_handler_handlers.on_got_focus_handler, cp)
-
 }
 
 func (focus_handler *CFocusHandlerT) Handler() interface{} {
@@ -11442,8 +14051,10 @@ type cCFrameT C.cef_frame_t
 
 // Go type for cef_frame_t
 type CFrameT struct {
-	noCopy   noCopy
-	pc_frame *cCFrameT
+	noCopy     noCopy
+	pc_frame   *cCFrameT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCFrameT struct {
@@ -11452,36 +14063,82 @@ type RefToCFrameT struct {
 
 type CFrameTAccessor interface {
 	GetCFrameT() *CFrameT
-	SetCFrameT(*CFrameT) (oldValue *CFrameT)
+	setCFrameT(*CFrameT)
+	// TakeOverCFrameT(*CFrameT)
+	// NewRefCFrameT(*CFrameT)
 }
 
 func (r RefToCFrameT) GetCFrameT() *CFrameT {
 	return r.p_frame
 }
 
-func (r *RefToCFrameT) SetCFrameT(p *CFrameT) (prevValue *CFrameT) {
-	prevValue = r.p_frame
+func (r *RefToCFrameT) setCFrameT(p *CFrameT) {
+	// prevValue = r.p_frame
+	r.p_frame.ForceUnref()
 	r.p_frame = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCFrameT) TakeOverCFrameT(src *CFrameT) {
+	if r == nil {
+		return
+	}
+	r.p_frame.ForceUnref()
+	gop := src.pc_frame
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_frame = newCFrameT((*C.cef_frame_t)(gop), byApp, true)
+}
+
+func PassCFrameT(p *CFrameT) (ret *CFrameT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_frame)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCFrameT((*C.cef_frame_t)(p.pc_frame), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCFrameT) NewRefCFrameT(p *CFrameT) {
+	if r == nil {
+		return
+	}
+	r.p_frame.ForceUnref()
+	gop := p.pc_frame
+	BaseAddRef(gop)
+	r.p_frame = newCFrameT((*C.cef_frame_t)(gop), byApp, true)
 }
 
 // Go type CFrameT wraps cef type *C.cef_frame_t
-func newCFrameT(p *C.cef_frame_t, countUp bool) *CFrameT {
+func newCFrameT(p *C.cef_frame_t, unrefedBy unrefedBy, needsUnref bool) *CFrameT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T148.1:")
 	pc := (*cCFrameT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_frame := &CFrameT{noCopy{}, pc}
+	go_frame := &CFrameT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_frame, func(g *CFrameT) {
-		if g.pc_frame != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_frame != nil {
 			Tracef(unsafe.Pointer(g.pc_frame), "T148.2:")
 			BaseRelease(g.pc_frame)
 		}
 	})
+
 	return go_frame
 }
 
@@ -11495,13 +14152,15 @@ func (p *cCFrameT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (frame *CFrameT) ForceUnref() (ret bool) {
-	ret = BaseRelease(frame.pc_frame)
+	if frame == nil {
+		return
+	}
+	if frame.needsUnref && frame.beUnrefed == byApp {
+		ret = BaseRelease(frame.pc_frame)
+		frame.beUnrefed = unrefed
+		frame.needsUnref = false
+	}
 	frame.pc_frame = nil
-	return ret
-}
-
-func (frame *CFrameT) release() (ret bool) {
-	ret = BaseRelease(frame.pc_frame)
 	return ret
 }
 
@@ -11725,7 +14384,7 @@ func (self *CFrameT) GetIdentifier() (ret int64) {
 
 	cRet := C.cefingo_frame_get_identifier((*C.cef_frame_t)(self.pc_frame))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -11737,7 +14396,7 @@ func (self *CFrameT) GetParent() (ret *CFrameT) {
 
 	cRet := C.cefingo_frame_get_parent((*C.cef_frame_t)(self.pc_frame))
 
-	ret = newCFrameT(cRet, false)
+	ret = newCFrameT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -11764,7 +14423,7 @@ func (self *CFrameT) GetBrowser() (ret *CBrowserT) {
 
 	cRet := C.cefingo_frame_get_browser((*C.cef_frame_t)(self.pc_frame))
 
-	ret = newCBrowserT(cRet, false)
+	ret = newCBrowserT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -11776,7 +14435,7 @@ func (self *CFrameT) GetV8context() (ret *CV8contextT) {
 
 	cRet := C.cefingo_frame_get_v8context((*C.cef_frame_t)(self.pc_frame))
 
-	ret = newCV8contextT(cRet, false)
+	ret = newCV8contextT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -11836,7 +14495,7 @@ func (self *CFrameT) CreateUrlrequest(
 
 	cRet := C.cefingo_frame_create_urlrequest((*C.cef_frame_t)(self.pc_frame), goTmprequest, goTmpclient)
 
-	ret = newCUrlrequestT(cRet, false)
+	ret = newCUrlrequestT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -11952,6 +14611,8 @@ type cCFrameHandlerT C.cef_frame_handler_t
 type CFrameHandlerT struct {
 	noCopy           noCopy
 	pc_frame_handler *cCFrameHandlerT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCFrameHandlerT struct {
@@ -11960,36 +14621,82 @@ type RefToCFrameHandlerT struct {
 
 type CFrameHandlerTAccessor interface {
 	GetCFrameHandlerT() *CFrameHandlerT
-	SetCFrameHandlerT(*CFrameHandlerT) (oldValue *CFrameHandlerT)
+	setCFrameHandlerT(*CFrameHandlerT)
+	// TakeOverCFrameHandlerT(*CFrameHandlerT)
+	// NewRefCFrameHandlerT(*CFrameHandlerT)
 }
 
 func (r RefToCFrameHandlerT) GetCFrameHandlerT() *CFrameHandlerT {
 	return r.p_frame_handler
 }
 
-func (r *RefToCFrameHandlerT) SetCFrameHandlerT(p *CFrameHandlerT) (prevValue *CFrameHandlerT) {
-	prevValue = r.p_frame_handler
+func (r *RefToCFrameHandlerT) setCFrameHandlerT(p *CFrameHandlerT) {
+	// prevValue = r.p_frame_handler
+	r.p_frame_handler.ForceUnref()
 	r.p_frame_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCFrameHandlerT) TakeOverCFrameHandlerT(src *CFrameHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_frame_handler.ForceUnref()
+	gop := src.pc_frame_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_frame_handler = newCFrameHandlerT((*C.cef_frame_handler_t)(gop), byApp, true)
+}
+
+func PassCFrameHandlerT(p *CFrameHandlerT) (ret *CFrameHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_frame_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCFrameHandlerT((*C.cef_frame_handler_t)(p.pc_frame_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCFrameHandlerT) NewRefCFrameHandlerT(p *CFrameHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_frame_handler.ForceUnref()
+	gop := p.pc_frame_handler
+	BaseAddRef(gop)
+	r.p_frame_handler = newCFrameHandlerT((*C.cef_frame_handler_t)(gop), byApp, true)
 }
 
 // Go type CFrameHandlerT wraps cef type *C.cef_frame_handler_t
-func newCFrameHandlerT(p *C.cef_frame_handler_t, countUp bool) *CFrameHandlerT {
+func newCFrameHandlerT(p *C.cef_frame_handler_t, unrefedBy unrefedBy, needsUnref bool) *CFrameHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T391.1:")
 	pc := (*cCFrameHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_frame_handler := &CFrameHandlerT{noCopy{}, pc}
+	go_frame_handler := &CFrameHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_frame_handler, func(g *CFrameHandlerT) {
-		if g.pc_frame_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_frame_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_frame_handler), "T391.2:")
 			BaseRelease(g.pc_frame_handler)
 		}
 	})
+
 	return go_frame_handler
 }
 
@@ -12003,13 +14710,15 @@ func (p *cCFrameHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (frame_handler *CFrameHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(frame_handler.pc_frame_handler)
+	if frame_handler == nil {
+		return
+	}
+	if frame_handler.needsUnref && frame_handler.beUnrefed == byApp {
+		ret = BaseRelease(frame_handler.pc_frame_handler)
+		frame_handler.beUnrefed = unrefed
+		frame_handler.needsUnref = false
+	}
 	frame_handler.pc_frame_handler = nil
-	return ret
-}
-
-func (frame_handler *CFrameHandlerT) release() (ret bool) {
-	ret = BaseRelease(frame_handler.pc_frame_handler)
 	return ret
 }
 
@@ -12141,8 +14850,10 @@ type cCImageT C.cef_image_t
 
 // Go type for cef_image_t
 type CImageT struct {
-	noCopy   noCopy
-	pc_image *cCImageT
+	noCopy     noCopy
+	pc_image   *cCImageT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCImageT struct {
@@ -12151,36 +14862,82 @@ type RefToCImageT struct {
 
 type CImageTAccessor interface {
 	GetCImageT() *CImageT
-	SetCImageT(*CImageT) (oldValue *CImageT)
+	setCImageT(*CImageT)
+	// TakeOverCImageT(*CImageT)
+	// NewRefCImageT(*CImageT)
 }
 
 func (r RefToCImageT) GetCImageT() *CImageT {
 	return r.p_image
 }
 
-func (r *RefToCImageT) SetCImageT(p *CImageT) (prevValue *CImageT) {
-	prevValue = r.p_image
+func (r *RefToCImageT) setCImageT(p *CImageT) {
+	// prevValue = r.p_image
+	r.p_image.ForceUnref()
 	r.p_image = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCImageT) TakeOverCImageT(src *CImageT) {
+	if r == nil {
+		return
+	}
+	r.p_image.ForceUnref()
+	gop := src.pc_image
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_image = newCImageT((*C.cef_image_t)(gop), byApp, true)
+}
+
+func PassCImageT(p *CImageT) (ret *CImageT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_image)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCImageT((*C.cef_image_t)(p.pc_image), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCImageT) NewRefCImageT(p *CImageT) {
+	if r == nil {
+		return
+	}
+	r.p_image.ForceUnref()
+	gop := p.pc_image
+	BaseAddRef(gop)
+	r.p_image = newCImageT((*C.cef_image_t)(gop), byApp, true)
 }
 
 // Go type CImageT wraps cef type *C.cef_image_t
-func newCImageT(p *C.cef_image_t, countUp bool) *CImageT {
+func newCImageT(p *C.cef_image_t, unrefedBy unrefedBy, needsUnref bool) *CImageT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T149.1:")
 	pc := (*cCImageT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_image := &CImageT{noCopy{}, pc}
+	go_image := &CImageT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_image, func(g *CImageT) {
-		if g.pc_image != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_image != nil {
 			Tracef(unsafe.Pointer(g.pc_image), "T149.2:")
 			BaseRelease(g.pc_image)
 		}
 	})
+
 	return go_image
 }
 
@@ -12194,13 +14951,15 @@ func (p *cCImageT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (image *CImageT) ForceUnref() (ret bool) {
-	ret = BaseRelease(image.pc_image)
+	if image == nil {
+		return
+	}
+	if image.needsUnref && image.beUnrefed == byApp {
+		ret = BaseRelease(image.pc_image)
+		image.beUnrefed = unrefed
+		image.needsUnref = false
+	}
 	image.pc_image = nil
-	return ret
-}
-
-func (image *CImageT) release() (ret bool) {
-	ret = BaseRelease(image.pc_image)
 	return ret
 }
 
@@ -12304,7 +15063,7 @@ func (self *CImageT) GetWidth() (ret int64) {
 
 	cRet := C.cefingo_image_get_width((*C.cef_image_t)(self.pc_image))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -12315,7 +15074,7 @@ func (self *CImageT) GetHeight() (ret int64) {
 
 	cRet := C.cefingo_image_get_height((*C.cef_image_t)(self.pc_image))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -12390,7 +15149,7 @@ func (self *CImageT) GetAsBitmap(
 	pixel_width = (int)(tmppixel_width)
 	pixel_height = (int)(tmppixel_height)
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret, pixel_width, pixel_height
 }
 
@@ -12414,7 +15173,7 @@ func (self *CImageT) GetAsPng(
 	pixel_width = (int)(tmppixel_width)
 	pixel_height = (int)(tmppixel_height)
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret, pixel_width, pixel_height
 }
 
@@ -12439,7 +15198,7 @@ func (self *CImageT) GetAsJpeg(
 	pixel_width = (int)(tmppixel_width)
 	pixel_height = (int)(tmppixel_height)
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret, pixel_width, pixel_height
 }
 
@@ -12451,7 +15210,7 @@ func ImageCreate() (ret *CImageT) {
 
 	cRet := C.cef_image_create()
 
-	ret = newCImageT(cRet, false)
+	ret = newCImageT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -12468,6 +15227,8 @@ type cCJsdialogCallbackT C.cef_jsdialog_callback_t
 type CJsdialogCallbackT struct {
 	noCopy               noCopy
 	pc_jsdialog_callback *cCJsdialogCallbackT
+	needsUnref           bool
+	beUnrefed            unrefedBy
 }
 
 type RefToCJsdialogCallbackT struct {
@@ -12476,36 +15237,82 @@ type RefToCJsdialogCallbackT struct {
 
 type CJsdialogCallbackTAccessor interface {
 	GetCJsdialogCallbackT() *CJsdialogCallbackT
-	SetCJsdialogCallbackT(*CJsdialogCallbackT) (oldValue *CJsdialogCallbackT)
+	setCJsdialogCallbackT(*CJsdialogCallbackT)
+	// TakeOverCJsdialogCallbackT(*CJsdialogCallbackT)
+	// NewRefCJsdialogCallbackT(*CJsdialogCallbackT)
 }
 
 func (r RefToCJsdialogCallbackT) GetCJsdialogCallbackT() *CJsdialogCallbackT {
 	return r.p_jsdialog_callback
 }
 
-func (r *RefToCJsdialogCallbackT) SetCJsdialogCallbackT(p *CJsdialogCallbackT) (prevValue *CJsdialogCallbackT) {
-	prevValue = r.p_jsdialog_callback
+func (r *RefToCJsdialogCallbackT) setCJsdialogCallbackT(p *CJsdialogCallbackT) {
+	// prevValue = r.p_jsdialog_callback
+	r.p_jsdialog_callback.ForceUnref()
 	r.p_jsdialog_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCJsdialogCallbackT) TakeOverCJsdialogCallbackT(src *CJsdialogCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_jsdialog_callback.ForceUnref()
+	gop := src.pc_jsdialog_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_jsdialog_callback = newCJsdialogCallbackT((*C.cef_jsdialog_callback_t)(gop), byApp, true)
+}
+
+func PassCJsdialogCallbackT(p *CJsdialogCallbackT) (ret *CJsdialogCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_jsdialog_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCJsdialogCallbackT((*C.cef_jsdialog_callback_t)(p.pc_jsdialog_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCJsdialogCallbackT) NewRefCJsdialogCallbackT(p *CJsdialogCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_jsdialog_callback.ForceUnref()
+	gop := p.pc_jsdialog_callback
+	BaseAddRef(gop)
+	r.p_jsdialog_callback = newCJsdialogCallbackT((*C.cef_jsdialog_callback_t)(gop), byApp, true)
 }
 
 // Go type CJsdialogCallbackT wraps cef type *C.cef_jsdialog_callback_t
-func newCJsdialogCallbackT(p *C.cef_jsdialog_callback_t, countUp bool) *CJsdialogCallbackT {
+func newCJsdialogCallbackT(p *C.cef_jsdialog_callback_t, unrefedBy unrefedBy, needsUnref bool) *CJsdialogCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T150.1:")
 	pc := (*cCJsdialogCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_jsdialog_callback := &CJsdialogCallbackT{noCopy{}, pc}
+	go_jsdialog_callback := &CJsdialogCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_jsdialog_callback, func(g *CJsdialogCallbackT) {
-		if g.pc_jsdialog_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_jsdialog_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_jsdialog_callback), "T150.2:")
 			BaseRelease(g.pc_jsdialog_callback)
 		}
 	})
+
 	return go_jsdialog_callback
 }
 
@@ -12519,13 +15326,15 @@ func (p *cCJsdialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 }
 
 func (jsdialog_callback *CJsdialogCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(jsdialog_callback.pc_jsdialog_callback)
+	if jsdialog_callback == nil {
+		return
+	}
+	if jsdialog_callback.needsUnref && jsdialog_callback.beUnrefed == byApp {
+		ret = BaseRelease(jsdialog_callback.pc_jsdialog_callback)
+		jsdialog_callback.beUnrefed = unrefed
+		jsdialog_callback.needsUnref = false
+	}
 	jsdialog_callback.pc_jsdialog_callback = nil
-	return ret
-}
-
-func (jsdialog_callback *CJsdialogCallbackT) release() (ret bool) {
-	ret = BaseRelease(jsdialog_callback.pc_jsdialog_callback)
 	return ret
 }
 
@@ -12554,6 +15363,8 @@ type cCJsdialogHandlerT C.cef_jsdialog_handler_t
 type CJsdialogHandlerT struct {
 	noCopy              noCopy
 	pc_jsdialog_handler *cCJsdialogHandlerT
+	needsUnref          bool
+	beUnrefed           unrefedBy
 }
 
 type RefToCJsdialogHandlerT struct {
@@ -12562,36 +15373,82 @@ type RefToCJsdialogHandlerT struct {
 
 type CJsdialogHandlerTAccessor interface {
 	GetCJsdialogHandlerT() *CJsdialogHandlerT
-	SetCJsdialogHandlerT(*CJsdialogHandlerT) (oldValue *CJsdialogHandlerT)
+	setCJsdialogHandlerT(*CJsdialogHandlerT)
+	// TakeOverCJsdialogHandlerT(*CJsdialogHandlerT)
+	// NewRefCJsdialogHandlerT(*CJsdialogHandlerT)
 }
 
 func (r RefToCJsdialogHandlerT) GetCJsdialogHandlerT() *CJsdialogHandlerT {
 	return r.p_jsdialog_handler
 }
 
-func (r *RefToCJsdialogHandlerT) SetCJsdialogHandlerT(p *CJsdialogHandlerT) (prevValue *CJsdialogHandlerT) {
-	prevValue = r.p_jsdialog_handler
+func (r *RefToCJsdialogHandlerT) setCJsdialogHandlerT(p *CJsdialogHandlerT) {
+	// prevValue = r.p_jsdialog_handler
+	r.p_jsdialog_handler.ForceUnref()
 	r.p_jsdialog_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCJsdialogHandlerT) TakeOverCJsdialogHandlerT(src *CJsdialogHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_jsdialog_handler.ForceUnref()
+	gop := src.pc_jsdialog_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_jsdialog_handler = newCJsdialogHandlerT((*C.cef_jsdialog_handler_t)(gop), byApp, true)
+}
+
+func PassCJsdialogHandlerT(p *CJsdialogHandlerT) (ret *CJsdialogHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_jsdialog_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCJsdialogHandlerT((*C.cef_jsdialog_handler_t)(p.pc_jsdialog_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCJsdialogHandlerT) NewRefCJsdialogHandlerT(p *CJsdialogHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_jsdialog_handler.ForceUnref()
+	gop := p.pc_jsdialog_handler
+	BaseAddRef(gop)
+	r.p_jsdialog_handler = newCJsdialogHandlerT((*C.cef_jsdialog_handler_t)(gop), byApp, true)
 }
 
 // Go type CJsdialogHandlerT wraps cef type *C.cef_jsdialog_handler_t
-func newCJsdialogHandlerT(p *C.cef_jsdialog_handler_t, countUp bool) *CJsdialogHandlerT {
+func newCJsdialogHandlerT(p *C.cef_jsdialog_handler_t, unrefedBy unrefedBy, needsUnref bool) *CJsdialogHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T151.1:")
 	pc := (*cCJsdialogHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_jsdialog_handler := &CJsdialogHandlerT{noCopy{}, pc}
+	go_jsdialog_handler := &CJsdialogHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_jsdialog_handler, func(g *CJsdialogHandlerT) {
-		if g.pc_jsdialog_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_jsdialog_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_jsdialog_handler), "T151.2:")
 			BaseRelease(g.pc_jsdialog_handler)
 		}
 	})
+
 	return go_jsdialog_handler
 }
 
@@ -12605,13 +15462,15 @@ func (p *cCJsdialogHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (jsdialog_handler *CJsdialogHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(jsdialog_handler.pc_jsdialog_handler)
+	if jsdialog_handler == nil {
+		return
+	}
+	if jsdialog_handler.needsUnref && jsdialog_handler.beUnrefed == byApp {
+		ret = BaseRelease(jsdialog_handler.pc_jsdialog_handler)
+		jsdialog_handler.beUnrefed = unrefed
+		jsdialog_handler.needsUnref = false
+	}
 	jsdialog_handler.pc_jsdialog_handler = nil
-	return ret
-}
-
-func (jsdialog_handler *CJsdialogHandlerT) release() (ret bool) {
-	ret = BaseRelease(jsdialog_handler.pc_jsdialog_handler)
 	return ret
 }
 
@@ -12718,7 +15577,13 @@ func AllocCJsdialogHandlerT() *CJsdialogHandlerT {
 		delete(jsdialog_handler_handlers.on_dialog_closed_handler, cgop)
 	}))
 
-	return newCJsdialogHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCJsdialogHandlerT(cefp, byApp, true)
+}
+
+// BindCJsdialogHandlerT allocates CJsdialogHandlerT, construct and bind it
+func BindCJsdialogHandlerT(a interface{}) *CJsdialogHandlerT {
+	return AllocCJsdialogHandlerT().Bind(a)
 }
 
 func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandlerT {
@@ -12728,7 +15593,7 @@ func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandler
 	cp := jsdialog_handler.pc_jsdialog_handler
 	if oldGoObj, ok := jsdialog_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CJsdialogHandlerTAccessor); ok {
-			oldAcc.SetCJsdialogHandlerT(nil)
+			oldAcc.setCJsdialogHandlerT(nil)
 		}
 	}
 	jsdialog_handler_handlers.handler[cp] = a
@@ -12758,7 +15623,7 @@ func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandler
 	}
 
 	if accessor, ok := a.(CJsdialogHandlerTAccessor); ok {
-		accessor.SetCJsdialogHandlerT(jsdialog_handler)
+		accessor.setCJsdialogHandlerT(jsdialog_handler)
 		Logf("T151.5:")
 	}
 
@@ -12766,22 +15631,27 @@ func (jsdialog_handler *CJsdialogHandlerT) Bind(a interface{}) *CJsdialogHandler
 }
 
 func (jsdialog_handler *CJsdialogHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CJsdialogHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := jsdialog_handler.pc_jsdialog_handler
-	if goHandler, ok := jsdialog_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CJsdialogHandlerTAccessor); ok1 {
-			accessor.SetCJsdialogHandlerT(nil)
+		cp := jsdialog_handler.pc_jsdialog_handler
+		if goHandler, ok := jsdialog_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CJsdialogHandlerTAccessor)
 		}
+		delete(jsdialog_handler_handlers.handler, cp)
+
+		delete(jsdialog_handler_handlers.on_jsdialog_handler, cp)
+		delete(jsdialog_handler_handlers.on_before_unload_dialog_handler, cp)
+		delete(jsdialog_handler_handlers.on_reset_dialog_state_handler, cp)
+		delete(jsdialog_handler_handlers.on_dialog_closed_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCJsdialogHandlerT(nil)
 	}
-	delete(jsdialog_handler_handlers.handler, cp)
-
-	delete(jsdialog_handler_handlers.on_jsdialog_handler, cp)
-	delete(jsdialog_handler_handlers.on_before_unload_dialog_handler, cp)
-	delete(jsdialog_handler_handlers.on_reset_dialog_state_handler, cp)
-	delete(jsdialog_handler_handlers.on_dialog_closed_handler, cp)
-
 }
 
 func (jsdialog_handler *CJsdialogHandlerT) Handler() interface{} {
@@ -12805,6 +15675,8 @@ type cCKeyboardHandlerT C.cef_keyboard_handler_t
 type CKeyboardHandlerT struct {
 	noCopy              noCopy
 	pc_keyboard_handler *cCKeyboardHandlerT
+	needsUnref          bool
+	beUnrefed           unrefedBy
 }
 
 type RefToCKeyboardHandlerT struct {
@@ -12813,36 +15685,82 @@ type RefToCKeyboardHandlerT struct {
 
 type CKeyboardHandlerTAccessor interface {
 	GetCKeyboardHandlerT() *CKeyboardHandlerT
-	SetCKeyboardHandlerT(*CKeyboardHandlerT) (oldValue *CKeyboardHandlerT)
+	setCKeyboardHandlerT(*CKeyboardHandlerT)
+	// TakeOverCKeyboardHandlerT(*CKeyboardHandlerT)
+	// NewRefCKeyboardHandlerT(*CKeyboardHandlerT)
 }
 
 func (r RefToCKeyboardHandlerT) GetCKeyboardHandlerT() *CKeyboardHandlerT {
 	return r.p_keyboard_handler
 }
 
-func (r *RefToCKeyboardHandlerT) SetCKeyboardHandlerT(p *CKeyboardHandlerT) (prevValue *CKeyboardHandlerT) {
-	prevValue = r.p_keyboard_handler
+func (r *RefToCKeyboardHandlerT) setCKeyboardHandlerT(p *CKeyboardHandlerT) {
+	// prevValue = r.p_keyboard_handler
+	r.p_keyboard_handler.ForceUnref()
 	r.p_keyboard_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCKeyboardHandlerT) TakeOverCKeyboardHandlerT(src *CKeyboardHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_keyboard_handler.ForceUnref()
+	gop := src.pc_keyboard_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_keyboard_handler = newCKeyboardHandlerT((*C.cef_keyboard_handler_t)(gop), byApp, true)
+}
+
+func PassCKeyboardHandlerT(p *CKeyboardHandlerT) (ret *CKeyboardHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_keyboard_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCKeyboardHandlerT((*C.cef_keyboard_handler_t)(p.pc_keyboard_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCKeyboardHandlerT) NewRefCKeyboardHandlerT(p *CKeyboardHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_keyboard_handler.ForceUnref()
+	gop := p.pc_keyboard_handler
+	BaseAddRef(gop)
+	r.p_keyboard_handler = newCKeyboardHandlerT((*C.cef_keyboard_handler_t)(gop), byApp, true)
 }
 
 // Go type CKeyboardHandlerT wraps cef type *C.cef_keyboard_handler_t
-func newCKeyboardHandlerT(p *C.cef_keyboard_handler_t, countUp bool) *CKeyboardHandlerT {
+func newCKeyboardHandlerT(p *C.cef_keyboard_handler_t, unrefedBy unrefedBy, needsUnref bool) *CKeyboardHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T152.1:")
 	pc := (*cCKeyboardHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_keyboard_handler := &CKeyboardHandlerT{noCopy{}, pc}
+	go_keyboard_handler := &CKeyboardHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_keyboard_handler, func(g *CKeyboardHandlerT) {
-		if g.pc_keyboard_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_keyboard_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_keyboard_handler), "T152.2:")
 			BaseRelease(g.pc_keyboard_handler)
 		}
 	})
+
 	return go_keyboard_handler
 }
 
@@ -12856,13 +15774,15 @@ func (p *cCKeyboardHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (keyboard_handler *CKeyboardHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(keyboard_handler.pc_keyboard_handler)
+	if keyboard_handler == nil {
+		return
+	}
+	if keyboard_handler.needsUnref && keyboard_handler.beUnrefed == byApp {
+		ret = BaseRelease(keyboard_handler.pc_keyboard_handler)
+		keyboard_handler.beUnrefed = unrefed
+		keyboard_handler.needsUnref = false
+	}
 	keyboard_handler.pc_keyboard_handler = nil
-	return ret
-}
-
-func (keyboard_handler *CKeyboardHandlerT) release() (ret bool) {
-	ret = BaseRelease(keyboard_handler.pc_keyboard_handler)
 	return ret
 }
 
@@ -12925,7 +15845,13 @@ func AllocCKeyboardHandlerT() *CKeyboardHandlerT {
 		delete(keyboard_handler_handlers.on_key_event_handler, cgop)
 	}))
 
-	return newCKeyboardHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCKeyboardHandlerT(cefp, byApp, true)
+}
+
+// BindCKeyboardHandlerT allocates CKeyboardHandlerT, construct and bind it
+func BindCKeyboardHandlerT(a interface{}) *CKeyboardHandlerT {
+	return AllocCKeyboardHandlerT().Bind(a)
 }
 
 func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandlerT {
@@ -12935,7 +15861,7 @@ func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandler
 	cp := keyboard_handler.pc_keyboard_handler
 	if oldGoObj, ok := keyboard_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CKeyboardHandlerTAccessor); ok {
-			oldAcc.SetCKeyboardHandlerT(nil)
+			oldAcc.setCKeyboardHandlerT(nil)
 		}
 	}
 	keyboard_handler_handlers.handler[cp] = a
@@ -12953,7 +15879,7 @@ func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandler
 	}
 
 	if accessor, ok := a.(CKeyboardHandlerTAccessor); ok {
-		accessor.SetCKeyboardHandlerT(keyboard_handler)
+		accessor.setCKeyboardHandlerT(keyboard_handler)
 		Logf("T152.5:")
 	}
 
@@ -12961,20 +15887,25 @@ func (keyboard_handler *CKeyboardHandlerT) Bind(a interface{}) *CKeyboardHandler
 }
 
 func (keyboard_handler *CKeyboardHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CKeyboardHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := keyboard_handler.pc_keyboard_handler
-	if goHandler, ok := keyboard_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CKeyboardHandlerTAccessor); ok1 {
-			accessor.SetCKeyboardHandlerT(nil)
+		cp := keyboard_handler.pc_keyboard_handler
+		if goHandler, ok := keyboard_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CKeyboardHandlerTAccessor)
 		}
+		delete(keyboard_handler_handlers.handler, cp)
+
+		delete(keyboard_handler_handlers.on_pre_key_event_handler, cp)
+		delete(keyboard_handler_handlers.on_key_event_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCKeyboardHandlerT(nil)
 	}
-	delete(keyboard_handler_handlers.handler, cp)
-
-	delete(keyboard_handler_handlers.on_pre_key_event_handler, cp)
-	delete(keyboard_handler_handlers.on_key_event_handler, cp)
-
 }
 
 func (keyboard_handler *CKeyboardHandlerT) Handler() interface{} {
@@ -12998,6 +15929,8 @@ type cCLabelButtonT C.cef_label_button_t
 type CLabelButtonT struct {
 	noCopy          noCopy
 	pc_label_button *cCLabelButtonT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCLabelButtonT struct {
@@ -13006,36 +15939,82 @@ type RefToCLabelButtonT struct {
 
 type CLabelButtonTAccessor interface {
 	GetCLabelButtonT() *CLabelButtonT
-	SetCLabelButtonT(*CLabelButtonT) (oldValue *CLabelButtonT)
+	setCLabelButtonT(*CLabelButtonT)
+	// TakeOverCLabelButtonT(*CLabelButtonT)
+	// NewRefCLabelButtonT(*CLabelButtonT)
 }
 
 func (r RefToCLabelButtonT) GetCLabelButtonT() *CLabelButtonT {
 	return r.p_label_button
 }
 
-func (r *RefToCLabelButtonT) SetCLabelButtonT(p *CLabelButtonT) (prevValue *CLabelButtonT) {
-	prevValue = r.p_label_button
+func (r *RefToCLabelButtonT) setCLabelButtonT(p *CLabelButtonT) {
+	// prevValue = r.p_label_button
+	r.p_label_button.ForceUnref()
 	r.p_label_button = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCLabelButtonT) TakeOverCLabelButtonT(src *CLabelButtonT) {
+	if r == nil {
+		return
+	}
+	r.p_label_button.ForceUnref()
+	gop := src.pc_label_button
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_label_button = newCLabelButtonT((*C.cef_label_button_t)(gop), byApp, true)
+}
+
+func PassCLabelButtonT(p *CLabelButtonT) (ret *CLabelButtonT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_label_button)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCLabelButtonT((*C.cef_label_button_t)(p.pc_label_button), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCLabelButtonT) NewRefCLabelButtonT(p *CLabelButtonT) {
+	if r == nil {
+		return
+	}
+	r.p_label_button.ForceUnref()
+	gop := p.pc_label_button
+	BaseAddRef(gop)
+	r.p_label_button = newCLabelButtonT((*C.cef_label_button_t)(gop), byApp, true)
 }
 
 // Go type CLabelButtonT wraps cef type *C.cef_label_button_t
-func newCLabelButtonT(p *C.cef_label_button_t, countUp bool) *CLabelButtonT {
+func newCLabelButtonT(p *C.cef_label_button_t, unrefedBy unrefedBy, needsUnref bool) *CLabelButtonT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T153.1:")
 	pc := (*cCLabelButtonT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_label_button := &CLabelButtonT{noCopy{}, pc}
+	go_label_button := &CLabelButtonT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_label_button, func(g *CLabelButtonT) {
-		if g.pc_label_button != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_label_button != nil {
 			Tracef(unsafe.Pointer(g.pc_label_button), "T153.2:")
 			BaseRelease(g.pc_label_button)
 		}
 	})
+
 	return go_label_button
 }
 
@@ -13049,20 +16028,23 @@ func (p *cCLabelButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (label_button *CLabelButtonT) ForceUnref() (ret bool) {
-	ret = BaseRelease(label_button.pc_label_button)
+	if label_button == nil {
+		return
+	}
+	if label_button.needsUnref && label_button.beUnrefed == byApp {
+		ret = BaseRelease(label_button.pc_label_button)
+		label_button.beUnrefed = unrefed
+		label_button.needsUnref = false
+	}
 	label_button.pc_label_button = nil
-	return ret
-}
-
-func (label_button *CLabelButtonT) release() (ret bool) {
-	ret = BaseRelease(label_button.pc_label_button)
 	return ret
 }
 
 // Convert to Base Class Pointer *CButtonT
 func (label_button *CLabelButtonT) ToCButtonT() *CButtonT {
 	p := (*C.cef_button_t)(unsafe.Pointer(label_button.pc_label_button))
-	return newCButtonT(p, true)
+	BaseAddRef(label_button.pc_label_button)
+	return newCButtonT(p, byApp, true)
 }
 
 ///
@@ -13073,7 +16055,7 @@ func (self *CLabelButtonT) AsMenuButton() (ret *CMenuButtonT) {
 
 	cRet := C.cefingo_label_button_as_menu_button((*C.cef_label_button_t)(self.pc_label_button))
 
-	ret = newCMenuButtonT(cRet, false)
+	ret = newCMenuButtonT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -13135,7 +16117,7 @@ func (self *CLabelButtonT) GetImage(
 
 	cRet := C.cefingo_label_button_get_image((*C.cef_label_button_t)(self.pc_label_button), (C.cef_button_state_t)(button_state))
 
-	ret = newCImageT(cRet, false)
+	ret = newCImageT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -13233,7 +16215,7 @@ func LabelButtonCreate(
 
 	cRet := C.cef_label_button_create(goTmpdelegate, c_text.p_cef_string_t)
 
-	ret = newCLabelButtonT(cRet, false)
+	ret = newCLabelButtonT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -13249,8 +16231,10 @@ type cCLayoutT C.cef_layout_t
 
 // Go type for cef_layout_t
 type CLayoutT struct {
-	noCopy    noCopy
-	pc_layout *cCLayoutT
+	noCopy     noCopy
+	pc_layout  *cCLayoutT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCLayoutT struct {
@@ -13259,36 +16243,82 @@ type RefToCLayoutT struct {
 
 type CLayoutTAccessor interface {
 	GetCLayoutT() *CLayoutT
-	SetCLayoutT(*CLayoutT) (oldValue *CLayoutT)
+	setCLayoutT(*CLayoutT)
+	// TakeOverCLayoutT(*CLayoutT)
+	// NewRefCLayoutT(*CLayoutT)
 }
 
 func (r RefToCLayoutT) GetCLayoutT() *CLayoutT {
 	return r.p_layout
 }
 
-func (r *RefToCLayoutT) SetCLayoutT(p *CLayoutT) (prevValue *CLayoutT) {
-	prevValue = r.p_layout
+func (r *RefToCLayoutT) setCLayoutT(p *CLayoutT) {
+	// prevValue = r.p_layout
+	r.p_layout.ForceUnref()
 	r.p_layout = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCLayoutT) TakeOverCLayoutT(src *CLayoutT) {
+	if r == nil {
+		return
+	}
+	r.p_layout.ForceUnref()
+	gop := src.pc_layout
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_layout = newCLayoutT((*C.cef_layout_t)(gop), byApp, true)
+}
+
+func PassCLayoutT(p *CLayoutT) (ret *CLayoutT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_layout)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCLayoutT((*C.cef_layout_t)(p.pc_layout), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCLayoutT) NewRefCLayoutT(p *CLayoutT) {
+	if r == nil {
+		return
+	}
+	r.p_layout.ForceUnref()
+	gop := p.pc_layout
+	BaseAddRef(gop)
+	r.p_layout = newCLayoutT((*C.cef_layout_t)(gop), byApp, true)
 }
 
 // Go type CLayoutT wraps cef type *C.cef_layout_t
-func newCLayoutT(p *C.cef_layout_t, countUp bool) *CLayoutT {
+func newCLayoutT(p *C.cef_layout_t, unrefedBy unrefedBy, needsUnref bool) *CLayoutT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T154.1:")
 	pc := (*cCLayoutT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_layout := &CLayoutT{noCopy{}, pc}
+	go_layout := &CLayoutT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_layout, func(g *CLayoutT) {
-		if g.pc_layout != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_layout != nil {
 			Tracef(unsafe.Pointer(g.pc_layout), "T154.2:")
 			BaseRelease(g.pc_layout)
 		}
 	})
+
 	return go_layout
 }
 
@@ -13302,13 +16332,15 @@ func (p *cCLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (layout *CLayoutT) ForceUnref() (ret bool) {
-	ret = BaseRelease(layout.pc_layout)
+	if layout == nil {
+		return
+	}
+	if layout.needsUnref && layout.beUnrefed == byApp {
+		ret = BaseRelease(layout.pc_layout)
+		layout.beUnrefed = unrefed
+		layout.needsUnref = false
+	}
 	layout.pc_layout = nil
-	return ret
-}
-
-func (layout *CLayoutT) release() (ret bool) {
-	ret = BaseRelease(layout.pc_layout)
 	return ret
 }
 
@@ -13319,7 +16351,7 @@ func (self *CLayoutT) AsBoxLayout() (ret *CBoxLayoutT) {
 
 	cRet := C.cefingo_layout_as_box_layout((*C.cef_layout_t)(self.pc_layout))
 
-	ret = newCBoxLayoutT(cRet, false)
+	ret = newCBoxLayoutT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -13330,7 +16362,7 @@ func (self *CLayoutT) AsFillLayout() (ret *CFillLayoutT) {
 
 	cRet := C.cefingo_layout_as_fill_layout((*C.cef_layout_t)(self.pc_layout))
 
-	ret = newCFillLayoutT(cRet, false)
+	ret = newCFillLayoutT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -13359,6 +16391,8 @@ type cCLifeSpanHandlerT C.cef_life_span_handler_t
 type CLifeSpanHandlerT struct {
 	noCopy               noCopy
 	pc_life_span_handler *cCLifeSpanHandlerT
+	needsUnref           bool
+	beUnrefed            unrefedBy
 }
 
 type RefToCLifeSpanHandlerT struct {
@@ -13367,36 +16401,82 @@ type RefToCLifeSpanHandlerT struct {
 
 type CLifeSpanHandlerTAccessor interface {
 	GetCLifeSpanHandlerT() *CLifeSpanHandlerT
-	SetCLifeSpanHandlerT(*CLifeSpanHandlerT) (oldValue *CLifeSpanHandlerT)
+	setCLifeSpanHandlerT(*CLifeSpanHandlerT)
+	// TakeOverCLifeSpanHandlerT(*CLifeSpanHandlerT)
+	// NewRefCLifeSpanHandlerT(*CLifeSpanHandlerT)
 }
 
 func (r RefToCLifeSpanHandlerT) GetCLifeSpanHandlerT() *CLifeSpanHandlerT {
 	return r.p_life_span_handler
 }
 
-func (r *RefToCLifeSpanHandlerT) SetCLifeSpanHandlerT(p *CLifeSpanHandlerT) (prevValue *CLifeSpanHandlerT) {
-	prevValue = r.p_life_span_handler
+func (r *RefToCLifeSpanHandlerT) setCLifeSpanHandlerT(p *CLifeSpanHandlerT) {
+	// prevValue = r.p_life_span_handler
+	r.p_life_span_handler.ForceUnref()
 	r.p_life_span_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCLifeSpanHandlerT) TakeOverCLifeSpanHandlerT(src *CLifeSpanHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_life_span_handler.ForceUnref()
+	gop := src.pc_life_span_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_life_span_handler = newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(gop), byApp, true)
+}
+
+func PassCLifeSpanHandlerT(p *CLifeSpanHandlerT) (ret *CLifeSpanHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_life_span_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(p.pc_life_span_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCLifeSpanHandlerT) NewRefCLifeSpanHandlerT(p *CLifeSpanHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_life_span_handler.ForceUnref()
+	gop := p.pc_life_span_handler
+	BaseAddRef(gop)
+	r.p_life_span_handler = newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(gop), byApp, true)
 }
 
 // Go type CLifeSpanHandlerT wraps cef type *C.cef_life_span_handler_t
-func newCLifeSpanHandlerT(p *C.cef_life_span_handler_t, countUp bool) *CLifeSpanHandlerT {
+func newCLifeSpanHandlerT(p *C.cef_life_span_handler_t, unrefedBy unrefedBy, needsUnref bool) *CLifeSpanHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T155.1:")
 	pc := (*cCLifeSpanHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_life_span_handler := &CLifeSpanHandlerT{noCopy{}, pc}
+	go_life_span_handler := &CLifeSpanHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_life_span_handler, func(g *CLifeSpanHandlerT) {
-		if g.pc_life_span_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_life_span_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_life_span_handler), "T155.2:")
 			BaseRelease(g.pc_life_span_handler)
 		}
 	})
+
 	return go_life_span_handler
 }
 
@@ -13410,13 +16490,15 @@ func (p *cCLifeSpanHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (life_span_handler *CLifeSpanHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(life_span_handler.pc_life_span_handler)
+	if life_span_handler == nil {
+		return
+	}
+	if life_span_handler.needsUnref && life_span_handler.beUnrefed == byApp {
+		ret = BaseRelease(life_span_handler.pc_life_span_handler)
+		life_span_handler.beUnrefed = unrefed
+		life_span_handler.needsUnref = false
+	}
 	life_span_handler.pc_life_span_handler = nil
-	return ret
-}
-
-func (life_span_handler *CLifeSpanHandlerT) release() (ret bool) {
-	ret = BaseRelease(life_span_handler.pc_life_span_handler)
 	return ret
 }
 
@@ -13624,7 +16706,13 @@ func AllocCLifeSpanHandlerT() *CLifeSpanHandlerT {
 		delete(life_span_handler_handlers.on_before_close_handler, cgop)
 	}))
 
-	return newCLifeSpanHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCLifeSpanHandlerT(cefp, byApp, true)
+}
+
+// BindCLifeSpanHandlerT allocates CLifeSpanHandlerT, construct and bind it
+func BindCLifeSpanHandlerT(a interface{}) *CLifeSpanHandlerT {
+	return AllocCLifeSpanHandlerT().Bind(a)
 }
 
 func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandlerT {
@@ -13634,7 +16722,7 @@ func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandle
 	cp := life_span_handler.pc_life_span_handler
 	if oldGoObj, ok := life_span_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CLifeSpanHandlerTAccessor); ok {
-			oldAcc.SetCLifeSpanHandlerT(nil)
+			oldAcc.setCLifeSpanHandlerT(nil)
 		}
 	}
 	life_span_handler_handlers.handler[cp] = a
@@ -13664,7 +16752,7 @@ func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandle
 	}
 
 	if accessor, ok := a.(CLifeSpanHandlerTAccessor); ok {
-		accessor.SetCLifeSpanHandlerT(life_span_handler)
+		accessor.setCLifeSpanHandlerT(life_span_handler)
 		Logf("T155.5:")
 	}
 
@@ -13672,22 +16760,27 @@ func (life_span_handler *CLifeSpanHandlerT) Bind(a interface{}) *CLifeSpanHandle
 }
 
 func (life_span_handler *CLifeSpanHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CLifeSpanHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := life_span_handler.pc_life_span_handler
-	if goHandler, ok := life_span_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CLifeSpanHandlerTAccessor); ok1 {
-			accessor.SetCLifeSpanHandlerT(nil)
+		cp := life_span_handler.pc_life_span_handler
+		if goHandler, ok := life_span_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CLifeSpanHandlerTAccessor)
 		}
+		delete(life_span_handler_handlers.handler, cp)
+
+		delete(life_span_handler_handlers.on_before_popup_handler, cp)
+		delete(life_span_handler_handlers.on_after_created_handler, cp)
+		delete(life_span_handler_handlers.do_close_handler, cp)
+		delete(life_span_handler_handlers.on_before_close_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCLifeSpanHandlerT(nil)
 	}
-	delete(life_span_handler_handlers.handler, cp)
-
-	delete(life_span_handler_handlers.on_before_popup_handler, cp)
-	delete(life_span_handler_handlers.on_after_created_handler, cp)
-	delete(life_span_handler_handlers.do_close_handler, cp)
-	delete(life_span_handler_handlers.on_before_close_handler, cp)
-
 }
 
 func (life_span_handler *CLifeSpanHandlerT) Handler() interface{} {
@@ -13712,6 +16805,8 @@ type cCLoadHandlerT C.cef_load_handler_t
 type CLoadHandlerT struct {
 	noCopy          noCopy
 	pc_load_handler *cCLoadHandlerT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCLoadHandlerT struct {
@@ -13720,36 +16815,82 @@ type RefToCLoadHandlerT struct {
 
 type CLoadHandlerTAccessor interface {
 	GetCLoadHandlerT() *CLoadHandlerT
-	SetCLoadHandlerT(*CLoadHandlerT) (oldValue *CLoadHandlerT)
+	setCLoadHandlerT(*CLoadHandlerT)
+	// TakeOverCLoadHandlerT(*CLoadHandlerT)
+	// NewRefCLoadHandlerT(*CLoadHandlerT)
 }
 
 func (r RefToCLoadHandlerT) GetCLoadHandlerT() *CLoadHandlerT {
 	return r.p_load_handler
 }
 
-func (r *RefToCLoadHandlerT) SetCLoadHandlerT(p *CLoadHandlerT) (prevValue *CLoadHandlerT) {
-	prevValue = r.p_load_handler
+func (r *RefToCLoadHandlerT) setCLoadHandlerT(p *CLoadHandlerT) {
+	// prevValue = r.p_load_handler
+	r.p_load_handler.ForceUnref()
 	r.p_load_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCLoadHandlerT) TakeOverCLoadHandlerT(src *CLoadHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_load_handler.ForceUnref()
+	gop := src.pc_load_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_load_handler = newCLoadHandlerT((*C.cef_load_handler_t)(gop), byApp, true)
+}
+
+func PassCLoadHandlerT(p *CLoadHandlerT) (ret *CLoadHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_load_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCLoadHandlerT((*C.cef_load_handler_t)(p.pc_load_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCLoadHandlerT) NewRefCLoadHandlerT(p *CLoadHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_load_handler.ForceUnref()
+	gop := p.pc_load_handler
+	BaseAddRef(gop)
+	r.p_load_handler = newCLoadHandlerT((*C.cef_load_handler_t)(gop), byApp, true)
 }
 
 // Go type CLoadHandlerT wraps cef type *C.cef_load_handler_t
-func newCLoadHandlerT(p *C.cef_load_handler_t, countUp bool) *CLoadHandlerT {
+func newCLoadHandlerT(p *C.cef_load_handler_t, unrefedBy unrefedBy, needsUnref bool) *CLoadHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T156.1:")
 	pc := (*cCLoadHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_load_handler := &CLoadHandlerT{noCopy{}, pc}
+	go_load_handler := &CLoadHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_load_handler, func(g *CLoadHandlerT) {
-		if g.pc_load_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_load_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_load_handler), "T156.2:")
 			BaseRelease(g.pc_load_handler)
 		}
 	})
+
 	return go_load_handler
 }
 
@@ -13763,13 +16904,15 @@ func (p *cCLoadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (load_handler *CLoadHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(load_handler.pc_load_handler)
+	if load_handler == nil {
+		return
+	}
+	if load_handler.needsUnref && load_handler.beUnrefed == byApp {
+		ret = BaseRelease(load_handler.pc_load_handler)
+		load_handler.beUnrefed = unrefed
+		load_handler.needsUnref = false
+	}
 	load_handler.pc_load_handler = nil
-	return ret
-}
-
-func (load_handler *CLoadHandlerT) release() (ret bool) {
-	ret = BaseRelease(load_handler.pc_load_handler)
 	return ret
 }
 
@@ -13882,7 +17025,13 @@ func AllocCLoadHandlerT() *CLoadHandlerT {
 		delete(load_handler_handlers.on_load_error_handler, cgop)
 	}))
 
-	return newCLoadHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCLoadHandlerT(cefp, byApp, true)
+}
+
+// BindCLoadHandlerT allocates CLoadHandlerT, construct and bind it
+func BindCLoadHandlerT(a interface{}) *CLoadHandlerT {
+	return AllocCLoadHandlerT().Bind(a)
 }
 
 func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
@@ -13892,7 +17041,7 @@ func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
 	cp := load_handler.pc_load_handler
 	if oldGoObj, ok := load_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CLoadHandlerTAccessor); ok {
-			oldAcc.SetCLoadHandlerT(nil)
+			oldAcc.setCLoadHandlerT(nil)
 		}
 	}
 	load_handler_handlers.handler[cp] = a
@@ -13922,7 +17071,7 @@ func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
 	}
 
 	if accessor, ok := a.(CLoadHandlerTAccessor); ok {
-		accessor.SetCLoadHandlerT(load_handler)
+		accessor.setCLoadHandlerT(load_handler)
 		Logf("T156.5:")
 	}
 
@@ -13930,22 +17079,27 @@ func (load_handler *CLoadHandlerT) Bind(a interface{}) *CLoadHandlerT {
 }
 
 func (load_handler *CLoadHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CLoadHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := load_handler.pc_load_handler
-	if goHandler, ok := load_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CLoadHandlerTAccessor); ok1 {
-			accessor.SetCLoadHandlerT(nil)
+		cp := load_handler.pc_load_handler
+		if goHandler, ok := load_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CLoadHandlerTAccessor)
 		}
+		delete(load_handler_handlers.handler, cp)
+
+		delete(load_handler_handlers.on_loading_state_change_handler, cp)
+		delete(load_handler_handlers.on_load_start_handler, cp)
+		delete(load_handler_handlers.on_load_end_handler, cp)
+		delete(load_handler_handlers.on_load_error_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCLoadHandlerT(nil)
 	}
-	delete(load_handler_handlers.handler, cp)
-
-	delete(load_handler_handlers.on_loading_state_change_handler, cp)
-	delete(load_handler_handlers.on_load_start_handler, cp)
-	delete(load_handler_handlers.on_load_end_handler, cp)
-	delete(load_handler_handlers.on_load_error_handler, cp)
-
 }
 
 func (load_handler *CLoadHandlerT) Handler() interface{} {
@@ -13970,6 +17124,8 @@ type cCMediaRouterT C.cef_media_router_t
 type CMediaRouterT struct {
 	noCopy          noCopy
 	pc_media_router *cCMediaRouterT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCMediaRouterT struct {
@@ -13978,36 +17134,82 @@ type RefToCMediaRouterT struct {
 
 type CMediaRouterTAccessor interface {
 	GetCMediaRouterT() *CMediaRouterT
-	SetCMediaRouterT(*CMediaRouterT) (oldValue *CMediaRouterT)
+	setCMediaRouterT(*CMediaRouterT)
+	// TakeOverCMediaRouterT(*CMediaRouterT)
+	// NewRefCMediaRouterT(*CMediaRouterT)
 }
 
 func (r RefToCMediaRouterT) GetCMediaRouterT() *CMediaRouterT {
 	return r.p_media_router
 }
 
-func (r *RefToCMediaRouterT) SetCMediaRouterT(p *CMediaRouterT) (prevValue *CMediaRouterT) {
-	prevValue = r.p_media_router
+func (r *RefToCMediaRouterT) setCMediaRouterT(p *CMediaRouterT) {
+	// prevValue = r.p_media_router
+	r.p_media_router.ForceUnref()
 	r.p_media_router = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMediaRouterT) TakeOverCMediaRouterT(src *CMediaRouterT) {
+	if r == nil {
+		return
+	}
+	r.p_media_router.ForceUnref()
+	gop := src.pc_media_router
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_media_router = newCMediaRouterT((*C.cef_media_router_t)(gop), byApp, true)
+}
+
+func PassCMediaRouterT(p *CMediaRouterT) (ret *CMediaRouterT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_media_router)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMediaRouterT((*C.cef_media_router_t)(p.pc_media_router), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMediaRouterT) NewRefCMediaRouterT(p *CMediaRouterT) {
+	if r == nil {
+		return
+	}
+	r.p_media_router.ForceUnref()
+	gop := p.pc_media_router
+	BaseAddRef(gop)
+	r.p_media_router = newCMediaRouterT((*C.cef_media_router_t)(gop), byApp, true)
 }
 
 // Go type CMediaRouterT wraps cef type *C.cef_media_router_t
-func newCMediaRouterT(p *C.cef_media_router_t, countUp bool) *CMediaRouterT {
+func newCMediaRouterT(p *C.cef_media_router_t, unrefedBy unrefedBy, needsUnref bool) *CMediaRouterT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T157.1:")
 	pc := (*cCMediaRouterT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_media_router := &CMediaRouterT{noCopy{}, pc}
+	go_media_router := &CMediaRouterT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_media_router, func(g *CMediaRouterT) {
-		if g.pc_media_router != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_media_router != nil {
 			Tracef(unsafe.Pointer(g.pc_media_router), "T157.2:")
 			BaseRelease(g.pc_media_router)
 		}
 	})
+
 	return go_media_router
 }
 
@@ -14021,13 +17223,15 @@ func (p *cCMediaRouterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (media_router *CMediaRouterT) ForceUnref() (ret bool) {
-	ret = BaseRelease(media_router.pc_media_router)
+	if media_router == nil {
+		return
+	}
+	if media_router.needsUnref && media_router.beUnrefed == byApp {
+		ret = BaseRelease(media_router.pc_media_router)
+		media_router.beUnrefed = unrefed
+		media_router.needsUnref = false
+	}
 	media_router.pc_media_router = nil
-	return ret
-}
-
-func (media_router *CMediaRouterT) release() (ret bool) {
-	ret = BaseRelease(media_router.pc_media_router)
 	return ret
 }
 
@@ -14046,7 +17250,7 @@ func (self *CMediaRouterT) AddObserver(
 
 	cRet := C.cefingo_media_router_add_observer((*C.cef_media_router_t)(self.pc_media_router), goTmpobserver)
 
-	ret = newCRegistrationT(cRet, false)
+	ret = newCRegistrationT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -14062,7 +17266,7 @@ func (self *CMediaRouterT) GetSource(
 
 	cRet := C.cefingo_media_router_get_source((*C.cef_media_router_t)(self.pc_media_router), c_urn.p_cef_string_t)
 
-	ret = newCMediaSourceT(cRet, false)
+	ret = newCMediaSourceT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -14137,7 +17341,7 @@ func MediaRouterGetGlobal(
 
 	cRet := C.cef_media_router_get_global(goTmpcallback)
 
-	ret = newCMediaRouterT(cRet, false)
+	ret = newCMediaRouterT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -14153,6 +17357,8 @@ type cCMediaObserverT C.cef_media_observer_t
 type CMediaObserverT struct {
 	noCopy            noCopy
 	pc_media_observer *cCMediaObserverT
+	needsUnref        bool
+	beUnrefed         unrefedBy
 }
 
 type RefToCMediaObserverT struct {
@@ -14161,36 +17367,82 @@ type RefToCMediaObserverT struct {
 
 type CMediaObserverTAccessor interface {
 	GetCMediaObserverT() *CMediaObserverT
-	SetCMediaObserverT(*CMediaObserverT) (oldValue *CMediaObserverT)
+	setCMediaObserverT(*CMediaObserverT)
+	// TakeOverCMediaObserverT(*CMediaObserverT)
+	// NewRefCMediaObserverT(*CMediaObserverT)
 }
 
 func (r RefToCMediaObserverT) GetCMediaObserverT() *CMediaObserverT {
 	return r.p_media_observer
 }
 
-func (r *RefToCMediaObserverT) SetCMediaObserverT(p *CMediaObserverT) (prevValue *CMediaObserverT) {
-	prevValue = r.p_media_observer
+func (r *RefToCMediaObserverT) setCMediaObserverT(p *CMediaObserverT) {
+	// prevValue = r.p_media_observer
+	r.p_media_observer.ForceUnref()
 	r.p_media_observer = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMediaObserverT) TakeOverCMediaObserverT(src *CMediaObserverT) {
+	if r == nil {
+		return
+	}
+	r.p_media_observer.ForceUnref()
+	gop := src.pc_media_observer
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_media_observer = newCMediaObserverT((*C.cef_media_observer_t)(gop), byApp, true)
+}
+
+func PassCMediaObserverT(p *CMediaObserverT) (ret *CMediaObserverT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_media_observer)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMediaObserverT((*C.cef_media_observer_t)(p.pc_media_observer), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMediaObserverT) NewRefCMediaObserverT(p *CMediaObserverT) {
+	if r == nil {
+		return
+	}
+	r.p_media_observer.ForceUnref()
+	gop := p.pc_media_observer
+	BaseAddRef(gop)
+	r.p_media_observer = newCMediaObserverT((*C.cef_media_observer_t)(gop), byApp, true)
 }
 
 // Go type CMediaObserverT wraps cef type *C.cef_media_observer_t
-func newCMediaObserverT(p *C.cef_media_observer_t, countUp bool) *CMediaObserverT {
+func newCMediaObserverT(p *C.cef_media_observer_t, unrefedBy unrefedBy, needsUnref bool) *CMediaObserverT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T158.1:")
 	pc := (*cCMediaObserverT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_media_observer := &CMediaObserverT{noCopy{}, pc}
+	go_media_observer := &CMediaObserverT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_media_observer, func(g *CMediaObserverT) {
-		if g.pc_media_observer != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_media_observer != nil {
 			Tracef(unsafe.Pointer(g.pc_media_observer), "T158.2:")
 			BaseRelease(g.pc_media_observer)
 		}
 	})
+
 	return go_media_observer
 }
 
@@ -14204,13 +17456,15 @@ func (p *cCMediaObserverT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (media_observer *CMediaObserverT) ForceUnref() (ret bool) {
-	ret = BaseRelease(media_observer.pc_media_observer)
+	if media_observer == nil {
+		return
+	}
+	if media_observer.needsUnref && media_observer.beUnrefed == byApp {
+		ret = BaseRelease(media_observer.pc_media_observer)
+		media_observer.beUnrefed = unrefed
+		media_observer.needsUnref = false
+	}
 	media_observer.pc_media_observer = nil
-	return ret
-}
-
-func (media_observer *CMediaObserverT) release() (ret bool) {
-	ret = BaseRelease(media_observer.pc_media_observer)
 	return ret
 }
 
@@ -14293,7 +17547,13 @@ func AllocCMediaObserverT() *CMediaObserverT {
 		delete(media_observer_handlers.on_route_message_received_handler, cgop)
 	}))
 
-	return newCMediaObserverT(cefp, true)
+	BaseAddRef(cgop)
+	return newCMediaObserverT(cefp, byApp, true)
+}
+
+// BindCMediaObserverT allocates CMediaObserverT, construct and bind it
+func BindCMediaObserverT(a interface{}) *CMediaObserverT {
+	return AllocCMediaObserverT().Bind(a)
 }
 
 func (media_observer *CMediaObserverT) Bind(a interface{}) *CMediaObserverT {
@@ -14303,7 +17563,7 @@ func (media_observer *CMediaObserverT) Bind(a interface{}) *CMediaObserverT {
 	cp := media_observer.pc_media_observer
 	if oldGoObj, ok := media_observer_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CMediaObserverTAccessor); ok {
-			oldAcc.SetCMediaObserverT(nil)
+			oldAcc.setCMediaObserverT(nil)
 		}
 	}
 	media_observer_handlers.handler[cp] = a
@@ -14333,7 +17593,7 @@ func (media_observer *CMediaObserverT) Bind(a interface{}) *CMediaObserverT {
 	}
 
 	if accessor, ok := a.(CMediaObserverTAccessor); ok {
-		accessor.SetCMediaObserverT(media_observer)
+		accessor.setCMediaObserverT(media_observer)
 		Logf("T158.5:")
 	}
 
@@ -14341,22 +17601,27 @@ func (media_observer *CMediaObserverT) Bind(a interface{}) *CMediaObserverT {
 }
 
 func (media_observer *CMediaObserverT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CMediaObserverTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := media_observer.pc_media_observer
-	if goHandler, ok := media_observer_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CMediaObserverTAccessor); ok1 {
-			accessor.SetCMediaObserverT(nil)
+		cp := media_observer.pc_media_observer
+		if goHandler, ok := media_observer_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CMediaObserverTAccessor)
 		}
+		delete(media_observer_handlers.handler, cp)
+
+		delete(media_observer_handlers.on_sinks_handler, cp)
+		delete(media_observer_handlers.on_routes_handler, cp)
+		delete(media_observer_handlers.on_route_state_changed_handler, cp)
+		delete(media_observer_handlers.on_route_message_received_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCMediaObserverT(nil)
 	}
-	delete(media_observer_handlers.handler, cp)
-
-	delete(media_observer_handlers.on_sinks_handler, cp)
-	delete(media_observer_handlers.on_routes_handler, cp)
-	delete(media_observer_handlers.on_route_state_changed_handler, cp)
-	delete(media_observer_handlers.on_route_message_received_handler, cp)
-
 }
 
 func (media_observer *CMediaObserverT) Handler() interface{} {
@@ -14381,6 +17646,8 @@ type cCMediaRouteT C.cef_media_route_t
 type CMediaRouteT struct {
 	noCopy         noCopy
 	pc_media_route *cCMediaRouteT
+	needsUnref     bool
+	beUnrefed      unrefedBy
 }
 
 type RefToCMediaRouteT struct {
@@ -14389,36 +17656,82 @@ type RefToCMediaRouteT struct {
 
 type CMediaRouteTAccessor interface {
 	GetCMediaRouteT() *CMediaRouteT
-	SetCMediaRouteT(*CMediaRouteT) (oldValue *CMediaRouteT)
+	setCMediaRouteT(*CMediaRouteT)
+	// TakeOverCMediaRouteT(*CMediaRouteT)
+	// NewRefCMediaRouteT(*CMediaRouteT)
 }
 
 func (r RefToCMediaRouteT) GetCMediaRouteT() *CMediaRouteT {
 	return r.p_media_route
 }
 
-func (r *RefToCMediaRouteT) SetCMediaRouteT(p *CMediaRouteT) (prevValue *CMediaRouteT) {
-	prevValue = r.p_media_route
+func (r *RefToCMediaRouteT) setCMediaRouteT(p *CMediaRouteT) {
+	// prevValue = r.p_media_route
+	r.p_media_route.ForceUnref()
 	r.p_media_route = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMediaRouteT) TakeOverCMediaRouteT(src *CMediaRouteT) {
+	if r == nil {
+		return
+	}
+	r.p_media_route.ForceUnref()
+	gop := src.pc_media_route
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_media_route = newCMediaRouteT((*C.cef_media_route_t)(gop), byApp, true)
+}
+
+func PassCMediaRouteT(p *CMediaRouteT) (ret *CMediaRouteT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_media_route)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMediaRouteT((*C.cef_media_route_t)(p.pc_media_route), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMediaRouteT) NewRefCMediaRouteT(p *CMediaRouteT) {
+	if r == nil {
+		return
+	}
+	r.p_media_route.ForceUnref()
+	gop := p.pc_media_route
+	BaseAddRef(gop)
+	r.p_media_route = newCMediaRouteT((*C.cef_media_route_t)(gop), byApp, true)
 }
 
 // Go type CMediaRouteT wraps cef type *C.cef_media_route_t
-func newCMediaRouteT(p *C.cef_media_route_t, countUp bool) *CMediaRouteT {
+func newCMediaRouteT(p *C.cef_media_route_t, unrefedBy unrefedBy, needsUnref bool) *CMediaRouteT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T159.1:")
 	pc := (*cCMediaRouteT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_media_route := &CMediaRouteT{noCopy{}, pc}
+	go_media_route := &CMediaRouteT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_media_route, func(g *CMediaRouteT) {
-		if g.pc_media_route != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_media_route != nil {
 			Tracef(unsafe.Pointer(g.pc_media_route), "T159.2:")
 			BaseRelease(g.pc_media_route)
 		}
 	})
+
 	return go_media_route
 }
 
@@ -14432,13 +17745,15 @@ func (p *cCMediaRouteT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }
 
 func (media_route *CMediaRouteT) ForceUnref() (ret bool) {
-	ret = BaseRelease(media_route.pc_media_route)
+	if media_route == nil {
+		return
+	}
+	if media_route.needsUnref && media_route.beUnrefed == byApp {
+		ret = BaseRelease(media_route.pc_media_route)
+		media_route.beUnrefed = unrefed
+		media_route.needsUnref = false
+	}
 	media_route.pc_media_route = nil
-	return ret
-}
-
-func (media_route *CMediaRouteT) release() (ret bool) {
-	ret = BaseRelease(media_route.pc_media_route)
 	return ret
 }
 
@@ -14465,7 +17780,7 @@ func (self *CMediaRouteT) GetSource() (ret *CMediaSourceT) {
 
 	cRet := C.cefingo_media_route_get_source((*C.cef_media_route_t)(self.pc_media_route))
 
-	ret = newCMediaSourceT(cRet, false)
+	ret = newCMediaSourceT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -14476,7 +17791,7 @@ func (self *CMediaRouteT) GetSink() (ret *CMediaSinkT) {
 
 	cRet := C.cefingo_media_route_get_sink((*C.cef_media_route_t)(self.pc_media_route))
 
-	ret = newCMediaSinkT(cRet, false)
+	ret = newCMediaSinkT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -14515,6 +17830,8 @@ type cCMediaRouteCreateCallbackT C.cef_media_route_create_callback_t
 type CMediaRouteCreateCallbackT struct {
 	noCopy                         noCopy
 	pc_media_route_create_callback *cCMediaRouteCreateCallbackT
+	needsUnref                     bool
+	beUnrefed                      unrefedBy
 }
 
 type RefToCMediaRouteCreateCallbackT struct {
@@ -14523,36 +17840,82 @@ type RefToCMediaRouteCreateCallbackT struct {
 
 type CMediaRouteCreateCallbackTAccessor interface {
 	GetCMediaRouteCreateCallbackT() *CMediaRouteCreateCallbackT
-	SetCMediaRouteCreateCallbackT(*CMediaRouteCreateCallbackT) (oldValue *CMediaRouteCreateCallbackT)
+	setCMediaRouteCreateCallbackT(*CMediaRouteCreateCallbackT)
+	// TakeOverCMediaRouteCreateCallbackT(*CMediaRouteCreateCallbackT)
+	// NewRefCMediaRouteCreateCallbackT(*CMediaRouteCreateCallbackT)
 }
 
 func (r RefToCMediaRouteCreateCallbackT) GetCMediaRouteCreateCallbackT() *CMediaRouteCreateCallbackT {
 	return r.p_media_route_create_callback
 }
 
-func (r *RefToCMediaRouteCreateCallbackT) SetCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) (prevValue *CMediaRouteCreateCallbackT) {
-	prevValue = r.p_media_route_create_callback
+func (r *RefToCMediaRouteCreateCallbackT) setCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) {
+	// prevValue = r.p_media_route_create_callback
+	r.p_media_route_create_callback.ForceUnref()
 	r.p_media_route_create_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMediaRouteCreateCallbackT) TakeOverCMediaRouteCreateCallbackT(src *CMediaRouteCreateCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_media_route_create_callback.ForceUnref()
+	gop := src.pc_media_route_create_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_media_route_create_callback = newCMediaRouteCreateCallbackT((*C.cef_media_route_create_callback_t)(gop), byApp, true)
+}
+
+func PassCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) (ret *CMediaRouteCreateCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_media_route_create_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMediaRouteCreateCallbackT((*C.cef_media_route_create_callback_t)(p.pc_media_route_create_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMediaRouteCreateCallbackT) NewRefCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_media_route_create_callback.ForceUnref()
+	gop := p.pc_media_route_create_callback
+	BaseAddRef(gop)
+	r.p_media_route_create_callback = newCMediaRouteCreateCallbackT((*C.cef_media_route_create_callback_t)(gop), byApp, true)
 }
 
 // Go type CMediaRouteCreateCallbackT wraps cef type *C.cef_media_route_create_callback_t
-func newCMediaRouteCreateCallbackT(p *C.cef_media_route_create_callback_t, countUp bool) *CMediaRouteCreateCallbackT {
+func newCMediaRouteCreateCallbackT(p *C.cef_media_route_create_callback_t, unrefedBy unrefedBy, needsUnref bool) *CMediaRouteCreateCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T160.1:")
 	pc := (*cCMediaRouteCreateCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_media_route_create_callback := &CMediaRouteCreateCallbackT{noCopy{}, pc}
+	go_media_route_create_callback := &CMediaRouteCreateCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_media_route_create_callback, func(g *CMediaRouteCreateCallbackT) {
-		if g.pc_media_route_create_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_media_route_create_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_media_route_create_callback), "T160.2:")
 			BaseRelease(g.pc_media_route_create_callback)
 		}
 	})
+
 	return go_media_route_create_callback
 }
 
@@ -14566,13 +17929,15 @@ func (p *cCMediaRouteCreateCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base
 }
 
 func (media_route_create_callback *CMediaRouteCreateCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(media_route_create_callback.pc_media_route_create_callback)
+	if media_route_create_callback == nil {
+		return
+	}
+	if media_route_create_callback.needsUnref && media_route_create_callback.beUnrefed == byApp {
+		ret = BaseRelease(media_route_create_callback.pc_media_route_create_callback)
+		media_route_create_callback.beUnrefed = unrefed
+		media_route_create_callback.needsUnref = false
+	}
 	media_route_create_callback.pc_media_route_create_callback = nil
-	return ret
-}
-
-func (media_route_create_callback *CMediaRouteCreateCallbackT) release() (ret bool) {
-	ret = BaseRelease(media_route_create_callback.pc_media_route_create_callback)
 	return ret
 }
 
@@ -14610,6 +17975,8 @@ type cCMediaSinkT C.cef_media_sink_t
 type CMediaSinkT struct {
 	noCopy        noCopy
 	pc_media_sink *cCMediaSinkT
+	needsUnref    bool
+	beUnrefed     unrefedBy
 }
 
 type RefToCMediaSinkT struct {
@@ -14618,36 +17985,82 @@ type RefToCMediaSinkT struct {
 
 type CMediaSinkTAccessor interface {
 	GetCMediaSinkT() *CMediaSinkT
-	SetCMediaSinkT(*CMediaSinkT) (oldValue *CMediaSinkT)
+	setCMediaSinkT(*CMediaSinkT)
+	// TakeOverCMediaSinkT(*CMediaSinkT)
+	// NewRefCMediaSinkT(*CMediaSinkT)
 }
 
 func (r RefToCMediaSinkT) GetCMediaSinkT() *CMediaSinkT {
 	return r.p_media_sink
 }
 
-func (r *RefToCMediaSinkT) SetCMediaSinkT(p *CMediaSinkT) (prevValue *CMediaSinkT) {
-	prevValue = r.p_media_sink
+func (r *RefToCMediaSinkT) setCMediaSinkT(p *CMediaSinkT) {
+	// prevValue = r.p_media_sink
+	r.p_media_sink.ForceUnref()
 	r.p_media_sink = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMediaSinkT) TakeOverCMediaSinkT(src *CMediaSinkT) {
+	if r == nil {
+		return
+	}
+	r.p_media_sink.ForceUnref()
+	gop := src.pc_media_sink
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_media_sink = newCMediaSinkT((*C.cef_media_sink_t)(gop), byApp, true)
+}
+
+func PassCMediaSinkT(p *CMediaSinkT) (ret *CMediaSinkT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_media_sink)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMediaSinkT((*C.cef_media_sink_t)(p.pc_media_sink), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMediaSinkT) NewRefCMediaSinkT(p *CMediaSinkT) {
+	if r == nil {
+		return
+	}
+	r.p_media_sink.ForceUnref()
+	gop := p.pc_media_sink
+	BaseAddRef(gop)
+	r.p_media_sink = newCMediaSinkT((*C.cef_media_sink_t)(gop), byApp, true)
 }
 
 // Go type CMediaSinkT wraps cef type *C.cef_media_sink_t
-func newCMediaSinkT(p *C.cef_media_sink_t, countUp bool) *CMediaSinkT {
+func newCMediaSinkT(p *C.cef_media_sink_t, unrefedBy unrefedBy, needsUnref bool) *CMediaSinkT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T161.1:")
 	pc := (*cCMediaSinkT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_media_sink := &CMediaSinkT{noCopy{}, pc}
+	go_media_sink := &CMediaSinkT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_media_sink, func(g *CMediaSinkT) {
-		if g.pc_media_sink != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_media_sink != nil {
 			Tracef(unsafe.Pointer(g.pc_media_sink), "T161.2:")
 			BaseRelease(g.pc_media_sink)
 		}
 	})
+
 	return go_media_sink
 }
 
@@ -14661,13 +18074,15 @@ func (p *cCMediaSinkT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (media_sink *CMediaSinkT) ForceUnref() (ret bool) {
-	ret = BaseRelease(media_sink.pc_media_sink)
+	if media_sink == nil {
+		return
+	}
+	if media_sink.needsUnref && media_sink.beUnrefed == byApp {
+		ret = BaseRelease(media_sink.pc_media_sink)
+		media_sink.beUnrefed = unrefed
+		media_sink.needsUnref = false
+	}
 	media_sink.pc_media_sink = nil
-	return ret
-}
-
-func (media_sink *CMediaSinkT) release() (ret bool) {
-	ret = BaseRelease(media_sink.pc_media_sink)
 	return ret
 }
 
@@ -14726,7 +18141,7 @@ func (self *CMediaSinkT) GetIconType() (ret CMediaSinkIconTypeT) {
 
 	cRet := C.cefingo_media_sink_get_icon_type((*C.cef_media_sink_t)(self.pc_media_sink))
 
-	ret = CMediaSinkIconTypeT(cRet)
+	ret = CMediaSinkIconTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -14797,6 +18212,8 @@ type cCMediaSinkDeviceInfoCallbackT C.cef_media_sink_device_info_callback_t
 type CMediaSinkDeviceInfoCallbackT struct {
 	noCopy                             noCopy
 	pc_media_sink_device_info_callback *cCMediaSinkDeviceInfoCallbackT
+	needsUnref                         bool
+	beUnrefed                          unrefedBy
 }
 
 type RefToCMediaSinkDeviceInfoCallbackT struct {
@@ -14805,36 +18222,82 @@ type RefToCMediaSinkDeviceInfoCallbackT struct {
 
 type CMediaSinkDeviceInfoCallbackTAccessor interface {
 	GetCMediaSinkDeviceInfoCallbackT() *CMediaSinkDeviceInfoCallbackT
-	SetCMediaSinkDeviceInfoCallbackT(*CMediaSinkDeviceInfoCallbackT) (oldValue *CMediaSinkDeviceInfoCallbackT)
+	setCMediaSinkDeviceInfoCallbackT(*CMediaSinkDeviceInfoCallbackT)
+	// TakeOverCMediaSinkDeviceInfoCallbackT(*CMediaSinkDeviceInfoCallbackT)
+	// NewRefCMediaSinkDeviceInfoCallbackT(*CMediaSinkDeviceInfoCallbackT)
 }
 
 func (r RefToCMediaSinkDeviceInfoCallbackT) GetCMediaSinkDeviceInfoCallbackT() *CMediaSinkDeviceInfoCallbackT {
 	return r.p_media_sink_device_info_callback
 }
 
-func (r *RefToCMediaSinkDeviceInfoCallbackT) SetCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) (prevValue *CMediaSinkDeviceInfoCallbackT) {
-	prevValue = r.p_media_sink_device_info_callback
+func (r *RefToCMediaSinkDeviceInfoCallbackT) setCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) {
+	// prevValue = r.p_media_sink_device_info_callback
+	r.p_media_sink_device_info_callback.ForceUnref()
 	r.p_media_sink_device_info_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMediaSinkDeviceInfoCallbackT) TakeOverCMediaSinkDeviceInfoCallbackT(src *CMediaSinkDeviceInfoCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_media_sink_device_info_callback.ForceUnref()
+	gop := src.pc_media_sink_device_info_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_media_sink_device_info_callback = newCMediaSinkDeviceInfoCallbackT((*C.cef_media_sink_device_info_callback_t)(gop), byApp, true)
+}
+
+func PassCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) (ret *CMediaSinkDeviceInfoCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_media_sink_device_info_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMediaSinkDeviceInfoCallbackT((*C.cef_media_sink_device_info_callback_t)(p.pc_media_sink_device_info_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMediaSinkDeviceInfoCallbackT) NewRefCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_media_sink_device_info_callback.ForceUnref()
+	gop := p.pc_media_sink_device_info_callback
+	BaseAddRef(gop)
+	r.p_media_sink_device_info_callback = newCMediaSinkDeviceInfoCallbackT((*C.cef_media_sink_device_info_callback_t)(gop), byApp, true)
 }
 
 // Go type CMediaSinkDeviceInfoCallbackT wraps cef type *C.cef_media_sink_device_info_callback_t
-func newCMediaSinkDeviceInfoCallbackT(p *C.cef_media_sink_device_info_callback_t, countUp bool) *CMediaSinkDeviceInfoCallbackT {
+func newCMediaSinkDeviceInfoCallbackT(p *C.cef_media_sink_device_info_callback_t, unrefedBy unrefedBy, needsUnref bool) *CMediaSinkDeviceInfoCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T338.1:")
 	pc := (*cCMediaSinkDeviceInfoCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_media_sink_device_info_callback := &CMediaSinkDeviceInfoCallbackT{noCopy{}, pc}
+	go_media_sink_device_info_callback := &CMediaSinkDeviceInfoCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_media_sink_device_info_callback, func(g *CMediaSinkDeviceInfoCallbackT) {
-		if g.pc_media_sink_device_info_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_media_sink_device_info_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_media_sink_device_info_callback), "T338.2:")
 			BaseRelease(g.pc_media_sink_device_info_callback)
 		}
 	})
+
 	return go_media_sink_device_info_callback
 }
 
@@ -14848,13 +18311,15 @@ func (p *cCMediaSinkDeviceInfoCallbackT) cast_to_p_base_ref_counted_t() *C.cef_b
 }
 
 func (media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(media_sink_device_info_callback.pc_media_sink_device_info_callback)
+	if media_sink_device_info_callback == nil {
+		return
+	}
+	if media_sink_device_info_callback.needsUnref && media_sink_device_info_callback.beUnrefed == byApp {
+		ret = BaseRelease(media_sink_device_info_callback.pc_media_sink_device_info_callback)
+		media_sink_device_info_callback.beUnrefed = unrefed
+		media_sink_device_info_callback.needsUnref = false
+	}
 	media_sink_device_info_callback.pc_media_sink_device_info_callback = nil
-	return ret
-}
-
-func (media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT) release() (ret bool) {
-	ret = BaseRelease(media_sink_device_info_callback.pc_media_sink_device_info_callback)
 	return ret
 }
 
@@ -14883,6 +18348,8 @@ type cCMediaSourceT C.cef_media_source_t
 type CMediaSourceT struct {
 	noCopy          noCopy
 	pc_media_source *cCMediaSourceT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCMediaSourceT struct {
@@ -14891,36 +18358,82 @@ type RefToCMediaSourceT struct {
 
 type CMediaSourceTAccessor interface {
 	GetCMediaSourceT() *CMediaSourceT
-	SetCMediaSourceT(*CMediaSourceT) (oldValue *CMediaSourceT)
+	setCMediaSourceT(*CMediaSourceT)
+	// TakeOverCMediaSourceT(*CMediaSourceT)
+	// NewRefCMediaSourceT(*CMediaSourceT)
 }
 
 func (r RefToCMediaSourceT) GetCMediaSourceT() *CMediaSourceT {
 	return r.p_media_source
 }
 
-func (r *RefToCMediaSourceT) SetCMediaSourceT(p *CMediaSourceT) (prevValue *CMediaSourceT) {
-	prevValue = r.p_media_source
+func (r *RefToCMediaSourceT) setCMediaSourceT(p *CMediaSourceT) {
+	// prevValue = r.p_media_source
+	r.p_media_source.ForceUnref()
 	r.p_media_source = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMediaSourceT) TakeOverCMediaSourceT(src *CMediaSourceT) {
+	if r == nil {
+		return
+	}
+	r.p_media_source.ForceUnref()
+	gop := src.pc_media_source
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_media_source = newCMediaSourceT((*C.cef_media_source_t)(gop), byApp, true)
+}
+
+func PassCMediaSourceT(p *CMediaSourceT) (ret *CMediaSourceT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_media_source)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMediaSourceT((*C.cef_media_source_t)(p.pc_media_source), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMediaSourceT) NewRefCMediaSourceT(p *CMediaSourceT) {
+	if r == nil {
+		return
+	}
+	r.p_media_source.ForceUnref()
+	gop := p.pc_media_source
+	BaseAddRef(gop)
+	r.p_media_source = newCMediaSourceT((*C.cef_media_source_t)(gop), byApp, true)
 }
 
 // Go type CMediaSourceT wraps cef type *C.cef_media_source_t
-func newCMediaSourceT(p *C.cef_media_source_t, countUp bool) *CMediaSourceT {
+func newCMediaSourceT(p *C.cef_media_source_t, unrefedBy unrefedBy, needsUnref bool) *CMediaSourceT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T162.1:")
 	pc := (*cCMediaSourceT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_media_source := &CMediaSourceT{noCopy{}, pc}
+	go_media_source := &CMediaSourceT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_media_source, func(g *CMediaSourceT) {
-		if g.pc_media_source != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_media_source != nil {
 			Tracef(unsafe.Pointer(g.pc_media_source), "T162.2:")
 			BaseRelease(g.pc_media_source)
 		}
 	})
+
 	return go_media_source
 }
 
@@ -14934,13 +18447,15 @@ func (p *cCMediaSourceT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (media_source *CMediaSourceT) ForceUnref() (ret bool) {
-	ret = BaseRelease(media_source.pc_media_source)
+	if media_source == nil {
+		return
+	}
+	if media_source.needsUnref && media_source.beUnrefed == byApp {
+		ret = BaseRelease(media_source.pc_media_source)
+		media_source.beUnrefed = unrefed
+		media_source.needsUnref = false
+	}
 	media_source.pc_media_source = nil
-	return ret
-}
-
-func (media_source *CMediaSourceT) release() (ret bool) {
-	ret = BaseRelease(media_source.pc_media_source)
 	return ret
 }
 
@@ -14997,6 +18512,8 @@ type cCMenuButtonT C.cef_menu_button_t
 type CMenuButtonT struct {
 	noCopy         noCopy
 	pc_menu_button *cCMenuButtonT
+	needsUnref     bool
+	beUnrefed      unrefedBy
 }
 
 type RefToCMenuButtonT struct {
@@ -15005,36 +18522,82 @@ type RefToCMenuButtonT struct {
 
 type CMenuButtonTAccessor interface {
 	GetCMenuButtonT() *CMenuButtonT
-	SetCMenuButtonT(*CMenuButtonT) (oldValue *CMenuButtonT)
+	setCMenuButtonT(*CMenuButtonT)
+	// TakeOverCMenuButtonT(*CMenuButtonT)
+	// NewRefCMenuButtonT(*CMenuButtonT)
 }
 
 func (r RefToCMenuButtonT) GetCMenuButtonT() *CMenuButtonT {
 	return r.p_menu_button
 }
 
-func (r *RefToCMenuButtonT) SetCMenuButtonT(p *CMenuButtonT) (prevValue *CMenuButtonT) {
-	prevValue = r.p_menu_button
+func (r *RefToCMenuButtonT) setCMenuButtonT(p *CMenuButtonT) {
+	// prevValue = r.p_menu_button
+	r.p_menu_button.ForceUnref()
 	r.p_menu_button = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMenuButtonT) TakeOverCMenuButtonT(src *CMenuButtonT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_button.ForceUnref()
+	gop := src.pc_menu_button
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_menu_button = newCMenuButtonT((*C.cef_menu_button_t)(gop), byApp, true)
+}
+
+func PassCMenuButtonT(p *CMenuButtonT) (ret *CMenuButtonT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_menu_button)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMenuButtonT((*C.cef_menu_button_t)(p.pc_menu_button), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMenuButtonT) NewRefCMenuButtonT(p *CMenuButtonT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_button.ForceUnref()
+	gop := p.pc_menu_button
+	BaseAddRef(gop)
+	r.p_menu_button = newCMenuButtonT((*C.cef_menu_button_t)(gop), byApp, true)
 }
 
 // Go type CMenuButtonT wraps cef type *C.cef_menu_button_t
-func newCMenuButtonT(p *C.cef_menu_button_t, countUp bool) *CMenuButtonT {
+func newCMenuButtonT(p *C.cef_menu_button_t, unrefedBy unrefedBy, needsUnref bool) *CMenuButtonT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T163.1:")
 	pc := (*cCMenuButtonT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_menu_button := &CMenuButtonT{noCopy{}, pc}
+	go_menu_button := &CMenuButtonT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_menu_button, func(g *CMenuButtonT) {
-		if g.pc_menu_button != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_menu_button != nil {
 			Tracef(unsafe.Pointer(g.pc_menu_button), "T163.2:")
 			BaseRelease(g.pc_menu_button)
 		}
 	})
+
 	return go_menu_button
 }
 
@@ -15048,20 +18611,23 @@ func (p *cCMenuButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }
 
 func (menu_button *CMenuButtonT) ForceUnref() (ret bool) {
-	ret = BaseRelease(menu_button.pc_menu_button)
+	if menu_button == nil {
+		return
+	}
+	if menu_button.needsUnref && menu_button.beUnrefed == byApp {
+		ret = BaseRelease(menu_button.pc_menu_button)
+		menu_button.beUnrefed = unrefed
+		menu_button.needsUnref = false
+	}
 	menu_button.pc_menu_button = nil
-	return ret
-}
-
-func (menu_button *CMenuButtonT) release() (ret bool) {
-	ret = BaseRelease(menu_button.pc_menu_button)
 	return ret
 }
 
 // Convert to Base Class Pointer *CLabelButtonT
 func (menu_button *CMenuButtonT) ToCLabelButtonT() *CLabelButtonT {
 	p := (*C.cef_label_button_t)(unsafe.Pointer(menu_button.pc_menu_button))
-	return newCLabelButtonT(p, true)
+	BaseAddRef(menu_button.pc_menu_button)
+	return newCLabelButtonT(p, byApp, true)
 }
 
 ///
@@ -15117,7 +18683,7 @@ func MenuButtonCreate(
 
 	cRet := C.cef_menu_button_create(goTmpdelegate, c_text.p_cef_string_t)
 
-	ret = newCMenuButtonT(cRet, false)
+	ret = newCMenuButtonT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -15133,6 +18699,8 @@ type cCMenuButtonPressedLockT C.cef_menu_button_pressed_lock_t
 type CMenuButtonPressedLockT struct {
 	noCopy                      noCopy
 	pc_menu_button_pressed_lock *cCMenuButtonPressedLockT
+	needsUnref                  bool
+	beUnrefed                   unrefedBy
 }
 
 type RefToCMenuButtonPressedLockT struct {
@@ -15141,36 +18709,82 @@ type RefToCMenuButtonPressedLockT struct {
 
 type CMenuButtonPressedLockTAccessor interface {
 	GetCMenuButtonPressedLockT() *CMenuButtonPressedLockT
-	SetCMenuButtonPressedLockT(*CMenuButtonPressedLockT) (oldValue *CMenuButtonPressedLockT)
+	setCMenuButtonPressedLockT(*CMenuButtonPressedLockT)
+	// TakeOverCMenuButtonPressedLockT(*CMenuButtonPressedLockT)
+	// NewRefCMenuButtonPressedLockT(*CMenuButtonPressedLockT)
 }
 
 func (r RefToCMenuButtonPressedLockT) GetCMenuButtonPressedLockT() *CMenuButtonPressedLockT {
 	return r.p_menu_button_pressed_lock
 }
 
-func (r *RefToCMenuButtonPressedLockT) SetCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) (prevValue *CMenuButtonPressedLockT) {
-	prevValue = r.p_menu_button_pressed_lock
+func (r *RefToCMenuButtonPressedLockT) setCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) {
+	// prevValue = r.p_menu_button_pressed_lock
+	r.p_menu_button_pressed_lock.ForceUnref()
 	r.p_menu_button_pressed_lock = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMenuButtonPressedLockT) TakeOverCMenuButtonPressedLockT(src *CMenuButtonPressedLockT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_button_pressed_lock.ForceUnref()
+	gop := src.pc_menu_button_pressed_lock
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_menu_button_pressed_lock = newCMenuButtonPressedLockT((*C.cef_menu_button_pressed_lock_t)(gop), byApp, true)
+}
+
+func PassCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) (ret *CMenuButtonPressedLockT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_menu_button_pressed_lock)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMenuButtonPressedLockT((*C.cef_menu_button_pressed_lock_t)(p.pc_menu_button_pressed_lock), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMenuButtonPressedLockT) NewRefCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_button_pressed_lock.ForceUnref()
+	gop := p.pc_menu_button_pressed_lock
+	BaseAddRef(gop)
+	r.p_menu_button_pressed_lock = newCMenuButtonPressedLockT((*C.cef_menu_button_pressed_lock_t)(gop), byApp, true)
 }
 
 // Go type CMenuButtonPressedLockT wraps cef type *C.cef_menu_button_pressed_lock_t
-func newCMenuButtonPressedLockT(p *C.cef_menu_button_pressed_lock_t, countUp bool) *CMenuButtonPressedLockT {
+func newCMenuButtonPressedLockT(p *C.cef_menu_button_pressed_lock_t, unrefedBy unrefedBy, needsUnref bool) *CMenuButtonPressedLockT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T164.1:")
 	pc := (*cCMenuButtonPressedLockT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_menu_button_pressed_lock := &CMenuButtonPressedLockT{noCopy{}, pc}
+	go_menu_button_pressed_lock := &CMenuButtonPressedLockT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_menu_button_pressed_lock, func(g *CMenuButtonPressedLockT) {
-		if g.pc_menu_button_pressed_lock != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_menu_button_pressed_lock != nil {
 			Tracef(unsafe.Pointer(g.pc_menu_button_pressed_lock), "T164.2:")
 			BaseRelease(g.pc_menu_button_pressed_lock)
 		}
 	})
+
 	return go_menu_button_pressed_lock
 }
 
@@ -15184,13 +18798,15 @@ func (p *cCMenuButtonPressedLockT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 }
 
 func (menu_button_pressed_lock *CMenuButtonPressedLockT) ForceUnref() (ret bool) {
-	ret = BaseRelease(menu_button_pressed_lock.pc_menu_button_pressed_lock)
+	if menu_button_pressed_lock == nil {
+		return
+	}
+	if menu_button_pressed_lock.needsUnref && menu_button_pressed_lock.beUnrefed == byApp {
+		ret = BaseRelease(menu_button_pressed_lock.pc_menu_button_pressed_lock)
+		menu_button_pressed_lock.beUnrefed = unrefed
+		menu_button_pressed_lock.needsUnref = false
+	}
 	menu_button_pressed_lock.pc_menu_button_pressed_lock = nil
-	return ret
-}
-
-func (menu_button_pressed_lock *CMenuButtonPressedLockT) release() (ret bool) {
-	ret = BaseRelease(menu_button_pressed_lock.pc_menu_button_pressed_lock)
 	return ret
 }
 
@@ -15206,6 +18822,8 @@ type cCMenuButtonDelegateT C.cef_menu_button_delegate_t
 type CMenuButtonDelegateT struct {
 	noCopy                  noCopy
 	pc_menu_button_delegate *cCMenuButtonDelegateT
+	needsUnref              bool
+	beUnrefed               unrefedBy
 }
 
 type RefToCMenuButtonDelegateT struct {
@@ -15214,36 +18832,82 @@ type RefToCMenuButtonDelegateT struct {
 
 type CMenuButtonDelegateTAccessor interface {
 	GetCMenuButtonDelegateT() *CMenuButtonDelegateT
-	SetCMenuButtonDelegateT(*CMenuButtonDelegateT) (oldValue *CMenuButtonDelegateT)
+	setCMenuButtonDelegateT(*CMenuButtonDelegateT)
+	// TakeOverCMenuButtonDelegateT(*CMenuButtonDelegateT)
+	// NewRefCMenuButtonDelegateT(*CMenuButtonDelegateT)
 }
 
 func (r RefToCMenuButtonDelegateT) GetCMenuButtonDelegateT() *CMenuButtonDelegateT {
 	return r.p_menu_button_delegate
 }
 
-func (r *RefToCMenuButtonDelegateT) SetCMenuButtonDelegateT(p *CMenuButtonDelegateT) (prevValue *CMenuButtonDelegateT) {
-	prevValue = r.p_menu_button_delegate
+func (r *RefToCMenuButtonDelegateT) setCMenuButtonDelegateT(p *CMenuButtonDelegateT) {
+	// prevValue = r.p_menu_button_delegate
+	r.p_menu_button_delegate.ForceUnref()
 	r.p_menu_button_delegate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMenuButtonDelegateT) TakeOverCMenuButtonDelegateT(src *CMenuButtonDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_button_delegate.ForceUnref()
+	gop := src.pc_menu_button_delegate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_menu_button_delegate = newCMenuButtonDelegateT((*C.cef_menu_button_delegate_t)(gop), byApp, true)
+}
+
+func PassCMenuButtonDelegateT(p *CMenuButtonDelegateT) (ret *CMenuButtonDelegateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_menu_button_delegate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMenuButtonDelegateT((*C.cef_menu_button_delegate_t)(p.pc_menu_button_delegate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMenuButtonDelegateT) NewRefCMenuButtonDelegateT(p *CMenuButtonDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_button_delegate.ForceUnref()
+	gop := p.pc_menu_button_delegate
+	BaseAddRef(gop)
+	r.p_menu_button_delegate = newCMenuButtonDelegateT((*C.cef_menu_button_delegate_t)(gop), byApp, true)
 }
 
 // Go type CMenuButtonDelegateT wraps cef type *C.cef_menu_button_delegate_t
-func newCMenuButtonDelegateT(p *C.cef_menu_button_delegate_t, countUp bool) *CMenuButtonDelegateT {
+func newCMenuButtonDelegateT(p *C.cef_menu_button_delegate_t, unrefedBy unrefedBy, needsUnref bool) *CMenuButtonDelegateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T165.1:")
 	pc := (*cCMenuButtonDelegateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_menu_button_delegate := &CMenuButtonDelegateT{noCopy{}, pc}
+	go_menu_button_delegate := &CMenuButtonDelegateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_menu_button_delegate, func(g *CMenuButtonDelegateT) {
-		if g.pc_menu_button_delegate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_menu_button_delegate != nil {
 			Tracef(unsafe.Pointer(g.pc_menu_button_delegate), "T165.2:")
 			BaseRelease(g.pc_menu_button_delegate)
 		}
 	})
+
 	return go_menu_button_delegate
 }
 
@@ -15257,20 +18921,23 @@ func (p *cCMenuButtonDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 }
 
 func (menu_button_delegate *CMenuButtonDelegateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(menu_button_delegate.pc_menu_button_delegate)
+	if menu_button_delegate == nil {
+		return
+	}
+	if menu_button_delegate.needsUnref && menu_button_delegate.beUnrefed == byApp {
+		ret = BaseRelease(menu_button_delegate.pc_menu_button_delegate)
+		menu_button_delegate.beUnrefed = unrefed
+		menu_button_delegate.needsUnref = false
+	}
 	menu_button_delegate.pc_menu_button_delegate = nil
-	return ret
-}
-
-func (menu_button_delegate *CMenuButtonDelegateT) release() (ret bool) {
-	ret = BaseRelease(menu_button_delegate.pc_menu_button_delegate)
 	return ret
 }
 
 // Convert to Base Class Pointer *CButtonDelegateT
 func (menu_button_delegate *CMenuButtonDelegateT) ToCButtonDelegateT() *CButtonDelegateT {
 	p := (*C.cef_button_delegate_t)(unsafe.Pointer(menu_button_delegate.pc_menu_button_delegate))
-	return newCButtonDelegateT(p, true)
+	BaseAddRef(menu_button_delegate.pc_menu_button_delegate)
+	return newCButtonDelegateT(p, byApp, true)
 }
 
 ///
@@ -15346,7 +19013,13 @@ func AllocCMenuButtonDelegateT() *CMenuButtonDelegateT {
 		delete(menu_button_delegate_handlers.on_blur_handler, cgop)
 	}))
 
-	return newCMenuButtonDelegateT(cefp, true)
+	BaseAddRef(cgop)
+	return newCMenuButtonDelegateT(cefp, byApp, true)
+}
+
+// BindCMenuButtonDelegateT allocates CMenuButtonDelegateT, construct and bind it
+func BindCMenuButtonDelegateT(a interface{}) *CMenuButtonDelegateT {
+	return AllocCMenuButtonDelegateT().Bind(a)
 }
 
 func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButtonDelegateT {
@@ -15356,7 +19029,7 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 	cp := menu_button_delegate.pc_menu_button_delegate
 	if oldGoObj, ok := menu_button_delegate_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CMenuButtonDelegateTAccessor); ok {
-			oldAcc.SetCMenuButtonDelegateT(nil)
+			oldAcc.setCMenuButtonDelegateT(nil)
 		}
 	}
 	menu_button_delegate_handlers.handler[cp] = a
@@ -15434,7 +19107,7 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 	}
 
 	if accessor, ok := a.(CMenuButtonDelegateTAccessor); ok {
-		accessor.SetCMenuButtonDelegateT(menu_button_delegate)
+		accessor.setCMenuButtonDelegateT(menu_button_delegate)
 		Logf("T165.5:")
 	}
 
@@ -15442,30 +19115,35 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 }
 
 func (menu_button_delegate *CMenuButtonDelegateT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CMenuButtonDelegateTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := menu_button_delegate.pc_menu_button_delegate
-	if goHandler, ok := menu_button_delegate_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CMenuButtonDelegateTAccessor); ok1 {
-			accessor.SetCMenuButtonDelegateT(nil)
+		cp := menu_button_delegate.pc_menu_button_delegate
+		if goHandler, ok := menu_button_delegate_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CMenuButtonDelegateTAccessor)
 		}
+		delete(menu_button_delegate_handlers.handler, cp)
+
+		delete(menu_button_delegate_handlers.on_menu_button_pressed_handler, cp)
+		delete(menu_button_delegate_handlers.on_button_pressed_handler, cp)
+		delete(menu_button_delegate_handlers.on_button_state_changed_handler, cp)
+		delete(menu_button_delegate_handlers.get_preferred_size_handler, cp)
+		delete(menu_button_delegate_handlers.get_minimum_size_handler, cp)
+		delete(menu_button_delegate_handlers.get_maximum_size_handler, cp)
+		delete(menu_button_delegate_handlers.get_height_for_width_handler, cp)
+		delete(menu_button_delegate_handlers.on_parent_view_changed_handler, cp)
+		delete(menu_button_delegate_handlers.on_child_view_changed_handler, cp)
+		delete(menu_button_delegate_handlers.on_window_changed_handler, cp)
+		delete(menu_button_delegate_handlers.on_focus_handler, cp)
+		delete(menu_button_delegate_handlers.on_blur_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCMenuButtonDelegateT(nil)
 	}
-	delete(menu_button_delegate_handlers.handler, cp)
-
-	delete(menu_button_delegate_handlers.on_menu_button_pressed_handler, cp)
-	delete(menu_button_delegate_handlers.on_button_pressed_handler, cp)
-	delete(menu_button_delegate_handlers.on_button_state_changed_handler, cp)
-	delete(menu_button_delegate_handlers.get_preferred_size_handler, cp)
-	delete(menu_button_delegate_handlers.get_minimum_size_handler, cp)
-	delete(menu_button_delegate_handlers.get_maximum_size_handler, cp)
-	delete(menu_button_delegate_handlers.get_height_for_width_handler, cp)
-	delete(menu_button_delegate_handlers.on_parent_view_changed_handler, cp)
-	delete(menu_button_delegate_handlers.on_child_view_changed_handler, cp)
-	delete(menu_button_delegate_handlers.on_window_changed_handler, cp)
-	delete(menu_button_delegate_handlers.on_focus_handler, cp)
-	delete(menu_button_delegate_handlers.on_blur_handler, cp)
-
 }
 
 func (menu_button_delegate *CMenuButtonDelegateT) Handler() interface{} {
@@ -15491,6 +19169,8 @@ type cCMenuModelT C.cef_menu_model_t
 type CMenuModelT struct {
 	noCopy        noCopy
 	pc_menu_model *cCMenuModelT
+	needsUnref    bool
+	beUnrefed     unrefedBy
 }
 
 type RefToCMenuModelT struct {
@@ -15499,36 +19179,82 @@ type RefToCMenuModelT struct {
 
 type CMenuModelTAccessor interface {
 	GetCMenuModelT() *CMenuModelT
-	SetCMenuModelT(*CMenuModelT) (oldValue *CMenuModelT)
+	setCMenuModelT(*CMenuModelT)
+	// TakeOverCMenuModelT(*CMenuModelT)
+	// NewRefCMenuModelT(*CMenuModelT)
 }
 
 func (r RefToCMenuModelT) GetCMenuModelT() *CMenuModelT {
 	return r.p_menu_model
 }
 
-func (r *RefToCMenuModelT) SetCMenuModelT(p *CMenuModelT) (prevValue *CMenuModelT) {
-	prevValue = r.p_menu_model
+func (r *RefToCMenuModelT) setCMenuModelT(p *CMenuModelT) {
+	// prevValue = r.p_menu_model
+	r.p_menu_model.ForceUnref()
 	r.p_menu_model = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMenuModelT) TakeOverCMenuModelT(src *CMenuModelT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_model.ForceUnref()
+	gop := src.pc_menu_model
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_menu_model = newCMenuModelT((*C.cef_menu_model_t)(gop), byApp, true)
+}
+
+func PassCMenuModelT(p *CMenuModelT) (ret *CMenuModelT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_menu_model)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMenuModelT((*C.cef_menu_model_t)(p.pc_menu_model), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMenuModelT) NewRefCMenuModelT(p *CMenuModelT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_model.ForceUnref()
+	gop := p.pc_menu_model
+	BaseAddRef(gop)
+	r.p_menu_model = newCMenuModelT((*C.cef_menu_model_t)(gop), byApp, true)
 }
 
 // Go type CMenuModelT wraps cef type *C.cef_menu_model_t
-func newCMenuModelT(p *C.cef_menu_model_t, countUp bool) *CMenuModelT {
+func newCMenuModelT(p *C.cef_menu_model_t, unrefedBy unrefedBy, needsUnref bool) *CMenuModelT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T166.1:")
 	pc := (*cCMenuModelT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_menu_model := &CMenuModelT{noCopy{}, pc}
+	go_menu_model := &CMenuModelT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_menu_model, func(g *CMenuModelT) {
-		if g.pc_menu_model != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_menu_model != nil {
 			Tracef(unsafe.Pointer(g.pc_menu_model), "T166.2:")
 			BaseRelease(g.pc_menu_model)
 		}
 	})
+
 	return go_menu_model
 }
 
@@ -15542,13 +19268,15 @@ func (p *cCMenuModelT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (menu_model *CMenuModelT) ForceUnref() (ret bool) {
-	ret = BaseRelease(menu_model.pc_menu_model)
+	if menu_model == nil {
+		return
+	}
+	if menu_model.needsUnref && menu_model.beUnrefed == byApp {
+		ret = BaseRelease(menu_model.pc_menu_model)
+		menu_model.beUnrefed = unrefed
+		menu_model.needsUnref = false
+	}
 	menu_model.pc_menu_model = nil
-	return ret
-}
-
-func (menu_model *CMenuModelT) release() (ret bool) {
-	ret = BaseRelease(menu_model.pc_menu_model)
 	return ret
 }
 
@@ -15654,7 +19382,7 @@ func (self *CMenuModelT) AddSubMenu(
 
 	cRet := C.cefingo_menu_model_add_sub_menu((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), c_label.p_cef_string_t)
 
-	ret = newCMenuModelT(cRet, false)
+	ret = newCMenuModelT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -15738,7 +19466,7 @@ func (self *CMenuModelT) InsertSubMenuAt(
 
 	cRet := C.cefingo_menu_model_insert_sub_menu_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
-	ret = newCMenuModelT(cRet, false)
+	ret = newCMenuModelT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -15887,7 +19615,7 @@ func (self *CMenuModelT) GetType(
 
 	cRet := C.cefingo_menu_model_get_type((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
-	ret = CMenuItemTypeT(cRet)
+	ret = CMenuItemTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -15900,7 +19628,7 @@ func (self *CMenuModelT) GetTypeAt(
 
 	cRet := C.cefingo_menu_model_get_type_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
-	ret = CMenuItemTypeT(cRet)
+	ret = CMenuItemTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -15968,7 +19696,7 @@ func (self *CMenuModelT) GetSubMenu(
 
 	cRet := C.cefingo_menu_model_get_sub_menu((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id))
 
-	ret = newCMenuModelT(cRet, false)
+	ret = newCMenuModelT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -15981,7 +19709,7 @@ func (self *CMenuModelT) GetSubMenuAt(
 
 	cRet := C.cefingo_menu_model_get_sub_menu_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
 
-	ret = newCMenuModelT(cRet, false)
+	ret = newCMenuModelT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -16428,7 +20156,7 @@ func MenuModelCreate(
 
 	cRet := C.cef_menu_model_create(goTmpdelegate)
 
-	ret = newCMenuModelT(cRet, false)
+	ret = newCMenuModelT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -16446,6 +20174,8 @@ type cCMenuModelDelegateT C.cef_menu_model_delegate_t
 type CMenuModelDelegateT struct {
 	noCopy                 noCopy
 	pc_menu_model_delegate *cCMenuModelDelegateT
+	needsUnref             bool
+	beUnrefed              unrefedBy
 }
 
 type RefToCMenuModelDelegateT struct {
@@ -16454,36 +20184,82 @@ type RefToCMenuModelDelegateT struct {
 
 type CMenuModelDelegateTAccessor interface {
 	GetCMenuModelDelegateT() *CMenuModelDelegateT
-	SetCMenuModelDelegateT(*CMenuModelDelegateT) (oldValue *CMenuModelDelegateT)
+	setCMenuModelDelegateT(*CMenuModelDelegateT)
+	// TakeOverCMenuModelDelegateT(*CMenuModelDelegateT)
+	// NewRefCMenuModelDelegateT(*CMenuModelDelegateT)
 }
 
 func (r RefToCMenuModelDelegateT) GetCMenuModelDelegateT() *CMenuModelDelegateT {
 	return r.p_menu_model_delegate
 }
 
-func (r *RefToCMenuModelDelegateT) SetCMenuModelDelegateT(p *CMenuModelDelegateT) (prevValue *CMenuModelDelegateT) {
-	prevValue = r.p_menu_model_delegate
+func (r *RefToCMenuModelDelegateT) setCMenuModelDelegateT(p *CMenuModelDelegateT) {
+	// prevValue = r.p_menu_model_delegate
+	r.p_menu_model_delegate.ForceUnref()
 	r.p_menu_model_delegate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCMenuModelDelegateT) TakeOverCMenuModelDelegateT(src *CMenuModelDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_model_delegate.ForceUnref()
+	gop := src.pc_menu_model_delegate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_menu_model_delegate = newCMenuModelDelegateT((*C.cef_menu_model_delegate_t)(gop), byApp, true)
+}
+
+func PassCMenuModelDelegateT(p *CMenuModelDelegateT) (ret *CMenuModelDelegateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_menu_model_delegate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCMenuModelDelegateT((*C.cef_menu_model_delegate_t)(p.pc_menu_model_delegate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCMenuModelDelegateT) NewRefCMenuModelDelegateT(p *CMenuModelDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_menu_model_delegate.ForceUnref()
+	gop := p.pc_menu_model_delegate
+	BaseAddRef(gop)
+	r.p_menu_model_delegate = newCMenuModelDelegateT((*C.cef_menu_model_delegate_t)(gop), byApp, true)
 }
 
 // Go type CMenuModelDelegateT wraps cef type *C.cef_menu_model_delegate_t
-func newCMenuModelDelegateT(p *C.cef_menu_model_delegate_t, countUp bool) *CMenuModelDelegateT {
+func newCMenuModelDelegateT(p *C.cef_menu_model_delegate_t, unrefedBy unrefedBy, needsUnref bool) *CMenuModelDelegateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T167.1:")
 	pc := (*cCMenuModelDelegateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_menu_model_delegate := &CMenuModelDelegateT{noCopy{}, pc}
+	go_menu_model_delegate := &CMenuModelDelegateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_menu_model_delegate, func(g *CMenuModelDelegateT) {
-		if g.pc_menu_model_delegate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_menu_model_delegate != nil {
 			Tracef(unsafe.Pointer(g.pc_menu_model_delegate), "T167.2:")
 			BaseRelease(g.pc_menu_model_delegate)
 		}
 	})
+
 	return go_menu_model_delegate
 }
 
@@ -16497,13 +20273,15 @@ func (p *cCMenuModelDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 }
 
 func (menu_model_delegate *CMenuModelDelegateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(menu_model_delegate.pc_menu_model_delegate)
+	if menu_model_delegate == nil {
+		return
+	}
+	if menu_model_delegate.needsUnref && menu_model_delegate.beUnrefed == byApp {
+		ret = BaseRelease(menu_model_delegate.pc_menu_model_delegate)
+		menu_model_delegate.beUnrefed = unrefed
+		menu_model_delegate.needsUnref = false
+	}
 	menu_model_delegate.pc_menu_model_delegate = nil
-	return ret
-}
-
-func (menu_model_delegate *CMenuModelDelegateT) release() (ret bool) {
-	ret = BaseRelease(menu_model_delegate.pc_menu_model_delegate)
 	return ret
 }
 
@@ -16631,7 +20409,13 @@ func AllocCMenuModelDelegateT() *CMenuModelDelegateT {
 		delete(menu_model_delegate_handlers.format_label_handler, cgop)
 	}))
 
-	return newCMenuModelDelegateT(cefp, true)
+	BaseAddRef(cgop)
+	return newCMenuModelDelegateT(cefp, byApp, true)
+}
+
+// BindCMenuModelDelegateT allocates CMenuModelDelegateT, construct and bind it
+func BindCMenuModelDelegateT(a interface{}) *CMenuModelDelegateT {
+	return AllocCMenuModelDelegateT().Bind(a)
 }
 
 func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelDelegateT {
@@ -16641,7 +20425,7 @@ func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelD
 	cp := menu_model_delegate.pc_menu_model_delegate
 	if oldGoObj, ok := menu_model_delegate_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CMenuModelDelegateTAccessor); ok {
-			oldAcc.SetCMenuModelDelegateT(nil)
+			oldAcc.setCMenuModelDelegateT(nil)
 		}
 	}
 	menu_model_delegate_handlers.handler[cp] = a
@@ -16689,7 +20473,7 @@ func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelD
 	}
 
 	if accessor, ok := a.(CMenuModelDelegateTAccessor); ok {
-		accessor.SetCMenuModelDelegateT(menu_model_delegate)
+		accessor.setCMenuModelDelegateT(menu_model_delegate)
 		Logf("T167.5:")
 	}
 
@@ -16697,25 +20481,30 @@ func (menu_model_delegate *CMenuModelDelegateT) Bind(a interface{}) *CMenuModelD
 }
 
 func (menu_model_delegate *CMenuModelDelegateT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CMenuModelDelegateTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := menu_model_delegate.pc_menu_model_delegate
-	if goHandler, ok := menu_model_delegate_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CMenuModelDelegateTAccessor); ok1 {
-			accessor.SetCMenuModelDelegateT(nil)
+		cp := menu_model_delegate.pc_menu_model_delegate
+		if goHandler, ok := menu_model_delegate_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CMenuModelDelegateTAccessor)
 		}
+		delete(menu_model_delegate_handlers.handler, cp)
+
+		delete(menu_model_delegate_handlers.execute_command_handler, cp)
+		delete(menu_model_delegate_handlers.mouse_outside_menu_handler, cp)
+		delete(menu_model_delegate_handlers.unhandled_open_submenu_handler, cp)
+		delete(menu_model_delegate_handlers.unhandled_close_submenu_handler, cp)
+		delete(menu_model_delegate_handlers.menu_will_show_handler, cp)
+		delete(menu_model_delegate_handlers.menu_closed_handler, cp)
+		delete(menu_model_delegate_handlers.format_label_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCMenuModelDelegateT(nil)
 	}
-	delete(menu_model_delegate_handlers.handler, cp)
-
-	delete(menu_model_delegate_handlers.execute_command_handler, cp)
-	delete(menu_model_delegate_handlers.mouse_outside_menu_handler, cp)
-	delete(menu_model_delegate_handlers.unhandled_open_submenu_handler, cp)
-	delete(menu_model_delegate_handlers.unhandled_close_submenu_handler, cp)
-	delete(menu_model_delegate_handlers.menu_will_show_handler, cp)
-	delete(menu_model_delegate_handlers.menu_closed_handler, cp)
-	delete(menu_model_delegate_handlers.format_label_handler, cp)
-
 }
 
 func (menu_model_delegate *CMenuModelDelegateT) Handler() interface{} {
@@ -16738,6 +20527,8 @@ type cCNavigationEntryT C.cef_navigation_entry_t
 type CNavigationEntryT struct {
 	noCopy              noCopy
 	pc_navigation_entry *cCNavigationEntryT
+	needsUnref          bool
+	beUnrefed           unrefedBy
 }
 
 type RefToCNavigationEntryT struct {
@@ -16746,36 +20537,82 @@ type RefToCNavigationEntryT struct {
 
 type CNavigationEntryTAccessor interface {
 	GetCNavigationEntryT() *CNavigationEntryT
-	SetCNavigationEntryT(*CNavigationEntryT) (oldValue *CNavigationEntryT)
+	setCNavigationEntryT(*CNavigationEntryT)
+	// TakeOverCNavigationEntryT(*CNavigationEntryT)
+	// NewRefCNavigationEntryT(*CNavigationEntryT)
 }
 
 func (r RefToCNavigationEntryT) GetCNavigationEntryT() *CNavigationEntryT {
 	return r.p_navigation_entry
 }
 
-func (r *RefToCNavigationEntryT) SetCNavigationEntryT(p *CNavigationEntryT) (prevValue *CNavigationEntryT) {
-	prevValue = r.p_navigation_entry
+func (r *RefToCNavigationEntryT) setCNavigationEntryT(p *CNavigationEntryT) {
+	// prevValue = r.p_navigation_entry
+	r.p_navigation_entry.ForceUnref()
 	r.p_navigation_entry = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCNavigationEntryT) TakeOverCNavigationEntryT(src *CNavigationEntryT) {
+	if r == nil {
+		return
+	}
+	r.p_navigation_entry.ForceUnref()
+	gop := src.pc_navigation_entry
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_navigation_entry = newCNavigationEntryT((*C.cef_navigation_entry_t)(gop), byApp, true)
+}
+
+func PassCNavigationEntryT(p *CNavigationEntryT) (ret *CNavigationEntryT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_navigation_entry)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCNavigationEntryT((*C.cef_navigation_entry_t)(p.pc_navigation_entry), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCNavigationEntryT) NewRefCNavigationEntryT(p *CNavigationEntryT) {
+	if r == nil {
+		return
+	}
+	r.p_navigation_entry.ForceUnref()
+	gop := p.pc_navigation_entry
+	BaseAddRef(gop)
+	r.p_navigation_entry = newCNavigationEntryT((*C.cef_navigation_entry_t)(gop), byApp, true)
 }
 
 // Go type CNavigationEntryT wraps cef type *C.cef_navigation_entry_t
-func newCNavigationEntryT(p *C.cef_navigation_entry_t, countUp bool) *CNavigationEntryT {
+func newCNavigationEntryT(p *C.cef_navigation_entry_t, unrefedBy unrefedBy, needsUnref bool) *CNavigationEntryT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T168.1:")
 	pc := (*cCNavigationEntryT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_navigation_entry := &CNavigationEntryT{noCopy{}, pc}
+	go_navigation_entry := &CNavigationEntryT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_navigation_entry, func(g *CNavigationEntryT) {
-		if g.pc_navigation_entry != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_navigation_entry != nil {
 			Tracef(unsafe.Pointer(g.pc_navigation_entry), "T168.2:")
 			BaseRelease(g.pc_navigation_entry)
 		}
 	})
+
 	return go_navigation_entry
 }
 
@@ -16789,13 +20626,15 @@ func (p *cCNavigationEntryT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (navigation_entry *CNavigationEntryT) ForceUnref() (ret bool) {
-	ret = BaseRelease(navigation_entry.pc_navigation_entry)
+	if navigation_entry == nil {
+		return
+	}
+	if navigation_entry.needsUnref && navigation_entry.beUnrefed == byApp {
+		ret = BaseRelease(navigation_entry.pc_navigation_entry)
+		navigation_entry.beUnrefed = unrefed
+		navigation_entry.needsUnref = false
+	}
 	navigation_entry.pc_navigation_entry = nil
-	return ret
-}
-
-func (navigation_entry *CNavigationEntryT) release() (ret bool) {
-	ret = BaseRelease(navigation_entry.pc_navigation_entry)
 	return ret
 }
 
@@ -16884,7 +20723,7 @@ func (self *CNavigationEntryT) GetTransitionType() (ret CTransitionTypeT) {
 
 	cRet := C.cefingo_navigation_entry_get_transition_type((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
-	ret = CTransitionTypeT(cRet)
+	ret = CTransitionTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -16908,7 +20747,7 @@ func (self *CNavigationEntryT) GetCompletionTime() (ret CTimeT) {
 
 	cRet := C.cefingo_navigation_entry_get_completion_time((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
-	ret = (CTimeT)(cRet)
+	ret = (CTimeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -16932,7 +20771,7 @@ func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 
 	cRet := C.cefingo_navigation_entry_get_sslstatus((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
-	ret = newCSslstatusT(cRet, false)
+	ret = newCSslstatusT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -17034,8 +20873,10 @@ type cCPanelT C.cef_panel_t
 
 // Go type for cef_panel_t
 type CPanelT struct {
-	noCopy   noCopy
-	pc_panel *cCPanelT
+	noCopy     noCopy
+	pc_panel   *cCPanelT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCPanelT struct {
@@ -17044,36 +20885,82 @@ type RefToCPanelT struct {
 
 type CPanelTAccessor interface {
 	GetCPanelT() *CPanelT
-	SetCPanelT(*CPanelT) (oldValue *CPanelT)
+	setCPanelT(*CPanelT)
+	// TakeOverCPanelT(*CPanelT)
+	// NewRefCPanelT(*CPanelT)
 }
 
 func (r RefToCPanelT) GetCPanelT() *CPanelT {
 	return r.p_panel
 }
 
-func (r *RefToCPanelT) SetCPanelT(p *CPanelT) (prevValue *CPanelT) {
-	prevValue = r.p_panel
+func (r *RefToCPanelT) setCPanelT(p *CPanelT) {
+	// prevValue = r.p_panel
+	r.p_panel.ForceUnref()
 	r.p_panel = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPanelT) TakeOverCPanelT(src *CPanelT) {
+	if r == nil {
+		return
+	}
+	r.p_panel.ForceUnref()
+	gop := src.pc_panel
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_panel = newCPanelT((*C.cef_panel_t)(gop), byApp, true)
+}
+
+func PassCPanelT(p *CPanelT) (ret *CPanelT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_panel)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPanelT((*C.cef_panel_t)(p.pc_panel), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPanelT) NewRefCPanelT(p *CPanelT) {
+	if r == nil {
+		return
+	}
+	r.p_panel.ForceUnref()
+	gop := p.pc_panel
+	BaseAddRef(gop)
+	r.p_panel = newCPanelT((*C.cef_panel_t)(gop), byApp, true)
 }
 
 // Go type CPanelT wraps cef type *C.cef_panel_t
-func newCPanelT(p *C.cef_panel_t, countUp bool) *CPanelT {
+func newCPanelT(p *C.cef_panel_t, unrefedBy unrefedBy, needsUnref bool) *CPanelT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T169.1:")
 	pc := (*cCPanelT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_panel := &CPanelT{noCopy{}, pc}
+	go_panel := &CPanelT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_panel, func(g *CPanelT) {
-		if g.pc_panel != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_panel != nil {
 			Tracef(unsafe.Pointer(g.pc_panel), "T169.2:")
 			BaseRelease(g.pc_panel)
 		}
 	})
+
 	return go_panel
 }
 
@@ -17087,20 +20974,23 @@ func (p *cCPanelT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (panel *CPanelT) ForceUnref() (ret bool) {
-	ret = BaseRelease(panel.pc_panel)
+	if panel == nil {
+		return
+	}
+	if panel.needsUnref && panel.beUnrefed == byApp {
+		ret = BaseRelease(panel.pc_panel)
+		panel.beUnrefed = unrefed
+		panel.needsUnref = false
+	}
 	panel.pc_panel = nil
-	return ret
-}
-
-func (panel *CPanelT) release() (ret bool) {
-	ret = BaseRelease(panel.pc_panel)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewT
 func (panel *CPanelT) ToCViewT() *CViewT {
 	p := (*C.cef_view_t)(unsafe.Pointer(panel.pc_panel))
-	return newCViewT(p, true)
+	BaseAddRef(panel.pc_panel)
+	return newCViewT(p, byApp, true)
 }
 
 ///
@@ -17110,7 +21000,7 @@ func (self *CPanelT) AsWindow() (ret *CWindowT) {
 
 	cRet := C.cefingo_panel_as_window((*C.cef_panel_t)(self.pc_panel))
 
-	ret = newCWindowT(cRet, false)
+	ret = newCWindowT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -17121,7 +21011,7 @@ func (self *CPanelT) SetToFillLayout() (ret *CFillLayoutT) {
 
 	cRet := C.cefingo_panel_set_to_fill_layout((*C.cef_panel_t)(self.pc_panel))
 
-	ret = newCFillLayoutT(cRet, false)
+	ret = newCFillLayoutT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -17134,7 +21024,7 @@ func (self *CPanelT) SetToBoxLayout(
 
 	cRet := C.cefingo_panel_set_to_box_layout((*C.cef_panel_t)(self.pc_panel), (*C.cef_box_layout_settings_t)(settings))
 
-	ret = newCBoxLayoutT(cRet, false)
+	ret = newCBoxLayoutT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -17145,7 +21035,7 @@ func (self *CPanelT) GetLayout() (ret *CLayoutT) {
 
 	cRet := C.cefingo_panel_get_layout((*C.cef_panel_t)(self.pc_panel))
 
-	ret = newCLayoutT(cRet, false)
+	ret = newCLayoutT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -17244,7 +21134,7 @@ func (self *CPanelT) GetChildViewCount() (ret int64) {
 
 	cRet := C.cefingo_panel_get_child_view_count((*C.cef_panel_t)(self.pc_panel))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -17257,7 +21147,7 @@ func (self *CPanelT) GetChildViewAt(
 
 	cRet := C.cefingo_panel_get_child_view_at((*C.cef_panel_t)(self.pc_panel), (C.int)(index))
 
-	ret = newCViewT(cRet, false)
+	ret = newCViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -17275,7 +21165,7 @@ func PanelCreate(
 
 	cRet := C.cef_panel_create(goTmpdelegate)
 
-	ret = newCPanelT(cRet, false)
+	ret = newCPanelT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -17293,6 +21183,8 @@ type cCPanelDelegateT C.cef_panel_delegate_t
 type CPanelDelegateT struct {
 	noCopy            noCopy
 	pc_panel_delegate *cCPanelDelegateT
+	needsUnref        bool
+	beUnrefed         unrefedBy
 }
 
 type RefToCPanelDelegateT struct {
@@ -17301,36 +21193,82 @@ type RefToCPanelDelegateT struct {
 
 type CPanelDelegateTAccessor interface {
 	GetCPanelDelegateT() *CPanelDelegateT
-	SetCPanelDelegateT(*CPanelDelegateT) (oldValue *CPanelDelegateT)
+	setCPanelDelegateT(*CPanelDelegateT)
+	// TakeOverCPanelDelegateT(*CPanelDelegateT)
+	// NewRefCPanelDelegateT(*CPanelDelegateT)
 }
 
 func (r RefToCPanelDelegateT) GetCPanelDelegateT() *CPanelDelegateT {
 	return r.p_panel_delegate
 }
 
-func (r *RefToCPanelDelegateT) SetCPanelDelegateT(p *CPanelDelegateT) (prevValue *CPanelDelegateT) {
-	prevValue = r.p_panel_delegate
+func (r *RefToCPanelDelegateT) setCPanelDelegateT(p *CPanelDelegateT) {
+	// prevValue = r.p_panel_delegate
+	r.p_panel_delegate.ForceUnref()
 	r.p_panel_delegate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPanelDelegateT) TakeOverCPanelDelegateT(src *CPanelDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_panel_delegate.ForceUnref()
+	gop := src.pc_panel_delegate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_panel_delegate = newCPanelDelegateT((*C.cef_panel_delegate_t)(gop), byApp, true)
+}
+
+func PassCPanelDelegateT(p *CPanelDelegateT) (ret *CPanelDelegateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_panel_delegate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPanelDelegateT((*C.cef_panel_delegate_t)(p.pc_panel_delegate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPanelDelegateT) NewRefCPanelDelegateT(p *CPanelDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_panel_delegate.ForceUnref()
+	gop := p.pc_panel_delegate
+	BaseAddRef(gop)
+	r.p_panel_delegate = newCPanelDelegateT((*C.cef_panel_delegate_t)(gop), byApp, true)
 }
 
 // Go type CPanelDelegateT wraps cef type *C.cef_panel_delegate_t
-func newCPanelDelegateT(p *C.cef_panel_delegate_t, countUp bool) *CPanelDelegateT {
+func newCPanelDelegateT(p *C.cef_panel_delegate_t, unrefedBy unrefedBy, needsUnref bool) *CPanelDelegateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T170.1:")
 	pc := (*cCPanelDelegateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_panel_delegate := &CPanelDelegateT{noCopy{}, pc}
+	go_panel_delegate := &CPanelDelegateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_panel_delegate, func(g *CPanelDelegateT) {
-		if g.pc_panel_delegate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_panel_delegate != nil {
 			Tracef(unsafe.Pointer(g.pc_panel_delegate), "T170.2:")
 			BaseRelease(g.pc_panel_delegate)
 		}
 	})
+
 	return go_panel_delegate
 }
 
@@ -17344,20 +21282,23 @@ func (p *cCPanelDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (panel_delegate *CPanelDelegateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(panel_delegate.pc_panel_delegate)
+	if panel_delegate == nil {
+		return
+	}
+	if panel_delegate.needsUnref && panel_delegate.beUnrefed == byApp {
+		ret = BaseRelease(panel_delegate.pc_panel_delegate)
+		panel_delegate.beUnrefed = unrefed
+		panel_delegate.needsUnref = false
+	}
 	panel_delegate.pc_panel_delegate = nil
-	return ret
-}
-
-func (panel_delegate *CPanelDelegateT) release() (ret bool) {
-	ret = BaseRelease(panel_delegate.pc_panel_delegate)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewDelegateT
 func (panel_delegate *CPanelDelegateT) ToCViewDelegateT() *CViewDelegateT {
 	p := (*C.cef_view_delegate_t)(unsafe.Pointer(panel_delegate.pc_panel_delegate))
-	return newCViewDelegateT(p, true)
+	BaseAddRef(panel_delegate.pc_panel_delegate)
+	return newCViewDelegateT(p, byApp, true)
 }
 
 var panel_delegate_handlers = struct {
@@ -17409,7 +21350,13 @@ func AllocCPanelDelegateT() *CPanelDelegateT {
 		delete(panel_delegate_handlers.on_blur_handler, cgop)
 	}))
 
-	return newCPanelDelegateT(cefp, true)
+	BaseAddRef(cgop)
+	return newCPanelDelegateT(cefp, byApp, true)
+}
+
+// BindCPanelDelegateT allocates CPanelDelegateT, construct and bind it
+func BindCPanelDelegateT(a interface{}) *CPanelDelegateT {
+	return AllocCPanelDelegateT().Bind(a)
 }
 
 func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
@@ -17419,7 +21366,7 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 	cp := panel_delegate.pc_panel_delegate
 	if oldGoObj, ok := panel_delegate_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CPanelDelegateTAccessor); ok {
-			oldAcc.SetCPanelDelegateT(nil)
+			oldAcc.setCPanelDelegateT(nil)
 		}
 	}
 	panel_delegate_handlers.handler[cp] = a
@@ -17479,7 +21426,7 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 	}
 
 	if accessor, ok := a.(CPanelDelegateTAccessor); ok {
-		accessor.SetCPanelDelegateT(panel_delegate)
+		accessor.setCPanelDelegateT(panel_delegate)
 		Logf("T170.5:")
 	}
 
@@ -17487,27 +21434,32 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 }
 
 func (panel_delegate *CPanelDelegateT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CPanelDelegateTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := panel_delegate.pc_panel_delegate
-	if goHandler, ok := panel_delegate_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CPanelDelegateTAccessor); ok1 {
-			accessor.SetCPanelDelegateT(nil)
+		cp := panel_delegate.pc_panel_delegate
+		if goHandler, ok := panel_delegate_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CPanelDelegateTAccessor)
 		}
+		delete(panel_delegate_handlers.handler, cp)
+
+		delete(panel_delegate_handlers.get_preferred_size_handler, cp)
+		delete(panel_delegate_handlers.get_minimum_size_handler, cp)
+		delete(panel_delegate_handlers.get_maximum_size_handler, cp)
+		delete(panel_delegate_handlers.get_height_for_width_handler, cp)
+		delete(panel_delegate_handlers.on_parent_view_changed_handler, cp)
+		delete(panel_delegate_handlers.on_child_view_changed_handler, cp)
+		delete(panel_delegate_handlers.on_window_changed_handler, cp)
+		delete(panel_delegate_handlers.on_focus_handler, cp)
+		delete(panel_delegate_handlers.on_blur_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCPanelDelegateT(nil)
 	}
-	delete(panel_delegate_handlers.handler, cp)
-
-	delete(panel_delegate_handlers.get_preferred_size_handler, cp)
-	delete(panel_delegate_handlers.get_minimum_size_handler, cp)
-	delete(panel_delegate_handlers.get_maximum_size_handler, cp)
-	delete(panel_delegate_handlers.get_height_for_width_handler, cp)
-	delete(panel_delegate_handlers.on_parent_view_changed_handler, cp)
-	delete(panel_delegate_handlers.on_child_view_changed_handler, cp)
-	delete(panel_delegate_handlers.on_window_changed_handler, cp)
-	delete(panel_delegate_handlers.on_focus_handler, cp)
-	delete(panel_delegate_handlers.on_blur_handler, cp)
-
 }
 
 func (panel_delegate *CPanelDelegateT) Handler() interface{} {
@@ -17530,6 +21482,8 @@ type cCPrintDialogCallbackT C.cef_print_dialog_callback_t
 type CPrintDialogCallbackT struct {
 	noCopy                   noCopy
 	pc_print_dialog_callback *cCPrintDialogCallbackT
+	needsUnref               bool
+	beUnrefed                unrefedBy
 }
 
 type RefToCPrintDialogCallbackT struct {
@@ -17538,36 +21492,82 @@ type RefToCPrintDialogCallbackT struct {
 
 type CPrintDialogCallbackTAccessor interface {
 	GetCPrintDialogCallbackT() *CPrintDialogCallbackT
-	SetCPrintDialogCallbackT(*CPrintDialogCallbackT) (oldValue *CPrintDialogCallbackT)
+	setCPrintDialogCallbackT(*CPrintDialogCallbackT)
+	// TakeOverCPrintDialogCallbackT(*CPrintDialogCallbackT)
+	// NewRefCPrintDialogCallbackT(*CPrintDialogCallbackT)
 }
 
 func (r RefToCPrintDialogCallbackT) GetCPrintDialogCallbackT() *CPrintDialogCallbackT {
 	return r.p_print_dialog_callback
 }
 
-func (r *RefToCPrintDialogCallbackT) SetCPrintDialogCallbackT(p *CPrintDialogCallbackT) (prevValue *CPrintDialogCallbackT) {
-	prevValue = r.p_print_dialog_callback
+func (r *RefToCPrintDialogCallbackT) setCPrintDialogCallbackT(p *CPrintDialogCallbackT) {
+	// prevValue = r.p_print_dialog_callback
+	r.p_print_dialog_callback.ForceUnref()
 	r.p_print_dialog_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPrintDialogCallbackT) TakeOverCPrintDialogCallbackT(src *CPrintDialogCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_print_dialog_callback.ForceUnref()
+	gop := src.pc_print_dialog_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_print_dialog_callback = newCPrintDialogCallbackT((*C.cef_print_dialog_callback_t)(gop), byApp, true)
+}
+
+func PassCPrintDialogCallbackT(p *CPrintDialogCallbackT) (ret *CPrintDialogCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_print_dialog_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPrintDialogCallbackT((*C.cef_print_dialog_callback_t)(p.pc_print_dialog_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPrintDialogCallbackT) NewRefCPrintDialogCallbackT(p *CPrintDialogCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_print_dialog_callback.ForceUnref()
+	gop := p.pc_print_dialog_callback
+	BaseAddRef(gop)
+	r.p_print_dialog_callback = newCPrintDialogCallbackT((*C.cef_print_dialog_callback_t)(gop), byApp, true)
 }
 
 // Go type CPrintDialogCallbackT wraps cef type *C.cef_print_dialog_callback_t
-func newCPrintDialogCallbackT(p *C.cef_print_dialog_callback_t, countUp bool) *CPrintDialogCallbackT {
+func newCPrintDialogCallbackT(p *C.cef_print_dialog_callback_t, unrefedBy unrefedBy, needsUnref bool) *CPrintDialogCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T171.1:")
 	pc := (*cCPrintDialogCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_print_dialog_callback := &CPrintDialogCallbackT{noCopy{}, pc}
+	go_print_dialog_callback := &CPrintDialogCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_print_dialog_callback, func(g *CPrintDialogCallbackT) {
-		if g.pc_print_dialog_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_print_dialog_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_print_dialog_callback), "T171.2:")
 			BaseRelease(g.pc_print_dialog_callback)
 		}
 	})
+
 	return go_print_dialog_callback
 }
 
@@ -17581,13 +21581,15 @@ func (p *cCPrintDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_
 }
 
 func (print_dialog_callback *CPrintDialogCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(print_dialog_callback.pc_print_dialog_callback)
+	if print_dialog_callback == nil {
+		return
+	}
+	if print_dialog_callback.needsUnref && print_dialog_callback.beUnrefed == byApp {
+		ret = BaseRelease(print_dialog_callback.pc_print_dialog_callback)
+		print_dialog_callback.beUnrefed = unrefed
+		print_dialog_callback.needsUnref = false
+	}
 	print_dialog_callback.pc_print_dialog_callback = nil
-	return ret
-}
-
-func (print_dialog_callback *CPrintDialogCallbackT) release() (ret bool) {
-	ret = BaseRelease(print_dialog_callback.pc_print_dialog_callback)
 	return ret
 }
 
@@ -17626,6 +21628,8 @@ type cCPrintJobCallbackT C.cef_print_job_callback_t
 type CPrintJobCallbackT struct {
 	noCopy                noCopy
 	pc_print_job_callback *cCPrintJobCallbackT
+	needsUnref            bool
+	beUnrefed             unrefedBy
 }
 
 type RefToCPrintJobCallbackT struct {
@@ -17634,36 +21638,82 @@ type RefToCPrintJobCallbackT struct {
 
 type CPrintJobCallbackTAccessor interface {
 	GetCPrintJobCallbackT() *CPrintJobCallbackT
-	SetCPrintJobCallbackT(*CPrintJobCallbackT) (oldValue *CPrintJobCallbackT)
+	setCPrintJobCallbackT(*CPrintJobCallbackT)
+	// TakeOverCPrintJobCallbackT(*CPrintJobCallbackT)
+	// NewRefCPrintJobCallbackT(*CPrintJobCallbackT)
 }
 
 func (r RefToCPrintJobCallbackT) GetCPrintJobCallbackT() *CPrintJobCallbackT {
 	return r.p_print_job_callback
 }
 
-func (r *RefToCPrintJobCallbackT) SetCPrintJobCallbackT(p *CPrintJobCallbackT) (prevValue *CPrintJobCallbackT) {
-	prevValue = r.p_print_job_callback
+func (r *RefToCPrintJobCallbackT) setCPrintJobCallbackT(p *CPrintJobCallbackT) {
+	// prevValue = r.p_print_job_callback
+	r.p_print_job_callback.ForceUnref()
 	r.p_print_job_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPrintJobCallbackT) TakeOverCPrintJobCallbackT(src *CPrintJobCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_print_job_callback.ForceUnref()
+	gop := src.pc_print_job_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_print_job_callback = newCPrintJobCallbackT((*C.cef_print_job_callback_t)(gop), byApp, true)
+}
+
+func PassCPrintJobCallbackT(p *CPrintJobCallbackT) (ret *CPrintJobCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_print_job_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPrintJobCallbackT((*C.cef_print_job_callback_t)(p.pc_print_job_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPrintJobCallbackT) NewRefCPrintJobCallbackT(p *CPrintJobCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_print_job_callback.ForceUnref()
+	gop := p.pc_print_job_callback
+	BaseAddRef(gop)
+	r.p_print_job_callback = newCPrintJobCallbackT((*C.cef_print_job_callback_t)(gop), byApp, true)
 }
 
 // Go type CPrintJobCallbackT wraps cef type *C.cef_print_job_callback_t
-func newCPrintJobCallbackT(p *C.cef_print_job_callback_t, countUp bool) *CPrintJobCallbackT {
+func newCPrintJobCallbackT(p *C.cef_print_job_callback_t, unrefedBy unrefedBy, needsUnref bool) *CPrintJobCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T172.1:")
 	pc := (*cCPrintJobCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_print_job_callback := &CPrintJobCallbackT{noCopy{}, pc}
+	go_print_job_callback := &CPrintJobCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_print_job_callback, func(g *CPrintJobCallbackT) {
-		if g.pc_print_job_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_print_job_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_print_job_callback), "T172.2:")
 			BaseRelease(g.pc_print_job_callback)
 		}
 	})
+
 	return go_print_job_callback
 }
 
@@ -17677,13 +21727,15 @@ func (p *cCPrintJobCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 }
 
 func (print_job_callback *CPrintJobCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(print_job_callback.pc_print_job_callback)
+	if print_job_callback == nil {
+		return
+	}
+	if print_job_callback.needsUnref && print_job_callback.beUnrefed == byApp {
+		ret = BaseRelease(print_job_callback.pc_print_job_callback)
+		print_job_callback.beUnrefed = unrefed
+		print_job_callback.needsUnref = false
+	}
 	print_job_callback.pc_print_job_callback = nil
-	return ret
-}
-
-func (print_job_callback *CPrintJobCallbackT) release() (ret bool) {
-	ret = BaseRelease(print_job_callback.pc_print_job_callback)
 	return ret
 }
 
@@ -17708,6 +21760,8 @@ type cCPrintHandlerT C.cef_print_handler_t
 type CPrintHandlerT struct {
 	noCopy           noCopy
 	pc_print_handler *cCPrintHandlerT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCPrintHandlerT struct {
@@ -17716,36 +21770,82 @@ type RefToCPrintHandlerT struct {
 
 type CPrintHandlerTAccessor interface {
 	GetCPrintHandlerT() *CPrintHandlerT
-	SetCPrintHandlerT(*CPrintHandlerT) (oldValue *CPrintHandlerT)
+	setCPrintHandlerT(*CPrintHandlerT)
+	// TakeOverCPrintHandlerT(*CPrintHandlerT)
+	// NewRefCPrintHandlerT(*CPrintHandlerT)
 }
 
 func (r RefToCPrintHandlerT) GetCPrintHandlerT() *CPrintHandlerT {
 	return r.p_print_handler
 }
 
-func (r *RefToCPrintHandlerT) SetCPrintHandlerT(p *CPrintHandlerT) (prevValue *CPrintHandlerT) {
-	prevValue = r.p_print_handler
+func (r *RefToCPrintHandlerT) setCPrintHandlerT(p *CPrintHandlerT) {
+	// prevValue = r.p_print_handler
+	r.p_print_handler.ForceUnref()
 	r.p_print_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPrintHandlerT) TakeOverCPrintHandlerT(src *CPrintHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_print_handler.ForceUnref()
+	gop := src.pc_print_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_print_handler = newCPrintHandlerT((*C.cef_print_handler_t)(gop), byApp, true)
+}
+
+func PassCPrintHandlerT(p *CPrintHandlerT) (ret *CPrintHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_print_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPrintHandlerT((*C.cef_print_handler_t)(p.pc_print_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPrintHandlerT) NewRefCPrintHandlerT(p *CPrintHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_print_handler.ForceUnref()
+	gop := p.pc_print_handler
+	BaseAddRef(gop)
+	r.p_print_handler = newCPrintHandlerT((*C.cef_print_handler_t)(gop), byApp, true)
 }
 
 // Go type CPrintHandlerT wraps cef type *C.cef_print_handler_t
-func newCPrintHandlerT(p *C.cef_print_handler_t, countUp bool) *CPrintHandlerT {
+func newCPrintHandlerT(p *C.cef_print_handler_t, unrefedBy unrefedBy, needsUnref bool) *CPrintHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T173.1:")
 	pc := (*cCPrintHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_print_handler := &CPrintHandlerT{noCopy{}, pc}
+	go_print_handler := &CPrintHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_print_handler, func(g *CPrintHandlerT) {
-		if g.pc_print_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_print_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_print_handler), "T173.2:")
 			BaseRelease(g.pc_print_handler)
 		}
 	})
+
 	return go_print_handler
 }
 
@@ -17759,13 +21859,15 @@ func (p *cCPrintHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (print_handler *CPrintHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(print_handler.pc_print_handler)
+	if print_handler == nil {
+		return
+	}
+	if print_handler.needsUnref && print_handler.beUnrefed == byApp {
+		ret = BaseRelease(print_handler.pc_print_handler)
+		print_handler.beUnrefed = unrefed
+		print_handler.needsUnref = false
+	}
 	print_handler.pc_print_handler = nil
-	return ret
-}
-
-func (print_handler *CPrintHandlerT) release() (ret bool) {
-	ret = BaseRelease(print_handler.pc_print_handler)
 	return ret
 }
 
@@ -17887,7 +21989,13 @@ func AllocCPrintHandlerT() *CPrintHandlerT {
 		delete(print_handler_handlers.get_pdf_paper_size_handler, cgop)
 	}))
 
-	return newCPrintHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCPrintHandlerT(cefp, byApp, true)
+}
+
+// BindCPrintHandlerT allocates CPrintHandlerT, construct and bind it
+func BindCPrintHandlerT(a interface{}) *CPrintHandlerT {
+	return AllocCPrintHandlerT().Bind(a)
 }
 
 func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
@@ -17897,7 +22005,7 @@ func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
 	cp := print_handler.pc_print_handler
 	if oldGoObj, ok := print_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CPrintHandlerTAccessor); ok {
-			oldAcc.SetCPrintHandlerT(nil)
+			oldAcc.setCPrintHandlerT(nil)
 		}
 	}
 	print_handler_handlers.handler[cp] = a
@@ -17939,7 +22047,7 @@ func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
 	}
 
 	if accessor, ok := a.(CPrintHandlerTAccessor); ok {
-		accessor.SetCPrintHandlerT(print_handler)
+		accessor.setCPrintHandlerT(print_handler)
 		Logf("T173.5:")
 	}
 
@@ -17947,24 +22055,29 @@ func (print_handler *CPrintHandlerT) Bind(a interface{}) *CPrintHandlerT {
 }
 
 func (print_handler *CPrintHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CPrintHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := print_handler.pc_print_handler
-	if goHandler, ok := print_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CPrintHandlerTAccessor); ok1 {
-			accessor.SetCPrintHandlerT(nil)
+		cp := print_handler.pc_print_handler
+		if goHandler, ok := print_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CPrintHandlerTAccessor)
 		}
+		delete(print_handler_handlers.handler, cp)
+
+		delete(print_handler_handlers.on_print_start_handler, cp)
+		delete(print_handler_handlers.on_print_settings_handler, cp)
+		delete(print_handler_handlers.on_print_dialog_handler, cp)
+		delete(print_handler_handlers.on_print_job_handler, cp)
+		delete(print_handler_handlers.on_print_reset_handler, cp)
+		delete(print_handler_handlers.get_pdf_paper_size_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCPrintHandlerT(nil)
 	}
-	delete(print_handler_handlers.handler, cp)
-
-	delete(print_handler_handlers.on_print_start_handler, cp)
-	delete(print_handler_handlers.on_print_settings_handler, cp)
-	delete(print_handler_handlers.on_print_dialog_handler, cp)
-	delete(print_handler_handlers.on_print_job_handler, cp)
-	delete(print_handler_handlers.on_print_reset_handler, cp)
-	delete(print_handler_handlers.get_pdf_paper_size_handler, cp)
-
 }
 
 func (print_handler *CPrintHandlerT) Handler() interface{} {
@@ -17987,6 +22100,8 @@ type cCPrintSettingsT C.cef_print_settings_t
 type CPrintSettingsT struct {
 	noCopy            noCopy
 	pc_print_settings *cCPrintSettingsT
+	needsUnref        bool
+	beUnrefed         unrefedBy
 }
 
 type RefToCPrintSettingsT struct {
@@ -17995,36 +22110,82 @@ type RefToCPrintSettingsT struct {
 
 type CPrintSettingsTAccessor interface {
 	GetCPrintSettingsT() *CPrintSettingsT
-	SetCPrintSettingsT(*CPrintSettingsT) (oldValue *CPrintSettingsT)
+	setCPrintSettingsT(*CPrintSettingsT)
+	// TakeOverCPrintSettingsT(*CPrintSettingsT)
+	// NewRefCPrintSettingsT(*CPrintSettingsT)
 }
 
 func (r RefToCPrintSettingsT) GetCPrintSettingsT() *CPrintSettingsT {
 	return r.p_print_settings
 }
 
-func (r *RefToCPrintSettingsT) SetCPrintSettingsT(p *CPrintSettingsT) (prevValue *CPrintSettingsT) {
-	prevValue = r.p_print_settings
+func (r *RefToCPrintSettingsT) setCPrintSettingsT(p *CPrintSettingsT) {
+	// prevValue = r.p_print_settings
+	r.p_print_settings.ForceUnref()
 	r.p_print_settings = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPrintSettingsT) TakeOverCPrintSettingsT(src *CPrintSettingsT) {
+	if r == nil {
+		return
+	}
+	r.p_print_settings.ForceUnref()
+	gop := src.pc_print_settings
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_print_settings = newCPrintSettingsT((*C.cef_print_settings_t)(gop), byApp, true)
+}
+
+func PassCPrintSettingsT(p *CPrintSettingsT) (ret *CPrintSettingsT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_print_settings)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPrintSettingsT((*C.cef_print_settings_t)(p.pc_print_settings), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPrintSettingsT) NewRefCPrintSettingsT(p *CPrintSettingsT) {
+	if r == nil {
+		return
+	}
+	r.p_print_settings.ForceUnref()
+	gop := p.pc_print_settings
+	BaseAddRef(gop)
+	r.p_print_settings = newCPrintSettingsT((*C.cef_print_settings_t)(gop), byApp, true)
 }
 
 // Go type CPrintSettingsT wraps cef type *C.cef_print_settings_t
-func newCPrintSettingsT(p *C.cef_print_settings_t, countUp bool) *CPrintSettingsT {
+func newCPrintSettingsT(p *C.cef_print_settings_t, unrefedBy unrefedBy, needsUnref bool) *CPrintSettingsT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T174.1:")
 	pc := (*cCPrintSettingsT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_print_settings := &CPrintSettingsT{noCopy{}, pc}
+	go_print_settings := &CPrintSettingsT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_print_settings, func(g *CPrintSettingsT) {
-		if g.pc_print_settings != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_print_settings != nil {
 			Tracef(unsafe.Pointer(g.pc_print_settings), "T174.2:")
 			BaseRelease(g.pc_print_settings)
 		}
 	})
+
 	return go_print_settings
 }
 
@@ -18038,13 +22199,15 @@ func (p *cCPrintSettingsT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (print_settings *CPrintSettingsT) ForceUnref() (ret bool) {
-	ret = BaseRelease(print_settings.pc_print_settings)
+	if print_settings == nil {
+		return
+	}
+	if print_settings.needsUnref && print_settings.beUnrefed == byApp {
+		ret = BaseRelease(print_settings.pc_print_settings)
+		print_settings.beUnrefed = unrefed
+		print_settings.needsUnref = false
+	}
 	print_settings.pc_print_settings = nil
-	return ret
-}
-
-func (print_settings *CPrintSettingsT) release() (ret bool) {
-	ret = BaseRelease(print_settings.pc_print_settings)
 	return ret
 }
 
@@ -18178,7 +22341,7 @@ func (self *CPrintSettingsT) GetPageRangesCount() (ret int64) {
 
 	cRet := C.cefingo_print_settings_get_page_ranges_count((*C.cef_print_settings_t)(self.pc_print_settings))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -18244,7 +22407,7 @@ func (self *CPrintSettingsT) GetColorModel() (ret CColorModelT) {
 
 	cRet := C.cefingo_print_settings_get_color_model((*C.cef_print_settings_t)(self.pc_print_settings))
 
-	ret = CColorModelT(cRet)
+	ret = CColorModelT(cRet) // return GoObj
 	return ret
 }
 
@@ -18288,7 +22451,7 @@ func (self *CPrintSettingsT) GetDuplexMode() (ret CDuplexModeT) {
 
 	cRet := C.cefingo_print_settings_get_duplex_mode((*C.cef_print_settings_t)(self.pc_print_settings))
 
-	ret = CDuplexModeT(cRet)
+	ret = CDuplexModeT(cRet) // return GoObj
 	return ret
 }
 
@@ -18299,7 +22462,7 @@ func PrintSettingsCreate() (ret *CPrintSettingsT) {
 
 	cRet := C.cef_print_settings_create()
 
-	ret = newCPrintSettingsT(cRet, false)
+	ret = newCPrintSettingsT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -18315,6 +22478,8 @@ type cCProcessMessageT C.cef_process_message_t
 type CProcessMessageT struct {
 	noCopy             noCopy
 	pc_process_message *cCProcessMessageT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCProcessMessageT struct {
@@ -18323,36 +22488,82 @@ type RefToCProcessMessageT struct {
 
 type CProcessMessageTAccessor interface {
 	GetCProcessMessageT() *CProcessMessageT
-	SetCProcessMessageT(*CProcessMessageT) (oldValue *CProcessMessageT)
+	setCProcessMessageT(*CProcessMessageT)
+	// TakeOverCProcessMessageT(*CProcessMessageT)
+	// NewRefCProcessMessageT(*CProcessMessageT)
 }
 
 func (r RefToCProcessMessageT) GetCProcessMessageT() *CProcessMessageT {
 	return r.p_process_message
 }
 
-func (r *RefToCProcessMessageT) SetCProcessMessageT(p *CProcessMessageT) (prevValue *CProcessMessageT) {
-	prevValue = r.p_process_message
+func (r *RefToCProcessMessageT) setCProcessMessageT(p *CProcessMessageT) {
+	// prevValue = r.p_process_message
+	r.p_process_message.ForceUnref()
 	r.p_process_message = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCProcessMessageT) TakeOverCProcessMessageT(src *CProcessMessageT) {
+	if r == nil {
+		return
+	}
+	r.p_process_message.ForceUnref()
+	gop := src.pc_process_message
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_process_message = newCProcessMessageT((*C.cef_process_message_t)(gop), byApp, true)
+}
+
+func PassCProcessMessageT(p *CProcessMessageT) (ret *CProcessMessageT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_process_message)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCProcessMessageT((*C.cef_process_message_t)(p.pc_process_message), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCProcessMessageT) NewRefCProcessMessageT(p *CProcessMessageT) {
+	if r == nil {
+		return
+	}
+	r.p_process_message.ForceUnref()
+	gop := p.pc_process_message
+	BaseAddRef(gop)
+	r.p_process_message = newCProcessMessageT((*C.cef_process_message_t)(gop), byApp, true)
 }
 
 // Go type CProcessMessageT wraps cef type *C.cef_process_message_t
-func newCProcessMessageT(p *C.cef_process_message_t, countUp bool) *CProcessMessageT {
+func newCProcessMessageT(p *C.cef_process_message_t, unrefedBy unrefedBy, needsUnref bool) *CProcessMessageT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T175.1:")
 	pc := (*cCProcessMessageT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_process_message := &CProcessMessageT{noCopy{}, pc}
+	go_process_message := &CProcessMessageT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_process_message, func(g *CProcessMessageT) {
-		if g.pc_process_message != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_process_message != nil {
 			Tracef(unsafe.Pointer(g.pc_process_message), "T175.2:")
 			BaseRelease(g.pc_process_message)
 		}
 	})
+
 	return go_process_message
 }
 
@@ -18366,13 +22577,15 @@ func (p *cCProcessMessageT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 }
 
 func (process_message *CProcessMessageT) ForceUnref() (ret bool) {
-	ret = BaseRelease(process_message.pc_process_message)
+	if process_message == nil {
+		return
+	}
+	if process_message.needsUnref && process_message.beUnrefed == byApp {
+		ret = BaseRelease(process_message.pc_process_message)
+		process_message.beUnrefed = unrefed
+		process_message.needsUnref = false
+	}
 	process_message.pc_process_message = nil
-	return ret
-}
-
-func (process_message *CProcessMessageT) release() (ret bool) {
-	ret = BaseRelease(process_message.pc_process_message)
 	return ret
 }
 
@@ -18407,7 +22620,7 @@ func (self *CProcessMessageT) Copy() (ret *CProcessMessageT) {
 
 	cRet := C.cefingo_process_message_copy((*C.cef_process_message_t)(self.pc_process_message))
 
-	ret = newCProcessMessageT(cRet, false)
+	ret = newCProcessMessageT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -18434,7 +22647,7 @@ func (self *CProcessMessageT) GetArgumentList() (ret *CListValueT) {
 
 	cRet := C.cefingo_process_message_get_argument_list((*C.cef_process_message_t)(self.pc_process_message))
 
-	ret = newCListValueT(cRet, false)
+	ret = newCListValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -18448,7 +22661,7 @@ func ProcessMessageCreate(
 
 	cRet := C.cef_process_message_create(c_name.p_cef_string_t)
 
-	ret = newCProcessMessageT(cRet, false)
+	ret = newCProcessMessageT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -18464,6 +22677,8 @@ type cCRegistrationT C.cef_registration_t
 type CRegistrationT struct {
 	noCopy          noCopy
 	pc_registration *cCRegistrationT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCRegistrationT struct {
@@ -18472,36 +22687,82 @@ type RefToCRegistrationT struct {
 
 type CRegistrationTAccessor interface {
 	GetCRegistrationT() *CRegistrationT
-	SetCRegistrationT(*CRegistrationT) (oldValue *CRegistrationT)
+	setCRegistrationT(*CRegistrationT)
+	// TakeOverCRegistrationT(*CRegistrationT)
+	// NewRefCRegistrationT(*CRegistrationT)
 }
 
 func (r RefToCRegistrationT) GetCRegistrationT() *CRegistrationT {
 	return r.p_registration
 }
 
-func (r *RefToCRegistrationT) SetCRegistrationT(p *CRegistrationT) (prevValue *CRegistrationT) {
-	prevValue = r.p_registration
+func (r *RefToCRegistrationT) setCRegistrationT(p *CRegistrationT) {
+	// prevValue = r.p_registration
+	r.p_registration.ForceUnref()
 	r.p_registration = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRegistrationT) TakeOverCRegistrationT(src *CRegistrationT) {
+	if r == nil {
+		return
+	}
+	r.p_registration.ForceUnref()
+	gop := src.pc_registration
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_registration = newCRegistrationT((*C.cef_registration_t)(gop), byApp, true)
+}
+
+func PassCRegistrationT(p *CRegistrationT) (ret *CRegistrationT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_registration)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRegistrationT((*C.cef_registration_t)(p.pc_registration), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRegistrationT) NewRefCRegistrationT(p *CRegistrationT) {
+	if r == nil {
+		return
+	}
+	r.p_registration.ForceUnref()
+	gop := p.pc_registration
+	BaseAddRef(gop)
+	r.p_registration = newCRegistrationT((*C.cef_registration_t)(gop), byApp, true)
 }
 
 // Go type CRegistrationT wraps cef type *C.cef_registration_t
-func newCRegistrationT(p *C.cef_registration_t, countUp bool) *CRegistrationT {
+func newCRegistrationT(p *C.cef_registration_t, unrefedBy unrefedBy, needsUnref bool) *CRegistrationT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T176.1:")
 	pc := (*cCRegistrationT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_registration := &CRegistrationT{noCopy{}, pc}
+	go_registration := &CRegistrationT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_registration, func(g *CRegistrationT) {
-		if g.pc_registration != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_registration != nil {
 			Tracef(unsafe.Pointer(g.pc_registration), "T176.2:")
 			BaseRelease(g.pc_registration)
 		}
 	})
+
 	return go_registration
 }
 
@@ -18515,13 +22776,15 @@ func (p *cCRegistrationT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (registration *CRegistrationT) ForceUnref() (ret bool) {
-	ret = BaseRelease(registration.pc_registration)
+	if registration == nil {
+		return
+	}
+	if registration.needsUnref && registration.beUnrefed == byApp {
+		ret = BaseRelease(registration.pc_registration)
+		registration.beUnrefed = unrefed
+		registration.needsUnref = false
+	}
 	registration.pc_registration = nil
-	return ret
-}
-
-func (registration *CRegistrationT) release() (ret bool) {
-	ret = BaseRelease(registration.pc_registration)
 	return ret
 }
 
@@ -18538,6 +22801,8 @@ type cCRenderHandlerT C.cef_render_handler_t
 type CRenderHandlerT struct {
 	noCopy            noCopy
 	pc_render_handler *cCRenderHandlerT
+	needsUnref        bool
+	beUnrefed         unrefedBy
 }
 
 type RefToCRenderHandlerT struct {
@@ -18546,36 +22811,82 @@ type RefToCRenderHandlerT struct {
 
 type CRenderHandlerTAccessor interface {
 	GetCRenderHandlerT() *CRenderHandlerT
-	SetCRenderHandlerT(*CRenderHandlerT) (oldValue *CRenderHandlerT)
+	setCRenderHandlerT(*CRenderHandlerT)
+	// TakeOverCRenderHandlerT(*CRenderHandlerT)
+	// NewRefCRenderHandlerT(*CRenderHandlerT)
 }
 
 func (r RefToCRenderHandlerT) GetCRenderHandlerT() *CRenderHandlerT {
 	return r.p_render_handler
 }
 
-func (r *RefToCRenderHandlerT) SetCRenderHandlerT(p *CRenderHandlerT) (prevValue *CRenderHandlerT) {
-	prevValue = r.p_render_handler
+func (r *RefToCRenderHandlerT) setCRenderHandlerT(p *CRenderHandlerT) {
+	// prevValue = r.p_render_handler
+	r.p_render_handler.ForceUnref()
 	r.p_render_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRenderHandlerT) TakeOverCRenderHandlerT(src *CRenderHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_render_handler.ForceUnref()
+	gop := src.pc_render_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_render_handler = newCRenderHandlerT((*C.cef_render_handler_t)(gop), byApp, true)
+}
+
+func PassCRenderHandlerT(p *CRenderHandlerT) (ret *CRenderHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_render_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRenderHandlerT((*C.cef_render_handler_t)(p.pc_render_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRenderHandlerT) NewRefCRenderHandlerT(p *CRenderHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_render_handler.ForceUnref()
+	gop := p.pc_render_handler
+	BaseAddRef(gop)
+	r.p_render_handler = newCRenderHandlerT((*C.cef_render_handler_t)(gop), byApp, true)
 }
 
 // Go type CRenderHandlerT wraps cef type *C.cef_render_handler_t
-func newCRenderHandlerT(p *C.cef_render_handler_t, countUp bool) *CRenderHandlerT {
+func newCRenderHandlerT(p *C.cef_render_handler_t, unrefedBy unrefedBy, needsUnref bool) *CRenderHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T177.1:")
 	pc := (*cCRenderHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_render_handler := &CRenderHandlerT{noCopy{}, pc}
+	go_render_handler := &CRenderHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_render_handler, func(g *CRenderHandlerT) {
-		if g.pc_render_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_render_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_render_handler), "T177.2:")
 			BaseRelease(g.pc_render_handler)
 		}
 	})
+
 	return go_render_handler
 }
 
@@ -18589,13 +22900,15 @@ func (p *cCRenderHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (render_handler *CRenderHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(render_handler.pc_render_handler)
+	if render_handler == nil {
+		return
+	}
+	if render_handler.needsUnref && render_handler.beUnrefed == byApp {
+		ret = BaseRelease(render_handler.pc_render_handler)
+		render_handler.beUnrefed = unrefed
+		render_handler.needsUnref = false
+	}
 	render_handler.pc_render_handler = nil
-	return ret
-}
-
-func (render_handler *CRenderHandlerT) release() (ret bool) {
-	ret = BaseRelease(render_handler.pc_render_handler)
 	return ret
 }
 
@@ -18889,7 +23202,13 @@ func AllocCRenderHandlerT() *CRenderHandlerT {
 		delete(render_handler_handlers.on_virtual_keyboard_requested_handler, cgop)
 	}))
 
-	return newCRenderHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCRenderHandlerT(cefp, byApp, true)
+}
+
+// BindCRenderHandlerT allocates CRenderHandlerT, construct and bind it
+func BindCRenderHandlerT(a interface{}) *CRenderHandlerT {
+	return AllocCRenderHandlerT().Bind(a)
 }
 
 func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
@@ -18899,7 +23218,7 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 	cp := render_handler.pc_render_handler
 	if oldGoObj, ok := render_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CRenderHandlerTAccessor); ok {
-			oldAcc.SetCRenderHandlerT(nil)
+			oldAcc.setCRenderHandlerT(nil)
 		}
 	}
 	render_handler_handlers.handler[cp] = a
@@ -18995,7 +23314,7 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 	}
 
 	if accessor, ok := a.(CRenderHandlerTAccessor); ok {
-		accessor.SetCRenderHandlerT(render_handler)
+		accessor.setCRenderHandlerT(render_handler)
 		Logf("T177.5:")
 	}
 
@@ -19003,33 +23322,38 @@ func (render_handler *CRenderHandlerT) Bind(a interface{}) *CRenderHandlerT {
 }
 
 func (render_handler *CRenderHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CRenderHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := render_handler.pc_render_handler
-	if goHandler, ok := render_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CRenderHandlerTAccessor); ok1 {
-			accessor.SetCRenderHandlerT(nil)
+		cp := render_handler.pc_render_handler
+		if goHandler, ok := render_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CRenderHandlerTAccessor)
 		}
+		delete(render_handler_handlers.handler, cp)
+
+		delete(render_handler_handlers.get_accessibility_handler_handler, cp)
+		delete(render_handler_handlers.get_root_screen_rect_handler, cp)
+		delete(render_handler_handlers.get_view_rect_handler, cp)
+		delete(render_handler_handlers.get_screen_point_handler, cp)
+		delete(render_handler_handlers.get_screen_info_handler, cp)
+		delete(render_handler_handlers.on_popup_show_handler, cp)
+		delete(render_handler_handlers.on_popup_size_handler, cp)
+		delete(render_handler_handlers.on_paint_handler, cp)
+		delete(render_handler_handlers.on_accelerated_paint_handler, cp)
+		delete(render_handler_handlers.start_dragging_handler, cp)
+		delete(render_handler_handlers.update_drag_cursor_handler, cp)
+		delete(render_handler_handlers.on_scroll_offset_changed_handler, cp)
+		delete(render_handler_handlers.on_ime_composition_range_changed_handler, cp)
+		delete(render_handler_handlers.on_text_selection_changed_handler, cp)
+		delete(render_handler_handlers.on_virtual_keyboard_requested_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCRenderHandlerT(nil)
 	}
-	delete(render_handler_handlers.handler, cp)
-
-	delete(render_handler_handlers.get_accessibility_handler_handler, cp)
-	delete(render_handler_handlers.get_root_screen_rect_handler, cp)
-	delete(render_handler_handlers.get_view_rect_handler, cp)
-	delete(render_handler_handlers.get_screen_point_handler, cp)
-	delete(render_handler_handlers.get_screen_info_handler, cp)
-	delete(render_handler_handlers.on_popup_show_handler, cp)
-	delete(render_handler_handlers.on_popup_size_handler, cp)
-	delete(render_handler_handlers.on_paint_handler, cp)
-	delete(render_handler_handlers.on_accelerated_paint_handler, cp)
-	delete(render_handler_handlers.start_dragging_handler, cp)
-	delete(render_handler_handlers.update_drag_cursor_handler, cp)
-	delete(render_handler_handlers.on_scroll_offset_changed_handler, cp)
-	delete(render_handler_handlers.on_ime_composition_range_changed_handler, cp)
-	delete(render_handler_handlers.on_text_selection_changed_handler, cp)
-	delete(render_handler_handlers.on_virtual_keyboard_requested_handler, cp)
-
 }
 
 func (render_handler *CRenderHandlerT) Handler() interface{} {
@@ -19054,6 +23378,8 @@ type cCRenderProcessHandlerT C.cef_render_process_handler_t
 type CRenderProcessHandlerT struct {
 	noCopy                    noCopy
 	pc_render_process_handler *cCRenderProcessHandlerT
+	needsUnref                bool
+	beUnrefed                 unrefedBy
 }
 
 type RefToCRenderProcessHandlerT struct {
@@ -19062,36 +23388,82 @@ type RefToCRenderProcessHandlerT struct {
 
 type CRenderProcessHandlerTAccessor interface {
 	GetCRenderProcessHandlerT() *CRenderProcessHandlerT
-	SetCRenderProcessHandlerT(*CRenderProcessHandlerT) (oldValue *CRenderProcessHandlerT)
+	setCRenderProcessHandlerT(*CRenderProcessHandlerT)
+	// TakeOverCRenderProcessHandlerT(*CRenderProcessHandlerT)
+	// NewRefCRenderProcessHandlerT(*CRenderProcessHandlerT)
 }
 
 func (r RefToCRenderProcessHandlerT) GetCRenderProcessHandlerT() *CRenderProcessHandlerT {
 	return r.p_render_process_handler
 }
 
-func (r *RefToCRenderProcessHandlerT) SetCRenderProcessHandlerT(p *CRenderProcessHandlerT) (prevValue *CRenderProcessHandlerT) {
-	prevValue = r.p_render_process_handler
+func (r *RefToCRenderProcessHandlerT) setCRenderProcessHandlerT(p *CRenderProcessHandlerT) {
+	// prevValue = r.p_render_process_handler
+	r.p_render_process_handler.ForceUnref()
 	r.p_render_process_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRenderProcessHandlerT) TakeOverCRenderProcessHandlerT(src *CRenderProcessHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_render_process_handler.ForceUnref()
+	gop := src.pc_render_process_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_render_process_handler = newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(gop), byApp, true)
+}
+
+func PassCRenderProcessHandlerT(p *CRenderProcessHandlerT) (ret *CRenderProcessHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_render_process_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(p.pc_render_process_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRenderProcessHandlerT) NewRefCRenderProcessHandlerT(p *CRenderProcessHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_render_process_handler.ForceUnref()
+	gop := p.pc_render_process_handler
+	BaseAddRef(gop)
+	r.p_render_process_handler = newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(gop), byApp, true)
 }
 
 // Go type CRenderProcessHandlerT wraps cef type *C.cef_render_process_handler_t
-func newCRenderProcessHandlerT(p *C.cef_render_process_handler_t, countUp bool) *CRenderProcessHandlerT {
+func newCRenderProcessHandlerT(p *C.cef_render_process_handler_t, unrefedBy unrefedBy, needsUnref bool) *CRenderProcessHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T178.1:")
 	pc := (*cCRenderProcessHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_render_process_handler := &CRenderProcessHandlerT{noCopy{}, pc}
+	go_render_process_handler := &CRenderProcessHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_render_process_handler, func(g *CRenderProcessHandlerT) {
-		if g.pc_render_process_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_render_process_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_render_process_handler), "T178.2:")
 			BaseRelease(g.pc_render_process_handler)
 		}
 	})
+
 	return go_render_process_handler
 }
 
@@ -19105,13 +23477,15 @@ func (p *cCRenderProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 }
 
 func (render_process_handler *CRenderProcessHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(render_process_handler.pc_render_process_handler)
+	if render_process_handler == nil {
+		return
+	}
+	if render_process_handler.needsUnref && render_process_handler.beUnrefed == byApp {
+		ret = BaseRelease(render_process_handler.pc_render_process_handler)
+		render_process_handler.beUnrefed = unrefed
+		render_process_handler.needsUnref = false
+	}
 	render_process_handler.pc_render_process_handler = nil
-	return ret
-}
-
-func (render_process_handler *CRenderProcessHandlerT) release() (ret bool) {
-	ret = BaseRelease(render_process_handler.pc_render_process_handler)
 	return ret
 }
 
@@ -19287,7 +23661,13 @@ func AllocCRenderProcessHandlerT() *CRenderProcessHandlerT {
 		delete(render_process_handler_handlers.on_process_message_received_handler, cgop)
 	}))
 
-	return newCRenderProcessHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCRenderProcessHandlerT(cefp, byApp, true)
+}
+
+// BindCRenderProcessHandlerT allocates CRenderProcessHandlerT, construct and bind it
+func BindCRenderProcessHandlerT(a interface{}) *CRenderProcessHandlerT {
+	return AllocCRenderProcessHandlerT().Bind(a)
 }
 
 func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRenderProcessHandlerT {
@@ -19297,7 +23677,7 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 	cp := render_process_handler.pc_render_process_handler
 	if oldGoObj, ok := render_process_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CRenderProcessHandlerTAccessor); ok {
-			oldAcc.SetCRenderProcessHandlerT(nil)
+			oldAcc.setCRenderProcessHandlerT(nil)
 		}
 	}
 	render_process_handler_handlers.handler[cp] = a
@@ -19357,7 +23737,7 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 	}
 
 	if accessor, ok := a.(CRenderProcessHandlerTAccessor); ok {
-		accessor.SetCRenderProcessHandlerT(render_process_handler)
+		accessor.setCRenderProcessHandlerT(render_process_handler)
 		Logf("T178.5:")
 	}
 
@@ -19365,27 +23745,32 @@ func (render_process_handler *CRenderProcessHandlerT) Bind(a interface{}) *CRend
 }
 
 func (render_process_handler *CRenderProcessHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CRenderProcessHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := render_process_handler.pc_render_process_handler
-	if goHandler, ok := render_process_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CRenderProcessHandlerTAccessor); ok1 {
-			accessor.SetCRenderProcessHandlerT(nil)
+		cp := render_process_handler.pc_render_process_handler
+		if goHandler, ok := render_process_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CRenderProcessHandlerTAccessor)
 		}
+		delete(render_process_handler_handlers.handler, cp)
+
+		delete(render_process_handler_handlers.on_web_kit_initialized_handler, cp)
+		delete(render_process_handler_handlers.on_browser_created_handler, cp)
+		delete(render_process_handler_handlers.on_browser_destroyed_handler, cp)
+		delete(render_process_handler_handlers.get_load_handler_handler, cp)
+		delete(render_process_handler_handlers.on_context_created_handler, cp)
+		delete(render_process_handler_handlers.on_context_released_handler, cp)
+		delete(render_process_handler_handlers.on_uncaught_exception_handler, cp)
+		delete(render_process_handler_handlers.on_focused_node_changed_handler, cp)
+		delete(render_process_handler_handlers.on_process_message_received_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCRenderProcessHandlerT(nil)
 	}
-	delete(render_process_handler_handlers.handler, cp)
-
-	delete(render_process_handler_handlers.on_web_kit_initialized_handler, cp)
-	delete(render_process_handler_handlers.on_browser_created_handler, cp)
-	delete(render_process_handler_handlers.on_browser_destroyed_handler, cp)
-	delete(render_process_handler_handlers.get_load_handler_handler, cp)
-	delete(render_process_handler_handlers.on_context_created_handler, cp)
-	delete(render_process_handler_handlers.on_context_released_handler, cp)
-	delete(render_process_handler_handlers.on_uncaught_exception_handler, cp)
-	delete(render_process_handler_handlers.on_focused_node_changed_handler, cp)
-	delete(render_process_handler_handlers.on_process_message_received_handler, cp)
-
 }
 
 func (render_process_handler *CRenderProcessHandlerT) Handler() interface{} {
@@ -19408,6 +23793,8 @@ type cCRequestCallbackT C.cef_request_callback_t
 type CRequestCallbackT struct {
 	noCopy              noCopy
 	pc_request_callback *cCRequestCallbackT
+	needsUnref          bool
+	beUnrefed           unrefedBy
 }
 
 type RefToCRequestCallbackT struct {
@@ -19416,36 +23803,82 @@ type RefToCRequestCallbackT struct {
 
 type CRequestCallbackTAccessor interface {
 	GetCRequestCallbackT() *CRequestCallbackT
-	SetCRequestCallbackT(*CRequestCallbackT) (oldValue *CRequestCallbackT)
+	setCRequestCallbackT(*CRequestCallbackT)
+	// TakeOverCRequestCallbackT(*CRequestCallbackT)
+	// NewRefCRequestCallbackT(*CRequestCallbackT)
 }
 
 func (r RefToCRequestCallbackT) GetCRequestCallbackT() *CRequestCallbackT {
 	return r.p_request_callback
 }
 
-func (r *RefToCRequestCallbackT) SetCRequestCallbackT(p *CRequestCallbackT) (prevValue *CRequestCallbackT) {
-	prevValue = r.p_request_callback
+func (r *RefToCRequestCallbackT) setCRequestCallbackT(p *CRequestCallbackT) {
+	// prevValue = r.p_request_callback
+	r.p_request_callback.ForceUnref()
 	r.p_request_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRequestCallbackT) TakeOverCRequestCallbackT(src *CRequestCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_request_callback.ForceUnref()
+	gop := src.pc_request_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_request_callback = newCRequestCallbackT((*C.cef_request_callback_t)(gop), byApp, true)
+}
+
+func PassCRequestCallbackT(p *CRequestCallbackT) (ret *CRequestCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_request_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRequestCallbackT((*C.cef_request_callback_t)(p.pc_request_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRequestCallbackT) NewRefCRequestCallbackT(p *CRequestCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_request_callback.ForceUnref()
+	gop := p.pc_request_callback
+	BaseAddRef(gop)
+	r.p_request_callback = newCRequestCallbackT((*C.cef_request_callback_t)(gop), byApp, true)
 }
 
 // Go type CRequestCallbackT wraps cef type *C.cef_request_callback_t
-func newCRequestCallbackT(p *C.cef_request_callback_t, countUp bool) *CRequestCallbackT {
+func newCRequestCallbackT(p *C.cef_request_callback_t, unrefedBy unrefedBy, needsUnref bool) *CRequestCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T179.1:")
 	pc := (*cCRequestCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_request_callback := &CRequestCallbackT{noCopy{}, pc}
+	go_request_callback := &CRequestCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_request_callback, func(g *CRequestCallbackT) {
-		if g.pc_request_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_request_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_request_callback), "T179.2:")
 			BaseRelease(g.pc_request_callback)
 		}
 	})
+
 	return go_request_callback
 }
 
@@ -19459,13 +23892,15 @@ func (p *cCRequestCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (request_callback *CRequestCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(request_callback.pc_request_callback)
+	if request_callback == nil {
+		return
+	}
+	if request_callback.needsUnref && request_callback.beUnrefed == byApp {
+		ret = BaseRelease(request_callback.pc_request_callback)
+		request_callback.beUnrefed = unrefed
+		request_callback.needsUnref = false
+	}
 	request_callback.pc_request_callback = nil
-	return ret
-}
-
-func (request_callback *CRequestCallbackT) release() (ret bool) {
-	ret = BaseRelease(request_callback.pc_request_callback)
 	return ret
 }
 
@@ -19503,6 +23938,8 @@ type cCRequestT C.cef_request_t
 type CRequestT struct {
 	noCopy     noCopy
 	pc_request *cCRequestT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCRequestT struct {
@@ -19511,36 +23948,82 @@ type RefToCRequestT struct {
 
 type CRequestTAccessor interface {
 	GetCRequestT() *CRequestT
-	SetCRequestT(*CRequestT) (oldValue *CRequestT)
+	setCRequestT(*CRequestT)
+	// TakeOverCRequestT(*CRequestT)
+	// NewRefCRequestT(*CRequestT)
 }
 
 func (r RefToCRequestT) GetCRequestT() *CRequestT {
 	return r.p_request
 }
 
-func (r *RefToCRequestT) SetCRequestT(p *CRequestT) (prevValue *CRequestT) {
-	prevValue = r.p_request
+func (r *RefToCRequestT) setCRequestT(p *CRequestT) {
+	// prevValue = r.p_request
+	r.p_request.ForceUnref()
 	r.p_request = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRequestT) TakeOverCRequestT(src *CRequestT) {
+	if r == nil {
+		return
+	}
+	r.p_request.ForceUnref()
+	gop := src.pc_request
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_request = newCRequestT((*C.cef_request_t)(gop), byApp, true)
+}
+
+func PassCRequestT(p *CRequestT) (ret *CRequestT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_request)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRequestT((*C.cef_request_t)(p.pc_request), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRequestT) NewRefCRequestT(p *CRequestT) {
+	if r == nil {
+		return
+	}
+	r.p_request.ForceUnref()
+	gop := p.pc_request
+	BaseAddRef(gop)
+	r.p_request = newCRequestT((*C.cef_request_t)(gop), byApp, true)
 }
 
 // Go type CRequestT wraps cef type *C.cef_request_t
-func newCRequestT(p *C.cef_request_t, countUp bool) *CRequestT {
+func newCRequestT(p *C.cef_request_t, unrefedBy unrefedBy, needsUnref bool) *CRequestT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T180.1:")
 	pc := (*cCRequestT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_request := &CRequestT{noCopy{}, pc}
+	go_request := &CRequestT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_request, func(g *CRequestT) {
-		if g.pc_request != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_request != nil {
 			Tracef(unsafe.Pointer(g.pc_request), "T180.2:")
 			BaseRelease(g.pc_request)
 		}
 	})
+
 	return go_request
 }
 
@@ -19554,13 +24037,15 @@ func (p *cCRequestT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (request *CRequestT) ForceUnref() (ret bool) {
-	ret = BaseRelease(request.pc_request)
+	if request == nil {
+		return
+	}
+	if request.needsUnref && request.beUnrefed == byApp {
+		ret = BaseRelease(request.pc_request)
+		request.beUnrefed = unrefed
+		request.needsUnref = false
+	}
 	request.pc_request = nil
-	return ret
-}
-
-func (request *CRequestT) release() (ret bool) {
-	ret = BaseRelease(request.pc_request)
 	return ret
 }
 
@@ -19670,7 +24155,7 @@ func (self *CRequestT) GetReferrerPolicy() (ret CReferrerPolicyT) {
 
 	cRet := C.cefingo_request_get_referrer_policy((*C.cef_request_t)(self.pc_request))
 
-	ret = CReferrerPolicyT(cRet)
+	ret = CReferrerPolicyT(cRet) // return GoObj
 	return ret
 }
 
@@ -19681,7 +24166,7 @@ func (self *CRequestT) GetPostData() (ret *CPostDataT) {
 
 	cRet := C.cefingo_request_get_post_data((*C.cef_request_t)(self.pc_request))
 
-	ret = newCPostDataT(cRet, false)
+	ret = newCPostDataT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -19846,7 +24331,7 @@ func (self *CRequestT) GetResourceType() (ret CResourceTypeT) {
 
 	cRet := C.cefingo_request_get_resource_type((*C.cef_request_t)(self.pc_request))
 
-	ret = CResourceTypeT(cRet)
+	ret = CResourceTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -19859,7 +24344,7 @@ func (self *CRequestT) GetTransitionType() (ret CTransitionTypeT) {
 
 	cRet := C.cefingo_request_get_transition_type((*C.cef_request_t)(self.pc_request))
 
-	ret = CTransitionTypeT(cRet)
+	ret = CTransitionTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -19872,7 +24357,7 @@ func (self *CRequestT) GetIdentifier() (ret uint64) {
 
 	cRet := C.cefingo_request_get_identifier((*C.cef_request_t)(self.pc_request))
 
-	ret = (uint64)(cRet)
+	ret = (uint64)(cRet) // return GoObj
 	return ret
 }
 
@@ -19883,7 +24368,7 @@ func RequestCreate() (ret *CRequestT) {
 
 	cRet := C.cef_request_create()
 
-	ret = newCRequestT(cRet, false)
+	ret = newCRequestT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -19898,6 +24383,8 @@ type cCPostDataT C.cef_post_data_t
 type CPostDataT struct {
 	noCopy       noCopy
 	pc_post_data *cCPostDataT
+	needsUnref   bool
+	beUnrefed    unrefedBy
 }
 
 type RefToCPostDataT struct {
@@ -19906,36 +24393,82 @@ type RefToCPostDataT struct {
 
 type CPostDataTAccessor interface {
 	GetCPostDataT() *CPostDataT
-	SetCPostDataT(*CPostDataT) (oldValue *CPostDataT)
+	setCPostDataT(*CPostDataT)
+	// TakeOverCPostDataT(*CPostDataT)
+	// NewRefCPostDataT(*CPostDataT)
 }
 
 func (r RefToCPostDataT) GetCPostDataT() *CPostDataT {
 	return r.p_post_data
 }
 
-func (r *RefToCPostDataT) SetCPostDataT(p *CPostDataT) (prevValue *CPostDataT) {
-	prevValue = r.p_post_data
+func (r *RefToCPostDataT) setCPostDataT(p *CPostDataT) {
+	// prevValue = r.p_post_data
+	r.p_post_data.ForceUnref()
 	r.p_post_data = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPostDataT) TakeOverCPostDataT(src *CPostDataT) {
+	if r == nil {
+		return
+	}
+	r.p_post_data.ForceUnref()
+	gop := src.pc_post_data
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_post_data = newCPostDataT((*C.cef_post_data_t)(gop), byApp, true)
+}
+
+func PassCPostDataT(p *CPostDataT) (ret *CPostDataT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_post_data)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPostDataT((*C.cef_post_data_t)(p.pc_post_data), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPostDataT) NewRefCPostDataT(p *CPostDataT) {
+	if r == nil {
+		return
+	}
+	r.p_post_data.ForceUnref()
+	gop := p.pc_post_data
+	BaseAddRef(gop)
+	r.p_post_data = newCPostDataT((*C.cef_post_data_t)(gop), byApp, true)
 }
 
 // Go type CPostDataT wraps cef type *C.cef_post_data_t
-func newCPostDataT(p *C.cef_post_data_t, countUp bool) *CPostDataT {
+func newCPostDataT(p *C.cef_post_data_t, unrefedBy unrefedBy, needsUnref bool) *CPostDataT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T181.1:")
 	pc := (*cCPostDataT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_post_data := &CPostDataT{noCopy{}, pc}
+	go_post_data := &CPostDataT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_post_data, func(g *CPostDataT) {
-		if g.pc_post_data != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_post_data != nil {
 			Tracef(unsafe.Pointer(g.pc_post_data), "T181.2:")
 			BaseRelease(g.pc_post_data)
 		}
 	})
+
 	return go_post_data
 }
 
@@ -19949,13 +24482,15 @@ func (p *cCPostDataT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (post_data *CPostDataT) ForceUnref() (ret bool) {
-	ret = BaseRelease(post_data.pc_post_data)
+	if post_data == nil {
+		return
+	}
+	if post_data.needsUnref && post_data.beUnrefed == byApp {
+		ret = BaseRelease(post_data.pc_post_data)
+		post_data.beUnrefed = unrefed
+		post_data.needsUnref = false
+	}
 	post_data.pc_post_data = nil
-	return ret
-}
-
-func (post_data *CPostDataT) release() (ret bool) {
-	ret = BaseRelease(post_data.pc_post_data)
 	return ret
 }
 
@@ -19991,7 +24526,7 @@ func (self *CPostDataT) GetElementCount() (ret int64) {
 
 	cRet := C.cefingo_post_data_get_element_count((*C.cef_post_data_t)(self.pc_post_data))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -20008,7 +24543,7 @@ func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
 	elements = make([]*CPostDataElementT, *elementsCount)
 	_tmpelements := (*[1 << 30](*C.cef_post_data_element_t))(unsafe.Pointer(tmpelements))[:*elementsCount:*elementsCount]
 	for i := C.size_t(0); i < *elementsCount; i++ {
-		elements[i] = newCPostDataElementT(_tmpelements[i], false) // Out Slice Param
+		elements[i] = newCPostDataElementT(_tmpelements[i], byApp, true) // Out Slice Param
 	}
 	return elements
 }
@@ -20066,7 +24601,7 @@ func PostDataCreate() (ret *CPostDataT) {
 
 	cRet := C.cef_post_data_create()
 
-	ret = newCPostDataT(cRet, false)
+	ret = newCPostDataT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20081,6 +24616,8 @@ type cCPostDataElementT C.cef_post_data_element_t
 type CPostDataElementT struct {
 	noCopy               noCopy
 	pc_post_data_element *cCPostDataElementT
+	needsUnref           bool
+	beUnrefed            unrefedBy
 }
 
 type RefToCPostDataElementT struct {
@@ -20089,36 +24626,82 @@ type RefToCPostDataElementT struct {
 
 type CPostDataElementTAccessor interface {
 	GetCPostDataElementT() *CPostDataElementT
-	SetCPostDataElementT(*CPostDataElementT) (oldValue *CPostDataElementT)
+	setCPostDataElementT(*CPostDataElementT)
+	// TakeOverCPostDataElementT(*CPostDataElementT)
+	// NewRefCPostDataElementT(*CPostDataElementT)
 }
 
 func (r RefToCPostDataElementT) GetCPostDataElementT() *CPostDataElementT {
 	return r.p_post_data_element
 }
 
-func (r *RefToCPostDataElementT) SetCPostDataElementT(p *CPostDataElementT) (prevValue *CPostDataElementT) {
-	prevValue = r.p_post_data_element
+func (r *RefToCPostDataElementT) setCPostDataElementT(p *CPostDataElementT) {
+	// prevValue = r.p_post_data_element
+	r.p_post_data_element.ForceUnref()
 	r.p_post_data_element = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCPostDataElementT) TakeOverCPostDataElementT(src *CPostDataElementT) {
+	if r == nil {
+		return
+	}
+	r.p_post_data_element.ForceUnref()
+	gop := src.pc_post_data_element
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_post_data_element = newCPostDataElementT((*C.cef_post_data_element_t)(gop), byApp, true)
+}
+
+func PassCPostDataElementT(p *CPostDataElementT) (ret *CPostDataElementT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_post_data_element)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCPostDataElementT((*C.cef_post_data_element_t)(p.pc_post_data_element), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCPostDataElementT) NewRefCPostDataElementT(p *CPostDataElementT) {
+	if r == nil {
+		return
+	}
+	r.p_post_data_element.ForceUnref()
+	gop := p.pc_post_data_element
+	BaseAddRef(gop)
+	r.p_post_data_element = newCPostDataElementT((*C.cef_post_data_element_t)(gop), byApp, true)
 }
 
 // Go type CPostDataElementT wraps cef type *C.cef_post_data_element_t
-func newCPostDataElementT(p *C.cef_post_data_element_t, countUp bool) *CPostDataElementT {
+func newCPostDataElementT(p *C.cef_post_data_element_t, unrefedBy unrefedBy, needsUnref bool) *CPostDataElementT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T182.1:")
 	pc := (*cCPostDataElementT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_post_data_element := &CPostDataElementT{noCopy{}, pc}
+	go_post_data_element := &CPostDataElementT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_post_data_element, func(g *CPostDataElementT) {
-		if g.pc_post_data_element != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_post_data_element != nil {
 			Tracef(unsafe.Pointer(g.pc_post_data_element), "T182.2:")
 			BaseRelease(g.pc_post_data_element)
 		}
 	})
+
 	return go_post_data_element
 }
 
@@ -20132,13 +24715,15 @@ func (p *cCPostDataElementT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (post_data_element *CPostDataElementT) ForceUnref() (ret bool) {
-	ret = BaseRelease(post_data_element.pc_post_data_element)
+	if post_data_element == nil {
+		return
+	}
+	if post_data_element.needsUnref && post_data_element.beUnrefed == byApp {
+		ret = BaseRelease(post_data_element.pc_post_data_element)
+		post_data_element.beUnrefed = unrefed
+		post_data_element.needsUnref = false
+	}
 	post_data_element.pc_post_data_element = nil
-	return ret
-}
-
-func (post_data_element *CPostDataElementT) release() (ret bool) {
-	ret = BaseRelease(post_data_element.pc_post_data_element)
 	return ret
 }
 
@@ -20196,7 +24781,7 @@ func (self *CPostDataElementT) GetType() (ret CPostdataelementTypeT) {
 
 	cRet := C.cefingo_post_data_element_get_type((*C.cef_post_data_element_t)(self.pc_post_data_element))
 
-	ret = CPostdataelementTypeT(cRet)
+	ret = CPostdataelementTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -20223,7 +24808,7 @@ func (self *CPostDataElementT) GetBytesCount() (ret int64) {
 
 	cRet := C.cefingo_post_data_element_get_bytes_count((*C.cef_post_data_element_t)(self.pc_post_data_element))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -20238,7 +24823,7 @@ func (self *CPostDataElementT) GetBytes(
 
 	cRet := C.cefingo_post_data_element_get_bytes((*C.cef_post_data_element_t)(self.pc_post_data_element), (C.size_t)(size), bytes)
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -20249,7 +24834,7 @@ func PostDataElementCreate() (ret *CPostDataElementT) {
 
 	cRet := C.cef_post_data_element_create()
 
-	ret = newCPostDataElementT(cRet, false)
+	ret = newCPostDataElementT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20265,6 +24850,8 @@ type cCResolveCallbackT C.cef_resolve_callback_t
 type CResolveCallbackT struct {
 	noCopy              noCopy
 	pc_resolve_callback *cCResolveCallbackT
+	needsUnref          bool
+	beUnrefed           unrefedBy
 }
 
 type RefToCResolveCallbackT struct {
@@ -20273,36 +24860,82 @@ type RefToCResolveCallbackT struct {
 
 type CResolveCallbackTAccessor interface {
 	GetCResolveCallbackT() *CResolveCallbackT
-	SetCResolveCallbackT(*CResolveCallbackT) (oldValue *CResolveCallbackT)
+	setCResolveCallbackT(*CResolveCallbackT)
+	// TakeOverCResolveCallbackT(*CResolveCallbackT)
+	// NewRefCResolveCallbackT(*CResolveCallbackT)
 }
 
 func (r RefToCResolveCallbackT) GetCResolveCallbackT() *CResolveCallbackT {
 	return r.p_resolve_callback
 }
 
-func (r *RefToCResolveCallbackT) SetCResolveCallbackT(p *CResolveCallbackT) (prevValue *CResolveCallbackT) {
-	prevValue = r.p_resolve_callback
+func (r *RefToCResolveCallbackT) setCResolveCallbackT(p *CResolveCallbackT) {
+	// prevValue = r.p_resolve_callback
+	r.p_resolve_callback.ForceUnref()
 	r.p_resolve_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCResolveCallbackT) TakeOverCResolveCallbackT(src *CResolveCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_resolve_callback.ForceUnref()
+	gop := src.pc_resolve_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_resolve_callback = newCResolveCallbackT((*C.cef_resolve_callback_t)(gop), byApp, true)
+}
+
+func PassCResolveCallbackT(p *CResolveCallbackT) (ret *CResolveCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_resolve_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCResolveCallbackT((*C.cef_resolve_callback_t)(p.pc_resolve_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCResolveCallbackT) NewRefCResolveCallbackT(p *CResolveCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_resolve_callback.ForceUnref()
+	gop := p.pc_resolve_callback
+	BaseAddRef(gop)
+	r.p_resolve_callback = newCResolveCallbackT((*C.cef_resolve_callback_t)(gop), byApp, true)
 }
 
 // Go type CResolveCallbackT wraps cef type *C.cef_resolve_callback_t
-func newCResolveCallbackT(p *C.cef_resolve_callback_t, countUp bool) *CResolveCallbackT {
+func newCResolveCallbackT(p *C.cef_resolve_callback_t, unrefedBy unrefedBy, needsUnref bool) *CResolveCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T183.1:")
 	pc := (*cCResolveCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_resolve_callback := &CResolveCallbackT{noCopy{}, pc}
+	go_resolve_callback := &CResolveCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_resolve_callback, func(g *CResolveCallbackT) {
-		if g.pc_resolve_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_resolve_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_resolve_callback), "T183.2:")
 			BaseRelease(g.pc_resolve_callback)
 		}
 	})
+
 	return go_resolve_callback
 }
 
@@ -20316,13 +24949,15 @@ func (p *cCResolveCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (resolve_callback *CResolveCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(resolve_callback.pc_resolve_callback)
+	if resolve_callback == nil {
+		return
+	}
+	if resolve_callback.needsUnref && resolve_callback.beUnrefed == byApp {
+		ret = BaseRelease(resolve_callback.pc_resolve_callback)
+		resolve_callback.beUnrefed = unrefed
+		resolve_callback.needsUnref = false
+	}
 	resolve_callback.pc_resolve_callback = nil
-	return ret
-}
-
-func (resolve_callback *CResolveCallbackT) release() (ret bool) {
-	ret = BaseRelease(resolve_callback.pc_resolve_callback)
 	return ret
 }
 
@@ -20363,6 +24998,8 @@ type cCRequestContextT C.cef_request_context_t
 type CRequestContextT struct {
 	noCopy             noCopy
 	pc_request_context *cCRequestContextT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCRequestContextT struct {
@@ -20371,36 +25008,82 @@ type RefToCRequestContextT struct {
 
 type CRequestContextTAccessor interface {
 	GetCRequestContextT() *CRequestContextT
-	SetCRequestContextT(*CRequestContextT) (oldValue *CRequestContextT)
+	setCRequestContextT(*CRequestContextT)
+	// TakeOverCRequestContextT(*CRequestContextT)
+	// NewRefCRequestContextT(*CRequestContextT)
 }
 
 func (r RefToCRequestContextT) GetCRequestContextT() *CRequestContextT {
 	return r.p_request_context
 }
 
-func (r *RefToCRequestContextT) SetCRequestContextT(p *CRequestContextT) (prevValue *CRequestContextT) {
-	prevValue = r.p_request_context
+func (r *RefToCRequestContextT) setCRequestContextT(p *CRequestContextT) {
+	// prevValue = r.p_request_context
+	r.p_request_context.ForceUnref()
 	r.p_request_context = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRequestContextT) TakeOverCRequestContextT(src *CRequestContextT) {
+	if r == nil {
+		return
+	}
+	r.p_request_context.ForceUnref()
+	gop := src.pc_request_context
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_request_context = newCRequestContextT((*C.cef_request_context_t)(gop), byApp, true)
+}
+
+func PassCRequestContextT(p *CRequestContextT) (ret *CRequestContextT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_request_context)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRequestContextT((*C.cef_request_context_t)(p.pc_request_context), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRequestContextT) NewRefCRequestContextT(p *CRequestContextT) {
+	if r == nil {
+		return
+	}
+	r.p_request_context.ForceUnref()
+	gop := p.pc_request_context
+	BaseAddRef(gop)
+	r.p_request_context = newCRequestContextT((*C.cef_request_context_t)(gop), byApp, true)
 }
 
 // Go type CRequestContextT wraps cef type *C.cef_request_context_t
-func newCRequestContextT(p *C.cef_request_context_t, countUp bool) *CRequestContextT {
+func newCRequestContextT(p *C.cef_request_context_t, unrefedBy unrefedBy, needsUnref bool) *CRequestContextT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T184.1:")
 	pc := (*cCRequestContextT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_request_context := &CRequestContextT{noCopy{}, pc}
+	go_request_context := &CRequestContextT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_request_context, func(g *CRequestContextT) {
-		if g.pc_request_context != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_request_context != nil {
 			Tracef(unsafe.Pointer(g.pc_request_context), "T184.2:")
 			BaseRelease(g.pc_request_context)
 		}
 	})
+
 	return go_request_context
 }
 
@@ -20414,13 +25097,15 @@ func (p *cCRequestContextT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 }
 
 func (request_context *CRequestContextT) ForceUnref() (ret bool) {
-	ret = BaseRelease(request_context.pc_request_context)
+	if request_context == nil {
+		return
+	}
+	if request_context.needsUnref && request_context.beUnrefed == byApp {
+		ret = BaseRelease(request_context.pc_request_context)
+		request_context.beUnrefed = unrefed
+		request_context.needsUnref = false
+	}
 	request_context.pc_request_context = nil
-	return ret
-}
-
-func (request_context *CRequestContextT) release() (ret bool) {
-	ret = BaseRelease(request_context.pc_request_context)
 	return ret
 }
 
@@ -20482,7 +25167,7 @@ func (self *CRequestContextT) GetHandler() (ret *CRequestContextHandlerT) {
 
 	cRet := C.cefingo_request_context_get_handler((*C.cef_request_context_t)(self.pc_request_context))
 
-	ret = newCRequestContextHandlerT(cRet, false)
+	ret = newCRequestContextHandlerT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20519,7 +25204,7 @@ func (self *CRequestContextT) GetCookieManager(
 
 	cRet := C.cefingo_request_context_get_cookie_manager((*C.cef_request_context_t)(self.pc_request_context), goTmpcallback)
 
-	ret = newCCookieManagerT(cRet, false)
+	ret = newCCookieManagerT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20611,7 +25296,7 @@ func (self *CRequestContextT) GetPreference(
 
 	cRet := C.cefingo_request_context_get_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t)
 
-	ret = newCValueT(cRet, false)
+	ret = newCValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20629,7 +25314,7 @@ func (self *CRequestContextT) GetAllPreferences(
 
 	cRet := C.cefingo_request_context_get_all_preferences((*C.cef_request_context_t)(self.pc_request_context), (C.int)(include_defaults))
 
-	ret = newCDictionaryValueT(cRet, false)
+	ret = newCDictionaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20885,7 +25570,7 @@ func (self *CRequestContextT) GetExtension(
 
 	cRet := C.cefingo_request_context_get_extension((*C.cef_request_context_t)(self.pc_request_context), c_extension_id.p_cef_string_t)
 
-	ret = newCExtensionT(cRet, false)
+	ret = newCExtensionT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20905,7 +25590,7 @@ func (self *CRequestContextT) GetMediaRouter(
 
 	cRet := C.cefingo_request_context_get_media_router((*C.cef_request_context_t)(self.pc_request_context), goTmpcallback)
 
-	ret = newCMediaRouterT(cRet, false)
+	ret = newCMediaRouterT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20916,7 +25601,7 @@ func RequestContextGetGlobalContext() (ret *CRequestContextT) {
 
 	cRet := C.cef_request_context_get_global_context()
 
-	ret = newCRequestContextT(cRet, false)
+	ret = newCRequestContextT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20936,7 +25621,7 @@ func RequestContextCreateContext(
 
 	cRet := C.cef_request_context_create_context((*C.cef_request_context_settings_t)(settings), goTmphandler)
 
-	ret = newCRequestContextT(cRet, false)
+	ret = newCRequestContextT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20961,7 +25646,7 @@ func CreateContextShared(
 
 	cRet := C.cef_create_context_shared(goTmpother, goTmphandler)
 
-	ret = newCRequestContextT(cRet, false)
+	ret = newCRequestContextT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -20979,6 +25664,8 @@ type cCRequestContextHandlerT C.cef_request_context_handler_t
 type CRequestContextHandlerT struct {
 	noCopy                     noCopy
 	pc_request_context_handler *cCRequestContextHandlerT
+	needsUnref                 bool
+	beUnrefed                  unrefedBy
 }
 
 type RefToCRequestContextHandlerT struct {
@@ -20987,36 +25674,82 @@ type RefToCRequestContextHandlerT struct {
 
 type CRequestContextHandlerTAccessor interface {
 	GetCRequestContextHandlerT() *CRequestContextHandlerT
-	SetCRequestContextHandlerT(*CRequestContextHandlerT) (oldValue *CRequestContextHandlerT)
+	setCRequestContextHandlerT(*CRequestContextHandlerT)
+	// TakeOverCRequestContextHandlerT(*CRequestContextHandlerT)
+	// NewRefCRequestContextHandlerT(*CRequestContextHandlerT)
 }
 
 func (r RefToCRequestContextHandlerT) GetCRequestContextHandlerT() *CRequestContextHandlerT {
 	return r.p_request_context_handler
 }
 
-func (r *RefToCRequestContextHandlerT) SetCRequestContextHandlerT(p *CRequestContextHandlerT) (prevValue *CRequestContextHandlerT) {
-	prevValue = r.p_request_context_handler
+func (r *RefToCRequestContextHandlerT) setCRequestContextHandlerT(p *CRequestContextHandlerT) {
+	// prevValue = r.p_request_context_handler
+	r.p_request_context_handler.ForceUnref()
 	r.p_request_context_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRequestContextHandlerT) TakeOverCRequestContextHandlerT(src *CRequestContextHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_request_context_handler.ForceUnref()
+	gop := src.pc_request_context_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_request_context_handler = newCRequestContextHandlerT((*C.cef_request_context_handler_t)(gop), byApp, true)
+}
+
+func PassCRequestContextHandlerT(p *CRequestContextHandlerT) (ret *CRequestContextHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_request_context_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRequestContextHandlerT((*C.cef_request_context_handler_t)(p.pc_request_context_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRequestContextHandlerT) NewRefCRequestContextHandlerT(p *CRequestContextHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_request_context_handler.ForceUnref()
+	gop := p.pc_request_context_handler
+	BaseAddRef(gop)
+	r.p_request_context_handler = newCRequestContextHandlerT((*C.cef_request_context_handler_t)(gop), byApp, true)
 }
 
 // Go type CRequestContextHandlerT wraps cef type *C.cef_request_context_handler_t
-func newCRequestContextHandlerT(p *C.cef_request_context_handler_t, countUp bool) *CRequestContextHandlerT {
+func newCRequestContextHandlerT(p *C.cef_request_context_handler_t, unrefedBy unrefedBy, needsUnref bool) *CRequestContextHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T185.1:")
 	pc := (*cCRequestContextHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_request_context_handler := &CRequestContextHandlerT{noCopy{}, pc}
+	go_request_context_handler := &CRequestContextHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_request_context_handler, func(g *CRequestContextHandlerT) {
-		if g.pc_request_context_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_request_context_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_request_context_handler), "T185.2:")
 			BaseRelease(g.pc_request_context_handler)
 		}
 	})
+
 	return go_request_context_handler
 }
 
@@ -21030,13 +25763,15 @@ func (p *cCRequestContextHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 }
 
 func (request_context_handler *CRequestContextHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(request_context_handler.pc_request_context_handler)
+	if request_context_handler == nil {
+		return
+	}
+	if request_context_handler.needsUnref && request_context_handler.beUnrefed == byApp {
+		ret = BaseRelease(request_context_handler.pc_request_context_handler)
+		request_context_handler.beUnrefed = unrefed
+		request_context_handler.needsUnref = false
+	}
 	request_context_handler.pc_request_context_handler = nil
-	return ret
-}
-
-func (request_context_handler *CRequestContextHandlerT) release() (ret bool) {
-	ret = BaseRelease(request_context_handler.pc_request_context_handler)
 	return ret
 }
 
@@ -21142,7 +25877,13 @@ func AllocCRequestContextHandlerT() *CRequestContextHandlerT {
 		delete(request_context_handler_handlers.get_resource_request_handler_handler, cgop)
 	}))
 
-	return newCRequestContextHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCRequestContextHandlerT(cefp, byApp, true)
+}
+
+// BindCRequestContextHandlerT allocates CRequestContextHandlerT, construct and bind it
+func BindCRequestContextHandlerT(a interface{}) *CRequestContextHandlerT {
+	return AllocCRequestContextHandlerT().Bind(a)
 }
 
 func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRequestContextHandlerT {
@@ -21152,7 +25893,7 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 	cp := request_context_handler.pc_request_context_handler
 	if oldGoObj, ok := request_context_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CRequestContextHandlerTAccessor); ok {
-			oldAcc.SetCRequestContextHandlerT(nil)
+			oldAcc.setCRequestContextHandlerT(nil)
 		}
 	}
 	request_context_handler_handlers.handler[cp] = a
@@ -21176,7 +25917,7 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 	}
 
 	if accessor, ok := a.(CRequestContextHandlerTAccessor); ok {
-		accessor.SetCRequestContextHandlerT(request_context_handler)
+		accessor.setCRequestContextHandlerT(request_context_handler)
 		Logf("T185.5:")
 	}
 
@@ -21184,21 +25925,26 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 }
 
 func (request_context_handler *CRequestContextHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CRequestContextHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := request_context_handler.pc_request_context_handler
-	if goHandler, ok := request_context_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CRequestContextHandlerTAccessor); ok1 {
-			accessor.SetCRequestContextHandlerT(nil)
+		cp := request_context_handler.pc_request_context_handler
+		if goHandler, ok := request_context_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CRequestContextHandlerTAccessor)
 		}
+		delete(request_context_handler_handlers.handler, cp)
+
+		delete(request_context_handler_handlers.on_request_context_initialized_handler, cp)
+		delete(request_context_handler_handlers.on_before_plugin_load_handler, cp)
+		delete(request_context_handler_handlers.get_resource_request_handler_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCRequestContextHandlerT(nil)
 	}
-	delete(request_context_handler_handlers.handler, cp)
-
-	delete(request_context_handler_handlers.on_request_context_initialized_handler, cp)
-	delete(request_context_handler_handlers.on_before_plugin_load_handler, cp)
-	delete(request_context_handler_handlers.get_resource_request_handler_handler, cp)
-
 }
 
 func (request_context_handler *CRequestContextHandlerT) Handler() interface{} {
@@ -21221,6 +25967,8 @@ type cCSelectClientCertificateCallbackT C.cef_select_client_certificate_callback
 type CSelectClientCertificateCallbackT struct {
 	noCopy                                noCopy
 	pc_select_client_certificate_callback *cCSelectClientCertificateCallbackT
+	needsUnref                            bool
+	beUnrefed                             unrefedBy
 }
 
 type RefToCSelectClientCertificateCallbackT struct {
@@ -21229,36 +25977,82 @@ type RefToCSelectClientCertificateCallbackT struct {
 
 type CSelectClientCertificateCallbackTAccessor interface {
 	GetCSelectClientCertificateCallbackT() *CSelectClientCertificateCallbackT
-	SetCSelectClientCertificateCallbackT(*CSelectClientCertificateCallbackT) (oldValue *CSelectClientCertificateCallbackT)
+	setCSelectClientCertificateCallbackT(*CSelectClientCertificateCallbackT)
+	// TakeOverCSelectClientCertificateCallbackT(*CSelectClientCertificateCallbackT)
+	// NewRefCSelectClientCertificateCallbackT(*CSelectClientCertificateCallbackT)
 }
 
 func (r RefToCSelectClientCertificateCallbackT) GetCSelectClientCertificateCallbackT() *CSelectClientCertificateCallbackT {
 	return r.p_select_client_certificate_callback
 }
 
-func (r *RefToCSelectClientCertificateCallbackT) SetCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT) (prevValue *CSelectClientCertificateCallbackT) {
-	prevValue = r.p_select_client_certificate_callback
+func (r *RefToCSelectClientCertificateCallbackT) setCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT) {
+	// prevValue = r.p_select_client_certificate_callback
+	r.p_select_client_certificate_callback.ForceUnref()
 	r.p_select_client_certificate_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCSelectClientCertificateCallbackT) TakeOverCSelectClientCertificateCallbackT(src *CSelectClientCertificateCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_select_client_certificate_callback.ForceUnref()
+	gop := src.pc_select_client_certificate_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_select_client_certificate_callback = newCSelectClientCertificateCallbackT((*C.cef_select_client_certificate_callback_t)(gop), byApp, true)
+}
+
+func PassCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT) (ret *CSelectClientCertificateCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_select_client_certificate_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCSelectClientCertificateCallbackT((*C.cef_select_client_certificate_callback_t)(p.pc_select_client_certificate_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCSelectClientCertificateCallbackT) NewRefCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_select_client_certificate_callback.ForceUnref()
+	gop := p.pc_select_client_certificate_callback
+	BaseAddRef(gop)
+	r.p_select_client_certificate_callback = newCSelectClientCertificateCallbackT((*C.cef_select_client_certificate_callback_t)(gop), byApp, true)
 }
 
 // Go type CSelectClientCertificateCallbackT wraps cef type *C.cef_select_client_certificate_callback_t
-func newCSelectClientCertificateCallbackT(p *C.cef_select_client_certificate_callback_t, countUp bool) *CSelectClientCertificateCallbackT {
+func newCSelectClientCertificateCallbackT(p *C.cef_select_client_certificate_callback_t, unrefedBy unrefedBy, needsUnref bool) *CSelectClientCertificateCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T186.1:")
 	pc := (*cCSelectClientCertificateCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_select_client_certificate_callback := &CSelectClientCertificateCallbackT{noCopy{}, pc}
+	go_select_client_certificate_callback := &CSelectClientCertificateCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_select_client_certificate_callback, func(g *CSelectClientCertificateCallbackT) {
-		if g.pc_select_client_certificate_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_select_client_certificate_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_select_client_certificate_callback), "T186.2:")
 			BaseRelease(g.pc_select_client_certificate_callback)
 		}
 	})
+
 	return go_select_client_certificate_callback
 }
 
@@ -21272,13 +26066,15 @@ func (p *cCSelectClientCertificateCallbackT) cast_to_p_base_ref_counted_t() *C.c
 }
 
 func (select_client_certificate_callback *CSelectClientCertificateCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(select_client_certificate_callback.pc_select_client_certificate_callback)
+	if select_client_certificate_callback == nil {
+		return
+	}
+	if select_client_certificate_callback.needsUnref && select_client_certificate_callback.beUnrefed == byApp {
+		ret = BaseRelease(select_client_certificate_callback.pc_select_client_certificate_callback)
+		select_client_certificate_callback.beUnrefed = unrefed
+		select_client_certificate_callback.needsUnref = false
+	}
 	select_client_certificate_callback.pc_select_client_certificate_callback = nil
-	return ret
-}
-
-func (select_client_certificate_callback *CSelectClientCertificateCallbackT) release() (ret bool) {
-	ret = BaseRelease(select_client_certificate_callback.pc_select_client_certificate_callback)
 	return ret
 }
 
@@ -21310,6 +26106,8 @@ type cCRequestHandlerT C.cef_request_handler_t
 type CRequestHandlerT struct {
 	noCopy             noCopy
 	pc_request_handler *cCRequestHandlerT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCRequestHandlerT struct {
@@ -21318,36 +26116,82 @@ type RefToCRequestHandlerT struct {
 
 type CRequestHandlerTAccessor interface {
 	GetCRequestHandlerT() *CRequestHandlerT
-	SetCRequestHandlerT(*CRequestHandlerT) (oldValue *CRequestHandlerT)
+	setCRequestHandlerT(*CRequestHandlerT)
+	// TakeOverCRequestHandlerT(*CRequestHandlerT)
+	// NewRefCRequestHandlerT(*CRequestHandlerT)
 }
 
 func (r RefToCRequestHandlerT) GetCRequestHandlerT() *CRequestHandlerT {
 	return r.p_request_handler
 }
 
-func (r *RefToCRequestHandlerT) SetCRequestHandlerT(p *CRequestHandlerT) (prevValue *CRequestHandlerT) {
-	prevValue = r.p_request_handler
+func (r *RefToCRequestHandlerT) setCRequestHandlerT(p *CRequestHandlerT) {
+	// prevValue = r.p_request_handler
+	r.p_request_handler.ForceUnref()
 	r.p_request_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRequestHandlerT) TakeOverCRequestHandlerT(src *CRequestHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_request_handler.ForceUnref()
+	gop := src.pc_request_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_request_handler = newCRequestHandlerT((*C.cef_request_handler_t)(gop), byApp, true)
+}
+
+func PassCRequestHandlerT(p *CRequestHandlerT) (ret *CRequestHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_request_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRequestHandlerT((*C.cef_request_handler_t)(p.pc_request_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRequestHandlerT) NewRefCRequestHandlerT(p *CRequestHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_request_handler.ForceUnref()
+	gop := p.pc_request_handler
+	BaseAddRef(gop)
+	r.p_request_handler = newCRequestHandlerT((*C.cef_request_handler_t)(gop), byApp, true)
 }
 
 // Go type CRequestHandlerT wraps cef type *C.cef_request_handler_t
-func newCRequestHandlerT(p *C.cef_request_handler_t, countUp bool) *CRequestHandlerT {
+func newCRequestHandlerT(p *C.cef_request_handler_t, unrefedBy unrefedBy, needsUnref bool) *CRequestHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T187.1:")
 	pc := (*cCRequestHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_request_handler := &CRequestHandlerT{noCopy{}, pc}
+	go_request_handler := &CRequestHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_request_handler, func(g *CRequestHandlerT) {
-		if g.pc_request_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_request_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_request_handler), "T187.2:")
 			BaseRelease(g.pc_request_handler)
 		}
 	})
+
 	return go_request_handler
 }
 
@@ -21361,13 +26205,15 @@ func (p *cCRequestHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 }
 
 func (request_handler *CRequestHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(request_handler.pc_request_handler)
+	if request_handler == nil {
+		return
+	}
+	if request_handler.needsUnref && request_handler.beUnrefed == byApp {
+		ret = BaseRelease(request_handler.pc_request_handler)
+		request_handler.beUnrefed = unrefed
+		request_handler.needsUnref = false
+	}
 	request_handler.pc_request_handler = nil
-	return ret
-}
-
-func (request_handler *CRequestHandlerT) release() (ret bool) {
-	ret = BaseRelease(request_handler.pc_request_handler)
 	return ret
 }
 
@@ -21640,7 +26486,13 @@ func AllocCRequestHandlerT() *CRequestHandlerT {
 		delete(request_handler_handlers.on_document_available_in_main_frame_handler, cgop)
 	}))
 
-	return newCRequestHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCRequestHandlerT(cefp, byApp, true)
+}
+
+// BindCRequestHandlerT allocates CRequestHandlerT, construct and bind it
+func BindCRequestHandlerT(a interface{}) *CRequestHandlerT {
+	return AllocCRequestHandlerT().Bind(a)
 }
 
 func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
@@ -21650,7 +26502,7 @@ func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
 	cp := request_handler.pc_request_handler
 	if oldGoObj, ok := request_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CRequestHandlerTAccessor); ok {
-			oldAcc.SetCRequestHandlerT(nil)
+			oldAcc.setCRequestHandlerT(nil)
 		}
 	}
 	request_handler_handlers.handler[cp] = a
@@ -21722,7 +26574,7 @@ func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
 	}
 
 	if accessor, ok := a.(CRequestHandlerTAccessor); ok {
-		accessor.SetCRequestHandlerT(request_handler)
+		accessor.setCRequestHandlerT(request_handler)
 		Logf("T187.5:")
 	}
 
@@ -21730,29 +26582,34 @@ func (request_handler *CRequestHandlerT) Bind(a interface{}) *CRequestHandlerT {
 }
 
 func (request_handler *CRequestHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CRequestHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := request_handler.pc_request_handler
-	if goHandler, ok := request_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CRequestHandlerTAccessor); ok1 {
-			accessor.SetCRequestHandlerT(nil)
+		cp := request_handler.pc_request_handler
+		if goHandler, ok := request_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CRequestHandlerTAccessor)
 		}
+		delete(request_handler_handlers.handler, cp)
+
+		delete(request_handler_handlers.on_before_browse_handler, cp)
+		delete(request_handler_handlers.on_open_urlfrom_tab_handler, cp)
+		delete(request_handler_handlers.get_resource_request_handler_handler, cp)
+		delete(request_handler_handlers.get_auth_credentials_handler, cp)
+		delete(request_handler_handlers.on_quota_request_handler, cp)
+		delete(request_handler_handlers.on_certificate_error_handler, cp)
+		delete(request_handler_handlers.on_select_client_certificate_handler, cp)
+		delete(request_handler_handlers.on_plugin_crashed_handler, cp)
+		delete(request_handler_handlers.on_render_view_ready_handler, cp)
+		delete(request_handler_handlers.on_render_process_terminated_handler, cp)
+		delete(request_handler_handlers.on_document_available_in_main_frame_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCRequestHandlerT(nil)
 	}
-	delete(request_handler_handlers.handler, cp)
-
-	delete(request_handler_handlers.on_before_browse_handler, cp)
-	delete(request_handler_handlers.on_open_urlfrom_tab_handler, cp)
-	delete(request_handler_handlers.get_resource_request_handler_handler, cp)
-	delete(request_handler_handlers.get_auth_credentials_handler, cp)
-	delete(request_handler_handlers.on_quota_request_handler, cp)
-	delete(request_handler_handlers.on_certificate_error_handler, cp)
-	delete(request_handler_handlers.on_select_client_certificate_handler, cp)
-	delete(request_handler_handlers.on_plugin_crashed_handler, cp)
-	delete(request_handler_handlers.on_render_view_ready_handler, cp)
-	delete(request_handler_handlers.on_render_process_terminated_handler, cp)
-	delete(request_handler_handlers.on_document_available_in_main_frame_handler, cp)
-
 }
 
 func (request_handler *CRequestHandlerT) Handler() interface{} {
@@ -21777,6 +26634,8 @@ type cCResourceBundleHandlerT C.cef_resource_bundle_handler_t
 type CResourceBundleHandlerT struct {
 	noCopy                     noCopy
 	pc_resource_bundle_handler *cCResourceBundleHandlerT
+	needsUnref                 bool
+	beUnrefed                  unrefedBy
 }
 
 type RefToCResourceBundleHandlerT struct {
@@ -21785,36 +26644,82 @@ type RefToCResourceBundleHandlerT struct {
 
 type CResourceBundleHandlerTAccessor interface {
 	GetCResourceBundleHandlerT() *CResourceBundleHandlerT
-	SetCResourceBundleHandlerT(*CResourceBundleHandlerT) (oldValue *CResourceBundleHandlerT)
+	setCResourceBundleHandlerT(*CResourceBundleHandlerT)
+	// TakeOverCResourceBundleHandlerT(*CResourceBundleHandlerT)
+	// NewRefCResourceBundleHandlerT(*CResourceBundleHandlerT)
 }
 
 func (r RefToCResourceBundleHandlerT) GetCResourceBundleHandlerT() *CResourceBundleHandlerT {
 	return r.p_resource_bundle_handler
 }
 
-func (r *RefToCResourceBundleHandlerT) SetCResourceBundleHandlerT(p *CResourceBundleHandlerT) (prevValue *CResourceBundleHandlerT) {
-	prevValue = r.p_resource_bundle_handler
+func (r *RefToCResourceBundleHandlerT) setCResourceBundleHandlerT(p *CResourceBundleHandlerT) {
+	// prevValue = r.p_resource_bundle_handler
+	r.p_resource_bundle_handler.ForceUnref()
 	r.p_resource_bundle_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCResourceBundleHandlerT) TakeOverCResourceBundleHandlerT(src *CResourceBundleHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_bundle_handler.ForceUnref()
+	gop := src.pc_resource_bundle_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_resource_bundle_handler = newCResourceBundleHandlerT((*C.cef_resource_bundle_handler_t)(gop), byApp, true)
+}
+
+func PassCResourceBundleHandlerT(p *CResourceBundleHandlerT) (ret *CResourceBundleHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_resource_bundle_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCResourceBundleHandlerT((*C.cef_resource_bundle_handler_t)(p.pc_resource_bundle_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCResourceBundleHandlerT) NewRefCResourceBundleHandlerT(p *CResourceBundleHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_bundle_handler.ForceUnref()
+	gop := p.pc_resource_bundle_handler
+	BaseAddRef(gop)
+	r.p_resource_bundle_handler = newCResourceBundleHandlerT((*C.cef_resource_bundle_handler_t)(gop), byApp, true)
 }
 
 // Go type CResourceBundleHandlerT wraps cef type *C.cef_resource_bundle_handler_t
-func newCResourceBundleHandlerT(p *C.cef_resource_bundle_handler_t, countUp bool) *CResourceBundleHandlerT {
+func newCResourceBundleHandlerT(p *C.cef_resource_bundle_handler_t, unrefedBy unrefedBy, needsUnref bool) *CResourceBundleHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T188.1:")
 	pc := (*cCResourceBundleHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_resource_bundle_handler := &CResourceBundleHandlerT{noCopy{}, pc}
+	go_resource_bundle_handler := &CResourceBundleHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_resource_bundle_handler, func(g *CResourceBundleHandlerT) {
-		if g.pc_resource_bundle_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_resource_bundle_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_resource_bundle_handler), "T188.2:")
 			BaseRelease(g.pc_resource_bundle_handler)
 		}
 	})
+
 	return go_resource_bundle_handler
 }
 
@@ -21828,13 +26733,15 @@ func (p *cCResourceBundleHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 }
 
 func (resource_bundle_handler *CResourceBundleHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(resource_bundle_handler.pc_resource_bundle_handler)
+	if resource_bundle_handler == nil {
+		return
+	}
+	if resource_bundle_handler.needsUnref && resource_bundle_handler.beUnrefed == byApp {
+		ret = BaseRelease(resource_bundle_handler.pc_resource_bundle_handler)
+		resource_bundle_handler.beUnrefed = unrefed
+		resource_bundle_handler.needsUnref = false
+	}
 	resource_bundle_handler.pc_resource_bundle_handler = nil
-	return ret
-}
-
-func (resource_bundle_handler *CResourceBundleHandlerT) release() (ret bool) {
-	ret = BaseRelease(resource_bundle_handler.pc_resource_bundle_handler)
 	return ret
 }
 
@@ -21913,7 +26820,13 @@ func AllocCResourceBundleHandlerT() *CResourceBundleHandlerT {
 		delete(resource_bundle_handler_handlers.get_data_resource_for_scale_handler, cgop)
 	}))
 
-	return newCResourceBundleHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCResourceBundleHandlerT(cefp, byApp, true)
+}
+
+// BindCResourceBundleHandlerT allocates CResourceBundleHandlerT, construct and bind it
+func BindCResourceBundleHandlerT(a interface{}) *CResourceBundleHandlerT {
+	return AllocCResourceBundleHandlerT().Bind(a)
 }
 
 func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CResourceBundleHandlerT {
@@ -21923,7 +26836,7 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CRe
 	cp := resource_bundle_handler.pc_resource_bundle_handler
 	if oldGoObj, ok := resource_bundle_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CResourceBundleHandlerTAccessor); ok {
-			oldAcc.SetCResourceBundleHandlerT(nil)
+			oldAcc.setCResourceBundleHandlerT(nil)
 		}
 	}
 	resource_bundle_handler_handlers.handler[cp] = a
@@ -21947,7 +26860,7 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CRe
 	}
 
 	if accessor, ok := a.(CResourceBundleHandlerTAccessor); ok {
-		accessor.SetCResourceBundleHandlerT(resource_bundle_handler)
+		accessor.setCResourceBundleHandlerT(resource_bundle_handler)
 		Logf("T188.5:")
 	}
 
@@ -21955,21 +26868,26 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Bind(a interface{}) *CRe
 }
 
 func (resource_bundle_handler *CResourceBundleHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CResourceBundleHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_bundle_handler.pc_resource_bundle_handler
-	if goHandler, ok := resource_bundle_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CResourceBundleHandlerTAccessor); ok1 {
-			accessor.SetCResourceBundleHandlerT(nil)
+		cp := resource_bundle_handler.pc_resource_bundle_handler
+		if goHandler, ok := resource_bundle_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CResourceBundleHandlerTAccessor)
 		}
+		delete(resource_bundle_handler_handlers.handler, cp)
+
+		delete(resource_bundle_handler_handlers.get_localized_string_handler, cp)
+		delete(resource_bundle_handler_handlers.get_data_resource_handler, cp)
+		delete(resource_bundle_handler_handlers.get_data_resource_for_scale_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCResourceBundleHandlerT(nil)
 	}
-	delete(resource_bundle_handler_handlers.handler, cp)
-
-	delete(resource_bundle_handler_handlers.get_localized_string_handler, cp)
-	delete(resource_bundle_handler_handlers.get_data_resource_handler, cp)
-	delete(resource_bundle_handler_handlers.get_data_resource_for_scale_handler, cp)
-
 }
 
 func (resource_bundle_handler *CResourceBundleHandlerT) Handler() interface{} {
@@ -21992,6 +26910,8 @@ type cCResourceSkipCallbackT C.cef_resource_skip_callback_t
 type CResourceSkipCallbackT struct {
 	noCopy                    noCopy
 	pc_resource_skip_callback *cCResourceSkipCallbackT
+	needsUnref                bool
+	beUnrefed                 unrefedBy
 }
 
 type RefToCResourceSkipCallbackT struct {
@@ -22000,36 +26920,82 @@ type RefToCResourceSkipCallbackT struct {
 
 type CResourceSkipCallbackTAccessor interface {
 	GetCResourceSkipCallbackT() *CResourceSkipCallbackT
-	SetCResourceSkipCallbackT(*CResourceSkipCallbackT) (oldValue *CResourceSkipCallbackT)
+	setCResourceSkipCallbackT(*CResourceSkipCallbackT)
+	// TakeOverCResourceSkipCallbackT(*CResourceSkipCallbackT)
+	// NewRefCResourceSkipCallbackT(*CResourceSkipCallbackT)
 }
 
 func (r RefToCResourceSkipCallbackT) GetCResourceSkipCallbackT() *CResourceSkipCallbackT {
 	return r.p_resource_skip_callback
 }
 
-func (r *RefToCResourceSkipCallbackT) SetCResourceSkipCallbackT(p *CResourceSkipCallbackT) (prevValue *CResourceSkipCallbackT) {
-	prevValue = r.p_resource_skip_callback
+func (r *RefToCResourceSkipCallbackT) setCResourceSkipCallbackT(p *CResourceSkipCallbackT) {
+	// prevValue = r.p_resource_skip_callback
+	r.p_resource_skip_callback.ForceUnref()
 	r.p_resource_skip_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCResourceSkipCallbackT) TakeOverCResourceSkipCallbackT(src *CResourceSkipCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_skip_callback.ForceUnref()
+	gop := src.pc_resource_skip_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_resource_skip_callback = newCResourceSkipCallbackT((*C.cef_resource_skip_callback_t)(gop), byApp, true)
+}
+
+func PassCResourceSkipCallbackT(p *CResourceSkipCallbackT) (ret *CResourceSkipCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_resource_skip_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCResourceSkipCallbackT((*C.cef_resource_skip_callback_t)(p.pc_resource_skip_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCResourceSkipCallbackT) NewRefCResourceSkipCallbackT(p *CResourceSkipCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_skip_callback.ForceUnref()
+	gop := p.pc_resource_skip_callback
+	BaseAddRef(gop)
+	r.p_resource_skip_callback = newCResourceSkipCallbackT((*C.cef_resource_skip_callback_t)(gop), byApp, true)
 }
 
 // Go type CResourceSkipCallbackT wraps cef type *C.cef_resource_skip_callback_t
-func newCResourceSkipCallbackT(p *C.cef_resource_skip_callback_t, countUp bool) *CResourceSkipCallbackT {
+func newCResourceSkipCallbackT(p *C.cef_resource_skip_callback_t, unrefedBy unrefedBy, needsUnref bool) *CResourceSkipCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T189.1:")
 	pc := (*cCResourceSkipCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_resource_skip_callback := &CResourceSkipCallbackT{noCopy{}, pc}
+	go_resource_skip_callback := &CResourceSkipCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_resource_skip_callback, func(g *CResourceSkipCallbackT) {
-		if g.pc_resource_skip_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_resource_skip_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_resource_skip_callback), "T189.2:")
 			BaseRelease(g.pc_resource_skip_callback)
 		}
 	})
+
 	return go_resource_skip_callback
 }
 
@@ -22043,13 +27009,15 @@ func (p *cCResourceSkipCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 }
 
 func (resource_skip_callback *CResourceSkipCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(resource_skip_callback.pc_resource_skip_callback)
+	if resource_skip_callback == nil {
+		return
+	}
+	if resource_skip_callback.needsUnref && resource_skip_callback.beUnrefed == byApp {
+		ret = BaseRelease(resource_skip_callback.pc_resource_skip_callback)
+		resource_skip_callback.beUnrefed = unrefed
+		resource_skip_callback.needsUnref = false
+	}
 	resource_skip_callback.pc_resource_skip_callback = nil
-	return ret
-}
-
-func (resource_skip_callback *CResourceSkipCallbackT) release() (ret bool) {
-	ret = BaseRelease(resource_skip_callback.pc_resource_skip_callback)
 	return ret
 }
 
@@ -22077,6 +27045,8 @@ type cCResourceReadCallbackT C.cef_resource_read_callback_t
 type CResourceReadCallbackT struct {
 	noCopy                    noCopy
 	pc_resource_read_callback *cCResourceReadCallbackT
+	needsUnref                bool
+	beUnrefed                 unrefedBy
 }
 
 type RefToCResourceReadCallbackT struct {
@@ -22085,36 +27055,82 @@ type RefToCResourceReadCallbackT struct {
 
 type CResourceReadCallbackTAccessor interface {
 	GetCResourceReadCallbackT() *CResourceReadCallbackT
-	SetCResourceReadCallbackT(*CResourceReadCallbackT) (oldValue *CResourceReadCallbackT)
+	setCResourceReadCallbackT(*CResourceReadCallbackT)
+	// TakeOverCResourceReadCallbackT(*CResourceReadCallbackT)
+	// NewRefCResourceReadCallbackT(*CResourceReadCallbackT)
 }
 
 func (r RefToCResourceReadCallbackT) GetCResourceReadCallbackT() *CResourceReadCallbackT {
 	return r.p_resource_read_callback
 }
 
-func (r *RefToCResourceReadCallbackT) SetCResourceReadCallbackT(p *CResourceReadCallbackT) (prevValue *CResourceReadCallbackT) {
-	prevValue = r.p_resource_read_callback
+func (r *RefToCResourceReadCallbackT) setCResourceReadCallbackT(p *CResourceReadCallbackT) {
+	// prevValue = r.p_resource_read_callback
+	r.p_resource_read_callback.ForceUnref()
 	r.p_resource_read_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCResourceReadCallbackT) TakeOverCResourceReadCallbackT(src *CResourceReadCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_read_callback.ForceUnref()
+	gop := src.pc_resource_read_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_resource_read_callback = newCResourceReadCallbackT((*C.cef_resource_read_callback_t)(gop), byApp, true)
+}
+
+func PassCResourceReadCallbackT(p *CResourceReadCallbackT) (ret *CResourceReadCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_resource_read_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCResourceReadCallbackT((*C.cef_resource_read_callback_t)(p.pc_resource_read_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCResourceReadCallbackT) NewRefCResourceReadCallbackT(p *CResourceReadCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_read_callback.ForceUnref()
+	gop := p.pc_resource_read_callback
+	BaseAddRef(gop)
+	r.p_resource_read_callback = newCResourceReadCallbackT((*C.cef_resource_read_callback_t)(gop), byApp, true)
 }
 
 // Go type CResourceReadCallbackT wraps cef type *C.cef_resource_read_callback_t
-func newCResourceReadCallbackT(p *C.cef_resource_read_callback_t, countUp bool) *CResourceReadCallbackT {
+func newCResourceReadCallbackT(p *C.cef_resource_read_callback_t, unrefedBy unrefedBy, needsUnref bool) *CResourceReadCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T190.1:")
 	pc := (*cCResourceReadCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_resource_read_callback := &CResourceReadCallbackT{noCopy{}, pc}
+	go_resource_read_callback := &CResourceReadCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_resource_read_callback, func(g *CResourceReadCallbackT) {
-		if g.pc_resource_read_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_resource_read_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_resource_read_callback), "T190.2:")
 			BaseRelease(g.pc_resource_read_callback)
 		}
 	})
+
 	return go_resource_read_callback
 }
 
@@ -22128,13 +27144,15 @@ func (p *cCResourceReadCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 }
 
 func (resource_read_callback *CResourceReadCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(resource_read_callback.pc_resource_read_callback)
+	if resource_read_callback == nil {
+		return
+	}
+	if resource_read_callback.needsUnref && resource_read_callback.beUnrefed == byApp {
+		ret = BaseRelease(resource_read_callback.pc_resource_read_callback)
+		resource_read_callback.beUnrefed = unrefed
+		resource_read_callback.needsUnref = false
+	}
 	resource_read_callback.pc_resource_read_callback = nil
-	return ret
-}
-
-func (resource_read_callback *CResourceReadCallbackT) release() (ret bool) {
-	ret = BaseRelease(resource_read_callback.pc_resource_read_callback)
 	return ret
 }
 
@@ -22164,6 +27182,8 @@ type cCResourceHandlerT C.cef_resource_handler_t
 type CResourceHandlerT struct {
 	noCopy              noCopy
 	pc_resource_handler *cCResourceHandlerT
+	needsUnref          bool
+	beUnrefed           unrefedBy
 }
 
 type RefToCResourceHandlerT struct {
@@ -22172,36 +27192,82 @@ type RefToCResourceHandlerT struct {
 
 type CResourceHandlerTAccessor interface {
 	GetCResourceHandlerT() *CResourceHandlerT
-	SetCResourceHandlerT(*CResourceHandlerT) (oldValue *CResourceHandlerT)
+	setCResourceHandlerT(*CResourceHandlerT)
+	// TakeOverCResourceHandlerT(*CResourceHandlerT)
+	// NewRefCResourceHandlerT(*CResourceHandlerT)
 }
 
 func (r RefToCResourceHandlerT) GetCResourceHandlerT() *CResourceHandlerT {
 	return r.p_resource_handler
 }
 
-func (r *RefToCResourceHandlerT) SetCResourceHandlerT(p *CResourceHandlerT) (prevValue *CResourceHandlerT) {
-	prevValue = r.p_resource_handler
+func (r *RefToCResourceHandlerT) setCResourceHandlerT(p *CResourceHandlerT) {
+	// prevValue = r.p_resource_handler
+	r.p_resource_handler.ForceUnref()
 	r.p_resource_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCResourceHandlerT) TakeOverCResourceHandlerT(src *CResourceHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_handler.ForceUnref()
+	gop := src.pc_resource_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_resource_handler = newCResourceHandlerT((*C.cef_resource_handler_t)(gop), byApp, true)
+}
+
+func PassCResourceHandlerT(p *CResourceHandlerT) (ret *CResourceHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_resource_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCResourceHandlerT((*C.cef_resource_handler_t)(p.pc_resource_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCResourceHandlerT) NewRefCResourceHandlerT(p *CResourceHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_handler.ForceUnref()
+	gop := p.pc_resource_handler
+	BaseAddRef(gop)
+	r.p_resource_handler = newCResourceHandlerT((*C.cef_resource_handler_t)(gop), byApp, true)
 }
 
 // Go type CResourceHandlerT wraps cef type *C.cef_resource_handler_t
-func newCResourceHandlerT(p *C.cef_resource_handler_t, countUp bool) *CResourceHandlerT {
+func newCResourceHandlerT(p *C.cef_resource_handler_t, unrefedBy unrefedBy, needsUnref bool) *CResourceHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T191.1:")
 	pc := (*cCResourceHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_resource_handler := &CResourceHandlerT{noCopy{}, pc}
+	go_resource_handler := &CResourceHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_resource_handler, func(g *CResourceHandlerT) {
-		if g.pc_resource_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_resource_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_resource_handler), "T191.2:")
 			BaseRelease(g.pc_resource_handler)
 		}
 	})
+
 	return go_resource_handler
 }
 
@@ -22215,13 +27281,15 @@ func (p *cCResourceHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (resource_handler *CResourceHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(resource_handler.pc_resource_handler)
+	if resource_handler == nil {
+		return
+	}
+	if resource_handler.needsUnref && resource_handler.beUnrefed == byApp {
+		ret = BaseRelease(resource_handler.pc_resource_handler)
+		resource_handler.beUnrefed = unrefed
+		resource_handler.needsUnref = false
+	}
 	resource_handler.pc_resource_handler = nil
-	return ret
-}
-
-func (resource_handler *CResourceHandlerT) release() (ret bool) {
-	ret = BaseRelease(resource_handler.pc_resource_handler)
 	return ret
 }
 
@@ -22321,23 +27389,6 @@ type CResourceHandlerTReadHandler interface {
 }
 
 ///
-// Read response data. If data is available immediately copy up to
-// |bytes_to_read| bytes into |data_out|, set |bytes_read| to the number of
-// bytes copied, and return true (1). To read the data at a later time set
-// |bytes_read| to 0, return true (1) and call cef_callback_t::cont() when the
-// data is available. To indicate response completion return false (0).
-//
-// WARNING: This function is deprecated. Use Skip and Read instead.
-///
-type ReadResponseHandler interface {
-	ReadResponse(
-		self *CResourceHandlerT,
-		data_out []byte,
-		callback *CCallbackT,
-	) (ret bool, bytes_read int)
-}
-
-///
 // Request processing has been canceled.
 ///
 type CancelHandler interface {
@@ -22353,7 +27404,6 @@ var resource_handler_handlers = struct {
 	get_response_headers_handler map[*cCResourceHandlerT]GetResponseHeadersHandler
 	skip_handler                 map[*cCResourceHandlerT]SkipHandler
 	read_handler                 map[*cCResourceHandlerT]CResourceHandlerTReadHandler
-	read_response_handler        map[*cCResourceHandlerT]ReadResponseHandler
 	cancel_handler               map[*cCResourceHandlerT]CancelHandler
 }{
 	map[*cCResourceHandlerT]interface{}{},
@@ -22362,7 +27412,6 @@ var resource_handler_handlers = struct {
 	map[*cCResourceHandlerT]GetResponseHeadersHandler{},
 	map[*cCResourceHandlerT]SkipHandler{},
 	map[*cCResourceHandlerT]CResourceHandlerTReadHandler{},
-	map[*cCResourceHandlerT]ReadResponseHandler{},
 	map[*cCResourceHandlerT]CancelHandler{},
 }
 
@@ -22385,11 +27434,16 @@ func AllocCResourceHandlerT() *CResourceHandlerT {
 		delete(resource_handler_handlers.get_response_headers_handler, cgop)
 		delete(resource_handler_handlers.skip_handler, cgop)
 		delete(resource_handler_handlers.read_handler, cgop)
-		delete(resource_handler_handlers.read_response_handler, cgop)
 		delete(resource_handler_handlers.cancel_handler, cgop)
 	}))
 
-	return newCResourceHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCResourceHandlerT(cefp, byApp, true)
+}
+
+// BindCResourceHandlerT allocates CResourceHandlerT, construct and bind it
+func BindCResourceHandlerT(a interface{}) *CResourceHandlerT {
+	return AllocCResourceHandlerT().Bind(a)
 }
 
 func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandlerT {
@@ -22399,7 +27453,7 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 	cp := resource_handler.pc_resource_handler
 	if oldGoObj, ok := resource_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CResourceHandlerTAccessor); ok {
-			oldAcc.SetCResourceHandlerT(nil)
+			oldAcc.setCResourceHandlerT(nil)
 		}
 	}
 	resource_handler_handlers.handler[cp] = a
@@ -22434,12 +27488,6 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 		delete(resource_handler_handlers.read_handler, cp)
 	}
 
-	if h, ok := a.(ReadResponseHandler); ok {
-		resource_handler_handlers.read_response_handler[cp] = h
-	} else {
-		delete(resource_handler_handlers.read_response_handler, cp)
-	}
-
 	if h, ok := a.(CancelHandler); ok {
 		resource_handler_handlers.cancel_handler[cp] = h
 	} else {
@@ -22447,7 +27495,7 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 	}
 
 	if accessor, ok := a.(CResourceHandlerTAccessor); ok {
-		accessor.SetCResourceHandlerT(resource_handler)
+		accessor.setCResourceHandlerT(resource_handler)
 		Logf("T191.5:")
 	}
 
@@ -22455,25 +27503,29 @@ func (resource_handler *CResourceHandlerT) Bind(a interface{}) *CResourceHandler
 }
 
 func (resource_handler *CResourceHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CResourceHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_handler.pc_resource_handler
-	if goHandler, ok := resource_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CResourceHandlerTAccessor); ok1 {
-			accessor.SetCResourceHandlerT(nil)
+		cp := resource_handler.pc_resource_handler
+		if goHandler, ok := resource_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CResourceHandlerTAccessor)
 		}
+		delete(resource_handler_handlers.handler, cp)
+
+		delete(resource_handler_handlers.open_handler, cp)
+		delete(resource_handler_handlers.process_request_handler, cp)
+		delete(resource_handler_handlers.get_response_headers_handler, cp)
+		delete(resource_handler_handlers.skip_handler, cp)
+		delete(resource_handler_handlers.read_handler, cp)
+		delete(resource_handler_handlers.cancel_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCResourceHandlerT(nil)
 	}
-	delete(resource_handler_handlers.handler, cp)
-
-	delete(resource_handler_handlers.open_handler, cp)
-	delete(resource_handler_handlers.process_request_handler, cp)
-	delete(resource_handler_handlers.get_response_headers_handler, cp)
-	delete(resource_handler_handlers.skip_handler, cp)
-	delete(resource_handler_handlers.read_handler, cp)
-	delete(resource_handler_handlers.read_response_handler, cp)
-	delete(resource_handler_handlers.cancel_handler, cp)
-
 }
 
 func (resource_handler *CResourceHandlerT) Handler() interface{} {
@@ -22498,6 +27550,8 @@ type cCResourceRequestHandlerT C.cef_resource_request_handler_t
 type CResourceRequestHandlerT struct {
 	noCopy                      noCopy
 	pc_resource_request_handler *cCResourceRequestHandlerT
+	needsUnref                  bool
+	beUnrefed                   unrefedBy
 }
 
 type RefToCResourceRequestHandlerT struct {
@@ -22506,36 +27560,82 @@ type RefToCResourceRequestHandlerT struct {
 
 type CResourceRequestHandlerTAccessor interface {
 	GetCResourceRequestHandlerT() *CResourceRequestHandlerT
-	SetCResourceRequestHandlerT(*CResourceRequestHandlerT) (oldValue *CResourceRequestHandlerT)
+	setCResourceRequestHandlerT(*CResourceRequestHandlerT)
+	// TakeOverCResourceRequestHandlerT(*CResourceRequestHandlerT)
+	// NewRefCResourceRequestHandlerT(*CResourceRequestHandlerT)
 }
 
 func (r RefToCResourceRequestHandlerT) GetCResourceRequestHandlerT() *CResourceRequestHandlerT {
 	return r.p_resource_request_handler
 }
 
-func (r *RefToCResourceRequestHandlerT) SetCResourceRequestHandlerT(p *CResourceRequestHandlerT) (prevValue *CResourceRequestHandlerT) {
-	prevValue = r.p_resource_request_handler
+func (r *RefToCResourceRequestHandlerT) setCResourceRequestHandlerT(p *CResourceRequestHandlerT) {
+	// prevValue = r.p_resource_request_handler
+	r.p_resource_request_handler.ForceUnref()
 	r.p_resource_request_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCResourceRequestHandlerT) TakeOverCResourceRequestHandlerT(src *CResourceRequestHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_request_handler.ForceUnref()
+	gop := src.pc_resource_request_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_resource_request_handler = newCResourceRequestHandlerT((*C.cef_resource_request_handler_t)(gop), byApp, true)
+}
+
+func PassCResourceRequestHandlerT(p *CResourceRequestHandlerT) (ret *CResourceRequestHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_resource_request_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCResourceRequestHandlerT((*C.cef_resource_request_handler_t)(p.pc_resource_request_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCResourceRequestHandlerT) NewRefCResourceRequestHandlerT(p *CResourceRequestHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_resource_request_handler.ForceUnref()
+	gop := p.pc_resource_request_handler
+	BaseAddRef(gop)
+	r.p_resource_request_handler = newCResourceRequestHandlerT((*C.cef_resource_request_handler_t)(gop), byApp, true)
 }
 
 // Go type CResourceRequestHandlerT wraps cef type *C.cef_resource_request_handler_t
-func newCResourceRequestHandlerT(p *C.cef_resource_request_handler_t, countUp bool) *CResourceRequestHandlerT {
+func newCResourceRequestHandlerT(p *C.cef_resource_request_handler_t, unrefedBy unrefedBy, needsUnref bool) *CResourceRequestHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T192.1:")
 	pc := (*cCResourceRequestHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_resource_request_handler := &CResourceRequestHandlerT{noCopy{}, pc}
+	go_resource_request_handler := &CResourceRequestHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_resource_request_handler, func(g *CResourceRequestHandlerT) {
-		if g.pc_resource_request_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_resource_request_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_resource_request_handler), "T192.2:")
 			BaseRelease(g.pc_resource_request_handler)
 		}
 	})
+
 	return go_resource_request_handler
 }
 
@@ -22549,13 +27649,15 @@ func (p *cCResourceRequestHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_r
 }
 
 func (resource_request_handler *CResourceRequestHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(resource_request_handler.pc_resource_request_handler)
+	if resource_request_handler == nil {
+		return
+	}
+	if resource_request_handler.needsUnref && resource_request_handler.beUnrefed == byApp {
+		ret = BaseRelease(resource_request_handler.pc_resource_request_handler)
+		resource_request_handler.beUnrefed = unrefed
+		resource_request_handler.needsUnref = false
+	}
 	resource_request_handler.pc_resource_request_handler = nil
-	return ret
-}
-
-func (resource_request_handler *CResourceRequestHandlerT) release() (ret bool) {
-	ret = BaseRelease(resource_request_handler.pc_resource_request_handler)
 	return ret
 }
 
@@ -22767,7 +27869,13 @@ func AllocCResourceRequestHandlerT() *CResourceRequestHandlerT {
 		delete(resource_request_handler_handlers.on_protocol_execution_handler, cgop)
 	}))
 
-	return newCResourceRequestHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCResourceRequestHandlerT(cefp, byApp, true)
+}
+
+// BindCResourceRequestHandlerT allocates CResourceRequestHandlerT, construct and bind it
+func BindCResourceRequestHandlerT(a interface{}) *CResourceRequestHandlerT {
+	return AllocCResourceRequestHandlerT().Bind(a)
 }
 
 func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *CResourceRequestHandlerT {
@@ -22777,7 +27885,7 @@ func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *C
 	cp := resource_request_handler.pc_resource_request_handler
 	if oldGoObj, ok := resource_request_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CResourceRequestHandlerTAccessor); ok {
-			oldAcc.SetCResourceRequestHandlerT(nil)
+			oldAcc.setCResourceRequestHandlerT(nil)
 		}
 	}
 	resource_request_handler_handlers.handler[cp] = a
@@ -22831,7 +27939,7 @@ func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *C
 	}
 
 	if accessor, ok := a.(CResourceRequestHandlerTAccessor); ok {
-		accessor.SetCResourceRequestHandlerT(resource_request_handler)
+		accessor.setCResourceRequestHandlerT(resource_request_handler)
 		Logf("T192.5:")
 	}
 
@@ -22839,26 +27947,31 @@ func (resource_request_handler *CResourceRequestHandlerT) Bind(a interface{}) *C
 }
 
 func (resource_request_handler *CResourceRequestHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CResourceRequestHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := resource_request_handler.pc_resource_request_handler
-	if goHandler, ok := resource_request_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CResourceRequestHandlerTAccessor); ok1 {
-			accessor.SetCResourceRequestHandlerT(nil)
+		cp := resource_request_handler.pc_resource_request_handler
+		if goHandler, ok := resource_request_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CResourceRequestHandlerTAccessor)
 		}
+		delete(resource_request_handler_handlers.handler, cp)
+
+		delete(resource_request_handler_handlers.get_cookie_access_filter_handler, cp)
+		delete(resource_request_handler_handlers.on_before_resource_load_handler, cp)
+		delete(resource_request_handler_handlers.get_resource_handler_handler, cp)
+		delete(resource_request_handler_handlers.on_resource_redirect_handler, cp)
+		delete(resource_request_handler_handlers.on_resource_response_handler, cp)
+		delete(resource_request_handler_handlers.get_resource_response_filter_handler, cp)
+		delete(resource_request_handler_handlers.on_resource_load_complete_handler, cp)
+		delete(resource_request_handler_handlers.on_protocol_execution_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCResourceRequestHandlerT(nil)
 	}
-	delete(resource_request_handler_handlers.handler, cp)
-
-	delete(resource_request_handler_handlers.get_cookie_access_filter_handler, cp)
-	delete(resource_request_handler_handlers.on_before_resource_load_handler, cp)
-	delete(resource_request_handler_handlers.get_resource_handler_handler, cp)
-	delete(resource_request_handler_handlers.on_resource_redirect_handler, cp)
-	delete(resource_request_handler_handlers.on_resource_response_handler, cp)
-	delete(resource_request_handler_handlers.get_resource_response_filter_handler, cp)
-	delete(resource_request_handler_handlers.on_resource_load_complete_handler, cp)
-	delete(resource_request_handler_handlers.on_protocol_execution_handler, cp)
-
 }
 
 func (resource_request_handler *CResourceRequestHandlerT) Handler() interface{} {
@@ -22881,6 +27994,8 @@ type cCCookieAccessFilterT C.cef_cookie_access_filter_t
 type CCookieAccessFilterT struct {
 	noCopy                  noCopy
 	pc_cookie_access_filter *cCCookieAccessFilterT
+	needsUnref              bool
+	beUnrefed               unrefedBy
 }
 
 type RefToCCookieAccessFilterT struct {
@@ -22889,36 +28004,82 @@ type RefToCCookieAccessFilterT struct {
 
 type CCookieAccessFilterTAccessor interface {
 	GetCCookieAccessFilterT() *CCookieAccessFilterT
-	SetCCookieAccessFilterT(*CCookieAccessFilterT) (oldValue *CCookieAccessFilterT)
+	setCCookieAccessFilterT(*CCookieAccessFilterT)
+	// TakeOverCCookieAccessFilterT(*CCookieAccessFilterT)
+	// NewRefCCookieAccessFilterT(*CCookieAccessFilterT)
 }
 
 func (r RefToCCookieAccessFilterT) GetCCookieAccessFilterT() *CCookieAccessFilterT {
 	return r.p_cookie_access_filter
 }
 
-func (r *RefToCCookieAccessFilterT) SetCCookieAccessFilterT(p *CCookieAccessFilterT) (prevValue *CCookieAccessFilterT) {
-	prevValue = r.p_cookie_access_filter
+func (r *RefToCCookieAccessFilterT) setCCookieAccessFilterT(p *CCookieAccessFilterT) {
+	// prevValue = r.p_cookie_access_filter
+	r.p_cookie_access_filter.ForceUnref()
 	r.p_cookie_access_filter = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCCookieAccessFilterT) TakeOverCCookieAccessFilterT(src *CCookieAccessFilterT) {
+	if r == nil {
+		return
+	}
+	r.p_cookie_access_filter.ForceUnref()
+	gop := src.pc_cookie_access_filter
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_cookie_access_filter = newCCookieAccessFilterT((*C.cef_cookie_access_filter_t)(gop), byApp, true)
+}
+
+func PassCCookieAccessFilterT(p *CCookieAccessFilterT) (ret *CCookieAccessFilterT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_cookie_access_filter)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCCookieAccessFilterT((*C.cef_cookie_access_filter_t)(p.pc_cookie_access_filter), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCCookieAccessFilterT) NewRefCCookieAccessFilterT(p *CCookieAccessFilterT) {
+	if r == nil {
+		return
+	}
+	r.p_cookie_access_filter.ForceUnref()
+	gop := p.pc_cookie_access_filter
+	BaseAddRef(gop)
+	r.p_cookie_access_filter = newCCookieAccessFilterT((*C.cef_cookie_access_filter_t)(gop), byApp, true)
 }
 
 // Go type CCookieAccessFilterT wraps cef type *C.cef_cookie_access_filter_t
-func newCCookieAccessFilterT(p *C.cef_cookie_access_filter_t, countUp bool) *CCookieAccessFilterT {
+func newCCookieAccessFilterT(p *C.cef_cookie_access_filter_t, unrefedBy unrefedBy, needsUnref bool) *CCookieAccessFilterT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T193.1:")
 	pc := (*cCCookieAccessFilterT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_cookie_access_filter := &CCookieAccessFilterT{noCopy{}, pc}
+	go_cookie_access_filter := &CCookieAccessFilterT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_cookie_access_filter, func(g *CCookieAccessFilterT) {
-		if g.pc_cookie_access_filter != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_cookie_access_filter != nil {
 			Tracef(unsafe.Pointer(g.pc_cookie_access_filter), "T193.2:")
 			BaseRelease(g.pc_cookie_access_filter)
 		}
 	})
+
 	return go_cookie_access_filter
 }
 
@@ -22932,13 +28093,15 @@ func (p *cCCookieAccessFilterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 }
 
 func (cookie_access_filter *CCookieAccessFilterT) ForceUnref() (ret bool) {
-	ret = BaseRelease(cookie_access_filter.pc_cookie_access_filter)
+	if cookie_access_filter == nil {
+		return
+	}
+	if cookie_access_filter.needsUnref && cookie_access_filter.beUnrefed == byApp {
+		ret = BaseRelease(cookie_access_filter.pc_cookie_access_filter)
+		cookie_access_filter.beUnrefed = unrefed
+		cookie_access_filter.needsUnref = false
+	}
 	cookie_access_filter.pc_cookie_access_filter = nil
-	return ret
-}
-
-func (cookie_access_filter *CCookieAccessFilterT) release() (ret bool) {
-	ret = BaseRelease(cookie_access_filter.pc_cookie_access_filter)
 	return ret
 }
 
@@ -23006,7 +28169,13 @@ func AllocCCookieAccessFilterT() *CCookieAccessFilterT {
 		delete(cookie_access_filter_handlers.can_save_cookie_handler, cgop)
 	}))
 
-	return newCCookieAccessFilterT(cefp, true)
+	BaseAddRef(cgop)
+	return newCCookieAccessFilterT(cefp, byApp, true)
+}
+
+// BindCCookieAccessFilterT allocates CCookieAccessFilterT, construct and bind it
+func BindCCookieAccessFilterT(a interface{}) *CCookieAccessFilterT {
+	return AllocCCookieAccessFilterT().Bind(a)
 }
 
 func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAccessFilterT {
@@ -23016,7 +28185,7 @@ func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAc
 	cp := cookie_access_filter.pc_cookie_access_filter
 	if oldGoObj, ok := cookie_access_filter_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CCookieAccessFilterTAccessor); ok {
-			oldAcc.SetCCookieAccessFilterT(nil)
+			oldAcc.setCCookieAccessFilterT(nil)
 		}
 	}
 	cookie_access_filter_handlers.handler[cp] = a
@@ -23034,7 +28203,7 @@ func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAc
 	}
 
 	if accessor, ok := a.(CCookieAccessFilterTAccessor); ok {
-		accessor.SetCCookieAccessFilterT(cookie_access_filter)
+		accessor.setCCookieAccessFilterT(cookie_access_filter)
 		Logf("T193.5:")
 	}
 
@@ -23042,20 +28211,25 @@ func (cookie_access_filter *CCookieAccessFilterT) Bind(a interface{}) *CCookieAc
 }
 
 func (cookie_access_filter *CCookieAccessFilterT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CCookieAccessFilterTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := cookie_access_filter.pc_cookie_access_filter
-	if goHandler, ok := cookie_access_filter_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CCookieAccessFilterTAccessor); ok1 {
-			accessor.SetCCookieAccessFilterT(nil)
+		cp := cookie_access_filter.pc_cookie_access_filter
+		if goHandler, ok := cookie_access_filter_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CCookieAccessFilterTAccessor)
 		}
+		delete(cookie_access_filter_handlers.handler, cp)
+
+		delete(cookie_access_filter_handlers.can_send_cookie_handler, cp)
+		delete(cookie_access_filter_handlers.can_save_cookie_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCCookieAccessFilterT(nil)
 	}
-	delete(cookie_access_filter_handlers.handler, cp)
-
-	delete(cookie_access_filter_handlers.can_send_cookie_handler, cp)
-	delete(cookie_access_filter_handlers.can_save_cookie_handler, cp)
-
 }
 
 func (cookie_access_filter *CCookieAccessFilterT) Handler() interface{} {
@@ -23079,6 +28253,8 @@ type cCResponseT C.cef_response_t
 type CResponseT struct {
 	noCopy      noCopy
 	pc_response *cCResponseT
+	needsUnref  bool
+	beUnrefed   unrefedBy
 }
 
 type RefToCResponseT struct {
@@ -23087,36 +28263,82 @@ type RefToCResponseT struct {
 
 type CResponseTAccessor interface {
 	GetCResponseT() *CResponseT
-	SetCResponseT(*CResponseT) (oldValue *CResponseT)
+	setCResponseT(*CResponseT)
+	// TakeOverCResponseT(*CResponseT)
+	// NewRefCResponseT(*CResponseT)
 }
 
 func (r RefToCResponseT) GetCResponseT() *CResponseT {
 	return r.p_response
 }
 
-func (r *RefToCResponseT) SetCResponseT(p *CResponseT) (prevValue *CResponseT) {
-	prevValue = r.p_response
+func (r *RefToCResponseT) setCResponseT(p *CResponseT) {
+	// prevValue = r.p_response
+	r.p_response.ForceUnref()
 	r.p_response = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCResponseT) TakeOverCResponseT(src *CResponseT) {
+	if r == nil {
+		return
+	}
+	r.p_response.ForceUnref()
+	gop := src.pc_response
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_response = newCResponseT((*C.cef_response_t)(gop), byApp, true)
+}
+
+func PassCResponseT(p *CResponseT) (ret *CResponseT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_response)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCResponseT((*C.cef_response_t)(p.pc_response), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCResponseT) NewRefCResponseT(p *CResponseT) {
+	if r == nil {
+		return
+	}
+	r.p_response.ForceUnref()
+	gop := p.pc_response
+	BaseAddRef(gop)
+	r.p_response = newCResponseT((*C.cef_response_t)(gop), byApp, true)
 }
 
 // Go type CResponseT wraps cef type *C.cef_response_t
-func newCResponseT(p *C.cef_response_t, countUp bool) *CResponseT {
+func newCResponseT(p *C.cef_response_t, unrefedBy unrefedBy, needsUnref bool) *CResponseT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T194.1:")
 	pc := (*cCResponseT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_response := &CResponseT{noCopy{}, pc}
+	go_response := &CResponseT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_response, func(g *CResponseT) {
-		if g.pc_response != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_response != nil {
 			Tracef(unsafe.Pointer(g.pc_response), "T194.2:")
 			BaseRelease(g.pc_response)
 		}
 	})
+
 	return go_response
 }
 
@@ -23130,13 +28352,15 @@ func (p *cCResponseT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (response *CResponseT) ForceUnref() (ret bool) {
-	ret = BaseRelease(response.pc_response)
+	if response == nil {
+		return
+	}
+	if response.needsUnref && response.beUnrefed == byApp {
+		ret = BaseRelease(response.pc_response)
+		response.beUnrefed = unrefed
+		response.needsUnref = false
+	}
 	response.pc_response = nil
-	return ret
-}
-
-func (response *CResponseT) release() (ret bool) {
-	ret = BaseRelease(response.pc_response)
 	return ret
 }
 
@@ -23158,7 +28382,7 @@ func (self *CResponseT) GetError() (ret CErrorcodeT) {
 
 	cRet := C.cefingo_response_get_error((*C.cef_response_t)(self.pc_response))
 
-	ret = CErrorcodeT(cRet)
+	ret = CErrorcodeT(cRet) // return GoObj
 	return ret
 }
 
@@ -23373,7 +28597,7 @@ func ResponseCreate() (ret *CResponseT) {
 
 	cRet := C.cef_response_create()
 
-	ret = newCResponseT(cRet, false)
+	ret = newCResponseT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -23390,6 +28614,8 @@ type cCResponseFilterT C.cef_response_filter_t
 type CResponseFilterT struct {
 	noCopy             noCopy
 	pc_response_filter *cCResponseFilterT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCResponseFilterT struct {
@@ -23398,36 +28624,82 @@ type RefToCResponseFilterT struct {
 
 type CResponseFilterTAccessor interface {
 	GetCResponseFilterT() *CResponseFilterT
-	SetCResponseFilterT(*CResponseFilterT) (oldValue *CResponseFilterT)
+	setCResponseFilterT(*CResponseFilterT)
+	// TakeOverCResponseFilterT(*CResponseFilterT)
+	// NewRefCResponseFilterT(*CResponseFilterT)
 }
 
 func (r RefToCResponseFilterT) GetCResponseFilterT() *CResponseFilterT {
 	return r.p_response_filter
 }
 
-func (r *RefToCResponseFilterT) SetCResponseFilterT(p *CResponseFilterT) (prevValue *CResponseFilterT) {
-	prevValue = r.p_response_filter
+func (r *RefToCResponseFilterT) setCResponseFilterT(p *CResponseFilterT) {
+	// prevValue = r.p_response_filter
+	r.p_response_filter.ForceUnref()
 	r.p_response_filter = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCResponseFilterT) TakeOverCResponseFilterT(src *CResponseFilterT) {
+	if r == nil {
+		return
+	}
+	r.p_response_filter.ForceUnref()
+	gop := src.pc_response_filter
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_response_filter = newCResponseFilterT((*C.cef_response_filter_t)(gop), byApp, true)
+}
+
+func PassCResponseFilterT(p *CResponseFilterT) (ret *CResponseFilterT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_response_filter)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCResponseFilterT((*C.cef_response_filter_t)(p.pc_response_filter), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCResponseFilterT) NewRefCResponseFilterT(p *CResponseFilterT) {
+	if r == nil {
+		return
+	}
+	r.p_response_filter.ForceUnref()
+	gop := p.pc_response_filter
+	BaseAddRef(gop)
+	r.p_response_filter = newCResponseFilterT((*C.cef_response_filter_t)(gop), byApp, true)
 }
 
 // Go type CResponseFilterT wraps cef type *C.cef_response_filter_t
-func newCResponseFilterT(p *C.cef_response_filter_t, countUp bool) *CResponseFilterT {
+func newCResponseFilterT(p *C.cef_response_filter_t, unrefedBy unrefedBy, needsUnref bool) *CResponseFilterT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T195.1:")
 	pc := (*cCResponseFilterT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_response_filter := &CResponseFilterT{noCopy{}, pc}
+	go_response_filter := &CResponseFilterT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_response_filter, func(g *CResponseFilterT) {
-		if g.pc_response_filter != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_response_filter != nil {
 			Tracef(unsafe.Pointer(g.pc_response_filter), "T195.2:")
 			BaseRelease(g.pc_response_filter)
 		}
 	})
+
 	return go_response_filter
 }
 
@@ -23441,13 +28713,15 @@ func (p *cCResponseFilterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 }
 
 func (response_filter *CResponseFilterT) ForceUnref() (ret bool) {
-	ret = BaseRelease(response_filter.pc_response_filter)
+	if response_filter == nil {
+		return
+	}
+	if response_filter.needsUnref && response_filter.beUnrefed == byApp {
+		ret = BaseRelease(response_filter.pc_response_filter)
+		response_filter.beUnrefed = unrefed
+		response_filter.needsUnref = false
+	}
 	response_filter.pc_response_filter = nil
-	return ret
-}
-
-func (response_filter *CResponseFilterT) release() (ret bool) {
-	ret = BaseRelease(response_filter.pc_response_filter)
 	return ret
 }
 
@@ -23528,7 +28802,13 @@ func AllocCResponseFilterT() *CResponseFilterT {
 		delete(response_filter_handlers.filter_handler, cgop)
 	}))
 
-	return newCResponseFilterT(cefp, true)
+	BaseAddRef(cgop)
+	return newCResponseFilterT(cefp, byApp, true)
+}
+
+// BindCResponseFilterT allocates CResponseFilterT, construct and bind it
+func BindCResponseFilterT(a interface{}) *CResponseFilterT {
+	return AllocCResponseFilterT().Bind(a)
 }
 
 func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
@@ -23538,7 +28818,7 @@ func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
 	cp := response_filter.pc_response_filter
 	if oldGoObj, ok := response_filter_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CResponseFilterTAccessor); ok {
-			oldAcc.SetCResponseFilterT(nil)
+			oldAcc.setCResponseFilterT(nil)
 		}
 	}
 	response_filter_handlers.handler[cp] = a
@@ -23556,7 +28836,7 @@ func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
 	}
 
 	if accessor, ok := a.(CResponseFilterTAccessor); ok {
-		accessor.SetCResponseFilterT(response_filter)
+		accessor.setCResponseFilterT(response_filter)
 		Logf("T195.5:")
 	}
 
@@ -23564,20 +28844,25 @@ func (response_filter *CResponseFilterT) Bind(a interface{}) *CResponseFilterT {
 }
 
 func (response_filter *CResponseFilterT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CResponseFilterTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := response_filter.pc_response_filter
-	if goHandler, ok := response_filter_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CResponseFilterTAccessor); ok1 {
-			accessor.SetCResponseFilterT(nil)
+		cp := response_filter.pc_response_filter
+		if goHandler, ok := response_filter_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CResponseFilterTAccessor)
 		}
+		delete(response_filter_handlers.handler, cp)
+
+		delete(response_filter_handlers.init_filter_handler, cp)
+		delete(response_filter_handlers.filter_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCResponseFilterT(nil)
 	}
-	delete(response_filter_handlers.handler, cp)
-
-	delete(response_filter_handlers.init_filter_handler, cp)
-	delete(response_filter_handlers.filter_handler, cp)
-
 }
 
 func (response_filter *CResponseFilterT) Handler() interface{} {
@@ -23608,17 +28893,39 @@ type RefToCSchemeRegistrarT struct {
 
 type CSchemeRegistrarTAccessor interface {
 	GetCSchemeRegistrarT() *CSchemeRegistrarT
-	SetCSchemeRegistrarT(*CSchemeRegistrarT) (oldValue *CSchemeRegistrarT)
+	setCSchemeRegistrarT(*CSchemeRegistrarT)
+	// TakeOverCSchemeRegistrarT(*CSchemeRegistrarT)
+	// NewRefCSchemeRegistrarT(*CSchemeRegistrarT)
 }
 
 func (r RefToCSchemeRegistrarT) GetCSchemeRegistrarT() *CSchemeRegistrarT {
 	return r.p_scheme_registrar
 }
 
-func (r *RefToCSchemeRegistrarT) SetCSchemeRegistrarT(p *CSchemeRegistrarT) (prevValue *CSchemeRegistrarT) {
-	prevValue = r.p_scheme_registrar
+func (r *RefToCSchemeRegistrarT) setCSchemeRegistrarT(p *CSchemeRegistrarT) {
+	// prevValue = r.p_scheme_registrar
 	r.p_scheme_registrar = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCSchemeRegistrarT) TakeOverCSchemeRegistrarT(src *CSchemeRegistrarT) {
+	if r == nil {
+		return
+	}
+	r.setCSchemeRegistrarT(src)
+}
+
+func PassCSchemeRegistrarT(p *CSchemeRegistrarT) (ret *CSchemeRegistrarT) {
+	ret = p
+
+	return ret
+}
+
+func (r *RefToCSchemeRegistrarT) NewRefCSchemeRegistrarT(p *CSchemeRegistrarT) {
+	if r == nil {
+		return
+	}
+	r.setCSchemeRegistrarT(p)
 }
 
 // Go type CSchemeRegistrarT wraps cef type *C.cef_scheme_registrar_t
@@ -23666,6 +28973,8 @@ type cCSchemeHandlerFactoryT C.cef_scheme_handler_factory_t
 type CSchemeHandlerFactoryT struct {
 	noCopy                    noCopy
 	pc_scheme_handler_factory *cCSchemeHandlerFactoryT
+	needsUnref                bool
+	beUnrefed                 unrefedBy
 }
 
 type RefToCSchemeHandlerFactoryT struct {
@@ -23674,36 +28983,82 @@ type RefToCSchemeHandlerFactoryT struct {
 
 type CSchemeHandlerFactoryTAccessor interface {
 	GetCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT
-	SetCSchemeHandlerFactoryT(*CSchemeHandlerFactoryT) (oldValue *CSchemeHandlerFactoryT)
+	setCSchemeHandlerFactoryT(*CSchemeHandlerFactoryT)
+	// TakeOverCSchemeHandlerFactoryT(*CSchemeHandlerFactoryT)
+	// NewRefCSchemeHandlerFactoryT(*CSchemeHandlerFactoryT)
 }
 
 func (r RefToCSchemeHandlerFactoryT) GetCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
 	return r.p_scheme_handler_factory
 }
 
-func (r *RefToCSchemeHandlerFactoryT) SetCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) (prevValue *CSchemeHandlerFactoryT) {
-	prevValue = r.p_scheme_handler_factory
+func (r *RefToCSchemeHandlerFactoryT) setCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) {
+	// prevValue = r.p_scheme_handler_factory
+	r.p_scheme_handler_factory.ForceUnref()
 	r.p_scheme_handler_factory = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCSchemeHandlerFactoryT) TakeOverCSchemeHandlerFactoryT(src *CSchemeHandlerFactoryT) {
+	if r == nil {
+		return
+	}
+	r.p_scheme_handler_factory.ForceUnref()
+	gop := src.pc_scheme_handler_factory
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_scheme_handler_factory = newCSchemeHandlerFactoryT((*C.cef_scheme_handler_factory_t)(gop), byApp, true)
+}
+
+func PassCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) (ret *CSchemeHandlerFactoryT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_scheme_handler_factory)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCSchemeHandlerFactoryT((*C.cef_scheme_handler_factory_t)(p.pc_scheme_handler_factory), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCSchemeHandlerFactoryT) NewRefCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) {
+	if r == nil {
+		return
+	}
+	r.p_scheme_handler_factory.ForceUnref()
+	gop := p.pc_scheme_handler_factory
+	BaseAddRef(gop)
+	r.p_scheme_handler_factory = newCSchemeHandlerFactoryT((*C.cef_scheme_handler_factory_t)(gop), byApp, true)
 }
 
 // Go type CSchemeHandlerFactoryT wraps cef type *C.cef_scheme_handler_factory_t
-func newCSchemeHandlerFactoryT(p *C.cef_scheme_handler_factory_t, countUp bool) *CSchemeHandlerFactoryT {
+func newCSchemeHandlerFactoryT(p *C.cef_scheme_handler_factory_t, unrefedBy unrefedBy, needsUnref bool) *CSchemeHandlerFactoryT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T197.1:")
 	pc := (*cCSchemeHandlerFactoryT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_scheme_handler_factory := &CSchemeHandlerFactoryT{noCopy{}, pc}
+	go_scheme_handler_factory := &CSchemeHandlerFactoryT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_scheme_handler_factory, func(g *CSchemeHandlerFactoryT) {
-		if g.pc_scheme_handler_factory != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_scheme_handler_factory != nil {
 			Tracef(unsafe.Pointer(g.pc_scheme_handler_factory), "T197.2:")
 			BaseRelease(g.pc_scheme_handler_factory)
 		}
 	})
+
 	return go_scheme_handler_factory
 }
 
@@ -23717,13 +29072,15 @@ func (p *cCSchemeHandlerFactoryT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 }
 
 func (scheme_handler_factory *CSchemeHandlerFactoryT) ForceUnref() (ret bool) {
-	ret = BaseRelease(scheme_handler_factory.pc_scheme_handler_factory)
+	if scheme_handler_factory == nil {
+		return
+	}
+	if scheme_handler_factory.needsUnref && scheme_handler_factory.beUnrefed == byApp {
+		ret = BaseRelease(scheme_handler_factory.pc_scheme_handler_factory)
+		scheme_handler_factory.beUnrefed = unrefed
+		scheme_handler_factory.needsUnref = false
+	}
 	scheme_handler_factory.pc_scheme_handler_factory = nil
-	return ret
-}
-
-func (scheme_handler_factory *CSchemeHandlerFactoryT) release() (ret bool) {
-	ret = BaseRelease(scheme_handler_factory.pc_scheme_handler_factory)
 	return ret
 }
 
@@ -23770,7 +29127,13 @@ func AllocCSchemeHandlerFactoryT() *CSchemeHandlerFactoryT {
 		delete(scheme_handler_factory_handlers.create_handler, cgop)
 	}))
 
-	return newCSchemeHandlerFactoryT(cefp, true)
+	BaseAddRef(cgop)
+	return newCSchemeHandlerFactoryT(cefp, byApp, true)
+}
+
+// BindCSchemeHandlerFactoryT allocates CSchemeHandlerFactoryT, construct and bind it
+func BindCSchemeHandlerFactoryT(a interface{}) *CSchemeHandlerFactoryT {
+	return AllocCSchemeHandlerFactoryT().Bind(a)
 }
 
 func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSchemeHandlerFactoryT {
@@ -23780,7 +29143,7 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 	cp := scheme_handler_factory.pc_scheme_handler_factory
 	if oldGoObj, ok := scheme_handler_factory_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CSchemeHandlerFactoryTAccessor); ok {
-			oldAcc.SetCSchemeHandlerFactoryT(nil)
+			oldAcc.setCSchemeHandlerFactoryT(nil)
 		}
 	}
 	scheme_handler_factory_handlers.handler[cp] = a
@@ -23792,7 +29155,7 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 	}
 
 	if accessor, ok := a.(CSchemeHandlerFactoryTAccessor); ok {
-		accessor.SetCSchemeHandlerFactoryT(scheme_handler_factory)
+		accessor.setCSchemeHandlerFactoryT(scheme_handler_factory)
 		Logf("T197.5:")
 	}
 
@@ -23800,19 +29163,24 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Bind(a interface{}) *CSche
 }
 
 func (scheme_handler_factory *CSchemeHandlerFactoryT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CSchemeHandlerFactoryTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := scheme_handler_factory.pc_scheme_handler_factory
-	if goHandler, ok := scheme_handler_factory_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CSchemeHandlerFactoryTAccessor); ok1 {
-			accessor.SetCSchemeHandlerFactoryT(nil)
+		cp := scheme_handler_factory.pc_scheme_handler_factory
+		if goHandler, ok := scheme_handler_factory_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CSchemeHandlerFactoryTAccessor)
 		}
+		delete(scheme_handler_factory_handlers.handler, cp)
+
+		delete(scheme_handler_factory_handlers.create_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCSchemeHandlerFactoryT(nil)
 	}
-	delete(scheme_handler_factory_handlers.handler, cp)
-
-	delete(scheme_handler_factory_handlers.create_handler, cp)
-
 }
 
 func (scheme_handler_factory *CSchemeHandlerFactoryT) Handler() interface{} {
@@ -23886,6 +29254,8 @@ type cCScrollViewT C.cef_scroll_view_t
 type CScrollViewT struct {
 	noCopy         noCopy
 	pc_scroll_view *cCScrollViewT
+	needsUnref     bool
+	beUnrefed      unrefedBy
 }
 
 type RefToCScrollViewT struct {
@@ -23894,36 +29264,82 @@ type RefToCScrollViewT struct {
 
 type CScrollViewTAccessor interface {
 	GetCScrollViewT() *CScrollViewT
-	SetCScrollViewT(*CScrollViewT) (oldValue *CScrollViewT)
+	setCScrollViewT(*CScrollViewT)
+	// TakeOverCScrollViewT(*CScrollViewT)
+	// NewRefCScrollViewT(*CScrollViewT)
 }
 
 func (r RefToCScrollViewT) GetCScrollViewT() *CScrollViewT {
 	return r.p_scroll_view
 }
 
-func (r *RefToCScrollViewT) SetCScrollViewT(p *CScrollViewT) (prevValue *CScrollViewT) {
-	prevValue = r.p_scroll_view
+func (r *RefToCScrollViewT) setCScrollViewT(p *CScrollViewT) {
+	// prevValue = r.p_scroll_view
+	r.p_scroll_view.ForceUnref()
 	r.p_scroll_view = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCScrollViewT) TakeOverCScrollViewT(src *CScrollViewT) {
+	if r == nil {
+		return
+	}
+	r.p_scroll_view.ForceUnref()
+	gop := src.pc_scroll_view
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_scroll_view = newCScrollViewT((*C.cef_scroll_view_t)(gop), byApp, true)
+}
+
+func PassCScrollViewT(p *CScrollViewT) (ret *CScrollViewT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_scroll_view)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCScrollViewT((*C.cef_scroll_view_t)(p.pc_scroll_view), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCScrollViewT) NewRefCScrollViewT(p *CScrollViewT) {
+	if r == nil {
+		return
+	}
+	r.p_scroll_view.ForceUnref()
+	gop := p.pc_scroll_view
+	BaseAddRef(gop)
+	r.p_scroll_view = newCScrollViewT((*C.cef_scroll_view_t)(gop), byApp, true)
 }
 
 // Go type CScrollViewT wraps cef type *C.cef_scroll_view_t
-func newCScrollViewT(p *C.cef_scroll_view_t, countUp bool) *CScrollViewT {
+func newCScrollViewT(p *C.cef_scroll_view_t, unrefedBy unrefedBy, needsUnref bool) *CScrollViewT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T198.1:")
 	pc := (*cCScrollViewT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_scroll_view := &CScrollViewT{noCopy{}, pc}
+	go_scroll_view := &CScrollViewT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_scroll_view, func(g *CScrollViewT) {
-		if g.pc_scroll_view != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_scroll_view != nil {
 			Tracef(unsafe.Pointer(g.pc_scroll_view), "T198.2:")
 			BaseRelease(g.pc_scroll_view)
 		}
 	})
+
 	return go_scroll_view
 }
 
@@ -23937,20 +29353,23 @@ func (p *cCScrollViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }
 
 func (scroll_view *CScrollViewT) ForceUnref() (ret bool) {
-	ret = BaseRelease(scroll_view.pc_scroll_view)
+	if scroll_view == nil {
+		return
+	}
+	if scroll_view.needsUnref && scroll_view.beUnrefed == byApp {
+		ret = BaseRelease(scroll_view.pc_scroll_view)
+		scroll_view.beUnrefed = unrefed
+		scroll_view.needsUnref = false
+	}
 	scroll_view.pc_scroll_view = nil
-	return ret
-}
-
-func (scroll_view *CScrollViewT) release() (ret bool) {
-	ret = BaseRelease(scroll_view.pc_scroll_view)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewT
 func (scroll_view *CScrollViewT) ToCViewT() *CViewT {
 	p := (*C.cef_view_t)(unsafe.Pointer(scroll_view.pc_scroll_view))
-	return newCViewT(p, true)
+	BaseAddRef(scroll_view.pc_scroll_view)
+	return newCViewT(p, byApp, true)
 }
 
 ///
@@ -23977,7 +29396,7 @@ func (self *CScrollViewT) GetContentView() (ret *CViewT) {
 
 	cRet := C.cefingo_scroll_view_get_content_view((*C.cef_scroll_view_t)(self.pc_scroll_view))
 
-	ret = newCViewT(cRet, false)
+	ret = newCViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -23988,7 +29407,7 @@ func (self *CScrollViewT) GetVisibleContentRect() (ret CRectT) {
 
 	cRet := C.cefingo_scroll_view_get_visible_content_rect((*C.cef_scroll_view_t)(self.pc_scroll_view))
 
-	ret = (CRectT)(cRet)
+	ret = (CRectT)(cRet) // return GoObj
 	return ret
 }
 
@@ -24050,7 +29469,7 @@ func ScrollViewCreate(
 
 	cRet := C.cef_scroll_view_create(goTmpdelegate)
 
-	ret = newCScrollViewT(cRet, false)
+	ret = newCScrollViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -24066,6 +29485,8 @@ type cCSslinfoT C.cef_sslinfo_t
 type CSslinfoT struct {
 	noCopy     noCopy
 	pc_sslinfo *cCSslinfoT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCSslinfoT struct {
@@ -24074,36 +29495,82 @@ type RefToCSslinfoT struct {
 
 type CSslinfoTAccessor interface {
 	GetCSslinfoT() *CSslinfoT
-	SetCSslinfoT(*CSslinfoT) (oldValue *CSslinfoT)
+	setCSslinfoT(*CSslinfoT)
+	// TakeOverCSslinfoT(*CSslinfoT)
+	// NewRefCSslinfoT(*CSslinfoT)
 }
 
 func (r RefToCSslinfoT) GetCSslinfoT() *CSslinfoT {
 	return r.p_sslinfo
 }
 
-func (r *RefToCSslinfoT) SetCSslinfoT(p *CSslinfoT) (prevValue *CSslinfoT) {
-	prevValue = r.p_sslinfo
+func (r *RefToCSslinfoT) setCSslinfoT(p *CSslinfoT) {
+	// prevValue = r.p_sslinfo
+	r.p_sslinfo.ForceUnref()
 	r.p_sslinfo = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCSslinfoT) TakeOverCSslinfoT(src *CSslinfoT) {
+	if r == nil {
+		return
+	}
+	r.p_sslinfo.ForceUnref()
+	gop := src.pc_sslinfo
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_sslinfo = newCSslinfoT((*C.cef_sslinfo_t)(gop), byApp, true)
+}
+
+func PassCSslinfoT(p *CSslinfoT) (ret *CSslinfoT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_sslinfo)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCSslinfoT((*C.cef_sslinfo_t)(p.pc_sslinfo), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCSslinfoT) NewRefCSslinfoT(p *CSslinfoT) {
+	if r == nil {
+		return
+	}
+	r.p_sslinfo.ForceUnref()
+	gop := p.pc_sslinfo
+	BaseAddRef(gop)
+	r.p_sslinfo = newCSslinfoT((*C.cef_sslinfo_t)(gop), byApp, true)
 }
 
 // Go type CSslinfoT wraps cef type *C.cef_sslinfo_t
-func newCSslinfoT(p *C.cef_sslinfo_t, countUp bool) *CSslinfoT {
+func newCSslinfoT(p *C.cef_sslinfo_t, unrefedBy unrefedBy, needsUnref bool) *CSslinfoT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T199.1:")
 	pc := (*cCSslinfoT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_sslinfo := &CSslinfoT{noCopy{}, pc}
+	go_sslinfo := &CSslinfoT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_sslinfo, func(g *CSslinfoT) {
-		if g.pc_sslinfo != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_sslinfo != nil {
 			Tracef(unsafe.Pointer(g.pc_sslinfo), "T199.2:")
 			BaseRelease(g.pc_sslinfo)
 		}
 	})
+
 	return go_sslinfo
 }
 
@@ -24117,13 +29584,15 @@ func (p *cCSslinfoT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (sslinfo *CSslinfoT) ForceUnref() (ret bool) {
-	ret = BaseRelease(sslinfo.pc_sslinfo)
+	if sslinfo == nil {
+		return
+	}
+	if sslinfo.needsUnref && sslinfo.beUnrefed == byApp {
+		ret = BaseRelease(sslinfo.pc_sslinfo)
+		sslinfo.beUnrefed = unrefed
+		sslinfo.needsUnref = false
+	}
 	sslinfo.pc_sslinfo = nil
-	return ret
-}
-
-func (sslinfo *CSslinfoT) release() (ret bool) {
-	ret = BaseRelease(sslinfo.pc_sslinfo)
 	return ret
 }
 
@@ -24135,7 +29604,7 @@ func (self *CSslinfoT) GetCertStatus() (ret CCertStatusT) {
 
 	cRet := C.cefingo_sslinfo_get_cert_status((*C.cef_sslinfo_t)(self.pc_sslinfo))
 
-	ret = CCertStatusT(cRet)
+	ret = CCertStatusT(cRet) // return GoObj
 	return ret
 }
 
@@ -24146,7 +29615,7 @@ func (self *CSslinfoT) GetX509certificate() (ret *CX509certificateT) {
 
 	cRet := C.cefingo_sslinfo_get_x509certificate((*C.cef_sslinfo_t)(self.pc_sslinfo))
 
-	ret = newCX509certificateT(cRet, false)
+	ret = newCX509certificateT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -24175,6 +29644,8 @@ type cCSslstatusT C.cef_sslstatus_t
 type CSslstatusT struct {
 	noCopy       noCopy
 	pc_sslstatus *cCSslstatusT
+	needsUnref   bool
+	beUnrefed    unrefedBy
 }
 
 type RefToCSslstatusT struct {
@@ -24183,36 +29654,82 @@ type RefToCSslstatusT struct {
 
 type CSslstatusTAccessor interface {
 	GetCSslstatusT() *CSslstatusT
-	SetCSslstatusT(*CSslstatusT) (oldValue *CSslstatusT)
+	setCSslstatusT(*CSslstatusT)
+	// TakeOverCSslstatusT(*CSslstatusT)
+	// NewRefCSslstatusT(*CSslstatusT)
 }
 
 func (r RefToCSslstatusT) GetCSslstatusT() *CSslstatusT {
 	return r.p_sslstatus
 }
 
-func (r *RefToCSslstatusT) SetCSslstatusT(p *CSslstatusT) (prevValue *CSslstatusT) {
-	prevValue = r.p_sslstatus
+func (r *RefToCSslstatusT) setCSslstatusT(p *CSslstatusT) {
+	// prevValue = r.p_sslstatus
+	r.p_sslstatus.ForceUnref()
 	r.p_sslstatus = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCSslstatusT) TakeOverCSslstatusT(src *CSslstatusT) {
+	if r == nil {
+		return
+	}
+	r.p_sslstatus.ForceUnref()
+	gop := src.pc_sslstatus
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_sslstatus = newCSslstatusT((*C.cef_sslstatus_t)(gop), byApp, true)
+}
+
+func PassCSslstatusT(p *CSslstatusT) (ret *CSslstatusT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_sslstatus)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCSslstatusT((*C.cef_sslstatus_t)(p.pc_sslstatus), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCSslstatusT) NewRefCSslstatusT(p *CSslstatusT) {
+	if r == nil {
+		return
+	}
+	r.p_sslstatus.ForceUnref()
+	gop := p.pc_sslstatus
+	BaseAddRef(gop)
+	r.p_sslstatus = newCSslstatusT((*C.cef_sslstatus_t)(gop), byApp, true)
 }
 
 // Go type CSslstatusT wraps cef type *C.cef_sslstatus_t
-func newCSslstatusT(p *C.cef_sslstatus_t, countUp bool) *CSslstatusT {
+func newCSslstatusT(p *C.cef_sslstatus_t, unrefedBy unrefedBy, needsUnref bool) *CSslstatusT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T200.1:")
 	pc := (*cCSslstatusT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_sslstatus := &CSslstatusT{noCopy{}, pc}
+	go_sslstatus := &CSslstatusT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_sslstatus, func(g *CSslstatusT) {
-		if g.pc_sslstatus != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_sslstatus != nil {
 			Tracef(unsafe.Pointer(g.pc_sslstatus), "T200.2:")
 			BaseRelease(g.pc_sslstatus)
 		}
 	})
+
 	return go_sslstatus
 }
 
@@ -24226,13 +29743,15 @@ func (p *cCSslstatusT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (sslstatus *CSslstatusT) ForceUnref() (ret bool) {
-	ret = BaseRelease(sslstatus.pc_sslstatus)
+	if sslstatus == nil {
+		return
+	}
+	if sslstatus.needsUnref && sslstatus.beUnrefed == byApp {
+		ret = BaseRelease(sslstatus.pc_sslstatus)
+		sslstatus.beUnrefed = unrefed
+		sslstatus.needsUnref = false
+	}
 	sslstatus.pc_sslstatus = nil
-	return ret
-}
-
-func (sslstatus *CSslstatusT) release() (ret bool) {
-	ret = BaseRelease(sslstatus.pc_sslstatus)
 	return ret
 }
 
@@ -24255,7 +29774,7 @@ func (self *CSslstatusT) GetCertStatus() (ret CCertStatusT) {
 
 	cRet := C.cefingo_sslstatus_get_cert_status((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
-	ret = CCertStatusT(cRet)
+	ret = CCertStatusT(cRet) // return GoObj
 	return ret
 }
 
@@ -24266,7 +29785,7 @@ func (self *CSslstatusT) GetSslversion() (ret CSslVersionT) {
 
 	cRet := C.cefingo_sslstatus_get_sslversion((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
-	ret = CSslVersionT(cRet)
+	ret = CSslVersionT(cRet) // return GoObj
 	return ret
 }
 
@@ -24277,7 +29796,7 @@ func (self *CSslstatusT) GetContentStatus() (ret CSslContentStatusT) {
 
 	cRet := C.cefingo_sslstatus_get_content_status((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
-	ret = CSslContentStatusT(cRet)
+	ret = CSslContentStatusT(cRet) // return GoObj
 	return ret
 }
 
@@ -24288,7 +29807,7 @@ func (self *CSslstatusT) GetX509certificate() (ret *CX509certificateT) {
 
 	cRet := C.cefingo_sslstatus_get_x509certificate((*C.cef_sslstatus_t)(self.pc_sslstatus))
 
-	ret = newCX509certificateT(cRet, false)
+	ret = newCX509certificateT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -24305,6 +29824,8 @@ type cCReadHandlerT C.cef_read_handler_t
 type CReadHandlerT struct {
 	noCopy          noCopy
 	pc_read_handler *cCReadHandlerT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCReadHandlerT struct {
@@ -24313,36 +29834,82 @@ type RefToCReadHandlerT struct {
 
 type CReadHandlerTAccessor interface {
 	GetCReadHandlerT() *CReadHandlerT
-	SetCReadHandlerT(*CReadHandlerT) (oldValue *CReadHandlerT)
+	setCReadHandlerT(*CReadHandlerT)
+	// TakeOverCReadHandlerT(*CReadHandlerT)
+	// NewRefCReadHandlerT(*CReadHandlerT)
 }
 
 func (r RefToCReadHandlerT) GetCReadHandlerT() *CReadHandlerT {
 	return r.p_read_handler
 }
 
-func (r *RefToCReadHandlerT) SetCReadHandlerT(p *CReadHandlerT) (prevValue *CReadHandlerT) {
-	prevValue = r.p_read_handler
+func (r *RefToCReadHandlerT) setCReadHandlerT(p *CReadHandlerT) {
+	// prevValue = r.p_read_handler
+	r.p_read_handler.ForceUnref()
 	r.p_read_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCReadHandlerT) TakeOverCReadHandlerT(src *CReadHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_read_handler.ForceUnref()
+	gop := src.pc_read_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_read_handler = newCReadHandlerT((*C.cef_read_handler_t)(gop), byApp, true)
+}
+
+func PassCReadHandlerT(p *CReadHandlerT) (ret *CReadHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_read_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCReadHandlerT((*C.cef_read_handler_t)(p.pc_read_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCReadHandlerT) NewRefCReadHandlerT(p *CReadHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_read_handler.ForceUnref()
+	gop := p.pc_read_handler
+	BaseAddRef(gop)
+	r.p_read_handler = newCReadHandlerT((*C.cef_read_handler_t)(gop), byApp, true)
 }
 
 // Go type CReadHandlerT wraps cef type *C.cef_read_handler_t
-func newCReadHandlerT(p *C.cef_read_handler_t, countUp bool) *CReadHandlerT {
+func newCReadHandlerT(p *C.cef_read_handler_t, unrefedBy unrefedBy, needsUnref bool) *CReadHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T201.1:")
 	pc := (*cCReadHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_read_handler := &CReadHandlerT{noCopy{}, pc}
+	go_read_handler := &CReadHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_read_handler, func(g *CReadHandlerT) {
-		if g.pc_read_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_read_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_read_handler), "T201.2:")
 			BaseRelease(g.pc_read_handler)
 		}
 	})
+
 	return go_read_handler
 }
 
@@ -24356,13 +29923,15 @@ func (p *cCReadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (read_handler *CReadHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(read_handler.pc_read_handler)
+	if read_handler == nil {
+		return
+	}
+	if read_handler.needsUnref && read_handler.beUnrefed == byApp {
+		ret = BaseRelease(read_handler.pc_read_handler)
+		read_handler.beUnrefed = unrefed
+		read_handler.needsUnref = false
+	}
 	read_handler.pc_read_handler = nil
-	return ret
-}
-
-func (read_handler *CReadHandlerT) release() (ret bool) {
-	ret = BaseRelease(read_handler.pc_read_handler)
 	return ret
 }
 
@@ -24456,7 +30025,13 @@ func AllocCReadHandlerT() *CReadHandlerT {
 		delete(read_handler_handlers.may_block_handler, cgop)
 	}))
 
-	return newCReadHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCReadHandlerT(cefp, byApp, true)
+}
+
+// BindCReadHandlerT allocates CReadHandlerT, construct and bind it
+func BindCReadHandlerT(a interface{}) *CReadHandlerT {
+	return AllocCReadHandlerT().Bind(a)
 }
 
 func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
@@ -24466,7 +30041,7 @@ func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
 	cp := read_handler.pc_read_handler
 	if oldGoObj, ok := read_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CReadHandlerTAccessor); ok {
-			oldAcc.SetCReadHandlerT(nil)
+			oldAcc.setCReadHandlerT(nil)
 		}
 	}
 	read_handler_handlers.handler[cp] = a
@@ -24502,7 +30077,7 @@ func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
 	}
 
 	if accessor, ok := a.(CReadHandlerTAccessor); ok {
-		accessor.SetCReadHandlerT(read_handler)
+		accessor.setCReadHandlerT(read_handler)
 		Logf("T201.5:")
 	}
 
@@ -24510,23 +30085,28 @@ func (read_handler *CReadHandlerT) Bind(a interface{}) *CReadHandlerT {
 }
 
 func (read_handler *CReadHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CReadHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := read_handler.pc_read_handler
-	if goHandler, ok := read_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CReadHandlerTAccessor); ok1 {
-			accessor.SetCReadHandlerT(nil)
+		cp := read_handler.pc_read_handler
+		if goHandler, ok := read_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CReadHandlerTAccessor)
 		}
+		delete(read_handler_handlers.handler, cp)
+
+		delete(read_handler_handlers.read_handler, cp)
+		delete(read_handler_handlers.seek_handler, cp)
+		delete(read_handler_handlers.tell_handler, cp)
+		delete(read_handler_handlers.eof_handler, cp)
+		delete(read_handler_handlers.may_block_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCReadHandlerT(nil)
 	}
-	delete(read_handler_handlers.handler, cp)
-
-	delete(read_handler_handlers.read_handler, cp)
-	delete(read_handler_handlers.seek_handler, cp)
-	delete(read_handler_handlers.tell_handler, cp)
-	delete(read_handler_handlers.eof_handler, cp)
-	delete(read_handler_handlers.may_block_handler, cp)
-
 }
 
 func (read_handler *CReadHandlerT) Handler() interface{} {
@@ -24548,6 +30128,8 @@ type cCStreamReaderT C.cef_stream_reader_t
 type CStreamReaderT struct {
 	noCopy           noCopy
 	pc_stream_reader *cCStreamReaderT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCStreamReaderT struct {
@@ -24556,36 +30138,82 @@ type RefToCStreamReaderT struct {
 
 type CStreamReaderTAccessor interface {
 	GetCStreamReaderT() *CStreamReaderT
-	SetCStreamReaderT(*CStreamReaderT) (oldValue *CStreamReaderT)
+	setCStreamReaderT(*CStreamReaderT)
+	// TakeOverCStreamReaderT(*CStreamReaderT)
+	// NewRefCStreamReaderT(*CStreamReaderT)
 }
 
 func (r RefToCStreamReaderT) GetCStreamReaderT() *CStreamReaderT {
 	return r.p_stream_reader
 }
 
-func (r *RefToCStreamReaderT) SetCStreamReaderT(p *CStreamReaderT) (prevValue *CStreamReaderT) {
-	prevValue = r.p_stream_reader
+func (r *RefToCStreamReaderT) setCStreamReaderT(p *CStreamReaderT) {
+	// prevValue = r.p_stream_reader
+	r.p_stream_reader.ForceUnref()
 	r.p_stream_reader = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCStreamReaderT) TakeOverCStreamReaderT(src *CStreamReaderT) {
+	if r == nil {
+		return
+	}
+	r.p_stream_reader.ForceUnref()
+	gop := src.pc_stream_reader
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_stream_reader = newCStreamReaderT((*C.cef_stream_reader_t)(gop), byApp, true)
+}
+
+func PassCStreamReaderT(p *CStreamReaderT) (ret *CStreamReaderT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_stream_reader)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCStreamReaderT((*C.cef_stream_reader_t)(p.pc_stream_reader), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCStreamReaderT) NewRefCStreamReaderT(p *CStreamReaderT) {
+	if r == nil {
+		return
+	}
+	r.p_stream_reader.ForceUnref()
+	gop := p.pc_stream_reader
+	BaseAddRef(gop)
+	r.p_stream_reader = newCStreamReaderT((*C.cef_stream_reader_t)(gop), byApp, true)
 }
 
 // Go type CStreamReaderT wraps cef type *C.cef_stream_reader_t
-func newCStreamReaderT(p *C.cef_stream_reader_t, countUp bool) *CStreamReaderT {
+func newCStreamReaderT(p *C.cef_stream_reader_t, unrefedBy unrefedBy, needsUnref bool) *CStreamReaderT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T202.1:")
 	pc := (*cCStreamReaderT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_stream_reader := &CStreamReaderT{noCopy{}, pc}
+	go_stream_reader := &CStreamReaderT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_stream_reader, func(g *CStreamReaderT) {
-		if g.pc_stream_reader != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_stream_reader != nil {
 			Tracef(unsafe.Pointer(g.pc_stream_reader), "T202.2:")
 			BaseRelease(g.pc_stream_reader)
 		}
 	})
+
 	return go_stream_reader
 }
 
@@ -24599,13 +30227,15 @@ func (p *cCStreamReaderT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (stream_reader *CStreamReaderT) ForceUnref() (ret bool) {
-	ret = BaseRelease(stream_reader.pc_stream_reader)
+	if stream_reader == nil {
+		return
+	}
+	if stream_reader.needsUnref && stream_reader.beUnrefed == byApp {
+		ret = BaseRelease(stream_reader.pc_stream_reader)
+		stream_reader.beUnrefed = unrefed
+		stream_reader.needsUnref = false
+	}
 	stream_reader.pc_stream_reader = nil
-	return ret
-}
-
-func (stream_reader *CStreamReaderT) release() (ret bool) {
-	ret = BaseRelease(stream_reader.pc_stream_reader)
 	return ret
 }
 
@@ -24620,7 +30250,7 @@ func (self *CStreamReaderT) Read(
 
 	cRet := C.cefingo_stream_reader_read((*C.cef_stream_reader_t)(self.pc_stream_reader), ptr, (C.size_t)(size), (C.size_t)(n))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -24646,7 +30276,7 @@ func (self *CStreamReaderT) Tell() (ret int64) {
 
 	cRet := C.cefingo_stream_reader_tell((*C.cef_stream_reader_t)(self.pc_stream_reader))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -24684,7 +30314,7 @@ func StreamReaderCreateForFile(
 
 	cRet := C.cef_stream_reader_create_for_file(c_fileName.p_cef_string_t)
 
-	ret = newCStreamReaderT(cRet, false)
+	ret = newCStreamReaderT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -24700,7 +30330,7 @@ func StreamReaderCreateForData(
 
 	cRet := C.cef_stream_reader_create_for_data(tmpdata, (C.size_t)(size))
 
-	ret = newCStreamReaderT(cRet, false)
+	ret = newCStreamReaderT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -24718,7 +30348,7 @@ func StreamReaderCreateForHandler(
 
 	cRet := C.cef_stream_reader_create_for_handler(goTmphandler)
 
-	ret = newCStreamReaderT(cRet, false)
+	ret = newCStreamReaderT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -24733,6 +30363,8 @@ type cCWriteHandlerT C.cef_write_handler_t
 type CWriteHandlerT struct {
 	noCopy           noCopy
 	pc_write_handler *cCWriteHandlerT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCWriteHandlerT struct {
@@ -24741,36 +30373,82 @@ type RefToCWriteHandlerT struct {
 
 type CWriteHandlerTAccessor interface {
 	GetCWriteHandlerT() *CWriteHandlerT
-	SetCWriteHandlerT(*CWriteHandlerT) (oldValue *CWriteHandlerT)
+	setCWriteHandlerT(*CWriteHandlerT)
+	// TakeOverCWriteHandlerT(*CWriteHandlerT)
+	// NewRefCWriteHandlerT(*CWriteHandlerT)
 }
 
 func (r RefToCWriteHandlerT) GetCWriteHandlerT() *CWriteHandlerT {
 	return r.p_write_handler
 }
 
-func (r *RefToCWriteHandlerT) SetCWriteHandlerT(p *CWriteHandlerT) (prevValue *CWriteHandlerT) {
-	prevValue = r.p_write_handler
+func (r *RefToCWriteHandlerT) setCWriteHandlerT(p *CWriteHandlerT) {
+	// prevValue = r.p_write_handler
+	r.p_write_handler.ForceUnref()
 	r.p_write_handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCWriteHandlerT) TakeOverCWriteHandlerT(src *CWriteHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_write_handler.ForceUnref()
+	gop := src.pc_write_handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_write_handler = newCWriteHandlerT((*C.cef_write_handler_t)(gop), byApp, true)
+}
+
+func PassCWriteHandlerT(p *CWriteHandlerT) (ret *CWriteHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_write_handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCWriteHandlerT((*C.cef_write_handler_t)(p.pc_write_handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCWriteHandlerT) NewRefCWriteHandlerT(p *CWriteHandlerT) {
+	if r == nil {
+		return
+	}
+	r.p_write_handler.ForceUnref()
+	gop := p.pc_write_handler
+	BaseAddRef(gop)
+	r.p_write_handler = newCWriteHandlerT((*C.cef_write_handler_t)(gop), byApp, true)
 }
 
 // Go type CWriteHandlerT wraps cef type *C.cef_write_handler_t
-func newCWriteHandlerT(p *C.cef_write_handler_t, countUp bool) *CWriteHandlerT {
+func newCWriteHandlerT(p *C.cef_write_handler_t, unrefedBy unrefedBy, needsUnref bool) *CWriteHandlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T203.1:")
 	pc := (*cCWriteHandlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_write_handler := &CWriteHandlerT{noCopy{}, pc}
+	go_write_handler := &CWriteHandlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_write_handler, func(g *CWriteHandlerT) {
-		if g.pc_write_handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_write_handler != nil {
 			Tracef(unsafe.Pointer(g.pc_write_handler), "T203.2:")
 			BaseRelease(g.pc_write_handler)
 		}
 	})
+
 	return go_write_handler
 }
 
@@ -24784,13 +30462,15 @@ func (p *cCWriteHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (write_handler *CWriteHandlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(write_handler.pc_write_handler)
+	if write_handler == nil {
+		return
+	}
+	if write_handler.needsUnref && write_handler.beUnrefed == byApp {
+		ret = BaseRelease(write_handler.pc_write_handler)
+		write_handler.beUnrefed = unrefed
+		write_handler.needsUnref = false
+	}
 	write_handler.pc_write_handler = nil
-	return ret
-}
-
-func (write_handler *CWriteHandlerT) release() (ret bool) {
-	ret = BaseRelease(write_handler.pc_write_handler)
 	return ret
 }
 
@@ -24884,7 +30564,13 @@ func AllocCWriteHandlerT() *CWriteHandlerT {
 		delete(write_handler_handlers.may_block_handler, cgop)
 	}))
 
-	return newCWriteHandlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCWriteHandlerT(cefp, byApp, true)
+}
+
+// BindCWriteHandlerT allocates CWriteHandlerT, construct and bind it
+func BindCWriteHandlerT(a interface{}) *CWriteHandlerT {
+	return AllocCWriteHandlerT().Bind(a)
 }
 
 func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
@@ -24894,7 +30580,7 @@ func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
 	cp := write_handler.pc_write_handler
 	if oldGoObj, ok := write_handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CWriteHandlerTAccessor); ok {
-			oldAcc.SetCWriteHandlerT(nil)
+			oldAcc.setCWriteHandlerT(nil)
 		}
 	}
 	write_handler_handlers.handler[cp] = a
@@ -24930,7 +30616,7 @@ func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
 	}
 
 	if accessor, ok := a.(CWriteHandlerTAccessor); ok {
-		accessor.SetCWriteHandlerT(write_handler)
+		accessor.setCWriteHandlerT(write_handler)
 		Logf("T203.5:")
 	}
 
@@ -24938,23 +30624,28 @@ func (write_handler *CWriteHandlerT) Bind(a interface{}) *CWriteHandlerT {
 }
 
 func (write_handler *CWriteHandlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CWriteHandlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := write_handler.pc_write_handler
-	if goHandler, ok := write_handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CWriteHandlerTAccessor); ok1 {
-			accessor.SetCWriteHandlerT(nil)
+		cp := write_handler.pc_write_handler
+		if goHandler, ok := write_handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CWriteHandlerTAccessor)
 		}
+		delete(write_handler_handlers.handler, cp)
+
+		delete(write_handler_handlers.write_handler, cp)
+		delete(write_handler_handlers.seek_handler, cp)
+		delete(write_handler_handlers.tell_handler, cp)
+		delete(write_handler_handlers.flush_handler, cp)
+		delete(write_handler_handlers.may_block_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCWriteHandlerT(nil)
 	}
-	delete(write_handler_handlers.handler, cp)
-
-	delete(write_handler_handlers.write_handler, cp)
-	delete(write_handler_handlers.seek_handler, cp)
-	delete(write_handler_handlers.tell_handler, cp)
-	delete(write_handler_handlers.flush_handler, cp)
-	delete(write_handler_handlers.may_block_handler, cp)
-
 }
 
 func (write_handler *CWriteHandlerT) Handler() interface{} {
@@ -24976,6 +30667,8 @@ type cCStreamWriterT C.cef_stream_writer_t
 type CStreamWriterT struct {
 	noCopy           noCopy
 	pc_stream_writer *cCStreamWriterT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCStreamWriterT struct {
@@ -24984,36 +30677,82 @@ type RefToCStreamWriterT struct {
 
 type CStreamWriterTAccessor interface {
 	GetCStreamWriterT() *CStreamWriterT
-	SetCStreamWriterT(*CStreamWriterT) (oldValue *CStreamWriterT)
+	setCStreamWriterT(*CStreamWriterT)
+	// TakeOverCStreamWriterT(*CStreamWriterT)
+	// NewRefCStreamWriterT(*CStreamWriterT)
 }
 
 func (r RefToCStreamWriterT) GetCStreamWriterT() *CStreamWriterT {
 	return r.p_stream_writer
 }
 
-func (r *RefToCStreamWriterT) SetCStreamWriterT(p *CStreamWriterT) (prevValue *CStreamWriterT) {
-	prevValue = r.p_stream_writer
+func (r *RefToCStreamWriterT) setCStreamWriterT(p *CStreamWriterT) {
+	// prevValue = r.p_stream_writer
+	r.p_stream_writer.ForceUnref()
 	r.p_stream_writer = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCStreamWriterT) TakeOverCStreamWriterT(src *CStreamWriterT) {
+	if r == nil {
+		return
+	}
+	r.p_stream_writer.ForceUnref()
+	gop := src.pc_stream_writer
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_stream_writer = newCStreamWriterT((*C.cef_stream_writer_t)(gop), byApp, true)
+}
+
+func PassCStreamWriterT(p *CStreamWriterT) (ret *CStreamWriterT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_stream_writer)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCStreamWriterT((*C.cef_stream_writer_t)(p.pc_stream_writer), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCStreamWriterT) NewRefCStreamWriterT(p *CStreamWriterT) {
+	if r == nil {
+		return
+	}
+	r.p_stream_writer.ForceUnref()
+	gop := p.pc_stream_writer
+	BaseAddRef(gop)
+	r.p_stream_writer = newCStreamWriterT((*C.cef_stream_writer_t)(gop), byApp, true)
 }
 
 // Go type CStreamWriterT wraps cef type *C.cef_stream_writer_t
-func newCStreamWriterT(p *C.cef_stream_writer_t, countUp bool) *CStreamWriterT {
+func newCStreamWriterT(p *C.cef_stream_writer_t, unrefedBy unrefedBy, needsUnref bool) *CStreamWriterT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T204.1:")
 	pc := (*cCStreamWriterT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_stream_writer := &CStreamWriterT{noCopy{}, pc}
+	go_stream_writer := &CStreamWriterT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_stream_writer, func(g *CStreamWriterT) {
-		if g.pc_stream_writer != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_stream_writer != nil {
 			Tracef(unsafe.Pointer(g.pc_stream_writer), "T204.2:")
 			BaseRelease(g.pc_stream_writer)
 		}
 	})
+
 	return go_stream_writer
 }
 
@@ -25027,13 +30766,15 @@ func (p *cCStreamWriterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (stream_writer *CStreamWriterT) ForceUnref() (ret bool) {
-	ret = BaseRelease(stream_writer.pc_stream_writer)
+	if stream_writer == nil {
+		return
+	}
+	if stream_writer.needsUnref && stream_writer.beUnrefed == byApp {
+		ret = BaseRelease(stream_writer.pc_stream_writer)
+		stream_writer.beUnrefed = unrefed
+		stream_writer.needsUnref = false
+	}
 	stream_writer.pc_stream_writer = nil
-	return ret
-}
-
-func (stream_writer *CStreamWriterT) release() (ret bool) {
-	ret = BaseRelease(stream_writer.pc_stream_writer)
 	return ret
 }
 
@@ -25048,7 +30789,7 @@ func (self *CStreamWriterT) Write(
 
 	cRet := C.cefingo_stream_writer_write((*C.cef_stream_writer_t)(self.pc_stream_writer), ptr, (C.size_t)(size), (C.size_t)(n))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -25074,7 +30815,7 @@ func (self *CStreamWriterT) Tell() (ret int64) {
 
 	cRet := C.cefingo_stream_writer_tell((*C.cef_stream_writer_t)(self.pc_stream_writer))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -25112,7 +30853,7 @@ func StreamWriterCreateForFile(
 
 	cRet := C.cef_stream_writer_create_for_file(c_fileName.p_cef_string_t)
 
-	ret = newCStreamWriterT(cRet, false)
+	ret = newCStreamWriterT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -25130,7 +30871,7 @@ func StreamWriterCreateForHandler(
 
 	cRet := C.cef_stream_writer_create_for_handler(goTmphandler)
 
-	ret = newCStreamWriterT(cRet, false)
+	ret = newCStreamWriterT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -25146,6 +30887,8 @@ type cCStringVisitorT C.cef_string_visitor_t
 type CStringVisitorT struct {
 	noCopy            noCopy
 	pc_string_visitor *cCStringVisitorT
+	needsUnref        bool
+	beUnrefed         unrefedBy
 }
 
 type RefToCStringVisitorT struct {
@@ -25154,36 +30897,82 @@ type RefToCStringVisitorT struct {
 
 type CStringVisitorTAccessor interface {
 	GetCStringVisitorT() *CStringVisitorT
-	SetCStringVisitorT(*CStringVisitorT) (oldValue *CStringVisitorT)
+	setCStringVisitorT(*CStringVisitorT)
+	// TakeOverCStringVisitorT(*CStringVisitorT)
+	// NewRefCStringVisitorT(*CStringVisitorT)
 }
 
 func (r RefToCStringVisitorT) GetCStringVisitorT() *CStringVisitorT {
 	return r.p_string_visitor
 }
 
-func (r *RefToCStringVisitorT) SetCStringVisitorT(p *CStringVisitorT) (prevValue *CStringVisitorT) {
-	prevValue = r.p_string_visitor
+func (r *RefToCStringVisitorT) setCStringVisitorT(p *CStringVisitorT) {
+	// prevValue = r.p_string_visitor
+	r.p_string_visitor.ForceUnref()
 	r.p_string_visitor = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCStringVisitorT) TakeOverCStringVisitorT(src *CStringVisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_string_visitor.ForceUnref()
+	gop := src.pc_string_visitor
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_string_visitor = newCStringVisitorT((*C.cef_string_visitor_t)(gop), byApp, true)
+}
+
+func PassCStringVisitorT(p *CStringVisitorT) (ret *CStringVisitorT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_string_visitor)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCStringVisitorT((*C.cef_string_visitor_t)(p.pc_string_visitor), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCStringVisitorT) NewRefCStringVisitorT(p *CStringVisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_string_visitor.ForceUnref()
+	gop := p.pc_string_visitor
+	BaseAddRef(gop)
+	r.p_string_visitor = newCStringVisitorT((*C.cef_string_visitor_t)(gop), byApp, true)
 }
 
 // Go type CStringVisitorT wraps cef type *C.cef_string_visitor_t
-func newCStringVisitorT(p *C.cef_string_visitor_t, countUp bool) *CStringVisitorT {
+func newCStringVisitorT(p *C.cef_string_visitor_t, unrefedBy unrefedBy, needsUnref bool) *CStringVisitorT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T205.1:")
 	pc := (*cCStringVisitorT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_string_visitor := &CStringVisitorT{noCopy{}, pc}
+	go_string_visitor := &CStringVisitorT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_string_visitor, func(g *CStringVisitorT) {
-		if g.pc_string_visitor != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_string_visitor != nil {
 			Tracef(unsafe.Pointer(g.pc_string_visitor), "T205.2:")
 			BaseRelease(g.pc_string_visitor)
 		}
 	})
+
 	return go_string_visitor
 }
 
@@ -25197,13 +30986,15 @@ func (p *cCStringVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (string_visitor *CStringVisitorT) ForceUnref() (ret bool) {
-	ret = BaseRelease(string_visitor.pc_string_visitor)
+	if string_visitor == nil {
+		return
+	}
+	if string_visitor.needsUnref && string_visitor.beUnrefed == byApp {
+		ret = BaseRelease(string_visitor.pc_string_visitor)
+		string_visitor.beUnrefed = unrefed
+		string_visitor.needsUnref = false
+	}
 	string_visitor.pc_string_visitor = nil
-	return ret
-}
-
-func (string_visitor *CStringVisitorT) release() (ret bool) {
-	ret = BaseRelease(string_visitor.pc_string_visitor)
 	return ret
 }
 
@@ -25242,7 +31033,13 @@ func AllocCStringVisitorT() *CStringVisitorT {
 		delete(string_visitor_handlers.visit_handler, cgop)
 	}))
 
-	return newCStringVisitorT(cefp, true)
+	BaseAddRef(cgop)
+	return newCStringVisitorT(cefp, byApp, true)
+}
+
+// BindCStringVisitorT allocates CStringVisitorT, construct and bind it
+func BindCStringVisitorT(a interface{}) *CStringVisitorT {
+	return AllocCStringVisitorT().Bind(a)
 }
 
 func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
@@ -25252,7 +31049,7 @@ func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
 	cp := string_visitor.pc_string_visitor
 	if oldGoObj, ok := string_visitor_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CStringVisitorTAccessor); ok {
-			oldAcc.SetCStringVisitorT(nil)
+			oldAcc.setCStringVisitorT(nil)
 		}
 	}
 	string_visitor_handlers.handler[cp] = a
@@ -25264,7 +31061,7 @@ func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
 	}
 
 	if accessor, ok := a.(CStringVisitorTAccessor); ok {
-		accessor.SetCStringVisitorT(string_visitor)
+		accessor.setCStringVisitorT(string_visitor)
 		Logf("T205.5:")
 	}
 
@@ -25272,19 +31069,24 @@ func (string_visitor *CStringVisitorT) Bind(a interface{}) *CStringVisitorT {
 }
 
 func (string_visitor *CStringVisitorT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CStringVisitorTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := string_visitor.pc_string_visitor
-	if goHandler, ok := string_visitor_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CStringVisitorTAccessor); ok1 {
-			accessor.SetCStringVisitorT(nil)
+		cp := string_visitor.pc_string_visitor
+		if goHandler, ok := string_visitor_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CStringVisitorTAccessor)
 		}
+		delete(string_visitor_handlers.handler, cp)
+
+		delete(string_visitor_handlers.visit_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCStringVisitorT(nil)
 	}
-	delete(string_visitor_handlers.handler, cp)
-
-	delete(string_visitor_handlers.visit_handler, cp)
-
 }
 
 func (string_visitor *CStringVisitorT) Handler() interface{} {
@@ -25310,8 +31112,10 @@ type cCTaskT C.cef_task_t
 
 // Go type for cef_task_t
 type CTaskT struct {
-	noCopy  noCopy
-	pc_task *cCTaskT
+	noCopy     noCopy
+	pc_task    *cCTaskT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCTaskT struct {
@@ -25320,36 +31124,82 @@ type RefToCTaskT struct {
 
 type CTaskTAccessor interface {
 	GetCTaskT() *CTaskT
-	SetCTaskT(*CTaskT) (oldValue *CTaskT)
+	setCTaskT(*CTaskT)
+	// TakeOverCTaskT(*CTaskT)
+	// NewRefCTaskT(*CTaskT)
 }
 
 func (r RefToCTaskT) GetCTaskT() *CTaskT {
 	return r.p_task
 }
 
-func (r *RefToCTaskT) SetCTaskT(p *CTaskT) (prevValue *CTaskT) {
-	prevValue = r.p_task
+func (r *RefToCTaskT) setCTaskT(p *CTaskT) {
+	// prevValue = r.p_task
+	r.p_task.ForceUnref()
 	r.p_task = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCTaskT) TakeOverCTaskT(src *CTaskT) {
+	if r == nil {
+		return
+	}
+	r.p_task.ForceUnref()
+	gop := src.pc_task
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_task = newCTaskT((*C.cef_task_t)(gop), byApp, true)
+}
+
+func PassCTaskT(p *CTaskT) (ret *CTaskT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_task)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCTaskT((*C.cef_task_t)(p.pc_task), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCTaskT) NewRefCTaskT(p *CTaskT) {
+	if r == nil {
+		return
+	}
+	r.p_task.ForceUnref()
+	gop := p.pc_task
+	BaseAddRef(gop)
+	r.p_task = newCTaskT((*C.cef_task_t)(gop), byApp, true)
 }
 
 // Go type CTaskT wraps cef type *C.cef_task_t
-func newCTaskT(p *C.cef_task_t, countUp bool) *CTaskT {
+func newCTaskT(p *C.cef_task_t, unrefedBy unrefedBy, needsUnref bool) *CTaskT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T206.1:")
 	pc := (*cCTaskT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_task := &CTaskT{noCopy{}, pc}
+	go_task := &CTaskT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_task, func(g *CTaskT) {
-		if g.pc_task != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_task != nil {
 			Tracef(unsafe.Pointer(g.pc_task), "T206.2:")
 			BaseRelease(g.pc_task)
 		}
 	})
+
 	return go_task
 }
 
@@ -25363,13 +31213,15 @@ func (p *cCTaskT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (task *CTaskT) ForceUnref() (ret bool) {
-	ret = BaseRelease(task.pc_task)
+	if task == nil {
+		return
+	}
+	if task.needsUnref && task.beUnrefed == byApp {
+		ret = BaseRelease(task.pc_task)
+		task.beUnrefed = unrefed
+		task.needsUnref = false
+	}
 	task.pc_task = nil
-	return ret
-}
-
-func (task *CTaskT) release() (ret bool) {
-	ret = BaseRelease(task.pc_task)
 	return ret
 }
 
@@ -25407,7 +31259,13 @@ func AllocCTaskT() *CTaskT {
 		delete(task_handlers.execute_handler, cgop)
 	}))
 
-	return newCTaskT(cefp, true)
+	BaseAddRef(cgop)
+	return newCTaskT(cefp, byApp, true)
+}
+
+// BindCTaskT allocates CTaskT, construct and bind it
+func BindCTaskT(a interface{}) *CTaskT {
+	return AllocCTaskT().Bind(a)
 }
 
 func (task *CTaskT) Bind(a interface{}) *CTaskT {
@@ -25417,7 +31275,7 @@ func (task *CTaskT) Bind(a interface{}) *CTaskT {
 	cp := task.pc_task
 	if oldGoObj, ok := task_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CTaskTAccessor); ok {
-			oldAcc.SetCTaskT(nil)
+			oldAcc.setCTaskT(nil)
 		}
 	}
 	task_handlers.handler[cp] = a
@@ -25429,7 +31287,7 @@ func (task *CTaskT) Bind(a interface{}) *CTaskT {
 	}
 
 	if accessor, ok := a.(CTaskTAccessor); ok {
-		accessor.SetCTaskT(task)
+		accessor.setCTaskT(task)
 		Logf("T206.5:")
 	}
 
@@ -25437,19 +31295,24 @@ func (task *CTaskT) Bind(a interface{}) *CTaskT {
 }
 
 func (task *CTaskT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CTaskTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := task.pc_task
-	if goHandler, ok := task_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CTaskTAccessor); ok1 {
-			accessor.SetCTaskT(nil)
+		cp := task.pc_task
+		if goHandler, ok := task_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CTaskTAccessor)
 		}
+		delete(task_handlers.handler, cp)
+
+		delete(task_handlers.execute_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCTaskT(nil)
 	}
-	delete(task_handlers.handler, cp)
-
-	delete(task_handlers.execute_handler, cp)
-
 }
 
 func (task *CTaskT) Handler() interface{} {
@@ -25476,6 +31339,8 @@ type cCTaskRunnerT C.cef_task_runner_t
 type CTaskRunnerT struct {
 	noCopy         noCopy
 	pc_task_runner *cCTaskRunnerT
+	needsUnref     bool
+	beUnrefed      unrefedBy
 }
 
 type RefToCTaskRunnerT struct {
@@ -25484,36 +31349,82 @@ type RefToCTaskRunnerT struct {
 
 type CTaskRunnerTAccessor interface {
 	GetCTaskRunnerT() *CTaskRunnerT
-	SetCTaskRunnerT(*CTaskRunnerT) (oldValue *CTaskRunnerT)
+	setCTaskRunnerT(*CTaskRunnerT)
+	// TakeOverCTaskRunnerT(*CTaskRunnerT)
+	// NewRefCTaskRunnerT(*CTaskRunnerT)
 }
 
 func (r RefToCTaskRunnerT) GetCTaskRunnerT() *CTaskRunnerT {
 	return r.p_task_runner
 }
 
-func (r *RefToCTaskRunnerT) SetCTaskRunnerT(p *CTaskRunnerT) (prevValue *CTaskRunnerT) {
-	prevValue = r.p_task_runner
+func (r *RefToCTaskRunnerT) setCTaskRunnerT(p *CTaskRunnerT) {
+	// prevValue = r.p_task_runner
+	r.p_task_runner.ForceUnref()
 	r.p_task_runner = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCTaskRunnerT) TakeOverCTaskRunnerT(src *CTaskRunnerT) {
+	if r == nil {
+		return
+	}
+	r.p_task_runner.ForceUnref()
+	gop := src.pc_task_runner
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_task_runner = newCTaskRunnerT((*C.cef_task_runner_t)(gop), byApp, true)
+}
+
+func PassCTaskRunnerT(p *CTaskRunnerT) (ret *CTaskRunnerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_task_runner)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCTaskRunnerT((*C.cef_task_runner_t)(p.pc_task_runner), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCTaskRunnerT) NewRefCTaskRunnerT(p *CTaskRunnerT) {
+	if r == nil {
+		return
+	}
+	r.p_task_runner.ForceUnref()
+	gop := p.pc_task_runner
+	BaseAddRef(gop)
+	r.p_task_runner = newCTaskRunnerT((*C.cef_task_runner_t)(gop), byApp, true)
 }
 
 // Go type CTaskRunnerT wraps cef type *C.cef_task_runner_t
-func newCTaskRunnerT(p *C.cef_task_runner_t, countUp bool) *CTaskRunnerT {
+func newCTaskRunnerT(p *C.cef_task_runner_t, unrefedBy unrefedBy, needsUnref bool) *CTaskRunnerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T207.1:")
 	pc := (*cCTaskRunnerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_task_runner := &CTaskRunnerT{noCopy{}, pc}
+	go_task_runner := &CTaskRunnerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_task_runner, func(g *CTaskRunnerT) {
-		if g.pc_task_runner != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_task_runner != nil {
 			Tracef(unsafe.Pointer(g.pc_task_runner), "T207.2:")
 			BaseRelease(g.pc_task_runner)
 		}
 	})
+
 	return go_task_runner
 }
 
@@ -25527,13 +31438,15 @@ func (p *cCTaskRunnerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }
 
 func (task_runner *CTaskRunnerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(task_runner.pc_task_runner)
+	if task_runner == nil {
+		return
+	}
+	if task_runner.needsUnref && task_runner.beUnrefed == byApp {
+		ret = BaseRelease(task_runner.pc_task_runner)
+		task_runner.beUnrefed = unrefed
+		task_runner.needsUnref = false
+	}
 	task_runner.pc_task_runner = nil
-	return ret
-}
-
-func (task_runner *CTaskRunnerT) release() (ret bool) {
-	ret = BaseRelease(task_runner.pc_task_runner)
 	return ret
 }
 
@@ -25630,7 +31543,7 @@ func TaskRunnerGetForCurrentThread() (ret *CTaskRunnerT) {
 
 	cRet := C.cef_task_runner_get_for_current_thread()
 
-	ret = newCTaskRunnerT(cRet, false)
+	ret = newCTaskRunnerT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -25643,7 +31556,7 @@ func TaskRunnerGetForThread(
 
 	cRet := C.cef_task_runner_get_for_thread((C.cef_thread_id_t)(threadId))
 
-	ret = newCTaskRunnerT(cRet, false)
+	ret = newCTaskRunnerT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -25717,6 +31630,8 @@ type cCTextfieldT C.cef_textfield_t
 type CTextfieldT struct {
 	noCopy       noCopy
 	pc_textfield *cCTextfieldT
+	needsUnref   bool
+	beUnrefed    unrefedBy
 }
 
 type RefToCTextfieldT struct {
@@ -25725,36 +31640,82 @@ type RefToCTextfieldT struct {
 
 type CTextfieldTAccessor interface {
 	GetCTextfieldT() *CTextfieldT
-	SetCTextfieldT(*CTextfieldT) (oldValue *CTextfieldT)
+	setCTextfieldT(*CTextfieldT)
+	// TakeOverCTextfieldT(*CTextfieldT)
+	// NewRefCTextfieldT(*CTextfieldT)
 }
 
 func (r RefToCTextfieldT) GetCTextfieldT() *CTextfieldT {
 	return r.p_textfield
 }
 
-func (r *RefToCTextfieldT) SetCTextfieldT(p *CTextfieldT) (prevValue *CTextfieldT) {
-	prevValue = r.p_textfield
+func (r *RefToCTextfieldT) setCTextfieldT(p *CTextfieldT) {
+	// prevValue = r.p_textfield
+	r.p_textfield.ForceUnref()
 	r.p_textfield = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCTextfieldT) TakeOverCTextfieldT(src *CTextfieldT) {
+	if r == nil {
+		return
+	}
+	r.p_textfield.ForceUnref()
+	gop := src.pc_textfield
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_textfield = newCTextfieldT((*C.cef_textfield_t)(gop), byApp, true)
+}
+
+func PassCTextfieldT(p *CTextfieldT) (ret *CTextfieldT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_textfield)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCTextfieldT((*C.cef_textfield_t)(p.pc_textfield), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCTextfieldT) NewRefCTextfieldT(p *CTextfieldT) {
+	if r == nil {
+		return
+	}
+	r.p_textfield.ForceUnref()
+	gop := p.pc_textfield
+	BaseAddRef(gop)
+	r.p_textfield = newCTextfieldT((*C.cef_textfield_t)(gop), byApp, true)
 }
 
 // Go type CTextfieldT wraps cef type *C.cef_textfield_t
-func newCTextfieldT(p *C.cef_textfield_t, countUp bool) *CTextfieldT {
+func newCTextfieldT(p *C.cef_textfield_t, unrefedBy unrefedBy, needsUnref bool) *CTextfieldT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T208.1:")
 	pc := (*cCTextfieldT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_textfield := &CTextfieldT{noCopy{}, pc}
+	go_textfield := &CTextfieldT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_textfield, func(g *CTextfieldT) {
-		if g.pc_textfield != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_textfield != nil {
 			Tracef(unsafe.Pointer(g.pc_textfield), "T208.2:")
 			BaseRelease(g.pc_textfield)
 		}
 	})
+
 	return go_textfield
 }
 
@@ -25768,20 +31729,23 @@ func (p *cCTextfieldT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (textfield *CTextfieldT) ForceUnref() (ret bool) {
-	ret = BaseRelease(textfield.pc_textfield)
+	if textfield == nil {
+		return
+	}
+	if textfield.needsUnref && textfield.beUnrefed == byApp {
+		ret = BaseRelease(textfield.pc_textfield)
+		textfield.beUnrefed = unrefed
+		textfield.needsUnref = false
+	}
 	textfield.pc_textfield = nil
-	return ret
-}
-
-func (textfield *CTextfieldT) release() (ret bool) {
-	ret = BaseRelease(textfield.pc_textfield)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewT
 func (textfield *CTextfieldT) ToCViewT() *CViewT {
 	p := (*C.cef_view_t)(unsafe.Pointer(textfield.pc_textfield))
-	return newCViewT(p, true)
+	BaseAddRef(textfield.pc_textfield)
+	return newCViewT(p, byApp, true)
 }
 
 ///
@@ -25937,7 +31901,7 @@ func (self *CTextfieldT) GetSelectedRange() (ret CRangeT) {
 
 	cRet := C.cefingo_textfield_get_selected_range((*C.cef_textfield_t)(self.pc_textfield))
 
-	ret = (CRangeT)(cRet)
+	ret = (CRangeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -25959,7 +31923,7 @@ func (self *CTextfieldT) GetCursorPosition() (ret int64) {
 
 	cRet := C.cefingo_textfield_get_cursor_position((*C.cef_textfield_t)(self.pc_textfield))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -25981,7 +31945,7 @@ func (self *CTextfieldT) GetTextColor() (ret CColorT) {
 
 	cRet := C.cefingo_textfield_get_text_color((*C.cef_textfield_t)(self.pc_textfield))
 
-	ret = (CColorT)(cRet)
+	ret = (CColorT)(cRet) // return GoObj
 	return ret
 }
 
@@ -26003,7 +31967,7 @@ func (self *CTextfieldT) GetSelectionTextColor() (ret CColorT) {
 
 	cRet := C.cefingo_textfield_get_selection_text_color((*C.cef_textfield_t)(self.pc_textfield))
 
-	ret = (CColorT)(cRet)
+	ret = (CColorT)(cRet) // return GoObj
 	return ret
 }
 
@@ -26025,7 +31989,7 @@ func (self *CTextfieldT) GetSelectionBackgroundColor() (ret CColorT) {
 
 	cRet := C.cefingo_textfield_get_selection_background_color((*C.cef_textfield_t)(self.pc_textfield))
 
-	ret = (CColorT)(cRet)
+	ret = (CColorT)(cRet) // return GoObj
 	return ret
 }
 
@@ -26179,7 +32143,7 @@ func TextfieldCreate(
 
 	cRet := C.cef_textfield_create(goTmpdelegate)
 
-	ret = newCTextfieldT(cRet, false)
+	ret = newCTextfieldT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -26197,6 +32161,8 @@ type cCTextfieldDelegateT C.cef_textfield_delegate_t
 type CTextfieldDelegateT struct {
 	noCopy                noCopy
 	pc_textfield_delegate *cCTextfieldDelegateT
+	needsUnref            bool
+	beUnrefed             unrefedBy
 }
 
 type RefToCTextfieldDelegateT struct {
@@ -26205,36 +32171,82 @@ type RefToCTextfieldDelegateT struct {
 
 type CTextfieldDelegateTAccessor interface {
 	GetCTextfieldDelegateT() *CTextfieldDelegateT
-	SetCTextfieldDelegateT(*CTextfieldDelegateT) (oldValue *CTextfieldDelegateT)
+	setCTextfieldDelegateT(*CTextfieldDelegateT)
+	// TakeOverCTextfieldDelegateT(*CTextfieldDelegateT)
+	// NewRefCTextfieldDelegateT(*CTextfieldDelegateT)
 }
 
 func (r RefToCTextfieldDelegateT) GetCTextfieldDelegateT() *CTextfieldDelegateT {
 	return r.p_textfield_delegate
 }
 
-func (r *RefToCTextfieldDelegateT) SetCTextfieldDelegateT(p *CTextfieldDelegateT) (prevValue *CTextfieldDelegateT) {
-	prevValue = r.p_textfield_delegate
+func (r *RefToCTextfieldDelegateT) setCTextfieldDelegateT(p *CTextfieldDelegateT) {
+	// prevValue = r.p_textfield_delegate
+	r.p_textfield_delegate.ForceUnref()
 	r.p_textfield_delegate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCTextfieldDelegateT) TakeOverCTextfieldDelegateT(src *CTextfieldDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_textfield_delegate.ForceUnref()
+	gop := src.pc_textfield_delegate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_textfield_delegate = newCTextfieldDelegateT((*C.cef_textfield_delegate_t)(gop), byApp, true)
+}
+
+func PassCTextfieldDelegateT(p *CTextfieldDelegateT) (ret *CTextfieldDelegateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_textfield_delegate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCTextfieldDelegateT((*C.cef_textfield_delegate_t)(p.pc_textfield_delegate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCTextfieldDelegateT) NewRefCTextfieldDelegateT(p *CTextfieldDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_textfield_delegate.ForceUnref()
+	gop := p.pc_textfield_delegate
+	BaseAddRef(gop)
+	r.p_textfield_delegate = newCTextfieldDelegateT((*C.cef_textfield_delegate_t)(gop), byApp, true)
 }
 
 // Go type CTextfieldDelegateT wraps cef type *C.cef_textfield_delegate_t
-func newCTextfieldDelegateT(p *C.cef_textfield_delegate_t, countUp bool) *CTextfieldDelegateT {
+func newCTextfieldDelegateT(p *C.cef_textfield_delegate_t, unrefedBy unrefedBy, needsUnref bool) *CTextfieldDelegateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T209.1:")
 	pc := (*cCTextfieldDelegateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_textfield_delegate := &CTextfieldDelegateT{noCopy{}, pc}
+	go_textfield_delegate := &CTextfieldDelegateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_textfield_delegate, func(g *CTextfieldDelegateT) {
-		if g.pc_textfield_delegate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_textfield_delegate != nil {
 			Tracef(unsafe.Pointer(g.pc_textfield_delegate), "T209.2:")
 			BaseRelease(g.pc_textfield_delegate)
 		}
 	})
+
 	return go_textfield_delegate
 }
 
@@ -26248,20 +32260,23 @@ func (p *cCTextfieldDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 }
 
 func (textfield_delegate *CTextfieldDelegateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(textfield_delegate.pc_textfield_delegate)
+	if textfield_delegate == nil {
+		return
+	}
+	if textfield_delegate.needsUnref && textfield_delegate.beUnrefed == byApp {
+		ret = BaseRelease(textfield_delegate.pc_textfield_delegate)
+		textfield_delegate.beUnrefed = unrefed
+		textfield_delegate.needsUnref = false
+	}
 	textfield_delegate.pc_textfield_delegate = nil
-	return ret
-}
-
-func (textfield_delegate *CTextfieldDelegateT) release() (ret bool) {
-	ret = BaseRelease(textfield_delegate.pc_textfield_delegate)
 	return ret
 }
 
 // Convert to Base Class Pointer *CViewDelegateT
 func (textfield_delegate *CTextfieldDelegateT) ToCViewDelegateT() *CViewDelegateT {
 	p := (*C.cef_view_delegate_t)(unsafe.Pointer(textfield_delegate.pc_textfield_delegate))
-	return newCViewDelegateT(p, true)
+	BaseAddRef(textfield_delegate.pc_textfield_delegate)
+	return newCViewDelegateT(p, byApp, true)
 }
 
 ///
@@ -26342,7 +32357,13 @@ func AllocCTextfieldDelegateT() *CTextfieldDelegateT {
 		delete(textfield_delegate_handlers.on_blur_handler, cgop)
 	}))
 
-	return newCTextfieldDelegateT(cefp, true)
+	BaseAddRef(cgop)
+	return newCTextfieldDelegateT(cefp, byApp, true)
+}
+
+// BindCTextfieldDelegateT allocates CTextfieldDelegateT, construct and bind it
+func BindCTextfieldDelegateT(a interface{}) *CTextfieldDelegateT {
+	return AllocCTextfieldDelegateT().Bind(a)
 }
 
 func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDelegateT {
@@ -26352,7 +32373,7 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 	cp := textfield_delegate.pc_textfield_delegate
 	if oldGoObj, ok := textfield_delegate_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CTextfieldDelegateTAccessor); ok {
-			oldAcc.SetCTextfieldDelegateT(nil)
+			oldAcc.setCTextfieldDelegateT(nil)
 		}
 	}
 	textfield_delegate_handlers.handler[cp] = a
@@ -26424,7 +32445,7 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 	}
 
 	if accessor, ok := a.(CTextfieldDelegateTAccessor); ok {
-		accessor.SetCTextfieldDelegateT(textfield_delegate)
+		accessor.setCTextfieldDelegateT(textfield_delegate)
 		Logf("T209.5:")
 	}
 
@@ -26432,29 +32453,34 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 }
 
 func (textfield_delegate *CTextfieldDelegateT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CTextfieldDelegateTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := textfield_delegate.pc_textfield_delegate
-	if goHandler, ok := textfield_delegate_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CTextfieldDelegateTAccessor); ok1 {
-			accessor.SetCTextfieldDelegateT(nil)
+		cp := textfield_delegate.pc_textfield_delegate
+		if goHandler, ok := textfield_delegate_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CTextfieldDelegateTAccessor)
 		}
+		delete(textfield_delegate_handlers.handler, cp)
+
+		delete(textfield_delegate_handlers.on_key_event_handler, cp)
+		delete(textfield_delegate_handlers.on_after_user_action_handler, cp)
+		delete(textfield_delegate_handlers.get_preferred_size_handler, cp)
+		delete(textfield_delegate_handlers.get_minimum_size_handler, cp)
+		delete(textfield_delegate_handlers.get_maximum_size_handler, cp)
+		delete(textfield_delegate_handlers.get_height_for_width_handler, cp)
+		delete(textfield_delegate_handlers.on_parent_view_changed_handler, cp)
+		delete(textfield_delegate_handlers.on_child_view_changed_handler, cp)
+		delete(textfield_delegate_handlers.on_window_changed_handler, cp)
+		delete(textfield_delegate_handlers.on_focus_handler, cp)
+		delete(textfield_delegate_handlers.on_blur_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCTextfieldDelegateT(nil)
 	}
-	delete(textfield_delegate_handlers.handler, cp)
-
-	delete(textfield_delegate_handlers.on_key_event_handler, cp)
-	delete(textfield_delegate_handlers.on_after_user_action_handler, cp)
-	delete(textfield_delegate_handlers.get_preferred_size_handler, cp)
-	delete(textfield_delegate_handlers.get_minimum_size_handler, cp)
-	delete(textfield_delegate_handlers.get_maximum_size_handler, cp)
-	delete(textfield_delegate_handlers.get_height_for_width_handler, cp)
-	delete(textfield_delegate_handlers.on_parent_view_changed_handler, cp)
-	delete(textfield_delegate_handlers.on_child_view_changed_handler, cp)
-	delete(textfield_delegate_handlers.on_window_changed_handler, cp)
-	delete(textfield_delegate_handlers.on_focus_handler, cp)
-	delete(textfield_delegate_handlers.on_blur_handler, cp)
-
 }
 
 func (textfield_delegate *CTextfieldDelegateT) Handler() interface{} {
@@ -26479,6 +32505,8 @@ type cCEndTracingCallbackT C.cef_end_tracing_callback_t
 type CEndTracingCallbackT struct {
 	noCopy                  noCopy
 	pc_end_tracing_callback *cCEndTracingCallbackT
+	needsUnref              bool
+	beUnrefed               unrefedBy
 }
 
 type RefToCEndTracingCallbackT struct {
@@ -26487,36 +32515,82 @@ type RefToCEndTracingCallbackT struct {
 
 type CEndTracingCallbackTAccessor interface {
 	GetCEndTracingCallbackT() *CEndTracingCallbackT
-	SetCEndTracingCallbackT(*CEndTracingCallbackT) (oldValue *CEndTracingCallbackT)
+	setCEndTracingCallbackT(*CEndTracingCallbackT)
+	// TakeOverCEndTracingCallbackT(*CEndTracingCallbackT)
+	// NewRefCEndTracingCallbackT(*CEndTracingCallbackT)
 }
 
 func (r RefToCEndTracingCallbackT) GetCEndTracingCallbackT() *CEndTracingCallbackT {
 	return r.p_end_tracing_callback
 }
 
-func (r *RefToCEndTracingCallbackT) SetCEndTracingCallbackT(p *CEndTracingCallbackT) (prevValue *CEndTracingCallbackT) {
-	prevValue = r.p_end_tracing_callback
+func (r *RefToCEndTracingCallbackT) setCEndTracingCallbackT(p *CEndTracingCallbackT) {
+	// prevValue = r.p_end_tracing_callback
+	r.p_end_tracing_callback.ForceUnref()
 	r.p_end_tracing_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCEndTracingCallbackT) TakeOverCEndTracingCallbackT(src *CEndTracingCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_end_tracing_callback.ForceUnref()
+	gop := src.pc_end_tracing_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_end_tracing_callback = newCEndTracingCallbackT((*C.cef_end_tracing_callback_t)(gop), byApp, true)
+}
+
+func PassCEndTracingCallbackT(p *CEndTracingCallbackT) (ret *CEndTracingCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_end_tracing_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCEndTracingCallbackT((*C.cef_end_tracing_callback_t)(p.pc_end_tracing_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCEndTracingCallbackT) NewRefCEndTracingCallbackT(p *CEndTracingCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_end_tracing_callback.ForceUnref()
+	gop := p.pc_end_tracing_callback
+	BaseAddRef(gop)
+	r.p_end_tracing_callback = newCEndTracingCallbackT((*C.cef_end_tracing_callback_t)(gop), byApp, true)
 }
 
 // Go type CEndTracingCallbackT wraps cef type *C.cef_end_tracing_callback_t
-func newCEndTracingCallbackT(p *C.cef_end_tracing_callback_t, countUp bool) *CEndTracingCallbackT {
+func newCEndTracingCallbackT(p *C.cef_end_tracing_callback_t, unrefedBy unrefedBy, needsUnref bool) *CEndTracingCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T381.1:")
 	pc := (*cCEndTracingCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_end_tracing_callback := &CEndTracingCallbackT{noCopy{}, pc}
+	go_end_tracing_callback := &CEndTracingCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_end_tracing_callback, func(g *CEndTracingCallbackT) {
-		if g.pc_end_tracing_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_end_tracing_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_end_tracing_callback), "T381.2:")
 			BaseRelease(g.pc_end_tracing_callback)
 		}
 	})
+
 	return go_end_tracing_callback
 }
 
@@ -26530,13 +32604,15 @@ func (p *cCEndTracingCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 }
 
 func (end_tracing_callback *CEndTracingCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(end_tracing_callback.pc_end_tracing_callback)
+	if end_tracing_callback == nil {
+		return
+	}
+	if end_tracing_callback.needsUnref && end_tracing_callback.beUnrefed == byApp {
+		ret = BaseRelease(end_tracing_callback.pc_end_tracing_callback)
+		end_tracing_callback.beUnrefed = unrefed
+		end_tracing_callback.needsUnref = false
+	}
 	end_tracing_callback.pc_end_tracing_callback = nil
-	return ret
-}
-
-func (end_tracing_callback *CEndTracingCallbackT) release() (ret bool) {
-	ret = BaseRelease(end_tracing_callback.pc_end_tracing_callback)
 	return ret
 }
 
@@ -26577,7 +32653,13 @@ func AllocCEndTracingCallbackT() *CEndTracingCallbackT {
 		delete(end_tracing_callback_handlers.on_end_tracing_complete_handler, cgop)
 	}))
 
-	return newCEndTracingCallbackT(cefp, true)
+	BaseAddRef(cgop)
+	return newCEndTracingCallbackT(cefp, byApp, true)
+}
+
+// BindCEndTracingCallbackT allocates CEndTracingCallbackT, construct and bind it
+func BindCEndTracingCallbackT(a interface{}) *CEndTracingCallbackT {
+	return AllocCEndTracingCallbackT().Bind(a)
 }
 
 func (end_tracing_callback *CEndTracingCallbackT) Bind(a interface{}) *CEndTracingCallbackT {
@@ -26587,7 +32669,7 @@ func (end_tracing_callback *CEndTracingCallbackT) Bind(a interface{}) *CEndTraci
 	cp := end_tracing_callback.pc_end_tracing_callback
 	if oldGoObj, ok := end_tracing_callback_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CEndTracingCallbackTAccessor); ok {
-			oldAcc.SetCEndTracingCallbackT(nil)
+			oldAcc.setCEndTracingCallbackT(nil)
 		}
 	}
 	end_tracing_callback_handlers.handler[cp] = a
@@ -26599,7 +32681,7 @@ func (end_tracing_callback *CEndTracingCallbackT) Bind(a interface{}) *CEndTraci
 	}
 
 	if accessor, ok := a.(CEndTracingCallbackTAccessor); ok {
-		accessor.SetCEndTracingCallbackT(end_tracing_callback)
+		accessor.setCEndTracingCallbackT(end_tracing_callback)
 		Logf("T381.5:")
 	}
 
@@ -26607,19 +32689,24 @@ func (end_tracing_callback *CEndTracingCallbackT) Bind(a interface{}) *CEndTraci
 }
 
 func (end_tracing_callback *CEndTracingCallbackT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CEndTracingCallbackTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := end_tracing_callback.pc_end_tracing_callback
-	if goHandler, ok := end_tracing_callback_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CEndTracingCallbackTAccessor); ok1 {
-			accessor.SetCEndTracingCallbackT(nil)
+		cp := end_tracing_callback.pc_end_tracing_callback
+		if goHandler, ok := end_tracing_callback_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CEndTracingCallbackTAccessor)
 		}
+		delete(end_tracing_callback_handlers.handler, cp)
+
+		delete(end_tracing_callback_handlers.on_end_tracing_complete_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCEndTracingCallbackT(nil)
 	}
-	delete(end_tracing_callback_handlers.handler, cp)
-
-	delete(end_tracing_callback_handlers.on_end_tracing_complete_handler, cp)
-
 }
 
 func (end_tracing_callback *CEndTracingCallbackT) Handler() interface{} {
@@ -26703,7 +32790,7 @@ func NowFromSystemTraceTime() (ret int64) {
 
 	cRet := C.cef_now_from_system_trace_time()
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -26723,6 +32810,8 @@ type cCUrlrequestT C.cef_urlrequest_t
 type CUrlrequestT struct {
 	noCopy        noCopy
 	pc_urlrequest *cCUrlrequestT
+	needsUnref    bool
+	beUnrefed     unrefedBy
 }
 
 type RefToCUrlrequestT struct {
@@ -26731,36 +32820,82 @@ type RefToCUrlrequestT struct {
 
 type CUrlrequestTAccessor interface {
 	GetCUrlrequestT() *CUrlrequestT
-	SetCUrlrequestT(*CUrlrequestT) (oldValue *CUrlrequestT)
+	setCUrlrequestT(*CUrlrequestT)
+	// TakeOverCUrlrequestT(*CUrlrequestT)
+	// NewRefCUrlrequestT(*CUrlrequestT)
 }
 
 func (r RefToCUrlrequestT) GetCUrlrequestT() *CUrlrequestT {
 	return r.p_urlrequest
 }
 
-func (r *RefToCUrlrequestT) SetCUrlrequestT(p *CUrlrequestT) (prevValue *CUrlrequestT) {
-	prevValue = r.p_urlrequest
+func (r *RefToCUrlrequestT) setCUrlrequestT(p *CUrlrequestT) {
+	// prevValue = r.p_urlrequest
+	r.p_urlrequest.ForceUnref()
 	r.p_urlrequest = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCUrlrequestT) TakeOverCUrlrequestT(src *CUrlrequestT) {
+	if r == nil {
+		return
+	}
+	r.p_urlrequest.ForceUnref()
+	gop := src.pc_urlrequest
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_urlrequest = newCUrlrequestT((*C.cef_urlrequest_t)(gop), byApp, true)
+}
+
+func PassCUrlrequestT(p *CUrlrequestT) (ret *CUrlrequestT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_urlrequest)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCUrlrequestT((*C.cef_urlrequest_t)(p.pc_urlrequest), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCUrlrequestT) NewRefCUrlrequestT(p *CUrlrequestT) {
+	if r == nil {
+		return
+	}
+	r.p_urlrequest.ForceUnref()
+	gop := p.pc_urlrequest
+	BaseAddRef(gop)
+	r.p_urlrequest = newCUrlrequestT((*C.cef_urlrequest_t)(gop), byApp, true)
 }
 
 // Go type CUrlrequestT wraps cef type *C.cef_urlrequest_t
-func newCUrlrequestT(p *C.cef_urlrequest_t, countUp bool) *CUrlrequestT {
+func newCUrlrequestT(p *C.cef_urlrequest_t, unrefedBy unrefedBy, needsUnref bool) *CUrlrequestT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T210.1:")
 	pc := (*cCUrlrequestT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_urlrequest := &CUrlrequestT{noCopy{}, pc}
+	go_urlrequest := &CUrlrequestT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_urlrequest, func(g *CUrlrequestT) {
-		if g.pc_urlrequest != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_urlrequest != nil {
 			Tracef(unsafe.Pointer(g.pc_urlrequest), "T210.2:")
 			BaseRelease(g.pc_urlrequest)
 		}
 	})
+
 	return go_urlrequest
 }
 
@@ -26774,13 +32909,15 @@ func (p *cCUrlrequestT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }
 
 func (urlrequest *CUrlrequestT) ForceUnref() (ret bool) {
-	ret = BaseRelease(urlrequest.pc_urlrequest)
+	if urlrequest == nil {
+		return
+	}
+	if urlrequest.needsUnref && urlrequest.beUnrefed == byApp {
+		ret = BaseRelease(urlrequest.pc_urlrequest)
+		urlrequest.beUnrefed = unrefed
+		urlrequest.needsUnref = false
+	}
 	urlrequest.pc_urlrequest = nil
-	return ret
-}
-
-func (urlrequest *CUrlrequestT) release() (ret bool) {
-	ret = BaseRelease(urlrequest.pc_urlrequest)
 	return ret
 }
 
@@ -26792,7 +32929,7 @@ func (self *CUrlrequestT) GetRequest() (ret *CRequestT) {
 
 	cRet := C.cefingo_urlrequest_get_request((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
-	ret = newCRequestT(cRet, false)
+	ret = newCRequestT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -26803,7 +32940,7 @@ func (self *CUrlrequestT) GetClient() (ret *CUrlrequestClientT) {
 
 	cRet := C.cefingo_urlrequest_get_client((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
-	ret = newCUrlrequestClientT(cRet, false)
+	ret = newCUrlrequestClientT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -26814,7 +32951,7 @@ func (self *CUrlrequestT) GetRequestStatus() (ret CUrlrequestStatusT) {
 
 	cRet := C.cefingo_urlrequest_get_request_status((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
-	ret = CUrlrequestStatusT(cRet)
+	ret = CUrlrequestStatusT(cRet) // return GoObj
 	return ret
 }
 
@@ -26826,7 +32963,7 @@ func (self *CUrlrequestT) GetRequestError() (ret CErrorcodeT) {
 
 	cRet := C.cefingo_urlrequest_get_request_error((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
-	ret = CErrorcodeT(cRet)
+	ret = CErrorcodeT(cRet) // return GoObj
 	return ret
 }
 
@@ -26839,7 +32976,7 @@ func (self *CUrlrequestT) GetResponse() (ret *CResponseT) {
 
 	cRet := C.cefingo_urlrequest_get_response((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
-	ret = newCResponseT(cRet, false)
+	ret = newCResponseT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -26901,7 +33038,7 @@ func UrlrequestCreate(
 
 	cRet := C.cef_urlrequest_create(goTmprequest, goTmpclient, goTmprequest_context)
 
-	ret = newCUrlrequestT(cRet, false)
+	ret = newCUrlrequestT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -26917,6 +33054,8 @@ type cCUrlrequestClientT C.cef_urlrequest_client_t
 type CUrlrequestClientT struct {
 	noCopy               noCopy
 	pc_urlrequest_client *cCUrlrequestClientT
+	needsUnref           bool
+	beUnrefed            unrefedBy
 }
 
 type RefToCUrlrequestClientT struct {
@@ -26925,36 +33064,82 @@ type RefToCUrlrequestClientT struct {
 
 type CUrlrequestClientTAccessor interface {
 	GetCUrlrequestClientT() *CUrlrequestClientT
-	SetCUrlrequestClientT(*CUrlrequestClientT) (oldValue *CUrlrequestClientT)
+	setCUrlrequestClientT(*CUrlrequestClientT)
+	// TakeOverCUrlrequestClientT(*CUrlrequestClientT)
+	// NewRefCUrlrequestClientT(*CUrlrequestClientT)
 }
 
 func (r RefToCUrlrequestClientT) GetCUrlrequestClientT() *CUrlrequestClientT {
 	return r.p_urlrequest_client
 }
 
-func (r *RefToCUrlrequestClientT) SetCUrlrequestClientT(p *CUrlrequestClientT) (prevValue *CUrlrequestClientT) {
-	prevValue = r.p_urlrequest_client
+func (r *RefToCUrlrequestClientT) setCUrlrequestClientT(p *CUrlrequestClientT) {
+	// prevValue = r.p_urlrequest_client
+	r.p_urlrequest_client.ForceUnref()
 	r.p_urlrequest_client = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCUrlrequestClientT) TakeOverCUrlrequestClientT(src *CUrlrequestClientT) {
+	if r == nil {
+		return
+	}
+	r.p_urlrequest_client.ForceUnref()
+	gop := src.pc_urlrequest_client
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_urlrequest_client = newCUrlrequestClientT((*C.cef_urlrequest_client_t)(gop), byApp, true)
+}
+
+func PassCUrlrequestClientT(p *CUrlrequestClientT) (ret *CUrlrequestClientT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_urlrequest_client)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCUrlrequestClientT((*C.cef_urlrequest_client_t)(p.pc_urlrequest_client), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCUrlrequestClientT) NewRefCUrlrequestClientT(p *CUrlrequestClientT) {
+	if r == nil {
+		return
+	}
+	r.p_urlrequest_client.ForceUnref()
+	gop := p.pc_urlrequest_client
+	BaseAddRef(gop)
+	r.p_urlrequest_client = newCUrlrequestClientT((*C.cef_urlrequest_client_t)(gop), byApp, true)
 }
 
 // Go type CUrlrequestClientT wraps cef type *C.cef_urlrequest_client_t
-func newCUrlrequestClientT(p *C.cef_urlrequest_client_t, countUp bool) *CUrlrequestClientT {
+func newCUrlrequestClientT(p *C.cef_urlrequest_client_t, unrefedBy unrefedBy, needsUnref bool) *CUrlrequestClientT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T211.1:")
 	pc := (*cCUrlrequestClientT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_urlrequest_client := &CUrlrequestClientT{noCopy{}, pc}
+	go_urlrequest_client := &CUrlrequestClientT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_urlrequest_client, func(g *CUrlrequestClientT) {
-		if g.pc_urlrequest_client != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_urlrequest_client != nil {
 			Tracef(unsafe.Pointer(g.pc_urlrequest_client), "T211.2:")
 			BaseRelease(g.pc_urlrequest_client)
 		}
 	})
+
 	return go_urlrequest_client
 }
 
@@ -26968,13 +33153,15 @@ func (p *cCUrlrequestClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 }
 
 func (urlrequest_client *CUrlrequestClientT) ForceUnref() (ret bool) {
-	ret = BaseRelease(urlrequest_client.pc_urlrequest_client)
+	if urlrequest_client == nil {
+		return
+	}
+	if urlrequest_client.needsUnref && urlrequest_client.beUnrefed == byApp {
+		ret = BaseRelease(urlrequest_client.pc_urlrequest_client)
+		urlrequest_client.beUnrefed = unrefed
+		urlrequest_client.needsUnref = false
+	}
 	urlrequest_client.pc_urlrequest_client = nil
-	return ret
-}
-
-func (urlrequest_client *CUrlrequestClientT) release() (ret bool) {
-	ret = BaseRelease(urlrequest_client.pc_urlrequest_client)
 	return ret
 }
 
@@ -27092,7 +33279,13 @@ func AllocCUrlrequestClientT() *CUrlrequestClientT {
 		delete(urlrequest_client_handlers.get_auth_credentials_handler, cgop)
 	}))
 
-	return newCUrlrequestClientT(cefp, true)
+	BaseAddRef(cgop)
+	return newCUrlrequestClientT(cefp, byApp, true)
+}
+
+// BindCUrlrequestClientT allocates CUrlrequestClientT, construct and bind it
+func BindCUrlrequestClientT(a interface{}) *CUrlrequestClientT {
+	return AllocCUrlrequestClientT().Bind(a)
 }
 
 func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestClientT {
@@ -27102,7 +33295,7 @@ func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestCli
 	cp := urlrequest_client.pc_urlrequest_client
 	if oldGoObj, ok := urlrequest_client_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CUrlrequestClientTAccessor); ok {
-			oldAcc.SetCUrlrequestClientT(nil)
+			oldAcc.setCUrlrequestClientT(nil)
 		}
 	}
 	urlrequest_client_handlers.handler[cp] = a
@@ -27138,7 +33331,7 @@ func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestCli
 	}
 
 	if accessor, ok := a.(CUrlrequestClientTAccessor); ok {
-		accessor.SetCUrlrequestClientT(urlrequest_client)
+		accessor.setCUrlrequestClientT(urlrequest_client)
 		Logf("T211.5:")
 	}
 
@@ -27146,23 +33339,28 @@ func (urlrequest_client *CUrlrequestClientT) Bind(a interface{}) *CUrlrequestCli
 }
 
 func (urlrequest_client *CUrlrequestClientT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CUrlrequestClientTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := urlrequest_client.pc_urlrequest_client
-	if goHandler, ok := urlrequest_client_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CUrlrequestClientTAccessor); ok1 {
-			accessor.SetCUrlrequestClientT(nil)
+		cp := urlrequest_client.pc_urlrequest_client
+		if goHandler, ok := urlrequest_client_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CUrlrequestClientTAccessor)
 		}
+		delete(urlrequest_client_handlers.handler, cp)
+
+		delete(urlrequest_client_handlers.on_request_complete_handler, cp)
+		delete(urlrequest_client_handlers.on_upload_progress_handler, cp)
+		delete(urlrequest_client_handlers.on_download_progress_handler, cp)
+		delete(urlrequest_client_handlers.on_download_data_handler, cp)
+		delete(urlrequest_client_handlers.get_auth_credentials_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCUrlrequestClientT(nil)
 	}
-	delete(urlrequest_client_handlers.handler, cp)
-
-	delete(urlrequest_client_handlers.on_request_complete_handler, cp)
-	delete(urlrequest_client_handlers.on_upload_progress_handler, cp)
-	delete(urlrequest_client_handlers.on_download_progress_handler, cp)
-	delete(urlrequest_client_handlers.on_download_data_handler, cp)
-	delete(urlrequest_client_handlers.get_auth_credentials_handler, cp)
-
 }
 
 func (urlrequest_client *CUrlrequestClientT) Handler() interface{} {
@@ -27189,6 +33387,8 @@ type cCV8contextT C.cef_v8context_t
 type CV8contextT struct {
 	noCopy       noCopy
 	pc_v8context *cCV8contextT
+	needsUnref   bool
+	beUnrefed    unrefedBy
 }
 
 type RefToCV8contextT struct {
@@ -27197,36 +33397,82 @@ type RefToCV8contextT struct {
 
 type CV8contextTAccessor interface {
 	GetCV8contextT() *CV8contextT
-	SetCV8contextT(*CV8contextT) (oldValue *CV8contextT)
+	setCV8contextT(*CV8contextT)
+	// TakeOverCV8contextT(*CV8contextT)
+	// NewRefCV8contextT(*CV8contextT)
 }
 
 func (r RefToCV8contextT) GetCV8contextT() *CV8contextT {
 	return r.p_v8context
 }
 
-func (r *RefToCV8contextT) SetCV8contextT(p *CV8contextT) (prevValue *CV8contextT) {
-	prevValue = r.p_v8context
+func (r *RefToCV8contextT) setCV8contextT(p *CV8contextT) {
+	// prevValue = r.p_v8context
+	r.p_v8context.ForceUnref()
 	r.p_v8context = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8contextT) TakeOverCV8contextT(src *CV8contextT) {
+	if r == nil {
+		return
+	}
+	r.p_v8context.ForceUnref()
+	gop := src.pc_v8context
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8context = newCV8contextT((*C.cef_v8context_t)(gop), byApp, true)
+}
+
+func PassCV8contextT(p *CV8contextT) (ret *CV8contextT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8context)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8contextT((*C.cef_v8context_t)(p.pc_v8context), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8contextT) NewRefCV8contextT(p *CV8contextT) {
+	if r == nil {
+		return
+	}
+	r.p_v8context.ForceUnref()
+	gop := p.pc_v8context
+	BaseAddRef(gop)
+	r.p_v8context = newCV8contextT((*C.cef_v8context_t)(gop), byApp, true)
 }
 
 // Go type CV8contextT wraps cef type *C.cef_v8context_t
-func newCV8contextT(p *C.cef_v8context_t, countUp bool) *CV8contextT {
+func newCV8contextT(p *C.cef_v8context_t, unrefedBy unrefedBy, needsUnref bool) *CV8contextT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T212.1:")
 	pc := (*cCV8contextT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8context := &CV8contextT{noCopy{}, pc}
+	go_v8context := &CV8contextT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8context, func(g *CV8contextT) {
-		if g.pc_v8context != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8context != nil {
 			Tracef(unsafe.Pointer(g.pc_v8context), "T212.2:")
 			BaseRelease(g.pc_v8context)
 		}
 	})
+
 	return go_v8context
 }
 
@@ -27240,13 +33486,15 @@ func (p *cCV8contextT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (v8context *CV8contextT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8context.pc_v8context)
+	if v8context == nil {
+		return
+	}
+	if v8context.needsUnref && v8context.beUnrefed == byApp {
+		ret = BaseRelease(v8context.pc_v8context)
+		v8context.beUnrefed = unrefed
+		v8context.needsUnref = false
+	}
 	v8context.pc_v8context = nil
-	return ret
-}
-
-func (v8context *CV8contextT) release() (ret bool) {
-	ret = BaseRelease(v8context.pc_v8context)
 	return ret
 }
 
@@ -27259,7 +33507,7 @@ func (self *CV8contextT) GetTaskRunner() (ret *CTaskRunnerT) {
 
 	cRet := C.cefingo_v8context_get_task_runner((*C.cef_v8context_t)(self.pc_v8context))
 
-	ret = newCTaskRunnerT(cRet, false)
+	ret = newCTaskRunnerT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -27284,7 +33532,7 @@ func (self *CV8contextT) GetBrowser() (ret *CBrowserT) {
 
 	cRet := C.cefingo_v8context_get_browser((*C.cef_v8context_t)(self.pc_v8context))
 
-	ret = newCBrowserT(cRet, false)
+	ret = newCBrowserT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -27296,7 +33544,7 @@ func (self *CV8contextT) GetFrame() (ret *CFrameT) {
 
 	cRet := C.cefingo_v8context_get_frame((*C.cef_v8context_t)(self.pc_v8context))
 
-	ret = newCFrameT(cRet, false)
+	ret = newCFrameT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -27308,7 +33556,7 @@ func (self *CV8contextT) GetGlobal() (ret *CV8valueT) {
 
 	cRet := C.cefingo_v8context_get_global((*C.cef_v8context_t)(self.pc_v8context))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -27378,8 +33626,8 @@ func (self *CV8contextT) Eval(
 
 	cRet := C.cefingo_v8context_eval((*C.cef_v8context_t)(self.pc_v8context), c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line), &tmpretval, &tmpexception)
 
-	retval = newCV8valueT(tmpretval, false)           // Out Param
-	exception = newCV8exceptionT(tmpexception, false) // Out Param
+	retval = newCV8valueT(tmpretval, byApp, true)           // Out Param
+	exception = newCV8exceptionT(tmpexception, byApp, true) // Out Param
 
 	ret = cRet == 1
 	return ret, retval, exception
@@ -27392,7 +33640,7 @@ func V8contextGetCurrentContext() (ret *CV8contextT) {
 
 	cRet := C.cef_v8context_get_current_context()
 
-	ret = newCV8contextT(cRet, false)
+	ret = newCV8contextT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -27403,7 +33651,7 @@ func V8contextGetEnteredContext() (ret *CV8contextT) {
 
 	cRet := C.cef_v8context_get_entered_context()
 
-	ret = newCV8contextT(cRet, false)
+	ret = newCV8contextT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -27430,6 +33678,8 @@ type cCV8handlerT C.cef_v8handler_t
 type CV8handlerT struct {
 	noCopy       noCopy
 	pc_v8handler *cCV8handlerT
+	needsUnref   bool
+	beUnrefed    unrefedBy
 }
 
 type RefToCV8handlerT struct {
@@ -27438,36 +33688,82 @@ type RefToCV8handlerT struct {
 
 type CV8handlerTAccessor interface {
 	GetCV8handlerT() *CV8handlerT
-	SetCV8handlerT(*CV8handlerT) (oldValue *CV8handlerT)
+	setCV8handlerT(*CV8handlerT)
+	// TakeOverCV8handlerT(*CV8handlerT)
+	// NewRefCV8handlerT(*CV8handlerT)
 }
 
 func (r RefToCV8handlerT) GetCV8handlerT() *CV8handlerT {
 	return r.p_v8handler
 }
 
-func (r *RefToCV8handlerT) SetCV8handlerT(p *CV8handlerT) (prevValue *CV8handlerT) {
-	prevValue = r.p_v8handler
+func (r *RefToCV8handlerT) setCV8handlerT(p *CV8handlerT) {
+	// prevValue = r.p_v8handler
+	r.p_v8handler.ForceUnref()
 	r.p_v8handler = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8handlerT) TakeOverCV8handlerT(src *CV8handlerT) {
+	if r == nil {
+		return
+	}
+	r.p_v8handler.ForceUnref()
+	gop := src.pc_v8handler
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8handler = newCV8handlerT((*C.cef_v8handler_t)(gop), byApp, true)
+}
+
+func PassCV8handlerT(p *CV8handlerT) (ret *CV8handlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8handler)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8handlerT((*C.cef_v8handler_t)(p.pc_v8handler), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8handlerT) NewRefCV8handlerT(p *CV8handlerT) {
+	if r == nil {
+		return
+	}
+	r.p_v8handler.ForceUnref()
+	gop := p.pc_v8handler
+	BaseAddRef(gop)
+	r.p_v8handler = newCV8handlerT((*C.cef_v8handler_t)(gop), byApp, true)
 }
 
 // Go type CV8handlerT wraps cef type *C.cef_v8handler_t
-func newCV8handlerT(p *C.cef_v8handler_t, countUp bool) *CV8handlerT {
+func newCV8handlerT(p *C.cef_v8handler_t, unrefedBy unrefedBy, needsUnref bool) *CV8handlerT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T213.1:")
 	pc := (*cCV8handlerT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8handler := &CV8handlerT{noCopy{}, pc}
+	go_v8handler := &CV8handlerT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8handler, func(g *CV8handlerT) {
-		if g.pc_v8handler != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8handler != nil {
 			Tracef(unsafe.Pointer(g.pc_v8handler), "T213.2:")
 			BaseRelease(g.pc_v8handler)
 		}
 	})
+
 	return go_v8handler
 }
 
@@ -27481,13 +33777,15 @@ func (p *cCV8handlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (v8handler *CV8handlerT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8handler.pc_v8handler)
+	if v8handler == nil {
+		return
+	}
+	if v8handler.needsUnref && v8handler.beUnrefed == byApp {
+		ret = BaseRelease(v8handler.pc_v8handler)
+		v8handler.beUnrefed = unrefed
+		v8handler.needsUnref = false
+	}
 	v8handler.pc_v8handler = nil
-	return ret
-}
-
-func (v8handler *CV8handlerT) release() (ret bool) {
-	ret = BaseRelease(v8handler.pc_v8handler)
 	return ret
 }
 
@@ -27532,7 +33830,13 @@ func AllocCV8handlerT() *CV8handlerT {
 		delete(v8handler_handlers.execute_handler, cgop)
 	}))
 
-	return newCV8handlerT(cefp, true)
+	BaseAddRef(cgop)
+	return newCV8handlerT(cefp, byApp, true)
+}
+
+// BindCV8handlerT allocates CV8handlerT, construct and bind it
+func BindCV8handlerT(a interface{}) *CV8handlerT {
+	return AllocCV8handlerT().Bind(a)
 }
 
 func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
@@ -27542,7 +33846,7 @@ func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
 	cp := v8handler.pc_v8handler
 	if oldGoObj, ok := v8handler_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CV8handlerTAccessor); ok {
-			oldAcc.SetCV8handlerT(nil)
+			oldAcc.setCV8handlerT(nil)
 		}
 	}
 	v8handler_handlers.handler[cp] = a
@@ -27554,7 +33858,7 @@ func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
 	}
 
 	if accessor, ok := a.(CV8handlerTAccessor); ok {
-		accessor.SetCV8handlerT(v8handler)
+		accessor.setCV8handlerT(v8handler)
 		Logf("T213.5:")
 	}
 
@@ -27562,19 +33866,24 @@ func (v8handler *CV8handlerT) Bind(a interface{}) *CV8handlerT {
 }
 
 func (v8handler *CV8handlerT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CV8handlerTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := v8handler.pc_v8handler
-	if goHandler, ok := v8handler_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CV8handlerTAccessor); ok1 {
-			accessor.SetCV8handlerT(nil)
+		cp := v8handler.pc_v8handler
+		if goHandler, ok := v8handler_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CV8handlerTAccessor)
 		}
+		delete(v8handler_handlers.handler, cp)
+
+		delete(v8handler_handlers.execute_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCV8handlerT(nil)
 	}
-	delete(v8handler_handlers.handler, cp)
-
-	delete(v8handler_handlers.execute_handler, cp)
-
 }
 
 func (v8handler *CV8handlerT) Handler() interface{} {
@@ -27598,6 +33907,8 @@ type cCV8accessorT C.cef_v8accessor_t
 type CV8accessorT struct {
 	noCopy        noCopy
 	pc_v8accessor *cCV8accessorT
+	needsUnref    bool
+	beUnrefed     unrefedBy
 }
 
 type RefToCV8accessorT struct {
@@ -27606,36 +33917,82 @@ type RefToCV8accessorT struct {
 
 type CV8accessorTAccessor interface {
 	GetCV8accessorT() *CV8accessorT
-	SetCV8accessorT(*CV8accessorT) (oldValue *CV8accessorT)
+	setCV8accessorT(*CV8accessorT)
+	// TakeOverCV8accessorT(*CV8accessorT)
+	// NewRefCV8accessorT(*CV8accessorT)
 }
 
 func (r RefToCV8accessorT) GetCV8accessorT() *CV8accessorT {
 	return r.p_v8accessor
 }
 
-func (r *RefToCV8accessorT) SetCV8accessorT(p *CV8accessorT) (prevValue *CV8accessorT) {
-	prevValue = r.p_v8accessor
+func (r *RefToCV8accessorT) setCV8accessorT(p *CV8accessorT) {
+	// prevValue = r.p_v8accessor
+	r.p_v8accessor.ForceUnref()
 	r.p_v8accessor = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8accessorT) TakeOverCV8accessorT(src *CV8accessorT) {
+	if r == nil {
+		return
+	}
+	r.p_v8accessor.ForceUnref()
+	gop := src.pc_v8accessor
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8accessor = newCV8accessorT((*C.cef_v8accessor_t)(gop), byApp, true)
+}
+
+func PassCV8accessorT(p *CV8accessorT) (ret *CV8accessorT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8accessor)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8accessorT((*C.cef_v8accessor_t)(p.pc_v8accessor), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8accessorT) NewRefCV8accessorT(p *CV8accessorT) {
+	if r == nil {
+		return
+	}
+	r.p_v8accessor.ForceUnref()
+	gop := p.pc_v8accessor
+	BaseAddRef(gop)
+	r.p_v8accessor = newCV8accessorT((*C.cef_v8accessor_t)(gop), byApp, true)
 }
 
 // Go type CV8accessorT wraps cef type *C.cef_v8accessor_t
-func newCV8accessorT(p *C.cef_v8accessor_t, countUp bool) *CV8accessorT {
+func newCV8accessorT(p *C.cef_v8accessor_t, unrefedBy unrefedBy, needsUnref bool) *CV8accessorT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T214.1:")
 	pc := (*cCV8accessorT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8accessor := &CV8accessorT{noCopy{}, pc}
+	go_v8accessor := &CV8accessorT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8accessor, func(g *CV8accessorT) {
-		if g.pc_v8accessor != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8accessor != nil {
 			Tracef(unsafe.Pointer(g.pc_v8accessor), "T214.2:")
 			BaseRelease(g.pc_v8accessor)
 		}
 	})
+
 	return go_v8accessor
 }
 
@@ -27649,13 +34006,15 @@ func (p *cCV8accessorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 }
 
 func (v8accessor *CV8accessorT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8accessor.pc_v8accessor)
+	if v8accessor == nil {
+		return
+	}
+	if v8accessor.needsUnref && v8accessor.beUnrefed == byApp {
+		ret = BaseRelease(v8accessor.pc_v8accessor)
+		v8accessor.beUnrefed = unrefed
+		v8accessor.needsUnref = false
+	}
 	v8accessor.pc_v8accessor = nil
-	return ret
-}
-
-func (v8accessor *CV8accessorT) release() (ret bool) {
-	ret = BaseRelease(v8accessor.pc_v8accessor)
 	return ret
 }
 
@@ -27718,7 +34077,13 @@ func AllocCV8accessorT() *CV8accessorT {
 		delete(v8accessor_handlers.set_handler, cgop)
 	}))
 
-	return newCV8accessorT(cefp, true)
+	BaseAddRef(cgop)
+	return newCV8accessorT(cefp, byApp, true)
+}
+
+// BindCV8accessorT allocates CV8accessorT, construct and bind it
+func BindCV8accessorT(a interface{}) *CV8accessorT {
+	return AllocCV8accessorT().Bind(a)
 }
 
 func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
@@ -27728,7 +34093,7 @@ func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
 	cp := v8accessor.pc_v8accessor
 	if oldGoObj, ok := v8accessor_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CV8accessorTAccessor); ok {
-			oldAcc.SetCV8accessorT(nil)
+			oldAcc.setCV8accessorT(nil)
 		}
 	}
 	v8accessor_handlers.handler[cp] = a
@@ -27746,7 +34111,7 @@ func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
 	}
 
 	if accessor, ok := a.(CV8accessorTAccessor); ok {
-		accessor.SetCV8accessorT(v8accessor)
+		accessor.setCV8accessorT(v8accessor)
 		Logf("T214.5:")
 	}
 
@@ -27754,20 +34119,25 @@ func (v8accessor *CV8accessorT) Bind(a interface{}) *CV8accessorT {
 }
 
 func (v8accessor *CV8accessorT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CV8accessorTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := v8accessor.pc_v8accessor
-	if goHandler, ok := v8accessor_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CV8accessorTAccessor); ok1 {
-			accessor.SetCV8accessorT(nil)
+		cp := v8accessor.pc_v8accessor
+		if goHandler, ok := v8accessor_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CV8accessorTAccessor)
 		}
+		delete(v8accessor_handlers.handler, cp)
+
+		delete(v8accessor_handlers.get_handler, cp)
+		delete(v8accessor_handlers.set_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCV8accessorT(nil)
 	}
-	delete(v8accessor_handlers.handler, cp)
-
-	delete(v8accessor_handlers.get_handler, cp)
-	delete(v8accessor_handlers.set_handler, cp)
-
 }
 
 func (v8accessor *CV8accessorT) Handler() interface{} {
@@ -27793,6 +34163,8 @@ type cCV8interceptorT C.cef_v8interceptor_t
 type CV8interceptorT struct {
 	noCopy           noCopy
 	pc_v8interceptor *cCV8interceptorT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCV8interceptorT struct {
@@ -27801,36 +34173,82 @@ type RefToCV8interceptorT struct {
 
 type CV8interceptorTAccessor interface {
 	GetCV8interceptorT() *CV8interceptorT
-	SetCV8interceptorT(*CV8interceptorT) (oldValue *CV8interceptorT)
+	setCV8interceptorT(*CV8interceptorT)
+	// TakeOverCV8interceptorT(*CV8interceptorT)
+	// NewRefCV8interceptorT(*CV8interceptorT)
 }
 
 func (r RefToCV8interceptorT) GetCV8interceptorT() *CV8interceptorT {
 	return r.p_v8interceptor
 }
 
-func (r *RefToCV8interceptorT) SetCV8interceptorT(p *CV8interceptorT) (prevValue *CV8interceptorT) {
-	prevValue = r.p_v8interceptor
+func (r *RefToCV8interceptorT) setCV8interceptorT(p *CV8interceptorT) {
+	// prevValue = r.p_v8interceptor
+	r.p_v8interceptor.ForceUnref()
 	r.p_v8interceptor = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8interceptorT) TakeOverCV8interceptorT(src *CV8interceptorT) {
+	if r == nil {
+		return
+	}
+	r.p_v8interceptor.ForceUnref()
+	gop := src.pc_v8interceptor
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8interceptor = newCV8interceptorT((*C.cef_v8interceptor_t)(gop), byApp, true)
+}
+
+func PassCV8interceptorT(p *CV8interceptorT) (ret *CV8interceptorT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8interceptor)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8interceptorT((*C.cef_v8interceptor_t)(p.pc_v8interceptor), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8interceptorT) NewRefCV8interceptorT(p *CV8interceptorT) {
+	if r == nil {
+		return
+	}
+	r.p_v8interceptor.ForceUnref()
+	gop := p.pc_v8interceptor
+	BaseAddRef(gop)
+	r.p_v8interceptor = newCV8interceptorT((*C.cef_v8interceptor_t)(gop), byApp, true)
 }
 
 // Go type CV8interceptorT wraps cef type *C.cef_v8interceptor_t
-func newCV8interceptorT(p *C.cef_v8interceptor_t, countUp bool) *CV8interceptorT {
+func newCV8interceptorT(p *C.cef_v8interceptor_t, unrefedBy unrefedBy, needsUnref bool) *CV8interceptorT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T215.1:")
 	pc := (*cCV8interceptorT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8interceptor := &CV8interceptorT{noCopy{}, pc}
+	go_v8interceptor := &CV8interceptorT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8interceptor, func(g *CV8interceptorT) {
-		if g.pc_v8interceptor != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8interceptor != nil {
 			Tracef(unsafe.Pointer(g.pc_v8interceptor), "T215.2:")
 			BaseRelease(g.pc_v8interceptor)
 		}
 	})
+
 	return go_v8interceptor
 }
 
@@ -27844,13 +34262,15 @@ func (p *cCV8interceptorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (v8interceptor *CV8interceptorT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8interceptor.pc_v8interceptor)
+	if v8interceptor == nil {
+		return
+	}
+	if v8interceptor.needsUnref && v8interceptor.beUnrefed == byApp {
+		ret = BaseRelease(v8interceptor.pc_v8interceptor)
+		v8interceptor.beUnrefed = unrefed
+		v8interceptor.needsUnref = false
+	}
 	v8interceptor.pc_v8interceptor = nil
-	return ret
-}
-
-func (v8interceptor *CV8interceptorT) release() (ret bool) {
-	ret = BaseRelease(v8interceptor.pc_v8interceptor)
 	return ret
 }
 
@@ -27878,7 +34298,7 @@ func (self *CV8interceptorT) GetByname(
 
 	cRet := C.cefingo_v8interceptor_get_byname((*C.cef_v8interceptor_t)(self.pc_v8interceptor), c_name.p_cef_string_t, goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
 
-	retval = newCV8valueT(tmpretval, false) // Out Param
+	retval = newCV8valueT(tmpretval, byApp, true) // Out Param
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
@@ -27907,7 +34327,7 @@ func (self *CV8interceptorT) GetByindex(
 
 	cRet := C.cefingo_v8interceptor_get_byindex((*C.cef_v8interceptor_t)(self.pc_v8interceptor), (C.int)(index), goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
 
-	retval = newCV8valueT(tmpretval, false) // Out Param
+	retval = newCV8valueT(tmpretval, byApp, true) // Out Param
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
@@ -27991,6 +34411,8 @@ type cCV8exceptionT C.cef_v8exception_t
 type CV8exceptionT struct {
 	noCopy         noCopy
 	pc_v8exception *cCV8exceptionT
+	needsUnref     bool
+	beUnrefed      unrefedBy
 }
 
 type RefToCV8exceptionT struct {
@@ -27999,36 +34421,82 @@ type RefToCV8exceptionT struct {
 
 type CV8exceptionTAccessor interface {
 	GetCV8exceptionT() *CV8exceptionT
-	SetCV8exceptionT(*CV8exceptionT) (oldValue *CV8exceptionT)
+	setCV8exceptionT(*CV8exceptionT)
+	// TakeOverCV8exceptionT(*CV8exceptionT)
+	// NewRefCV8exceptionT(*CV8exceptionT)
 }
 
 func (r RefToCV8exceptionT) GetCV8exceptionT() *CV8exceptionT {
 	return r.p_v8exception
 }
 
-func (r *RefToCV8exceptionT) SetCV8exceptionT(p *CV8exceptionT) (prevValue *CV8exceptionT) {
-	prevValue = r.p_v8exception
+func (r *RefToCV8exceptionT) setCV8exceptionT(p *CV8exceptionT) {
+	// prevValue = r.p_v8exception
+	r.p_v8exception.ForceUnref()
 	r.p_v8exception = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8exceptionT) TakeOverCV8exceptionT(src *CV8exceptionT) {
+	if r == nil {
+		return
+	}
+	r.p_v8exception.ForceUnref()
+	gop := src.pc_v8exception
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8exception = newCV8exceptionT((*C.cef_v8exception_t)(gop), byApp, true)
+}
+
+func PassCV8exceptionT(p *CV8exceptionT) (ret *CV8exceptionT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8exception)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8exceptionT((*C.cef_v8exception_t)(p.pc_v8exception), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8exceptionT) NewRefCV8exceptionT(p *CV8exceptionT) {
+	if r == nil {
+		return
+	}
+	r.p_v8exception.ForceUnref()
+	gop := p.pc_v8exception
+	BaseAddRef(gop)
+	r.p_v8exception = newCV8exceptionT((*C.cef_v8exception_t)(gop), byApp, true)
 }
 
 // Go type CV8exceptionT wraps cef type *C.cef_v8exception_t
-func newCV8exceptionT(p *C.cef_v8exception_t, countUp bool) *CV8exceptionT {
+func newCV8exceptionT(p *C.cef_v8exception_t, unrefedBy unrefedBy, needsUnref bool) *CV8exceptionT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T216.1:")
 	pc := (*cCV8exceptionT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8exception := &CV8exceptionT{noCopy{}, pc}
+	go_v8exception := &CV8exceptionT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8exception, func(g *CV8exceptionT) {
-		if g.pc_v8exception != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8exception != nil {
 			Tracef(unsafe.Pointer(g.pc_v8exception), "T216.2:")
 			BaseRelease(g.pc_v8exception)
 		}
 	})
+
 	return go_v8exception
 }
 
@@ -28042,13 +34510,15 @@ func (p *cCV8exceptionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (v8exception *CV8exceptionT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8exception.pc_v8exception)
+	if v8exception == nil {
+		return
+	}
+	if v8exception.needsUnref && v8exception.beUnrefed == byApp {
+		ret = BaseRelease(v8exception.pc_v8exception)
+		v8exception.beUnrefed = unrefed
+		v8exception.needsUnref = false
+	}
 	v8exception.pc_v8exception = nil
-	return ret
-}
-
-func (v8exception *CV8exceptionT) release() (ret bool) {
-	ret = BaseRelease(v8exception.pc_v8exception)
 	return ret
 }
 
@@ -28171,6 +34641,8 @@ type cCV8arrayBufferReleaseCallbackT C.cef_v8array_buffer_release_callback_t
 type CV8arrayBufferReleaseCallbackT struct {
 	noCopy                             noCopy
 	pc_v8array_buffer_release_callback *cCV8arrayBufferReleaseCallbackT
+	needsUnref                         bool
+	beUnrefed                          unrefedBy
 }
 
 type RefToCV8arrayBufferReleaseCallbackT struct {
@@ -28179,36 +34651,82 @@ type RefToCV8arrayBufferReleaseCallbackT struct {
 
 type CV8arrayBufferReleaseCallbackTAccessor interface {
 	GetCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT
-	SetCV8arrayBufferReleaseCallbackT(*CV8arrayBufferReleaseCallbackT) (oldValue *CV8arrayBufferReleaseCallbackT)
+	setCV8arrayBufferReleaseCallbackT(*CV8arrayBufferReleaseCallbackT)
+	// TakeOverCV8arrayBufferReleaseCallbackT(*CV8arrayBufferReleaseCallbackT)
+	// NewRefCV8arrayBufferReleaseCallbackT(*CV8arrayBufferReleaseCallbackT)
 }
 
 func (r RefToCV8arrayBufferReleaseCallbackT) GetCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
 	return r.p_v8array_buffer_release_callback
 }
 
-func (r *RefToCV8arrayBufferReleaseCallbackT) SetCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) (prevValue *CV8arrayBufferReleaseCallbackT) {
-	prevValue = r.p_v8array_buffer_release_callback
+func (r *RefToCV8arrayBufferReleaseCallbackT) setCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) {
+	// prevValue = r.p_v8array_buffer_release_callback
+	r.p_v8array_buffer_release_callback.ForceUnref()
 	r.p_v8array_buffer_release_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8arrayBufferReleaseCallbackT) TakeOverCV8arrayBufferReleaseCallbackT(src *CV8arrayBufferReleaseCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_v8array_buffer_release_callback.ForceUnref()
+	gop := src.pc_v8array_buffer_release_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8array_buffer_release_callback = newCV8arrayBufferReleaseCallbackT((*C.cef_v8array_buffer_release_callback_t)(gop), byApp, true)
+}
+
+func PassCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) (ret *CV8arrayBufferReleaseCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8array_buffer_release_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8arrayBufferReleaseCallbackT((*C.cef_v8array_buffer_release_callback_t)(p.pc_v8array_buffer_release_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8arrayBufferReleaseCallbackT) NewRefCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_v8array_buffer_release_callback.ForceUnref()
+	gop := p.pc_v8array_buffer_release_callback
+	BaseAddRef(gop)
+	r.p_v8array_buffer_release_callback = newCV8arrayBufferReleaseCallbackT((*C.cef_v8array_buffer_release_callback_t)(gop), byApp, true)
 }
 
 // Go type CV8arrayBufferReleaseCallbackT wraps cef type *C.cef_v8array_buffer_release_callback_t
-func newCV8arrayBufferReleaseCallbackT(p *C.cef_v8array_buffer_release_callback_t, countUp bool) *CV8arrayBufferReleaseCallbackT {
+func newCV8arrayBufferReleaseCallbackT(p *C.cef_v8array_buffer_release_callback_t, unrefedBy unrefedBy, needsUnref bool) *CV8arrayBufferReleaseCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T217.1:")
 	pc := (*cCV8arrayBufferReleaseCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8array_buffer_release_callback := &CV8arrayBufferReleaseCallbackT{noCopy{}, pc}
+	go_v8array_buffer_release_callback := &CV8arrayBufferReleaseCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8array_buffer_release_callback, func(g *CV8arrayBufferReleaseCallbackT) {
-		if g.pc_v8array_buffer_release_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8array_buffer_release_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_v8array_buffer_release_callback), "T217.2:")
 			BaseRelease(g.pc_v8array_buffer_release_callback)
 		}
 	})
+
 	return go_v8array_buffer_release_callback
 }
 
@@ -28222,13 +34740,15 @@ func (p *cCV8arrayBufferReleaseCallbackT) cast_to_p_base_ref_counted_t() *C.cef_
 }
 
 func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8array_buffer_release_callback.pc_v8array_buffer_release_callback)
+	if v8array_buffer_release_callback == nil {
+		return
+	}
+	if v8array_buffer_release_callback.needsUnref && v8array_buffer_release_callback.beUnrefed == byApp {
+		ret = BaseRelease(v8array_buffer_release_callback.pc_v8array_buffer_release_callback)
+		v8array_buffer_release_callback.beUnrefed = unrefed
+		v8array_buffer_release_callback.needsUnref = false
+	}
 	v8array_buffer_release_callback.pc_v8array_buffer_release_callback = nil
-	return ret
-}
-
-func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) release() (ret bool) {
-	ret = BaseRelease(v8array_buffer_release_callback.pc_v8array_buffer_release_callback)
 	return ret
 }
 
@@ -28269,7 +34789,13 @@ func AllocCV8arrayBufferReleaseCallbackT() *CV8arrayBufferReleaseCallbackT {
 		delete(v8array_buffer_release_callback_handlers.release_buffer_handler, cgop)
 	}))
 
-	return newCV8arrayBufferReleaseCallbackT(cefp, true)
+	BaseAddRef(cgop)
+	return newCV8arrayBufferReleaseCallbackT(cefp, byApp, true)
+}
+
+// BindCV8arrayBufferReleaseCallbackT allocates CV8arrayBufferReleaseCallbackT, construct and bind it
+func BindCV8arrayBufferReleaseCallbackT(a interface{}) *CV8arrayBufferReleaseCallbackT {
+	return AllocCV8arrayBufferReleaseCallbackT().Bind(a)
 }
 
 func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a interface{}) *CV8arrayBufferReleaseCallbackT {
@@ -28279,7 +34805,7 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a in
 	cp := v8array_buffer_release_callback.pc_v8array_buffer_release_callback
 	if oldGoObj, ok := v8array_buffer_release_callback_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CV8arrayBufferReleaseCallbackTAccessor); ok {
-			oldAcc.SetCV8arrayBufferReleaseCallbackT(nil)
+			oldAcc.setCV8arrayBufferReleaseCallbackT(nil)
 		}
 	}
 	v8array_buffer_release_callback_handlers.handler[cp] = a
@@ -28291,7 +34817,7 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a in
 	}
 
 	if accessor, ok := a.(CV8arrayBufferReleaseCallbackTAccessor); ok {
-		accessor.SetCV8arrayBufferReleaseCallbackT(v8array_buffer_release_callback)
+		accessor.setCV8arrayBufferReleaseCallbackT(v8array_buffer_release_callback)
 		Logf("T217.5:")
 	}
 
@@ -28299,19 +34825,24 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Bind(a in
 }
 
 func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CV8arrayBufferReleaseCallbackTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := v8array_buffer_release_callback.pc_v8array_buffer_release_callback
-	if goHandler, ok := v8array_buffer_release_callback_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CV8arrayBufferReleaseCallbackTAccessor); ok1 {
-			accessor.SetCV8arrayBufferReleaseCallbackT(nil)
+		cp := v8array_buffer_release_callback.pc_v8array_buffer_release_callback
+		if goHandler, ok := v8array_buffer_release_callback_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CV8arrayBufferReleaseCallbackTAccessor)
 		}
+		delete(v8array_buffer_release_callback_handlers.handler, cp)
+
+		delete(v8array_buffer_release_callback_handlers.release_buffer_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCV8arrayBufferReleaseCallbackT(nil)
 	}
-	delete(v8array_buffer_release_callback_handlers.handler, cp)
-
-	delete(v8array_buffer_release_callback_handlers.release_buffer_handler, cp)
-
 }
 
 func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Handler() interface{} {
@@ -28336,6 +34867,8 @@ type cCV8valueT C.cef_v8value_t
 type CV8valueT struct {
 	noCopy     noCopy
 	pc_v8value *cCV8valueT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCV8valueT struct {
@@ -28344,36 +34877,82 @@ type RefToCV8valueT struct {
 
 type CV8valueTAccessor interface {
 	GetCV8valueT() *CV8valueT
-	SetCV8valueT(*CV8valueT) (oldValue *CV8valueT)
+	setCV8valueT(*CV8valueT)
+	// TakeOverCV8valueT(*CV8valueT)
+	// NewRefCV8valueT(*CV8valueT)
 }
 
 func (r RefToCV8valueT) GetCV8valueT() *CV8valueT {
 	return r.p_v8value
 }
 
-func (r *RefToCV8valueT) SetCV8valueT(p *CV8valueT) (prevValue *CV8valueT) {
-	prevValue = r.p_v8value
+func (r *RefToCV8valueT) setCV8valueT(p *CV8valueT) {
+	// prevValue = r.p_v8value
+	r.p_v8value.ForceUnref()
 	r.p_v8value = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8valueT) TakeOverCV8valueT(src *CV8valueT) {
+	if r == nil {
+		return
+	}
+	r.p_v8value.ForceUnref()
+	gop := src.pc_v8value
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8value = newCV8valueT((*C.cef_v8value_t)(gop), byApp, true)
+}
+
+func PassCV8valueT(p *CV8valueT) (ret *CV8valueT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8value)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8valueT((*C.cef_v8value_t)(p.pc_v8value), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8valueT) NewRefCV8valueT(p *CV8valueT) {
+	if r == nil {
+		return
+	}
+	r.p_v8value.ForceUnref()
+	gop := p.pc_v8value
+	BaseAddRef(gop)
+	r.p_v8value = newCV8valueT((*C.cef_v8value_t)(gop), byApp, true)
 }
 
 // Go type CV8valueT wraps cef type *C.cef_v8value_t
-func newCV8valueT(p *C.cef_v8value_t, countUp bool) *CV8valueT {
+func newCV8valueT(p *C.cef_v8value_t, unrefedBy unrefedBy, needsUnref bool) *CV8valueT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T218.1:")
 	pc := (*cCV8valueT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8value := &CV8valueT{noCopy{}, pc}
+	go_v8value := &CV8valueT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8value, func(g *CV8valueT) {
-		if g.pc_v8value != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8value != nil {
 			Tracef(unsafe.Pointer(g.pc_v8value), "T218.2:")
 			BaseRelease(g.pc_v8value)
 		}
 	})
+
 	return go_v8value
 }
 
@@ -28387,13 +34966,15 @@ func (p *cCV8valueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (v8value *CV8valueT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8value.pc_v8value)
+	if v8value == nil {
+		return
+	}
+	if v8value.needsUnref && v8value.beUnrefed == byApp {
+		ret = BaseRelease(v8value.pc_v8value)
+		v8value.beUnrefed = unrefed
+		v8value.needsUnref = false
+	}
 	v8value.pc_v8value = nil
-	return ret
-}
-
-func (v8value *CV8valueT) release() (ret bool) {
-	ret = BaseRelease(v8value.pc_v8value)
 	return ret
 }
 
@@ -28579,7 +35160,7 @@ func (self *CV8valueT) GetIntValue() (ret int32) {
 
 	cRet := C.cefingo_v8value_get_int_value((*C.cef_v8value_t)(self.pc_v8value))
 
-	ret = (int32)(cRet)
+	ret = (int32)(cRet) // return GoObj
 	return ret
 }
 
@@ -28590,7 +35171,7 @@ func (self *CV8valueT) GetUintValue() (ret uint32) {
 
 	cRet := C.cefingo_v8value_get_uint_value((*C.cef_v8value_t)(self.pc_v8value))
 
-	ret = (uint32)(cRet)
+	ret = (uint32)(cRet) // return GoObj
 	return ret
 }
 
@@ -28601,7 +35182,7 @@ func (self *CV8valueT) GetDoubleValue() (ret float64) {
 
 	cRet := C.cefingo_v8value_get_double_value((*C.cef_v8value_t)(self.pc_v8value))
 
-	ret = (float64)(cRet)
+	ret = (float64)(cRet) // return GoObj
 	return ret
 }
 
@@ -28612,7 +35193,7 @@ func (self *CV8valueT) GetDateValue() (ret CTimeT) {
 
 	cRet := C.cefingo_v8value_get_date_value((*C.cef_v8value_t)(self.pc_v8value))
 
-	ret = (CTimeT)(cRet)
+	ret = (CTimeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -28663,7 +35244,7 @@ func (self *CV8valueT) GetException() (ret *CV8exceptionT) {
 
 	cRet := C.cefingo_v8value_get_exception((*C.cef_v8value_t)(self.pc_v8value))
 
-	ret = newCV8exceptionT(cRet, false)
+	ret = newCV8exceptionT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -28778,7 +35359,7 @@ func (self *CV8valueT) GetValueBykey(
 
 	cRet := C.cefingo_v8value_get_value_bykey((*C.cef_v8value_t)(self.pc_v8value), c_key.p_cef_string_t)
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -28792,7 +35373,7 @@ func (self *CV8valueT) GetValueByindex(
 
 	cRet := C.cefingo_v8value_get_value_byindex((*C.cef_v8value_t)(self.pc_v8value), (C.int)(index))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -28928,7 +35509,7 @@ func (self *CV8valueT) GetArrayBufferReleaseCallback() (ret *CV8arrayBufferRelea
 
 	cRet := C.cefingo_v8value_get_array_buffer_release_callback((*C.cef_v8value_t)(self.pc_v8value))
 
-	ret = newCV8arrayBufferReleaseCallbackT(cRet, false)
+	ret = newCV8arrayBufferReleaseCallbackT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -28970,7 +35551,7 @@ func (self *CV8valueT) GetFunctionHandler() (ret *CV8handlerT) {
 
 	cRet := C.cefingo_v8value_get_function_handler((*C.cef_v8value_t)(self.pc_v8value))
 
-	ret = newCV8handlerT(cRet, false)
+	ret = newCV8handlerT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29007,7 +35588,7 @@ func (self *CV8valueT) ExecuteFunction(
 
 	cRet := C.cefingo_v8value_execute_function((*C.cef_v8value_t)(self.pc_v8value), goTmpobject, (C.size_t)(argumentsCount), (**C.cef_v8value_t)(tmparguments))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29047,7 +35628,7 @@ func (self *CV8valueT) ExecuteFunctionWithContext(
 
 	cRet := C.cefingo_v8value_execute_function_with_context((*C.cef_v8value_t)(self.pc_v8value), goTmpcontext, goTmpobject, (C.size_t)(argumentsCount), (**C.cef_v8value_t)(tmparguments))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29058,7 +35639,7 @@ func V8valueCreateUndefined() (ret *CV8valueT) {
 
 	cRet := C.cef_v8value_create_undefined()
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29069,7 +35650,7 @@ func V8valueCreateNull() (ret *CV8valueT) {
 
 	cRet := C.cef_v8value_create_null()
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29082,7 +35663,7 @@ func V8valueCreateBool(
 
 	cRet := C.cef_v8value_create_bool((C.int)(value))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29095,7 +35676,7 @@ func V8valueCreateInt(
 
 	cRet := C.cef_v8value_create_int((C.int32)(value))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29108,7 +35689,7 @@ func V8valueCreateUint(
 
 	cRet := C.cef_v8value_create_uint((C.uint32)(value))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29121,7 +35702,7 @@ func V8valueCreateDouble(
 
 	cRet := C.cef_v8value_create_double((C.double)(value))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29137,7 +35718,7 @@ func V8valueCreateDate(
 
 	cRet := C.cef_v8value_create_date((*C.cef_time_t)(date))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29151,7 +35732,7 @@ func V8valueCreateString(
 
 	cRet := C.cef_v8value_create_string(c_value.p_cef_string_t)
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29179,7 +35760,7 @@ func V8valueCreateObject(
 
 	cRet := C.cef_v8value_create_object(goTmpaccessor, goTmpinterceptor)
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29197,7 +35778,7 @@ func V8valueCreateArray(
 
 	cRet := C.cef_v8value_create_array((C.int)(length))
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29224,7 +35805,7 @@ func V8valueCreateArrayBuffer(
 
 	cRet := C.cef_v8value_create_array_buffer(buffer, (C.size_t)(length), goTmprelease_callback)
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29247,7 +35828,7 @@ func V8valueCreateFunction(
 
 	cRet := C.cef_v8value_create_function(c_name.p_cef_string_t, goTmphandler)
 
-	ret = newCV8valueT(cRet, false)
+	ret = newCV8valueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29265,6 +35846,8 @@ type cCV8stackTraceT C.cef_v8stack_trace_t
 type CV8stackTraceT struct {
 	noCopy           noCopy
 	pc_v8stack_trace *cCV8stackTraceT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCV8stackTraceT struct {
@@ -29273,36 +35856,82 @@ type RefToCV8stackTraceT struct {
 
 type CV8stackTraceTAccessor interface {
 	GetCV8stackTraceT() *CV8stackTraceT
-	SetCV8stackTraceT(*CV8stackTraceT) (oldValue *CV8stackTraceT)
+	setCV8stackTraceT(*CV8stackTraceT)
+	// TakeOverCV8stackTraceT(*CV8stackTraceT)
+	// NewRefCV8stackTraceT(*CV8stackTraceT)
 }
 
 func (r RefToCV8stackTraceT) GetCV8stackTraceT() *CV8stackTraceT {
 	return r.p_v8stack_trace
 }
 
-func (r *RefToCV8stackTraceT) SetCV8stackTraceT(p *CV8stackTraceT) (prevValue *CV8stackTraceT) {
-	prevValue = r.p_v8stack_trace
+func (r *RefToCV8stackTraceT) setCV8stackTraceT(p *CV8stackTraceT) {
+	// prevValue = r.p_v8stack_trace
+	r.p_v8stack_trace.ForceUnref()
 	r.p_v8stack_trace = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8stackTraceT) TakeOverCV8stackTraceT(src *CV8stackTraceT) {
+	if r == nil {
+		return
+	}
+	r.p_v8stack_trace.ForceUnref()
+	gop := src.pc_v8stack_trace
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8stack_trace = newCV8stackTraceT((*C.cef_v8stack_trace_t)(gop), byApp, true)
+}
+
+func PassCV8stackTraceT(p *CV8stackTraceT) (ret *CV8stackTraceT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8stack_trace)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8stackTraceT((*C.cef_v8stack_trace_t)(p.pc_v8stack_trace), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8stackTraceT) NewRefCV8stackTraceT(p *CV8stackTraceT) {
+	if r == nil {
+		return
+	}
+	r.p_v8stack_trace.ForceUnref()
+	gop := p.pc_v8stack_trace
+	BaseAddRef(gop)
+	r.p_v8stack_trace = newCV8stackTraceT((*C.cef_v8stack_trace_t)(gop), byApp, true)
 }
 
 // Go type CV8stackTraceT wraps cef type *C.cef_v8stack_trace_t
-func newCV8stackTraceT(p *C.cef_v8stack_trace_t, countUp bool) *CV8stackTraceT {
+func newCV8stackTraceT(p *C.cef_v8stack_trace_t, unrefedBy unrefedBy, needsUnref bool) *CV8stackTraceT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T219.1:")
 	pc := (*cCV8stackTraceT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8stack_trace := &CV8stackTraceT{noCopy{}, pc}
+	go_v8stack_trace := &CV8stackTraceT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8stack_trace, func(g *CV8stackTraceT) {
-		if g.pc_v8stack_trace != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8stack_trace != nil {
 			Tracef(unsafe.Pointer(g.pc_v8stack_trace), "T219.2:")
 			BaseRelease(g.pc_v8stack_trace)
 		}
 	})
+
 	return go_v8stack_trace
 }
 
@@ -29316,13 +35945,15 @@ func (p *cCV8stackTraceT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (v8stack_trace *CV8stackTraceT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8stack_trace.pc_v8stack_trace)
+	if v8stack_trace == nil {
+		return
+	}
+	if v8stack_trace.needsUnref && v8stack_trace.beUnrefed == byApp {
+		ret = BaseRelease(v8stack_trace.pc_v8stack_trace)
+		v8stack_trace.beUnrefed = unrefed
+		v8stack_trace.needsUnref = false
+	}
 	v8stack_trace.pc_v8stack_trace = nil
-	return ret
-}
-
-func (v8stack_trace *CV8stackTraceT) release() (ret bool) {
-	ret = BaseRelease(v8stack_trace.pc_v8stack_trace)
 	return ret
 }
 
@@ -29359,7 +35990,7 @@ func (self *CV8stackTraceT) GetFrame(
 
 	cRet := C.cefingo_v8stack_trace_get_frame((*C.cef_v8stack_trace_t)(self.pc_v8stack_trace), (C.int)(index))
 
-	ret = newCV8stackFrameT(cRet, false)
+	ret = newCV8stackFrameT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29373,7 +36004,7 @@ func V8stackTraceGetCurrent(
 
 	cRet := C.cef_v8stack_trace_get_current((C.int)(frame_limit))
 
-	ret = newCV8stackTraceT(cRet, false)
+	ret = newCV8stackTraceT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29391,6 +36022,8 @@ type cCV8stackFrameT C.cef_v8stack_frame_t
 type CV8stackFrameT struct {
 	noCopy           noCopy
 	pc_v8stack_frame *cCV8stackFrameT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCV8stackFrameT struct {
@@ -29399,36 +36032,82 @@ type RefToCV8stackFrameT struct {
 
 type CV8stackFrameTAccessor interface {
 	GetCV8stackFrameT() *CV8stackFrameT
-	SetCV8stackFrameT(*CV8stackFrameT) (oldValue *CV8stackFrameT)
+	setCV8stackFrameT(*CV8stackFrameT)
+	// TakeOverCV8stackFrameT(*CV8stackFrameT)
+	// NewRefCV8stackFrameT(*CV8stackFrameT)
 }
 
 func (r RefToCV8stackFrameT) GetCV8stackFrameT() *CV8stackFrameT {
 	return r.p_v8stack_frame
 }
 
-func (r *RefToCV8stackFrameT) SetCV8stackFrameT(p *CV8stackFrameT) (prevValue *CV8stackFrameT) {
-	prevValue = r.p_v8stack_frame
+func (r *RefToCV8stackFrameT) setCV8stackFrameT(p *CV8stackFrameT) {
+	// prevValue = r.p_v8stack_frame
+	r.p_v8stack_frame.ForceUnref()
 	r.p_v8stack_frame = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCV8stackFrameT) TakeOverCV8stackFrameT(src *CV8stackFrameT) {
+	if r == nil {
+		return
+	}
+	r.p_v8stack_frame.ForceUnref()
+	gop := src.pc_v8stack_frame
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_v8stack_frame = newCV8stackFrameT((*C.cef_v8stack_frame_t)(gop), byApp, true)
+}
+
+func PassCV8stackFrameT(p *CV8stackFrameT) (ret *CV8stackFrameT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_v8stack_frame)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCV8stackFrameT((*C.cef_v8stack_frame_t)(p.pc_v8stack_frame), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCV8stackFrameT) NewRefCV8stackFrameT(p *CV8stackFrameT) {
+	if r == nil {
+		return
+	}
+	r.p_v8stack_frame.ForceUnref()
+	gop := p.pc_v8stack_frame
+	BaseAddRef(gop)
+	r.p_v8stack_frame = newCV8stackFrameT((*C.cef_v8stack_frame_t)(gop), byApp, true)
 }
 
 // Go type CV8stackFrameT wraps cef type *C.cef_v8stack_frame_t
-func newCV8stackFrameT(p *C.cef_v8stack_frame_t, countUp bool) *CV8stackFrameT {
+func newCV8stackFrameT(p *C.cef_v8stack_frame_t, unrefedBy unrefedBy, needsUnref bool) *CV8stackFrameT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T220.1:")
 	pc := (*cCV8stackFrameT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_v8stack_frame := &CV8stackFrameT{noCopy{}, pc}
+	go_v8stack_frame := &CV8stackFrameT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_v8stack_frame, func(g *CV8stackFrameT) {
-		if g.pc_v8stack_frame != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_v8stack_frame != nil {
 			Tracef(unsafe.Pointer(g.pc_v8stack_frame), "T220.2:")
 			BaseRelease(g.pc_v8stack_frame)
 		}
 	})
+
 	return go_v8stack_frame
 }
 
@@ -29442,13 +36121,15 @@ func (p *cCV8stackFrameT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (v8stack_frame *CV8stackFrameT) ForceUnref() (ret bool) {
-	ret = BaseRelease(v8stack_frame.pc_v8stack_frame)
+	if v8stack_frame == nil {
+		return
+	}
+	if v8stack_frame.needsUnref && v8stack_frame.beUnrefed == byApp {
+		ret = BaseRelease(v8stack_frame.pc_v8stack_frame)
+		v8stack_frame.beUnrefed = unrefed
+		v8stack_frame.needsUnref = false
+	}
 	v8stack_frame.pc_v8stack_frame = nil
-	return ret
-}
-
-func (v8stack_frame *CV8stackFrameT) release() (ret bool) {
-	ret = BaseRelease(v8stack_frame.pc_v8stack_frame)
 	return ret
 }
 
@@ -29647,8 +36328,10 @@ type cCValueT C.cef_value_t
 
 // Go type for cef_value_t
 type CValueT struct {
-	noCopy   noCopy
-	pc_value *cCValueT
+	noCopy     noCopy
+	pc_value   *cCValueT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCValueT struct {
@@ -29657,36 +36340,82 @@ type RefToCValueT struct {
 
 type CValueTAccessor interface {
 	GetCValueT() *CValueT
-	SetCValueT(*CValueT) (oldValue *CValueT)
+	setCValueT(*CValueT)
+	// TakeOverCValueT(*CValueT)
+	// NewRefCValueT(*CValueT)
 }
 
 func (r RefToCValueT) GetCValueT() *CValueT {
 	return r.p_value
 }
 
-func (r *RefToCValueT) SetCValueT(p *CValueT) (prevValue *CValueT) {
-	prevValue = r.p_value
+func (r *RefToCValueT) setCValueT(p *CValueT) {
+	// prevValue = r.p_value
+	r.p_value.ForceUnref()
 	r.p_value = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCValueT) TakeOverCValueT(src *CValueT) {
+	if r == nil {
+		return
+	}
+	r.p_value.ForceUnref()
+	gop := src.pc_value
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_value = newCValueT((*C.cef_value_t)(gop), byApp, true)
+}
+
+func PassCValueT(p *CValueT) (ret *CValueT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_value)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCValueT((*C.cef_value_t)(p.pc_value), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCValueT) NewRefCValueT(p *CValueT) {
+	if r == nil {
+		return
+	}
+	r.p_value.ForceUnref()
+	gop := p.pc_value
+	BaseAddRef(gop)
+	r.p_value = newCValueT((*C.cef_value_t)(gop), byApp, true)
 }
 
 // Go type CValueT wraps cef type *C.cef_value_t
-func newCValueT(p *C.cef_value_t, countUp bool) *CValueT {
+func newCValueT(p *C.cef_value_t, unrefedBy unrefedBy, needsUnref bool) *CValueT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T221.1:")
 	pc := (*cCValueT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_value := &CValueT{noCopy{}, pc}
+	go_value := &CValueT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_value, func(g *CValueT) {
-		if g.pc_value != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_value != nil {
 			Tracef(unsafe.Pointer(g.pc_value), "T221.2:")
 			BaseRelease(g.pc_value)
 		}
 	})
+
 	return go_value
 }
 
@@ -29700,13 +36429,15 @@ func (p *cCValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (value *CValueT) ForceUnref() (ret bool) {
-	ret = BaseRelease(value.pc_value)
+	if value == nil {
+		return
+	}
+	if value.needsUnref && value.beUnrefed == byApp {
+		ret = BaseRelease(value.pc_value)
+		value.beUnrefed = unrefed
+		value.needsUnref = false
+	}
 	value.pc_value = nil
-	return ret
-}
-
-func (value *CValueT) release() (ret bool) {
-	ret = BaseRelease(value.pc_value)
 	return ret
 }
 
@@ -29795,7 +36526,7 @@ func (self *CValueT) Copy() (ret *CValueT) {
 
 	cRet := C.cefingo_value_copy((*C.cef_value_t)(self.pc_value))
 
-	ret = newCValueT(cRet, false)
+	ret = newCValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29806,7 +36537,7 @@ func (self *CValueT) GetType() (ret CValueTypeT) {
 
 	cRet := C.cefingo_value_get_type((*C.cef_value_t)(self.pc_value))
 
-	ret = CValueTypeT(cRet)
+	ret = CValueTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -29839,7 +36570,7 @@ func (self *CValueT) GetDouble() (ret float64) {
 
 	cRet := C.cefingo_value_get_double((*C.cef_value_t)(self.pc_value))
 
-	ret = (float64)(cRet)
+	ret = (float64)(cRet) // return GoObj
 	return ret
 }
 
@@ -29871,7 +36602,7 @@ func (self *CValueT) GetBinary() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_value_get_binary((*C.cef_value_t)(self.pc_value))
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29887,7 +36618,7 @@ func (self *CValueT) GetDictionary() (ret *CDictionaryValueT) {
 
 	cRet := C.cefingo_value_get_dictionary((*C.cef_value_t)(self.pc_value))
 
-	ret = newCDictionaryValueT(cRet, false)
+	ret = newCDictionaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -29903,7 +36634,7 @@ func (self *CValueT) GetList() (ret *CListValueT) {
 
 	cRet := C.cefingo_value_get_list((*C.cef_value_t)(self.pc_value))
 
-	ret = newCListValueT(cRet, false)
+	ret = newCListValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30047,7 +36778,7 @@ func ValueCreate() (ret *CValueT) {
 
 	cRet := C.cef_value_create()
 
-	ret = newCValueT(cRet, false)
+	ret = newCValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30061,6 +36792,8 @@ type cCBinaryValueT C.cef_binary_value_t
 type CBinaryValueT struct {
 	noCopy          noCopy
 	pc_binary_value *cCBinaryValueT
+	needsUnref      bool
+	beUnrefed       unrefedBy
 }
 
 type RefToCBinaryValueT struct {
@@ -30069,36 +36802,82 @@ type RefToCBinaryValueT struct {
 
 type CBinaryValueTAccessor interface {
 	GetCBinaryValueT() *CBinaryValueT
-	SetCBinaryValueT(*CBinaryValueT) (oldValue *CBinaryValueT)
+	setCBinaryValueT(*CBinaryValueT)
+	// TakeOverCBinaryValueT(*CBinaryValueT)
+	// NewRefCBinaryValueT(*CBinaryValueT)
 }
 
 func (r RefToCBinaryValueT) GetCBinaryValueT() *CBinaryValueT {
 	return r.p_binary_value
 }
 
-func (r *RefToCBinaryValueT) SetCBinaryValueT(p *CBinaryValueT) (prevValue *CBinaryValueT) {
-	prevValue = r.p_binary_value
+func (r *RefToCBinaryValueT) setCBinaryValueT(p *CBinaryValueT) {
+	// prevValue = r.p_binary_value
+	r.p_binary_value.ForceUnref()
 	r.p_binary_value = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCBinaryValueT) TakeOverCBinaryValueT(src *CBinaryValueT) {
+	if r == nil {
+		return
+	}
+	r.p_binary_value.ForceUnref()
+	gop := src.pc_binary_value
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_binary_value = newCBinaryValueT((*C.cef_binary_value_t)(gop), byApp, true)
+}
+
+func PassCBinaryValueT(p *CBinaryValueT) (ret *CBinaryValueT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_binary_value)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCBinaryValueT((*C.cef_binary_value_t)(p.pc_binary_value), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCBinaryValueT) NewRefCBinaryValueT(p *CBinaryValueT) {
+	if r == nil {
+		return
+	}
+	r.p_binary_value.ForceUnref()
+	gop := p.pc_binary_value
+	BaseAddRef(gop)
+	r.p_binary_value = newCBinaryValueT((*C.cef_binary_value_t)(gop), byApp, true)
 }
 
 // Go type CBinaryValueT wraps cef type *C.cef_binary_value_t
-func newCBinaryValueT(p *C.cef_binary_value_t, countUp bool) *CBinaryValueT {
+func newCBinaryValueT(p *C.cef_binary_value_t, unrefedBy unrefedBy, needsUnref bool) *CBinaryValueT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T222.1:")
 	pc := (*cCBinaryValueT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_binary_value := &CBinaryValueT{noCopy{}, pc}
+	go_binary_value := &CBinaryValueT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_binary_value, func(g *CBinaryValueT) {
-		if g.pc_binary_value != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_binary_value != nil {
 			Tracef(unsafe.Pointer(g.pc_binary_value), "T222.2:")
 			BaseRelease(g.pc_binary_value)
 		}
 	})
+
 	return go_binary_value
 }
 
@@ -30112,13 +36891,15 @@ func (p *cCBinaryValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 }
 
 func (binary_value *CBinaryValueT) ForceUnref() (ret bool) {
-	ret = BaseRelease(binary_value.pc_binary_value)
+	if binary_value == nil {
+		return
+	}
+	if binary_value.needsUnref && binary_value.beUnrefed == byApp {
+		ret = BaseRelease(binary_value.pc_binary_value)
+		binary_value.beUnrefed = unrefed
+		binary_value.needsUnref = false
+	}
 	binary_value.pc_binary_value = nil
-	return ret
-}
-
-func (binary_value *CBinaryValueT) release() (ret bool) {
-	ret = BaseRelease(binary_value.pc_binary_value)
 	return ret
 }
 
@@ -30192,7 +36973,7 @@ func (self *CBinaryValueT) Copy() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_binary_value_copy((*C.cef_binary_value_t)(self.pc_binary_value))
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30203,7 +36984,7 @@ func (self *CBinaryValueT) GetSize() (ret int64) {
 
 	cRet := C.cefingo_binary_value_get_size((*C.cef_binary_value_t)(self.pc_binary_value))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -30219,7 +37000,7 @@ func (self *CBinaryValueT) GetData(
 
 	cRet := C.cefingo_binary_value_get_data((*C.cef_binary_value_t)(self.pc_binary_value), buffer, (C.size_t)(buffer_size), (C.size_t)(data_offset))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -30236,7 +37017,7 @@ func BinaryValueCreate(
 
 	cRet := C.cef_binary_value_create(tmpdata, (C.size_t)(data_size))
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30251,6 +37032,8 @@ type cCDictionaryValueT C.cef_dictionary_value_t
 type CDictionaryValueT struct {
 	noCopy              noCopy
 	pc_dictionary_value *cCDictionaryValueT
+	needsUnref          bool
+	beUnrefed           unrefedBy
 }
 
 type RefToCDictionaryValueT struct {
@@ -30259,36 +37042,82 @@ type RefToCDictionaryValueT struct {
 
 type CDictionaryValueTAccessor interface {
 	GetCDictionaryValueT() *CDictionaryValueT
-	SetCDictionaryValueT(*CDictionaryValueT) (oldValue *CDictionaryValueT)
+	setCDictionaryValueT(*CDictionaryValueT)
+	// TakeOverCDictionaryValueT(*CDictionaryValueT)
+	// NewRefCDictionaryValueT(*CDictionaryValueT)
 }
 
 func (r RefToCDictionaryValueT) GetCDictionaryValueT() *CDictionaryValueT {
 	return r.p_dictionary_value
 }
 
-func (r *RefToCDictionaryValueT) SetCDictionaryValueT(p *CDictionaryValueT) (prevValue *CDictionaryValueT) {
-	prevValue = r.p_dictionary_value
+func (r *RefToCDictionaryValueT) setCDictionaryValueT(p *CDictionaryValueT) {
+	// prevValue = r.p_dictionary_value
+	r.p_dictionary_value.ForceUnref()
 	r.p_dictionary_value = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCDictionaryValueT) TakeOverCDictionaryValueT(src *CDictionaryValueT) {
+	if r == nil {
+		return
+	}
+	r.p_dictionary_value.ForceUnref()
+	gop := src.pc_dictionary_value
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_dictionary_value = newCDictionaryValueT((*C.cef_dictionary_value_t)(gop), byApp, true)
+}
+
+func PassCDictionaryValueT(p *CDictionaryValueT) (ret *CDictionaryValueT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_dictionary_value)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCDictionaryValueT((*C.cef_dictionary_value_t)(p.pc_dictionary_value), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCDictionaryValueT) NewRefCDictionaryValueT(p *CDictionaryValueT) {
+	if r == nil {
+		return
+	}
+	r.p_dictionary_value.ForceUnref()
+	gop := p.pc_dictionary_value
+	BaseAddRef(gop)
+	r.p_dictionary_value = newCDictionaryValueT((*C.cef_dictionary_value_t)(gop), byApp, true)
 }
 
 // Go type CDictionaryValueT wraps cef type *C.cef_dictionary_value_t
-func newCDictionaryValueT(p *C.cef_dictionary_value_t, countUp bool) *CDictionaryValueT {
+func newCDictionaryValueT(p *C.cef_dictionary_value_t, unrefedBy unrefedBy, needsUnref bool) *CDictionaryValueT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T223.1:")
 	pc := (*cCDictionaryValueT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_dictionary_value := &CDictionaryValueT{noCopy{}, pc}
+	go_dictionary_value := &CDictionaryValueT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_dictionary_value, func(g *CDictionaryValueT) {
-		if g.pc_dictionary_value != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_dictionary_value != nil {
 			Tracef(unsafe.Pointer(g.pc_dictionary_value), "T223.2:")
 			BaseRelease(g.pc_dictionary_value)
 		}
 	})
+
 	return go_dictionary_value
 }
 
@@ -30302,13 +37131,15 @@ func (p *cCDictionaryValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (dictionary_value *CDictionaryValueT) ForceUnref() (ret bool) {
-	ret = BaseRelease(dictionary_value.pc_dictionary_value)
+	if dictionary_value == nil {
+		return
+	}
+	if dictionary_value.needsUnref && dictionary_value.beUnrefed == byApp {
+		ret = BaseRelease(dictionary_value.pc_dictionary_value)
+		dictionary_value.beUnrefed = unrefed
+		dictionary_value.needsUnref = false
+	}
 	dictionary_value.pc_dictionary_value = nil
-	return ret
-}
-
-func (dictionary_value *CDictionaryValueT) release() (ret bool) {
-	ret = BaseRelease(dictionary_value.pc_dictionary_value)
 	return ret
 }
 
@@ -30398,7 +37229,7 @@ func (self *CDictionaryValueT) Copy(
 
 	cRet := C.cefingo_dictionary_value_copy((*C.cef_dictionary_value_t)(self.pc_dictionary_value), (C.int)(exclude_empty_children))
 
-	ret = newCDictionaryValueT(cRet, false)
+	ret = newCDictionaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30409,7 +37240,7 @@ func (self *CDictionaryValueT) GetSize() (ret int64) {
 
 	cRet := C.cefingo_dictionary_value_get_size((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -30476,7 +37307,7 @@ func (self *CDictionaryValueT) GetType(
 
 	cRet := C.cefingo_dictionary_value_get_type((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
-	ret = CValueTypeT(cRet)
+	ret = CValueTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -30494,7 +37325,7 @@ func (self *CDictionaryValueT) GetValue(
 
 	cRet := C.cefingo_dictionary_value_get_value((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
-	ret = newCValueT(cRet, false)
+	ret = newCValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30536,7 +37367,7 @@ func (self *CDictionaryValueT) GetDouble(
 
 	cRet := C.cefingo_dictionary_value_get_double((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
-	ret = (float64)(cRet)
+	ret = (float64)(cRet) // return GoObj
 	return ret
 }
 
@@ -30570,7 +37401,7 @@ func (self *CDictionaryValueT) GetBinary(
 
 	cRet := C.cefingo_dictionary_value_get_binary((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30586,7 +37417,7 @@ func (self *CDictionaryValueT) GetDictionary(
 
 	cRet := C.cefingo_dictionary_value_get_dictionary((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
-	ret = newCDictionaryValueT(cRet, false)
+	ret = newCDictionaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30602,7 +37433,7 @@ func (self *CDictionaryValueT) GetList(
 
 	cRet := C.cefingo_dictionary_value_get_list((*C.cef_dictionary_value_t)(self.pc_dictionary_value), c_key.p_cef_string_t)
 
-	ret = newCListValueT(cRet, false)
+	ret = newCListValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30794,7 +37625,7 @@ func DictionaryValueCreate() (ret *CDictionaryValueT) {
 
 	cRet := C.cef_dictionary_value_create()
 
-	ret = newCDictionaryValueT(cRet, false)
+	ret = newCDictionaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30808,6 +37639,8 @@ type cCListValueT C.cef_list_value_t
 type CListValueT struct {
 	noCopy        noCopy
 	pc_list_value *cCListValueT
+	needsUnref    bool
+	beUnrefed     unrefedBy
 }
 
 type RefToCListValueT struct {
@@ -30816,36 +37649,82 @@ type RefToCListValueT struct {
 
 type CListValueTAccessor interface {
 	GetCListValueT() *CListValueT
-	SetCListValueT(*CListValueT) (oldValue *CListValueT)
+	setCListValueT(*CListValueT)
+	// TakeOverCListValueT(*CListValueT)
+	// NewRefCListValueT(*CListValueT)
 }
 
 func (r RefToCListValueT) GetCListValueT() *CListValueT {
 	return r.p_list_value
 }
 
-func (r *RefToCListValueT) SetCListValueT(p *CListValueT) (prevValue *CListValueT) {
-	prevValue = r.p_list_value
+func (r *RefToCListValueT) setCListValueT(p *CListValueT) {
+	// prevValue = r.p_list_value
+	r.p_list_value.ForceUnref()
 	r.p_list_value = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCListValueT) TakeOverCListValueT(src *CListValueT) {
+	if r == nil {
+		return
+	}
+	r.p_list_value.ForceUnref()
+	gop := src.pc_list_value
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_list_value = newCListValueT((*C.cef_list_value_t)(gop), byApp, true)
+}
+
+func PassCListValueT(p *CListValueT) (ret *CListValueT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_list_value)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCListValueT((*C.cef_list_value_t)(p.pc_list_value), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCListValueT) NewRefCListValueT(p *CListValueT) {
+	if r == nil {
+		return
+	}
+	r.p_list_value.ForceUnref()
+	gop := p.pc_list_value
+	BaseAddRef(gop)
+	r.p_list_value = newCListValueT((*C.cef_list_value_t)(gop), byApp, true)
 }
 
 // Go type CListValueT wraps cef type *C.cef_list_value_t
-func newCListValueT(p *C.cef_list_value_t, countUp bool) *CListValueT {
+func newCListValueT(p *C.cef_list_value_t, unrefedBy unrefedBy, needsUnref bool) *CListValueT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T224.1:")
 	pc := (*cCListValueT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_list_value := &CListValueT{noCopy{}, pc}
+	go_list_value := &CListValueT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_list_value, func(g *CListValueT) {
-		if g.pc_list_value != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_list_value != nil {
 			Tracef(unsafe.Pointer(g.pc_list_value), "T224.2:")
 			BaseRelease(g.pc_list_value)
 		}
 	})
+
 	return go_list_value
 }
 
@@ -30859,13 +37738,15 @@ func (p *cCListValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 }
 
 func (list_value *CListValueT) ForceUnref() (ret bool) {
-	ret = BaseRelease(list_value.pc_list_value)
+	if list_value == nil {
+		return
+	}
+	if list_value.needsUnref && list_value.beUnrefed == byApp {
+		ret = BaseRelease(list_value.pc_list_value)
+		list_value.beUnrefed = unrefed
+		list_value.needsUnref = false
+	}
 	list_value.pc_list_value = nil
-	return ret
-}
-
-func (list_value *CListValueT) release() (ret bool) {
-	ret = BaseRelease(list_value.pc_list_value)
 	return ret
 }
 
@@ -30952,7 +37833,7 @@ func (self *CListValueT) Copy() (ret *CListValueT) {
 
 	cRet := C.cefingo_list_value_copy((*C.cef_list_value_t)(self.pc_list_value))
 
-	ret = newCListValueT(cRet, false)
+	ret = newCListValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -30977,7 +37858,7 @@ func (self *CListValueT) GetSize() (ret int64) {
 
 	cRet := C.cefingo_list_value_get_size((*C.cef_list_value_t)(self.pc_list_value))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -31014,7 +37895,7 @@ func (self *CListValueT) GetType(
 
 	cRet := C.cefingo_list_value_get_type((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
-	ret = CValueTypeT(cRet)
+	ret = CValueTypeT(cRet) // return GoObj
 	return ret
 }
 
@@ -31031,7 +37912,7 @@ func (self *CListValueT) GetValue(
 
 	cRet := C.cefingo_list_value_get_value((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
-	ret = newCValueT(cRet, false)
+	ret = newCValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31057,7 +37938,7 @@ func (self *CListValueT) GetInt(
 
 	cRet := C.cefingo_list_value_get_int((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
-	ret = (int)(cRet)
+	ret = (int)(cRet) // return GoObj
 	return ret
 }
 
@@ -31070,7 +37951,7 @@ func (self *CListValueT) GetDouble(
 
 	cRet := C.cefingo_list_value_get_double((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
-	ret = (float64)(cRet)
+	ret = (float64)(cRet) // return GoObj
 	return ret
 }
 
@@ -31102,7 +37983,7 @@ func (self *CListValueT) GetBinary(
 
 	cRet := C.cefingo_list_value_get_binary((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31117,7 +37998,7 @@ func (self *CListValueT) GetDictionary(
 
 	cRet := C.cefingo_list_value_get_dictionary((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
-	ret = newCDictionaryValueT(cRet, false)
+	ret = newCDictionaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31132,7 +38013,7 @@ func (self *CListValueT) GetList(
 
 	cRet := C.cefingo_list_value_get_list((*C.cef_list_value_t)(self.pc_list_value), (C.size_t)(index))
 
-	ret = newCListValueT(cRet, false)
+	ret = newCListValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31315,7 +38196,7 @@ func ListValueCreate() (ret *CListValueT) {
 
 	cRet := C.cef_list_value_create()
 
-	ret = newCListValueT(cRet, false)
+	ret = newCListValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31332,8 +38213,10 @@ type cCViewT C.cef_view_t
 
 // Go type for cef_view_t
 type CViewT struct {
-	noCopy  noCopy
-	pc_view *cCViewT
+	noCopy     noCopy
+	pc_view    *cCViewT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCViewT struct {
@@ -31342,36 +38225,82 @@ type RefToCViewT struct {
 
 type CViewTAccessor interface {
 	GetCViewT() *CViewT
-	SetCViewT(*CViewT) (oldValue *CViewT)
+	setCViewT(*CViewT)
+	// TakeOverCViewT(*CViewT)
+	// NewRefCViewT(*CViewT)
 }
 
 func (r RefToCViewT) GetCViewT() *CViewT {
 	return r.p_view
 }
 
-func (r *RefToCViewT) SetCViewT(p *CViewT) (prevValue *CViewT) {
-	prevValue = r.p_view
+func (r *RefToCViewT) setCViewT(p *CViewT) {
+	// prevValue = r.p_view
+	r.p_view.ForceUnref()
 	r.p_view = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCViewT) TakeOverCViewT(src *CViewT) {
+	if r == nil {
+		return
+	}
+	r.p_view.ForceUnref()
+	gop := src.pc_view
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_view = newCViewT((*C.cef_view_t)(gop), byApp, true)
+}
+
+func PassCViewT(p *CViewT) (ret *CViewT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_view)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCViewT((*C.cef_view_t)(p.pc_view), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCViewT) NewRefCViewT(p *CViewT) {
+	if r == nil {
+		return
+	}
+	r.p_view.ForceUnref()
+	gop := p.pc_view
+	BaseAddRef(gop)
+	r.p_view = newCViewT((*C.cef_view_t)(gop), byApp, true)
 }
 
 // Go type CViewT wraps cef type *C.cef_view_t
-func newCViewT(p *C.cef_view_t, countUp bool) *CViewT {
+func newCViewT(p *C.cef_view_t, unrefedBy unrefedBy, needsUnref bool) *CViewT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T225.1:")
 	pc := (*cCViewT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_view := &CViewT{noCopy{}, pc}
+	go_view := &CViewT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_view, func(g *CViewT) {
-		if g.pc_view != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_view != nil {
 			Tracef(unsafe.Pointer(g.pc_view), "T225.2:")
 			BaseRelease(g.pc_view)
 		}
 	})
+
 	return go_view
 }
 
@@ -31385,13 +38314,15 @@ func (p *cCViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (view *CViewT) ForceUnref() (ret bool) {
-	ret = BaseRelease(view.pc_view)
+	if view == nil {
+		return
+	}
+	if view.needsUnref && view.beUnrefed == byApp {
+		ret = BaseRelease(view.pc_view)
+		view.beUnrefed = unrefed
+		view.needsUnref = false
+	}
 	view.pc_view = nil
-	return ret
-}
-
-func (view *CViewT) release() (ret bool) {
-	ret = BaseRelease(view.pc_view)
 	return ret
 }
 
@@ -31402,7 +38333,7 @@ func (self *CViewT) AsBrowserView() (ret *CBrowserViewT) {
 
 	cRet := C.cefingo_view_as_browser_view((*C.cef_view_t)(self.pc_view))
 
-	ret = newCBrowserViewT(cRet, false)
+	ret = newCBrowserViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31413,7 +38344,7 @@ func (self *CViewT) AsButton() (ret *CButtonT) {
 
 	cRet := C.cefingo_view_as_button((*C.cef_view_t)(self.pc_view))
 
-	ret = newCButtonT(cRet, false)
+	ret = newCButtonT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31424,7 +38355,7 @@ func (self *CViewT) AsPanel() (ret *CPanelT) {
 
 	cRet := C.cefingo_view_as_panel((*C.cef_view_t)(self.pc_view))
 
-	ret = newCPanelT(cRet, false)
+	ret = newCPanelT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31435,7 +38366,7 @@ func (self *CViewT) AsScrollView() (ret *CScrollViewT) {
 
 	cRet := C.cefingo_view_as_scroll_view((*C.cef_view_t)(self.pc_view))
 
-	ret = newCScrollViewT(cRet, false)
+	ret = newCScrollViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31446,7 +38377,7 @@ func (self *CViewT) AsTextfield() (ret *CTextfieldT) {
 
 	cRet := C.cefingo_view_as_textfield((*C.cef_view_t)(self.pc_view))
 
-	ret = newCTextfieldT(cRet, false)
+	ret = newCTextfieldT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31536,7 +38467,7 @@ func (self *CViewT) GetDelegate() (ret *CViewDelegateT) {
 
 	cRet := C.cefingo_view_get_delegate((*C.cef_view_t)(self.pc_view))
 
-	ret = newCViewDelegateT(cRet, false)
+	ret = newCViewDelegateT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31547,7 +38478,7 @@ func (self *CViewT) GetWindow() (ret *CWindowT) {
 
 	cRet := C.cefingo_view_get_window((*C.cef_view_t)(self.pc_view))
 
-	ret = newCWindowT(cRet, false)
+	ret = newCWindowT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31605,7 +38536,7 @@ func (self *CViewT) GetParentView() (ret *CViewT) {
 
 	cRet := C.cefingo_view_get_parent_view((*C.cef_view_t)(self.pc_view))
 
-	ret = newCViewT(cRet, false)
+	ret = newCViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31620,7 +38551,7 @@ func (self *CViewT) GetViewForId(
 
 	cRet := C.cefingo_view_get_view_for_id((*C.cef_view_t)(self.pc_view), (C.int)(id))
 
-	ret = newCViewT(cRet, false)
+	ret = newCViewT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -31644,7 +38575,7 @@ func (self *CViewT) GetBounds() (ret CRectT) {
 
 	cRet := C.cefingo_view_get_bounds((*C.cef_view_t)(self.pc_view))
 
-	ret = (CRectT)(cRet)
+	ret = (CRectT)(cRet) // return GoObj
 	return ret
 }
 
@@ -31656,7 +38587,7 @@ func (self *CViewT) GetBoundsInScreen() (ret CRectT) {
 
 	cRet := C.cefingo_view_get_bounds_in_screen((*C.cef_view_t)(self.pc_view))
 
-	ret = (CRectT)(cRet)
+	ret = (CRectT)(cRet) // return GoObj
 	return ret
 }
 
@@ -31680,7 +38611,7 @@ func (self *CViewT) GetSize() (ret CSizeT) {
 
 	cRet := C.cefingo_view_get_size((*C.cef_view_t)(self.pc_view))
 
-	ret = (CSizeT)(cRet)
+	ret = (CSizeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -31704,7 +38635,7 @@ func (self *CViewT) GetPosition() (ret CPointT) {
 
 	cRet := C.cefingo_view_get_position((*C.cef_view_t)(self.pc_view))
 
-	ret = (CPointT)(cRet)
+	ret = (CPointT)(cRet) // return GoObj
 	return ret
 }
 
@@ -31717,7 +38648,7 @@ func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 
 	cRet := C.cefingo_view_get_preferred_size((*C.cef_view_t)(self.pc_view))
 
-	ret = (CSizeT)(cRet)
+	ret = (CSizeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -31739,7 +38670,7 @@ func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 
 	cRet := C.cefingo_view_get_minimum_size((*C.cef_view_t)(self.pc_view))
 
-	ret = (CSizeT)(cRet)
+	ret = (CSizeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -31751,7 +38682,7 @@ func (self *CViewT) GetMaximumSize() (ret CSizeT) {
 
 	cRet := C.cefingo_view_get_maximum_size((*C.cef_view_t)(self.pc_view))
 
-	ret = (CSizeT)(cRet)
+	ret = (CSizeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -31919,7 +38850,7 @@ func (self *CViewT) GetBackgroundColor() (ret CColorT) {
 
 	cRet := C.cefingo_view_get_background_color((*C.cef_view_t)(self.pc_view))
 
-	ret = (CColorT)(cRet)
+	ret = (CColorT)(cRet) // return GoObj
 	return ret
 }
 
@@ -32044,6 +38975,8 @@ type cCViewDelegateT C.cef_view_delegate_t
 type CViewDelegateT struct {
 	noCopy           noCopy
 	pc_view_delegate *cCViewDelegateT
+	needsUnref       bool
+	beUnrefed        unrefedBy
 }
 
 type RefToCViewDelegateT struct {
@@ -32052,36 +38985,82 @@ type RefToCViewDelegateT struct {
 
 type CViewDelegateTAccessor interface {
 	GetCViewDelegateT() *CViewDelegateT
-	SetCViewDelegateT(*CViewDelegateT) (oldValue *CViewDelegateT)
+	setCViewDelegateT(*CViewDelegateT)
+	// TakeOverCViewDelegateT(*CViewDelegateT)
+	// NewRefCViewDelegateT(*CViewDelegateT)
 }
 
 func (r RefToCViewDelegateT) GetCViewDelegateT() *CViewDelegateT {
 	return r.p_view_delegate
 }
 
-func (r *RefToCViewDelegateT) SetCViewDelegateT(p *CViewDelegateT) (prevValue *CViewDelegateT) {
-	prevValue = r.p_view_delegate
+func (r *RefToCViewDelegateT) setCViewDelegateT(p *CViewDelegateT) {
+	// prevValue = r.p_view_delegate
+	r.p_view_delegate.ForceUnref()
 	r.p_view_delegate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCViewDelegateT) TakeOverCViewDelegateT(src *CViewDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_view_delegate.ForceUnref()
+	gop := src.pc_view_delegate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_view_delegate = newCViewDelegateT((*C.cef_view_delegate_t)(gop), byApp, true)
+}
+
+func PassCViewDelegateT(p *CViewDelegateT) (ret *CViewDelegateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_view_delegate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCViewDelegateT((*C.cef_view_delegate_t)(p.pc_view_delegate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCViewDelegateT) NewRefCViewDelegateT(p *CViewDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_view_delegate.ForceUnref()
+	gop := p.pc_view_delegate
+	BaseAddRef(gop)
+	r.p_view_delegate = newCViewDelegateT((*C.cef_view_delegate_t)(gop), byApp, true)
 }
 
 // Go type CViewDelegateT wraps cef type *C.cef_view_delegate_t
-func newCViewDelegateT(p *C.cef_view_delegate_t, countUp bool) *CViewDelegateT {
+func newCViewDelegateT(p *C.cef_view_delegate_t, unrefedBy unrefedBy, needsUnref bool) *CViewDelegateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T226.1:")
 	pc := (*cCViewDelegateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_view_delegate := &CViewDelegateT{noCopy{}, pc}
+	go_view_delegate := &CViewDelegateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_view_delegate, func(g *CViewDelegateT) {
-		if g.pc_view_delegate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_view_delegate != nil {
 			Tracef(unsafe.Pointer(g.pc_view_delegate), "T226.2:")
 			BaseRelease(g.pc_view_delegate)
 		}
 	})
+
 	return go_view_delegate
 }
 
@@ -32095,13 +39074,15 @@ func (p *cCViewDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 }
 
 func (view_delegate *CViewDelegateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(view_delegate.pc_view_delegate)
+	if view_delegate == nil {
+		return
+	}
+	if view_delegate.needsUnref && view_delegate.beUnrefed == byApp {
+		ret = BaseRelease(view_delegate.pc_view_delegate)
+		view_delegate.beUnrefed = unrefed
+		view_delegate.needsUnref = false
+	}
 	view_delegate.pc_view_delegate = nil
-	return ret
-}
-
-func (view_delegate *CViewDelegateT) release() (ret bool) {
-	ret = BaseRelease(view_delegate.pc_view_delegate)
 	return ret
 }
 
@@ -32263,7 +39244,13 @@ func AllocCViewDelegateT() *CViewDelegateT {
 		delete(view_delegate_handlers.on_blur_handler, cgop)
 	}))
 
-	return newCViewDelegateT(cefp, true)
+	BaseAddRef(cgop)
+	return newCViewDelegateT(cefp, byApp, true)
+}
+
+// BindCViewDelegateT allocates CViewDelegateT, construct and bind it
+func BindCViewDelegateT(a interface{}) *CViewDelegateT {
+	return AllocCViewDelegateT().Bind(a)
 }
 
 func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
@@ -32273,7 +39260,7 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 	cp := view_delegate.pc_view_delegate
 	if oldGoObj, ok := view_delegate_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CViewDelegateTAccessor); ok {
-			oldAcc.SetCViewDelegateT(nil)
+			oldAcc.setCViewDelegateT(nil)
 		}
 	}
 	view_delegate_handlers.handler[cp] = a
@@ -32333,7 +39320,7 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 	}
 
 	if accessor, ok := a.(CViewDelegateTAccessor); ok {
-		accessor.SetCViewDelegateT(view_delegate)
+		accessor.setCViewDelegateT(view_delegate)
 		Logf("T226.5:")
 	}
 
@@ -32341,27 +39328,32 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 }
 
 func (view_delegate *CViewDelegateT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CViewDelegateTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := view_delegate.pc_view_delegate
-	if goHandler, ok := view_delegate_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CViewDelegateTAccessor); ok1 {
-			accessor.SetCViewDelegateT(nil)
+		cp := view_delegate.pc_view_delegate
+		if goHandler, ok := view_delegate_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CViewDelegateTAccessor)
 		}
+		delete(view_delegate_handlers.handler, cp)
+
+		delete(view_delegate_handlers.get_preferred_size_handler, cp)
+		delete(view_delegate_handlers.get_minimum_size_handler, cp)
+		delete(view_delegate_handlers.get_maximum_size_handler, cp)
+		delete(view_delegate_handlers.get_height_for_width_handler, cp)
+		delete(view_delegate_handlers.on_parent_view_changed_handler, cp)
+		delete(view_delegate_handlers.on_child_view_changed_handler, cp)
+		delete(view_delegate_handlers.on_window_changed_handler, cp)
+		delete(view_delegate_handlers.on_focus_handler, cp)
+		delete(view_delegate_handlers.on_blur_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCViewDelegateT(nil)
 	}
-	delete(view_delegate_handlers.handler, cp)
-
-	delete(view_delegate_handlers.get_preferred_size_handler, cp)
-	delete(view_delegate_handlers.get_minimum_size_handler, cp)
-	delete(view_delegate_handlers.get_maximum_size_handler, cp)
-	delete(view_delegate_handlers.get_height_for_width_handler, cp)
-	delete(view_delegate_handlers.on_parent_view_changed_handler, cp)
-	delete(view_delegate_handlers.on_child_view_changed_handler, cp)
-	delete(view_delegate_handlers.on_window_changed_handler, cp)
-	delete(view_delegate_handlers.on_focus_handler, cp)
-	delete(view_delegate_handlers.on_blur_handler, cp)
-
 }
 
 func (view_delegate *CViewDelegateT) Handler() interface{} {
@@ -32384,6 +39376,8 @@ type cCWebPluginInfoT C.cef_web_plugin_info_t
 type CWebPluginInfoT struct {
 	noCopy             noCopy
 	pc_web_plugin_info *cCWebPluginInfoT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCWebPluginInfoT struct {
@@ -32392,36 +39386,82 @@ type RefToCWebPluginInfoT struct {
 
 type CWebPluginInfoTAccessor interface {
 	GetCWebPluginInfoT() *CWebPluginInfoT
-	SetCWebPluginInfoT(*CWebPluginInfoT) (oldValue *CWebPluginInfoT)
+	setCWebPluginInfoT(*CWebPluginInfoT)
+	// TakeOverCWebPluginInfoT(*CWebPluginInfoT)
+	// NewRefCWebPluginInfoT(*CWebPluginInfoT)
 }
 
 func (r RefToCWebPluginInfoT) GetCWebPluginInfoT() *CWebPluginInfoT {
 	return r.p_web_plugin_info
 }
 
-func (r *RefToCWebPluginInfoT) SetCWebPluginInfoT(p *CWebPluginInfoT) (prevValue *CWebPluginInfoT) {
-	prevValue = r.p_web_plugin_info
+func (r *RefToCWebPluginInfoT) setCWebPluginInfoT(p *CWebPluginInfoT) {
+	// prevValue = r.p_web_plugin_info
+	r.p_web_plugin_info.ForceUnref()
 	r.p_web_plugin_info = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCWebPluginInfoT) TakeOverCWebPluginInfoT(src *CWebPluginInfoT) {
+	if r == nil {
+		return
+	}
+	r.p_web_plugin_info.ForceUnref()
+	gop := src.pc_web_plugin_info
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_web_plugin_info = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(gop), byApp, true)
+}
+
+func PassCWebPluginInfoT(p *CWebPluginInfoT) (ret *CWebPluginInfoT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_web_plugin_info)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(p.pc_web_plugin_info), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCWebPluginInfoT) NewRefCWebPluginInfoT(p *CWebPluginInfoT) {
+	if r == nil {
+		return
+	}
+	r.p_web_plugin_info.ForceUnref()
+	gop := p.pc_web_plugin_info
+	BaseAddRef(gop)
+	r.p_web_plugin_info = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(gop), byApp, true)
 }
 
 // Go type CWebPluginInfoT wraps cef type *C.cef_web_plugin_info_t
-func newCWebPluginInfoT(p *C.cef_web_plugin_info_t, countUp bool) *CWebPluginInfoT {
+func newCWebPluginInfoT(p *C.cef_web_plugin_info_t, unrefedBy unrefedBy, needsUnref bool) *CWebPluginInfoT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T227.1:")
 	pc := (*cCWebPluginInfoT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_web_plugin_info := &CWebPluginInfoT{noCopy{}, pc}
+	go_web_plugin_info := &CWebPluginInfoT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_web_plugin_info, func(g *CWebPluginInfoT) {
-		if g.pc_web_plugin_info != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_web_plugin_info != nil {
 			Tracef(unsafe.Pointer(g.pc_web_plugin_info), "T227.2:")
 			BaseRelease(g.pc_web_plugin_info)
 		}
 	})
+
 	return go_web_plugin_info
 }
 
@@ -32435,13 +39475,15 @@ func (p *cCWebPluginInfoT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 }
 
 func (web_plugin_info *CWebPluginInfoT) ForceUnref() (ret bool) {
-	ret = BaseRelease(web_plugin_info.pc_web_plugin_info)
+	if web_plugin_info == nil {
+		return
+	}
+	if web_plugin_info.needsUnref && web_plugin_info.beUnrefed == byApp {
+		ret = BaseRelease(web_plugin_info.pc_web_plugin_info)
+		web_plugin_info.beUnrefed = unrefed
+		web_plugin_info.needsUnref = false
+	}
 	web_plugin_info.pc_web_plugin_info = nil
-	return ret
-}
-
-func (web_plugin_info *CWebPluginInfoT) release() (ret bool) {
-	ret = BaseRelease(web_plugin_info.pc_web_plugin_info)
 	return ret
 }
 
@@ -32520,6 +39562,8 @@ type cCWebPluginInfoVisitorT C.cef_web_plugin_info_visitor_t
 type CWebPluginInfoVisitorT struct {
 	noCopy                     noCopy
 	pc_web_plugin_info_visitor *cCWebPluginInfoVisitorT
+	needsUnref                 bool
+	beUnrefed                  unrefedBy
 }
 
 type RefToCWebPluginInfoVisitorT struct {
@@ -32528,36 +39572,82 @@ type RefToCWebPluginInfoVisitorT struct {
 
 type CWebPluginInfoVisitorTAccessor interface {
 	GetCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT
-	SetCWebPluginInfoVisitorT(*CWebPluginInfoVisitorT) (oldValue *CWebPluginInfoVisitorT)
+	setCWebPluginInfoVisitorT(*CWebPluginInfoVisitorT)
+	// TakeOverCWebPluginInfoVisitorT(*CWebPluginInfoVisitorT)
+	// NewRefCWebPluginInfoVisitorT(*CWebPluginInfoVisitorT)
 }
 
 func (r RefToCWebPluginInfoVisitorT) GetCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT {
 	return r.p_web_plugin_info_visitor
 }
 
-func (r *RefToCWebPluginInfoVisitorT) SetCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) (prevValue *CWebPluginInfoVisitorT) {
-	prevValue = r.p_web_plugin_info_visitor
+func (r *RefToCWebPluginInfoVisitorT) setCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) {
+	// prevValue = r.p_web_plugin_info_visitor
+	r.p_web_plugin_info_visitor.ForceUnref()
 	r.p_web_plugin_info_visitor = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCWebPluginInfoVisitorT) TakeOverCWebPluginInfoVisitorT(src *CWebPluginInfoVisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_web_plugin_info_visitor.ForceUnref()
+	gop := src.pc_web_plugin_info_visitor
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_web_plugin_info_visitor = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(gop), byApp, true)
+}
+
+func PassCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) (ret *CWebPluginInfoVisitorT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_web_plugin_info_visitor)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(p.pc_web_plugin_info_visitor), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCWebPluginInfoVisitorT) NewRefCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) {
+	if r == nil {
+		return
+	}
+	r.p_web_plugin_info_visitor.ForceUnref()
+	gop := p.pc_web_plugin_info_visitor
+	BaseAddRef(gop)
+	r.p_web_plugin_info_visitor = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(gop), byApp, true)
 }
 
 // Go type CWebPluginInfoVisitorT wraps cef type *C.cef_web_plugin_info_visitor_t
-func newCWebPluginInfoVisitorT(p *C.cef_web_plugin_info_visitor_t, countUp bool) *CWebPluginInfoVisitorT {
+func newCWebPluginInfoVisitorT(p *C.cef_web_plugin_info_visitor_t, unrefedBy unrefedBy, needsUnref bool) *CWebPluginInfoVisitorT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T228.1:")
 	pc := (*cCWebPluginInfoVisitorT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_web_plugin_info_visitor := &CWebPluginInfoVisitorT{noCopy{}, pc}
+	go_web_plugin_info_visitor := &CWebPluginInfoVisitorT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_web_plugin_info_visitor, func(g *CWebPluginInfoVisitorT) {
-		if g.pc_web_plugin_info_visitor != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_web_plugin_info_visitor != nil {
 			Tracef(unsafe.Pointer(g.pc_web_plugin_info_visitor), "T228.2:")
 			BaseRelease(g.pc_web_plugin_info_visitor)
 		}
 	})
+
 	return go_web_plugin_info_visitor
 }
 
@@ -32571,13 +39661,15 @@ func (p *cCWebPluginInfoVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 }
 
 func (web_plugin_info_visitor *CWebPluginInfoVisitorT) ForceUnref() (ret bool) {
-	ret = BaseRelease(web_plugin_info_visitor.pc_web_plugin_info_visitor)
+	if web_plugin_info_visitor == nil {
+		return
+	}
+	if web_plugin_info_visitor.needsUnref && web_plugin_info_visitor.beUnrefed == byApp {
+		ret = BaseRelease(web_plugin_info_visitor.pc_web_plugin_info_visitor)
+		web_plugin_info_visitor.beUnrefed = unrefed
+		web_plugin_info_visitor.needsUnref = false
+	}
 	web_plugin_info_visitor.pc_web_plugin_info_visitor = nil
-	return ret
-}
-
-func (web_plugin_info_visitor *CWebPluginInfoVisitorT) release() (ret bool) {
-	ret = BaseRelease(web_plugin_info_visitor.pc_web_plugin_info_visitor)
 	return ret
 }
 
@@ -32621,7 +39713,13 @@ func AllocCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT {
 		delete(web_plugin_info_visitor_handlers.visit_handler, cgop)
 	}))
 
-	return newCWebPluginInfoVisitorT(cefp, true)
+	BaseAddRef(cgop)
+	return newCWebPluginInfoVisitorT(cefp, byApp, true)
+}
+
+// BindCWebPluginInfoVisitorT allocates CWebPluginInfoVisitorT, construct and bind it
+func BindCWebPluginInfoVisitorT(a interface{}) *CWebPluginInfoVisitorT {
+	return AllocCWebPluginInfoVisitorT().Bind(a)
 }
 
 func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWebPluginInfoVisitorT {
@@ -32631,7 +39729,7 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWeb
 	cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
 	if oldGoObj, ok := web_plugin_info_visitor_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CWebPluginInfoVisitorTAccessor); ok {
-			oldAcc.SetCWebPluginInfoVisitorT(nil)
+			oldAcc.setCWebPluginInfoVisitorT(nil)
 		}
 	}
 	web_plugin_info_visitor_handlers.handler[cp] = a
@@ -32643,7 +39741,7 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWeb
 	}
 
 	if accessor, ok := a.(CWebPluginInfoVisitorTAccessor); ok {
-		accessor.SetCWebPluginInfoVisitorT(web_plugin_info_visitor)
+		accessor.setCWebPluginInfoVisitorT(web_plugin_info_visitor)
 		Logf("T228.5:")
 	}
 
@@ -32651,19 +39749,24 @@ func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Bind(a interface{}) *CWeb
 }
 
 func (web_plugin_info_visitor *CWebPluginInfoVisitorT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CWebPluginInfoVisitorTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
-	if goHandler, ok := web_plugin_info_visitor_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CWebPluginInfoVisitorTAccessor); ok1 {
-			accessor.SetCWebPluginInfoVisitorT(nil)
+		cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
+		if goHandler, ok := web_plugin_info_visitor_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CWebPluginInfoVisitorTAccessor)
 		}
+		delete(web_plugin_info_visitor_handlers.handler, cp)
+
+		delete(web_plugin_info_visitor_handlers.visit_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCWebPluginInfoVisitorT(nil)
 	}
-	delete(web_plugin_info_visitor_handlers.handler, cp)
-
-	delete(web_plugin_info_visitor_handlers.visit_handler, cp)
-
 }
 
 func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Handler() interface{} {
@@ -32685,6 +39788,8 @@ type cCWebPluginUnstableCallbackT C.cef_web_plugin_unstable_callback_t
 type CWebPluginUnstableCallbackT struct {
 	noCopy                          noCopy
 	pc_web_plugin_unstable_callback *cCWebPluginUnstableCallbackT
+	needsUnref                      bool
+	beUnrefed                       unrefedBy
 }
 
 type RefToCWebPluginUnstableCallbackT struct {
@@ -32693,36 +39798,82 @@ type RefToCWebPluginUnstableCallbackT struct {
 
 type CWebPluginUnstableCallbackTAccessor interface {
 	GetCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT
-	SetCWebPluginUnstableCallbackT(*CWebPluginUnstableCallbackT) (oldValue *CWebPluginUnstableCallbackT)
+	setCWebPluginUnstableCallbackT(*CWebPluginUnstableCallbackT)
+	// TakeOverCWebPluginUnstableCallbackT(*CWebPluginUnstableCallbackT)
+	// NewRefCWebPluginUnstableCallbackT(*CWebPluginUnstableCallbackT)
 }
 
 func (r RefToCWebPluginUnstableCallbackT) GetCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT {
 	return r.p_web_plugin_unstable_callback
 }
 
-func (r *RefToCWebPluginUnstableCallbackT) SetCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) (prevValue *CWebPluginUnstableCallbackT) {
-	prevValue = r.p_web_plugin_unstable_callback
+func (r *RefToCWebPluginUnstableCallbackT) setCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) {
+	// prevValue = r.p_web_plugin_unstable_callback
+	r.p_web_plugin_unstable_callback.ForceUnref()
 	r.p_web_plugin_unstable_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCWebPluginUnstableCallbackT) TakeOverCWebPluginUnstableCallbackT(src *CWebPluginUnstableCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_web_plugin_unstable_callback.ForceUnref()
+	gop := src.pc_web_plugin_unstable_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_web_plugin_unstable_callback = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(gop), byApp, true)
+}
+
+func PassCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) (ret *CWebPluginUnstableCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_web_plugin_unstable_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(p.pc_web_plugin_unstable_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCWebPluginUnstableCallbackT) NewRefCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_web_plugin_unstable_callback.ForceUnref()
+	gop := p.pc_web_plugin_unstable_callback
+	BaseAddRef(gop)
+	r.p_web_plugin_unstable_callback = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(gop), byApp, true)
 }
 
 // Go type CWebPluginUnstableCallbackT wraps cef type *C.cef_web_plugin_unstable_callback_t
-func newCWebPluginUnstableCallbackT(p *C.cef_web_plugin_unstable_callback_t, countUp bool) *CWebPluginUnstableCallbackT {
+func newCWebPluginUnstableCallbackT(p *C.cef_web_plugin_unstable_callback_t, unrefedBy unrefedBy, needsUnref bool) *CWebPluginUnstableCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T229.1:")
 	pc := (*cCWebPluginUnstableCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_web_plugin_unstable_callback := &CWebPluginUnstableCallbackT{noCopy{}, pc}
+	go_web_plugin_unstable_callback := &CWebPluginUnstableCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_web_plugin_unstable_callback, func(g *CWebPluginUnstableCallbackT) {
-		if g.pc_web_plugin_unstable_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_web_plugin_unstable_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_web_plugin_unstable_callback), "T229.2:")
 			BaseRelease(g.pc_web_plugin_unstable_callback)
 		}
 	})
+
 	return go_web_plugin_unstable_callback
 }
 
@@ -32736,13 +39887,15 @@ func (p *cCWebPluginUnstableCallbackT) cast_to_p_base_ref_counted_t() *C.cef_bas
 }
 
 func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(web_plugin_unstable_callback.pc_web_plugin_unstable_callback)
+	if web_plugin_unstable_callback == nil {
+		return
+	}
+	if web_plugin_unstable_callback.needsUnref && web_plugin_unstable_callback.beUnrefed == byApp {
+		ret = BaseRelease(web_plugin_unstable_callback.pc_web_plugin_unstable_callback)
+		web_plugin_unstable_callback.beUnrefed = unrefed
+		web_plugin_unstable_callback.needsUnref = false
+	}
 	web_plugin_unstable_callback.pc_web_plugin_unstable_callback = nil
-	return ret
-}
-
-func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) release() (ret bool) {
-	ret = BaseRelease(web_plugin_unstable_callback.pc_web_plugin_unstable_callback)
 	return ret
 }
 
@@ -32784,7 +39937,13 @@ func AllocCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT {
 		delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cgop)
 	}))
 
-	return newCWebPluginUnstableCallbackT(cefp, true)
+	BaseAddRef(cgop)
+	return newCWebPluginUnstableCallbackT(cefp, byApp, true)
+}
+
+// BindCWebPluginUnstableCallbackT allocates CWebPluginUnstableCallbackT, construct and bind it
+func BindCWebPluginUnstableCallbackT(a interface{}) *CWebPluginUnstableCallbackT {
+	return AllocCWebPluginUnstableCallbackT().Bind(a)
 }
 
 func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interface{}) *CWebPluginUnstableCallbackT {
@@ -32794,7 +39953,7 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interfac
 	cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
 	if oldGoObj, ok := web_plugin_unstable_callback_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CWebPluginUnstableCallbackTAccessor); ok {
-			oldAcc.SetCWebPluginUnstableCallbackT(nil)
+			oldAcc.setCWebPluginUnstableCallbackT(nil)
 		}
 	}
 	web_plugin_unstable_callback_handlers.handler[cp] = a
@@ -32806,7 +39965,7 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interfac
 	}
 
 	if accessor, ok := a.(CWebPluginUnstableCallbackTAccessor); ok {
-		accessor.SetCWebPluginUnstableCallbackT(web_plugin_unstable_callback)
+		accessor.setCWebPluginUnstableCallbackT(web_plugin_unstable_callback)
 		Logf("T229.5:")
 	}
 
@@ -32814,19 +39973,24 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Bind(a interfac
 }
 
 func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CWebPluginUnstableCallbackTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
-	if goHandler, ok := web_plugin_unstable_callback_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CWebPluginUnstableCallbackTAccessor); ok1 {
-			accessor.SetCWebPluginUnstableCallbackT(nil)
+		cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
+		if goHandler, ok := web_plugin_unstable_callback_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CWebPluginUnstableCallbackTAccessor)
 		}
+		delete(web_plugin_unstable_callback_handlers.handler, cp)
+
+		delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCWebPluginUnstableCallbackT(nil)
 	}
-	delete(web_plugin_unstable_callback_handlers.handler, cp)
-
-	delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cp)
-
 }
 
 func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Handler() interface{} {
@@ -32849,6 +40013,8 @@ type cCRegisterCdmCallbackT C.cef_register_cdm_callback_t
 type CRegisterCdmCallbackT struct {
 	noCopy                   noCopy
 	pc_register_cdm_callback *cCRegisterCdmCallbackT
+	needsUnref               bool
+	beUnrefed                unrefedBy
 }
 
 type RefToCRegisterCdmCallbackT struct {
@@ -32857,36 +40023,82 @@ type RefToCRegisterCdmCallbackT struct {
 
 type CRegisterCdmCallbackTAccessor interface {
 	GetCRegisterCdmCallbackT() *CRegisterCdmCallbackT
-	SetCRegisterCdmCallbackT(*CRegisterCdmCallbackT) (oldValue *CRegisterCdmCallbackT)
+	setCRegisterCdmCallbackT(*CRegisterCdmCallbackT)
+	// TakeOverCRegisterCdmCallbackT(*CRegisterCdmCallbackT)
+	// NewRefCRegisterCdmCallbackT(*CRegisterCdmCallbackT)
 }
 
 func (r RefToCRegisterCdmCallbackT) GetCRegisterCdmCallbackT() *CRegisterCdmCallbackT {
 	return r.p_register_cdm_callback
 }
 
-func (r *RefToCRegisterCdmCallbackT) SetCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) (prevValue *CRegisterCdmCallbackT) {
-	prevValue = r.p_register_cdm_callback
+func (r *RefToCRegisterCdmCallbackT) setCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) {
+	// prevValue = r.p_register_cdm_callback
+	r.p_register_cdm_callback.ForceUnref()
 	r.p_register_cdm_callback = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCRegisterCdmCallbackT) TakeOverCRegisterCdmCallbackT(src *CRegisterCdmCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_register_cdm_callback.ForceUnref()
+	gop := src.pc_register_cdm_callback
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_register_cdm_callback = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(gop), byApp, true)
+}
+
+func PassCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) (ret *CRegisterCdmCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_register_cdm_callback)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(p.pc_register_cdm_callback), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCRegisterCdmCallbackT) NewRefCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) {
+	if r == nil {
+		return
+	}
+	r.p_register_cdm_callback.ForceUnref()
+	gop := p.pc_register_cdm_callback
+	BaseAddRef(gop)
+	r.p_register_cdm_callback = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(gop), byApp, true)
 }
 
 // Go type CRegisterCdmCallbackT wraps cef type *C.cef_register_cdm_callback_t
-func newCRegisterCdmCallbackT(p *C.cef_register_cdm_callback_t, countUp bool) *CRegisterCdmCallbackT {
+func newCRegisterCdmCallbackT(p *C.cef_register_cdm_callback_t, unrefedBy unrefedBy, needsUnref bool) *CRegisterCdmCallbackT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T230.1:")
 	pc := (*cCRegisterCdmCallbackT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_register_cdm_callback := &CRegisterCdmCallbackT{noCopy{}, pc}
+	go_register_cdm_callback := &CRegisterCdmCallbackT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_register_cdm_callback, func(g *CRegisterCdmCallbackT) {
-		if g.pc_register_cdm_callback != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_register_cdm_callback != nil {
 			Tracef(unsafe.Pointer(g.pc_register_cdm_callback), "T230.2:")
 			BaseRelease(g.pc_register_cdm_callback)
 		}
 	})
+
 	return go_register_cdm_callback
 }
 
@@ -32900,13 +40112,15 @@ func (p *cCRegisterCdmCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_
 }
 
 func (register_cdm_callback *CRegisterCdmCallbackT) ForceUnref() (ret bool) {
-	ret = BaseRelease(register_cdm_callback.pc_register_cdm_callback)
+	if register_cdm_callback == nil {
+		return
+	}
+	if register_cdm_callback.needsUnref && register_cdm_callback.beUnrefed == byApp {
+		ret = BaseRelease(register_cdm_callback.pc_register_cdm_callback)
+		register_cdm_callback.beUnrefed = unrefed
+		register_cdm_callback.needsUnref = false
+	}
 	register_cdm_callback.pc_register_cdm_callback = nil
-	return ret
-}
-
-func (register_cdm_callback *CRegisterCdmCallbackT) release() (ret bool) {
-	ret = BaseRelease(register_cdm_callback.pc_register_cdm_callback)
 	return ret
 }
 
@@ -32949,7 +40163,13 @@ func AllocCRegisterCdmCallbackT() *CRegisterCdmCallbackT {
 		delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cgop)
 	}))
 
-	return newCRegisterCdmCallbackT(cefp, true)
+	BaseAddRef(cgop)
+	return newCRegisterCdmCallbackT(cefp, byApp, true)
+}
+
+// BindCRegisterCdmCallbackT allocates CRegisterCdmCallbackT, construct and bind it
+func BindCRegisterCdmCallbackT(a interface{}) *CRegisterCdmCallbackT {
+	return AllocCRegisterCdmCallbackT().Bind(a)
 }
 
 func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegisterCdmCallbackT {
@@ -32959,7 +40179,7 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegist
 	cp := register_cdm_callback.pc_register_cdm_callback
 	if oldGoObj, ok := register_cdm_callback_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CRegisterCdmCallbackTAccessor); ok {
-			oldAcc.SetCRegisterCdmCallbackT(nil)
+			oldAcc.setCRegisterCdmCallbackT(nil)
 		}
 	}
 	register_cdm_callback_handlers.handler[cp] = a
@@ -32971,7 +40191,7 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegist
 	}
 
 	if accessor, ok := a.(CRegisterCdmCallbackTAccessor); ok {
-		accessor.SetCRegisterCdmCallbackT(register_cdm_callback)
+		accessor.setCRegisterCdmCallbackT(register_cdm_callback)
 		Logf("T230.5:")
 	}
 
@@ -32979,19 +40199,24 @@ func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegist
 }
 
 func (register_cdm_callback *CRegisterCdmCallbackT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CRegisterCdmCallbackTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := register_cdm_callback.pc_register_cdm_callback
-	if goHandler, ok := register_cdm_callback_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CRegisterCdmCallbackTAccessor); ok1 {
-			accessor.SetCRegisterCdmCallbackT(nil)
+		cp := register_cdm_callback.pc_register_cdm_callback
+		if goHandler, ok := register_cdm_callback_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CRegisterCdmCallbackTAccessor)
 		}
+		delete(register_cdm_callback_handlers.handler, cp)
+
+		delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCRegisterCdmCallbackT(nil)
 	}
-	delete(register_cdm_callback_handlers.handler, cp)
-
-	delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cp)
-
 }
 
 func (register_cdm_callback *CRegisterCdmCallbackT) Handler() interface{} {
@@ -33147,8 +40372,10 @@ type cCWindowT C.cef_window_t
 
 // Go type for cef_window_t
 type CWindowT struct {
-	noCopy    noCopy
-	pc_window *cCWindowT
+	noCopy     noCopy
+	pc_window  *cCWindowT
+	needsUnref bool
+	beUnrefed  unrefedBy
 }
 
 type RefToCWindowT struct {
@@ -33157,36 +40384,82 @@ type RefToCWindowT struct {
 
 type CWindowTAccessor interface {
 	GetCWindowT() *CWindowT
-	SetCWindowT(*CWindowT) (oldValue *CWindowT)
+	setCWindowT(*CWindowT)
+	// TakeOverCWindowT(*CWindowT)
+	// NewRefCWindowT(*CWindowT)
 }
 
 func (r RefToCWindowT) GetCWindowT() *CWindowT {
 	return r.p_window
 }
 
-func (r *RefToCWindowT) SetCWindowT(p *CWindowT) (prevValue *CWindowT) {
-	prevValue = r.p_window
+func (r *RefToCWindowT) setCWindowT(p *CWindowT) {
+	// prevValue = r.p_window
+	r.p_window.ForceUnref()
 	r.p_window = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCWindowT) TakeOverCWindowT(src *CWindowT) {
+	if r == nil {
+		return
+	}
+	r.p_window.ForceUnref()
+	gop := src.pc_window
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_window = newCWindowT((*C.cef_window_t)(gop), byApp, true)
+}
+
+func PassCWindowT(p *CWindowT) (ret *CWindowT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_window)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCWindowT((*C.cef_window_t)(p.pc_window), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCWindowT) NewRefCWindowT(p *CWindowT) {
+	if r == nil {
+		return
+	}
+	r.p_window.ForceUnref()
+	gop := p.pc_window
+	BaseAddRef(gop)
+	r.p_window = newCWindowT((*C.cef_window_t)(gop), byApp, true)
 }
 
 // Go type CWindowT wraps cef type *C.cef_window_t
-func newCWindowT(p *C.cef_window_t, countUp bool) *CWindowT {
+func newCWindowT(p *C.cef_window_t, unrefedBy unrefedBy, needsUnref bool) *CWindowT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T231.1:")
 	pc := (*cCWindowT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_window := &CWindowT{noCopy{}, pc}
+	go_window := &CWindowT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_window, func(g *CWindowT) {
-		if g.pc_window != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_window != nil {
 			Tracef(unsafe.Pointer(g.pc_window), "T231.2:")
 			BaseRelease(g.pc_window)
 		}
 	})
+
 	return go_window
 }
 
@@ -33200,20 +40473,23 @@ func (p *cCWindowT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 }
 
 func (window *CWindowT) ForceUnref() (ret bool) {
-	ret = BaseRelease(window.pc_window)
+	if window == nil {
+		return
+	}
+	if window.needsUnref && window.beUnrefed == byApp {
+		ret = BaseRelease(window.pc_window)
+		window.beUnrefed = unrefed
+		window.needsUnref = false
+	}
 	window.pc_window = nil
-	return ret
-}
-
-func (window *CWindowT) release() (ret bool) {
-	ret = BaseRelease(window.pc_window)
 	return ret
 }
 
 // Convert to Base Class Pointer *CPanelT
 func (window *CWindowT) ToCPanelT() *CPanelT {
 	p := (*C.cef_panel_t)(unsafe.Pointer(window.pc_window))
-	return newCPanelT(p, true)
+	BaseAddRef(window.pc_window)
+	return newCPanelT(p, byApp, true)
 }
 
 ///
@@ -33450,7 +40726,7 @@ func (self *CWindowT) GetWindowIcon() (ret *CImageT) {
 
 	cRet := C.cefingo_window_get_window_icon((*C.cef_window_t)(self.pc_window))
 
-	ret = newCImageT(cRet, false)
+	ret = newCImageT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -33480,7 +40756,7 @@ func (self *CWindowT) GetWindowAppIcon() (ret *CImageT) {
 
 	cRet := C.cefingo_window_get_window_app_icon((*C.cef_window_t)(self.pc_window))
 
-	ret = newCImageT(cRet, false)
+	ret = newCImageT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -33521,7 +40797,7 @@ func (self *CWindowT) GetDisplay() (ret *CDisplayT) {
 
 	cRet := C.cefingo_window_get_display((*C.cef_window_t)(self.pc_window))
 
-	ret = newCDisplayT(cRet, false)
+	ret = newCDisplayT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -33533,7 +40809,7 @@ func (self *CWindowT) GetClientAreaBoundsInScreen() (ret CRectT) {
 
 	cRet := C.cefingo_window_get_client_area_bounds_in_screen((*C.cef_window_t)(self.pc_window))
 
-	ret = (CRectT)(cRet)
+	ret = (CRectT)(cRet) // return GoObj
 	return ret
 }
 
@@ -33559,7 +40835,7 @@ func (self *CWindowT) GetWindowHandle() (ret CWindowHandleT) {
 
 	cRet := C.cefingo_window_get_window_handle((*C.cef_window_t)(self.pc_window))
 
-	ret = (CWindowHandleT)(cRet)
+	ret = (CWindowHandleT)(cRet) // return GoObj
 	return ret
 }
 
@@ -33664,7 +40940,7 @@ func WindowCreateTopLevel(
 
 	cRet := C.cef_window_create_top_level(goTmpdelegate)
 
-	ret = newCWindowT(cRet, false)
+	ret = newCWindowT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -33682,6 +40958,8 @@ type cCWindowDelegateT C.cef_window_delegate_t
 type CWindowDelegateT struct {
 	noCopy             noCopy
 	pc_window_delegate *cCWindowDelegateT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCWindowDelegateT struct {
@@ -33690,36 +40968,82 @@ type RefToCWindowDelegateT struct {
 
 type CWindowDelegateTAccessor interface {
 	GetCWindowDelegateT() *CWindowDelegateT
-	SetCWindowDelegateT(*CWindowDelegateT) (oldValue *CWindowDelegateT)
+	setCWindowDelegateT(*CWindowDelegateT)
+	// TakeOverCWindowDelegateT(*CWindowDelegateT)
+	// NewRefCWindowDelegateT(*CWindowDelegateT)
 }
 
 func (r RefToCWindowDelegateT) GetCWindowDelegateT() *CWindowDelegateT {
 	return r.p_window_delegate
 }
 
-func (r *RefToCWindowDelegateT) SetCWindowDelegateT(p *CWindowDelegateT) (prevValue *CWindowDelegateT) {
-	prevValue = r.p_window_delegate
+func (r *RefToCWindowDelegateT) setCWindowDelegateT(p *CWindowDelegateT) {
+	// prevValue = r.p_window_delegate
+	r.p_window_delegate.ForceUnref()
 	r.p_window_delegate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCWindowDelegateT) TakeOverCWindowDelegateT(src *CWindowDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_window_delegate.ForceUnref()
+	gop := src.pc_window_delegate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_window_delegate = newCWindowDelegateT((*C.cef_window_delegate_t)(gop), byApp, true)
+}
+
+func PassCWindowDelegateT(p *CWindowDelegateT) (ret *CWindowDelegateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_window_delegate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCWindowDelegateT((*C.cef_window_delegate_t)(p.pc_window_delegate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCWindowDelegateT) NewRefCWindowDelegateT(p *CWindowDelegateT) {
+	if r == nil {
+		return
+	}
+	r.p_window_delegate.ForceUnref()
+	gop := p.pc_window_delegate
+	BaseAddRef(gop)
+	r.p_window_delegate = newCWindowDelegateT((*C.cef_window_delegate_t)(gop), byApp, true)
 }
 
 // Go type CWindowDelegateT wraps cef type *C.cef_window_delegate_t
-func newCWindowDelegateT(p *C.cef_window_delegate_t, countUp bool) *CWindowDelegateT {
+func newCWindowDelegateT(p *C.cef_window_delegate_t, unrefedBy unrefedBy, needsUnref bool) *CWindowDelegateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T232.1:")
 	pc := (*cCWindowDelegateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_window_delegate := &CWindowDelegateT{noCopy{}, pc}
+	go_window_delegate := &CWindowDelegateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_window_delegate, func(g *CWindowDelegateT) {
-		if g.pc_window_delegate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_window_delegate != nil {
 			Tracef(unsafe.Pointer(g.pc_window_delegate), "T232.2:")
 			BaseRelease(g.pc_window_delegate)
 		}
 	})
+
 	return go_window_delegate
 }
 
@@ -33733,20 +41057,23 @@ func (p *cCWindowDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 }
 
 func (window_delegate *CWindowDelegateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(window_delegate.pc_window_delegate)
+	if window_delegate == nil {
+		return
+	}
+	if window_delegate.needsUnref && window_delegate.beUnrefed == byApp {
+		ret = BaseRelease(window_delegate.pc_window_delegate)
+		window_delegate.beUnrefed = unrefed
+		window_delegate.needsUnref = false
+	}
 	window_delegate.pc_window_delegate = nil
-	return ret
-}
-
-func (window_delegate *CWindowDelegateT) release() (ret bool) {
-	ret = BaseRelease(window_delegate.pc_window_delegate)
 	return ret
 }
 
 // Convert to Base Class Pointer *CPanelDelegateT
 func (window_delegate *CWindowDelegateT) ToCPanelDelegateT() *CPanelDelegateT {
 	p := (*C.cef_panel_delegate_t)(unsafe.Pointer(window_delegate.pc_window_delegate))
-	return newCPanelDelegateT(p, true)
+	BaseAddRef(window_delegate.pc_window_delegate)
+	return newCPanelDelegateT(p, byApp, true)
 }
 
 ///
@@ -33962,7 +41289,13 @@ func AllocCWindowDelegateT() *CWindowDelegateT {
 		delete(window_delegate_handlers.on_blur_handler, cgop)
 	}))
 
-	return newCWindowDelegateT(cefp, true)
+	BaseAddRef(cgop)
+	return newCWindowDelegateT(cefp, byApp, true)
+}
+
+// BindCWindowDelegateT allocates CWindowDelegateT, construct and bind it
+func BindCWindowDelegateT(a interface{}) *CWindowDelegateT {
+	return AllocCWindowDelegateT().Bind(a)
 }
 
 func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
@@ -33972,7 +41305,7 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 	cp := window_delegate.pc_window_delegate
 	if oldGoObj, ok := window_delegate_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.(CWindowDelegateTAccessor); ok {
-			oldAcc.SetCWindowDelegateT(nil)
+			oldAcc.setCWindowDelegateT(nil)
 		}
 	}
 	window_delegate_handlers.handler[cp] = a
@@ -34098,7 +41431,7 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 	}
 
 	if accessor, ok := a.(CWindowDelegateTAccessor); ok {
-		accessor.SetCWindowDelegateT(window_delegate)
+		accessor.setCWindowDelegateT(window_delegate)
 		Logf("T232.5:")
 	}
 
@@ -34106,38 +41439,43 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 }
 
 func (window_delegate *CWindowDelegateT) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
+	var hasAccessor bool
+	var accessor CWindowDelegateTAccessor
+	func() {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
 
-	cp := window_delegate.pc_window_delegate
-	if goHandler, ok := window_delegate_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.(CWindowDelegateTAccessor); ok1 {
-			accessor.SetCWindowDelegateT(nil)
+		cp := window_delegate.pc_window_delegate
+		if goHandler, ok := window_delegate_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.(CWindowDelegateTAccessor)
 		}
+		delete(window_delegate_handlers.handler, cp)
+
+		delete(window_delegate_handlers.on_window_created_handler, cp)
+		delete(window_delegate_handlers.on_window_destroyed_handler, cp)
+		delete(window_delegate_handlers.get_parent_window_handler, cp)
+		delete(window_delegate_handlers.get_initial_bounds_handler, cp)
+		delete(window_delegate_handlers.is_frameless_handler, cp)
+		delete(window_delegate_handlers.can_resize_handler, cp)
+		delete(window_delegate_handlers.can_maximize_handler, cp)
+		delete(window_delegate_handlers.can_minimize_handler, cp)
+		delete(window_delegate_handlers.can_close_handler, cp)
+		delete(window_delegate_handlers.on_accelerator_handler, cp)
+		delete(window_delegate_handlers.on_key_event_handler, cp)
+		delete(window_delegate_handlers.get_preferred_size_handler, cp)
+		delete(window_delegate_handlers.get_minimum_size_handler, cp)
+		delete(window_delegate_handlers.get_maximum_size_handler, cp)
+		delete(window_delegate_handlers.get_height_for_width_handler, cp)
+		delete(window_delegate_handlers.on_parent_view_changed_handler, cp)
+		delete(window_delegate_handlers.on_child_view_changed_handler, cp)
+		delete(window_delegate_handlers.on_window_changed_handler, cp)
+		delete(window_delegate_handlers.on_focus_handler, cp)
+		delete(window_delegate_handlers.on_blur_handler, cp)
+	}()
+
+	if hasAccessor {
+		accessor.setCWindowDelegateT(nil)
 	}
-	delete(window_delegate_handlers.handler, cp)
-
-	delete(window_delegate_handlers.on_window_created_handler, cp)
-	delete(window_delegate_handlers.on_window_destroyed_handler, cp)
-	delete(window_delegate_handlers.get_parent_window_handler, cp)
-	delete(window_delegate_handlers.get_initial_bounds_handler, cp)
-	delete(window_delegate_handlers.is_frameless_handler, cp)
-	delete(window_delegate_handlers.can_resize_handler, cp)
-	delete(window_delegate_handlers.can_maximize_handler, cp)
-	delete(window_delegate_handlers.can_minimize_handler, cp)
-	delete(window_delegate_handlers.can_close_handler, cp)
-	delete(window_delegate_handlers.on_accelerator_handler, cp)
-	delete(window_delegate_handlers.on_key_event_handler, cp)
-	delete(window_delegate_handlers.get_preferred_size_handler, cp)
-	delete(window_delegate_handlers.get_minimum_size_handler, cp)
-	delete(window_delegate_handlers.get_maximum_size_handler, cp)
-	delete(window_delegate_handlers.get_height_for_width_handler, cp)
-	delete(window_delegate_handlers.on_parent_view_changed_handler, cp)
-	delete(window_delegate_handlers.on_child_view_changed_handler, cp)
-	delete(window_delegate_handlers.on_window_changed_handler, cp)
-	delete(window_delegate_handlers.on_focus_handler, cp)
-	delete(window_delegate_handlers.on_blur_handler, cp)
-
 }
 
 func (window_delegate *CWindowDelegateT) Handler() interface{} {
@@ -34160,6 +41498,8 @@ type cCX509certPrincipalT C.cef_x509cert_principal_t
 type CX509certPrincipalT struct {
 	noCopy                noCopy
 	pc_x509cert_principal *cCX509certPrincipalT
+	needsUnref            bool
+	beUnrefed             unrefedBy
 }
 
 type RefToCX509certPrincipalT struct {
@@ -34168,36 +41508,82 @@ type RefToCX509certPrincipalT struct {
 
 type CX509certPrincipalTAccessor interface {
 	GetCX509certPrincipalT() *CX509certPrincipalT
-	SetCX509certPrincipalT(*CX509certPrincipalT) (oldValue *CX509certPrincipalT)
+	setCX509certPrincipalT(*CX509certPrincipalT)
+	// TakeOverCX509certPrincipalT(*CX509certPrincipalT)
+	// NewRefCX509certPrincipalT(*CX509certPrincipalT)
 }
 
 func (r RefToCX509certPrincipalT) GetCX509certPrincipalT() *CX509certPrincipalT {
 	return r.p_x509cert_principal
 }
 
-func (r *RefToCX509certPrincipalT) SetCX509certPrincipalT(p *CX509certPrincipalT) (prevValue *CX509certPrincipalT) {
-	prevValue = r.p_x509cert_principal
+func (r *RefToCX509certPrincipalT) setCX509certPrincipalT(p *CX509certPrincipalT) {
+	// prevValue = r.p_x509cert_principal
+	r.p_x509cert_principal.ForceUnref()
 	r.p_x509cert_principal = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCX509certPrincipalT) TakeOverCX509certPrincipalT(src *CX509certPrincipalT) {
+	if r == nil {
+		return
+	}
+	r.p_x509cert_principal.ForceUnref()
+	gop := src.pc_x509cert_principal
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_x509cert_principal = newCX509certPrincipalT((*C.cef_x509cert_principal_t)(gop), byApp, true)
+}
+
+func PassCX509certPrincipalT(p *CX509certPrincipalT) (ret *CX509certPrincipalT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_x509cert_principal)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCX509certPrincipalT((*C.cef_x509cert_principal_t)(p.pc_x509cert_principal), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCX509certPrincipalT) NewRefCX509certPrincipalT(p *CX509certPrincipalT) {
+	if r == nil {
+		return
+	}
+	r.p_x509cert_principal.ForceUnref()
+	gop := p.pc_x509cert_principal
+	BaseAddRef(gop)
+	r.p_x509cert_principal = newCX509certPrincipalT((*C.cef_x509cert_principal_t)(gop), byApp, true)
 }
 
 // Go type CX509certPrincipalT wraps cef type *C.cef_x509cert_principal_t
-func newCX509certPrincipalT(p *C.cef_x509cert_principal_t, countUp bool) *CX509certPrincipalT {
+func newCX509certPrincipalT(p *C.cef_x509cert_principal_t, unrefedBy unrefedBy, needsUnref bool) *CX509certPrincipalT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T233.1:")
 	pc := (*cCX509certPrincipalT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_x509cert_principal := &CX509certPrincipalT{noCopy{}, pc}
+	go_x509cert_principal := &CX509certPrincipalT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_x509cert_principal, func(g *CX509certPrincipalT) {
-		if g.pc_x509cert_principal != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_x509cert_principal != nil {
 			Tracef(unsafe.Pointer(g.pc_x509cert_principal), "T233.2:")
 			BaseRelease(g.pc_x509cert_principal)
 		}
 	})
+
 	return go_x509cert_principal
 }
 
@@ -34211,13 +41597,15 @@ func (p *cCX509certPrincipalT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 }
 
 func (x509cert_principal *CX509certPrincipalT) ForceUnref() (ret bool) {
-	ret = BaseRelease(x509cert_principal.pc_x509cert_principal)
+	if x509cert_principal == nil {
+		return
+	}
+	if x509cert_principal.needsUnref && x509cert_principal.beUnrefed == byApp {
+		ret = BaseRelease(x509cert_principal.pc_x509cert_principal)
+		x509cert_principal.beUnrefed = unrefed
+		x509cert_principal.needsUnref = false
+	}
 	x509cert_principal.pc_x509cert_principal = nil
-	return ret
-}
-
-func (x509cert_principal *CX509certPrincipalT) release() (ret bool) {
-	ret = BaseRelease(x509cert_principal.pc_x509cert_principal)
 	return ret
 }
 
@@ -34357,6 +41745,8 @@ type cCX509certificateT C.cef_x509certificate_t
 type CX509certificateT struct {
 	noCopy             noCopy
 	pc_x509certificate *cCX509certificateT
+	needsUnref         bool
+	beUnrefed          unrefedBy
 }
 
 type RefToCX509certificateT struct {
@@ -34365,36 +41755,82 @@ type RefToCX509certificateT struct {
 
 type CX509certificateTAccessor interface {
 	GetCX509certificateT() *CX509certificateT
-	SetCX509certificateT(*CX509certificateT) (oldValue *CX509certificateT)
+	setCX509certificateT(*CX509certificateT)
+	// TakeOverCX509certificateT(*CX509certificateT)
+	// NewRefCX509certificateT(*CX509certificateT)
 }
 
 func (r RefToCX509certificateT) GetCX509certificateT() *CX509certificateT {
 	return r.p_x509certificate
 }
 
-func (r *RefToCX509certificateT) SetCX509certificateT(p *CX509certificateT) (prevValue *CX509certificateT) {
-	prevValue = r.p_x509certificate
+func (r *RefToCX509certificateT) setCX509certificateT(p *CX509certificateT) {
+	// prevValue = r.p_x509certificate
+	r.p_x509certificate.ForceUnref()
 	r.p_x509certificate = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefToCX509certificateT) TakeOverCX509certificateT(src *CX509certificateT) {
+	if r == nil {
+		return
+	}
+	r.p_x509certificate.ForceUnref()
+	gop := src.pc_x509certificate
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_x509certificate = newCX509certificateT((*C.cef_x509certificate_t)(gop), byApp, true)
+}
+
+func PassCX509certificateT(p *CX509certificateT) (ret *CX509certificateT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_x509certificate)
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = newCX509certificateT((*C.cef_x509certificate_t)(p.pc_x509certificate), byCef, false)
+
+	return ret
+}
+
+func (r *RefToCX509certificateT) NewRefCX509certificateT(p *CX509certificateT) {
+	if r == nil {
+		return
+	}
+	r.p_x509certificate.ForceUnref()
+	gop := p.pc_x509certificate
+	BaseAddRef(gop)
+	r.p_x509certificate = newCX509certificateT((*C.cef_x509certificate_t)(gop), byApp, true)
 }
 
 // Go type CX509certificateT wraps cef type *C.cef_x509certificate_t
-func newCX509certificateT(p *C.cef_x509certificate_t, countUp bool) *CX509certificateT {
+func newCX509certificateT(p *C.cef_x509certificate_t, unrefedBy unrefedBy, needsUnref bool) *CX509certificateT {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "T234.1:")
 	pc := (*cCX509certificateT)(p)
-	if countUp {
-		BaseAddRef(pc)
-	}
-	go_x509certificate := &CX509certificateT{noCopy{}, pc}
+	go_x509certificate := &CX509certificateT{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_x509certificate, func(g *CX509certificateT) {
-		if g.pc_x509certificate != nil {
+		if g.needsUnref && g.beUnrefed == byApp && g.pc_x509certificate != nil {
 			Tracef(unsafe.Pointer(g.pc_x509certificate), "T234.2:")
 			BaseRelease(g.pc_x509certificate)
 		}
 	})
+
 	return go_x509certificate
 }
 
@@ -34408,13 +41844,15 @@ func (p *cCX509certificateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 }
 
 func (x509certificate *CX509certificateT) ForceUnref() (ret bool) {
-	ret = BaseRelease(x509certificate.pc_x509certificate)
+	if x509certificate == nil {
+		return
+	}
+	if x509certificate.needsUnref && x509certificate.beUnrefed == byApp {
+		ret = BaseRelease(x509certificate.pc_x509certificate)
+		x509certificate.beUnrefed = unrefed
+		x509certificate.needsUnref = false
+	}
 	x509certificate.pc_x509certificate = nil
-	return ret
-}
-
-func (x509certificate *CX509certificateT) release() (ret bool) {
-	ret = BaseRelease(x509certificate.pc_x509certificate)
 	return ret
 }
 
@@ -34427,7 +41865,7 @@ func (self *CX509certificateT) GetSubject() (ret *CX509certPrincipalT) {
 
 	cRet := C.cefingo_x509certificate_get_subject((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = newCX509certPrincipalT(cRet, false)
+	ret = newCX509certPrincipalT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -34438,7 +41876,7 @@ func (self *CX509certificateT) GetIssuer() (ret *CX509certPrincipalT) {
 
 	cRet := C.cefingo_x509certificate_get_issuer((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = newCX509certPrincipalT(cRet, false)
+	ret = newCX509certPrincipalT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -34450,7 +41888,7 @@ func (self *CX509certificateT) GetSerialNumber() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_x509certificate_get_serial_number((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -34462,7 +41900,7 @@ func (self *CX509certificateT) GetValidStart() (ret CTimeT) {
 
 	cRet := C.cefingo_x509certificate_get_valid_start((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = (CTimeT)(cRet)
+	ret = (CTimeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -34474,7 +41912,7 @@ func (self *CX509certificateT) GetValidExpiry() (ret CTimeT) {
 
 	cRet := C.cefingo_x509certificate_get_valid_expiry((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = (CTimeT)(cRet)
+	ret = (CTimeT)(cRet) // return GoObj
 	return ret
 }
 
@@ -34485,7 +41923,7 @@ func (self *CX509certificateT) GetDerencoded() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_x509certificate_get_derencoded((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -34496,7 +41934,7 @@ func (self *CX509certificateT) GetPemencoded() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_x509certificate_get_pemencoded((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = newCBinaryValueT(cRet, false)
+	ret = newCBinaryValueT(cRet, byApp, true) // return GoObj
 	return ret
 }
 
@@ -34508,7 +41946,7 @@ func (self *CX509certificateT) GetIssuerChainSize() (ret int64) {
 
 	cRet := C.cefingo_x509certificate_get_issuer_chain_size((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = (int64)(cRet)
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
@@ -34527,7 +41965,7 @@ func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValue
 	chain = make([]*CBinaryValueT, *chainCount)
 	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
 	for i := C.size_t(0); i < *chainCount; i++ {
-		chain[i] = newCBinaryValueT(_tmpchain[i], false) // Out Slice Param
+		chain[i] = newCBinaryValueT(_tmpchain[i], byApp, true) // Out Slice Param
 	}
 	return chain
 }
@@ -34547,7 +41985,7 @@ func (self *CX509certificateT) GetPemencodedIssuerChain() (chain []*CBinaryValue
 	chain = make([]*CBinaryValueT, *chainCount)
 	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
 	for i := C.size_t(0); i < *chainCount; i++ {
-		chain[i] = newCBinaryValueT(_tmpchain[i], false) // Out Slice Param
+		chain[i] = newCBinaryValueT(_tmpchain[i], byApp, true) // Out Slice Param
 	}
 	return chain
 }

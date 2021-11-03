@@ -6564,8 +6564,6 @@ cef_resource_handler_t *cefingo_construct_resource_handler(cefingo_resource_hand
 		cefingo_resource_handler_skip;
 	resource_handler->body.read =
 		cefingo_resource_handler_read;
-	resource_handler->body.read_response =
-		cefingo_resource_handler_read_response;
 	resource_handler->body.cancel =
 		cefingo_resource_handler_cancel;
 

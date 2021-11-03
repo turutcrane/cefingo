@@ -100,6 +100,7 @@ var unGenerateMethod = map[string]void{
 	"cef_audio_handler_t::on_audio_stream_packet": setElement, // data parameter type **float shoud be *float (float[frame * length of channel_layout])
 	"cef_v8value_t::get_user_data":                setElement, // use struct _cef_base_ref_counted_t*
 	"cef_v8value_t::set_user_data":                setElement, // use struct _cef_base_ref_counted_t*
+	"cef_resource_handler_t::read_response":       setElement, // deprecated method
 }
 
 var notBoolValueMethod = map[string]void{

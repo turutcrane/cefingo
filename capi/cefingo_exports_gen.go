@@ -29,16 +29,16 @@ func cefingo_accessibility_handler_on_accessibility_tree_change(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAccessibilityHandlerT(self, true)
+		goTmpself := newCAccessibilityHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpvalue := newCValueT(value, true)
+		goTmpvalue := newCValueT(value, byApi, false)
 
 		f.OnAccessibilityTreeChange(goTmpself, goTmpvalue)
 
 	} else {
 		Logf("T101.7: on_accessibility_tree_change: Noo!")
 	}
-	BaseRelease((*cCValueT)(value))
+	BaseRelease((*cCValueT)(value)) // byApi
 
 }
 
@@ -61,16 +61,16 @@ func cefingo_accessibility_handler_on_accessibility_location_change(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAccessibilityHandlerT(self, true)
+		goTmpself := newCAccessibilityHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpvalue := newCValueT(value, true)
+		goTmpvalue := newCValueT(value, byApi, false)
 
 		f.OnAccessibilityLocationChange(goTmpself, goTmpvalue)
 
 	} else {
 		Logf("T101.9: on_accessibility_location_change: Noo!")
 	}
-	BaseRelease((*cCValueT)(value))
+	BaseRelease((*cCValueT)(value)) // byApi
 
 }
 
@@ -101,18 +101,18 @@ func cefingo_app_on_before_command_line_processing(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAppT(self, true)
+		goTmpself := newCAppT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpprocess_type := string_from_cef_string(process_type)
 		// !p.IsOutParam
-		goTmpcommand_line := newCCommandLineT(command_line, true)
+		goTmpcommand_line := newCCommandLineT(command_line, byApi, false)
 
 		f.OnBeforeCommandLineProcessing(goTmpself, goTmpprocess_type, goTmpcommand_line)
 
 	} else {
 		Logf("T102.7: on_before_command_line_processing: Noo!")
 	}
-	BaseRelease((*cCCommandLineT)(command_line))
+	BaseRelease((*cCCommandLineT)(command_line)) // byApi
 
 }
 
@@ -137,7 +137,7 @@ func cefingo_app_on_register_custom_schemes(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAppT(self, true)
+		goTmpself := newCAppT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpregistrar := newCSchemeRegistrarT(registrar)
 
@@ -169,12 +169,14 @@ func cefingo_app_get_resource_bundle_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAppT(self, true)
+		goTmpself := newCAppT(self, byApi, false)
 
 		goRet := f.GetResourceBundleHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_resource_bundle_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_resource_bundle_handler) // return GoObj
+			}
 			cRet = (*C.cef_resource_bundle_handler_t)(goRet.pc_resource_bundle_handler)
 		}
 	} else {
@@ -202,12 +204,14 @@ func cefingo_app_get_browser_process_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAppT(self, true)
+		goTmpself := newCAppT(self, byApi, false)
 
 		goRet := f.GetBrowserProcessHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_browser_process_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_browser_process_handler) // return GoObj
+			}
 			cRet = (*C.cef_browser_process_handler_t)(goRet.pc_browser_process_handler)
 		}
 	} else {
@@ -235,12 +239,14 @@ func cefingo_app_get_render_process_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAppT(self, true)
+		goTmpself := newCAppT(self, byApi, false)
 
 		goRet := f.GetRenderProcessHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_render_process_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_render_process_handler) // return GoObj
+			}
 			cRet = (*C.cef_render_process_handler_t)(goRet.pc_render_process_handler)
 		}
 	} else {
@@ -272,9 +278,9 @@ func cefingo_audio_handler_get_audio_parameters(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAudioHandlerT(self, true)
+		goTmpself := newCAudioHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpparams := (*CAudioParametersT)(params)
 
@@ -286,7 +292,7 @@ func cefingo_audio_handler_get_audio_parameters(
 	} else {
 		Logf("T103.7: get_audio_parameters: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -315,9 +321,9 @@ func cefingo_audio_handler_on_audio_stream_started(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAudioHandlerT(self, true)
+		goTmpself := newCAudioHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpparams := (*CAudioParametersT)(params)
 		// !p.IsOutParam
@@ -328,7 +334,7 @@ func cefingo_audio_handler_on_audio_stream_started(
 	} else {
 		Logf("T103.9: on_audio_stream_started: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -352,16 +358,16 @@ func cefingo_audio_handler_on_audio_stream_stopped(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAudioHandlerT(self, true)
+		goTmpself := newCAudioHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnAudioStreamStopped(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T103.11: on_audio_stream_stopped: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -387,9 +393,9 @@ func cefingo_audio_handler_on_audio_stream_error(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCAudioHandlerT(self, true)
+		goTmpself := newCAudioHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpmessage := string_from_cef_string(message)
 
@@ -398,7 +404,7 @@ func cefingo_audio_handler_on_audio_stream_error(
 	} else {
 		Logf("T103.13: on_audio_stream_error: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -425,7 +431,7 @@ func cefingo_run_file_dialog_callback_on_file_dialog_dismissed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRunFileDialogCallbackT(self, true)
+		goTmpself := newCRunFileDialogCallbackT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpselected_accept_filter := (int)(selected_accept_filter)
 		// !p.IsOutParam
@@ -464,9 +470,9 @@ func cefingo_navigation_entry_visitor_visit(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCNavigationEntryVisitorT(self, true)
+		goTmpself := newCNavigationEntryVisitorT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpentry := newCNavigationEntryT(entry, true)
+		goTmpentry := newCNavigationEntryT(entry, byApi, false)
 		// !p.IsOutParam
 		goTmpcurrent := current != 0
 		// !p.IsOutParam
@@ -482,7 +488,7 @@ func cefingo_navigation_entry_visitor_visit(
 	} else {
 		Logf("T108.7: visit: Noo!")
 	}
-	BaseRelease((*cCNavigationEntryT)(entry))
+	BaseRelease((*cCNavigationEntryT)(entry)) // byApi
 
 	return cRet
 }
@@ -508,7 +514,7 @@ func cefingo_pdf_print_callback_on_pdf_print_finished(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCPdfPrintCallbackT(self, true)
+		goTmpself := newCPdfPrintCallbackT(self, byApi, false)
 		// !p.IsOutParam
 		goTmppath := string_from_cef_string(path)
 		// !p.IsOutParam
@@ -540,7 +546,7 @@ func cefingo_browser_process_handler_on_context_initialized(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserProcessHandlerT(self, true)
+		goTmpself := newCBrowserProcessHandlerT(self, byApi, false)
 
 		f.OnContextInitialized(goTmpself)
 
@@ -572,16 +578,16 @@ func cefingo_browser_process_handler_on_before_child_process_launch(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserProcessHandlerT(self, true)
+		goTmpself := newCBrowserProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpcommand_line := newCCommandLineT(command_line, true)
+		goTmpcommand_line := newCCommandLineT(command_line, byApi, false)
 
 		f.OnBeforeChildProcessLaunch(goTmpself, goTmpcommand_line)
 
 	} else {
 		Logf("T112.9: on_before_child_process_launch: Noo!")
 	}
-	BaseRelease((*cCCommandLineT)(command_line))
+	BaseRelease((*cCCommandLineT)(command_line)) // byApi
 
 }
 
@@ -613,7 +619,7 @@ func cefingo_browser_process_handler_on_schedule_message_pump_work(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserProcessHandlerT(self, true)
+		goTmpself := newCBrowserProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpdelay_ms := (int64)(delay_ms)
 
@@ -646,12 +652,14 @@ func cefingo_browser_process_handler_get_default_client(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserProcessHandlerT(self, true)
+		goTmpself := newCBrowserProcessHandlerT(self, byApi, false)
 
 		goRet := f.GetDefaultClient(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_client)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_client) // return GoObj
+			}
 			cRet = (*C.cef_client_t)(goRet.pc_client)
 		}
 	} else {
@@ -683,19 +691,19 @@ func cefingo_browser_view_delegate_on_browser_created(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserViewDelegateT(self, true)
+		goTmpself := newCBrowserViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser_view := newCBrowserViewT(browser_view, true)
+		goTmpbrowser_view := newCBrowserViewT(browser_view, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnBrowserCreated(goTmpself, goTmpbrowser_view, goTmpbrowser)
 
 	} else {
 		Logf("T114.7: on_browser_created: Noo!")
 	}
-	BaseRelease((*cCBrowserViewT)(browser_view))
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserViewT)(browser_view)) // byApi
+	BaseRelease((*cCBrowserT)(browser))          // byApi
 
 }
 
@@ -721,19 +729,19 @@ func cefingo_browser_view_delegate_on_browser_destroyed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserViewDelegateT(self, true)
+		goTmpself := newCBrowserViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser_view := newCBrowserViewT(browser_view, true)
+		goTmpbrowser_view := newCBrowserViewT(browser_view, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnBrowserDestroyed(goTmpself, goTmpbrowser_view, goTmpbrowser)
 
 	} else {
 		Logf("T114.9: on_browser_destroyed: Noo!")
 	}
-	BaseRelease((*cCBrowserViewT)(browser_view))
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserViewT)(browser_view)) // byApi
+	BaseRelease((*cCBrowserT)(browser))          // byApi
 
 }
 
@@ -762,27 +770,29 @@ func cefingo_browser_view_delegate_get_delegate_for_popup_browser_view(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserViewDelegateT(self, true)
+		goTmpself := newCBrowserViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser_view := newCBrowserViewT(browser_view, true)
+		goTmpbrowser_view := newCBrowserViewT(browser_view, byApi, false)
 		// !p.IsOutParam
 		goTmpsettings := (*CBrowserSettingsT)(settings)
 		// !p.IsOutParam
-		goTmpclient := newCClientT(client, true)
+		goTmpclient := newCClientT(client, byApi, false)
 		// !p.IsOutParam
 		goTmpis_devtools := is_devtools != 0
 
 		goRet := f.GetDelegateForPopupBrowserView(goTmpself, goTmpbrowser_view, goTmpsettings, goTmpclient, goTmpis_devtools)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_browser_view_delegate)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_browser_view_delegate) // return GoObj
+			}
 			cRet = (*C.cef_browser_view_delegate_t)(goRet.pc_browser_view_delegate)
 		}
 	} else {
 		Logf("T114.11: get_delegate_for_popup_browser_view: Noo!")
 	}
-	BaseRelease((*cCBrowserViewT)(browser_view))
-	BaseRelease((*cCClientT)(client))
+	BaseRelease((*cCBrowserViewT)(browser_view)) // byApi
+	BaseRelease((*cCClientT)(client))            // byApi
 
 	return cRet
 }
@@ -813,11 +823,11 @@ func cefingo_browser_view_delegate_on_popup_browser_view_created(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserViewDelegateT(self, true)
+		goTmpself := newCBrowserViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser_view := newCBrowserViewT(browser_view, true)
+		goTmpbrowser_view := newCBrowserViewT(browser_view, byApi, false)
 		// !p.IsOutParam
-		goTmppopup_browser_view := newCBrowserViewT(popup_browser_view, true)
+		goTmppopup_browser_view := newCBrowserViewT(popup_browser_view, byApi, false)
 		// !p.IsOutParam
 		goTmpis_devtools := is_devtools != 0
 
@@ -829,8 +839,8 @@ func cefingo_browser_view_delegate_on_popup_browser_view_created(
 	} else {
 		Logf("T114.13: on_popup_browser_view_created: Noo!")
 	}
-	BaseRelease((*cCBrowserViewT)(browser_view))
-	BaseRelease((*cCBrowserViewT)(popup_browser_view))
+	BaseRelease((*cCBrowserViewT)(browser_view))       // byApi
+	BaseRelease((*cCBrowserViewT)(popup_browser_view)) // byApi
 
 	return cRet
 }
@@ -854,7 +864,7 @@ func cefingo_browser_view_delegate_get_chrome_toolbar_type(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCBrowserViewDelegateT(self, true)
+		goTmpself := newCBrowserViewDelegateT(self, byApi, false)
 
 		goRet := f.GetChromeToolbarType(goTmpself)
 
@@ -881,9 +891,9 @@ func cefingo_browser_view_delegate_get_preferred_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetPreferredSize(goTmpself, goTmpview)
 
@@ -891,7 +901,7 @@ func cefingo_browser_view_delegate_get_preferred_size(
 	} else {
 		Logf("T114.17: get_preferred_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -911,9 +921,9 @@ func cefingo_browser_view_delegate_get_minimum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMinimumSize(goTmpself, goTmpview)
 
@@ -921,7 +931,7 @@ func cefingo_browser_view_delegate_get_minimum_size(
 	} else {
 		Logf("T114.19: get_minimum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -941,9 +951,9 @@ func cefingo_browser_view_delegate_get_maximum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMaximumSize(goTmpself, goTmpview)
 
@@ -951,7 +961,7 @@ func cefingo_browser_view_delegate_get_maximum_size(
 	} else {
 		Logf("T114.21: get_maximum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -972,9 +982,9 @@ func cefingo_browser_view_delegate_get_height_for_width(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpwidth := (int)(width)
 
@@ -986,7 +996,7 @@ func cefingo_browser_view_delegate_get_height_for_width(
 	} else {
 		Logf("T114.23: get_height_for_width: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -1008,21 +1018,21 @@ func cefingo_browser_view_delegate_on_parent_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpparent := newCViewT(parent, true)
+		goTmpparent := newCViewT(parent, byApi, false)
 
 		f.OnParentViewChanged(goTmpself, goTmpview, goTmpadded, goTmpparent)
 
 	} else {
 		Logf("T114.25: on_parent_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(parent))
+	BaseRelease((*cCViewT)(view))   // byApi
+	BaseRelease((*cCViewT)(parent)) // byApi
 
 }
 
@@ -1043,21 +1053,21 @@ func cefingo_browser_view_delegate_on_child_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpchild := newCViewT(child, true)
+		goTmpchild := newCViewT(child, byApi, false)
 
 		f.OnChildViewChanged(goTmpself, goTmpview, goTmpadded, goTmpchild)
 
 	} else {
 		Logf("T114.27: on_child_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(child))
+	BaseRelease((*cCViewT)(view))  // byApi
+	BaseRelease((*cCViewT)(child)) // byApi
 
 }
 
@@ -1077,9 +1087,9 @@ func cefingo_browser_view_delegate_on_window_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 
@@ -1088,7 +1098,7 @@ func cefingo_browser_view_delegate_on_window_changed(
 	} else {
 		Logf("T114.29: on_window_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -1107,16 +1117,16 @@ func cefingo_browser_view_delegate_on_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnFocus(goTmpself, goTmpview)
 
 	} else {
 		Logf("T114.31: on_focus: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -1135,16 +1145,16 @@ func cefingo_browser_view_delegate_on_blur(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnBlur(goTmpself, goTmpview)
 
 	} else {
 		Logf("T114.33: on_blur: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -1166,16 +1176,16 @@ func cefingo_button_delegate_on_button_pressed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCButtonDelegateT(self, true)
+		goTmpself := newCButtonDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbutton := newCButtonT(button, true)
+		goTmpbutton := newCButtonT(button, byApi, false)
 
 		f.OnButtonPressed(goTmpself, goTmpbutton)
 
 	} else {
 		Logf("T116.7: on_button_pressed: Noo!")
 	}
-	BaseRelease((*cCButtonT)(button))
+	BaseRelease((*cCButtonT)(button)) // byApi
 
 }
 
@@ -1197,16 +1207,16 @@ func cefingo_button_delegate_on_button_state_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCButtonDelegateT(self, true)
+		goTmpself := newCButtonDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbutton := newCButtonT(button, true)
+		goTmpbutton := newCButtonT(button, byApi, false)
 
 		f.OnButtonStateChanged(goTmpself, goTmpbutton)
 
 	} else {
 		Logf("T116.9: on_button_state_changed: Noo!")
 	}
-	BaseRelease((*cCButtonT)(button))
+	BaseRelease((*cCButtonT)(button)) // byApi
 
 }
 
@@ -1225,9 +1235,9 @@ func cefingo_button_delegate_get_preferred_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetPreferredSize(goTmpself, goTmpview)
 
@@ -1235,7 +1245,7 @@ func cefingo_button_delegate_get_preferred_size(
 	} else {
 		Logf("T116.11: get_preferred_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -1255,9 +1265,9 @@ func cefingo_button_delegate_get_minimum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMinimumSize(goTmpself, goTmpview)
 
@@ -1265,7 +1275,7 @@ func cefingo_button_delegate_get_minimum_size(
 	} else {
 		Logf("T116.13: get_minimum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -1285,9 +1295,9 @@ func cefingo_button_delegate_get_maximum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMaximumSize(goTmpself, goTmpview)
 
@@ -1295,7 +1305,7 @@ func cefingo_button_delegate_get_maximum_size(
 	} else {
 		Logf("T116.15: get_maximum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -1316,9 +1326,9 @@ func cefingo_button_delegate_get_height_for_width(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpwidth := (int)(width)
 
@@ -1330,7 +1340,7 @@ func cefingo_button_delegate_get_height_for_width(
 	} else {
 		Logf("T116.17: get_height_for_width: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -1352,21 +1362,21 @@ func cefingo_button_delegate_on_parent_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpparent := newCViewT(parent, true)
+		goTmpparent := newCViewT(parent, byApi, false)
 
 		f.OnParentViewChanged(goTmpself, goTmpview, goTmpadded, goTmpparent)
 
 	} else {
 		Logf("T116.19: on_parent_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(parent))
+	BaseRelease((*cCViewT)(view))   // byApi
+	BaseRelease((*cCViewT)(parent)) // byApi
 
 }
 
@@ -1387,21 +1397,21 @@ func cefingo_button_delegate_on_child_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpchild := newCViewT(child, true)
+		goTmpchild := newCViewT(child, byApi, false)
 
 		f.OnChildViewChanged(goTmpself, goTmpview, goTmpadded, goTmpchild)
 
 	} else {
 		Logf("T116.21: on_child_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(child))
+	BaseRelease((*cCViewT)(view))  // byApi
+	BaseRelease((*cCViewT)(child)) // byApi
 
 }
 
@@ -1421,9 +1431,9 @@ func cefingo_button_delegate_on_window_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 
@@ -1432,7 +1442,7 @@ func cefingo_button_delegate_on_window_changed(
 	} else {
 		Logf("T116.23: on_window_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -1451,16 +1461,16 @@ func cefingo_button_delegate_on_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnFocus(goTmpself, goTmpview)
 
 	} else {
 		Logf("T116.25: on_focus: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -1479,16 +1489,16 @@ func cefingo_button_delegate_on_blur(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnBlur(goTmpself, goTmpview)
 
 	} else {
 		Logf("T116.27: on_blur: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -1509,12 +1519,14 @@ func cefingo_client_get_audio_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetAudioHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_audio_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_audio_handler) // return GoObj
+			}
 			cRet = (*C.cef_audio_handler_t)(goRet.pc_audio_handler)
 		}
 	} else {
@@ -1542,12 +1554,14 @@ func cefingo_client_get_context_menu_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetContextMenuHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_context_menu_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_context_menu_handler) // return GoObj
+			}
 			cRet = (*C.cef_context_menu_handler_t)(goRet.pc_context_menu_handler)
 		}
 	} else {
@@ -1575,12 +1589,14 @@ func cefingo_client_get_dialog_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetDialogHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_dialog_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_dialog_handler) // return GoObj
+			}
 			cRet = (*C.cef_dialog_handler_t)(goRet.pc_dialog_handler)
 		}
 	} else {
@@ -1607,12 +1623,14 @@ func cefingo_client_get_display_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetDisplayHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_display_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_display_handler) // return GoObj
+			}
 			cRet = (*C.cef_display_handler_t)(goRet.pc_display_handler)
 		}
 	} else {
@@ -1640,12 +1658,14 @@ func cefingo_client_get_download_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetDownloadHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_download_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_download_handler) // return GoObj
+			}
 			cRet = (*C.cef_download_handler_t)(goRet.pc_download_handler)
 		}
 	} else {
@@ -1672,12 +1692,14 @@ func cefingo_client_get_drag_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetDragHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_drag_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_drag_handler) // return GoObj
+			}
 			cRet = (*C.cef_drag_handler_t)(goRet.pc_drag_handler)
 		}
 	} else {
@@ -1704,12 +1726,14 @@ func cefingo_client_get_find_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetFindHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_find_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_find_handler) // return GoObj
+			}
 			cRet = (*C.cef_find_handler_t)(goRet.pc_find_handler)
 		}
 	} else {
@@ -1736,12 +1760,14 @@ func cefingo_client_get_focus_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetFocusHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_focus_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_focus_handler) // return GoObj
+			}
 			cRet = (*C.cef_focus_handler_t)(goRet.pc_focus_handler)
 		}
 	} else {
@@ -1770,12 +1796,14 @@ func cefingo_client_get_frame_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetFrameHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_frame_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_frame_handler) // return GoObj
+			}
 			cRet = (*C.cef_frame_handler_t)(goRet.pc_frame_handler)
 		}
 	} else {
@@ -1803,12 +1831,14 @@ func cefingo_client_get_jsdialog_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetJsdialogHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_jsdialog_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_jsdialog_handler) // return GoObj
+			}
 			cRet = (*C.cef_jsdialog_handler_t)(goRet.pc_jsdialog_handler)
 		}
 	} else {
@@ -1835,12 +1865,14 @@ func cefingo_client_get_keyboard_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetKeyboardHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_keyboard_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_keyboard_handler) // return GoObj
+			}
 			cRet = (*C.cef_keyboard_handler_t)(goRet.pc_keyboard_handler)
 		}
 	} else {
@@ -1867,12 +1899,14 @@ func cefingo_client_get_life_span_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetLifeSpanHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_life_span_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_life_span_handler) // return GoObj
+			}
 			cRet = (*C.cef_life_span_handler_t)(goRet.pc_life_span_handler)
 		}
 	} else {
@@ -1899,12 +1933,14 @@ func cefingo_client_get_load_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetLoadHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_load_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_load_handler) // return GoObj
+			}
 			cRet = (*C.cef_load_handler_t)(goRet.pc_load_handler)
 		}
 	} else {
@@ -1932,12 +1968,14 @@ func cefingo_client_get_print_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetPrintHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_print_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_print_handler) // return GoObj
+			}
 			cRet = (*C.cef_print_handler_t)(goRet.pc_print_handler)
 		}
 	} else {
@@ -1964,12 +2002,14 @@ func cefingo_client_get_render_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetRenderHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_render_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_render_handler) // return GoObj
+			}
 			cRet = (*C.cef_render_handler_t)(goRet.pc_render_handler)
 		}
 	} else {
@@ -1996,12 +2036,14 @@ func cefingo_client_get_request_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 
 		goRet := f.GetRequestHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_request_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_request_handler) // return GoObj
+			}
 			cRet = (*C.cef_request_handler_t)(goRet.pc_request_handler)
 		}
 	} else {
@@ -2034,15 +2076,15 @@ func cefingo_client_on_process_message_received(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCClientT(self, true)
+		goTmpself := newCClientT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmpsource_process := CProcessIdT(source_process)
 		// !p.IsOutParam
-		goTmpmessage := newCProcessMessageT(message, true)
+		goTmpmessage := newCProcessMessageT(message, byApi, false)
 
 		goRet := f.OnProcessMessageReceived(goTmpself, goTmpbrowser, goTmpframe, goTmpsource_process, goTmpmessage)
 
@@ -2052,9 +2094,9 @@ func cefingo_client_on_process_message_received(
 	} else {
 		Logf("T119.39: on_process_message_received: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCProcessMessageT)(message))
+	BaseRelease((*cCBrowserT)(browser))        // byApi
+	BaseRelease((*cCFrameT)(frame))            // byApi
+	BaseRelease((*cCProcessMessageT)(message)) // byApi
 
 	return cRet
 }
@@ -2084,25 +2126,25 @@ func cefingo_context_menu_handler_on_before_context_menu(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCContextMenuHandlerT(self, true)
+		goTmpself := newCContextMenuHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmpparams := newCContextMenuParamsT(params, true)
+		goTmpparams := newCContextMenuParamsT(params, byApi, false)
 		// !p.IsOutParam
-		goTmpmodel := newCMenuModelT(model, true)
+		goTmpmodel := newCMenuModelT(model, byApi, false)
 
 		f.OnBeforeContextMenu(goTmpself, goTmpbrowser, goTmpframe, goTmpparams, goTmpmodel)
 
 	} else {
 		Logf("T122.7: on_before_context_menu: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCContextMenuParamsT)(params))
-	BaseRelease((*cCMenuModelT)(model))
+	BaseRelease((*cCBrowserT)(browser))          // byApi
+	BaseRelease((*cCFrameT)(frame))              // byApi
+	BaseRelease((*cCContextMenuParamsT)(params)) // byApi
+	BaseRelease((*cCMenuModelT)(model))          // byApi
 
 }
 
@@ -2133,17 +2175,17 @@ func cefingo_context_menu_handler_run_context_menu(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCContextMenuHandlerT(self, true)
+		goTmpself := newCContextMenuHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmpparams := newCContextMenuParamsT(params, true)
+		goTmpparams := newCContextMenuParamsT(params, byApi, false)
 		// !p.IsOutParam
-		goTmpmodel := newCMenuModelT(model, true)
+		goTmpmodel := newCMenuModelT(model, byApi, false)
 		// !p.IsOutParam
-		goTmpcallback := newCRunContextMenuCallbackT(callback, true)
+		goTmpcallback := newCRunContextMenuCallbackT(callback, byApi, false)
 
 		goRet := f.RunContextMenu(goTmpself, goTmpbrowser, goTmpframe, goTmpparams, goTmpmodel, goTmpcallback)
 
@@ -2153,11 +2195,11 @@ func cefingo_context_menu_handler_run_context_menu(
 	} else {
 		Logf("T122.9: run_context_menu: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCContextMenuParamsT)(params))
-	BaseRelease((*cCMenuModelT)(model))
-	BaseRelease((*cCRunContextMenuCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))                 // byApi
+	BaseRelease((*cCFrameT)(frame))                     // byApi
+	BaseRelease((*cCContextMenuParamsT)(params))        // byApi
+	BaseRelease((*cCMenuModelT)(model))                 // byApi
+	BaseRelease((*cCRunContextMenuCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -2190,13 +2232,13 @@ func cefingo_context_menu_handler_on_context_menu_command(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCContextMenuHandlerT(self, true)
+		goTmpself := newCContextMenuHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmpparams := newCContextMenuParamsT(params, true)
+		goTmpparams := newCContextMenuParamsT(params, byApi, false)
 		// !p.IsOutParam
 		goTmpcommand_id := (int)(command_id)
 		// !p.IsOutParam
@@ -2210,9 +2252,9 @@ func cefingo_context_menu_handler_on_context_menu_command(
 	} else {
 		Logf("T122.11: on_context_menu_command: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCContextMenuParamsT)(params))
+	BaseRelease((*cCBrowserT)(browser))          // byApi
+	BaseRelease((*cCFrameT)(frame))              // byApi
+	BaseRelease((*cCContextMenuParamsT)(params)) // byApi
 
 	return cRet
 }
@@ -2237,19 +2279,19 @@ func cefingo_context_menu_handler_on_context_menu_dismissed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCContextMenuHandlerT(self, true)
+		goTmpself := newCContextMenuHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 
 		f.OnContextMenuDismissed(goTmpself, goTmpbrowser, goTmpframe)
 
 	} else {
 		Logf("T122.13: on_context_menu_dismissed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
 
 }
 
@@ -2278,7 +2320,7 @@ func cefingo_cookie_visitor_visit(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCCookieVisitorT(self, true)
+		goTmpself := newCCookieVisitorT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpcookie := (*CCookieT)(cookie)
 		// !p.IsOutParam
@@ -2318,7 +2360,7 @@ func cefingo_set_cookie_callback_on_complete(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCSetCookieCallbackT(self, true)
+		goTmpself := newCSetCookieCallbackT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpsuccess := (int)(success)
 
@@ -2349,7 +2391,7 @@ func cefingo_delete_cookies_callback_on_complete(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDeleteCookiesCallbackT(self, true)
+		goTmpself := newCDeleteCookiesCallbackT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpnum_deleted := (int)(num_deleted)
 
@@ -2399,9 +2441,9 @@ func cefingo_dev_tools_message_observer_on_dev_tools_message(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDevToolsMessageObserverT(self, true)
+		goTmpself := newCDevToolsMessageObserverT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpmessage := (*[1 << 30]byte)(message)[:message_size:message_size]
 
@@ -2413,7 +2455,7 @@ func cefingo_dev_tools_message_observer_on_dev_tools_message(
 	} else {
 		Logf("T128.7: on_dev_tools_message: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -2449,9 +2491,9 @@ func cefingo_dev_tools_message_observer_on_dev_tools_method_result(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDevToolsMessageObserverT(self, true)
+		goTmpself := newCDevToolsMessageObserverT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpmessage_id := (int)(message_id)
 		// !p.IsOutParam
@@ -2464,7 +2506,7 @@ func cefingo_dev_tools_message_observer_on_dev_tools_method_result(
 	} else {
 		Logf("T128.9: on_dev_tools_method_result: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -2494,9 +2536,9 @@ func cefingo_dev_tools_message_observer_on_dev_tools_event(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDevToolsMessageObserverT(self, true)
+		goTmpself := newCDevToolsMessageObserverT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpmethod := string_from_cef_string(method)
 		// !p.IsOutParam
@@ -2507,7 +2549,7 @@ func cefingo_dev_tools_message_observer_on_dev_tools_event(
 	} else {
 		Logf("T128.11: on_dev_tools_event: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -2531,16 +2573,16 @@ func cefingo_dev_tools_message_observer_on_dev_tools_agent_attached(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDevToolsMessageObserverT(self, true)
+		goTmpself := newCDevToolsMessageObserverT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnDevToolsAgentAttached(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T128.13: on_dev_tools_agent_attached: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -2565,16 +2607,16 @@ func cefingo_dev_tools_message_observer_on_dev_tools_agent_detached(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDevToolsMessageObserverT(self, true)
+		goTmpself := newCDevToolsMessageObserverT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnDevToolsAgentDetached(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T128.15: on_dev_tools_agent_detached: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -2614,9 +2656,9 @@ func cefingo_dialog_handler_on_file_dialog(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDialogHandlerT(self, true)
+		goTmpself := newCDialogHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpmode := CFileDialogModeT(mode)
 		// !p.IsOutParam
@@ -2628,7 +2670,7 @@ func cefingo_dialog_handler_on_file_dialog(
 		// !p.IsOutParam
 		goTmpselected_accept_filter := (int)(selected_accept_filter)
 		// !p.IsOutParam
-		goTmpcallback := newCFileDialogCallbackT(callback, true)
+		goTmpcallback := newCFileDialogCallbackT(callback, byApi, false)
 
 		goRet := f.OnFileDialog(goTmpself, goTmpbrowser, goTmpmode, goTmptitle, goTmpdefault_file_path, goTmpaccept_filters, goTmpselected_accept_filter, goTmpcallback)
 
@@ -2638,8 +2680,8 @@ func cefingo_dialog_handler_on_file_dialog(
 	} else {
 		Logf("T130.7: on_file_dialog: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFileDialogCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))             // byApi
+	BaseRelease((*cCFileDialogCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -2664,11 +2706,11 @@ func cefingo_display_handler_on_address_change(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmpurl := string_from_cef_string(url)
 
@@ -2677,8 +2719,8 @@ func cefingo_display_handler_on_address_change(
 	} else {
 		Logf("T132.7: on_address_change: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
 
 }
 
@@ -2701,9 +2743,9 @@ func cefingo_display_handler_on_title_change(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmptitle := string_from_cef_string(title)
 
@@ -2712,7 +2754,7 @@ func cefingo_display_handler_on_title_change(
 	} else {
 		Logf("T132.9: on_title_change: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -2735,9 +2777,9 @@ func cefingo_display_handler_on_favicon_urlchange(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpicon_urls := (CStringListT)(icon_urls)
 
@@ -2746,7 +2788,7 @@ func cefingo_display_handler_on_favicon_urlchange(
 	} else {
 		Logf("T132.11: on_favicon_urlchange: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -2773,9 +2815,9 @@ func cefingo_display_handler_on_fullscreen_mode_change(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpfullscreen := (int)(fullscreen)
 
@@ -2784,7 +2826,7 @@ func cefingo_display_handler_on_fullscreen_mode_change(
 	} else {
 		Logf("T132.13: on_fullscreen_mode_change: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -2812,9 +2854,9 @@ func cefingo_display_handler_on_tooltip(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// p.IsInOutParam
 		goTmptext := string_from_cef_string(text)
 
@@ -2827,7 +2869,7 @@ func cefingo_display_handler_on_tooltip(
 	} else {
 		Logf("T132.15: on_tooltip: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -2852,9 +2894,9 @@ func cefingo_display_handler_on_status_message(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpvalue := string_from_cef_string(value)
 
@@ -2863,7 +2905,7 @@ func cefingo_display_handler_on_status_message(
 	} else {
 		Logf("T132.17: on_status_message: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -2890,9 +2932,9 @@ func cefingo_display_handler_on_console_message(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmplevel := CLogSeverityT(level)
 		// !p.IsOutParam
@@ -2910,7 +2952,7 @@ func cefingo_display_handler_on_console_message(
 	} else {
 		Logf("T132.19: on_console_message: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -2937,9 +2979,9 @@ func cefingo_display_handler_on_auto_resize(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpnew_size := (*CSizeT)(new_size)
 
@@ -2951,7 +2993,7 @@ func cefingo_display_handler_on_auto_resize(
 	} else {
 		Logf("T132.21: on_auto_resize: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -2976,9 +3018,9 @@ func cefingo_display_handler_on_loading_progress_change(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpprogress := (float64)(progress)
 
@@ -2987,7 +3029,7 @@ func cefingo_display_handler_on_loading_progress_change(
 	} else {
 		Logf("T132.23: on_loading_progress_change: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -3015,9 +3057,9 @@ func cefingo_display_handler_on_cursor_change(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDisplayHandlerT(self, true)
+		goTmpself := newCDisplayHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpcursor := (CCursorHandleT)(cursor)
 		// !p.IsOutParam
@@ -3033,7 +3075,7 @@ func cefingo_display_handler_on_cursor_change(
 	} else {
 		Logf("T132.25: on_cursor_change: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -3060,16 +3102,16 @@ func cefingo_domvisitor_visit(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDomvisitorT(self, true)
+		goTmpself := newCDomvisitorT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpdocument := newCDomdocumentT(document, true)
+		goTmpdocument := newCDomdocumentT(document, byApi, false)
 
 		f.Visit(goTmpself, goTmpdocument)
 
 	} else {
 		Logf("T133.7: visit: Noo!")
 	}
-	BaseRelease((*cCDomdocumentT)(document))
+	BaseRelease((*cCDomdocumentT)(document)) // byApi
 
 }
 
@@ -3098,24 +3140,24 @@ func cefingo_download_handler_on_before_download(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDownloadHandlerT(self, true)
+		goTmpself := newCDownloadHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpdownload_item := newCDownloadItemT(download_item, true)
+		goTmpdownload_item := newCDownloadItemT(download_item, byApi, false)
 		// !p.IsOutParam
 		goTmpsuggested_name := string_from_cef_string(suggested_name)
 		// !p.IsOutParam
-		goTmpcallback := newCBeforeDownloadCallbackT(callback, true)
+		goTmpcallback := newCBeforeDownloadCallbackT(callback, byApi, false)
 
 		f.OnBeforeDownload(goTmpself, goTmpbrowser, goTmpdownload_item, goTmpsuggested_name, goTmpcallback)
 
 	} else {
 		Logf("T138.7: on_before_download: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCDownloadItemT)(download_item))
-	BaseRelease((*cCBeforeDownloadCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))                 // byApi
+	BaseRelease((*cCDownloadItemT)(download_item))      // byApi
+	BaseRelease((*cCBeforeDownloadCallbackT)(callback)) // byApi
 
 }
 
@@ -3143,22 +3185,22 @@ func cefingo_download_handler_on_download_updated(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDownloadHandlerT(self, true)
+		goTmpself := newCDownloadHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpdownload_item := newCDownloadItemT(download_item, true)
+		goTmpdownload_item := newCDownloadItemT(download_item, byApi, false)
 		// !p.IsOutParam
-		goTmpcallback := newCDownloadItemCallbackT(callback, true)
+		goTmpcallback := newCDownloadItemCallbackT(callback, byApi, false)
 
 		f.OnDownloadUpdated(goTmpself, goTmpbrowser, goTmpdownload_item, goTmpcallback)
 
 	} else {
 		Logf("T138.9: on_download_updated: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCDownloadItemT)(download_item))
-	BaseRelease((*cCDownloadItemCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))               // byApi
+	BaseRelease((*cCDownloadItemT)(download_item))    // byApi
+	BaseRelease((*cCDownloadItemCallbackT)(callback)) // byApi
 
 }
 
@@ -3185,11 +3227,11 @@ func cefingo_drag_handler_on_drag_enter(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDragHandlerT(self, true)
+		goTmpself := newCDragHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpdragData := newCDragDataT(dragData, true)
+		goTmpdragData := newCDragDataT(dragData, byApi, false)
 		// !p.IsOutParam
 		goTmpmask := CDragOperationsMaskT(mask)
 
@@ -3201,8 +3243,8 @@ func cefingo_drag_handler_on_drag_enter(
 	} else {
 		Logf("T141.7: on_drag_enter: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCDragDataT)(dragData))
+	BaseRelease((*cCBrowserT)(browser))   // byApi
+	BaseRelease((*cCDragDataT)(dragData)) // byApi
 
 	return cRet
 }
@@ -3232,11 +3274,11 @@ func cefingo_drag_handler_on_draggable_regions_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCDragHandlerT(self, true)
+		goTmpself := newCDragHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmpregionsCount := (int64)(regionsCount)
 		// !p.IsOutParam
@@ -3247,8 +3289,8 @@ func cefingo_drag_handler_on_draggable_regions_changed(
 	} else {
 		Logf("T141.9: on_draggable_regions_changed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
 
 }
 
@@ -3271,7 +3313,7 @@ func cefingo_extension_handler_on_extension_load_failed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCExtensionHandlerT(self, true)
+		goTmpself := newCExtensionHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpresult := CErrorcodeT(result)
 
@@ -3302,16 +3344,16 @@ func cefingo_extension_handler_on_extension_loaded(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCExtensionHandlerT(self, true)
+		goTmpself := newCExtensionHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpextension := newCExtensionT(extension, true)
+		goTmpextension := newCExtensionT(extension, byApi, false)
 
 		f.OnExtensionLoaded(goTmpself, goTmpextension)
 
 	} else {
 		Logf("T144.9: on_extension_loaded: Noo!")
 	}
-	BaseRelease((*cCExtensionT)(extension))
+	BaseRelease((*cCExtensionT)(extension)) // byApi
 
 }
 
@@ -3333,16 +3375,16 @@ func cefingo_extension_handler_on_extension_unloaded(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCExtensionHandlerT(self, true)
+		goTmpself := newCExtensionHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpextension := newCExtensionT(extension, true)
+		goTmpextension := newCExtensionT(extension, byApi, false)
 
 		f.OnExtensionUnloaded(goTmpself, goTmpextension)
 
 	} else {
 		Logf("T144.11: on_extension_unloaded: Noo!")
 	}
-	BaseRelease((*cCExtensionT)(extension))
+	BaseRelease((*cCExtensionT)(extension)) // byApi
 
 }
 
@@ -3379,20 +3421,22 @@ func cefingo_extension_handler_on_before_background_browser(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCExtensionHandlerT(self, true)
+		goTmpself := newCExtensionHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpextension := newCExtensionT(extension, true)
+		goTmpextension := newCExtensionT(extension, byApi, false)
 		// !p.IsOutParam
 		goTmpurl := string_from_cef_string(url)
 		// p.IsInOutParam
-		goTmpclient := newCClientT(*client, true)
+		goTmpclient := newCClientT(*client, byApi, false)
 		cefp := goTmpclient.pc_client
 		// p.IsInOutParam
 		goTmpsettings := CBrowserSettingsT(*settings)
 
 		goRet, goTmpclientOut, goTmpsettingsOut := f.OnBeforeBackgroundBrowser(goTmpself, goTmpextension, goTmpurl, goTmpclient, goTmpsettings)
 		if cefp != goTmpclientOut.pc_client {
-			BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+			if goTmpclientOut.beUnrefed != byCef {
+				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+			}
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
 		}
 		*settings = C.cef_browser_settings_t(goTmpsettingsOut)
@@ -3403,7 +3447,7 @@ func cefingo_extension_handler_on_before_background_browser(
 	} else {
 		Logf("T144.13: on_before_background_browser: Noo!")
 	}
-	BaseRelease((*cCExtensionT)(extension))
+	BaseRelease((*cCExtensionT)(extension)) // byApi
 
 	return cRet
 }
@@ -3446,13 +3490,13 @@ func cefingo_extension_handler_on_before_browser(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCExtensionHandlerT(self, true)
+		goTmpself := newCExtensionHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpextension := newCExtensionT(extension, true)
+		goTmpextension := newCExtensionT(extension, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpactive_browser := newCBrowserT(active_browser, true)
+		goTmpactive_browser := newCBrowserT(active_browser, byApi, false)
 		// !p.IsOutParam
 		goTmpindex := (int)(index)
 		// !p.IsOutParam
@@ -3462,7 +3506,7 @@ func cefingo_extension_handler_on_before_browser(
 		// p.IsInOutParam
 		goTmpwindowInfo := CWindowInfoT(*windowInfo)
 		// p.IsInOutParam
-		goTmpclient := newCClientT(*client, true)
+		goTmpclient := newCClientT(*client, byApi, false)
 		cefp := goTmpclient.pc_client
 		// p.IsInOutParam
 		goTmpsettings := CBrowserSettingsT(*settings)
@@ -3470,7 +3514,9 @@ func cefingo_extension_handler_on_before_browser(
 		goRet, goTmpwindowInfoOut, goTmpclientOut, goTmpsettingsOut := f.OnBeforeBrowser(goTmpself, goTmpextension, goTmpbrowser, goTmpactive_browser, goTmpindex, goTmpurl, goTmpactive, goTmpwindowInfo, goTmpclient, goTmpsettings)
 		*windowInfo = C.cef_window_info_t(goTmpwindowInfoOut)
 		if cefp != goTmpclientOut.pc_client {
-			BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+			if goTmpclientOut.beUnrefed != byCef {
+				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+			}
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
 		}
 		*settings = C.cef_browser_settings_t(goTmpsettingsOut)
@@ -3481,9 +3527,9 @@ func cefingo_extension_handler_on_before_browser(
 	} else {
 		Logf("T144.15: on_before_browser: Noo!")
 	}
-	BaseRelease((*cCExtensionT)(extension))
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCBrowserT)(active_browser))
+	BaseRelease((*cCExtensionT)(extension))    // byApi
+	BaseRelease((*cCBrowserT)(browser))        // byApi
+	BaseRelease((*cCBrowserT)(active_browser)) // byApi
 
 	return cRet
 }
@@ -3514,25 +3560,27 @@ func cefingo_extension_handler_get_active_browser(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCExtensionHandlerT(self, true)
+		goTmpself := newCExtensionHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpextension := newCExtensionT(extension, true)
+		goTmpextension := newCExtensionT(extension, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpinclude_incognito := (int)(include_incognito)
 
 		goRet := f.GetActiveBrowser(goTmpself, goTmpextension, goTmpbrowser, goTmpinclude_incognito)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_browser)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_browser) // return GoObj
+			}
 			cRet = (*C.cef_browser_t)(goRet.pc_browser)
 		}
 	} else {
 		Logf("T144.17: get_active_browser: Noo!")
 	}
-	BaseRelease((*cCExtensionT)(extension))
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCExtensionT)(extension)) // byApi
+	BaseRelease((*cCBrowserT)(browser))     // byApi
 
 	return cRet
 }
@@ -3563,15 +3611,15 @@ func cefingo_extension_handler_can_access_browser(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCExtensionHandlerT(self, true)
+		goTmpself := newCExtensionHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpextension := newCExtensionT(extension, true)
+		goTmpextension := newCExtensionT(extension, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpinclude_incognito := (int)(include_incognito)
 		// !p.IsOutParam
-		goTmptarget_browser := newCBrowserT(target_browser, true)
+		goTmptarget_browser := newCBrowserT(target_browser, byApi, false)
 
 		goRet := f.CanAccessBrowser(goTmpself, goTmpextension, goTmpbrowser, goTmpinclude_incognito, goTmptarget_browser)
 
@@ -3581,9 +3629,9 @@ func cefingo_extension_handler_can_access_browser(
 	} else {
 		Logf("T144.19: can_access_browser: Noo!")
 	}
-	BaseRelease((*cCExtensionT)(extension))
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCBrowserT)(target_browser))
+	BaseRelease((*cCExtensionT)(extension))    // byApi
+	BaseRelease((*cCBrowserT)(browser))        // byApi
+	BaseRelease((*cCBrowserT)(target_browser)) // byApi
 
 	return cRet
 }
@@ -3616,15 +3664,15 @@ func cefingo_extension_handler_get_extension_resource(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCExtensionHandlerT(self, true)
+		goTmpself := newCExtensionHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpextension := newCExtensionT(extension, true)
+		goTmpextension := newCExtensionT(extension, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpfile := string_from_cef_string(file)
 		// !p.IsOutParam
-		goTmpcallback := newCGetExtensionResourceCallbackT(callback, true)
+		goTmpcallback := newCGetExtensionResourceCallbackT(callback, byApi, false)
 
 		goRet := f.GetExtensionResource(goTmpself, goTmpextension, goTmpbrowser, goTmpfile, goTmpcallback)
 
@@ -3634,9 +3682,9 @@ func cefingo_extension_handler_get_extension_resource(
 	} else {
 		Logf("T144.21: get_extension_resource: Noo!")
 	}
-	BaseRelease((*cCExtensionT)(extension))
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCGetExtensionResourceCallbackT)(callback))
+	BaseRelease((*cCExtensionT)(extension))                   // byApi
+	BaseRelease((*cCBrowserT)(browser))                       // byApi
+	BaseRelease((*cCGetExtensionResourceCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -3669,9 +3717,9 @@ func cefingo_find_handler_on_find_result(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCFindHandlerT(self, true)
+		goTmpself := newCFindHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpidentifier := (int)(identifier)
 		// !p.IsOutParam
@@ -3688,7 +3736,7 @@ func cefingo_find_handler_on_find_result(
 	} else {
 		Logf("T146.7: on_find_result: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -3714,9 +3762,9 @@ func cefingo_focus_handler_on_take_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCFocusHandlerT(self, true)
+		goTmpself := newCFocusHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpnext := (int)(next)
 
@@ -3725,7 +3773,7 @@ func cefingo_focus_handler_on_take_focus(
 	} else {
 		Logf("T147.7: on_take_focus: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -3750,9 +3798,9 @@ func cefingo_focus_handler_on_set_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCFocusHandlerT(self, true)
+		goTmpself := newCFocusHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpsource := CFocusSourceT(source)
 
@@ -3764,7 +3812,7 @@ func cefingo_focus_handler_on_set_focus(
 	} else {
 		Logf("T147.9: on_set_focus: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -3787,16 +3835,16 @@ func cefingo_focus_handler_on_got_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCFocusHandlerT(self, true)
+		goTmpself := newCFocusHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnGotFocus(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T147.11: on_got_focus: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -3838,9 +3886,9 @@ func cefingo_jsdialog_handler_on_jsdialog(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCJsdialogHandlerT(self, true)
+		goTmpself := newCJsdialogHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmporigin_url := string_from_cef_string(origin_url)
 		// !p.IsOutParam
@@ -3850,7 +3898,7 @@ func cefingo_jsdialog_handler_on_jsdialog(
 		// !p.IsOutParam
 		goTmpdefault_prompt_text := string_from_cef_string(default_prompt_text)
 		// !p.IsOutParam
-		goTmpcallback := newCJsdialogCallbackT(callback, true)
+		goTmpcallback := newCJsdialogCallbackT(callback, byApi, false)
 
 		goRet, goTmpsuppress_messageOut := f.OnJsdialog(goTmpself, goTmpbrowser, goTmporigin_url, goTmpdialog_type, goTmpmessage_text, goTmpdefault_prompt_text, goTmpcallback)
 		*suppress_message = (C.int)(goTmpsuppress_messageOut)
@@ -3861,8 +3909,8 @@ func cefingo_jsdialog_handler_on_jsdialog(
 	} else {
 		Logf("T151.7: on_jsdialog: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCJsdialogCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))           // byApi
+	BaseRelease((*cCJsdialogCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -3893,15 +3941,15 @@ func cefingo_jsdialog_handler_on_before_unload_dialog(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCJsdialogHandlerT(self, true)
+		goTmpself := newCJsdialogHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpmessage_text := string_from_cef_string(message_text)
 		// !p.IsOutParam
 		goTmpis_reload := (int)(is_reload)
 		// !p.IsOutParam
-		goTmpcallback := newCJsdialogCallbackT(callback, true)
+		goTmpcallback := newCJsdialogCallbackT(callback, byApi, false)
 
 		goRet := f.OnBeforeUnloadDialog(goTmpself, goTmpbrowser, goTmpmessage_text, goTmpis_reload, goTmpcallback)
 
@@ -3911,8 +3959,8 @@ func cefingo_jsdialog_handler_on_before_unload_dialog(
 	} else {
 		Logf("T151.9: on_before_unload_dialog: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCJsdialogCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))           // byApi
+	BaseRelease((*cCJsdialogCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -3937,16 +3985,16 @@ func cefingo_jsdialog_handler_on_reset_dialog_state(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCJsdialogHandlerT(self, true)
+		goTmpself := newCJsdialogHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnResetDialogState(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T151.11: on_reset_dialog_state: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -3968,16 +4016,16 @@ func cefingo_jsdialog_handler_on_dialog_closed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCJsdialogHandlerT(self, true)
+		goTmpself := newCJsdialogHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnDialogClosed(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T151.13: on_dialog_closed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -4006,9 +4054,9 @@ func cefingo_keyboard_handler_on_pre_key_event(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCKeyboardHandlerT(self, true)
+		goTmpself := newCKeyboardHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpevent := (*CKeyEventT)(event)
 		// !p.IsOutParam
@@ -4023,7 +4071,7 @@ func cefingo_keyboard_handler_on_pre_key_event(
 	} else {
 		Logf("T152.7: on_pre_key_event: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -4051,9 +4099,9 @@ func cefingo_keyboard_handler_on_key_event(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCKeyboardHandlerT(self, true)
+		goTmpself := newCKeyboardHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpevent := (*CKeyEventT)(event)
 		// !p.IsOutParam
@@ -4067,7 +4115,7 @@ func cefingo_keyboard_handler_on_key_event(
 	} else {
 		Logf("T152.9: on_key_event: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -4123,11 +4171,11 @@ func cefingo_life_span_handler_on_before_popup(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCLifeSpanHandlerT(self, true)
+		goTmpself := newCLifeSpanHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmptarget_url := string_from_cef_string(target_url)
 		// !p.IsOutParam
@@ -4141,7 +4189,7 @@ func cefingo_life_span_handler_on_before_popup(
 		// p.IsInOutParam
 		goTmpwindowInfo := CWindowInfoT(*windowInfo)
 		// p.IsInOutParam
-		goTmpclient := newCClientT(*client, true)
+		goTmpclient := newCClientT(*client, byApi, false)
 		cefp := goTmpclient.pc_client
 		// p.IsInOutParam
 		goTmpsettings := CBrowserSettingsT(*settings)
@@ -4151,12 +4199,16 @@ func cefingo_life_span_handler_on_before_popup(
 		goRet, goTmpwindowInfoOut, goTmpclientOut, goTmpsettingsOut, goTmpextra_infoOut, goTmpno_javascript_accessOut := f.OnBeforePopup(goTmpself, goTmpbrowser, goTmpframe, goTmptarget_url, goTmptarget_frame_name, goTmptarget_disposition, goTmpuser_gesture, goTmppopupFeatures, goTmpwindowInfo, goTmpclient, goTmpsettings, goTmpno_javascript_access)
 		*windowInfo = C.cef_window_info_t(goTmpwindowInfoOut)
 		if cefp != goTmpclientOut.pc_client {
-			BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+			if goTmpclientOut.beUnrefed != byCef {
+				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+			}
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
 		}
 		*settings = C.cef_browser_settings_t(goTmpsettingsOut)
 		if goTmpextra_infoOut != nil {
-			BaseAddRef(goTmpextra_infoOut.pc_dictionary_value) // Out Param
+			if goTmpextra_infoOut.beUnrefed != byCef {
+				BaseAddRef(goTmpextra_infoOut.pc_dictionary_value) // Out Param
+			}
 			*extra_info = (*C.cef_dictionary_value_t)(goTmpextra_infoOut.pc_dictionary_value)
 		}
 		*no_javascript_access = 0
@@ -4170,8 +4222,8 @@ func cefingo_life_span_handler_on_before_popup(
 	} else {
 		Logf("T155.7: on_before_popup: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
 
 	return cRet
 }
@@ -4197,16 +4249,16 @@ func cefingo_life_span_handler_on_after_created(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCLifeSpanHandlerT(self, true)
+		goTmpself := newCLifeSpanHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnAfterCreated(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T155.9: on_after_created: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -4314,9 +4366,9 @@ func cefingo_life_span_handler_do_close(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCLifeSpanHandlerT(self, true)
+		goTmpself := newCLifeSpanHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		goRet := f.DoClose(goTmpself, goTmpbrowser)
 
@@ -4326,7 +4378,7 @@ func cefingo_life_span_handler_do_close(
 	} else {
 		Logf("T155.11: do_close: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -4358,16 +4410,16 @@ func cefingo_life_span_handler_on_before_close(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCLifeSpanHandlerT(self, true)
+		goTmpself := newCLifeSpanHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnBeforeClose(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T155.13: on_before_close: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -4396,9 +4448,9 @@ func cefingo_load_handler_on_loading_state_change(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCLoadHandlerT(self, true)
+		goTmpself := newCLoadHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpisLoading := isLoading != 0
 		// !p.IsOutParam
@@ -4411,7 +4463,7 @@ func cefingo_load_handler_on_loading_state_change(
 	} else {
 		Logf("T156.7: on_loading_state_change: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -4444,11 +4496,11 @@ func cefingo_load_handler_on_load_start(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCLoadHandlerT(self, true)
+		goTmpself := newCLoadHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmptransition_type := CTransitionTypeT(transition_type)
 
@@ -4457,8 +4509,8 @@ func cefingo_load_handler_on_load_start(
 	} else {
 		Logf("T156.9: on_load_start: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
 
 }
 
@@ -4489,11 +4541,11 @@ func cefingo_load_handler_on_load_end(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCLoadHandlerT(self, true)
+		goTmpself := newCLoadHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmphttpStatusCode := (int)(httpStatusCode)
 
@@ -4502,8 +4554,8 @@ func cefingo_load_handler_on_load_end(
 	} else {
 		Logf("T156.11: on_load_end: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
 
 }
 
@@ -4533,11 +4585,11 @@ func cefingo_load_handler_on_load_error(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCLoadHandlerT(self, true)
+		goTmpself := newCLoadHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmperrorCode := CErrorcodeT(errorCode)
 		// !p.IsOutParam
@@ -4550,8 +4602,8 @@ func cefingo_load_handler_on_load_error(
 	} else {
 		Logf("T156.13: on_load_error: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
 
 }
 
@@ -4575,14 +4627,14 @@ func cefingo_media_observer_on_sinks(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMediaObserverT(self, true)
+		goTmpself := newCMediaObserverT(self, byApi, false)
 		// !p.IsOutParam
 		// !p.IsOutParam
 		// p.IsSliceParam
 		slice := (*[1 << 30](*C.cef_media_sink_t))(unsafe.Pointer(sinks))[:sinksCount:sinksCount]
 		goTmpsinks := make([]*CMediaSinkT, sinksCount)
 		for i, v := range slice {
-			goTmpsinks[i] = newCMediaSinkT(v, true)
+			goTmpsinks[i] = newCMediaSinkT(v, byApi, false)
 		}
 
 		f.OnSinks(goTmpself, goTmpsinks)
@@ -4613,14 +4665,14 @@ func cefingo_media_observer_on_routes(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMediaObserverT(self, true)
+		goTmpself := newCMediaObserverT(self, byApi, false)
 		// !p.IsOutParam
 		// !p.IsOutParam
 		// p.IsSliceParam
 		slice := (*[1 << 30](*C.cef_media_route_t))(unsafe.Pointer(routes))[:routesCount:routesCount]
 		goTmproutes := make([]*CMediaRouteT, routesCount)
 		for i, v := range slice {
-			goTmproutes[i] = newCMediaRouteT(v, true)
+			goTmproutes[i] = newCMediaRouteT(v, byApi, false)
 		}
 
 		f.OnRoutes(goTmpself, goTmproutes)
@@ -4650,9 +4702,9 @@ func cefingo_media_observer_on_route_state_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMediaObserverT(self, true)
+		goTmpself := newCMediaObserverT(self, byApi, false)
 		// !p.IsOutParam
-		goTmproute := newCMediaRouteT(route, true)
+		goTmproute := newCMediaRouteT(route, byApi, false)
 		// !p.IsOutParam
 		goTmpstate := CMediaRouteConnectionStateT(state)
 
@@ -4661,7 +4713,7 @@ func cefingo_media_observer_on_route_state_changed(
 	} else {
 		Logf("T158.11: on_route_state_changed: Noo!")
 	}
-	BaseRelease((*cCMediaRouteT)(route))
+	BaseRelease((*cCMediaRouteT)(route)) // byApi
 
 }
 
@@ -4686,9 +4738,9 @@ func cefingo_media_observer_on_route_message_received(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMediaObserverT(self, true)
+		goTmpself := newCMediaObserverT(self, byApi, false)
 		// !p.IsOutParam
-		goTmproute := newCMediaRouteT(route, true)
+		goTmproute := newCMediaRouteT(route, byApi, false)
 		// !p.IsOutParam
 		goTmpmessage := (*[1 << 30]byte)(message)[:message_size:message_size]
 
@@ -4697,7 +4749,7 @@ func cefingo_media_observer_on_route_message_received(
 	} else {
 		Logf("T158.13: on_route_message_received: Noo!")
 	}
-	BaseRelease((*cCMediaRouteT)(route))
+	BaseRelease((*cCMediaRouteT)(route)) // byApi
 
 }
 
@@ -4724,21 +4776,21 @@ func cefingo_menu_button_delegate_on_menu_button_pressed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMenuButtonDelegateT(self, true)
+		goTmpself := newCMenuButtonDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpmenu_button := newCMenuButtonT(menu_button, true)
+		goTmpmenu_button := newCMenuButtonT(menu_button, byApi, false)
 		// !p.IsOutParam
 		goTmpscreen_point := (*CPointT)(screen_point)
 		// !p.IsOutParam
-		goTmpbutton_pressed_lock := newCMenuButtonPressedLockT(button_pressed_lock, true)
+		goTmpbutton_pressed_lock := newCMenuButtonPressedLockT(button_pressed_lock, byApi, false)
 
 		f.OnMenuButtonPressed(goTmpself, goTmpmenu_button, goTmpscreen_point, goTmpbutton_pressed_lock)
 
 	} else {
 		Logf("T165.7: on_menu_button_pressed: Noo!")
 	}
-	BaseRelease((*cCMenuButtonT)(menu_button))
-	BaseRelease((*cCMenuButtonPressedLockT)(button_pressed_lock))
+	BaseRelease((*cCMenuButtonT)(menu_button))                    // byApi
+	BaseRelease((*cCMenuButtonPressedLockT)(button_pressed_lock)) // byApi
 
 }
 
@@ -4760,16 +4812,16 @@ func cefingo_menu_button_delegate_on_button_pressed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCButtonDelegateT(self, true)
+		goTmpself := newCButtonDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbutton := newCButtonT(button, true)
+		goTmpbutton := newCButtonT(button, byApi, false)
 
 		f.OnButtonPressed(goTmpself, goTmpbutton)
 
 	} else {
 		Logf("T165.9: on_button_pressed: Noo!")
 	}
-	BaseRelease((*cCButtonT)(button))
+	BaseRelease((*cCButtonT)(button)) // byApi
 
 }
 
@@ -4791,16 +4843,16 @@ func cefingo_menu_button_delegate_on_button_state_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCButtonDelegateT(self, true)
+		goTmpself := newCButtonDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbutton := newCButtonT(button, true)
+		goTmpbutton := newCButtonT(button, byApi, false)
 
 		f.OnButtonStateChanged(goTmpself, goTmpbutton)
 
 	} else {
 		Logf("T165.11: on_button_state_changed: Noo!")
 	}
-	BaseRelease((*cCButtonT)(button))
+	BaseRelease((*cCButtonT)(button)) // byApi
 
 }
 
@@ -4819,9 +4871,9 @@ func cefingo_menu_button_delegate_get_preferred_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetPreferredSize(goTmpself, goTmpview)
 
@@ -4829,7 +4881,7 @@ func cefingo_menu_button_delegate_get_preferred_size(
 	} else {
 		Logf("T165.13: get_preferred_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -4849,9 +4901,9 @@ func cefingo_menu_button_delegate_get_minimum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMinimumSize(goTmpself, goTmpview)
 
@@ -4859,7 +4911,7 @@ func cefingo_menu_button_delegate_get_minimum_size(
 	} else {
 		Logf("T165.15: get_minimum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -4879,9 +4931,9 @@ func cefingo_menu_button_delegate_get_maximum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMaximumSize(goTmpself, goTmpview)
 
@@ -4889,7 +4941,7 @@ func cefingo_menu_button_delegate_get_maximum_size(
 	} else {
 		Logf("T165.17: get_maximum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -4910,9 +4962,9 @@ func cefingo_menu_button_delegate_get_height_for_width(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpwidth := (int)(width)
 
@@ -4924,7 +4976,7 @@ func cefingo_menu_button_delegate_get_height_for_width(
 	} else {
 		Logf("T165.19: get_height_for_width: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -4946,21 +4998,21 @@ func cefingo_menu_button_delegate_on_parent_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpparent := newCViewT(parent, true)
+		goTmpparent := newCViewT(parent, byApi, false)
 
 		f.OnParentViewChanged(goTmpself, goTmpview, goTmpadded, goTmpparent)
 
 	} else {
 		Logf("T165.21: on_parent_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(parent))
+	BaseRelease((*cCViewT)(view))   // byApi
+	BaseRelease((*cCViewT)(parent)) // byApi
 
 }
 
@@ -4981,21 +5033,21 @@ func cefingo_menu_button_delegate_on_child_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpchild := newCViewT(child, true)
+		goTmpchild := newCViewT(child, byApi, false)
 
 		f.OnChildViewChanged(goTmpself, goTmpview, goTmpadded, goTmpchild)
 
 	} else {
 		Logf("T165.23: on_child_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(child))
+	BaseRelease((*cCViewT)(view))  // byApi
+	BaseRelease((*cCViewT)(child)) // byApi
 
 }
 
@@ -5015,9 +5067,9 @@ func cefingo_menu_button_delegate_on_window_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 
@@ -5026,7 +5078,7 @@ func cefingo_menu_button_delegate_on_window_changed(
 	} else {
 		Logf("T165.25: on_window_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -5045,16 +5097,16 @@ func cefingo_menu_button_delegate_on_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnFocus(goTmpself, goTmpview)
 
 	} else {
 		Logf("T165.27: on_focus: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -5073,16 +5125,16 @@ func cefingo_menu_button_delegate_on_blur(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnBlur(goTmpself, goTmpview)
 
 	} else {
 		Logf("T165.29: on_blur: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -5107,9 +5159,9 @@ func cefingo_menu_model_delegate_execute_command(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMenuModelDelegateT(self, true)
+		goTmpself := newCMenuModelDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpmenu_model := newCMenuModelT(menu_model, true)
+		goTmpmenu_model := newCMenuModelT(menu_model, byApi, false)
 		// !p.IsOutParam
 		goTmpcommand_id := (int)(command_id)
 		// !p.IsOutParam
@@ -5120,7 +5172,7 @@ func cefingo_menu_model_delegate_execute_command(
 	} else {
 		Logf("T167.7: execute_command: Noo!")
 	}
-	BaseRelease((*cCMenuModelT)(menu_model))
+	BaseRelease((*cCMenuModelT)(menu_model)) // byApi
 
 }
 
@@ -5144,9 +5196,9 @@ func cefingo_menu_model_delegate_mouse_outside_menu(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMenuModelDelegateT(self, true)
+		goTmpself := newCMenuModelDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpmenu_model := newCMenuModelT(menu_model, true)
+		goTmpmenu_model := newCMenuModelT(menu_model, byApi, false)
 		// !p.IsOutParam
 		goTmpscreen_point := (*CPointT)(screen_point)
 
@@ -5155,7 +5207,7 @@ func cefingo_menu_model_delegate_mouse_outside_menu(
 	} else {
 		Logf("T167.9: mouse_outside_menu: Noo!")
 	}
-	BaseRelease((*cCMenuModelT)(menu_model))
+	BaseRelease((*cCMenuModelT)(menu_model)) // byApi
 
 }
 
@@ -5179,9 +5231,9 @@ func cefingo_menu_model_delegate_unhandled_open_submenu(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMenuModelDelegateT(self, true)
+		goTmpself := newCMenuModelDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpmenu_model := newCMenuModelT(menu_model, true)
+		goTmpmenu_model := newCMenuModelT(menu_model, byApi, false)
 		// !p.IsOutParam
 		goTmpis_rtl := (int)(is_rtl)
 
@@ -5190,7 +5242,7 @@ func cefingo_menu_model_delegate_unhandled_open_submenu(
 	} else {
 		Logf("T167.11: unhandled_open_submenu: Noo!")
 	}
-	BaseRelease((*cCMenuModelT)(menu_model))
+	BaseRelease((*cCMenuModelT)(menu_model)) // byApi
 
 }
 
@@ -5214,9 +5266,9 @@ func cefingo_menu_model_delegate_unhandled_close_submenu(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMenuModelDelegateT(self, true)
+		goTmpself := newCMenuModelDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpmenu_model := newCMenuModelT(menu_model, true)
+		goTmpmenu_model := newCMenuModelT(menu_model, byApi, false)
 		// !p.IsOutParam
 		goTmpis_rtl := (int)(is_rtl)
 
@@ -5225,7 +5277,7 @@ func cefingo_menu_model_delegate_unhandled_close_submenu(
 	} else {
 		Logf("T167.13: unhandled_close_submenu: Noo!")
 	}
-	BaseRelease((*cCMenuModelT)(menu_model))
+	BaseRelease((*cCMenuModelT)(menu_model)) // byApi
 
 }
 
@@ -5247,16 +5299,16 @@ func cefingo_menu_model_delegate_menu_will_show(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMenuModelDelegateT(self, true)
+		goTmpself := newCMenuModelDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpmenu_model := newCMenuModelT(menu_model, true)
+		goTmpmenu_model := newCMenuModelT(menu_model, byApi, false)
 
 		f.MenuWillShow(goTmpself, goTmpmenu_model)
 
 	} else {
 		Logf("T167.15: menu_will_show: Noo!")
 	}
-	BaseRelease((*cCMenuModelT)(menu_model))
+	BaseRelease((*cCMenuModelT)(menu_model)) // byApi
 
 }
 
@@ -5278,16 +5330,16 @@ func cefingo_menu_model_delegate_menu_closed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMenuModelDelegateT(self, true)
+		goTmpself := newCMenuModelDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpmenu_model := newCMenuModelT(menu_model, true)
+		goTmpmenu_model := newCMenuModelT(menu_model, byApi, false)
 
 		f.MenuClosed(goTmpself, goTmpmenu_model)
 
 	} else {
 		Logf("T167.17: menu_closed: Noo!")
 	}
-	BaseRelease((*cCMenuModelT)(menu_model))
+	BaseRelease((*cCMenuModelT)(menu_model)) // byApi
 
 }
 
@@ -5311,9 +5363,9 @@ func cefingo_menu_model_delegate_format_label(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCMenuModelDelegateT(self, true)
+		goTmpself := newCMenuModelDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpmenu_model := newCMenuModelT(menu_model, true)
+		goTmpmenu_model := newCMenuModelT(menu_model, byApi, false)
 		// p.IsInOutParam
 		goTmplabel := string_from_cef_string(label)
 
@@ -5326,7 +5378,7 @@ func cefingo_menu_model_delegate_format_label(
 	} else {
 		Logf("T167.19: format_label: Noo!")
 	}
-	BaseRelease((*cCMenuModelT)(menu_model))
+	BaseRelease((*cCMenuModelT)(menu_model)) // byApi
 
 	return cRet
 }
@@ -5346,9 +5398,9 @@ func cefingo_panel_delegate_get_preferred_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetPreferredSize(goTmpself, goTmpview)
 
@@ -5356,7 +5408,7 @@ func cefingo_panel_delegate_get_preferred_size(
 	} else {
 		Logf("T170.7: get_preferred_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -5376,9 +5428,9 @@ func cefingo_panel_delegate_get_minimum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMinimumSize(goTmpself, goTmpview)
 
@@ -5386,7 +5438,7 @@ func cefingo_panel_delegate_get_minimum_size(
 	} else {
 		Logf("T170.9: get_minimum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -5406,9 +5458,9 @@ func cefingo_panel_delegate_get_maximum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMaximumSize(goTmpself, goTmpview)
 
@@ -5416,7 +5468,7 @@ func cefingo_panel_delegate_get_maximum_size(
 	} else {
 		Logf("T170.11: get_maximum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -5437,9 +5489,9 @@ func cefingo_panel_delegate_get_height_for_width(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpwidth := (int)(width)
 
@@ -5451,7 +5503,7 @@ func cefingo_panel_delegate_get_height_for_width(
 	} else {
 		Logf("T170.13: get_height_for_width: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -5473,21 +5525,21 @@ func cefingo_panel_delegate_on_parent_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpparent := newCViewT(parent, true)
+		goTmpparent := newCViewT(parent, byApi, false)
 
 		f.OnParentViewChanged(goTmpself, goTmpview, goTmpadded, goTmpparent)
 
 	} else {
 		Logf("T170.15: on_parent_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(parent))
+	BaseRelease((*cCViewT)(view))   // byApi
+	BaseRelease((*cCViewT)(parent)) // byApi
 
 }
 
@@ -5508,21 +5560,21 @@ func cefingo_panel_delegate_on_child_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpchild := newCViewT(child, true)
+		goTmpchild := newCViewT(child, byApi, false)
 
 		f.OnChildViewChanged(goTmpself, goTmpview, goTmpadded, goTmpchild)
 
 	} else {
 		Logf("T170.17: on_child_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(child))
+	BaseRelease((*cCViewT)(view))  // byApi
+	BaseRelease((*cCViewT)(child)) // byApi
 
 }
 
@@ -5542,9 +5594,9 @@ func cefingo_panel_delegate_on_window_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 
@@ -5553,7 +5605,7 @@ func cefingo_panel_delegate_on_window_changed(
 	} else {
 		Logf("T170.19: on_window_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -5572,16 +5624,16 @@ func cefingo_panel_delegate_on_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnFocus(goTmpself, goTmpview)
 
 	} else {
 		Logf("T170.21: on_focus: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -5600,16 +5652,16 @@ func cefingo_panel_delegate_on_blur(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnBlur(goTmpself, goTmpview)
 
 	} else {
 		Logf("T170.23: on_blur: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -5634,16 +5686,16 @@ func cefingo_print_handler_on_print_start(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCPrintHandlerT(self, true)
+		goTmpself := newCPrintHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnPrintStart(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T173.7: on_print_start: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -5669,11 +5721,11 @@ func cefingo_print_handler_on_print_settings(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCPrintHandlerT(self, true)
+		goTmpself := newCPrintHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpsettings := newCPrintSettingsT(settings, true)
+		goTmpsettings := newCPrintSettingsT(settings, byApi, false)
 		// !p.IsOutParam
 		goTmpget_defaults := (int)(get_defaults)
 
@@ -5682,8 +5734,8 @@ func cefingo_print_handler_on_print_settings(
 	} else {
 		Logf("T173.9: on_print_settings: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCPrintSettingsT)(settings))
+	BaseRelease((*cCBrowserT)(browser))        // byApi
+	BaseRelease((*cCPrintSettingsT)(settings)) // byApi
 
 }
 
@@ -5709,13 +5761,13 @@ func cefingo_print_handler_on_print_dialog(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCPrintHandlerT(self, true)
+		goTmpself := newCPrintHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmphas_selection := (int)(has_selection)
 		// !p.IsOutParam
-		goTmpcallback := newCPrintDialogCallbackT(callback, true)
+		goTmpcallback := newCPrintDialogCallbackT(callback, byApi, false)
 
 		goRet := f.OnPrintDialog(goTmpself, goTmpbrowser, goTmphas_selection, goTmpcallback)
 
@@ -5725,8 +5777,8 @@ func cefingo_print_handler_on_print_dialog(
 	} else {
 		Logf("T173.11: on_print_dialog: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCPrintDialogCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))              // byApi
+	BaseRelease((*cCPrintDialogCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -5754,15 +5806,15 @@ func cefingo_print_handler_on_print_job(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCPrintHandlerT(self, true)
+		goTmpself := newCPrintHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpdocument_name := string_from_cef_string(document_name)
 		// !p.IsOutParam
 		goTmppdf_file_path := string_from_cef_string(pdf_file_path)
 		// !p.IsOutParam
-		goTmpcallback := newCPrintJobCallbackT(callback, true)
+		goTmpcallback := newCPrintJobCallbackT(callback, byApi, false)
 
 		goRet := f.OnPrintJob(goTmpself, goTmpbrowser, goTmpdocument_name, goTmppdf_file_path, goTmpcallback)
 
@@ -5772,8 +5824,8 @@ func cefingo_print_handler_on_print_job(
 	} else {
 		Logf("T173.13: on_print_job: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCPrintJobCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))           // byApi
+	BaseRelease((*cCPrintJobCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -5796,16 +5848,16 @@ func cefingo_print_handler_on_print_reset(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCPrintHandlerT(self, true)
+		goTmpself := newCPrintHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnPrintReset(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T173.15: on_print_reset: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -5829,9 +5881,9 @@ func cefingo_print_handler_get_pdf_paper_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCPrintHandlerT(self, true)
+		goTmpself := newCPrintHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpdevice_units_per_inch := (int)(device_units_per_inch)
 
@@ -5841,7 +5893,7 @@ func cefingo_print_handler_get_pdf_paper_size(
 	} else {
 		Logf("T173.17: get_pdf_paper_size: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -5864,12 +5916,14 @@ func cefingo_render_handler_get_accessibility_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 
 		goRet := f.GetAccessibilityHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_accessibility_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_accessibility_handler) // return GoObj
+			}
 			cRet = (*C.cef_accessibility_handler_t)(goRet.pc_accessibility_handler)
 		}
 	} else {
@@ -5900,9 +5954,9 @@ func cefingo_render_handler_get_root_screen_rect(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		goRet, goTmprectOut := f.GetRootScreenRect(goTmpself, goTmpbrowser)
 		*rect = (C.cef_rect_t)(goTmprectOut)
@@ -5913,7 +5967,7 @@ func cefingo_render_handler_get_root_screen_rect(
 	} else {
 		Logf("T177.9: get_root_screen_rect: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -5938,9 +5992,9 @@ func cefingo_render_handler_get_view_rect(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		goTmprectOut := f.GetViewRect(goTmpself, goTmpbrowser)
 		*rect = (C.cef_rect_t)(goTmprectOut)
@@ -5948,7 +6002,7 @@ func cefingo_render_handler_get_view_rect(
 	} else {
 		Logf("T177.11: get_view_rect: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -5975,9 +6029,9 @@ func cefingo_render_handler_get_screen_point(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpviewX := (int)(viewX)
 		// !p.IsOutParam
@@ -5993,7 +6047,7 @@ func cefingo_render_handler_get_screen_point(
 	} else {
 		Logf("T177.13: get_screen_point: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -6023,9 +6077,9 @@ func cefingo_render_handler_get_screen_info(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// p.IsInOutParam
 		goTmpscreen_info := CScreenInfoT(*screen_info)
 
@@ -6038,7 +6092,7 @@ func cefingo_render_handler_get_screen_info(
 	} else {
 		Logf("T177.15: get_screen_info: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 	return cRet
 }
@@ -6063,9 +6117,9 @@ func cefingo_render_handler_on_popup_show(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpshow := (int)(show)
 
@@ -6074,7 +6128,7 @@ func cefingo_render_handler_on_popup_show(
 	} else {
 		Logf("T177.17: on_popup_show: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6098,9 +6152,9 @@ func cefingo_render_handler_on_popup_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmprect := (*CRectT)(rect)
 
@@ -6109,7 +6163,7 @@ func cefingo_render_handler_on_popup_size(
 	} else {
 		Logf("T177.19: on_popup_size: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6145,9 +6199,9 @@ func cefingo_render_handler_on_paint(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmptype := CPaintElementTypeT(ctype)
 		// !p.IsOutParam
@@ -6170,7 +6224,7 @@ func cefingo_render_handler_on_paint(
 	} else {
 		Logf("T177.21: on_paint: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6202,9 +6256,9 @@ func cefingo_render_handler_on_accelerated_paint(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmptype := CPaintElementTypeT(ctype)
 		// !p.IsOutParam
@@ -6219,7 +6273,7 @@ func cefingo_render_handler_on_accelerated_paint(
 	} else {
 		Logf("T177.23: on_accelerated_paint: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6256,11 +6310,11 @@ func cefingo_render_handler_start_dragging(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpdrag_data := newCDragDataT(drag_data, true)
+		goTmpdrag_data := newCDragDataT(drag_data, byApi, false)
 		// !p.IsOutParam
 		goTmpallowed_ops := CDragOperationsMaskT(allowed_ops)
 		// !p.IsOutParam
@@ -6276,8 +6330,8 @@ func cefingo_render_handler_start_dragging(
 	} else {
 		Logf("T177.25: start_dragging: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCDragDataT)(drag_data))
+	BaseRelease((*cCBrowserT)(browser))    // byApi
+	BaseRelease((*cCDragDataT)(drag_data)) // byApi
 
 	return cRet
 }
@@ -6303,9 +6357,9 @@ func cefingo_render_handler_update_drag_cursor(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpoperation := CDragOperationsMaskT(operation)
 
@@ -6314,7 +6368,7 @@ func cefingo_render_handler_update_drag_cursor(
 	} else {
 		Logf("T177.27: update_drag_cursor: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6338,9 +6392,9 @@ func cefingo_render_handler_on_scroll_offset_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpx := (float64)(x)
 		// !p.IsOutParam
@@ -6351,7 +6405,7 @@ func cefingo_render_handler_on_scroll_offset_changed(
 	} else {
 		Logf("T177.29: on_scroll_offset_changed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6378,9 +6432,9 @@ func cefingo_render_handler_on_ime_composition_range_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpselected_range := (*CRangeT)(selected_range)
 		// !p.IsOutParam
@@ -6393,7 +6447,7 @@ func cefingo_render_handler_on_ime_composition_range_changed(
 	} else {
 		Logf("T177.31: on_ime_composition_range_changed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6419,9 +6473,9 @@ func cefingo_render_handler_on_text_selection_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpselected_text := string_from_cef_string(selected_text)
 		// !p.IsOutParam
@@ -6432,7 +6486,7 @@ func cefingo_render_handler_on_text_selection_changed(
 	} else {
 		Logf("T177.33: on_text_selection_changed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6458,9 +6512,9 @@ func cefingo_render_handler_on_virtual_keyboard_requested(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderHandlerT(self, true)
+		goTmpself := newCRenderHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpinput_mode := CTextInputModeT(input_mode)
 
@@ -6469,7 +6523,7 @@ func cefingo_render_handler_on_virtual_keyboard_requested(
 	} else {
 		Logf("T177.35: on_virtual_keyboard_requested: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6490,7 +6544,7 @@ func cefingo_render_process_handler_on_web_kit_initialized(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 
 		f.OnWebKitInitialized(goTmpself)
 
@@ -6525,19 +6579,19 @@ func cefingo_render_process_handler_on_browser_created(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpextra_info := newCDictionaryValueT(extra_info, true)
+		goTmpextra_info := newCDictionaryValueT(extra_info, byApi, false)
 
 		f.OnBrowserCreated(goTmpself, goTmpbrowser, goTmpextra_info)
 
 	} else {
 		Logf("T178.9: on_browser_created: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCDictionaryValueT)(extra_info))
+	BaseRelease((*cCBrowserT)(browser))            // byApi
+	BaseRelease((*cCDictionaryValueT)(extra_info)) // byApi
 
 }
 
@@ -6559,16 +6613,16 @@ func cefingo_render_process_handler_on_browser_destroyed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnBrowserDestroyed(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T178.11: on_browser_destroyed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -6589,12 +6643,14 @@ func cefingo_render_process_handler_get_load_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 
 		goRet := f.GetLoadHandler(goTmpself)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_load_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_load_handler) // return GoObj
+			}
 			cRet = (*C.cef_load_handler_t)(goRet.pc_load_handler)
 		}
 	} else {
@@ -6629,22 +6685,22 @@ func cefingo_render_process_handler_on_context_created(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmpcontext := newCV8contextT(context, true)
+		goTmpcontext := newCV8contextT(context, byApi, false)
 
 		f.OnContextCreated(goTmpself, goTmpbrowser, goTmpframe, goTmpcontext)
 
 	} else {
 		Logf("T178.15: on_context_created: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCV8contextT)(context))
+	BaseRelease((*cCBrowserT)(browser))   // byApi
+	BaseRelease((*cCFrameT)(frame))       // byApi
+	BaseRelease((*cCV8contextT)(context)) // byApi
 
 }
 
@@ -6669,22 +6725,22 @@ func cefingo_render_process_handler_on_context_released(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmpcontext := newCV8contextT(context, true)
+		goTmpcontext := newCV8contextT(context, byApi, false)
 
 		f.OnContextReleased(goTmpself, goTmpbrowser, goTmpframe, goTmpcontext)
 
 	} else {
 		Logf("T178.17: on_context_released: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCV8contextT)(context))
+	BaseRelease((*cCBrowserT)(browser))   // byApi
+	BaseRelease((*cCFrameT)(frame))       // byApi
+	BaseRelease((*cCV8contextT)(context)) // byApi
 
 }
 
@@ -6712,28 +6768,28 @@ func cefingo_render_process_handler_on_uncaught_exception(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmpcontext := newCV8contextT(context, true)
+		goTmpcontext := newCV8contextT(context, byApi, false)
 		// !p.IsOutParam
-		goTmpexception := newCV8exceptionT(exception, true)
+		goTmpexception := newCV8exceptionT(exception, byApi, false)
 		// !p.IsOutParam
-		goTmpstackTrace := newCV8stackTraceT(stackTrace, true)
+		goTmpstackTrace := newCV8stackTraceT(stackTrace, byApi, false)
 
 		f.OnUncaughtException(goTmpself, goTmpbrowser, goTmpframe, goTmpcontext, goTmpexception, goTmpstackTrace)
 
 	} else {
 		Logf("T178.19: on_uncaught_exception: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCV8contextT)(context))
-	BaseRelease((*cCV8exceptionT)(exception))
-	BaseRelease((*cCV8stackTraceT)(stackTrace))
+	BaseRelease((*cCBrowserT)(browser))         // byApi
+	BaseRelease((*cCFrameT)(frame))             // byApi
+	BaseRelease((*cCV8contextT)(context))       // byApi
+	BaseRelease((*cCV8exceptionT)(exception))   // byApi
+	BaseRelease((*cCV8stackTraceT)(stackTrace)) // byApi
 
 }
 
@@ -6762,22 +6818,22 @@ func cefingo_render_process_handler_on_focused_node_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmpnode := newCDomnodeT(node, true)
+		goTmpnode := newCDomnodeT(node, byApi, false)
 
 		f.OnFocusedNodeChanged(goTmpself, goTmpbrowser, goTmpframe, goTmpnode)
 
 	} else {
 		Logf("T178.21: on_focused_node_changed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCDomnodeT)(node))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCDomnodeT)(node))    // byApi
 
 }
 
@@ -6804,15 +6860,15 @@ func cefingo_render_process_handler_on_process_message_received(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRenderProcessHandlerT(self, true)
+		goTmpself := newCRenderProcessHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmpsource_process := CProcessIdT(source_process)
 		// !p.IsOutParam
-		goTmpmessage := newCProcessMessageT(message, true)
+		goTmpmessage := newCProcessMessageT(message, byApi, false)
 
 		goRet := f.OnProcessMessageReceived(goTmpself, goTmpbrowser, goTmpframe, goTmpsource_process, goTmpmessage)
 
@@ -6822,9 +6878,9 @@ func cefingo_render_process_handler_on_process_message_received(
 	} else {
 		Logf("T178.23: on_process_message_received: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCProcessMessageT)(message))
+	BaseRelease((*cCBrowserT)(browser))        // byApi
+	BaseRelease((*cCFrameT)(frame))            // byApi
+	BaseRelease((*cCProcessMessageT)(message)) // byApi
 
 	return cRet
 }
@@ -6848,16 +6904,16 @@ func cefingo_request_context_handler_on_request_context_initialized(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestContextHandlerT(self, true)
+		goTmpself := newCRequestContextHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmprequest_context := newCRequestContextT(request_context, true)
+		goTmprequest_context := newCRequestContextT(request_context, byApi, false)
 
 		f.OnRequestContextInitialized(goTmpself, goTmprequest_context)
 
 	} else {
 		Logf("T185.7: on_request_context_initialized: Noo!")
 	}
-	BaseRelease((*cCRequestContextT)(request_context))
+	BaseRelease((*cCRequestContextT)(request_context)) // byApi
 
 }
 
@@ -6900,7 +6956,7 @@ func cefingo_request_context_handler_on_before_plugin_load(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestContextHandlerT(self, true)
+		goTmpself := newCRequestContextHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpmime_type := string_from_cef_string(mime_type)
 		// !p.IsOutParam
@@ -6910,7 +6966,7 @@ func cefingo_request_context_handler_on_before_plugin_load(
 		// !p.IsOutParam
 		goTmptop_origin_url := string_from_cef_string(top_origin_url)
 		// !p.IsOutParam
-		goTmpplugin_info := newCWebPluginInfoT(plugin_info, true)
+		goTmpplugin_info := newCWebPluginInfoT(plugin_info, byApi, false)
 
 		goRet, goTmpplugin_policyOut := f.OnBeforePluginLoad(goTmpself, goTmpmime_type, goTmpplugin_url, goTmpis_main_frame, goTmptop_origin_url, goTmpplugin_info)
 		*plugin_policy = (C.cef_plugin_policy_t)(goTmpplugin_policyOut)
@@ -6921,7 +6977,7 @@ func cefingo_request_context_handler_on_before_plugin_load(
 	} else {
 		Logf("T185.9: on_before_plugin_load: Noo!")
 	}
-	BaseRelease((*cCWebPluginInfoT)(plugin_info))
+	BaseRelease((*cCWebPluginInfoT)(plugin_info)) // byApi
 
 	return cRet
 }
@@ -6965,13 +7021,13 @@ func cefingo_request_context_handler_get_resource_request_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestContextHandlerT(self, true)
+		goTmpself := newCRequestContextHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
 		goTmpis_navigation := (int)(is_navigation)
 		// !p.IsOutParam
@@ -6986,15 +7042,17 @@ func cefingo_request_context_handler_get_resource_request_handler(
 		}
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_resource_request_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_resource_request_handler) // return GoObj
+			}
 			cRet = (*C.cef_resource_request_handler_t)(goRet.pc_resource_request_handler)
 		}
 	} else {
 		Logf("T185.11: get_resource_request_handler: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCRequestT)(request)) // byApi
 
 	return cRet
 }
@@ -7030,13 +7088,13 @@ func cefingo_request_handler_on_before_browse(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
 		goTmpuser_gesture := user_gesture != 0
 		// !p.IsOutParam
@@ -7050,9 +7108,9 @@ func cefingo_request_handler_on_before_browse(
 	} else {
 		Logf("T187.7: on_before_browse: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCRequestT)(request)) // byApi
 
 	return cRet
 }
@@ -7092,11 +7150,11 @@ func cefingo_request_handler_on_open_urlfrom_tab(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmptarget_url := string_from_cef_string(target_url)
 		// !p.IsOutParam
@@ -7112,8 +7170,8 @@ func cefingo_request_handler_on_open_urlfrom_tab(
 	} else {
 		Logf("T187.9: on_open_urlfrom_tab: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
 
 	return cRet
 }
@@ -7155,13 +7213,13 @@ func cefingo_request_handler_get_resource_request_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
 		goTmpis_navigation := (int)(is_navigation)
 		// !p.IsOutParam
@@ -7176,15 +7234,17 @@ func cefingo_request_handler_get_resource_request_handler(
 		}
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_resource_request_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_resource_request_handler) // return GoObj
+			}
 			cRet = (*C.cef_resource_request_handler_t)(goRet.pc_resource_request_handler)
 		}
 	} else {
 		Logf("T187.11: get_resource_request_handler: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCRequestT)(request)) // byApi
 
 	return cRet
 }
@@ -7223,9 +7283,9 @@ func cefingo_request_handler_get_auth_credentials(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmporigin_url := string_from_cef_string(origin_url)
 		// !p.IsOutParam
@@ -7239,7 +7299,7 @@ func cefingo_request_handler_get_auth_credentials(
 		// !p.IsOutParam
 		goTmpscheme := string_from_cef_string(scheme)
 		// !p.IsOutParam
-		goTmpcallback := newCAuthCallbackT(callback, true)
+		goTmpcallback := newCAuthCallbackT(callback, byApi, false)
 
 		goRet := f.GetAuthCredentials(goTmpself, goTmpbrowser, goTmporigin_url, goTmpisProxy, goTmphost, goTmpport, goTmprealm, goTmpscheme, goTmpcallback)
 
@@ -7249,8 +7309,8 @@ func cefingo_request_handler_get_auth_credentials(
 	} else {
 		Logf("T187.13: get_auth_credentials: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCAuthCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))       // byApi
+	BaseRelease((*cCAuthCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -7282,15 +7342,15 @@ func cefingo_request_handler_on_quota_request(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmporigin_url := string_from_cef_string(origin_url)
 		// !p.IsOutParam
 		goTmpnew_size := (int64)(new_size)
 		// !p.IsOutParam
-		goTmpcallback := newCRequestCallbackT(callback, true)
+		goTmpcallback := newCRequestCallbackT(callback, byApi, false)
 
 		goRet := f.OnQuotaRequest(goTmpself, goTmpbrowser, goTmporigin_url, goTmpnew_size, goTmpcallback)
 
@@ -7300,8 +7360,8 @@ func cefingo_request_handler_on_quota_request(
 	} else {
 		Logf("T187.15: on_quota_request: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCRequestCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))          // byApi
+	BaseRelease((*cCRequestCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -7333,17 +7393,17 @@ func cefingo_request_handler_on_certificate_error(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpcert_error := CErrorcodeT(cert_error)
 		// !p.IsOutParam
 		goTmprequest_url := string_from_cef_string(request_url)
 		// !p.IsOutParam
-		goTmpssl_info := newCSslinfoT(ssl_info, true)
+		goTmpssl_info := newCSslinfoT(ssl_info, byApi, false)
 		// !p.IsOutParam
-		goTmpcallback := newCRequestCallbackT(callback, true)
+		goTmpcallback := newCRequestCallbackT(callback, byApi, false)
 
 		goRet := f.OnCertificateError(goTmpself, goTmpbrowser, goTmpcert_error, goTmprequest_url, goTmpssl_info, goTmpcallback)
 
@@ -7353,9 +7413,9 @@ func cefingo_request_handler_on_certificate_error(
 	} else {
 		Logf("T187.17: on_certificate_error: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCSslinfoT)(ssl_info))
-	BaseRelease((*cCRequestCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))          // byApi
+	BaseRelease((*cCSslinfoT)(ssl_info))         // byApi
+	BaseRelease((*cCRequestCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -7394,9 +7454,9 @@ func cefingo_request_handler_on_select_client_certificate(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpisProxy := (int)(isProxy)
 		// !p.IsOutParam
@@ -7409,10 +7469,10 @@ func cefingo_request_handler_on_select_client_certificate(
 		slice := (*[1 << 30](*C.cef_x509certificate_t))(unsafe.Pointer(certificates))[:certificatesCount:certificatesCount]
 		goTmpcertificates := make([]*CX509certificateT, certificatesCount)
 		for i, v := range slice {
-			goTmpcertificates[i] = newCX509certificateT(v, true)
+			goTmpcertificates[i] = newCX509certificateT(v, byApi, false)
 		}
 		// !p.IsOutParam
-		goTmpcallback := newCSelectClientCertificateCallbackT(callback, true)
+		goTmpcallback := newCSelectClientCertificateCallbackT(callback, byApi, false)
 
 		goRet := f.OnSelectClientCertificate(goTmpself, goTmpbrowser, goTmpisProxy, goTmphost, goTmpport, goTmpcertificates, goTmpcallback)
 
@@ -7422,8 +7482,8 @@ func cefingo_request_handler_on_select_client_certificate(
 	} else {
 		Logf("T187.19: on_select_client_certificate: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCSelectClientCertificateCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))                          // byApi
+	BaseRelease((*cCSelectClientCertificateCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -7448,9 +7508,9 @@ func cefingo_request_handler_on_plugin_crashed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpplugin_path := string_from_cef_string(plugin_path)
 
@@ -7459,7 +7519,7 @@ func cefingo_request_handler_on_plugin_crashed(
 	} else {
 		Logf("T187.21: on_plugin_crashed: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -7483,16 +7543,16 @@ func cefingo_request_handler_on_render_view_ready(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnRenderViewReady(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T187.23: on_render_view_ready: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -7516,9 +7576,9 @@ func cefingo_request_handler_on_render_process_terminated(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
 		goTmpstatus := CTerminationStatusT(status)
 
@@ -7527,7 +7587,7 @@ func cefingo_request_handler_on_render_process_terminated(
 	} else {
 		Logf("T187.25: on_render_process_terminated: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -7550,16 +7610,16 @@ func cefingo_request_handler_on_document_available_in_main_frame(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRequestHandlerT(self, true)
+		goTmpself := newCRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 
 		f.OnDocumentAvailableInMainFrame(goTmpself, goTmpbrowser)
 
 	} else {
 		Logf("T187.27: on_document_available_in_main_frame: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
@@ -7585,7 +7645,7 @@ func cefingo_resource_bundle_handler_get_localized_string(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceBundleHandlerT(self, true)
+		goTmpself := newCResourceBundleHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpstring_id := (int)(string_id)
 
@@ -7627,7 +7687,7 @@ func cefingo_resource_bundle_handler_get_data_resource(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceBundleHandlerT(self, true)
+		goTmpself := newCResourceBundleHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpresource_id := (int)(resource_id)
 
@@ -7673,7 +7733,7 @@ func cefingo_resource_bundle_handler_get_data_resource_for_scale(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceBundleHandlerT(self, true)
+		goTmpself := newCResourceBundleHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpresource_id := (int)(resource_id)
 		// !p.IsOutParam
@@ -7722,11 +7782,11 @@ func cefingo_resource_handler_open(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceHandlerT(self, true)
+		goTmpself := newCResourceHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
-		goTmpcallback := newCCallbackT(callback, true)
+		goTmpcallback := newCCallbackT(callback, byApi, false)
 
 		goRet, goTmphandle_requestOut := f.Open(goTmpself, goTmprequest, goTmpcallback)
 		*handle_request = 0
@@ -7740,8 +7800,8 @@ func cefingo_resource_handler_open(
 	} else {
 		Logf("T191.7: open: Noo!")
 	}
-	BaseRelease((*cCRequestT)(request))
-	BaseRelease((*cCCallbackT)(callback))
+	BaseRelease((*cCRequestT)(request))   // byApi
+	BaseRelease((*cCCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -7771,11 +7831,11 @@ func cefingo_resource_handler_process_request(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceHandlerT(self, true)
+		goTmpself := newCResourceHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
-		goTmpcallback := newCCallbackT(callback, true)
+		goTmpcallback := newCCallbackT(callback, byApi, false)
 
 		goRet := f.ProcessRequest(goTmpself, goTmprequest, goTmpcallback)
 
@@ -7785,8 +7845,8 @@ func cefingo_resource_handler_process_request(
 	} else {
 		Logf("T191.9: process_request: Noo!")
 	}
-	BaseRelease((*cCRequestT)(request))
-	BaseRelease((*cCCallbackT)(callback))
+	BaseRelease((*cCRequestT)(request))   // byApi
+	BaseRelease((*cCCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -7823,9 +7883,9 @@ func cefingo_resource_handler_get_response_headers(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceHandlerT(self, true)
+		goTmpself := newCResourceHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpresponse := newCResponseT(response, true)
+		goTmpresponse := newCResponseT(response, byApi, false)
 
 		goTmpresponse_lengthOut, goTmpredirectUrlOut := f.GetResponseHeaders(goTmpself, goTmpresponse)
 		*response_length = (C.int64)(goTmpresponse_lengthOut)
@@ -7834,7 +7894,7 @@ func cefingo_resource_handler_get_response_headers(
 	} else {
 		Logf("T191.11: get_response_headers: Noo!")
 	}
-	BaseRelease((*cCResponseT)(response))
+	BaseRelease((*cCResponseT)(response)) // byApi
 
 }
 
@@ -7864,11 +7924,11 @@ func cefingo_resource_handler_skip(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceHandlerT(self, true)
+		goTmpself := newCResourceHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpbytes_to_skip := (int64)(bytes_to_skip)
 		// !p.IsOutParam
-		goTmpcallback := newCResourceSkipCallbackT(callback, true)
+		goTmpcallback := newCResourceSkipCallbackT(callback, byApi, false)
 
 		goRet, goTmpbytes_skippedOut := f.Skip(goTmpself, goTmpbytes_to_skip, goTmpcallback)
 		*bytes_skipped = (C.int64)(goTmpbytes_skippedOut)
@@ -7879,7 +7939,7 @@ func cefingo_resource_handler_skip(
 	} else {
 		Logf("T191.13: skip: Noo!")
 	}
-	BaseRelease((*cCResourceSkipCallbackT)(callback))
+	BaseRelease((*cCResourceSkipCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -7915,11 +7975,11 @@ func cefingo_resource_handler_read(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceHandlerT(self, true)
+		goTmpself := newCResourceHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpdata_out := (*[1 << 30]byte)(data_out)[:bytes_to_read:bytes_to_read]
 		// !p.IsOutParam
-		goTmpcallback := newCResourceReadCallbackT(callback, true)
+		goTmpcallback := newCResourceReadCallbackT(callback, byApi, false)
 
 		goRet, goTmpbytes_readOut := f.Read(goTmpself, goTmpdata_out, goTmpcallback)
 		*bytes_read = (C.int)(goTmpbytes_readOut)
@@ -7930,54 +7990,7 @@ func cefingo_resource_handler_read(
 	} else {
 		Logf("T191.15: read: Noo!")
 	}
-	BaseRelease((*cCResourceReadCallbackT)(callback))
-
-	return cRet
-}
-
-///
-// Read response data. If data is available immediately copy up to
-// |bytes_to_read| bytes into |data_out|, set |bytes_read| to the number of
-// bytes copied, and return true (1). To read the data at a later time set
-// |bytes_read| to 0, return true (1) and call cef_callback_t::cont() when the
-// data is available. To indicate response completion return false (0).
-//
-// WARNING: This function is deprecated. Use Skip and Read instead.
-///
-//export cefingo_resource_handler_read_response
-func cefingo_resource_handler_read_response(
-	self *C.cef_resource_handler_t,
-	data_out C.VOIDP,
-	bytes_to_read C.int,
-	bytes_read *C.int,
-	callback *C.cef_callback_t,
-) (cRet C.int) {
-	runtime.LockOSThread()
-	defer runtime.UnlockOSThread()
-
-	Tracef(unsafe.Pointer(self), "T191.16:")
-	cefingoIfaceAccess.Lock()
-	f := resource_handler_handlers.read_response_handler[(*cCResourceHandlerT)(self)]
-	cefingoIfaceAccess.Unlock()
-
-	if f != nil {
-		// !p.IsOutParam
-		goTmpself := newCResourceHandlerT(self, true)
-		// !p.IsOutParam
-		goTmpdata_out := (*[1 << 30]byte)(data_out)[:bytes_to_read:bytes_to_read]
-		// !p.IsOutParam
-		goTmpcallback := newCCallbackT(callback, true)
-
-		goRet, goTmpbytes_readOut := f.ReadResponse(goTmpself, goTmpdata_out, goTmpcallback)
-		*bytes_read = (C.int)(goTmpbytes_readOut)
-
-		if goRet {
-			cRet = 1
-		}
-	} else {
-		Logf("T191.17: read_response: Noo!")
-	}
-	BaseRelease((*cCCallbackT)(callback))
+	BaseRelease((*cCResourceReadCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -7992,19 +8005,19 @@ func cefingo_resource_handler_cancel(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T191.18:")
+	Tracef(unsafe.Pointer(self), "T191.16:")
 	cefingoIfaceAccess.Lock()
 	f := resource_handler_handlers.cancel_handler[(*cCResourceHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceHandlerT(self, true)
+		goTmpself := newCResourceHandlerT(self, byApi, false)
 
 		f.Cancel(goTmpself)
 
 	} else {
-		Logf("T191.19: cancel: Noo!")
+		Logf("T191.17: cancel: Noo!")
 	}
 
 }
@@ -8034,26 +8047,28 @@ func cefingo_resource_request_handler_get_cookie_access_filter(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceRequestHandlerT(self, true)
+		goTmpself := newCResourceRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 
 		goRet := f.GetCookieAccessFilter(goTmpself, goTmpbrowser, goTmpframe, goTmprequest)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_cookie_access_filter)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_cookie_access_filter) // return GoObj
+			}
 			cRet = (*C.cef_cookie_access_filter_t)(goRet.pc_cookie_access_filter)
 		}
 	} else {
 		Logf("T192.7: get_cookie_access_filter: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCRequestT)(request)) // byApi
 
 	return cRet
 }
@@ -8087,15 +8102,15 @@ func cefingo_resource_request_handler_on_before_resource_load(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceRequestHandlerT(self, true)
+		goTmpself := newCResourceRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
-		goTmpcallback := newCRequestCallbackT(callback, true)
+		goTmpcallback := newCRequestCallbackT(callback, byApi, false)
 
 		goRet := f.OnBeforeResourceLoad(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpcallback)
 
@@ -8103,10 +8118,10 @@ func cefingo_resource_request_handler_on_before_resource_load(
 	} else {
 		Logf("T192.9: on_before_resource_load: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
-	BaseRelease((*cCRequestCallbackT)(callback))
+	BaseRelease((*cCBrowserT)(browser))          // byApi
+	BaseRelease((*cCFrameT)(frame))              // byApi
+	BaseRelease((*cCRequestT)(request))          // byApi
+	BaseRelease((*cCRequestCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -8136,26 +8151,28 @@ func cefingo_resource_request_handler_get_resource_handler(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceRequestHandlerT(self, true)
+		goTmpself := newCResourceRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 
 		goRet := f.GetResourceHandler(goTmpself, goTmpbrowser, goTmpframe, goTmprequest)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_resource_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_resource_handler) // return GoObj
+			}
 			cRet = (*C.cef_resource_handler_t)(goRet.pc_resource_handler)
 		}
 	} else {
 		Logf("T192.11: get_resource_handler: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCRequestT)(request)) // byApi
 
 	return cRet
 }
@@ -8189,15 +8206,15 @@ func cefingo_resource_request_handler_on_resource_redirect(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceRequestHandlerT(self, true)
+		goTmpself := newCResourceRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
-		goTmpresponse := newCResponseT(response, true)
+		goTmpresponse := newCResponseT(response, byApi, false)
 
 		goTmpnew_urlOut := f.OnResourceRedirect(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpresponse)
 		set_cef_string(new_url, goTmpnew_urlOut)
@@ -8205,10 +8222,10 @@ func cefingo_resource_request_handler_on_resource_redirect(
 	} else {
 		Logf("T192.13: on_resource_redirect: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
-	BaseRelease((*cCResponseT)(response))
+	BaseRelease((*cCBrowserT)(browser))   // byApi
+	BaseRelease((*cCFrameT)(frame))       // byApi
+	BaseRelease((*cCRequestT)(request))   // byApi
+	BaseRelease((*cCResponseT)(response)) // byApi
 
 }
 
@@ -8243,15 +8260,15 @@ func cefingo_resource_request_handler_on_resource_response(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceRequestHandlerT(self, true)
+		goTmpself := newCResourceRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
-		goTmpresponse := newCResponseT(response, true)
+		goTmpresponse := newCResponseT(response, byApi, false)
 
 		goRet := f.OnResourceResponse(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpresponse)
 
@@ -8261,10 +8278,10 @@ func cefingo_resource_request_handler_on_resource_response(
 	} else {
 		Logf("T192.15: on_resource_response: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
-	BaseRelease((*cCResponseT)(response))
+	BaseRelease((*cCBrowserT)(browser))   // byApi
+	BaseRelease((*cCFrameT)(frame))       // byApi
+	BaseRelease((*cCRequestT)(request))   // byApi
+	BaseRelease((*cCResponseT)(response)) // byApi
 
 	return cRet
 }
@@ -8294,29 +8311,31 @@ func cefingo_resource_request_handler_get_resource_response_filter(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceRequestHandlerT(self, true)
+		goTmpself := newCResourceRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
-		goTmpresponse := newCResponseT(response, true)
+		goTmpresponse := newCResponseT(response, byApi, false)
 
 		goRet := f.GetResourceResponseFilter(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpresponse)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_response_filter)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_response_filter) // return GoObj
+			}
 			cRet = (*C.cef_response_filter_t)(goRet.pc_response_filter)
 		}
 	} else {
 		Logf("T192.17: get_resource_response_filter: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
-	BaseRelease((*cCResponseT)(response))
+	BaseRelease((*cCBrowserT)(browser))   // byApi
+	BaseRelease((*cCFrameT)(frame))       // byApi
+	BaseRelease((*cCRequestT)(request))   // byApi
+	BaseRelease((*cCResponseT)(response)) // byApi
 
 	return cRet
 }
@@ -8357,15 +8376,15 @@ func cefingo_resource_request_handler_on_resource_load_complete(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceRequestHandlerT(self, true)
+		goTmpself := newCResourceRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
-		goTmpresponse := newCResponseT(response, true)
+		goTmpresponse := newCResponseT(response, byApi, false)
 		// !p.IsOutParam
 		goTmpstatus := CUrlrequestStatusT(status)
 		// !p.IsOutParam
@@ -8376,10 +8395,10 @@ func cefingo_resource_request_handler_on_resource_load_complete(
 	} else {
 		Logf("T192.19: on_resource_load_complete: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
-	BaseRelease((*cCResponseT)(response))
+	BaseRelease((*cCBrowserT)(browser))   // byApi
+	BaseRelease((*cCFrameT)(frame))       // byApi
+	BaseRelease((*cCRequestT)(request))   // byApi
+	BaseRelease((*cCResponseT)(response)) // byApi
 
 }
 
@@ -8411,13 +8430,13 @@ func cefingo_resource_request_handler_on_protocol_execution(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResourceRequestHandlerT(self, true)
+		goTmpself := newCResourceRequestHandlerT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 
 		goTmpallow_os_executionOut := f.OnProtocolExecution(goTmpself, goTmpbrowser, goTmpframe, goTmprequest)
 		*allow_os_execution = (C.int)(goTmpallow_os_executionOut)
@@ -8425,9 +8444,9 @@ func cefingo_resource_request_handler_on_protocol_execution(
 	} else {
 		Logf("T192.21: on_protocol_execution: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCRequestT)(request)) // byApi
 
 }
 
@@ -8456,13 +8475,13 @@ func cefingo_cookie_access_filter_can_send_cookie(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCCookieAccessFilterT(self, true)
+		goTmpself := newCCookieAccessFilterT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
 		goTmpcookie := (*CCookieT)(cookie)
 
@@ -8474,9 +8493,9 @@ func cefingo_cookie_access_filter_can_send_cookie(
 	} else {
 		Logf("T193.7: can_send_cookie: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCRequestT)(request)) // byApi
 
 	return cRet
 }
@@ -8508,15 +8527,15 @@ func cefingo_cookie_access_filter_can_save_cookie(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCCookieAccessFilterT(self, true)
+		goTmpself := newCCookieAccessFilterT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 		// !p.IsOutParam
-		goTmpresponse := newCResponseT(response, true)
+		goTmpresponse := newCResponseT(response, byApi, false)
 		// !p.IsOutParam
 		goTmpcookie := (*CCookieT)(cookie)
 
@@ -8528,10 +8547,10 @@ func cefingo_cookie_access_filter_can_save_cookie(
 	} else {
 		Logf("T193.9: can_save_cookie: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
-	BaseRelease((*cCResponseT)(response))
+	BaseRelease((*cCBrowserT)(browser))   // byApi
+	BaseRelease((*cCFrameT)(frame))       // byApi
+	BaseRelease((*cCRequestT)(request))   // byApi
+	BaseRelease((*cCResponseT)(response)) // byApi
 
 	return cRet
 }
@@ -8554,7 +8573,7 @@ func cefingo_response_filter_init_filter(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResponseFilterT(self, true)
+		goTmpself := newCResponseFilterT(self, byApi, false)
 
 		goRet := f.InitFilter(goTmpself)
 
@@ -8619,7 +8638,7 @@ func cefingo_response_filter_filter(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCResponseFilterT(self, true)
+		goTmpself := newCResponseFilterT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpdata_in := (*[1 << 30]byte)(data_in)[:data_in_size:data_in_size]
 		// !p.IsOutParam
@@ -8663,28 +8682,30 @@ func cefingo_scheme_handler_factory_create(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCSchemeHandlerFactoryT(self, true)
+		goTmpself := newCSchemeHandlerFactoryT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpbrowser := newCBrowserT(browser, true)
+		goTmpbrowser := newCBrowserT(browser, byApi, false)
 		// !p.IsOutParam
-		goTmpframe := newCFrameT(frame, true)
+		goTmpframe := newCFrameT(frame, byApi, false)
 		// !p.IsOutParam
 		goTmpscheme_name := string_from_cef_string(scheme_name)
 		// !p.IsOutParam
-		goTmprequest := newCRequestT(request, true)
+		goTmprequest := newCRequestT(request, byApi, false)
 
 		goRet := f.Create(goTmpself, goTmpbrowser, goTmpframe, goTmpscheme_name, goTmprequest)
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_resource_handler)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_resource_handler) // return GoObj
+			}
 			cRet = (*C.cef_resource_handler_t)(goRet.pc_resource_handler)
 		}
 	} else {
 		Logf("T197.7: create: Noo!")
 	}
-	BaseRelease((*cCBrowserT)(browser))
-	BaseRelease((*cCFrameT)(frame))
-	BaseRelease((*cCRequestT)(request))
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+	BaseRelease((*cCRequestT)(request)) // byApi
 
 	return cRet
 }
@@ -8709,7 +8730,7 @@ func cefingo_read_handler_read(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCReadHandlerT(self, true)
+		goTmpself := newCReadHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpptr := (*[1 << 30]byte)(ptr)[: size*n : size*n]
 		// !p.IsOutParam
@@ -8747,7 +8768,7 @@ func cefingo_read_handler_seek(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCReadHandlerT(self, true)
+		goTmpself := newCReadHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpoffset := (int64)(offset)
 		// !p.IsOutParam
@@ -8782,7 +8803,7 @@ func cefingo_read_handler_tell(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCReadHandlerT(self, true)
+		goTmpself := newCReadHandlerT(self, byApi, false)
 
 		goRet := f.Tell(goTmpself)
 
@@ -8811,7 +8832,7 @@ func cefingo_read_handler_eof(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCReadHandlerT(self, true)
+		goTmpself := newCReadHandlerT(self, byApi, false)
 
 		goRet := f.Eof(goTmpself)
 
@@ -8844,7 +8865,7 @@ func cefingo_read_handler_may_block(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCReadHandlerT(self, true)
+		goTmpself := newCReadHandlerT(self, byApi, false)
 
 		goRet := f.MayBlock(goTmpself)
 
@@ -8878,7 +8899,7 @@ func cefingo_write_handler_write(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWriteHandlerT(self, true)
+		goTmpself := newCWriteHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpptr := (*[1 << 30]byte)(ptr)[: size*n : size*n]
 		// !p.IsOutParam
@@ -8916,7 +8937,7 @@ func cefingo_write_handler_seek(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWriteHandlerT(self, true)
+		goTmpself := newCWriteHandlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpoffset := (int64)(offset)
 		// !p.IsOutParam
@@ -8951,7 +8972,7 @@ func cefingo_write_handler_tell(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWriteHandlerT(self, true)
+		goTmpself := newCWriteHandlerT(self, byApi, false)
 
 		goRet := f.Tell(goTmpself)
 
@@ -8980,7 +9001,7 @@ func cefingo_write_handler_flush(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWriteHandlerT(self, true)
+		goTmpself := newCWriteHandlerT(self, byApi, false)
 
 		goRet := f.Flush(goTmpself)
 
@@ -9013,7 +9034,7 @@ func cefingo_write_handler_may_block(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWriteHandlerT(self, true)
+		goTmpself := newCWriteHandlerT(self, byApi, false)
 
 		goRet := f.MayBlock(goTmpself)
 
@@ -9045,7 +9066,7 @@ func cefingo_string_visitor_visit(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCStringVisitorT(self, true)
+		goTmpself := newCStringVisitorT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpstring := string_from_cef_string(cstring)
 
@@ -9074,7 +9095,7 @@ func cefingo_task_execute(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCTaskT(self, true)
+		goTmpself := newCTaskT(self, byApi, false)
 
 		f.Execute(goTmpself)
 
@@ -9105,9 +9126,9 @@ func cefingo_textfield_delegate_on_key_event(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCTextfieldDelegateT(self, true)
+		goTmpself := newCTextfieldDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmptextfield := newCTextfieldT(textfield, true)
+		goTmptextfield := newCTextfieldT(textfield, byApi, false)
 		// !p.IsOutParam
 		goTmpevent := (*CKeyEventT)(event)
 
@@ -9119,7 +9140,7 @@ func cefingo_textfield_delegate_on_key_event(
 	} else {
 		Logf("T209.7: on_key_event: Noo!")
 	}
-	BaseRelease((*cCTextfieldT)(textfield))
+	BaseRelease((*cCTextfieldT)(textfield)) // byApi
 
 	return cRet
 }
@@ -9142,16 +9163,16 @@ func cefingo_textfield_delegate_on_after_user_action(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCTextfieldDelegateT(self, true)
+		goTmpself := newCTextfieldDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmptextfield := newCTextfieldT(textfield, true)
+		goTmptextfield := newCTextfieldT(textfield, byApi, false)
 
 		f.OnAfterUserAction(goTmpself, goTmptextfield)
 
 	} else {
 		Logf("T209.9: on_after_user_action: Noo!")
 	}
-	BaseRelease((*cCTextfieldT)(textfield))
+	BaseRelease((*cCTextfieldT)(textfield)) // byApi
 
 }
 
@@ -9170,9 +9191,9 @@ func cefingo_textfield_delegate_get_preferred_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetPreferredSize(goTmpself, goTmpview)
 
@@ -9180,7 +9201,7 @@ func cefingo_textfield_delegate_get_preferred_size(
 	} else {
 		Logf("T209.11: get_preferred_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -9200,9 +9221,9 @@ func cefingo_textfield_delegate_get_minimum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMinimumSize(goTmpself, goTmpview)
 
@@ -9210,7 +9231,7 @@ func cefingo_textfield_delegate_get_minimum_size(
 	} else {
 		Logf("T209.13: get_minimum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -9230,9 +9251,9 @@ func cefingo_textfield_delegate_get_maximum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMaximumSize(goTmpself, goTmpview)
 
@@ -9240,7 +9261,7 @@ func cefingo_textfield_delegate_get_maximum_size(
 	} else {
 		Logf("T209.15: get_maximum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -9261,9 +9282,9 @@ func cefingo_textfield_delegate_get_height_for_width(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpwidth := (int)(width)
 
@@ -9275,7 +9296,7 @@ func cefingo_textfield_delegate_get_height_for_width(
 	} else {
 		Logf("T209.17: get_height_for_width: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -9297,21 +9318,21 @@ func cefingo_textfield_delegate_on_parent_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpparent := newCViewT(parent, true)
+		goTmpparent := newCViewT(parent, byApi, false)
 
 		f.OnParentViewChanged(goTmpself, goTmpview, goTmpadded, goTmpparent)
 
 	} else {
 		Logf("T209.19: on_parent_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(parent))
+	BaseRelease((*cCViewT)(view))   // byApi
+	BaseRelease((*cCViewT)(parent)) // byApi
 
 }
 
@@ -9332,21 +9353,21 @@ func cefingo_textfield_delegate_on_child_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpchild := newCViewT(child, true)
+		goTmpchild := newCViewT(child, byApi, false)
 
 		f.OnChildViewChanged(goTmpself, goTmpview, goTmpadded, goTmpchild)
 
 	} else {
 		Logf("T209.21: on_child_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(child))
+	BaseRelease((*cCViewT)(view))  // byApi
+	BaseRelease((*cCViewT)(child)) // byApi
 
 }
 
@@ -9366,9 +9387,9 @@ func cefingo_textfield_delegate_on_window_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 
@@ -9377,7 +9398,7 @@ func cefingo_textfield_delegate_on_window_changed(
 	} else {
 		Logf("T209.23: on_window_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -9396,16 +9417,16 @@ func cefingo_textfield_delegate_on_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnFocus(goTmpself, goTmpview)
 
 	} else {
 		Logf("T209.25: on_focus: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -9424,16 +9445,16 @@ func cefingo_textfield_delegate_on_blur(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnBlur(goTmpself, goTmpview)
 
 	} else {
 		Logf("T209.27: on_blur: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -9457,7 +9478,7 @@ func cefingo_end_tracing_callback_on_end_tracing_complete(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCEndTracingCallbackT(self, true)
+		goTmpself := newCEndTracingCallbackT(self, byApi, false)
 		// !p.IsOutParam
 		goTmptracing_file := string_from_cef_string(tracing_file)
 
@@ -9489,16 +9510,16 @@ func cefingo_urlrequest_client_on_request_complete(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCUrlrequestClientT(self, true)
+		goTmpself := newCUrlrequestClientT(self, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCUrlrequestT(request, true)
+		goTmprequest := newCUrlrequestT(request, byApi, false)
 
 		f.OnRequestComplete(goTmpself, goTmprequest)
 
 	} else {
 		Logf("T211.7: on_request_complete: Noo!")
 	}
-	BaseRelease((*cCUrlrequestT)(request))
+	BaseRelease((*cCUrlrequestT)(request)) // byApi
 
 }
 
@@ -9525,9 +9546,9 @@ func cefingo_urlrequest_client_on_upload_progress(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCUrlrequestClientT(self, true)
+		goTmpself := newCUrlrequestClientT(self, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCUrlrequestT(request, true)
+		goTmprequest := newCUrlrequestT(request, byApi, false)
 		// !p.IsOutParam
 		goTmpcurrent := (int64)(current)
 		// !p.IsOutParam
@@ -9538,7 +9559,7 @@ func cefingo_urlrequest_client_on_upload_progress(
 	} else {
 		Logf("T211.9: on_upload_progress: Noo!")
 	}
-	BaseRelease((*cCUrlrequestT)(request))
+	BaseRelease((*cCUrlrequestT)(request)) // byApi
 
 }
 
@@ -9564,9 +9585,9 @@ func cefingo_urlrequest_client_on_download_progress(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCUrlrequestClientT(self, true)
+		goTmpself := newCUrlrequestClientT(self, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCUrlrequestT(request, true)
+		goTmprequest := newCUrlrequestT(request, byApi, false)
 		// !p.IsOutParam
 		goTmpcurrent := (int64)(current)
 		// !p.IsOutParam
@@ -9577,7 +9598,7 @@ func cefingo_urlrequest_client_on_download_progress(
 	} else {
 		Logf("T211.11: on_download_progress: Noo!")
 	}
-	BaseRelease((*cCUrlrequestT)(request))
+	BaseRelease((*cCUrlrequestT)(request)) // byApi
 
 }
 
@@ -9603,9 +9624,9 @@ func cefingo_urlrequest_client_on_download_data(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCUrlrequestClientT(self, true)
+		goTmpself := newCUrlrequestClientT(self, byApi, false)
 		// !p.IsOutParam
-		goTmprequest := newCUrlrequestT(request, true)
+		goTmprequest := newCUrlrequestT(request, byApi, false)
 		// !p.IsOutParam
 		goTmpdata := (*[1 << 30]byte)(data)[:data_length:data_length]
 
@@ -9614,7 +9635,7 @@ func cefingo_urlrequest_client_on_download_data(
 	} else {
 		Logf("T211.13: on_download_data: Noo!")
 	}
-	BaseRelease((*cCUrlrequestT)(request))
+	BaseRelease((*cCUrlrequestT)(request)) // byApi
 
 }
 
@@ -9649,7 +9670,7 @@ func cefingo_urlrequest_client_get_auth_credentials(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCUrlrequestClientT(self, true)
+		goTmpself := newCUrlrequestClientT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpisProxy := (int)(isProxy)
 		// !p.IsOutParam
@@ -9661,7 +9682,7 @@ func cefingo_urlrequest_client_get_auth_credentials(
 		// !p.IsOutParam
 		goTmpscheme := string_from_cef_string(scheme)
 		// !p.IsOutParam
-		goTmpcallback := newCAuthCallbackT(callback, true)
+		goTmpcallback := newCAuthCallbackT(callback, byApi, false)
 
 		goRet := f.GetAuthCredentials(goTmpself, goTmpisProxy, goTmphost, goTmpport, goTmprealm, goTmpscheme, goTmpcallback)
 
@@ -9671,7 +9692,7 @@ func cefingo_urlrequest_client_get_auth_credentials(
 	} else {
 		Logf("T211.15: get_auth_credentials: Noo!")
 	}
-	BaseRelease((*cCAuthCallbackT)(callback))
+	BaseRelease((*cCAuthCallbackT)(callback)) // byApi
 
 	return cRet
 }
@@ -9703,23 +9724,25 @@ func cefingo_v8handler_execute(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCV8handlerT(self, true)
+		goTmpself := newCV8handlerT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpname := string_from_cef_string(name)
 		// !p.IsOutParam
-		goTmpobject := newCV8valueT(object, true)
+		goTmpobject := newCV8valueT(object, byApi, false)
 		// !p.IsOutParam
 		// !p.IsOutParam
 		// p.IsSliceParam
 		slice := (*[1 << 30](*C.cef_v8value_t))(unsafe.Pointer(arguments))[:argumentsCount:argumentsCount]
 		goTmparguments := make([]*CV8valueT, argumentsCount)
 		for i, v := range slice {
-			goTmparguments[i] = newCV8valueT(v, true)
+			goTmparguments[i] = newCV8valueT(v, byApi, false)
 		}
 
 		goRet, goTmpretvalOut, goTmpexceptionOut := f.Execute(goTmpself, goTmpname, goTmpobject, goTmparguments)
 		if goTmpretvalOut != nil {
-			BaseAddRef(goTmpretvalOut.pc_v8value) // Out Param
+			if goTmpretvalOut.beUnrefed != byCef {
+				BaseAddRef(goTmpretvalOut.pc_v8value) // Out Param
+			}
 			*retval = (*C.cef_v8value_t)(goTmpretvalOut.pc_v8value)
 		}
 		set_cef_string(exception, goTmpexceptionOut)
@@ -9730,7 +9753,7 @@ func cefingo_v8handler_execute(
 	} else {
 		Logf("T213.7: execute: Noo!")
 	}
-	BaseRelease((*cCV8valueT)(object))
+	BaseRelease((*cCV8valueT)(object)) // byApi
 
 	return cRet
 }
@@ -9760,15 +9783,17 @@ func cefingo_v8accessor_get(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCV8accessorT(self, true)
+		goTmpself := newCV8accessorT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpname := string_from_cef_string(name)
 		// !p.IsOutParam
-		goTmpobject := newCV8valueT(object, true)
+		goTmpobject := newCV8valueT(object, byApi, false)
 
 		goRet, goTmpretvalOut, goTmpexceptionOut := f.Get(goTmpself, goTmpname, goTmpobject)
 		if goTmpretvalOut != nil {
-			BaseAddRef(goTmpretvalOut.pc_v8value) // Out Param
+			if goTmpretvalOut.beUnrefed != byCef {
+				BaseAddRef(goTmpretvalOut.pc_v8value) // Out Param
+			}
 			*retval = (*C.cef_v8value_t)(goTmpretvalOut.pc_v8value)
 		}
 		set_cef_string(exception, goTmpexceptionOut)
@@ -9779,7 +9804,7 @@ func cefingo_v8accessor_get(
 	} else {
 		Logf("T214.7: get: Noo!")
 	}
-	BaseRelease((*cCV8valueT)(object))
+	BaseRelease((*cCV8valueT)(object)) // byApi
 
 	return cRet
 }
@@ -9809,13 +9834,13 @@ func cefingo_v8accessor_set(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCV8accessorT(self, true)
+		goTmpself := newCV8accessorT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpname := string_from_cef_string(name)
 		// !p.IsOutParam
-		goTmpobject := newCV8valueT(object, true)
+		goTmpobject := newCV8valueT(object, byApi, false)
 		// !p.IsOutParam
-		goTmpvalue := newCV8valueT(value, true)
+		goTmpvalue := newCV8valueT(value, byApi, false)
 
 		goRet, goTmpexceptionOut := f.Set(goTmpself, goTmpname, goTmpobject, goTmpvalue)
 		set_cef_string(exception, goTmpexceptionOut)
@@ -9826,8 +9851,8 @@ func cefingo_v8accessor_set(
 	} else {
 		Logf("T214.9: set: Noo!")
 	}
-	BaseRelease((*cCV8valueT)(object))
-	BaseRelease((*cCV8valueT)(value))
+	BaseRelease((*cCV8valueT)(object)) // byApi
+	BaseRelease((*cCV8valueT)(value))  // byApi
 
 	return cRet
 }
@@ -9852,7 +9877,7 @@ func cefingo_v8array_buffer_release_callback_release_buffer(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCV8arrayBufferReleaseCallbackT(self, true)
+		goTmpself := newCV8arrayBufferReleaseCallbackT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpbuffer := unsafe.Pointer(buffer)
 
@@ -9883,9 +9908,9 @@ func cefingo_view_delegate_get_preferred_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetPreferredSize(goTmpself, goTmpview)
 
@@ -9893,7 +9918,7 @@ func cefingo_view_delegate_get_preferred_size(
 	} else {
 		Logf("T226.7: get_preferred_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -9916,9 +9941,9 @@ func cefingo_view_delegate_get_minimum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMinimumSize(goTmpself, goTmpview)
 
@@ -9926,7 +9951,7 @@ func cefingo_view_delegate_get_minimum_size(
 	} else {
 		Logf("T226.9: get_minimum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -9949,9 +9974,9 @@ func cefingo_view_delegate_get_maximum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMaximumSize(goTmpself, goTmpview)
 
@@ -9959,7 +9984,7 @@ func cefingo_view_delegate_get_maximum_size(
 	} else {
 		Logf("T226.11: get_maximum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -9986,9 +10011,9 @@ func cefingo_view_delegate_get_height_for_width(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpwidth := (int)(width)
 
@@ -10000,7 +10025,7 @@ func cefingo_view_delegate_get_height_for_width(
 	} else {
 		Logf("T226.13: get_height_for_width: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -10029,21 +10054,21 @@ func cefingo_view_delegate_on_parent_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpparent := newCViewT(parent, true)
+		goTmpparent := newCViewT(parent, byApi, false)
 
 		f.OnParentViewChanged(goTmpself, goTmpview, goTmpadded, goTmpparent)
 
 	} else {
 		Logf("T226.15: on_parent_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(parent))
+	BaseRelease((*cCViewT)(view))   // byApi
+	BaseRelease((*cCViewT)(parent)) // byApi
 
 }
 
@@ -10072,21 +10097,21 @@ func cefingo_view_delegate_on_child_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpchild := newCViewT(child, true)
+		goTmpchild := newCViewT(child, byApi, false)
 
 		f.OnChildViewChanged(goTmpself, goTmpview, goTmpadded, goTmpchild)
 
 	} else {
 		Logf("T226.17: on_child_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(child))
+	BaseRelease((*cCViewT)(view))  // byApi
+	BaseRelease((*cCViewT)(child)) // byApi
 
 }
 
@@ -10109,9 +10134,9 @@ func cefingo_view_delegate_on_window_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 
@@ -10120,7 +10145,7 @@ func cefingo_view_delegate_on_window_changed(
 	} else {
 		Logf("T226.19: on_window_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -10142,16 +10167,16 @@ func cefingo_view_delegate_on_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnFocus(goTmpself, goTmpview)
 
 	} else {
 		Logf("T226.21: on_focus: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -10173,16 +10198,16 @@ func cefingo_view_delegate_on_blur(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnBlur(goTmpself, goTmpview)
 
 	} else {
 		Logf("T226.23: on_blur: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -10209,9 +10234,9 @@ func cefingo_web_plugin_info_visitor_visit(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWebPluginInfoVisitorT(self, true)
+		goTmpself := newCWebPluginInfoVisitorT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpinfo := newCWebPluginInfoT(info, true)
+		goTmpinfo := newCWebPluginInfoT(info, byApi, false)
 		// !p.IsOutParam
 		goTmpcount := (int)(count)
 		// !p.IsOutParam
@@ -10225,7 +10250,7 @@ func cefingo_web_plugin_info_visitor_visit(
 	} else {
 		Logf("T228.7: visit: Noo!")
 	}
-	BaseRelease((*cCWebPluginInfoT)(info))
+	BaseRelease((*cCWebPluginInfoT)(info)) // byApi
 
 	return cRet
 }
@@ -10251,7 +10276,7 @@ func cefingo_web_plugin_unstable_callback_is_unstable(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWebPluginUnstableCallbackT(self, true)
+		goTmpself := newCWebPluginUnstableCallbackT(self, byApi, false)
 		// !p.IsOutParam
 		goTmppath := string_from_cef_string(path)
 		// !p.IsOutParam
@@ -10287,7 +10312,7 @@ func cefingo_register_cdm_callback_on_cdm_registration_complete(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCRegisterCdmCallbackT(self, true)
+		goTmpself := newCRegisterCdmCallbackT(self, byApi, false)
 		// !p.IsOutParam
 		goTmpresult := CCdmRegistrationErrorT(result)
 		// !p.IsOutParam
@@ -10319,16 +10344,16 @@ func cefingo_window_delegate_on_window_created(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		f.OnWindowCreated(goTmpself, goTmpwindow)
 
 	} else {
 		Logf("T232.7: on_window_created: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 }
 
@@ -10352,16 +10377,16 @@ func cefingo_window_delegate_on_window_destroyed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		f.OnWindowDestroyed(goTmpself, goTmpwindow)
 
 	} else {
 		Logf("T232.9: on_window_destroyed: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 }
 
@@ -10390,9 +10415,9 @@ func cefingo_window_delegate_get_parent_window(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		goRet, goTmpis_menuOut, goTmpcan_activate_menuOut := f.GetParentWindow(goTmpself, goTmpwindow)
 		*is_menu = 0
@@ -10405,13 +10430,15 @@ func cefingo_window_delegate_get_parent_window(
 		}
 
 		if goRet != nil {
-			BaseAddRef(goRet.pc_window)
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_window) // return GoObj
+			}
 			cRet = (*C.cef_window_t)(goRet.pc_window)
 		}
 	} else {
 		Logf("T232.11: get_parent_window: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10439,9 +10466,9 @@ func cefingo_window_delegate_get_initial_bounds(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		goRet := f.GetInitialBounds(goTmpself, goTmpwindow)
 
@@ -10449,7 +10476,7 @@ func cefingo_window_delegate_get_initial_bounds(
 	} else {
 		Logf("T232.13: get_initial_bounds: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10474,9 +10501,9 @@ func cefingo_window_delegate_is_frameless(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		goRet := f.IsFrameless(goTmpself, goTmpwindow)
 
@@ -10486,7 +10513,7 @@ func cefingo_window_delegate_is_frameless(
 	} else {
 		Logf("T232.15: is_frameless: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10509,9 +10536,9 @@ func cefingo_window_delegate_can_resize(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		goRet := f.CanResize(goTmpself, goTmpwindow)
 
@@ -10521,7 +10548,7 @@ func cefingo_window_delegate_can_resize(
 	} else {
 		Logf("T232.17: can_resize: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10544,9 +10571,9 @@ func cefingo_window_delegate_can_maximize(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		goRet := f.CanMaximize(goTmpself, goTmpwindow)
 
@@ -10556,7 +10583,7 @@ func cefingo_window_delegate_can_maximize(
 	} else {
 		Logf("T232.19: can_maximize: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10579,9 +10606,9 @@ func cefingo_window_delegate_can_minimize(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		goRet := f.CanMinimize(goTmpself, goTmpwindow)
 
@@ -10591,7 +10618,7 @@ func cefingo_window_delegate_can_minimize(
 	} else {
 		Logf("T232.21: can_minimize: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10615,9 +10642,9 @@ func cefingo_window_delegate_can_close(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 
 		goRet := f.CanClose(goTmpself, goTmpwindow)
 
@@ -10627,7 +10654,7 @@ func cefingo_window_delegate_can_close(
 	} else {
 		Logf("T232.23: can_close: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10653,9 +10680,9 @@ func cefingo_window_delegate_on_accelerator(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 		// !p.IsOutParam
 		goTmpcommand_id := (int)(command_id)
 
@@ -10667,7 +10694,7 @@ func cefingo_window_delegate_on_accelerator(
 	} else {
 		Logf("T232.25: on_accelerator: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10693,9 +10720,9 @@ func cefingo_window_delegate_on_key_event(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCWindowDelegateT(self, true)
+		goTmpself := newCWindowDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpwindow := newCWindowT(window, true)
+		goTmpwindow := newCWindowT(window, byApi, false)
 		// !p.IsOutParam
 		goTmpevent := (*CKeyEventT)(event)
 
@@ -10707,7 +10734,7 @@ func cefingo_window_delegate_on_key_event(
 	} else {
 		Logf("T232.27: on_key_event: Noo!")
 	}
-	BaseRelease((*cCWindowT)(window))
+	BaseRelease((*cCWindowT)(window)) // byApi
 
 	return cRet
 }
@@ -10731,9 +10758,9 @@ func cefingo_window_delegate_get_preferred_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetPreferredSize(goTmpself, goTmpview)
 
@@ -10741,7 +10768,7 @@ func cefingo_window_delegate_get_preferred_size(
 	} else {
 		Logf("T232.29: get_preferred_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -10764,9 +10791,9 @@ func cefingo_window_delegate_get_minimum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMinimumSize(goTmpself, goTmpview)
 
@@ -10774,7 +10801,7 @@ func cefingo_window_delegate_get_minimum_size(
 	} else {
 		Logf("T232.31: get_minimum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -10797,9 +10824,9 @@ func cefingo_window_delegate_get_maximum_size(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		goRet := f.GetMaximumSize(goTmpself, goTmpview)
 
@@ -10807,7 +10834,7 @@ func cefingo_window_delegate_get_maximum_size(
 	} else {
 		Logf("T232.33: get_maximum_size: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -10834,9 +10861,9 @@ func cefingo_window_delegate_get_height_for_width(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpwidth := (int)(width)
 
@@ -10848,7 +10875,7 @@ func cefingo_window_delegate_get_height_for_width(
 	} else {
 		Logf("T232.35: get_height_for_width: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 	return cRet
 }
@@ -10877,21 +10904,21 @@ func cefingo_window_delegate_on_parent_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpparent := newCViewT(parent, true)
+		goTmpparent := newCViewT(parent, byApi, false)
 
 		f.OnParentViewChanged(goTmpself, goTmpview, goTmpadded, goTmpparent)
 
 	} else {
 		Logf("T232.37: on_parent_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(parent))
+	BaseRelease((*cCViewT)(view))   // byApi
+	BaseRelease((*cCViewT)(parent)) // byApi
 
 }
 
@@ -10920,21 +10947,21 @@ func cefingo_window_delegate_on_child_view_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 		// !p.IsOutParam
-		goTmpchild := newCViewT(child, true)
+		goTmpchild := newCViewT(child, byApi, false)
 
 		f.OnChildViewChanged(goTmpself, goTmpview, goTmpadded, goTmpchild)
 
 	} else {
 		Logf("T232.39: on_child_view_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
-	BaseRelease((*cCViewT)(child))
+	BaseRelease((*cCViewT)(view))  // byApi
+	BaseRelease((*cCViewT)(child)) // byApi
 
 }
 
@@ -10957,9 +10984,9 @@ func cefingo_window_delegate_on_window_changed(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 		// !p.IsOutParam
 		goTmpadded := (int)(added)
 
@@ -10968,7 +10995,7 @@ func cefingo_window_delegate_on_window_changed(
 	} else {
 		Logf("T232.41: on_window_changed: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -10990,16 +11017,16 @@ func cefingo_window_delegate_on_focus(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnFocus(goTmpself, goTmpview)
 
 	} else {
 		Logf("T232.43: on_focus: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }
 
@@ -11021,15 +11048,15 @@ func cefingo_window_delegate_on_blur(
 
 	if f != nil {
 		// !p.IsOutParam
-		goTmpself := newCViewDelegateT(self, true)
+		goTmpself := newCViewDelegateT(self, byApi, false)
 		// !p.IsOutParam
-		goTmpview := newCViewT(view, true)
+		goTmpview := newCViewT(view, byApi, false)
 
 		f.OnBlur(goTmpself, goTmpview)
 
 	} else {
 		Logf("T232.45: on_blur: Noo!")
 	}
-	BaseRelease((*cCViewT)(view))
+	BaseRelease((*cCViewT)(view)) // byApi
 
 }

@@ -37,7 +37,7 @@ Statemens to convert from C.param to Go type.
 	{%- if p.Type().Ty == parser.TyStringT -%}
 		{%= goTempName(p) %} := string_from_cef_string({%s goParamName(p) %})
 	{%- elseif p.Type().Pointer == 2 && p.Type().Deref().IsRefCountedClass() -%}
-		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type().Deref(), "*" + goParamName(p), true) %}
+		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type().Deref(), "*" + goParamName(p), "byApi", false) %}
 		cefp := {%s goTempName(p) %}.pc_{%s p.Type().BaseName() %}
 	{%- elseif p.IsBoolParam() -%}
 		{%= goTempName(p) %} := (*{%s p.Name() %}) != 0
@@ -55,13 +55,13 @@ Statemens to convert from C.param to Go type.
 		slice := (*[1 << 30]({%s p.Type().Deref().GoCType() %}))(unsafe.Pointer({%s p.Name() %}))[:{%s maxLenArg %}:{%s maxLenArg %}]
 		{%= goTempName(p) %} := make({%s p.GoType() %}, {%s maxLenArg %})
 		for i, v := range slice {
-			{%= goTempName(p) %}[i] = {%s ConvToGoTypeExp(p.Type().Deref(), "v", true) %}
+			{%= goTempName(p) %}[i] = {%s ConvToGoTypeExp(p.Type().Deref(), "v", "byApi", false) %}
 		}
 	{%- else -%}
 		{%- if p.IsBoolParam() -%}
 		{%= goTempName(p) %} := {%s= goParamName(p) %} != 0
 		{%- elseif !p.IsSliceLengthParam() -%}
-		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type(), goParamName(p), true) %}
+		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type(), goParamName(p), "byApi", false) %}
 		{%- endif -%}
 	{%- endif -%}
 {% endif -%}
@@ -74,7 +74,9 @@ Set returned Go value to C.param and cleanup
 		set_cef_string({%= goParamName(p) %}, {%= goTempNameOut(p) %})
 	{%- elseif p.Type().Deref().IsRefCountedClass() -%}
 		if {%s goTempNameOut(p) %} != nil {
-			BaseAddRef({%s goTempNameOut(p) %}.pc_{%s p.Type().BaseName() %}) // Out Param
+			if {%s goTempNameOut(p) %}.beUnrefed != byCef {
+				BaseAddRef({%s goTempNameOut(p) %}.pc_{%s p.Type().BaseName() %}) // Out Param
+			}
 			*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})({%s goTempNameOut(p) %}.pc_{%s p.Type().BaseName() %})
 		}
 	{%- elseif isSlice, sliceLen := p.IsByteSliceParam(); isSlice -%}
@@ -104,7 +106,9 @@ Set returned Go value to C.param and cleanup
 		*{%s p.Name() %} = {%s p.Type().Deref().GoCType() %}({%s goTempNameOut(p) %})
 	{%- elseif p.Type().Pointer == 2 -%}
 		if cefp != {%= goTempNameOut(p) %}.pc_{%s p.Type().BaseName() %} {
-			BaseAddRef({%= goTempNameOut(p) %}.pc_{%s p.Type().BaseName() %}) // InOut Param
+			if {%= goTempNameOut(p) %}.beUnrefed != byCef {
+				BaseAddRef({%= goTempNameOut(p) %}.pc_{%s p.Type().BaseName() %}) // InOut Param
+			}
 			*{%s goParamName(p) %} = ({%s p.Type().Deref().GoCType() %})({%= goTempNameOut(p) %}.pc_{%s p.Type().BaseName() %})
 		}
 	{%- else -%}
@@ -175,7 +179,9 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 		if goRet {cRet = 1}
 		{%- elseif m.ReturnType().IsRefCountedClass() %}
 		if goRet != nil {
-			BaseAddRef(goRet.pc_{%s m.ReturnType().BaseName() %})
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_{%s m.ReturnType().BaseName() %}) // return GoObj
+			}
 			cRet = ({%s retCtype %})(goRet.pc_{%s m.ReturnType().BaseName() %})
 		}
 		{%- elseif retCtype != "" %}
@@ -186,7 +192,7 @@ func cefingo_{%s baseName %}_{%s m.Funcname.Name() %}(
 	}
 	{%- for _, p := range m.Params() -%}
 		{%- if p.Name() != "self" && p.IsRefCountedClass() -%}
-			BaseRelease(({%s p.CgoType() %})({%s goParamName(p) %}))
+			BaseRelease(({%s p.CgoType() %})({%s goParamName(p) %})) // byApi
 		{%- endif -%}
 	{%- endfor %}
 	{% if retCtype !="" %}return cRet{% endif %}
@@ -206,7 +212,7 @@ func ({%s self %} {%s st.GoType() %}) Bind(a interface{}) {%s st.GoType() %} {
 	cp := {%s self %}.pc_{%s baseName %}
 	if oldGoObj, ok := {%s baseName %}_handlers.handler[cp]; ok {
 		if oldAcc, ok := oldGoObj.({%s st.GoName() %}Accessor); ok {
-			oldAcc.Set{%s st.GoName() %}(nil)
+			oldAcc.set{%s st.GoName() %}(nil)
 		}
 	}
 	{%s baseName %}_handlers.handler[cp] = a
@@ -221,7 +227,7 @@ func ({%s self %} {%s st.GoType() %}) Bind(a interface{}) {%s st.GoType() %} {
 	{%- endfor -%}
 	{%- endfor %}
 	if accessor, ok := a.({%s st.GoName() %}Accessor); ok {
-		accessor.Set{%s st.GoName() %}({%s self %})
+		accessor.set{%s st.GoName() %}({%s self %})
 		Logf("{%s lt.NextTag() %}:")
 	}
 
@@ -229,25 +235,31 @@ func ({%s self %} {%s st.GoType() %}) Bind(a interface{}) {%s st.GoType() %} {
 }
 
 func ({%s self %} {%s st.GoType() %}) UnbindAll() {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-	{%- code funcnum = 0 -%}
-	{%- for c := st; c != nil; c = c.GetBase() -%}
-	{%- for _, m := range c.Methods -%}
-	{%- if funcnum == 0 %}
-	cp := {%s self %}.pc_{%s baseName %}
-	if goHandler, ok := {%s baseName %}_handlers.handler[cp]; ok {
-		if accessor, ok1 := goHandler.({%s st.GoName() %}Accessor); ok1 {
-			accessor.Set{%s st.GoName() %}(nil)			
+	var hasAccessor bool
+	var accessor {%s st.GoName() %}Accessor
+	func () {
+		cefingoIfaceAccess.Lock()
+		defer cefingoIfaceAccess.Unlock()
+		{%- code funcnum = 0 -%}
+		{%- for c := st; c != nil; c = c.GetBase() -%}
+		{%- for _, m := range c.Methods -%}
+		{%- if funcnum == 0 %}
+		cp := {%s self %}.pc_{%s baseName %}
+		if goHandler, ok := {%s baseName %}_handlers.handler[cp]; ok {
+			accessor, hasAccessor = goHandler.({%s st.GoName() %}Accessor)
 		}
-	}
-	delete({%s baseName %}_handlers.handler, cp)
+		delete({%s baseName %}_handlers.handler, cp)
 
-	{%- endif -%}
-	{%- code funcnum += 1 -%}
-	delete({%s baseName %}_handlers.{%= memberName(m) %}, cp)
-	{%- endfor -%}
-	{%- endfor %}
+		{%- endif -%}
+		{%- code funcnum += 1 -%}
+		delete({%s baseName %}_handlers.{%= memberName(m) %}, cp)
+		{%- endfor -%}
+		{%- endfor -%}
+	}()
+
+	if (hasAccessor) {
+		accessor.set{%s st.GoName() %}(nil)			
+	}
 }
 
 func ({%s self %} {%s st.GoType() %}) Handler() interface{} {
@@ -341,7 +353,13 @@ func Alloc{%s st.GoName()%}() {%s st.GoType()%} {
 		{%- endfor -%}
 	}))
 
-	return new{%s st.GoName() %}(cefp, true)
+	BaseAddRef(cgop)
+	return new{%s st.GoName() %}(cefp, byApp, true)
+}
+
+// Bind{%s st.GoName()%} allocates {%s st.GoName() %}, construct and bind it
+func Bind{%s st.GoName()%}(a interface{}) {%s st.GoType()%} {
+	return Alloc{%s st.GoName()%}().Bind(a)
 }
 {% endfunc %}
 
@@ -497,12 +515,12 @@ tmp{%= cName(p) -%}
 	{%s goParamName(p) %} = make([]{%s p.Type().Deref().GoType() %}, *{%s argLen %})
 	_{%s cTempName(p) %} := (*[1 << 30]({%s p.Type().Deref().GoCType() %}))(unsafe.Pointer({%s cTempName(p) %}))[:*{%s argLen %}:*{%s argLen %}]
 	for i := C.size_t(0); i {%s= "<" %} *{%s argLen %}; i++ {
-		{%s goParamName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(_{%s cTempName(p) %}[i], false) // Out Slice Param
+		{%s goParamName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(_{%s cTempName(p) %}[i], byApp, true) // Out Slice Param
 	}
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
 	{%s goParamName(p) %} = string_from_cef_string({%s cTempName(p) %}.p_cef_string_t)
 	{%- elseif p.Type().Deref().IsRefCountedClass() -%}
-	{%s goParamName(p) %} = new{%s p.Type().Deref().Deref().GoType() %}({%s cTempName(p) %}, false) // Out Param
+	{%s goParamName(p) %} = new{%s p.Type().Deref().Deref().GoType() %}({%s cTempName(p) %}, byApp, true) // Out Param
 	{%- elseif p.Type().Ty == parser.TyTimeT %}
 	{%s goParamName(p) %} = time.Unix(int64({%= cTempName(p) %}), 0)
 	{%- else -%}
@@ -598,7 +616,7 @@ func  ({%s goParamName(m.Params()[0]) %} {%s m.Params()[0].GoType() %}) {%s m.Fu
 	}
 	ret = s
 	{%- else %}
-	ret = {%s ConvToGoTypeExp(m.ReturnType(), "cRet", false) %}
+	ret = {%s ConvToGoTypeExp(m.ReturnType(), "cRet", "byApp", true) %} // return GoObj
 	{%- endif -%}
 	{%- endif -%}
 	{%- if m.HasReturnValue() || m.HasOutParam() -%}{% code first := true -%}
@@ -648,8 +666,12 @@ extern {%s methodCSig(m) %};
 type {%s d.CgoName() %} C.{%s d.CefName() %}
 // Go type for {%s d.CefName() %}
 type {%s d.GoName() %} struct {
-	noCopy noCopy
+	noCopy     noCopy
 	pc_{%s d.BaseName() %} {%s d.CgoType() %}
+	{%- if d.St == parser.StRefCounted -%}
+	needsUnref bool
+	beUnrefed  unrefedBy
+	{%- endif -%}
 }
 
 type RefTo{%s d.GoName() %} struct {
@@ -658,39 +680,98 @@ type RefTo{%s d.GoName() %} struct {
 
 type {%s d.GoName() %}Accessor interface {
 	Get{%s d.GoName() %}() {%s d.GoType() %}
-	Set{%s d.GoName() %}({%s d.GoType() %}) (oldValue {%s d.GoType() %})
+	set{%s d.GoName() %}({%s d.GoType() %})
+	// TakeOver{%s d.GoName() %}({%s d.GoType() %})
+	// NewRef{%s d.GoName() %}({%s d.GoType() %})
 }
 
 func (r RefTo{%s d.GoName() %}) Get{%s d.GoName() %}() {%s d.GoType() %} {
 	return r.p_{%s d.BaseName() %}
 }
 
-func (r *RefTo{%s d.GoName() %}) Set{%s d.GoName() %}(p {%s d.GoType() %}) (prevValue {%s d.GoType() %}) {
-	prevValue = r.p_{%s d.BaseName() %}
+func (r *RefTo{%s d.GoName() %}) set{%s d.GoName() %}(p {%s d.GoType() %}) {
+	// prevValue = r.p_{%s d.BaseName() %}
+	{%- if d.St == parser.StRefCounted -%}
+	r.p_{%s d.BaseName() %}.ForceUnref()
+	{%- endif -%}
 	r.p_{%s d.BaseName() %} = p
-	return prevValue
+	// return prevValue
+}
+
+func (r *RefTo{%s d.GoName() %}) TakeOver{%s d.GoName() %}(src {%s d.GoType() %}) {
+	if r == nil {
+		return
+	}
+	{%- if d.St == parser.StRefCounted -%}
+	r.p_{%s d.BaseName() %}.ForceUnref()
+	gop := src.pc_{%s d.BaseName() %}
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+		src.needsUnref = false
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_{%s d.BaseName() %} = new{%s d.GoName() %}(({%s d.GoCType() %})(gop), byApp, true)
+	{%- else -%}
+	r.set{%s d.GoName() %}(src)
+	{%- endif -%}
+}
+
+func Pass{%s d.GoName() %}(p {%s d.GoType() %}) (ret {%s d.GoType() %}) {
+	{%- if d.St == parser.StRefCounted -%}
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(p.pc_{%s d.BaseName() %})
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+	p.needsUnref = false
+	ret = new{%s d.GoName() %}(({%s d.GoCType() %})(p.pc_{%s d.BaseName() %}), byCef, false)
+	{%- else -%}
+	ret = p
+	{%- endif %}
+	return ret
+}
+
+func (r *RefTo{%s d.GoName() %}) NewRef{%s d.GoName() %}(p {%s d.GoType() %}) {
+	if r == nil {
+		return
+	}
+	{%- if d.St == parser.StRefCounted -%}
+	r.p_{%s d.BaseName() %}.ForceUnref()
+	gop := p.pc_{%s d.BaseName() %}
+	BaseAddRef(gop)
+	r.p_{%s d.BaseName() %} = new{%s d.GoName() %}(({%s d.GoCType() %})(gop), byApp, true)
+	{%- else -%}
+	r.set{%s d.GoName() %}(p)
+	{%- endif -%}
 }
 
 // Go type {%s d.GoName() %} wraps cef type {%s d.GoCType() %}
-func new{%s d.GoName() %}(p {%s d.GoCType() %}{%- if d.St == parser.StRefCounted -%}, countUp bool{% endif %}) {%s d.GoType() %} {
+func new{%s d.GoName() %}(p {%s d.GoCType() %}{%- if d.St == parser.StRefCounted -%}, unrefedBy unrefedBy, needsUnref bool{% endif %}) {%s d.GoType() %} {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "{%s lt.NextTag() %}:")
 	pc := ({%s d.CgoType() %})(p)
 	{%- if d.St == parser.StRefCounted -%}
-	if countUp {
-		BaseAddRef(pc)
-	}
-	{%- endif -%}
-	go_{%s d.BaseName() %} := &{%s d.GoName() %}{noCopy{}, pc}
-	{%- if d.St == parser.StRefCounted -%}
+	go_{%s d.BaseName() %} := &{%s d.GoName() %}{noCopy{}, pc, needsUnref, unrefedBy}
+	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_{%s d.BaseName() %}, func(g {%s d.GoType() %}) {
-		if (g.pc_{%s d.BaseName() %} != nil) {
+		if (g.needsUnref && g.beUnrefed == byApp && g.pc_{%s d.BaseName() %} != nil) {
 			Tracef(unsafe.Pointer(g.pc_{%s d.BaseName() %}), "{%s lt.NextTag() %}:")
 			BaseRelease(g.pc_{%s d.BaseName() %})
 		}
 	})
+
+	{%- else -%}
+	go_{%s d.BaseName() %} := &{%s d.GoName() %}{noCopy{}, pc}
 	{%- endif -%}
 	return go_{%s d.BaseName() %}
 }
@@ -705,22 +786,24 @@ func (p {%s d.CgoType() %}) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 }
 
 func ({%s d.BaseName() %} {%s d.GoType() %}) ForceUnref() (ret bool) {
-	ret = BaseRelease({%s d.BaseName() %}.pc_{%s d.BaseName() %})
+	if {%s d.BaseName() %} == nil {
+		return
+	}
+	if {%s d.BaseName() %}.needsUnref && {%s d.BaseName() %}.beUnrefed == byApp {
+		ret = BaseRelease({%s d.BaseName() %}.pc_{%s d.BaseName() %})
+		{%s d.BaseName() %}.beUnrefed = unrefed
+		{%s d.BaseName() %}.needsUnref = false
+	}
 	{%s d.BaseName() %}.pc_{%s d.BaseName() %} = nil
 	return ret
 }
-
-func ({%s d.BaseName() %} {%s d.GoType() %}) release() (ret bool) {
-	ret = BaseRelease({%s d.BaseName() %}.pc_{%s d.BaseName() %})
-	return ret
-}
-
 {% endif -%}
 {% if p := d.GetBase(); p != nil %}
 // Convert to Base Class Pointer {%s p.GoType() %}
 func ({%s d.BaseName() %} {%s d.GoType() %}) To{%s p.GoName() %}() {%s p.GoType() %}{
 	p := ({%s p.GoCType() %})(unsafe.Pointer({%s d.BaseName() %}.pc_{%s d.BaseName() %}))
-	return new{%s p.GoName() %}(p, true)
+	BaseAddRef({%s d.BaseName() %}.pc_{%s d.BaseName() %})
+	return new{%s p.GoName() %}(p, byApp, true)
 }
 {% endif -%}
 {% endfunc %}

@@ -316,7 +316,7 @@ func genGoCallbackFunc(gf *Generator, st *parser.CefClassDecl) {
 	}
 }
 
-func ConvToGoTypeExp(t parser.Type, val string, countUp bool) (exp string) {
+func ConvToGoTypeExp(t parser.Type, val string, origin string, needsUnref bool) (exp string) {
 	switch t.Ty {
 	case parser.TyInt, parser.TyInt32, parser.TyInt64, parser.TyUint32, parser.TyUint64,
 		parser.TyFloat, parser.TyDouble,
@@ -325,10 +325,10 @@ func ConvToGoTypeExp(t parser.Type, val string, countUp bool) (exp string) {
 	case parser.TyStructRefCounted:
 		if t.Pointer == 1 {
 			exp = "new" + t.Deref().GoType() + "(" + val
-			if countUp {
-				exp += ", true)"
+			if needsUnref {
+				exp += ", " + origin + ", true)"
 			} else {
-				exp += ", false)"
+				exp += ", " + origin + ", false)"
 			}
 		} else {
 			log.Panicf("T448: %s: %v, %t, %v\n", val, t.Ty, t.IsRefCountedClass(), t.GoType())

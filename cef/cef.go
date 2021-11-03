@@ -25,9 +25,9 @@ func ExecuteProcess(mainArgs *capi.CMainArgsT, app *capi.CAppT) {
 	}
 }
 
-func Initialize(mainArgs *capi.CMainArgsT, settings *capi.CSettingsT, app *capi.CAppT) {
+func Initialize(mainArgs *capi.CMainArgsT, settings *capi.CSettingsT, app *capi.CAppT) bool {
 
-	capi.Initialize(mainArgs, settings, app, nil)
+	return capi.Initialize(mainArgs, settings, app, nil)
 }
 
 func PostElementGetBytes(e *capi.CPostDataElementT) (bytes []byte) {
