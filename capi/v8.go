@@ -39,7 +39,7 @@ func V8valueCreateStringFromByteArray(b []byte) (val *CV8valueT) {
 	cef_string := create_cef_string_from_byte_array(b)
 
 	v := C.cef_v8value_create_string(cef_string.p_cef_string_t)
-	return newCV8valueT(v, byApp, true)
+	return newCV8valueT(v, byApp)
 }
 
 // func (self *CV8valueT) GetFunctionName() (s string) {

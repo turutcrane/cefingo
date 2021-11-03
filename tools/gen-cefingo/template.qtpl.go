@@ -210,7 +210,7 @@ func streamconvToGoTypeStmts(qw422016 *qt422016.Writer, p parser.Param, lt *LogT
 //line template.qtpl:40
 			qw422016.N().S(` := `)
 //line template.qtpl:40
-			qw422016.E().S(ConvToGoTypeExp(p.Type().Deref(), "*"+goParamName(p), "byApi", false))
+			qw422016.E().S(ConvToGoTypeExp(p.Type().Deref(), "*"+goParamName(p), "byApi"))
 //line template.qtpl:40
 			qw422016.N().S(`
 		cefp := `)
@@ -327,7 +327,7 @@ func streamconvToGoTypeStmts(qw422016 *qt422016.Writer, p parser.Param, lt *LogT
 //line template.qtpl:58
 			qw422016.N().S(`[i] = `)
 //line template.qtpl:58
-			qw422016.E().S(ConvToGoTypeExp(p.Type().Deref(), "v", "byApi", false))
+			qw422016.E().S(ConvToGoTypeExp(p.Type().Deref(), "v", "byApi"))
 //line template.qtpl:58
 			qw422016.N().S(`
 		}
@@ -356,7 +356,7 @@ func streamconvToGoTypeStmts(qw422016 *qt422016.Writer, p parser.Param, lt *LogT
 //line template.qtpl:64
 				qw422016.N().S(` := `)
 //line template.qtpl:64
-				qw422016.E().S(ConvToGoTypeExp(p.Type(), goParamName(p), "byApi", false))
+				qw422016.E().S(ConvToGoTypeExp(p.Type(), goParamName(p), "byApi"))
 //line template.qtpl:64
 				qw422016.N().S(`
 `)
@@ -1780,7 +1780,7 @@ func Alloc`)
 //line template.qtpl:357
 	qw422016.E().S(st.GoName())
 //line template.qtpl:357
-	qw422016.N().S(`(cefp, byApp, true)
+	qw422016.N().S(`(cefp, byApp)
 }
 
 // Bind`)
@@ -2733,7 +2733,7 @@ func streampostConvFromC(qw422016 *qt422016.Writer, p parser.Param, lt *LogTag) 
 //line template.qtpl:518
 			qw422016.E().S(cTempName(p))
 //line template.qtpl:518
-			qw422016.N().S(`[i], byApp, true) // Out Slice Param
+			qw422016.N().S(`[i], byApp) // Out Slice Param
 	}
 `)
 //line template.qtpl:520
@@ -2764,7 +2764,7 @@ func streampostConvFromC(qw422016 *qt422016.Writer, p parser.Param, lt *LogTag) 
 //line template.qtpl:523
 			qw422016.E().S(cTempName(p))
 //line template.qtpl:523
-			qw422016.N().S(`, byApp, true) // Out Param
+			qw422016.N().S(`, byApp) // Out Param
 `)
 //line template.qtpl:524
 		} else if p.Type().Ty == parser.TyTimeT {
@@ -3207,7 +3207,7 @@ func streamgoReturnStmt(qw422016 *qt422016.Writer, m parser.Callable) {
 			qw422016.N().S(`
 	ret = `)
 //line template.qtpl:619
-			qw422016.E().S(ConvToGoTypeExp(m.ReturnType(), "cRet", "byApp", true))
+			qw422016.E().S(ConvToGoTypeExp(m.ReturnType(), "cRet", "byApp"))
 //line template.qtpl:619
 			qw422016.N().S(` // return GoObj
 `)
@@ -3534,7 +3534,7 @@ type `)
 	qw422016.E().S(d.GoName())
 //line template.qtpl:668
 	qw422016.N().S(` struct {
-	noCopy     noCopy
+	noCopy                 noCopy
 	pc_`)
 //line template.qtpl:670
 	qw422016.E().S(d.BaseName())
@@ -3548,166 +3548,164 @@ type `)
 //line template.qtpl:671
 	if d.St == parser.StRefCounted {
 //line template.qtpl:671
-		qw422016.N().S(`	needsUnref bool
-	beUnrefed  unrefedBy
+		qw422016.N().S(`	beUnrefed              unrefedBy
 `)
-//line template.qtpl:674
+//line template.qtpl:673
 	}
-//line template.qtpl:674
+//line template.qtpl:673
 	qw422016.N().S(`}
 
 type RefTo`)
-//line template.qtpl:677
+//line template.qtpl:676
 	qw422016.E().S(d.GoName())
-//line template.qtpl:677
+//line template.qtpl:676
 	qw422016.N().S(` struct {
 	p_`)
-//line template.qtpl:678
+//line template.qtpl:677
 	qw422016.E().S(d.BaseName())
-//line template.qtpl:678
+//line template.qtpl:677
 	qw422016.N().S(` `)
-//line template.qtpl:678
+//line template.qtpl:677
 	qw422016.E().S(d.GoType())
-//line template.qtpl:678
+//line template.qtpl:677
 	qw422016.N().S(`
 }
 
 type `)
-//line template.qtpl:681
+//line template.qtpl:680
 	qw422016.E().S(d.GoName())
-//line template.qtpl:681
+//line template.qtpl:680
 	qw422016.N().S(`Accessor interface {
 	Get`)
-//line template.qtpl:682
+//line template.qtpl:681
 	qw422016.E().S(d.GoName())
-//line template.qtpl:682
+//line template.qtpl:681
 	qw422016.N().S(`() `)
-//line template.qtpl:682
+//line template.qtpl:681
 	qw422016.E().S(d.GoType())
-//line template.qtpl:682
+//line template.qtpl:681
 	qw422016.N().S(`
 	set`)
-//line template.qtpl:683
+//line template.qtpl:682
 	qw422016.E().S(d.GoName())
-//line template.qtpl:683
+//line template.qtpl:682
 	qw422016.N().S(`(`)
-//line template.qtpl:683
+//line template.qtpl:682
 	qw422016.E().S(d.GoType())
-//line template.qtpl:683
+//line template.qtpl:682
 	qw422016.N().S(`)
 	// TakeOver`)
-//line template.qtpl:684
+//line template.qtpl:683
 	qw422016.E().S(d.GoName())
-//line template.qtpl:684
+//line template.qtpl:683
 	qw422016.N().S(`(`)
-//line template.qtpl:684
+//line template.qtpl:683
 	qw422016.E().S(d.GoType())
-//line template.qtpl:684
+//line template.qtpl:683
 	qw422016.N().S(`)
 	// NewRef`)
-//line template.qtpl:685
+//line template.qtpl:684
 	qw422016.E().S(d.GoName())
-//line template.qtpl:685
+//line template.qtpl:684
 	qw422016.N().S(`(`)
-//line template.qtpl:685
+//line template.qtpl:684
 	qw422016.E().S(d.GoType())
-//line template.qtpl:685
+//line template.qtpl:684
 	qw422016.N().S(`)
 }
 
 func (r RefTo`)
-//line template.qtpl:688
+//line template.qtpl:687
 	qw422016.E().S(d.GoName())
-//line template.qtpl:688
+//line template.qtpl:687
 	qw422016.N().S(`) Get`)
-//line template.qtpl:688
+//line template.qtpl:687
 	qw422016.E().S(d.GoName())
-//line template.qtpl:688
+//line template.qtpl:687
 	qw422016.N().S(`() `)
-//line template.qtpl:688
+//line template.qtpl:687
 	qw422016.E().S(d.GoType())
-//line template.qtpl:688
+//line template.qtpl:687
 	qw422016.N().S(` {
 	return r.p_`)
-//line template.qtpl:689
+//line template.qtpl:688
 	qw422016.E().S(d.BaseName())
-//line template.qtpl:689
+//line template.qtpl:688
 	qw422016.N().S(`
 }
 
 func (r *RefTo`)
-//line template.qtpl:692
+//line template.qtpl:691
 	qw422016.E().S(d.GoName())
-//line template.qtpl:692
+//line template.qtpl:691
 	qw422016.N().S(`) set`)
-//line template.qtpl:692
+//line template.qtpl:691
 	qw422016.E().S(d.GoName())
-//line template.qtpl:692
+//line template.qtpl:691
 	qw422016.N().S(`(p `)
-//line template.qtpl:692
+//line template.qtpl:691
 	qw422016.E().S(d.GoType())
-//line template.qtpl:692
+//line template.qtpl:691
 	qw422016.N().S(`) {
 	// prevValue = r.p_`)
-//line template.qtpl:693
+//line template.qtpl:692
 	qw422016.E().S(d.BaseName())
-//line template.qtpl:693
+//line template.qtpl:692
 	qw422016.N().S(`
 `)
-//line template.qtpl:694
+//line template.qtpl:693
 	if d.St == parser.StRefCounted {
-//line template.qtpl:694
+//line template.qtpl:693
 		qw422016.N().S(`	r.p_`)
-//line template.qtpl:695
+//line template.qtpl:694
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:695
+//line template.qtpl:694
 		qw422016.N().S(`.ForceUnref()
 `)
-//line template.qtpl:696
+//line template.qtpl:695
 	}
-//line template.qtpl:696
+//line template.qtpl:695
 	qw422016.N().S(`	r.p_`)
-//line template.qtpl:697
+//line template.qtpl:696
 	qw422016.E().S(d.BaseName())
-//line template.qtpl:697
+//line template.qtpl:696
 	qw422016.N().S(` = p
 	// return prevValue
 }
 
 func (r *RefTo`)
-//line template.qtpl:701
+//line template.qtpl:700
 	qw422016.E().S(d.GoName())
-//line template.qtpl:701
+//line template.qtpl:700
 	qw422016.N().S(`) TakeOver`)
-//line template.qtpl:701
+//line template.qtpl:700
 	qw422016.E().S(d.GoName())
-//line template.qtpl:701
+//line template.qtpl:700
 	qw422016.N().S(`(src `)
-//line template.qtpl:701
+//line template.qtpl:700
 	qw422016.E().S(d.GoType())
-//line template.qtpl:701
+//line template.qtpl:700
 	qw422016.N().S(`) {
 	if r == nil {
 		return
 	}
 `)
-//line template.qtpl:705
+//line template.qtpl:704
 	if d.St == parser.StRefCounted {
-//line template.qtpl:705
+//line template.qtpl:704
 		qw422016.N().S(`	r.p_`)
-//line template.qtpl:706
+//line template.qtpl:705
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:706
+//line template.qtpl:705
 		qw422016.N().S(`.ForceUnref()
 	gop := src.pc_`)
-//line template.qtpl:707
+//line template.qtpl:706
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:707
+//line template.qtpl:706
 		qw422016.N().S(`
 	switch src.beUnrefed {
 	case byApp:
 		src.beUnrefed = unrefed
-		src.needsUnref = false
 	case byApi:
 		BaseAddRef(gop)
 	default:
@@ -3715,430 +3713,463 @@ func (r *RefTo`)
 	}
 
 	r.p_`)
-//line template.qtpl:718
+//line template.qtpl:716
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:718
+//line template.qtpl:716
 		qw422016.N().S(` = new`)
-//line template.qtpl:718
+//line template.qtpl:716
 		qw422016.E().S(d.GoName())
-//line template.qtpl:718
+//line template.qtpl:716
 		qw422016.N().S(`((`)
-//line template.qtpl:718
+//line template.qtpl:716
 		qw422016.E().S(d.GoCType())
-//line template.qtpl:718
-		qw422016.N().S(`)(gop), byApp, true)
+//line template.qtpl:716
+		qw422016.N().S(`)(gop), byApp)
 `)
-//line template.qtpl:719
+//line template.qtpl:717
 	} else {
-//line template.qtpl:719
+//line template.qtpl:717
 		qw422016.N().S(`	r.set`)
-//line template.qtpl:720
+//line template.qtpl:718
 		qw422016.E().S(d.GoName())
-//line template.qtpl:720
+//line template.qtpl:718
 		qw422016.N().S(`(src)
 `)
-//line template.qtpl:721
+//line template.qtpl:719
 	}
-//line template.qtpl:721
+//line template.qtpl:719
 	qw422016.N().S(`}
 
 func Pass`)
-//line template.qtpl:724
+//line template.qtpl:722
 	qw422016.E().S(d.GoName())
-//line template.qtpl:724
+//line template.qtpl:722
 	qw422016.N().S(`(p `)
-//line template.qtpl:724
+//line template.qtpl:722
 	qw422016.E().S(d.GoType())
-//line template.qtpl:724
+//line template.qtpl:722
 	qw422016.N().S(`) (ret `)
-//line template.qtpl:724
+//line template.qtpl:722
 	qw422016.E().S(d.GoType())
-//line template.qtpl:724
+//line template.qtpl:722
 	qw422016.N().S(`) {
 `)
-//line template.qtpl:725
+//line template.qtpl:723
 	if d.St == parser.StRefCounted {
-//line template.qtpl:725
+//line template.qtpl:723
 		qw422016.N().S(`	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
 	case byApi:
 		BaseAddRef(p.pc_`)
-//line template.qtpl:730
+//line template.qtpl:728
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:730
+//line template.qtpl:728
 		qw422016.N().S(`)
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	p.needsUnref = false
 	ret = new`)
-//line template.qtpl:735
+//line template.qtpl:732
 		qw422016.E().S(d.GoName())
-//line template.qtpl:735
+//line template.qtpl:732
 		qw422016.N().S(`((`)
-//line template.qtpl:735
+//line template.qtpl:732
 		qw422016.E().S(d.GoCType())
-//line template.qtpl:735
+//line template.qtpl:732
 		qw422016.N().S(`)(p.pc_`)
-//line template.qtpl:735
+//line template.qtpl:732
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:735
-		qw422016.N().S(`), byCef, false)
+//line template.qtpl:732
+		qw422016.N().S(`), byCef)
 `)
-//line template.qtpl:736
+//line template.qtpl:733
 	} else {
-//line template.qtpl:736
+//line template.qtpl:733
 		qw422016.N().S(`	ret = p
 `)
-//line template.qtpl:738
+//line template.qtpl:735
 	}
-//line template.qtpl:738
+//line template.qtpl:735
 	qw422016.N().S(`
 	return ret
 }
 
 func (r *RefTo`)
-//line template.qtpl:742
+//line template.qtpl:739
 	qw422016.E().S(d.GoName())
-//line template.qtpl:742
+//line template.qtpl:739
 	qw422016.N().S(`) NewRef`)
-//line template.qtpl:742
+//line template.qtpl:739
 	qw422016.E().S(d.GoName())
-//line template.qtpl:742
+//line template.qtpl:739
 	qw422016.N().S(`(p `)
-//line template.qtpl:742
+//line template.qtpl:739
 	qw422016.E().S(d.GoType())
-//line template.qtpl:742
+//line template.qtpl:739
 	qw422016.N().S(`) {
 	if r == nil {
 		return
 	}
 `)
-//line template.qtpl:746
+//line template.qtpl:743
 	if d.St == parser.StRefCounted {
-//line template.qtpl:746
+//line template.qtpl:743
 		qw422016.N().S(`	r.p_`)
-//line template.qtpl:747
+//line template.qtpl:744
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:747
+//line template.qtpl:744
 		qw422016.N().S(`.ForceUnref()
 	gop := p.pc_`)
-//line template.qtpl:748
+//line template.qtpl:745
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:748
+//line template.qtpl:745
 		qw422016.N().S(`
 	BaseAddRef(gop)
 	r.p_`)
-//line template.qtpl:750
+//line template.qtpl:747
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:750
+//line template.qtpl:747
 		qw422016.N().S(` = new`)
-//line template.qtpl:750
+//line template.qtpl:747
 		qw422016.E().S(d.GoName())
-//line template.qtpl:750
+//line template.qtpl:747
 		qw422016.N().S(`((`)
-//line template.qtpl:750
+//line template.qtpl:747
 		qw422016.E().S(d.GoCType())
-//line template.qtpl:750
-		qw422016.N().S(`)(gop), byApp, true)
+//line template.qtpl:747
+		qw422016.N().S(`)(gop), byApp)
 `)
-//line template.qtpl:751
+//line template.qtpl:748
 	} else {
-//line template.qtpl:751
+//line template.qtpl:748
 		qw422016.N().S(`	r.set`)
-//line template.qtpl:752
+//line template.qtpl:749
 		qw422016.E().S(d.GoName())
-//line template.qtpl:752
+//line template.qtpl:749
 		qw422016.N().S(`(p)
 `)
-//line template.qtpl:753
+//line template.qtpl:750
 	}
-//line template.qtpl:753
+//line template.qtpl:750
 	qw422016.N().S(`}
 
 // Go type `)
-//line template.qtpl:756
+//line template.qtpl:753
 	qw422016.E().S(d.GoName())
-//line template.qtpl:756
+//line template.qtpl:753
 	qw422016.N().S(` wraps cef type `)
-//line template.qtpl:756
+//line template.qtpl:753
 	qw422016.E().S(d.GoCType())
-//line template.qtpl:756
+//line template.qtpl:753
 	qw422016.N().S(`
 func new`)
-//line template.qtpl:757
+//line template.qtpl:754
 	qw422016.E().S(d.GoName())
-//line template.qtpl:757
+//line template.qtpl:754
 	qw422016.N().S(`(p `)
-//line template.qtpl:757
+//line template.qtpl:754
 	qw422016.E().S(d.GoCType())
-//line template.qtpl:757
+//line template.qtpl:754
 	if d.St == parser.StRefCounted {
-//line template.qtpl:757
-		qw422016.N().S(`, unrefedBy unrefedBy, needsUnref bool`)
-//line template.qtpl:757
+//line template.qtpl:754
+		qw422016.N().S(`, unrefedBy unrefedBy`)
+//line template.qtpl:754
 	}
-//line template.qtpl:757
+//line template.qtpl:754
 	qw422016.N().S(`) `)
-//line template.qtpl:757
+//line template.qtpl:754
 	qw422016.E().S(d.GoType())
-//line template.qtpl:757
+//line template.qtpl:754
 	qw422016.N().S(` {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "`)
-//line template.qtpl:761
+//line template.qtpl:758
 	qw422016.E().S(lt.NextTag())
-//line template.qtpl:761
+//line template.qtpl:758
 	qw422016.N().S(`:")
 	pc := (`)
-//line template.qtpl:762
+//line template.qtpl:759
 	qw422016.E().S(d.CgoType())
-//line template.qtpl:762
+//line template.qtpl:759
 	qw422016.N().S(`)(p)
 `)
-//line template.qtpl:763
+//line template.qtpl:760
 	if d.St == parser.StRefCounted {
-//line template.qtpl:763
+//line template.qtpl:760
 		qw422016.N().S(`	go_`)
-//line template.qtpl:764
+//line template.qtpl:761
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:764
+//line template.qtpl:761
 		qw422016.N().S(` := &`)
-//line template.qtpl:764
+//line template.qtpl:761
 		qw422016.E().S(d.GoName())
-//line template.qtpl:764
-		qw422016.N().S(`{noCopy{}, pc, needsUnref, unrefedBy}
+//line template.qtpl:761
+		qw422016.N().S(`{noCopy{}, pc, unrefedBy}
 	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_`)
-//line template.qtpl:766
+//line template.qtpl:763
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:766
+//line template.qtpl:763
 		qw422016.N().S(`, func(g `)
-//line template.qtpl:766
+//line template.qtpl:763
 		qw422016.E().S(d.GoType())
-//line template.qtpl:766
+//line template.qtpl:763
 		qw422016.N().S(`) {
-		if (g.needsUnref && g.beUnrefed == byApp && g.pc_`)
-//line template.qtpl:767
+		if (g.beUnrefed == byApp && g.pc_`)
+//line template.qtpl:764
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:767
+//line template.qtpl:764
 		qw422016.N().S(` != nil) {
 			Tracef(unsafe.Pointer(g.pc_`)
-//line template.qtpl:768
+//line template.qtpl:765
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:768
+//line template.qtpl:765
 		qw422016.N().S(`), "`)
-//line template.qtpl:768
+//line template.qtpl:765
 		qw422016.E().S(lt.NextTag())
-//line template.qtpl:768
+//line template.qtpl:765
 		qw422016.N().S(`:")
 			BaseRelease(g.pc_`)
-//line template.qtpl:769
+//line template.qtpl:766
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:769
+//line template.qtpl:766
 		qw422016.N().S(`)
 		}
 	})
 
 `)
-//line template.qtpl:773
+//line template.qtpl:770
 	} else {
-//line template.qtpl:773
+//line template.qtpl:770
 		qw422016.N().S(`	go_`)
-//line template.qtpl:774
+//line template.qtpl:771
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:774
+//line template.qtpl:771
 		qw422016.N().S(` := &`)
-//line template.qtpl:774
+//line template.qtpl:771
 		qw422016.E().S(d.GoName())
-//line template.qtpl:774
+//line template.qtpl:771
 		qw422016.N().S(`{noCopy{}, pc}
 `)
-//line template.qtpl:775
+//line template.qtpl:772
 	}
-//line template.qtpl:775
+//line template.qtpl:772
 	qw422016.N().S(`	return go_`)
-//line template.qtpl:776
+//line template.qtpl:773
 	qw422016.E().S(d.BaseName())
-//line template.qtpl:776
+//line template.qtpl:773
 	qw422016.N().S(`
 }
 `)
-//line template.qtpl:778
+//line template.qtpl:775
 	if d.St == parser.StRefCounted {
-//line template.qtpl:778
+//line template.qtpl:775
 		qw422016.N().S(`// `)
-//line template.qtpl:779
+//line template.qtpl:776
 		qw422016.E().S(d.GoCType())
-//line template.qtpl:779
+//line template.qtpl:776
 		qw422016.N().S(` has refCounted interface
 func (`)
-//line template.qtpl:780
+//line template.qtpl:777
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:780
+//line template.qtpl:777
 		qw422016.N().S(` `)
-//line template.qtpl:780
+//line template.qtpl:777
 		qw422016.E().S(d.GoType())
-//line template.qtpl:780
+//line template.qtpl:777
 		qw422016.N().S(`) HasOneRef() bool {
 	return BaseHasOneRef(`)
-//line template.qtpl:781
+//line template.qtpl:778
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:781
+//line template.qtpl:778
 		qw422016.N().S(`.pc_`)
-//line template.qtpl:781
+//line template.qtpl:778
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:781
+//line template.qtpl:778
 		qw422016.N().S(`)
 }
 
 func (p `)
-//line template.qtpl:784
+//line template.qtpl:781
 		qw422016.E().S(d.CgoType())
-//line template.qtpl:784
+//line template.qtpl:781
 		qw422016.N().S(`) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
 func (`)
-//line template.qtpl:788
+//line template.qtpl:785
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:788
+//line template.qtpl:785
 		qw422016.N().S(` `)
-//line template.qtpl:788
+//line template.qtpl:785
 		qw422016.E().S(d.GoType())
-//line template.qtpl:788
+//line template.qtpl:785
 		qw422016.N().S(`) ForceUnref() (ret bool) {
 	if `)
-//line template.qtpl:789
+//line template.qtpl:786
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:789
+//line template.qtpl:786
 		qw422016.N().S(` == nil {
 		return
 	}
 	if `)
-//line template.qtpl:792
+//line template.qtpl:789
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:792
-		qw422016.N().S(`.needsUnref && `)
-//line template.qtpl:792
-		qw422016.E().S(d.BaseName())
-//line template.qtpl:792
+//line template.qtpl:789
 		qw422016.N().S(`.beUnrefed == byApp {
 		ret = BaseRelease(`)
-//line template.qtpl:793
+//line template.qtpl:790
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:793
+//line template.qtpl:790
 		qw422016.N().S(`.pc_`)
-//line template.qtpl:793
+//line template.qtpl:790
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:793
+//line template.qtpl:790
 		qw422016.N().S(`)
 		`)
-//line template.qtpl:794
+//line template.qtpl:791
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:794
+//line template.qtpl:791
 		qw422016.N().S(`.beUnrefed = unrefed
-		`)
-//line template.qtpl:795
-		qw422016.E().S(d.BaseName())
-//line template.qtpl:795
-		qw422016.N().S(`.needsUnref = false
 	}
 	`)
-//line template.qtpl:797
+//line template.qtpl:793
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:797
+//line template.qtpl:793
 		qw422016.N().S(`.pc_`)
-//line template.qtpl:797
+//line template.qtpl:793
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:797
+//line template.qtpl:793
 		qw422016.N().S(` = nil
 	return ret
 }
 `)
-//line template.qtpl:800
+//line template.qtpl:796
 	}
-//line template.qtpl:801
+//line template.qtpl:797
 	if p := d.GetBase(); p != nil {
-//line template.qtpl:801
+//line template.qtpl:797
 		qw422016.N().S(`
 // Convert to Base Class Pointer `)
-//line template.qtpl:802
+//line template.qtpl:798
 		qw422016.E().S(p.GoType())
-//line template.qtpl:802
+//line template.qtpl:798
 		qw422016.N().S(`
 func (`)
-//line template.qtpl:803
+//line template.qtpl:799
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:803
+//line template.qtpl:799
 		qw422016.N().S(` `)
-//line template.qtpl:803
+//line template.qtpl:799
 		qw422016.E().S(d.GoType())
-//line template.qtpl:803
+//line template.qtpl:799
 		qw422016.N().S(`) To`)
-//line template.qtpl:803
+//line template.qtpl:799
 		qw422016.E().S(p.GoName())
-//line template.qtpl:803
+//line template.qtpl:799
 		qw422016.N().S(`() `)
-//line template.qtpl:803
+//line template.qtpl:799
 		qw422016.E().S(p.GoType())
-//line template.qtpl:803
+//line template.qtpl:799
 		qw422016.N().S(`{
 	p := (`)
-//line template.qtpl:804
+//line template.qtpl:800
 		qw422016.E().S(p.GoCType())
-//line template.qtpl:804
+//line template.qtpl:800
 		qw422016.N().S(`)(unsafe.Pointer(`)
-//line template.qtpl:804
+//line template.qtpl:800
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:804
+//line template.qtpl:800
 		qw422016.N().S(`.pc_`)
-//line template.qtpl:804
+//line template.qtpl:800
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:804
+//line template.qtpl:800
 		qw422016.N().S(`))
 	BaseAddRef(`)
-//line template.qtpl:805
+//line template.qtpl:801
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:805
+//line template.qtpl:801
 		qw422016.N().S(`.pc_`)
-//line template.qtpl:805
+//line template.qtpl:801
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:805
+//line template.qtpl:801
 		qw422016.N().S(`)
 	return new`)
-//line template.qtpl:806
+//line template.qtpl:802
 		qw422016.E().S(p.GoName())
-//line template.qtpl:806
-		qw422016.N().S(`(p, byApp, true)
+//line template.qtpl:802
+		qw422016.N().S(`(p, byApp)
 }
 `)
+//line template.qtpl:804
+	}
+//line template.qtpl:805
+}
+
+//line template.qtpl:805
+func WriteGoType(qq422016 qtio422016.Writer, d *parser.CefClassDecl, lt *LogTag) {
+//line template.qtpl:805
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line template.qtpl:805
+	StreamGoType(qw422016, d, lt)
+//line template.qtpl:805
+	qt422016.ReleaseWriter(qw422016)
+//line template.qtpl:805
+}
+
+//line template.qtpl:805
+func GoType(d *parser.CefClassDecl, lt *LogTag) string {
+//line template.qtpl:805
+	qb422016 := qt422016.AcquireByteBuffer()
+//line template.qtpl:805
+	WriteGoType(qb422016, d, lt)
+//line template.qtpl:805
+	qs422016 := string(qb422016.B)
+//line template.qtpl:805
+	qt422016.ReleaseByteBuffer(qb422016)
+//line template.qtpl:805
+	return qs422016
+//line template.qtpl:805
+}
+
+//line template.qtpl:807
+func streamcField(qw422016 *qt422016.Writer, f string) {
+//line template.qtpl:808
+	if f == "type" || f == "range" {
+//line template.qtpl:808
+		qw422016.N().S(`_`)
+//line template.qtpl:808
+		qw422016.E().S(f)
+//line template.qtpl:808
+	} else {
+//line template.qtpl:808
+		qw422016.E().S(f)
 //line template.qtpl:808
 	}
 //line template.qtpl:809
 }
 
 //line template.qtpl:809
-func WriteGoType(qq422016 qtio422016.Writer, d *parser.CefClassDecl, lt *LogTag) {
+func writecField(qq422016 qtio422016.Writer, f string) {
 //line template.qtpl:809
 	qw422016 := qt422016.AcquireWriter(qq422016)
 //line template.qtpl:809
-	StreamGoType(qw422016, d, lt)
+	streamcField(qw422016, f)
 //line template.qtpl:809
 	qt422016.ReleaseWriter(qw422016)
 //line template.qtpl:809
 }
 
 //line template.qtpl:809
-func GoType(d *parser.CefClassDecl, lt *LogTag) string {
+func cField(f string) string {
 //line template.qtpl:809
 	qb422016 := qt422016.AcquireByteBuffer()
 //line template.qtpl:809
-	WriteGoType(qb422016, d, lt)
+	writecField(qb422016, f)
 //line template.qtpl:809
 	qs422016 := string(qb422016.B)
 //line template.qtpl:809
@@ -4149,289 +4180,246 @@ func GoType(d *parser.CefClassDecl, lt *LogTag) string {
 }
 
 //line template.qtpl:811
-func streamcField(qw422016 *qt422016.Writer, f string) {
-//line template.qtpl:812
-	if f == "type" || f == "range" {
-//line template.qtpl:812
-		qw422016.N().S(`_`)
-//line template.qtpl:812
-		qw422016.E().S(f)
-//line template.qtpl:812
-	} else {
-//line template.qtpl:812
-		qw422016.E().S(f)
-//line template.qtpl:812
-	}
-//line template.qtpl:813
-}
-
-//line template.qtpl:813
-func writecField(qq422016 qtio422016.Writer, f string) {
-//line template.qtpl:813
-	qw422016 := qt422016.AcquireWriter(qq422016)
-//line template.qtpl:813
-	streamcField(qw422016, f)
-//line template.qtpl:813
-	qt422016.ReleaseWriter(qw422016)
-//line template.qtpl:813
-}
-
-//line template.qtpl:813
-func cField(f string) string {
-//line template.qtpl:813
-	qb422016 := qt422016.AcquireByteBuffer()
-//line template.qtpl:813
-	writecField(qb422016, f)
-//line template.qtpl:813
-	qs422016 := string(qb422016.B)
-//line template.qtpl:813
-	qt422016.ReleaseByteBuffer(qb422016)
-//line template.qtpl:813
-	return qs422016
-//line template.qtpl:813
-}
-
-//line template.qtpl:815
 func streamcastGoType(qw422016 *qt422016.Writer, s string) {
-//line template.qtpl:816
+//line template.qtpl:812
 	if s == "C.VOIDP" {
-//line template.qtpl:816
+//line template.qtpl:812
 		qw422016.N().S(`unsafe.Pointer`)
-//line template.qtpl:816
+//line template.qtpl:812
 	} else {
-//line template.qtpl:816
+//line template.qtpl:812
 		qw422016.E().S(s)
-//line template.qtpl:816
+//line template.qtpl:812
 	}
-//line template.qtpl:816
+//line template.qtpl:812
 }
 
-//line template.qtpl:816
+//line template.qtpl:812
 func writecastGoType(qq422016 qtio422016.Writer, s string) {
-//line template.qtpl:816
+//line template.qtpl:812
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line template.qtpl:816
+//line template.qtpl:812
 	streamcastGoType(qw422016, s)
-//line template.qtpl:816
+//line template.qtpl:812
 	qt422016.ReleaseWriter(qw422016)
-//line template.qtpl:816
+//line template.qtpl:812
 }
 
-//line template.qtpl:816
+//line template.qtpl:812
 func castGoType(s string) string {
-//line template.qtpl:816
+//line template.qtpl:812
 	qb422016 := qt422016.AcquireByteBuffer()
-//line template.qtpl:816
+//line template.qtpl:812
 	writecastGoType(qb422016, s)
-//line template.qtpl:816
+//line template.qtpl:812
 	qs422016 := string(qb422016.B)
-//line template.qtpl:816
+//line template.qtpl:812
 	qt422016.ReleaseByteBuffer(qb422016)
-//line template.qtpl:816
+//line template.qtpl:812
 	return qs422016
-//line template.qtpl:816
+//line template.qtpl:812
 }
 
-//line template.qtpl:818
+//line template.qtpl:814
 func StreamMemberAccessor(qw422016 *qt422016.Writer, d *parser.StructDecl, m parser.Member) {
-//line template.qtpl:818
+//line template.qtpl:814
 	qw422016.N().S(`func (st `)
-//line template.qtpl:819
+//line template.qtpl:815
 	qw422016.E().S(d.GoType())
-//line template.qtpl:819
+//line template.qtpl:815
 	qw422016.N().S(`) `)
-//line template.qtpl:819
+//line template.qtpl:815
 	qw422016.E().S(m.GoName())
-//line template.qtpl:819
+//line template.qtpl:815
 	qw422016.N().S(`() `)
-//line template.qtpl:819
+//line template.qtpl:815
 	qw422016.E().S(m.GoType())
-//line template.qtpl:819
+//line template.qtpl:815
 	qw422016.N().S(` {
 `)
-//line template.qtpl:820
+//line template.qtpl:816
 	if m.Type().Ty == parser.TyStringT && m.Type().Pointer == 0 {
-//line template.qtpl:820
+//line template.qtpl:816
 		qw422016.N().S(`	return string_from_cef_string(&st.`)
-//line template.qtpl:821
+//line template.qtpl:817
 		qw422016.E().S(cField(m.Name()))
-//line template.qtpl:821
+//line template.qtpl:817
 		qw422016.N().S(`)
 `)
-//line template.qtpl:822
+//line template.qtpl:818
 	} else if m.IsBoolMember() {
-//line template.qtpl:822
+//line template.qtpl:818
 		qw422016.N().S(`	return st.`)
-//line template.qtpl:823
+//line template.qtpl:819
 		qw422016.E().S(cField(m.Name()))
-//line template.qtpl:823
+//line template.qtpl:819
 		qw422016.N().S(` != 0
 `)
-//line template.qtpl:824
+//line template.qtpl:820
 	} else {
-//line template.qtpl:824
+//line template.qtpl:820
 		qw422016.N().S(`	return `)
-//line template.qtpl:825
+//line template.qtpl:821
 		qw422016.E().S(m.GoType())
-//line template.qtpl:825
+//line template.qtpl:821
 		qw422016.N().S(`(st.`)
-//line template.qtpl:825
+//line template.qtpl:821
 		qw422016.E().S(cField(m.Name()))
-//line template.qtpl:825
+//line template.qtpl:821
 		qw422016.N().S(`)
 `)
-//line template.qtpl:826
+//line template.qtpl:822
 	}
-//line template.qtpl:826
+//line template.qtpl:822
 	qw422016.N().S(`}
 
 func (st `)
-//line template.qtpl:829
+//line template.qtpl:825
 	qw422016.E().S(d.GoType())
-//line template.qtpl:829
+//line template.qtpl:825
 	qw422016.N().S(`) Set`)
-//line template.qtpl:829
+//line template.qtpl:825
 	qw422016.E().S(m.GoName())
-//line template.qtpl:829
+//line template.qtpl:825
 	qw422016.N().S(`(v `)
-//line template.qtpl:829
+//line template.qtpl:825
 	qw422016.E().S(m.GoType())
-//line template.qtpl:829
+//line template.qtpl:825
 	qw422016.N().S(`) {
 `)
-//line template.qtpl:830
+//line template.qtpl:826
 	if m.Type().Ty == parser.TyStringT && m.Type().Pointer == 0 {
-//line template.qtpl:830
+//line template.qtpl:826
 		qw422016.N().S(`	set_cef_string(&st.`)
-//line template.qtpl:831
+//line template.qtpl:827
 		qw422016.E().S(cField(m.Name()))
-//line template.qtpl:831
+//line template.qtpl:827
 		qw422016.N().S(`, v)
 `)
-//line template.qtpl:832
+//line template.qtpl:828
 	} else if m.IsBoolMember() {
-//line template.qtpl:832
+//line template.qtpl:828
 		qw422016.N().S(`	if v {
 		st.`)
-//line template.qtpl:834
+//line template.qtpl:830
 		qw422016.E().S(cField(m.Name()))
-//line template.qtpl:834
+//line template.qtpl:830
 		qw422016.N().S(` = 1
 	} else {
 		st.`)
-//line template.qtpl:836
+//line template.qtpl:832
 		qw422016.E().S(cField(m.Name()))
-//line template.qtpl:836
+//line template.qtpl:832
 		qw422016.N().S(` = 0
 	}
 `)
-//line template.qtpl:838
+//line template.qtpl:834
 	} else {
-//line template.qtpl:838
+//line template.qtpl:834
 		qw422016.N().S(`	st.`)
-//line template.qtpl:839
+//line template.qtpl:835
 		qw422016.E().S(cField(m.Name()))
-//line template.qtpl:839
+//line template.qtpl:835
 		qw422016.N().S(` = (`)
-//line template.qtpl:839
+//line template.qtpl:835
 		qw422016.E().S(castGoType(m.Type().GoCType()))
-//line template.qtpl:839
+//line template.qtpl:835
 		qw422016.N().S(`)(v)
 `)
-//line template.qtpl:840
+//line template.qtpl:836
 	}
-//line template.qtpl:840
+//line template.qtpl:836
 	qw422016.N().S(`}
 
 `)
-//line template.qtpl:843
+//line template.qtpl:839
 }
 
-//line template.qtpl:843
+//line template.qtpl:839
 func WriteMemberAccessor(qq422016 qtio422016.Writer, d *parser.StructDecl, m parser.Member) {
-//line template.qtpl:843
+//line template.qtpl:839
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line template.qtpl:843
+//line template.qtpl:839
 	StreamMemberAccessor(qw422016, d, m)
-//line template.qtpl:843
+//line template.qtpl:839
 	qt422016.ReleaseWriter(qw422016)
-//line template.qtpl:843
+//line template.qtpl:839
 }
 
-//line template.qtpl:843
+//line template.qtpl:839
 func MemberAccessor(d *parser.StructDecl, m parser.Member) string {
-//line template.qtpl:843
+//line template.qtpl:839
 	qb422016 := qt422016.AcquireByteBuffer()
-//line template.qtpl:843
+//line template.qtpl:839
 	WriteMemberAccessor(qb422016, d, m)
-//line template.qtpl:843
+//line template.qtpl:839
 	qs422016 := string(qb422016.B)
-//line template.qtpl:843
+//line template.qtpl:839
 	qt422016.ReleaseByteBuffer(qb422016)
-//line template.qtpl:843
+//line template.qtpl:839
 	return qs422016
-//line template.qtpl:843
+//line template.qtpl:839
 }
 
-//line template.qtpl:845
+//line template.qtpl:841
 func StreamNewStruct(qw422016 *qt422016.Writer, d *parser.StructDecl) {
-//line template.qtpl:845
+//line template.qtpl:841
 	qw422016.N().S(`func New`)
-//line template.qtpl:846
+//line template.qtpl:842
 	qw422016.E().S(d.GoName())
-//line template.qtpl:846
+//line template.qtpl:842
 	qw422016.N().S(`() `)
-//line template.qtpl:846
+//line template.qtpl:842
 	qw422016.E().S(d.GoType())
-//line template.qtpl:846
+//line template.qtpl:842
 	qw422016.N().S(` {
 	s := &`)
-//line template.qtpl:847
+//line template.qtpl:843
 	qw422016.E().S(d.GoName())
-//line template.qtpl:847
+//line template.qtpl:843
 	qw422016.N().S(`{}
 `)
-//line template.qtpl:848
+//line template.qtpl:844
 	if d.Members[0].Type().Ty == parser.TySizeT && d.Members[0].Name() == "size" {
-//line template.qtpl:848
+//line template.qtpl:844
 		qw422016.N().S(`	s.size = C.sizeof_`)
-//line template.qtpl:849
+//line template.qtpl:845
 		qw422016.E().S(d.CefName())
-//line template.qtpl:849
+//line template.qtpl:845
 		qw422016.N().S(`
 `)
-//line template.qtpl:850
+//line template.qtpl:846
 	}
-//line template.qtpl:850
+//line template.qtpl:846
 	qw422016.N().S(`	return s
 }
 
 `)
-//line template.qtpl:854
+//line template.qtpl:850
 }
 
-//line template.qtpl:854
+//line template.qtpl:850
 func WriteNewStruct(qq422016 qtio422016.Writer, d *parser.StructDecl) {
-//line template.qtpl:854
+//line template.qtpl:850
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line template.qtpl:854
+//line template.qtpl:850
 	StreamNewStruct(qw422016, d)
-//line template.qtpl:854
+//line template.qtpl:850
 	qt422016.ReleaseWriter(qw422016)
-//line template.qtpl:854
+//line template.qtpl:850
 }
 
-//line template.qtpl:854
+//line template.qtpl:850
 func NewStruct(d *parser.StructDecl) string {
-//line template.qtpl:854
+//line template.qtpl:850
 	qb422016 := qt422016.AcquireByteBuffer()
-//line template.qtpl:854
+//line template.qtpl:850
 	WriteNewStruct(qb422016, d)
-//line template.qtpl:854
+//line template.qtpl:850
 	qs422016 := string(qb422016.B)
-//line template.qtpl:854
+//line template.qtpl:850
 	qt422016.ReleaseByteBuffer(qb422016)
-//line template.qtpl:854
+//line template.qtpl:850
 	return qs422016
-//line template.qtpl:854
+//line template.qtpl:850
 }

@@ -37,7 +37,7 @@ Statemens to convert from C.param to Go type.
 	{%- if p.Type().Ty == parser.TyStringT -%}
 		{%= goTempName(p) %} := string_from_cef_string({%s goParamName(p) %})
 	{%- elseif p.Type().Pointer == 2 && p.Type().Deref().IsRefCountedClass() -%}
-		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type().Deref(), "*" + goParamName(p), "byApi", false) %}
+		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type().Deref(), "*" + goParamName(p), "byApi") %}
 		cefp := {%s goTempName(p) %}.pc_{%s p.Type().BaseName() %}
 	{%- elseif p.IsBoolParam() -%}
 		{%= goTempName(p) %} := (*{%s p.Name() %}) != 0
@@ -55,13 +55,13 @@ Statemens to convert from C.param to Go type.
 		slice := (*[1 << 30]({%s p.Type().Deref().GoCType() %}))(unsafe.Pointer({%s p.Name() %}))[:{%s maxLenArg %}:{%s maxLenArg %}]
 		{%= goTempName(p) %} := make({%s p.GoType() %}, {%s maxLenArg %})
 		for i, v := range slice {
-			{%= goTempName(p) %}[i] = {%s ConvToGoTypeExp(p.Type().Deref(), "v", "byApi", false) %}
+			{%= goTempName(p) %}[i] = {%s ConvToGoTypeExp(p.Type().Deref(), "v", "byApi") %}
 		}
 	{%- else -%}
 		{%- if p.IsBoolParam() -%}
 		{%= goTempName(p) %} := {%s= goParamName(p) %} != 0
 		{%- elseif !p.IsSliceLengthParam() -%}
-		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type(), goParamName(p), "byApi", false) %}
+		{%= goTempName(p) %} := {%s ConvToGoTypeExp(p.Type(), goParamName(p), "byApi") %}
 		{%- endif -%}
 	{%- endif -%}
 {% endif -%}
@@ -354,7 +354,7 @@ func Alloc{%s st.GoName()%}() {%s st.GoType()%} {
 	}))
 
 	BaseAddRef(cgop)
-	return new{%s st.GoName() %}(cefp, byApp, true)
+	return new{%s st.GoName() %}(cefp, byApp)
 }
 
 // Bind{%s st.GoName()%} allocates {%s st.GoName() %}, construct and bind it
@@ -515,12 +515,12 @@ tmp{%= cName(p) -%}
 	{%s goParamName(p) %} = make([]{%s p.Type().Deref().GoType() %}, *{%s argLen %})
 	_{%s cTempName(p) %} := (*[1 << 30]({%s p.Type().Deref().GoCType() %}))(unsafe.Pointer({%s cTempName(p) %}))[:*{%s argLen %}:*{%s argLen %}]
 	for i := C.size_t(0); i {%s= "<" %} *{%s argLen %}; i++ {
-		{%s goParamName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(_{%s cTempName(p) %}[i], byApp, true) // Out Slice Param
+		{%s goParamName(p) %}[i] = new{%s p.Type().Deref().Deref().GoType() %}(_{%s cTempName(p) %}[i], byApp) // Out Slice Param
 	}
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
 	{%s goParamName(p) %} = string_from_cef_string({%s cTempName(p) %}.p_cef_string_t)
 	{%- elseif p.Type().Deref().IsRefCountedClass() -%}
-	{%s goParamName(p) %} = new{%s p.Type().Deref().Deref().GoType() %}({%s cTempName(p) %}, byApp, true) // Out Param
+	{%s goParamName(p) %} = new{%s p.Type().Deref().Deref().GoType() %}({%s cTempName(p) %}, byApp) // Out Param
 	{%- elseif p.Type().Ty == parser.TyTimeT %}
 	{%s goParamName(p) %} = time.Unix(int64({%= cTempName(p) %}), 0)
 	{%- else -%}
@@ -616,7 +616,7 @@ func  ({%s goParamName(m.Params()[0]) %} {%s m.Params()[0].GoType() %}) {%s m.Fu
 	}
 	ret = s
 	{%- else %}
-	ret = {%s ConvToGoTypeExp(m.ReturnType(), "cRet", "byApp", true) %} // return GoObj
+	ret = {%s ConvToGoTypeExp(m.ReturnType(), "cRet", "byApp") %} // return GoObj
 	{%- endif -%}
 	{%- endif -%}
 	{%- if m.HasReturnValue() || m.HasOutParam() -%}{% code first := true -%}
@@ -666,11 +666,10 @@ extern {%s methodCSig(m) %};
 type {%s d.CgoName() %} C.{%s d.CefName() %}
 // Go type for {%s d.CefName() %}
 type {%s d.GoName() %} struct {
-	noCopy     noCopy
+	noCopy                 noCopy
 	pc_{%s d.BaseName() %} {%s d.CgoType() %}
 	{%- if d.St == parser.StRefCounted -%}
-	needsUnref bool
-	beUnrefed  unrefedBy
+	beUnrefed              unrefedBy
 	{%- endif -%}
 }
 
@@ -708,14 +707,13 @@ func (r *RefTo{%s d.GoName() %}) TakeOver{%s d.GoName() %}(src {%s d.GoType() %}
 	switch src.beUnrefed {
 	case byApp:
 		src.beUnrefed = unrefed
-		src.needsUnref = false
 	case byApi:
 		BaseAddRef(gop)
 	default:
 		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
 	}
 
-	r.p_{%s d.BaseName() %} = new{%s d.GoName() %}(({%s d.GoCType() %})(gop), byApp, true)
+	r.p_{%s d.BaseName() %} = new{%s d.GoName() %}(({%s d.GoCType() %})(gop), byApp)
 	{%- else -%}
 	r.set{%s d.GoName() %}(src)
 	{%- endif -%}
@@ -731,8 +729,7 @@ func Pass{%s d.GoName() %}(p {%s d.GoType() %}) (ret {%s d.GoType() %}) {
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	p.needsUnref = false
-	ret = new{%s d.GoName() %}(({%s d.GoCType() %})(p.pc_{%s d.BaseName() %}), byCef, false)
+	ret = new{%s d.GoName() %}(({%s d.GoCType() %})(p.pc_{%s d.BaseName() %}), byCef)
 	{%- else -%}
 	ret = p
 	{%- endif %}
@@ -747,24 +744,24 @@ func (r *RefTo{%s d.GoName() %}) NewRef{%s d.GoName() %}(p {%s d.GoType() %}) {
 	r.p_{%s d.BaseName() %}.ForceUnref()
 	gop := p.pc_{%s d.BaseName() %}
 	BaseAddRef(gop)
-	r.p_{%s d.BaseName() %} = new{%s d.GoName() %}(({%s d.GoCType() %})(gop), byApp, true)
+	r.p_{%s d.BaseName() %} = new{%s d.GoName() %}(({%s d.GoCType() %})(gop), byApp)
 	{%- else -%}
 	r.set{%s d.GoName() %}(p)
 	{%- endif -%}
 }
 
 // Go type {%s d.GoName() %} wraps cef type {%s d.GoCType() %}
-func new{%s d.GoName() %}(p {%s d.GoCType() %}{%- if d.St == parser.StRefCounted -%}, unrefedBy unrefedBy, needsUnref bool{% endif %}) {%s d.GoType() %} {
+func new{%s d.GoName() %}(p {%s d.GoCType() %}{%- if d.St == parser.StRefCounted -%}, unrefedBy unrefedBy{% endif %}) {%s d.GoType() %} {
 	if p == nil {
 		return nil
 	}
 	Tracef(unsafe.Pointer(p), "{%s lt.NextTag() %}:")
 	pc := ({%s d.CgoType() %})(p)
 	{%- if d.St == parser.StRefCounted -%}
-	go_{%s d.BaseName() %} := &{%s d.GoName() %}{noCopy{}, pc, needsUnref, unrefedBy}
+	go_{%s d.BaseName() %} := &{%s d.GoName() %}{noCopy{}, pc, unrefedBy}
 	// BaseAddRef(pc)
 	runtime.SetFinalizer(go_{%s d.BaseName() %}, func(g {%s d.GoType() %}) {
-		if (g.needsUnref && g.beUnrefed == byApp && g.pc_{%s d.BaseName() %} != nil) {
+		if (g.beUnrefed == byApp && g.pc_{%s d.BaseName() %} != nil) {
 			Tracef(unsafe.Pointer(g.pc_{%s d.BaseName() %}), "{%s lt.NextTag() %}:")
 			BaseRelease(g.pc_{%s d.BaseName() %})
 		}
@@ -789,10 +786,9 @@ func ({%s d.BaseName() %} {%s d.GoType() %}) ForceUnref() (ret bool) {
 	if {%s d.BaseName() %} == nil {
 		return
 	}
-	if {%s d.BaseName() %}.needsUnref && {%s d.BaseName() %}.beUnrefed == byApp {
+	if {%s d.BaseName() %}.beUnrefed == byApp {
 		ret = BaseRelease({%s d.BaseName() %}.pc_{%s d.BaseName() %})
 		{%s d.BaseName() %}.beUnrefed = unrefed
-		{%s d.BaseName() %}.needsUnref = false
 	}
 	{%s d.BaseName() %}.pc_{%s d.BaseName() %} = nil
 	return ret
@@ -803,7 +799,7 @@ func ({%s d.BaseName() %} {%s d.GoType() %}) ForceUnref() (ret bool) {
 func ({%s d.BaseName() %} {%s d.GoType() %}) To{%s p.GoName() %}() {%s p.GoType() %}{
 	p := ({%s p.GoCType() %})(unsafe.Pointer({%s d.BaseName() %}.pc_{%s d.BaseName() %}))
 	BaseAddRef({%s d.BaseName() %}.pc_{%s d.BaseName() %})
-	return new{%s p.GoName() %}(p, byApp, true)
+	return new{%s p.GoName() %}(p, byApp)
 }
 {% endif -%}
 {% endfunc %}

@@ -545,7 +545,7 @@ func (s *CefClassDecl) SetComment(comments map[int][]string) {
 	switch s.DeclCommon.Dk {
 	case DkCefClass:
 		s.DeclCommon.SetComment(comments)
-		for i, _ := range s.Methods {
+		for i := range s.Methods {
 			m := s.Methods[i]
 			if c, ok := comments[(*m).FirstLine()]; ok {
 				m.Comment = c

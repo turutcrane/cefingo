@@ -57,7 +57,7 @@ func main() {
 
 	var goFile *Generator
 	fn := []string{}
-	for fname, _ := range parser.FileDefs {
+	for fname := range parser.FileDefs {
 		fn = append(fn, fname)
 	}
 	sort.Strings(fn)
@@ -316,7 +316,7 @@ func genGoCallbackFunc(gf *Generator, st *parser.CefClassDecl) {
 	}
 }
 
-func ConvToGoTypeExp(t parser.Type, val string, origin string, needsUnref bool) (exp string) {
+func ConvToGoTypeExp(t parser.Type, val string, beUnrefed string) (exp string) {
 	switch t.Ty {
 	case parser.TyInt, parser.TyInt32, parser.TyInt64, parser.TyUint32, parser.TyUint64,
 		parser.TyFloat, parser.TyDouble,
@@ -324,12 +324,7 @@ func ConvToGoTypeExp(t parser.Type, val string, origin string, needsUnref bool) 
 		exp = "(" + t.GoType() + ")(" + val + ")"
 	case parser.TyStructRefCounted:
 		if t.Pointer == 1 {
-			exp = "new" + t.Deref().GoType() + "(" + val
-			if needsUnref {
-				exp += ", " + origin + ", true)"
-			} else {
-				exp += ", " + origin + ", false)"
-			}
+			exp = "new" + t.Deref().GoType() + "(" + val + ", " + beUnrefed + ")"
 		} else {
 			log.Panicf("T448: %s: %v, %t, %v\n", val, t.Ty, t.IsRefCountedClass(), t.GoType())
 		}
