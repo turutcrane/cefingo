@@ -71,12 +71,12 @@ func PassCAccessibilityHandlerT(p *CAccessibilityHandlerT) (ret *CAccessibilityH
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCAccessibilityHandlerT((*C.cef_accessibility_handler_t)(p.pc_accessibility_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_accessibility_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCAccessibilityHandlerT((*C.cef_accessibility_handler_t)(p.pc_accessibility_handler), byCef)
 
 	return ret
 }
@@ -312,12 +312,12 @@ func PassCAppT(p *CAppT) (ret *CAppT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCAppT((*C.cef_app_t)(p.pc_app), byCef)
 	case byApi:
-		BaseAddRef(p.pc_app)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCAppT((*C.cef_app_t)(p.pc_app), byCef)
 
 	return ret
 }
@@ -761,12 +761,12 @@ func PassCAudioHandlerT(p *CAudioHandlerT) (ret *CAudioHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCAudioHandlerT((*C.cef_audio_handler_t)(p.pc_audio_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_audio_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCAudioHandlerT((*C.cef_audio_handler_t)(p.pc_audio_handler), byCef)
 
 	return ret
 }
@@ -1056,12 +1056,12 @@ func PassCAuthCallbackT(p *CAuthCallbackT) (ret *CAuthCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCAuthCallbackT((*C.cef_auth_callback_t)(p.pc_auth_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_auth_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCAuthCallbackT((*C.cef_auth_callback_t)(p.pc_auth_callback), byCef)
 
 	return ret
 }
@@ -1203,12 +1203,12 @@ func PassCBoxLayoutT(p *CBoxLayoutT) (ret *CBoxLayoutT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCBoxLayoutT((*C.cef_box_layout_t)(p.pc_box_layout), byCef)
 	case byApi:
-		BaseAddRef(p.pc_box_layout)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCBoxLayoutT((*C.cef_box_layout_t)(p.pc_box_layout), byCef)
 
 	return ret
 }
@@ -1370,12 +1370,12 @@ func PassCBrowserT(p *CBrowserT) (ret *CBrowserT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCBrowserT((*C.cef_browser_t)(p.pc_browser), byCef)
 	case byApi:
-		BaseAddRef(p.pc_browser)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCBrowserT((*C.cef_browser_t)(p.pc_browser), byCef)
 
 	return ret
 }
@@ -1720,12 +1720,12 @@ func PassCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) (ret *CRunFileDialo
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(p.pc_run_file_dialog_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_run_file_dialog_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(p.pc_run_file_dialog_callback), byCef)
 
 	return ret
 }
@@ -1942,12 +1942,12 @@ func PassCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) (ret *CNavigation
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCNavigationEntryVisitorT((*C.cef_navigation_entry_visitor_t)(p.pc_navigation_entry_visitor), byCef)
 	case byApi:
-		BaseAddRef(p.pc_navigation_entry_visitor)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCNavigationEntryVisitorT((*C.cef_navigation_entry_visitor_t)(p.pc_navigation_entry_visitor), byCef)
 
 	return ret
 }
@@ -2166,12 +2166,12 @@ func PassCPdfPrintCallbackT(p *CPdfPrintCallbackT) (ret *CPdfPrintCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPdfPrintCallbackT((*C.cef_pdf_print_callback_t)(p.pc_pdf_print_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_pdf_print_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPdfPrintCallbackT((*C.cef_pdf_print_callback_t)(p.pc_pdf_print_callback), byCef)
 
 	return ret
 }
@@ -2386,12 +2386,12 @@ func PassCDownloadImageCallbackT(p *CDownloadImageCallbackT) (ret *CDownloadImag
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDownloadImageCallbackT((*C.cef_download_image_callback_t)(p.pc_download_image_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_download_image_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDownloadImageCallbackT((*C.cef_download_image_callback_t)(p.pc_download_image_callback), byCef)
 
 	return ret
 }
@@ -2528,12 +2528,12 @@ func PassCBrowserHostT(p *CBrowserHostT) (ret *CBrowserHostT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCBrowserHostT((*C.cef_browser_host_t)(p.pc_browser_host), byCef)
 	case byApi:
-		BaseAddRef(p.pc_browser_host)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCBrowserHostT((*C.cef_browser_host_t)(p.pc_browser_host), byCef)
 
 	return ret
 }
@@ -3755,12 +3755,12 @@ func PassCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) (ret *CBrowserProce
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCBrowserProcessHandlerT((*C.cef_browser_process_handler_t)(p.pc_browser_process_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_browser_process_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCBrowserProcessHandlerT((*C.cef_browser_process_handler_t)(p.pc_browser_process_handler), byCef)
 
 	return ret
 }
@@ -4051,12 +4051,12 @@ func PassCBrowserViewT(p *CBrowserViewT) (ret *CBrowserViewT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCBrowserViewT((*C.cef_browser_view_t)(p.pc_browser_view), byCef)
 	case byApi:
-		BaseAddRef(p.pc_browser_view)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCBrowserViewT((*C.cef_browser_view_t)(p.pc_browser_view), byCef)
 
 	return ret
 }
@@ -4289,12 +4289,12 @@ func PassCBrowserViewDelegateT(p *CBrowserViewDelegateT) (ret *CBrowserViewDeleg
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCBrowserViewDelegateT((*C.cef_browser_view_delegate_t)(p.pc_browser_view_delegate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_browser_view_delegate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCBrowserViewDelegateT((*C.cef_browser_view_delegate_t)(p.pc_browser_view_delegate), byCef)
 
 	return ret
 }
@@ -4710,12 +4710,12 @@ func PassCButtonT(p *CButtonT) (ret *CButtonT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCButtonT((*C.cef_button_t)(p.pc_button), byCef)
 	case byApi:
-		BaseAddRef(p.pc_button)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCButtonT((*C.cef_button_t)(p.pc_button), byCef)
 
 	return ret
 }
@@ -4907,12 +4907,12 @@ func PassCButtonDelegateT(p *CButtonDelegateT) (ret *CButtonDelegateT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCButtonDelegateT((*C.cef_button_delegate_t)(p.pc_button_delegate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_button_delegate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCButtonDelegateT((*C.cef_button_delegate_t)(p.pc_button_delegate), byCef)
 
 	return ret
 }
@@ -5242,12 +5242,12 @@ func PassCCallbackT(p *CCallbackT) (ret *CCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCCallbackT((*C.cef_callback_t)(p.pc_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCCallbackT((*C.cef_callback_t)(p.pc_callback), byCef)
 
 	return ret
 }
@@ -5377,12 +5377,12 @@ func PassCCompletionCallbackT(p *CCompletionCallbackT) (ret *CCompletionCallback
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCCompletionCallbackT((*C.cef_completion_callback_t)(p.pc_completion_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_completion_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCCompletionCallbackT((*C.cef_completion_callback_t)(p.pc_completion_callback), byCef)
 
 	return ret
 }
@@ -5505,12 +5505,12 @@ func PassCClientT(p *CClientT) (ret *CClientT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCClientT((*C.cef_client_t)(p.pc_client), byCef)
 	case byApi:
-		BaseAddRef(p.pc_client)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCClientT((*C.cef_client_t)(p.pc_client), byCef)
 
 	return ret
 }
@@ -6046,12 +6046,12 @@ func PassCCommandLineT(p *CCommandLineT) (ret *CCommandLineT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCCommandLineT((*C.cef_command_line_t)(p.pc_command_line), byCef)
 	case byApi:
-		BaseAddRef(p.pc_command_line)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCCommandLineT((*C.cef_command_line_t)(p.pc_command_line), byCef)
 
 	return ret
 }
@@ -6434,12 +6434,12 @@ func PassCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) (ret *CRunContext
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRunContextMenuCallbackT((*C.cef_run_context_menu_callback_t)(p.pc_run_context_menu_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_run_context_menu_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRunContextMenuCallbackT((*C.cef_run_context_menu_callback_t)(p.pc_run_context_menu_callback), byCef)
 
 	return ret
 }
@@ -6574,12 +6574,12 @@ func PassCContextMenuHandlerT(p *CContextMenuHandlerT) (ret *CContextMenuHandler
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCContextMenuHandlerT((*C.cef_context_menu_handler_t)(p.pc_context_menu_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_context_menu_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCContextMenuHandlerT((*C.cef_context_menu_handler_t)(p.pc_context_menu_handler), byCef)
 
 	return ret
 }
@@ -6879,12 +6879,12 @@ func PassCContextMenuParamsT(p *CContextMenuParamsT) (ret *CContextMenuParamsT) 
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCContextMenuParamsT((*C.cef_context_menu_params_t)(p.pc_context_menu_params), byCef)
 	case byApi:
-		BaseAddRef(p.pc_context_menu_params)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCContextMenuParamsT((*C.cef_context_menu_params_t)(p.pc_context_menu_params), byCef)
 
 	return ret
 }
@@ -7284,12 +7284,12 @@ func PassCCookieManagerT(p *CCookieManagerT) (ret *CCookieManagerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCCookieManagerT((*C.cef_cookie_manager_t)(p.pc_cookie_manager), byCef)
 	case byApi:
-		BaseAddRef(p.pc_cookie_manager)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCCookieManagerT((*C.cef_cookie_manager_t)(p.pc_cookie_manager), byCef)
 
 	return ret
 }
@@ -7547,12 +7547,12 @@ func PassCCookieVisitorT(p *CCookieVisitorT) (ret *CCookieVisitorT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCCookieVisitorT((*C.cef_cookie_visitor_t)(p.pc_cookie_visitor), byCef)
 	case byApi:
-		BaseAddRef(p.pc_cookie_visitor)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCCookieVisitorT((*C.cef_cookie_visitor_t)(p.pc_cookie_visitor), byCef)
 
 	return ret
 }
@@ -7770,12 +7770,12 @@ func PassCSetCookieCallbackT(p *CSetCookieCallbackT) (ret *CSetCookieCallbackT) 
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCSetCookieCallbackT((*C.cef_set_cookie_callback_t)(p.pc_set_cookie_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_set_cookie_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCSetCookieCallbackT((*C.cef_set_cookie_callback_t)(p.pc_set_cookie_callback), byCef)
 
 	return ret
 }
@@ -7988,12 +7988,12 @@ func PassCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) (ret *CDeleteCookie
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDeleteCookiesCallbackT((*C.cef_delete_cookies_callback_t)(p.pc_delete_cookies_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_delete_cookies_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDeleteCookiesCallbackT((*C.cef_delete_cookies_callback_t)(p.pc_delete_cookies_callback), byCef)
 
 	return ret
 }
@@ -8322,12 +8322,12 @@ func PassCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) (ret *CDevTools
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDevToolsMessageObserverT((*C.cef_dev_tools_message_observer_t)(p.pc_dev_tools_message_observer), byCef)
 	case byApi:
-		BaseAddRef(p.pc_dev_tools_message_observer)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDevToolsMessageObserverT((*C.cef_dev_tools_message_observer_t)(p.pc_dev_tools_message_observer), byCef)
 
 	return ret
 }
@@ -8663,12 +8663,12 @@ func PassCFileDialogCallbackT(p *CFileDialogCallbackT) (ret *CFileDialogCallback
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCFileDialogCallbackT((*C.cef_file_dialog_callback_t)(p.pc_file_dialog_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_file_dialog_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCFileDialogCallbackT((*C.cef_file_dialog_callback_t)(p.pc_file_dialog_callback), byCef)
 
 	return ret
 }
@@ -8806,12 +8806,12 @@ func PassCDialogHandlerT(p *CDialogHandlerT) (ret *CDialogHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDialogHandlerT((*C.cef_dialog_handler_t)(p.pc_dialog_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_dialog_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDialogHandlerT((*C.cef_dialog_handler_t)(p.pc_dialog_handler), byCef)
 
 	return ret
 }
@@ -9047,12 +9047,12 @@ func PassCDisplayT(p *CDisplayT) (ret *CDisplayT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDisplayT((*C.cef_display_t)(p.pc_display), byCef)
 	case byApi:
-		BaseAddRef(p.pc_display)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDisplayT((*C.cef_display_t)(p.pc_display), byCef)
 
 	return ret
 }
@@ -9324,12 +9324,12 @@ func PassCDisplayHandlerT(p *CDisplayHandlerT) (ret *CDisplayHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDisplayHandlerT((*C.cef_display_handler_t)(p.pc_display_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_display_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDisplayHandlerT((*C.cef_display_handler_t)(p.pc_display_handler), byCef)
 
 	return ret
 }
@@ -9757,12 +9757,12 @@ func PassCDomvisitorT(p *CDomvisitorT) (ret *CDomvisitorT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDomvisitorT((*C.cef_domvisitor_t)(p.pc_domvisitor), byCef)
 	case byApi:
-		BaseAddRef(p.pc_domvisitor)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDomvisitorT((*C.cef_domvisitor_t)(p.pc_domvisitor), byCef)
 
 	return ret
 }
@@ -9978,12 +9978,12 @@ func PassCDomdocumentT(p *CDomdocumentT) (ret *CDomdocumentT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDomdocumentT((*C.cef_domdocument_t)(p.pc_domdocument), byCef)
 	case byApi:
-		BaseAddRef(p.pc_domdocument)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDomdocumentT((*C.cef_domdocument_t)(p.pc_domdocument), byCef)
 
 	return ret
 }
@@ -10282,12 +10282,12 @@ func PassCDomnodeT(p *CDomnodeT) (ret *CDomnodeT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDomnodeT((*C.cef_domnode_t)(p.pc_domnode), byCef)
 	case byApi:
-		BaseAddRef(p.pc_domnode)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDomnodeT((*C.cef_domnode_t)(p.pc_domnode), byCef)
 
 	return ret
 }
@@ -10745,12 +10745,12 @@ func PassCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) (ret *CBeforeDown
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCBeforeDownloadCallbackT((*C.cef_before_download_callback_t)(p.pc_before_download_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_before_download_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCBeforeDownloadCallbackT((*C.cef_before_download_callback_t)(p.pc_before_download_callback), byCef)
 
 	return ret
 }
@@ -10878,12 +10878,12 @@ func PassCDownloadItemCallbackT(p *CDownloadItemCallbackT) (ret *CDownloadItemCa
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDownloadItemCallbackT((*C.cef_download_item_callback_t)(p.pc_download_item_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_download_item_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDownloadItemCallbackT((*C.cef_download_item_callback_t)(p.pc_download_item_callback), byCef)
 
 	return ret
 }
@@ -11023,12 +11023,12 @@ func PassCDownloadHandlerT(p *CDownloadHandlerT) (ret *CDownloadHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDownloadHandlerT((*C.cef_download_handler_t)(p.pc_download_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_download_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDownloadHandlerT((*C.cef_download_handler_t)(p.pc_download_handler), byCef)
 
 	return ret
 }
@@ -11274,12 +11274,12 @@ func PassCDownloadItemT(p *CDownloadItemT) (ret *CDownloadItemT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDownloadItemT((*C.cef_download_item_t)(p.pc_download_item), byCef)
 	case byApi:
-		BaseAddRef(p.pc_download_item)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDownloadItemT((*C.cef_download_item_t)(p.pc_download_item), byCef)
 
 	return ret
 }
@@ -11613,12 +11613,12 @@ func PassCDragDataT(p *CDragDataT) (ret *CDragDataT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDragDataT((*C.cef_drag_data_t)(p.pc_drag_data), byCef)
 	case byApi:
-		BaseAddRef(p.pc_drag_data)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDragDataT((*C.cef_drag_data_t)(p.pc_drag_data), byCef)
 
 	return ret
 }
@@ -12078,12 +12078,12 @@ func PassCDragHandlerT(p *CDragHandlerT) (ret *CDragHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDragHandlerT((*C.cef_drag_handler_t)(p.pc_drag_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_drag_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDragHandlerT((*C.cef_drag_handler_t)(p.pc_drag_handler), byCef)
 
 	return ret
 }
@@ -12329,12 +12329,12 @@ func PassCExtensionT(p *CExtensionT) (ret *CExtensionT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCExtensionT((*C.cef_extension_t)(p.pc_extension), byCef)
 	case byApi:
-		BaseAddRef(p.pc_extension)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCExtensionT((*C.cef_extension_t)(p.pc_extension), byCef)
 
 	return ret
 }
@@ -12567,12 +12567,12 @@ func PassCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) (ret 
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCGetExtensionResourceCallbackT((*C.cef_get_extension_resource_callback_t)(p.pc_get_extension_resource_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_get_extension_resource_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCGetExtensionResourceCallbackT((*C.cef_get_extension_resource_callback_t)(p.pc_get_extension_resource_callback), byCef)
 
 	return ret
 }
@@ -12711,12 +12711,12 @@ func PassCExtensionHandlerT(p *CExtensionHandlerT) (ret *CExtensionHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCExtensionHandlerT((*C.cef_extension_handler_t)(p.pc_extension_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_extension_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCExtensionHandlerT((*C.cef_extension_handler_t)(p.pc_extension_handler), byCef)
 
 	return ret
 }
@@ -13288,12 +13288,12 @@ func PassCFillLayoutT(p *CFillLayoutT) (ret *CFillLayoutT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCFillLayoutT((*C.cef_fill_layout_t)(p.pc_fill_layout), byCef)
 	case byApi:
-		BaseAddRef(p.pc_fill_layout)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCFillLayoutT((*C.cef_fill_layout_t)(p.pc_fill_layout), byCef)
 
 	return ret
 }
@@ -13415,12 +13415,12 @@ func PassCFindHandlerT(p *CFindHandlerT) (ret *CFindHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCFindHandlerT((*C.cef_find_handler_t)(p.pc_find_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_find_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCFindHandlerT((*C.cef_find_handler_t)(p.pc_find_handler), byCef)
 
 	return ret
 }
@@ -13644,12 +13644,12 @@ func PassCFocusHandlerT(p *CFocusHandlerT) (ret *CFocusHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCFocusHandlerT((*C.cef_focus_handler_t)(p.pc_focus_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_focus_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCFocusHandlerT((*C.cef_focus_handler_t)(p.pc_focus_handler), byCef)
 
 	return ret
 }
@@ -13912,12 +13912,12 @@ func PassCFrameT(p *CFrameT) (ret *CFrameT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCFrameT((*C.cef_frame_t)(p.pc_frame), byCef)
 	case byApi:
-		BaseAddRef(p.pc_frame)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCFrameT((*C.cef_frame_t)(p.pc_frame), byCef)
 
 	return ret
 }
@@ -14466,12 +14466,12 @@ func PassCFrameHandlerT(p *CFrameHandlerT) (ret *CFrameHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCFrameHandlerT((*C.cef_frame_handler_t)(p.pc_frame_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_frame_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCFrameHandlerT((*C.cef_frame_handler_t)(p.pc_frame_handler), byCef)
 
 	return ret
 }
@@ -14703,12 +14703,12 @@ func PassCImageT(p *CImageT) (ret *CImageT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCImageT((*C.cef_image_t)(p.pc_image), byCef)
 	case byApi:
-		BaseAddRef(p.pc_image)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCImageT((*C.cef_image_t)(p.pc_image), byCef)
 
 	return ret
 }
@@ -15074,12 +15074,12 @@ func PassCJsdialogCallbackT(p *CJsdialogCallbackT) (ret *CJsdialogCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCJsdialogCallbackT((*C.cef_jsdialog_callback_t)(p.pc_jsdialog_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_jsdialog_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCJsdialogCallbackT((*C.cef_jsdialog_callback_t)(p.pc_jsdialog_callback), byCef)
 
 	return ret
 }
@@ -15206,12 +15206,12 @@ func PassCJsdialogHandlerT(p *CJsdialogHandlerT) (ret *CJsdialogHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCJsdialogHandlerT((*C.cef_jsdialog_handler_t)(p.pc_jsdialog_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_jsdialog_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCJsdialogHandlerT((*C.cef_jsdialog_handler_t)(p.pc_jsdialog_handler), byCef)
 
 	return ret
 }
@@ -15514,12 +15514,12 @@ func PassCKeyboardHandlerT(p *CKeyboardHandlerT) (ret *CKeyboardHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCKeyboardHandlerT((*C.cef_keyboard_handler_t)(p.pc_keyboard_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_keyboard_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCKeyboardHandlerT((*C.cef_keyboard_handler_t)(p.pc_keyboard_handler), byCef)
 
 	return ret
 }
@@ -15764,12 +15764,12 @@ func PassCLabelButtonT(p *CLabelButtonT) (ret *CLabelButtonT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCLabelButtonT((*C.cef_label_button_t)(p.pc_label_button), byCef)
 	case byApi:
-		BaseAddRef(p.pc_label_button)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCLabelButtonT((*C.cef_label_button_t)(p.pc_label_button), byCef)
 
 	return ret
 }
@@ -16064,12 +16064,12 @@ func PassCLayoutT(p *CLayoutT) (ret *CLayoutT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCLayoutT((*C.cef_layout_t)(p.pc_layout), byCef)
 	case byApi:
-		BaseAddRef(p.pc_layout)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCLayoutT((*C.cef_layout_t)(p.pc_layout), byCef)
 
 	return ret
 }
@@ -16218,12 +16218,12 @@ func PassCLifeSpanHandlerT(p *CLifeSpanHandlerT) (ret *CLifeSpanHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(p.pc_life_span_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_life_span_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(p.pc_life_span_handler), byCef)
 
 	return ret
 }
@@ -16628,12 +16628,12 @@ func PassCLoadHandlerT(p *CLoadHandlerT) (ret *CLoadHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCLoadHandlerT((*C.cef_load_handler_t)(p.pc_load_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_load_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCLoadHandlerT((*C.cef_load_handler_t)(p.pc_load_handler), byCef)
 
 	return ret
 }
@@ -16943,12 +16943,12 @@ func PassCMediaRouterT(p *CMediaRouterT) (ret *CMediaRouterT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMediaRouterT((*C.cef_media_router_t)(p.pc_media_router), byCef)
 	case byApi:
-		BaseAddRef(p.pc_media_router)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMediaRouterT((*C.cef_media_router_t)(p.pc_media_router), byCef)
 
 	return ret
 }
@@ -17172,12 +17172,12 @@ func PassCMediaObserverT(p *CMediaObserverT) (ret *CMediaObserverT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMediaObserverT((*C.cef_media_observer_t)(p.pc_media_observer), byCef)
 	case byApi:
-		BaseAddRef(p.pc_media_observer)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMediaObserverT((*C.cef_media_observer_t)(p.pc_media_observer), byCef)
 
 	return ret
 }
@@ -17457,12 +17457,12 @@ func PassCMediaRouteT(p *CMediaRouteT) (ret *CMediaRouteT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMediaRouteT((*C.cef_media_route_t)(p.pc_media_route), byCef)
 	case byApi:
-		BaseAddRef(p.pc_media_route)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMediaRouteT((*C.cef_media_route_t)(p.pc_media_route), byCef)
 
 	return ret
 }
@@ -17637,12 +17637,12 @@ func PassCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) (ret *CMediaR
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMediaRouteCreateCallbackT((*C.cef_media_route_create_callback_t)(p.pc_media_route_create_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_media_route_create_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMediaRouteCreateCallbackT((*C.cef_media_route_create_callback_t)(p.pc_media_route_create_callback), byCef)
 
 	return ret
 }
@@ -17778,12 +17778,12 @@ func PassCMediaSinkT(p *CMediaSinkT) (ret *CMediaSinkT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMediaSinkT((*C.cef_media_sink_t)(p.pc_media_sink), byCef)
 	case byApi:
-		BaseAddRef(p.pc_media_sink)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMediaSinkT((*C.cef_media_sink_t)(p.pc_media_sink), byCef)
 
 	return ret
 }
@@ -18011,12 +18011,12 @@ func PassCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) (ret *C
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMediaSinkDeviceInfoCallbackT((*C.cef_media_sink_device_info_callback_t)(p.pc_media_sink_device_info_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_media_sink_device_info_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMediaSinkDeviceInfoCallbackT((*C.cef_media_sink_device_info_callback_t)(p.pc_media_sink_device_info_callback), byCef)
 
 	return ret
 }
@@ -18143,12 +18143,12 @@ func PassCMediaSourceT(p *CMediaSourceT) (ret *CMediaSourceT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMediaSourceT((*C.cef_media_source_t)(p.pc_media_source), byCef)
 	case byApi:
-		BaseAddRef(p.pc_media_source)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMediaSourceT((*C.cef_media_source_t)(p.pc_media_source), byCef)
 
 	return ret
 }
@@ -18303,12 +18303,12 @@ func PassCMenuButtonT(p *CMenuButtonT) (ret *CMenuButtonT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMenuButtonT((*C.cef_menu_button_t)(p.pc_menu_button), byCef)
 	case byApi:
-		BaseAddRef(p.pc_menu_button)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMenuButtonT((*C.cef_menu_button_t)(p.pc_menu_button), byCef)
 
 	return ret
 }
@@ -18486,12 +18486,12 @@ func PassCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) (ret *CMenuButtonPr
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMenuButtonPressedLockT((*C.cef_menu_button_pressed_lock_t)(p.pc_menu_button_pressed_lock), byCef)
 	case byApi:
-		BaseAddRef(p.pc_menu_button_pressed_lock)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMenuButtonPressedLockT((*C.cef_menu_button_pressed_lock_t)(p.pc_menu_button_pressed_lock), byCef)
 
 	return ret
 }
@@ -18605,12 +18605,12 @@ func PassCMenuButtonDelegateT(p *CMenuButtonDelegateT) (ret *CMenuButtonDelegate
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMenuButtonDelegateT((*C.cef_menu_button_delegate_t)(p.pc_menu_button_delegate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_menu_button_delegate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMenuButtonDelegateT((*C.cef_menu_button_delegate_t)(p.pc_menu_button_delegate), byCef)
 
 	return ret
 }
@@ -18948,12 +18948,12 @@ func PassCMenuModelT(p *CMenuModelT) (ret *CMenuModelT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMenuModelT((*C.cef_menu_model_t)(p.pc_menu_model), byCef)
 	case byApi:
-		BaseAddRef(p.pc_menu_model)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMenuModelT((*C.cef_menu_model_t)(p.pc_menu_model), byCef)
 
 	return ret
 }
@@ -19949,12 +19949,12 @@ func PassCMenuModelDelegateT(p *CMenuModelDelegateT) (ret *CMenuModelDelegateT) 
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCMenuModelDelegateT((*C.cef_menu_model_delegate_t)(p.pc_menu_model_delegate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_menu_model_delegate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCMenuModelDelegateT((*C.cef_menu_model_delegate_t)(p.pc_menu_model_delegate), byCef)
 
 	return ret
 }
@@ -20298,12 +20298,12 @@ func PassCNavigationEntryT(p *CNavigationEntryT) (ret *CNavigationEntryT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCNavigationEntryT((*C.cef_navigation_entry_t)(p.pc_navigation_entry), byCef)
 	case byApi:
-		BaseAddRef(p.pc_navigation_entry)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCNavigationEntryT((*C.cef_navigation_entry_t)(p.pc_navigation_entry), byCef)
 
 	return ret
 }
@@ -20642,12 +20642,12 @@ func PassCPanelT(p *CPanelT) (ret *CPanelT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPanelT((*C.cef_panel_t)(p.pc_panel), byCef)
 	case byApi:
-		BaseAddRef(p.pc_panel)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPanelT((*C.cef_panel_t)(p.pc_panel), byCef)
 
 	return ret
 }
@@ -20946,12 +20946,12 @@ func PassCPanelDelegateT(p *CPanelDelegateT) (ret *CPanelDelegateT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPanelDelegateT((*C.cef_panel_delegate_t)(p.pc_panel_delegate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_panel_delegate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPanelDelegateT((*C.cef_panel_delegate_t)(p.pc_panel_delegate), byCef)
 
 	return ret
 }
@@ -21241,12 +21241,12 @@ func PassCPrintDialogCallbackT(p *CPrintDialogCallbackT) (ret *CPrintDialogCallb
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPrintDialogCallbackT((*C.cef_print_dialog_callback_t)(p.pc_print_dialog_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_print_dialog_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPrintDialogCallbackT((*C.cef_print_dialog_callback_t)(p.pc_print_dialog_callback), byCef)
 
 	return ret
 }
@@ -21383,12 +21383,12 @@ func PassCPrintJobCallbackT(p *CPrintJobCallbackT) (ret *CPrintJobCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPrintJobCallbackT((*C.cef_print_job_callback_t)(p.pc_print_job_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_print_job_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPrintJobCallbackT((*C.cef_print_job_callback_t)(p.pc_print_job_callback), byCef)
 
 	return ret
 }
@@ -21511,12 +21511,12 @@ func PassCPrintHandlerT(p *CPrintHandlerT) (ret *CPrintHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPrintHandlerT((*C.cef_print_handler_t)(p.pc_print_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_print_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPrintHandlerT((*C.cef_print_handler_t)(p.pc_print_handler), byCef)
 
 	return ret
 }
@@ -21847,12 +21847,12 @@ func PassCPrintSettingsT(p *CPrintSettingsT) (ret *CPrintSettingsT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPrintSettingsT((*C.cef_print_settings_t)(p.pc_print_settings), byCef)
 	case byApi:
-		BaseAddRef(p.pc_print_settings)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPrintSettingsT((*C.cef_print_settings_t)(p.pc_print_settings), byCef)
 
 	return ret
 }
@@ -22221,12 +22221,12 @@ func PassCProcessMessageT(p *CProcessMessageT) (ret *CProcessMessageT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCProcessMessageT((*C.cef_process_message_t)(p.pc_process_message), byCef)
 	case byApi:
-		BaseAddRef(p.pc_process_message)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCProcessMessageT((*C.cef_process_message_t)(p.pc_process_message), byCef)
 
 	return ret
 }
@@ -22416,12 +22416,12 @@ func PassCRegistrationT(p *CRegistrationT) (ret *CRegistrationT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRegistrationT((*C.cef_registration_t)(p.pc_registration), byCef)
 	case byApi:
-		BaseAddRef(p.pc_registration)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRegistrationT((*C.cef_registration_t)(p.pc_registration), byCef)
 
 	return ret
 }
@@ -22536,12 +22536,12 @@ func PassCRenderHandlerT(p *CRenderHandlerT) (ret *CRenderHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRenderHandlerT((*C.cef_render_handler_t)(p.pc_render_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_render_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRenderHandlerT((*C.cef_render_handler_t)(p.pc_render_handler), byCef)
 
 	return ret
 }
@@ -23109,12 +23109,12 @@ func PassCRenderProcessHandlerT(p *CRenderProcessHandlerT) (ret *CRenderProcessH
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(p.pc_render_process_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_render_process_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(p.pc_render_process_handler), byCef)
 
 	return ret
 }
@@ -23520,12 +23520,12 @@ func PassCRequestCallbackT(p *CRequestCallbackT) (ret *CRequestCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRequestCallbackT((*C.cef_request_callback_t)(p.pc_request_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_request_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRequestCallbackT((*C.cef_request_callback_t)(p.pc_request_callback), byCef)
 
 	return ret
 }
@@ -23661,12 +23661,12 @@ func PassCRequestT(p *CRequestT) (ret *CRequestT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRequestT((*C.cef_request_t)(p.pc_request), byCef)
 	case byApi:
-		BaseAddRef(p.pc_request)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRequestT((*C.cef_request_t)(p.pc_request), byCef)
 
 	return ret
 }
@@ -24102,12 +24102,12 @@ func PassCPostDataT(p *CPostDataT) (ret *CPostDataT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPostDataT((*C.cef_post_data_t)(p.pc_post_data), byCef)
 	case byApi:
-		BaseAddRef(p.pc_post_data)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPostDataT((*C.cef_post_data_t)(p.pc_post_data), byCef)
 
 	return ret
 }
@@ -24331,12 +24331,12 @@ func PassCPostDataElementT(p *CPostDataElementT) (ret *CPostDataElementT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCPostDataElementT((*C.cef_post_data_element_t)(p.pc_post_data_element), byCef)
 	case byApi:
-		BaseAddRef(p.pc_post_data_element)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCPostDataElementT((*C.cef_post_data_element_t)(p.pc_post_data_element), byCef)
 
 	return ret
 }
@@ -24561,12 +24561,12 @@ func PassCResolveCallbackT(p *CResolveCallbackT) (ret *CResolveCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCResolveCallbackT((*C.cef_resolve_callback_t)(p.pc_resolve_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_resolve_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCResolveCallbackT((*C.cef_resolve_callback_t)(p.pc_resolve_callback), byCef)
 
 	return ret
 }
@@ -24705,12 +24705,12 @@ func PassCRequestContextT(p *CRequestContextT) (ret *CRequestContextT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRequestContextT((*C.cef_request_context_t)(p.pc_request_context), byCef)
 	case byApi:
-		BaseAddRef(p.pc_request_context)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRequestContextT((*C.cef_request_context_t)(p.pc_request_context), byCef)
 
 	return ret
 }
@@ -25367,12 +25367,12 @@ func PassCRequestContextHandlerT(p *CRequestContextHandlerT) (ret *CRequestConte
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRequestContextHandlerT((*C.cef_request_context_handler_t)(p.pc_request_context_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_request_context_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRequestContextHandlerT((*C.cef_request_context_handler_t)(p.pc_request_context_handler), byCef)
 
 	return ret
 }
@@ -25666,12 +25666,12 @@ func PassCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT)
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCSelectClientCertificateCallbackT((*C.cef_select_client_certificate_callback_t)(p.pc_select_client_certificate_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_select_client_certificate_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCSelectClientCertificateCallbackT((*C.cef_select_client_certificate_callback_t)(p.pc_select_client_certificate_callback), byCef)
 
 	return ret
 }
@@ -25801,12 +25801,12 @@ func PassCRequestHandlerT(p *CRequestHandlerT) (ret *CRequestHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRequestHandlerT((*C.cef_request_handler_t)(p.pc_request_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_request_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRequestHandlerT((*C.cef_request_handler_t)(p.pc_request_handler), byCef)
 
 	return ret
 }
@@ -26325,12 +26325,12 @@ func PassCResourceBundleHandlerT(p *CResourceBundleHandlerT) (ret *CResourceBund
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCResourceBundleHandlerT((*C.cef_resource_bundle_handler_t)(p.pc_resource_bundle_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_resource_bundle_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCResourceBundleHandlerT((*C.cef_resource_bundle_handler_t)(p.pc_resource_bundle_handler), byCef)
 
 	return ret
 }
@@ -26597,12 +26597,12 @@ func PassCResourceSkipCallbackT(p *CResourceSkipCallbackT) (ret *CResourceSkipCa
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCResourceSkipCallbackT((*C.cef_resource_skip_callback_t)(p.pc_resource_skip_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_resource_skip_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCResourceSkipCallbackT((*C.cef_resource_skip_callback_t)(p.pc_resource_skip_callback), byCef)
 
 	return ret
 }
@@ -26728,12 +26728,12 @@ func PassCResourceReadCallbackT(p *CResourceReadCallbackT) (ret *CResourceReadCa
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCResourceReadCallbackT((*C.cef_resource_read_callback_t)(p.pc_resource_read_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_resource_read_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCResourceReadCallbackT((*C.cef_resource_read_callback_t)(p.pc_resource_read_callback), byCef)
 
 	return ret
 }
@@ -26861,12 +26861,12 @@ func PassCResourceHandlerT(p *CResourceHandlerT) (ret *CResourceHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCResourceHandlerT((*C.cef_resource_handler_t)(p.pc_resource_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_resource_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCResourceHandlerT((*C.cef_resource_handler_t)(p.pc_resource_handler), byCef)
 
 	return ret
 }
@@ -27225,12 +27225,12 @@ func PassCResourceRequestHandlerT(p *CResourceRequestHandlerT) (ret *CResourceRe
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCResourceRequestHandlerT((*C.cef_resource_request_handler_t)(p.pc_resource_request_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_resource_request_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCResourceRequestHandlerT((*C.cef_resource_request_handler_t)(p.pc_resource_request_handler), byCef)
 
 	return ret
 }
@@ -27665,12 +27665,12 @@ func PassCCookieAccessFilterT(p *CCookieAccessFilterT) (ret *CCookieAccessFilter
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCCookieAccessFilterT((*C.cef_cookie_access_filter_t)(p.pc_cookie_access_filter), byCef)
 	case byApi:
-		BaseAddRef(p.pc_cookie_access_filter)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCCookieAccessFilterT((*C.cef_cookie_access_filter_t)(p.pc_cookie_access_filter), byCef)
 
 	return ret
 }
@@ -27920,12 +27920,12 @@ func PassCResponseT(p *CResponseT) (ret *CResponseT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCResponseT((*C.cef_response_t)(p.pc_response), byCef)
 	case byApi:
-		BaseAddRef(p.pc_response)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCResponseT((*C.cef_response_t)(p.pc_response), byCef)
 
 	return ret
 }
@@ -28277,12 +28277,12 @@ func PassCResponseFilterT(p *CResponseFilterT) (ret *CResponseFilterT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCResponseFilterT((*C.cef_response_filter_t)(p.pc_response_filter), byCef)
 	case byApi:
-		BaseAddRef(p.pc_response_filter)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCResponseFilterT((*C.cef_response_filter_t)(p.pc_response_filter), byCef)
 
 	return ret
 }
@@ -28632,12 +28632,12 @@ func PassCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) (ret *CSchemeHandlerF
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCSchemeHandlerFactoryT((*C.cef_scheme_handler_factory_t)(p.pc_scheme_handler_factory), byCef)
 	case byApi:
-		BaseAddRef(p.pc_scheme_handler_factory)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCSchemeHandlerFactoryT((*C.cef_scheme_handler_factory_t)(p.pc_scheme_handler_factory), byCef)
 
 	return ret
 }
@@ -28909,12 +28909,12 @@ func PassCScrollViewT(p *CScrollViewT) (ret *CScrollViewT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCScrollViewT((*C.cef_scroll_view_t)(p.pc_scroll_view), byCef)
 	case byApi:
-		BaseAddRef(p.pc_scroll_view)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCScrollViewT((*C.cef_scroll_view_t)(p.pc_scroll_view), byCef)
 
 	return ret
 }
@@ -29136,12 +29136,12 @@ func PassCSslinfoT(p *CSslinfoT) (ret *CSslinfoT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCSslinfoT((*C.cef_sslinfo_t)(p.pc_sslinfo), byCef)
 	case byApi:
-		BaseAddRef(p.pc_sslinfo)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCSslinfoT((*C.cef_sslinfo_t)(p.pc_sslinfo), byCef)
 
 	return ret
 }
@@ -29291,12 +29291,12 @@ func PassCSslstatusT(p *CSslstatusT) (ret *CSslstatusT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCSslstatusT((*C.cef_sslstatus_t)(p.pc_sslstatus), byCef)
 	case byApi:
-		BaseAddRef(p.pc_sslstatus)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCSslstatusT((*C.cef_sslstatus_t)(p.pc_sslstatus), byCef)
 
 	return ret
 }
@@ -29467,12 +29467,12 @@ func PassCReadHandlerT(p *CReadHandlerT) (ret *CReadHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCReadHandlerT((*C.cef_read_handler_t)(p.pc_read_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_read_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCReadHandlerT((*C.cef_read_handler_t)(p.pc_read_handler), byCef)
 
 	return ret
 }
@@ -29767,12 +29767,12 @@ func PassCStreamReaderT(p *CStreamReaderT) (ret *CStreamReaderT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCStreamReaderT((*C.cef_stream_reader_t)(p.pc_stream_reader), byCef)
 	case byApi:
-		BaseAddRef(p.pc_stream_reader)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCStreamReaderT((*C.cef_stream_reader_t)(p.pc_stream_reader), byCef)
 
 	return ret
 }
@@ -29998,12 +29998,12 @@ func PassCWriteHandlerT(p *CWriteHandlerT) (ret *CWriteHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCWriteHandlerT((*C.cef_write_handler_t)(p.pc_write_handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_write_handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCWriteHandlerT((*C.cef_write_handler_t)(p.pc_write_handler), byCef)
 
 	return ret
 }
@@ -30298,12 +30298,12 @@ func PassCStreamWriterT(p *CStreamWriterT) (ret *CStreamWriterT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCStreamWriterT((*C.cef_stream_writer_t)(p.pc_stream_writer), byCef)
 	case byApi:
-		BaseAddRef(p.pc_stream_writer)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCStreamWriterT((*C.cef_stream_writer_t)(p.pc_stream_writer), byCef)
 
 	return ret
 }
@@ -30514,12 +30514,12 @@ func PassCStringVisitorT(p *CStringVisitorT) (ret *CStringVisitorT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCStringVisitorT((*C.cef_string_visitor_t)(p.pc_string_visitor), byCef)
 	case byApi:
-		BaseAddRef(p.pc_string_visitor)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCStringVisitorT((*C.cef_string_visitor_t)(p.pc_string_visitor), byCef)
 
 	return ret
 }
@@ -30737,12 +30737,12 @@ func PassCTaskT(p *CTaskT) (ret *CTaskT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCTaskT((*C.cef_task_t)(p.pc_task), byCef)
 	case byApi:
-		BaseAddRef(p.pc_task)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCTaskT((*C.cef_task_t)(p.pc_task), byCef)
 
 	return ret
 }
@@ -30958,12 +30958,12 @@ func PassCTaskRunnerT(p *CTaskRunnerT) (ret *CTaskRunnerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCTaskRunnerT((*C.cef_task_runner_t)(p.pc_task_runner), byCef)
 	case byApi:
-		BaseAddRef(p.pc_task_runner)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCTaskRunnerT((*C.cef_task_runner_t)(p.pc_task_runner), byCef)
 
 	return ret
 }
@@ -31245,12 +31245,12 @@ func PassCTextfieldT(p *CTextfieldT) (ret *CTextfieldT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCTextfieldT((*C.cef_textfield_t)(p.pc_textfield), byCef)
 	case byApi:
-		BaseAddRef(p.pc_textfield)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCTextfieldT((*C.cef_textfield_t)(p.pc_textfield), byCef)
 
 	return ret
 }
@@ -31772,12 +31772,12 @@ func PassCTextfieldDelegateT(p *CTextfieldDelegateT) (ret *CTextfieldDelegateT) 
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCTextfieldDelegateT((*C.cef_textfield_delegate_t)(p.pc_textfield_delegate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_textfield_delegate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCTextfieldDelegateT((*C.cef_textfield_delegate_t)(p.pc_textfield_delegate), byCef)
 
 	return ret
 }
@@ -32112,12 +32112,12 @@ func PassCEndTracingCallbackT(p *CEndTracingCallbackT) (ret *CEndTracingCallback
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCEndTracingCallbackT((*C.cef_end_tracing_callback_t)(p.pc_end_tracing_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_end_tracing_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCEndTracingCallbackT((*C.cef_end_tracing_callback_t)(p.pc_end_tracing_callback), byCef)
 
 	return ret
 }
@@ -32413,12 +32413,12 @@ func PassCUrlrequestT(p *CUrlrequestT) (ret *CUrlrequestT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCUrlrequestT((*C.cef_urlrequest_t)(p.pc_urlrequest), byCef)
 	case byApi:
-		BaseAddRef(p.pc_urlrequest)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCUrlrequestT((*C.cef_urlrequest_t)(p.pc_urlrequest), byCef)
 
 	return ret
 }
@@ -32653,12 +32653,12 @@ func PassCUrlrequestClientT(p *CUrlrequestClientT) (ret *CUrlrequestClientT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCUrlrequestClientT((*C.cef_urlrequest_client_t)(p.pc_urlrequest_client), byCef)
 	case byApi:
-		BaseAddRef(p.pc_urlrequest_client)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCUrlrequestClientT((*C.cef_urlrequest_client_t)(p.pc_urlrequest_client), byCef)
 
 	return ret
 }
@@ -32982,12 +32982,12 @@ func PassCV8contextT(p *CV8contextT) (ret *CV8contextT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8contextT((*C.cef_v8context_t)(p.pc_v8context), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8context)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8contextT((*C.cef_v8context_t)(p.pc_v8context), byCef)
 
 	return ret
 }
@@ -33269,12 +33269,12 @@ func PassCV8handlerT(p *CV8handlerT) (ret *CV8handlerT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8handlerT((*C.cef_v8handler_t)(p.pc_v8handler), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8handler)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8handlerT((*C.cef_v8handler_t)(p.pc_v8handler), byCef)
 
 	return ret
 }
@@ -33494,12 +33494,12 @@ func PassCV8accessorT(p *CV8accessorT) (ret *CV8accessorT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8accessorT((*C.cef_v8accessor_t)(p.pc_v8accessor), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8accessor)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8accessorT((*C.cef_v8accessor_t)(p.pc_v8accessor), byCef)
 
 	return ret
 }
@@ -33746,12 +33746,12 @@ func PassCV8interceptorT(p *CV8interceptorT) (ret *CV8interceptorT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8interceptorT((*C.cef_v8interceptor_t)(p.pc_v8interceptor), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8interceptor)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8interceptorT((*C.cef_v8interceptor_t)(p.pc_v8interceptor), byCef)
 
 	return ret
 }
@@ -33990,12 +33990,12 @@ func PassCV8exceptionT(p *CV8exceptionT) (ret *CV8exceptionT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8exceptionT((*C.cef_v8exception_t)(p.pc_v8exception), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8exception)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8exceptionT((*C.cef_v8exception_t)(p.pc_v8exception), byCef)
 
 	return ret
 }
@@ -34216,12 +34216,12 @@ func PassCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) (ret 
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8arrayBufferReleaseCallbackT((*C.cef_v8array_buffer_release_callback_t)(p.pc_v8array_buffer_release_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8array_buffer_release_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8arrayBufferReleaseCallbackT((*C.cef_v8array_buffer_release_callback_t)(p.pc_v8array_buffer_release_callback), byCef)
 
 	return ret
 }
@@ -34438,12 +34438,12 @@ func PassCV8valueT(p *CV8valueT) (ret *CV8valueT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8valueT((*C.cef_v8value_t)(p.pc_v8value), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8value)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8valueT((*C.cef_v8value_t)(p.pc_v8value), byCef)
 
 	return ret
 }
@@ -35413,12 +35413,12 @@ func PassCV8stackTraceT(p *CV8stackTraceT) (ret *CV8stackTraceT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8stackTraceT((*C.cef_v8stack_trace_t)(p.pc_v8stack_trace), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8stack_trace)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8stackTraceT((*C.cef_v8stack_trace_t)(p.pc_v8stack_trace), byCef)
 
 	return ret
 }
@@ -35585,12 +35585,12 @@ func PassCV8stackFrameT(p *CV8stackFrameT) (ret *CV8stackFrameT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCV8stackFrameT((*C.cef_v8stack_frame_t)(p.pc_v8stack_frame), byCef)
 	case byApi:
-		BaseAddRef(p.pc_v8stack_frame)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCV8stackFrameT((*C.cef_v8stack_frame_t)(p.pc_v8stack_frame), byCef)
 
 	return ret
 }
@@ -35889,12 +35889,12 @@ func PassCValueT(p *CValueT) (ret *CValueT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCValueT((*C.cef_value_t)(p.pc_value), byCef)
 	case byApi:
-		BaseAddRef(p.pc_value)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCValueT((*C.cef_value_t)(p.pc_value), byCef)
 
 	return ret
 }
@@ -36347,12 +36347,12 @@ func PassCBinaryValueT(p *CBinaryValueT) (ret *CBinaryValueT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCBinaryValueT((*C.cef_binary_value_t)(p.pc_binary_value), byCef)
 	case byApi:
-		BaseAddRef(p.pc_binary_value)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCBinaryValueT((*C.cef_binary_value_t)(p.pc_binary_value), byCef)
 
 	return ret
 }
@@ -36583,12 +36583,12 @@ func PassCDictionaryValueT(p *CDictionaryValueT) (ret *CDictionaryValueT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCDictionaryValueT((*C.cef_dictionary_value_t)(p.pc_dictionary_value), byCef)
 	case byApi:
-		BaseAddRef(p.pc_dictionary_value)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCDictionaryValueT((*C.cef_dictionary_value_t)(p.pc_dictionary_value), byCef)
 
 	return ret
 }
@@ -37186,12 +37186,12 @@ func PassCListValueT(p *CListValueT) (ret *CListValueT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCListValueT((*C.cef_list_value_t)(p.pc_list_value), byCef)
 	case byApi:
-		BaseAddRef(p.pc_list_value)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCListValueT((*C.cef_list_value_t)(p.pc_list_value), byCef)
 
 	return ret
 }
@@ -37758,12 +37758,12 @@ func PassCViewT(p *CViewT) (ret *CViewT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCViewT((*C.cef_view_t)(p.pc_view), byCef)
 	case byApi:
-		BaseAddRef(p.pc_view)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCViewT((*C.cef_view_t)(p.pc_view), byCef)
 
 	return ret
 }
@@ -38514,12 +38514,12 @@ func PassCViewDelegateT(p *CViewDelegateT) (ret *CViewDelegateT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCViewDelegateT((*C.cef_view_delegate_t)(p.pc_view_delegate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_view_delegate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCViewDelegateT((*C.cef_view_delegate_t)(p.pc_view_delegate), byCef)
 
 	return ret
 }
@@ -38911,12 +38911,12 @@ func PassCWebPluginInfoT(p *CWebPluginInfoT) (ret *CWebPluginInfoT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(p.pc_web_plugin_info), byCef)
 	case byApi:
-		BaseAddRef(p.pc_web_plugin_info)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(p.pc_web_plugin_info), byCef)
 
 	return ret
 }
@@ -39093,12 +39093,12 @@ func PassCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) (ret *CWebPluginInfoV
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(p.pc_web_plugin_info_visitor), byCef)
 	case byApi:
-		BaseAddRef(p.pc_web_plugin_info_visitor)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(p.pc_web_plugin_info_visitor), byCef)
 
 	return ret
 }
@@ -39315,12 +39315,12 @@ func PassCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) (ret *CWebP
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(p.pc_web_plugin_unstable_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_web_plugin_unstable_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(p.pc_web_plugin_unstable_callback), byCef)
 
 	return ret
 }
@@ -39536,12 +39536,12 @@ func PassCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) (ret *CRegisterCdmCallb
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(p.pc_register_cdm_callback), byCef)
 	case byApi:
-		BaseAddRef(p.pc_register_cdm_callback)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(p.pc_register_cdm_callback), byCef)
 
 	return ret
 }
@@ -39893,12 +39893,12 @@ func PassCWindowT(p *CWindowT) (ret *CWindowT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCWindowT((*C.cef_window_t)(p.pc_window), byCef)
 	case byApi:
-		BaseAddRef(p.pc_window)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCWindowT((*C.cef_window_t)(p.pc_window), byCef)
 
 	return ret
 }
@@ -40473,12 +40473,12 @@ func PassCWindowDelegateT(p *CWindowDelegateT) (ret *CWindowDelegateT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCWindowDelegateT((*C.cef_window_delegate_t)(p.pc_window_delegate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_window_delegate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCWindowDelegateT((*C.cef_window_delegate_t)(p.pc_window_delegate), byCef)
 
 	return ret
 }
@@ -41009,12 +41009,12 @@ func PassCX509certPrincipalT(p *CX509certPrincipalT) (ret *CX509certPrincipalT) 
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCX509certPrincipalT((*C.cef_x509cert_principal_t)(p.pc_x509cert_principal), byCef)
 	case byApi:
-		BaseAddRef(p.pc_x509cert_principal)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCX509certPrincipalT((*C.cef_x509cert_principal_t)(p.pc_x509cert_principal), byCef)
 
 	return ret
 }
@@ -41252,12 +41252,12 @@ func PassCX509certificateT(p *CX509certificateT) (ret *CX509certificateT) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = newCX509certificateT((*C.cef_x509certificate_t)(p.pc_x509certificate), byCef)
 	case byApi:
-		BaseAddRef(p.pc_x509certificate)
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = newCX509certificateT((*C.cef_x509certificate_t)(p.pc_x509certificate), byCef)
 
 	return ret
 }

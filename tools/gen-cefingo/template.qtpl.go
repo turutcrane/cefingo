@@ -3760,28 +3760,24 @@ func Pass`)
 		qw422016.N().S(`	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(p.pc_`)
-//line template.qtpl:728
+		ret = new`)
+//line template.qtpl:727
+		qw422016.E().S(d.GoName())
+//line template.qtpl:727
+		qw422016.N().S(`((`)
+//line template.qtpl:727
+		qw422016.E().S(d.GoCType())
+//line template.qtpl:727
+		qw422016.N().S(`)(p.pc_`)
+//line template.qtpl:727
 		qw422016.E().S(d.BaseName())
-//line template.qtpl:728
-		qw422016.N().S(`)
+//line template.qtpl:727
+		qw422016.N().S(`), byCef)
+	case byApi:
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = new`)
-//line template.qtpl:732
-		qw422016.E().S(d.GoName())
-//line template.qtpl:732
-		qw422016.N().S(`((`)
-//line template.qtpl:732
-		qw422016.E().S(d.GoCType())
-//line template.qtpl:732
-		qw422016.N().S(`)(p.pc_`)
-//line template.qtpl:732
-		qw422016.E().S(d.BaseName())
-//line template.qtpl:732
-		qw422016.N().S(`), byCef)
 `)
 //line template.qtpl:733
 	} else {

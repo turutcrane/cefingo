@@ -724,12 +724,12 @@ func Pass{%s d.GoName() %}(p {%s d.GoType() %}) (ret {%s d.GoType() %}) {
 	switch p.beUnrefed {
 	case byApp:
 		p.beUnrefed = unrefed
+		ret = new{%s d.GoName() %}(({%s d.GoCType() %})(p.pc_{%s d.BaseName() %}), byCef)
 	case byApi:
-		BaseAddRef(p.pc_{%s d.BaseName() %})
+		ret = p
 	default:
 		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
 	}
-	ret = new{%s d.GoName() %}(({%s d.GoCType() %})(p.pc_{%s d.BaseName() %}), byCef)
 	{%- else -%}
 	ret = p
 	{%- endif %}
