@@ -3660,7 +3660,7 @@ func (r *RefTo`)
 //line template.qtpl:694
 		qw422016.E().S(d.BaseName())
 //line template.qtpl:694
-		qw422016.N().S(`.ForceUnref()
+		qw422016.N().S(`.Unref()
 `)
 //line template.qtpl:695
 	}
@@ -3697,7 +3697,7 @@ func (r *RefTo`)
 //line template.qtpl:705
 		qw422016.E().S(d.BaseName())
 //line template.qtpl:705
-		qw422016.N().S(`.ForceUnref()
+		qw422016.N().S(`.Unref()
 	gop := src.pc_`)
 //line template.qtpl:706
 		qw422016.E().S(d.BaseName())
@@ -3815,7 +3815,7 @@ func (r *RefTo`)
 //line template.qtpl:744
 		qw422016.E().S(d.BaseName())
 //line template.qtpl:744
-		qw422016.N().S(`.ForceUnref()
+		qw422016.N().S(`.Unref()
 	gop := p.pc_`)
 //line template.qtpl:745
 		qw422016.E().S(d.BaseName())
@@ -4004,7 +4004,7 @@ func (`)
 //line template.qtpl:785
 		qw422016.E().S(d.GoType())
 //line template.qtpl:785
-		qw422016.N().S(`) ForceUnref() (ret bool) {
+		qw422016.N().S(`) Unref() (ret bool) {
 	if `)
 //line template.qtpl:786
 		qw422016.E().S(d.BaseName())

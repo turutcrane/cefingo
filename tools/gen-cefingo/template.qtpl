@@ -691,7 +691,7 @@ func (r RefTo{%s d.GoName() %}) Get{%s d.GoName() %}() {%s d.GoType() %} {
 func (r *RefTo{%s d.GoName() %}) set{%s d.GoName() %}(p {%s d.GoType() %}) {
 	// prevValue = r.p_{%s d.BaseName() %}
 	{%- if d.St == parser.StRefCounted -%}
-	r.p_{%s d.BaseName() %}.ForceUnref()
+	r.p_{%s d.BaseName() %}.Unref()
 	{%- endif -%}
 	r.p_{%s d.BaseName() %} = p
 	// return prevValue
@@ -702,7 +702,7 @@ func (r *RefTo{%s d.GoName() %}) TakeOver{%s d.GoName() %}(src {%s d.GoType() %}
 		return
 	}
 	{%- if d.St == parser.StRefCounted -%}
-	r.p_{%s d.BaseName() %}.ForceUnref()
+	r.p_{%s d.BaseName() %}.Unref()
 	gop := src.pc_{%s d.BaseName() %}
 	switch src.beUnrefed {
 	case byApp:
@@ -741,7 +741,7 @@ func (r *RefTo{%s d.GoName() %}) NewRef{%s d.GoName() %}(p {%s d.GoType() %}) {
 		return
 	}
 	{%- if d.St == parser.StRefCounted -%}
-	r.p_{%s d.BaseName() %}.ForceUnref()
+	r.p_{%s d.BaseName() %}.Unref()
 	gop := p.pc_{%s d.BaseName() %}
 	BaseAddRef(gop)
 	r.p_{%s d.BaseName() %} = new{%s d.GoName() %}(({%s d.GoCType() %})(gop), byApp)
@@ -782,7 +782,7 @@ func (p {%s d.CgoType() %}) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func ({%s d.BaseName() %} {%s d.GoType() %}) ForceUnref() (ret bool) {
+func ({%s d.BaseName() %} {%s d.GoType() %}) Unref() (ret bool) {
 	if {%s d.BaseName() %} == nil {
 		return
 	}

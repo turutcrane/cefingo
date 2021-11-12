@@ -44,7 +44,7 @@ func (r RefToCAccessibilityHandlerT) GetCAccessibilityHandlerT() *CAccessibility
 
 func (r *RefToCAccessibilityHandlerT) setCAccessibilityHandlerT(p *CAccessibilityHandlerT) {
 	// prevValue = r.p_accessibility_handler
-	r.p_accessibility_handler.ForceUnref()
+	r.p_accessibility_handler.Unref()
 	r.p_accessibility_handler = p
 	// return prevValue
 }
@@ -53,7 +53,7 @@ func (r *RefToCAccessibilityHandlerT) TakeOverCAccessibilityHandlerT(src *CAcces
 	if r == nil {
 		return
 	}
-	r.p_accessibility_handler.ForceUnref()
+	r.p_accessibility_handler.Unref()
 	gop := src.pc_accessibility_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -85,7 +85,7 @@ func (r *RefToCAccessibilityHandlerT) NewRefCAccessibilityHandlerT(p *CAccessibi
 	if r == nil {
 		return
 	}
-	r.p_accessibility_handler.ForceUnref()
+	r.p_accessibility_handler.Unref()
 	gop := p.pc_accessibility_handler
 	BaseAddRef(gop)
 	r.p_accessibility_handler = newCAccessibilityHandlerT((*C.cef_accessibility_handler_t)(gop), byApp)
@@ -119,7 +119,7 @@ func (p *cCAccessibilityHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (accessibility_handler *CAccessibilityHandlerT) ForceUnref() (ret bool) {
+func (accessibility_handler *CAccessibilityHandlerT) Unref() (ret bool) {
 	if accessibility_handler == nil {
 		return
 	}
@@ -285,7 +285,7 @@ func (r RefToCAppT) GetCAppT() *CAppT {
 
 func (r *RefToCAppT) setCAppT(p *CAppT) {
 	// prevValue = r.p_app
-	r.p_app.ForceUnref()
+	r.p_app.Unref()
 	r.p_app = p
 	// return prevValue
 }
@@ -294,7 +294,7 @@ func (r *RefToCAppT) TakeOverCAppT(src *CAppT) {
 	if r == nil {
 		return
 	}
-	r.p_app.ForceUnref()
+	r.p_app.Unref()
 	gop := src.pc_app
 	switch src.beUnrefed {
 	case byApp:
@@ -326,7 +326,7 @@ func (r *RefToCAppT) NewRefCAppT(p *CAppT) {
 	if r == nil {
 		return
 	}
-	r.p_app.ForceUnref()
+	r.p_app.Unref()
 	gop := p.pc_app
 	BaseAddRef(gop)
 	r.p_app = newCAppT((*C.cef_app_t)(gop), byApp)
@@ -360,7 +360,7 @@ func (p *cCAppT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (app *CAppT) ForceUnref() (ret bool) {
+func (app *CAppT) Unref() (ret bool) {
 	if app == nil {
 		return
 	}
@@ -734,7 +734,7 @@ func (r RefToCAudioHandlerT) GetCAudioHandlerT() *CAudioHandlerT {
 
 func (r *RefToCAudioHandlerT) setCAudioHandlerT(p *CAudioHandlerT) {
 	// prevValue = r.p_audio_handler
-	r.p_audio_handler.ForceUnref()
+	r.p_audio_handler.Unref()
 	r.p_audio_handler = p
 	// return prevValue
 }
@@ -743,7 +743,7 @@ func (r *RefToCAudioHandlerT) TakeOverCAudioHandlerT(src *CAudioHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_audio_handler.ForceUnref()
+	r.p_audio_handler.Unref()
 	gop := src.pc_audio_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -775,7 +775,7 @@ func (r *RefToCAudioHandlerT) NewRefCAudioHandlerT(p *CAudioHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_audio_handler.ForceUnref()
+	r.p_audio_handler.Unref()
 	gop := p.pc_audio_handler
 	BaseAddRef(gop)
 	r.p_audio_handler = newCAudioHandlerT((*C.cef_audio_handler_t)(gop), byApp)
@@ -809,7 +809,7 @@ func (p *cCAudioHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (audio_handler *CAudioHandlerT) ForceUnref() (ret bool) {
+func (audio_handler *CAudioHandlerT) Unref() (ret bool) {
 	if audio_handler == nil {
 		return
 	}
@@ -1029,7 +1029,7 @@ func (r RefToCAuthCallbackT) GetCAuthCallbackT() *CAuthCallbackT {
 
 func (r *RefToCAuthCallbackT) setCAuthCallbackT(p *CAuthCallbackT) {
 	// prevValue = r.p_auth_callback
-	r.p_auth_callback.ForceUnref()
+	r.p_auth_callback.Unref()
 	r.p_auth_callback = p
 	// return prevValue
 }
@@ -1038,7 +1038,7 @@ func (r *RefToCAuthCallbackT) TakeOverCAuthCallbackT(src *CAuthCallbackT) {
 	if r == nil {
 		return
 	}
-	r.p_auth_callback.ForceUnref()
+	r.p_auth_callback.Unref()
 	gop := src.pc_auth_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -1070,7 +1070,7 @@ func (r *RefToCAuthCallbackT) NewRefCAuthCallbackT(p *CAuthCallbackT) {
 	if r == nil {
 		return
 	}
-	r.p_auth_callback.ForceUnref()
+	r.p_auth_callback.Unref()
 	gop := p.pc_auth_callback
 	BaseAddRef(gop)
 	r.p_auth_callback = newCAuthCallbackT((*C.cef_auth_callback_t)(gop), byApp)
@@ -1104,7 +1104,7 @@ func (p *cCAuthCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (auth_callback *CAuthCallbackT) ForceUnref() (ret bool) {
+func (auth_callback *CAuthCallbackT) Unref() (ret bool) {
 	if auth_callback == nil {
 		return
 	}
@@ -1176,7 +1176,7 @@ func (r RefToCBoxLayoutT) GetCBoxLayoutT() *CBoxLayoutT {
 
 func (r *RefToCBoxLayoutT) setCBoxLayoutT(p *CBoxLayoutT) {
 	// prevValue = r.p_box_layout
-	r.p_box_layout.ForceUnref()
+	r.p_box_layout.Unref()
 	r.p_box_layout = p
 	// return prevValue
 }
@@ -1185,7 +1185,7 @@ func (r *RefToCBoxLayoutT) TakeOverCBoxLayoutT(src *CBoxLayoutT) {
 	if r == nil {
 		return
 	}
-	r.p_box_layout.ForceUnref()
+	r.p_box_layout.Unref()
 	gop := src.pc_box_layout
 	switch src.beUnrefed {
 	case byApp:
@@ -1217,7 +1217,7 @@ func (r *RefToCBoxLayoutT) NewRefCBoxLayoutT(p *CBoxLayoutT) {
 	if r == nil {
 		return
 	}
-	r.p_box_layout.ForceUnref()
+	r.p_box_layout.Unref()
 	gop := p.pc_box_layout
 	BaseAddRef(gop)
 	r.p_box_layout = newCBoxLayoutT((*C.cef_box_layout_t)(gop), byApp)
@@ -1251,7 +1251,7 @@ func (p *cCBoxLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (box_layout *CBoxLayoutT) ForceUnref() (ret bool) {
+func (box_layout *CBoxLayoutT) Unref() (ret bool) {
 	if box_layout == nil {
 		return
 	}
@@ -1343,7 +1343,7 @@ func (r RefToCBrowserT) GetCBrowserT() *CBrowserT {
 
 func (r *RefToCBrowserT) setCBrowserT(p *CBrowserT) {
 	// prevValue = r.p_browser
-	r.p_browser.ForceUnref()
+	r.p_browser.Unref()
 	r.p_browser = p
 	// return prevValue
 }
@@ -1352,7 +1352,7 @@ func (r *RefToCBrowserT) TakeOverCBrowserT(src *CBrowserT) {
 	if r == nil {
 		return
 	}
-	r.p_browser.ForceUnref()
+	r.p_browser.Unref()
 	gop := src.pc_browser
 	switch src.beUnrefed {
 	case byApp:
@@ -1384,7 +1384,7 @@ func (r *RefToCBrowserT) NewRefCBrowserT(p *CBrowserT) {
 	if r == nil {
 		return
 	}
-	r.p_browser.ForceUnref()
+	r.p_browser.Unref()
 	gop := p.pc_browser
 	BaseAddRef(gop)
 	r.p_browser = newCBrowserT((*C.cef_browser_t)(gop), byApp)
@@ -1418,7 +1418,7 @@ func (p *cCBrowserT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (browser *CBrowserT) ForceUnref() (ret bool) {
+func (browser *CBrowserT) Unref() (ret bool) {
 	if browser == nil {
 		return
 	}
@@ -1693,7 +1693,7 @@ func (r RefToCRunFileDialogCallbackT) GetCRunFileDialogCallbackT() *CRunFileDial
 
 func (r *RefToCRunFileDialogCallbackT) setCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) {
 	// prevValue = r.p_run_file_dialog_callback
-	r.p_run_file_dialog_callback.ForceUnref()
+	r.p_run_file_dialog_callback.Unref()
 	r.p_run_file_dialog_callback = p
 	// return prevValue
 }
@@ -1702,7 +1702,7 @@ func (r *RefToCRunFileDialogCallbackT) TakeOverCRunFileDialogCallbackT(src *CRun
 	if r == nil {
 		return
 	}
-	r.p_run_file_dialog_callback.ForceUnref()
+	r.p_run_file_dialog_callback.Unref()
 	gop := src.pc_run_file_dialog_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -1734,7 +1734,7 @@ func (r *RefToCRunFileDialogCallbackT) NewRefCRunFileDialogCallbackT(p *CRunFile
 	if r == nil {
 		return
 	}
-	r.p_run_file_dialog_callback.ForceUnref()
+	r.p_run_file_dialog_callback.Unref()
 	gop := p.pc_run_file_dialog_callback
 	BaseAddRef(gop)
 	r.p_run_file_dialog_callback = newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(gop), byApp)
@@ -1768,7 +1768,7 @@ func (p *cCRunFileDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (run_file_dialog_callback *CRunFileDialogCallbackT) ForceUnref() (ret bool) {
+func (run_file_dialog_callback *CRunFileDialogCallbackT) Unref() (ret bool) {
 	if run_file_dialog_callback == nil {
 		return
 	}
@@ -1915,7 +1915,7 @@ func (r RefToCNavigationEntryVisitorT) GetCNavigationEntryVisitorT() *CNavigatio
 
 func (r *RefToCNavigationEntryVisitorT) setCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) {
 	// prevValue = r.p_navigation_entry_visitor
-	r.p_navigation_entry_visitor.ForceUnref()
+	r.p_navigation_entry_visitor.Unref()
 	r.p_navigation_entry_visitor = p
 	// return prevValue
 }
@@ -1924,7 +1924,7 @@ func (r *RefToCNavigationEntryVisitorT) TakeOverCNavigationEntryVisitorT(src *CN
 	if r == nil {
 		return
 	}
-	r.p_navigation_entry_visitor.ForceUnref()
+	r.p_navigation_entry_visitor.Unref()
 	gop := src.pc_navigation_entry_visitor
 	switch src.beUnrefed {
 	case byApp:
@@ -1956,7 +1956,7 @@ func (r *RefToCNavigationEntryVisitorT) NewRefCNavigationEntryVisitorT(p *CNavig
 	if r == nil {
 		return
 	}
-	r.p_navigation_entry_visitor.ForceUnref()
+	r.p_navigation_entry_visitor.Unref()
 	gop := p.pc_navigation_entry_visitor
 	BaseAddRef(gop)
 	r.p_navigation_entry_visitor = newCNavigationEntryVisitorT((*C.cef_navigation_entry_visitor_t)(gop), byApp)
@@ -1990,7 +1990,7 @@ func (p *cCNavigationEntryVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_r
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (navigation_entry_visitor *CNavigationEntryVisitorT) ForceUnref() (ret bool) {
+func (navigation_entry_visitor *CNavigationEntryVisitorT) Unref() (ret bool) {
 	if navigation_entry_visitor == nil {
 		return
 	}
@@ -2139,7 +2139,7 @@ func (r RefToCPdfPrintCallbackT) GetCPdfPrintCallbackT() *CPdfPrintCallbackT {
 
 func (r *RefToCPdfPrintCallbackT) setCPdfPrintCallbackT(p *CPdfPrintCallbackT) {
 	// prevValue = r.p_pdf_print_callback
-	r.p_pdf_print_callback.ForceUnref()
+	r.p_pdf_print_callback.Unref()
 	r.p_pdf_print_callback = p
 	// return prevValue
 }
@@ -2148,7 +2148,7 @@ func (r *RefToCPdfPrintCallbackT) TakeOverCPdfPrintCallbackT(src *CPdfPrintCallb
 	if r == nil {
 		return
 	}
-	r.p_pdf_print_callback.ForceUnref()
+	r.p_pdf_print_callback.Unref()
 	gop := src.pc_pdf_print_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -2180,7 +2180,7 @@ func (r *RefToCPdfPrintCallbackT) NewRefCPdfPrintCallbackT(p *CPdfPrintCallbackT
 	if r == nil {
 		return
 	}
-	r.p_pdf_print_callback.ForceUnref()
+	r.p_pdf_print_callback.Unref()
 	gop := p.pc_pdf_print_callback
 	BaseAddRef(gop)
 	r.p_pdf_print_callback = newCPdfPrintCallbackT((*C.cef_pdf_print_callback_t)(gop), byApp)
@@ -2214,7 +2214,7 @@ func (p *cCPdfPrintCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (pdf_print_callback *CPdfPrintCallbackT) ForceUnref() (ret bool) {
+func (pdf_print_callback *CPdfPrintCallbackT) Unref() (ret bool) {
 	if pdf_print_callback == nil {
 		return
 	}
@@ -2359,7 +2359,7 @@ func (r RefToCDownloadImageCallbackT) GetCDownloadImageCallbackT() *CDownloadIma
 
 func (r *RefToCDownloadImageCallbackT) setCDownloadImageCallbackT(p *CDownloadImageCallbackT) {
 	// prevValue = r.p_download_image_callback
-	r.p_download_image_callback.ForceUnref()
+	r.p_download_image_callback.Unref()
 	r.p_download_image_callback = p
 	// return prevValue
 }
@@ -2368,7 +2368,7 @@ func (r *RefToCDownloadImageCallbackT) TakeOverCDownloadImageCallbackT(src *CDow
 	if r == nil {
 		return
 	}
-	r.p_download_image_callback.ForceUnref()
+	r.p_download_image_callback.Unref()
 	gop := src.pc_download_image_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -2400,7 +2400,7 @@ func (r *RefToCDownloadImageCallbackT) NewRefCDownloadImageCallbackT(p *CDownloa
 	if r == nil {
 		return
 	}
-	r.p_download_image_callback.ForceUnref()
+	r.p_download_image_callback.Unref()
 	gop := p.pc_download_image_callback
 	BaseAddRef(gop)
 	r.p_download_image_callback = newCDownloadImageCallbackT((*C.cef_download_image_callback_t)(gop), byApp)
@@ -2434,7 +2434,7 @@ func (p *cCDownloadImageCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (download_image_callback *CDownloadImageCallbackT) ForceUnref() (ret bool) {
+func (download_image_callback *CDownloadImageCallbackT) Unref() (ret bool) {
 	if download_image_callback == nil {
 		return
 	}
@@ -2501,7 +2501,7 @@ func (r RefToCBrowserHostT) GetCBrowserHostT() *CBrowserHostT {
 
 func (r *RefToCBrowserHostT) setCBrowserHostT(p *CBrowserHostT) {
 	// prevValue = r.p_browser_host
-	r.p_browser_host.ForceUnref()
+	r.p_browser_host.Unref()
 	r.p_browser_host = p
 	// return prevValue
 }
@@ -2510,7 +2510,7 @@ func (r *RefToCBrowserHostT) TakeOverCBrowserHostT(src *CBrowserHostT) {
 	if r == nil {
 		return
 	}
-	r.p_browser_host.ForceUnref()
+	r.p_browser_host.Unref()
 	gop := src.pc_browser_host
 	switch src.beUnrefed {
 	case byApp:
@@ -2542,7 +2542,7 @@ func (r *RefToCBrowserHostT) NewRefCBrowserHostT(p *CBrowserHostT) {
 	if r == nil {
 		return
 	}
-	r.p_browser_host.ForceUnref()
+	r.p_browser_host.Unref()
 	gop := p.pc_browser_host
 	BaseAddRef(gop)
 	r.p_browser_host = newCBrowserHostT((*C.cef_browser_host_t)(gop), byApp)
@@ -2576,7 +2576,7 @@ func (p *cCBrowserHostT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (browser_host *CBrowserHostT) ForceUnref() (ret bool) {
+func (browser_host *CBrowserHostT) Unref() (ret bool) {
 	if browser_host == nil {
 		return
 	}
@@ -3728,7 +3728,7 @@ func (r RefToCBrowserProcessHandlerT) GetCBrowserProcessHandlerT() *CBrowserProc
 
 func (r *RefToCBrowserProcessHandlerT) setCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) {
 	// prevValue = r.p_browser_process_handler
-	r.p_browser_process_handler.ForceUnref()
+	r.p_browser_process_handler.Unref()
 	r.p_browser_process_handler = p
 	// return prevValue
 }
@@ -3737,7 +3737,7 @@ func (r *RefToCBrowserProcessHandlerT) TakeOverCBrowserProcessHandlerT(src *CBro
 	if r == nil {
 		return
 	}
-	r.p_browser_process_handler.ForceUnref()
+	r.p_browser_process_handler.Unref()
 	gop := src.pc_browser_process_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -3769,7 +3769,7 @@ func (r *RefToCBrowserProcessHandlerT) NewRefCBrowserProcessHandlerT(p *CBrowser
 	if r == nil {
 		return
 	}
-	r.p_browser_process_handler.ForceUnref()
+	r.p_browser_process_handler.Unref()
 	gop := p.pc_browser_process_handler
 	BaseAddRef(gop)
 	r.p_browser_process_handler = newCBrowserProcessHandlerT((*C.cef_browser_process_handler_t)(gop), byApp)
@@ -3803,7 +3803,7 @@ func (p *cCBrowserProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (browser_process_handler *CBrowserProcessHandlerT) ForceUnref() (ret bool) {
+func (browser_process_handler *CBrowserProcessHandlerT) Unref() (ret bool) {
 	if browser_process_handler == nil {
 		return
 	}
@@ -4024,7 +4024,7 @@ func (r RefToCBrowserViewT) GetCBrowserViewT() *CBrowserViewT {
 
 func (r *RefToCBrowserViewT) setCBrowserViewT(p *CBrowserViewT) {
 	// prevValue = r.p_browser_view
-	r.p_browser_view.ForceUnref()
+	r.p_browser_view.Unref()
 	r.p_browser_view = p
 	// return prevValue
 }
@@ -4033,7 +4033,7 @@ func (r *RefToCBrowserViewT) TakeOverCBrowserViewT(src *CBrowserViewT) {
 	if r == nil {
 		return
 	}
-	r.p_browser_view.ForceUnref()
+	r.p_browser_view.Unref()
 	gop := src.pc_browser_view
 	switch src.beUnrefed {
 	case byApp:
@@ -4065,7 +4065,7 @@ func (r *RefToCBrowserViewT) NewRefCBrowserViewT(p *CBrowserViewT) {
 	if r == nil {
 		return
 	}
-	r.p_browser_view.ForceUnref()
+	r.p_browser_view.Unref()
 	gop := p.pc_browser_view
 	BaseAddRef(gop)
 	r.p_browser_view = newCBrowserViewT((*C.cef_browser_view_t)(gop), byApp)
@@ -4099,7 +4099,7 @@ func (p *cCBrowserViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (browser_view *CBrowserViewT) ForceUnref() (ret bool) {
+func (browser_view *CBrowserViewT) Unref() (ret bool) {
 	if browser_view == nil {
 		return
 	}
@@ -4262,7 +4262,7 @@ func (r RefToCBrowserViewDelegateT) GetCBrowserViewDelegateT() *CBrowserViewDele
 
 func (r *RefToCBrowserViewDelegateT) setCBrowserViewDelegateT(p *CBrowserViewDelegateT) {
 	// prevValue = r.p_browser_view_delegate
-	r.p_browser_view_delegate.ForceUnref()
+	r.p_browser_view_delegate.Unref()
 	r.p_browser_view_delegate = p
 	// return prevValue
 }
@@ -4271,7 +4271,7 @@ func (r *RefToCBrowserViewDelegateT) TakeOverCBrowserViewDelegateT(src *CBrowser
 	if r == nil {
 		return
 	}
-	r.p_browser_view_delegate.ForceUnref()
+	r.p_browser_view_delegate.Unref()
 	gop := src.pc_browser_view_delegate
 	switch src.beUnrefed {
 	case byApp:
@@ -4303,7 +4303,7 @@ func (r *RefToCBrowserViewDelegateT) NewRefCBrowserViewDelegateT(p *CBrowserView
 	if r == nil {
 		return
 	}
-	r.p_browser_view_delegate.ForceUnref()
+	r.p_browser_view_delegate.Unref()
 	gop := p.pc_browser_view_delegate
 	BaseAddRef(gop)
 	r.p_browser_view_delegate = newCBrowserViewDelegateT((*C.cef_browser_view_delegate_t)(gop), byApp)
@@ -4337,7 +4337,7 @@ func (p *cCBrowserViewDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (browser_view_delegate *CBrowserViewDelegateT) ForceUnref() (ret bool) {
+func (browser_view_delegate *CBrowserViewDelegateT) Unref() (ret bool) {
 	if browser_view_delegate == nil {
 		return
 	}
@@ -4683,7 +4683,7 @@ func (r RefToCButtonT) GetCButtonT() *CButtonT {
 
 func (r *RefToCButtonT) setCButtonT(p *CButtonT) {
 	// prevValue = r.p_button
-	r.p_button.ForceUnref()
+	r.p_button.Unref()
 	r.p_button = p
 	// return prevValue
 }
@@ -4692,7 +4692,7 @@ func (r *RefToCButtonT) TakeOverCButtonT(src *CButtonT) {
 	if r == nil {
 		return
 	}
-	r.p_button.ForceUnref()
+	r.p_button.Unref()
 	gop := src.pc_button
 	switch src.beUnrefed {
 	case byApp:
@@ -4724,7 +4724,7 @@ func (r *RefToCButtonT) NewRefCButtonT(p *CButtonT) {
 	if r == nil {
 		return
 	}
-	r.p_button.ForceUnref()
+	r.p_button.Unref()
 	gop := p.pc_button
 	BaseAddRef(gop)
 	r.p_button = newCButtonT((*C.cef_button_t)(gop), byApp)
@@ -4758,7 +4758,7 @@ func (p *cCButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (button *CButtonT) ForceUnref() (ret bool) {
+func (button *CButtonT) Unref() (ret bool) {
 	if button == nil {
 		return
 	}
@@ -4880,7 +4880,7 @@ func (r RefToCButtonDelegateT) GetCButtonDelegateT() *CButtonDelegateT {
 
 func (r *RefToCButtonDelegateT) setCButtonDelegateT(p *CButtonDelegateT) {
 	// prevValue = r.p_button_delegate
-	r.p_button_delegate.ForceUnref()
+	r.p_button_delegate.Unref()
 	r.p_button_delegate = p
 	// return prevValue
 }
@@ -4889,7 +4889,7 @@ func (r *RefToCButtonDelegateT) TakeOverCButtonDelegateT(src *CButtonDelegateT) 
 	if r == nil {
 		return
 	}
-	r.p_button_delegate.ForceUnref()
+	r.p_button_delegate.Unref()
 	gop := src.pc_button_delegate
 	switch src.beUnrefed {
 	case byApp:
@@ -4921,7 +4921,7 @@ func (r *RefToCButtonDelegateT) NewRefCButtonDelegateT(p *CButtonDelegateT) {
 	if r == nil {
 		return
 	}
-	r.p_button_delegate.ForceUnref()
+	r.p_button_delegate.Unref()
 	gop := p.pc_button_delegate
 	BaseAddRef(gop)
 	r.p_button_delegate = newCButtonDelegateT((*C.cef_button_delegate_t)(gop), byApp)
@@ -4955,7 +4955,7 @@ func (p *cCButtonDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (button_delegate *CButtonDelegateT) ForceUnref() (ret bool) {
+func (button_delegate *CButtonDelegateT) Unref() (ret bool) {
 	if button_delegate == nil {
 		return
 	}
@@ -5215,7 +5215,7 @@ func (r RefToCCallbackT) GetCCallbackT() *CCallbackT {
 
 func (r *RefToCCallbackT) setCCallbackT(p *CCallbackT) {
 	// prevValue = r.p_callback
-	r.p_callback.ForceUnref()
+	r.p_callback.Unref()
 	r.p_callback = p
 	// return prevValue
 }
@@ -5224,7 +5224,7 @@ func (r *RefToCCallbackT) TakeOverCCallbackT(src *CCallbackT) {
 	if r == nil {
 		return
 	}
-	r.p_callback.ForceUnref()
+	r.p_callback.Unref()
 	gop := src.pc_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -5256,7 +5256,7 @@ func (r *RefToCCallbackT) NewRefCCallbackT(p *CCallbackT) {
 	if r == nil {
 		return
 	}
-	r.p_callback.ForceUnref()
+	r.p_callback.Unref()
 	gop := p.pc_callback
 	BaseAddRef(gop)
 	r.p_callback = newCCallbackT((*C.cef_callback_t)(gop), byApp)
@@ -5290,7 +5290,7 @@ func (p *cCCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (callback *CCallbackT) ForceUnref() (ret bool) {
+func (callback *CCallbackT) Unref() (ret bool) {
 	if callback == nil {
 		return
 	}
@@ -5350,7 +5350,7 @@ func (r RefToCCompletionCallbackT) GetCCompletionCallbackT() *CCompletionCallbac
 
 func (r *RefToCCompletionCallbackT) setCCompletionCallbackT(p *CCompletionCallbackT) {
 	// prevValue = r.p_completion_callback
-	r.p_completion_callback.ForceUnref()
+	r.p_completion_callback.Unref()
 	r.p_completion_callback = p
 	// return prevValue
 }
@@ -5359,7 +5359,7 @@ func (r *RefToCCompletionCallbackT) TakeOverCCompletionCallbackT(src *CCompletio
 	if r == nil {
 		return
 	}
-	r.p_completion_callback.ForceUnref()
+	r.p_completion_callback.Unref()
 	gop := src.pc_completion_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -5391,7 +5391,7 @@ func (r *RefToCCompletionCallbackT) NewRefCCompletionCallbackT(p *CCompletionCal
 	if r == nil {
 		return
 	}
-	r.p_completion_callback.ForceUnref()
+	r.p_completion_callback.Unref()
 	gop := p.pc_completion_callback
 	BaseAddRef(gop)
 	r.p_completion_callback = newCCompletionCallbackT((*C.cef_completion_callback_t)(gop), byApp)
@@ -5425,7 +5425,7 @@ func (p *cCCompletionCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (completion_callback *CCompletionCallbackT) ForceUnref() (ret bool) {
+func (completion_callback *CCompletionCallbackT) Unref() (ret bool) {
 	if completion_callback == nil {
 		return
 	}
@@ -5478,7 +5478,7 @@ func (r RefToCClientT) GetCClientT() *CClientT {
 
 func (r *RefToCClientT) setCClientT(p *CClientT) {
 	// prevValue = r.p_client
-	r.p_client.ForceUnref()
+	r.p_client.Unref()
 	r.p_client = p
 	// return prevValue
 }
@@ -5487,7 +5487,7 @@ func (r *RefToCClientT) TakeOverCClientT(src *CClientT) {
 	if r == nil {
 		return
 	}
-	r.p_client.ForceUnref()
+	r.p_client.Unref()
 	gop := src.pc_client
 	switch src.beUnrefed {
 	case byApp:
@@ -5519,7 +5519,7 @@ func (r *RefToCClientT) NewRefCClientT(p *CClientT) {
 	if r == nil {
 		return
 	}
-	r.p_client.ForceUnref()
+	r.p_client.Unref()
 	gop := p.pc_client
 	BaseAddRef(gop)
 	r.p_client = newCClientT((*C.cef_client_t)(gop), byApp)
@@ -5553,7 +5553,7 @@ func (p *cCClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (client *CClientT) ForceUnref() (ret bool) {
+func (client *CClientT) Unref() (ret bool) {
 	if client == nil {
 		return
 	}
@@ -6019,7 +6019,7 @@ func (r RefToCCommandLineT) GetCCommandLineT() *CCommandLineT {
 
 func (r *RefToCCommandLineT) setCCommandLineT(p *CCommandLineT) {
 	// prevValue = r.p_command_line
-	r.p_command_line.ForceUnref()
+	r.p_command_line.Unref()
 	r.p_command_line = p
 	// return prevValue
 }
@@ -6028,7 +6028,7 @@ func (r *RefToCCommandLineT) TakeOverCCommandLineT(src *CCommandLineT) {
 	if r == nil {
 		return
 	}
-	r.p_command_line.ForceUnref()
+	r.p_command_line.Unref()
 	gop := src.pc_command_line
 	switch src.beUnrefed {
 	case byApp:
@@ -6060,7 +6060,7 @@ func (r *RefToCCommandLineT) NewRefCCommandLineT(p *CCommandLineT) {
 	if r == nil {
 		return
 	}
-	r.p_command_line.ForceUnref()
+	r.p_command_line.Unref()
 	gop := p.pc_command_line
 	BaseAddRef(gop)
 	r.p_command_line = newCCommandLineT((*C.cef_command_line_t)(gop), byApp)
@@ -6094,7 +6094,7 @@ func (p *cCCommandLineT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (command_line *CCommandLineT) ForceUnref() (ret bool) {
+func (command_line *CCommandLineT) Unref() (ret bool) {
 	if command_line == nil {
 		return
 	}
@@ -6407,7 +6407,7 @@ func (r RefToCRunContextMenuCallbackT) GetCRunContextMenuCallbackT() *CRunContex
 
 func (r *RefToCRunContextMenuCallbackT) setCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) {
 	// prevValue = r.p_run_context_menu_callback
-	r.p_run_context_menu_callback.ForceUnref()
+	r.p_run_context_menu_callback.Unref()
 	r.p_run_context_menu_callback = p
 	// return prevValue
 }
@@ -6416,7 +6416,7 @@ func (r *RefToCRunContextMenuCallbackT) TakeOverCRunContextMenuCallbackT(src *CR
 	if r == nil {
 		return
 	}
-	r.p_run_context_menu_callback.ForceUnref()
+	r.p_run_context_menu_callback.Unref()
 	gop := src.pc_run_context_menu_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -6448,7 +6448,7 @@ func (r *RefToCRunContextMenuCallbackT) NewRefCRunContextMenuCallbackT(p *CRunCo
 	if r == nil {
 		return
 	}
-	r.p_run_context_menu_callback.ForceUnref()
+	r.p_run_context_menu_callback.Unref()
 	gop := p.pc_run_context_menu_callback
 	BaseAddRef(gop)
 	r.p_run_context_menu_callback = newCRunContextMenuCallbackT((*C.cef_run_context_menu_callback_t)(gop), byApp)
@@ -6482,7 +6482,7 @@ func (p *cCRunContextMenuCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_r
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (run_context_menu_callback *CRunContextMenuCallbackT) ForceUnref() (ret bool) {
+func (run_context_menu_callback *CRunContextMenuCallbackT) Unref() (ret bool) {
 	if run_context_menu_callback == nil {
 		return
 	}
@@ -6547,7 +6547,7 @@ func (r RefToCContextMenuHandlerT) GetCContextMenuHandlerT() *CContextMenuHandle
 
 func (r *RefToCContextMenuHandlerT) setCContextMenuHandlerT(p *CContextMenuHandlerT) {
 	// prevValue = r.p_context_menu_handler
-	r.p_context_menu_handler.ForceUnref()
+	r.p_context_menu_handler.Unref()
 	r.p_context_menu_handler = p
 	// return prevValue
 }
@@ -6556,7 +6556,7 @@ func (r *RefToCContextMenuHandlerT) TakeOverCContextMenuHandlerT(src *CContextMe
 	if r == nil {
 		return
 	}
-	r.p_context_menu_handler.ForceUnref()
+	r.p_context_menu_handler.Unref()
 	gop := src.pc_context_menu_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -6588,7 +6588,7 @@ func (r *RefToCContextMenuHandlerT) NewRefCContextMenuHandlerT(p *CContextMenuHa
 	if r == nil {
 		return
 	}
-	r.p_context_menu_handler.ForceUnref()
+	r.p_context_menu_handler.Unref()
 	gop := p.pc_context_menu_handler
 	BaseAddRef(gop)
 	r.p_context_menu_handler = newCContextMenuHandlerT((*C.cef_context_menu_handler_t)(gop), byApp)
@@ -6622,7 +6622,7 @@ func (p *cCContextMenuHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (context_menu_handler *CContextMenuHandlerT) ForceUnref() (ret bool) {
+func (context_menu_handler *CContextMenuHandlerT) Unref() (ret bool) {
 	if context_menu_handler == nil {
 		return
 	}
@@ -6852,7 +6852,7 @@ func (r RefToCContextMenuParamsT) GetCContextMenuParamsT() *CContextMenuParamsT 
 
 func (r *RefToCContextMenuParamsT) setCContextMenuParamsT(p *CContextMenuParamsT) {
 	// prevValue = r.p_context_menu_params
-	r.p_context_menu_params.ForceUnref()
+	r.p_context_menu_params.Unref()
 	r.p_context_menu_params = p
 	// return prevValue
 }
@@ -6861,7 +6861,7 @@ func (r *RefToCContextMenuParamsT) TakeOverCContextMenuParamsT(src *CContextMenu
 	if r == nil {
 		return
 	}
-	r.p_context_menu_params.ForceUnref()
+	r.p_context_menu_params.Unref()
 	gop := src.pc_context_menu_params
 	switch src.beUnrefed {
 	case byApp:
@@ -6893,7 +6893,7 @@ func (r *RefToCContextMenuParamsT) NewRefCContextMenuParamsT(p *CContextMenuPara
 	if r == nil {
 		return
 	}
-	r.p_context_menu_params.ForceUnref()
+	r.p_context_menu_params.Unref()
 	gop := p.pc_context_menu_params
 	BaseAddRef(gop)
 	r.p_context_menu_params = newCContextMenuParamsT((*C.cef_context_menu_params_t)(gop), byApp)
@@ -6927,7 +6927,7 @@ func (p *cCContextMenuParamsT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (context_menu_params *CContextMenuParamsT) ForceUnref() (ret bool) {
+func (context_menu_params *CContextMenuParamsT) Unref() (ret bool) {
 	if context_menu_params == nil {
 		return
 	}
@@ -7257,7 +7257,7 @@ func (r RefToCCookieManagerT) GetCCookieManagerT() *CCookieManagerT {
 
 func (r *RefToCCookieManagerT) setCCookieManagerT(p *CCookieManagerT) {
 	// prevValue = r.p_cookie_manager
-	r.p_cookie_manager.ForceUnref()
+	r.p_cookie_manager.Unref()
 	r.p_cookie_manager = p
 	// return prevValue
 }
@@ -7266,7 +7266,7 @@ func (r *RefToCCookieManagerT) TakeOverCCookieManagerT(src *CCookieManagerT) {
 	if r == nil {
 		return
 	}
-	r.p_cookie_manager.ForceUnref()
+	r.p_cookie_manager.Unref()
 	gop := src.pc_cookie_manager
 	switch src.beUnrefed {
 	case byApp:
@@ -7298,7 +7298,7 @@ func (r *RefToCCookieManagerT) NewRefCCookieManagerT(p *CCookieManagerT) {
 	if r == nil {
 		return
 	}
-	r.p_cookie_manager.ForceUnref()
+	r.p_cookie_manager.Unref()
 	gop := p.pc_cookie_manager
 	BaseAddRef(gop)
 	r.p_cookie_manager = newCCookieManagerT((*C.cef_cookie_manager_t)(gop), byApp)
@@ -7332,7 +7332,7 @@ func (p *cCCookieManagerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (cookie_manager *CCookieManagerT) ForceUnref() (ret bool) {
+func (cookie_manager *CCookieManagerT) Unref() (ret bool) {
 	if cookie_manager == nil {
 		return
 	}
@@ -7520,7 +7520,7 @@ func (r RefToCCookieVisitorT) GetCCookieVisitorT() *CCookieVisitorT {
 
 func (r *RefToCCookieVisitorT) setCCookieVisitorT(p *CCookieVisitorT) {
 	// prevValue = r.p_cookie_visitor
-	r.p_cookie_visitor.ForceUnref()
+	r.p_cookie_visitor.Unref()
 	r.p_cookie_visitor = p
 	// return prevValue
 }
@@ -7529,7 +7529,7 @@ func (r *RefToCCookieVisitorT) TakeOverCCookieVisitorT(src *CCookieVisitorT) {
 	if r == nil {
 		return
 	}
-	r.p_cookie_visitor.ForceUnref()
+	r.p_cookie_visitor.Unref()
 	gop := src.pc_cookie_visitor
 	switch src.beUnrefed {
 	case byApp:
@@ -7561,7 +7561,7 @@ func (r *RefToCCookieVisitorT) NewRefCCookieVisitorT(p *CCookieVisitorT) {
 	if r == nil {
 		return
 	}
-	r.p_cookie_visitor.ForceUnref()
+	r.p_cookie_visitor.Unref()
 	gop := p.pc_cookie_visitor
 	BaseAddRef(gop)
 	r.p_cookie_visitor = newCCookieVisitorT((*C.cef_cookie_visitor_t)(gop), byApp)
@@ -7595,7 +7595,7 @@ func (p *cCCookieVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (cookie_visitor *CCookieVisitorT) ForceUnref() (ret bool) {
+func (cookie_visitor *CCookieVisitorT) Unref() (ret bool) {
 	if cookie_visitor == nil {
 		return
 	}
@@ -7743,7 +7743,7 @@ func (r RefToCSetCookieCallbackT) GetCSetCookieCallbackT() *CSetCookieCallbackT 
 
 func (r *RefToCSetCookieCallbackT) setCSetCookieCallbackT(p *CSetCookieCallbackT) {
 	// prevValue = r.p_set_cookie_callback
-	r.p_set_cookie_callback.ForceUnref()
+	r.p_set_cookie_callback.Unref()
 	r.p_set_cookie_callback = p
 	// return prevValue
 }
@@ -7752,7 +7752,7 @@ func (r *RefToCSetCookieCallbackT) TakeOverCSetCookieCallbackT(src *CSetCookieCa
 	if r == nil {
 		return
 	}
-	r.p_set_cookie_callback.ForceUnref()
+	r.p_set_cookie_callback.Unref()
 	gop := src.pc_set_cookie_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -7784,7 +7784,7 @@ func (r *RefToCSetCookieCallbackT) NewRefCSetCookieCallbackT(p *CSetCookieCallba
 	if r == nil {
 		return
 	}
-	r.p_set_cookie_callback.ForceUnref()
+	r.p_set_cookie_callback.Unref()
 	gop := p.pc_set_cookie_callback
 	BaseAddRef(gop)
 	r.p_set_cookie_callback = newCSetCookieCallbackT((*C.cef_set_cookie_callback_t)(gop), byApp)
@@ -7818,7 +7818,7 @@ func (p *cCSetCookieCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (set_cookie_callback *CSetCookieCallbackT) ForceUnref() (ret bool) {
+func (set_cookie_callback *CSetCookieCallbackT) Unref() (ret bool) {
 	if set_cookie_callback == nil {
 		return
 	}
@@ -7961,7 +7961,7 @@ func (r RefToCDeleteCookiesCallbackT) GetCDeleteCookiesCallbackT() *CDeleteCooki
 
 func (r *RefToCDeleteCookiesCallbackT) setCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) {
 	// prevValue = r.p_delete_cookies_callback
-	r.p_delete_cookies_callback.ForceUnref()
+	r.p_delete_cookies_callback.Unref()
 	r.p_delete_cookies_callback = p
 	// return prevValue
 }
@@ -7970,7 +7970,7 @@ func (r *RefToCDeleteCookiesCallbackT) TakeOverCDeleteCookiesCallbackT(src *CDel
 	if r == nil {
 		return
 	}
-	r.p_delete_cookies_callback.ForceUnref()
+	r.p_delete_cookies_callback.Unref()
 	gop := src.pc_delete_cookies_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -8002,7 +8002,7 @@ func (r *RefToCDeleteCookiesCallbackT) NewRefCDeleteCookiesCallbackT(p *CDeleteC
 	if r == nil {
 		return
 	}
-	r.p_delete_cookies_callback.ForceUnref()
+	r.p_delete_cookies_callback.Unref()
 	gop := p.pc_delete_cookies_callback
 	BaseAddRef(gop)
 	r.p_delete_cookies_callback = newCDeleteCookiesCallbackT((*C.cef_delete_cookies_callback_t)(gop), byApp)
@@ -8036,7 +8036,7 @@ func (p *cCDeleteCookiesCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (delete_cookies_callback *CDeleteCookiesCallbackT) ForceUnref() (ret bool) {
+func (delete_cookies_callback *CDeleteCookiesCallbackT) Unref() (ret bool) {
 	if delete_cookies_callback == nil {
 		return
 	}
@@ -8295,7 +8295,7 @@ func (r RefToCDevToolsMessageObserverT) GetCDevToolsMessageObserverT() *CDevTool
 
 func (r *RefToCDevToolsMessageObserverT) setCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) {
 	// prevValue = r.p_dev_tools_message_observer
-	r.p_dev_tools_message_observer.ForceUnref()
+	r.p_dev_tools_message_observer.Unref()
 	r.p_dev_tools_message_observer = p
 	// return prevValue
 }
@@ -8304,7 +8304,7 @@ func (r *RefToCDevToolsMessageObserverT) TakeOverCDevToolsMessageObserverT(src *
 	if r == nil {
 		return
 	}
-	r.p_dev_tools_message_observer.ForceUnref()
+	r.p_dev_tools_message_observer.Unref()
 	gop := src.pc_dev_tools_message_observer
 	switch src.beUnrefed {
 	case byApp:
@@ -8336,7 +8336,7 @@ func (r *RefToCDevToolsMessageObserverT) NewRefCDevToolsMessageObserverT(p *CDev
 	if r == nil {
 		return
 	}
-	r.p_dev_tools_message_observer.ForceUnref()
+	r.p_dev_tools_message_observer.Unref()
 	gop := p.pc_dev_tools_message_observer
 	BaseAddRef(gop)
 	r.p_dev_tools_message_observer = newCDevToolsMessageObserverT((*C.cef_dev_tools_message_observer_t)(gop), byApp)
@@ -8370,7 +8370,7 @@ func (p *cCDevToolsMessageObserverT) cast_to_p_base_ref_counted_t() *C.cef_base_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (dev_tools_message_observer *CDevToolsMessageObserverT) ForceUnref() (ret bool) {
+func (dev_tools_message_observer *CDevToolsMessageObserverT) Unref() (ret bool) {
 	if dev_tools_message_observer == nil {
 		return
 	}
@@ -8636,7 +8636,7 @@ func (r RefToCFileDialogCallbackT) GetCFileDialogCallbackT() *CFileDialogCallbac
 
 func (r *RefToCFileDialogCallbackT) setCFileDialogCallbackT(p *CFileDialogCallbackT) {
 	// prevValue = r.p_file_dialog_callback
-	r.p_file_dialog_callback.ForceUnref()
+	r.p_file_dialog_callback.Unref()
 	r.p_file_dialog_callback = p
 	// return prevValue
 }
@@ -8645,7 +8645,7 @@ func (r *RefToCFileDialogCallbackT) TakeOverCFileDialogCallbackT(src *CFileDialo
 	if r == nil {
 		return
 	}
-	r.p_file_dialog_callback.ForceUnref()
+	r.p_file_dialog_callback.Unref()
 	gop := src.pc_file_dialog_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -8677,7 +8677,7 @@ func (r *RefToCFileDialogCallbackT) NewRefCFileDialogCallbackT(p *CFileDialogCal
 	if r == nil {
 		return
 	}
-	r.p_file_dialog_callback.ForceUnref()
+	r.p_file_dialog_callback.Unref()
 	gop := p.pc_file_dialog_callback
 	BaseAddRef(gop)
 	r.p_file_dialog_callback = newCFileDialogCallbackT((*C.cef_file_dialog_callback_t)(gop), byApp)
@@ -8711,7 +8711,7 @@ func (p *cCFileDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (file_dialog_callback *CFileDialogCallbackT) ForceUnref() (ret bool) {
+func (file_dialog_callback *CFileDialogCallbackT) Unref() (ret bool) {
 	if file_dialog_callback == nil {
 		return
 	}
@@ -8779,7 +8779,7 @@ func (r RefToCDialogHandlerT) GetCDialogHandlerT() *CDialogHandlerT {
 
 func (r *RefToCDialogHandlerT) setCDialogHandlerT(p *CDialogHandlerT) {
 	// prevValue = r.p_dialog_handler
-	r.p_dialog_handler.ForceUnref()
+	r.p_dialog_handler.Unref()
 	r.p_dialog_handler = p
 	// return prevValue
 }
@@ -8788,7 +8788,7 @@ func (r *RefToCDialogHandlerT) TakeOverCDialogHandlerT(src *CDialogHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_dialog_handler.ForceUnref()
+	r.p_dialog_handler.Unref()
 	gop := src.pc_dialog_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -8820,7 +8820,7 @@ func (r *RefToCDialogHandlerT) NewRefCDialogHandlerT(p *CDialogHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_dialog_handler.ForceUnref()
+	r.p_dialog_handler.Unref()
 	gop := p.pc_dialog_handler
 	BaseAddRef(gop)
 	r.p_dialog_handler = newCDialogHandlerT((*C.cef_dialog_handler_t)(gop), byApp)
@@ -8854,7 +8854,7 @@ func (p *cCDialogHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (dialog_handler *CDialogHandlerT) ForceUnref() (ret bool) {
+func (dialog_handler *CDialogHandlerT) Unref() (ret bool) {
 	if dialog_handler == nil {
 		return
 	}
@@ -9020,7 +9020,7 @@ func (r RefToCDisplayT) GetCDisplayT() *CDisplayT {
 
 func (r *RefToCDisplayT) setCDisplayT(p *CDisplayT) {
 	// prevValue = r.p_display
-	r.p_display.ForceUnref()
+	r.p_display.Unref()
 	r.p_display = p
 	// return prevValue
 }
@@ -9029,7 +9029,7 @@ func (r *RefToCDisplayT) TakeOverCDisplayT(src *CDisplayT) {
 	if r == nil {
 		return
 	}
-	r.p_display.ForceUnref()
+	r.p_display.Unref()
 	gop := src.pc_display
 	switch src.beUnrefed {
 	case byApp:
@@ -9061,7 +9061,7 @@ func (r *RefToCDisplayT) NewRefCDisplayT(p *CDisplayT) {
 	if r == nil {
 		return
 	}
-	r.p_display.ForceUnref()
+	r.p_display.Unref()
 	gop := p.pc_display
 	BaseAddRef(gop)
 	r.p_display = newCDisplayT((*C.cef_display_t)(gop), byApp)
@@ -9095,7 +9095,7 @@ func (p *cCDisplayT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (display *CDisplayT) ForceUnref() (ret bool) {
+func (display *CDisplayT) Unref() (ret bool) {
 	if display == nil {
 		return
 	}
@@ -9297,7 +9297,7 @@ func (r RefToCDisplayHandlerT) GetCDisplayHandlerT() *CDisplayHandlerT {
 
 func (r *RefToCDisplayHandlerT) setCDisplayHandlerT(p *CDisplayHandlerT) {
 	// prevValue = r.p_display_handler
-	r.p_display_handler.ForceUnref()
+	r.p_display_handler.Unref()
 	r.p_display_handler = p
 	// return prevValue
 }
@@ -9306,7 +9306,7 @@ func (r *RefToCDisplayHandlerT) TakeOverCDisplayHandlerT(src *CDisplayHandlerT) 
 	if r == nil {
 		return
 	}
-	r.p_display_handler.ForceUnref()
+	r.p_display_handler.Unref()
 	gop := src.pc_display_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -9338,7 +9338,7 @@ func (r *RefToCDisplayHandlerT) NewRefCDisplayHandlerT(p *CDisplayHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_display_handler.ForceUnref()
+	r.p_display_handler.Unref()
 	gop := p.pc_display_handler
 	BaseAddRef(gop)
 	r.p_display_handler = newCDisplayHandlerT((*C.cef_display_handler_t)(gop), byApp)
@@ -9372,7 +9372,7 @@ func (p *cCDisplayHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (display_handler *CDisplayHandlerT) ForceUnref() (ret bool) {
+func (display_handler *CDisplayHandlerT) Unref() (ret bool) {
 	if display_handler == nil {
 		return
 	}
@@ -9730,7 +9730,7 @@ func (r RefToCDomvisitorT) GetCDomvisitorT() *CDomvisitorT {
 
 func (r *RefToCDomvisitorT) setCDomvisitorT(p *CDomvisitorT) {
 	// prevValue = r.p_domvisitor
-	r.p_domvisitor.ForceUnref()
+	r.p_domvisitor.Unref()
 	r.p_domvisitor = p
 	// return prevValue
 }
@@ -9739,7 +9739,7 @@ func (r *RefToCDomvisitorT) TakeOverCDomvisitorT(src *CDomvisitorT) {
 	if r == nil {
 		return
 	}
-	r.p_domvisitor.ForceUnref()
+	r.p_domvisitor.Unref()
 	gop := src.pc_domvisitor
 	switch src.beUnrefed {
 	case byApp:
@@ -9771,7 +9771,7 @@ func (r *RefToCDomvisitorT) NewRefCDomvisitorT(p *CDomvisitorT) {
 	if r == nil {
 		return
 	}
-	r.p_domvisitor.ForceUnref()
+	r.p_domvisitor.Unref()
 	gop := p.pc_domvisitor
 	BaseAddRef(gop)
 	r.p_domvisitor = newCDomvisitorT((*C.cef_domvisitor_t)(gop), byApp)
@@ -9805,7 +9805,7 @@ func (p *cCDomvisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (domvisitor *CDomvisitorT) ForceUnref() (ret bool) {
+func (domvisitor *CDomvisitorT) Unref() (ret bool) {
 	if domvisitor == nil {
 		return
 	}
@@ -9951,7 +9951,7 @@ func (r RefToCDomdocumentT) GetCDomdocumentT() *CDomdocumentT {
 
 func (r *RefToCDomdocumentT) setCDomdocumentT(p *CDomdocumentT) {
 	// prevValue = r.p_domdocument
-	r.p_domdocument.ForceUnref()
+	r.p_domdocument.Unref()
 	r.p_domdocument = p
 	// return prevValue
 }
@@ -9960,7 +9960,7 @@ func (r *RefToCDomdocumentT) TakeOverCDomdocumentT(src *CDomdocumentT) {
 	if r == nil {
 		return
 	}
-	r.p_domdocument.ForceUnref()
+	r.p_domdocument.Unref()
 	gop := src.pc_domdocument
 	switch src.beUnrefed {
 	case byApp:
@@ -9992,7 +9992,7 @@ func (r *RefToCDomdocumentT) NewRefCDomdocumentT(p *CDomdocumentT) {
 	if r == nil {
 		return
 	}
-	r.p_domdocument.ForceUnref()
+	r.p_domdocument.Unref()
 	gop := p.pc_domdocument
 	BaseAddRef(gop)
 	r.p_domdocument = newCDomdocumentT((*C.cef_domdocument_t)(gop), byApp)
@@ -10026,7 +10026,7 @@ func (p *cCDomdocumentT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (domdocument *CDomdocumentT) ForceUnref() (ret bool) {
+func (domdocument *CDomdocumentT) Unref() (ret bool) {
 	if domdocument == nil {
 		return
 	}
@@ -10255,7 +10255,7 @@ func (r RefToCDomnodeT) GetCDomnodeT() *CDomnodeT {
 
 func (r *RefToCDomnodeT) setCDomnodeT(p *CDomnodeT) {
 	// prevValue = r.p_domnode
-	r.p_domnode.ForceUnref()
+	r.p_domnode.Unref()
 	r.p_domnode = p
 	// return prevValue
 }
@@ -10264,7 +10264,7 @@ func (r *RefToCDomnodeT) TakeOverCDomnodeT(src *CDomnodeT) {
 	if r == nil {
 		return
 	}
-	r.p_domnode.ForceUnref()
+	r.p_domnode.Unref()
 	gop := src.pc_domnode
 	switch src.beUnrefed {
 	case byApp:
@@ -10296,7 +10296,7 @@ func (r *RefToCDomnodeT) NewRefCDomnodeT(p *CDomnodeT) {
 	if r == nil {
 		return
 	}
-	r.p_domnode.ForceUnref()
+	r.p_domnode.Unref()
 	gop := p.pc_domnode
 	BaseAddRef(gop)
 	r.p_domnode = newCDomnodeT((*C.cef_domnode_t)(gop), byApp)
@@ -10330,7 +10330,7 @@ func (p *cCDomnodeT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (domnode *CDomnodeT) ForceUnref() (ret bool) {
+func (domnode *CDomnodeT) Unref() (ret bool) {
 	if domnode == nil {
 		return
 	}
@@ -10718,7 +10718,7 @@ func (r RefToCBeforeDownloadCallbackT) GetCBeforeDownloadCallbackT() *CBeforeDow
 
 func (r *RefToCBeforeDownloadCallbackT) setCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) {
 	// prevValue = r.p_before_download_callback
-	r.p_before_download_callback.ForceUnref()
+	r.p_before_download_callback.Unref()
 	r.p_before_download_callback = p
 	// return prevValue
 }
@@ -10727,7 +10727,7 @@ func (r *RefToCBeforeDownloadCallbackT) TakeOverCBeforeDownloadCallbackT(src *CB
 	if r == nil {
 		return
 	}
-	r.p_before_download_callback.ForceUnref()
+	r.p_before_download_callback.Unref()
 	gop := src.pc_before_download_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -10759,7 +10759,7 @@ func (r *RefToCBeforeDownloadCallbackT) NewRefCBeforeDownloadCallbackT(p *CBefor
 	if r == nil {
 		return
 	}
-	r.p_before_download_callback.ForceUnref()
+	r.p_before_download_callback.Unref()
 	gop := p.pc_before_download_callback
 	BaseAddRef(gop)
 	r.p_before_download_callback = newCBeforeDownloadCallbackT((*C.cef_before_download_callback_t)(gop), byApp)
@@ -10793,7 +10793,7 @@ func (p *cCBeforeDownloadCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_r
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (before_download_callback *CBeforeDownloadCallbackT) ForceUnref() (ret bool) {
+func (before_download_callback *CBeforeDownloadCallbackT) Unref() (ret bool) {
 	if before_download_callback == nil {
 		return
 	}
@@ -10851,7 +10851,7 @@ func (r RefToCDownloadItemCallbackT) GetCDownloadItemCallbackT() *CDownloadItemC
 
 func (r *RefToCDownloadItemCallbackT) setCDownloadItemCallbackT(p *CDownloadItemCallbackT) {
 	// prevValue = r.p_download_item_callback
-	r.p_download_item_callback.ForceUnref()
+	r.p_download_item_callback.Unref()
 	r.p_download_item_callback = p
 	// return prevValue
 }
@@ -10860,7 +10860,7 @@ func (r *RefToCDownloadItemCallbackT) TakeOverCDownloadItemCallbackT(src *CDownl
 	if r == nil {
 		return
 	}
-	r.p_download_item_callback.ForceUnref()
+	r.p_download_item_callback.Unref()
 	gop := src.pc_download_item_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -10892,7 +10892,7 @@ func (r *RefToCDownloadItemCallbackT) NewRefCDownloadItemCallbackT(p *CDownloadI
 	if r == nil {
 		return
 	}
-	r.p_download_item_callback.ForceUnref()
+	r.p_download_item_callback.Unref()
 	gop := p.pc_download_item_callback
 	BaseAddRef(gop)
 	r.p_download_item_callback = newCDownloadItemCallbackT((*C.cef_download_item_callback_t)(gop), byApp)
@@ -10926,7 +10926,7 @@ func (p *cCDownloadItemCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (download_item_callback *CDownloadItemCallbackT) ForceUnref() (ret bool) {
+func (download_item_callback *CDownloadItemCallbackT) Unref() (ret bool) {
 	if download_item_callback == nil {
 		return
 	}
@@ -10996,7 +10996,7 @@ func (r RefToCDownloadHandlerT) GetCDownloadHandlerT() *CDownloadHandlerT {
 
 func (r *RefToCDownloadHandlerT) setCDownloadHandlerT(p *CDownloadHandlerT) {
 	// prevValue = r.p_download_handler
-	r.p_download_handler.ForceUnref()
+	r.p_download_handler.Unref()
 	r.p_download_handler = p
 	// return prevValue
 }
@@ -11005,7 +11005,7 @@ func (r *RefToCDownloadHandlerT) TakeOverCDownloadHandlerT(src *CDownloadHandler
 	if r == nil {
 		return
 	}
-	r.p_download_handler.ForceUnref()
+	r.p_download_handler.Unref()
 	gop := src.pc_download_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -11037,7 +11037,7 @@ func (r *RefToCDownloadHandlerT) NewRefCDownloadHandlerT(p *CDownloadHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_download_handler.ForceUnref()
+	r.p_download_handler.Unref()
 	gop := p.pc_download_handler
 	BaseAddRef(gop)
 	r.p_download_handler = newCDownloadHandlerT((*C.cef_download_handler_t)(gop), byApp)
@@ -11071,7 +11071,7 @@ func (p *cCDownloadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (download_handler *CDownloadHandlerT) ForceUnref() (ret bool) {
+func (download_handler *CDownloadHandlerT) Unref() (ret bool) {
 	if download_handler == nil {
 		return
 	}
@@ -11247,7 +11247,7 @@ func (r RefToCDownloadItemT) GetCDownloadItemT() *CDownloadItemT {
 
 func (r *RefToCDownloadItemT) setCDownloadItemT(p *CDownloadItemT) {
 	// prevValue = r.p_download_item
-	r.p_download_item.ForceUnref()
+	r.p_download_item.Unref()
 	r.p_download_item = p
 	// return prevValue
 }
@@ -11256,7 +11256,7 @@ func (r *RefToCDownloadItemT) TakeOverCDownloadItemT(src *CDownloadItemT) {
 	if r == nil {
 		return
 	}
-	r.p_download_item.ForceUnref()
+	r.p_download_item.Unref()
 	gop := src.pc_download_item
 	switch src.beUnrefed {
 	case byApp:
@@ -11288,7 +11288,7 @@ func (r *RefToCDownloadItemT) NewRefCDownloadItemT(p *CDownloadItemT) {
 	if r == nil {
 		return
 	}
-	r.p_download_item.ForceUnref()
+	r.p_download_item.Unref()
 	gop := p.pc_download_item
 	BaseAddRef(gop)
 	r.p_download_item = newCDownloadItemT((*C.cef_download_item_t)(gop), byApp)
@@ -11322,7 +11322,7 @@ func (p *cCDownloadItemT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (download_item *CDownloadItemT) ForceUnref() (ret bool) {
+func (download_item *CDownloadItemT) Unref() (ret bool) {
 	if download_item == nil {
 		return
 	}
@@ -11586,7 +11586,7 @@ func (r RefToCDragDataT) GetCDragDataT() *CDragDataT {
 
 func (r *RefToCDragDataT) setCDragDataT(p *CDragDataT) {
 	// prevValue = r.p_drag_data
-	r.p_drag_data.ForceUnref()
+	r.p_drag_data.Unref()
 	r.p_drag_data = p
 	// return prevValue
 }
@@ -11595,7 +11595,7 @@ func (r *RefToCDragDataT) TakeOverCDragDataT(src *CDragDataT) {
 	if r == nil {
 		return
 	}
-	r.p_drag_data.ForceUnref()
+	r.p_drag_data.Unref()
 	gop := src.pc_drag_data
 	switch src.beUnrefed {
 	case byApp:
@@ -11627,7 +11627,7 @@ func (r *RefToCDragDataT) NewRefCDragDataT(p *CDragDataT) {
 	if r == nil {
 		return
 	}
-	r.p_drag_data.ForceUnref()
+	r.p_drag_data.Unref()
 	gop := p.pc_drag_data
 	BaseAddRef(gop)
 	r.p_drag_data = newCDragDataT((*C.cef_drag_data_t)(gop), byApp)
@@ -11661,7 +11661,7 @@ func (p *cCDragDataT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (drag_data *CDragDataT) ForceUnref() (ret bool) {
+func (drag_data *CDragDataT) Unref() (ret bool) {
 	if drag_data == nil {
 		return
 	}
@@ -12051,7 +12051,7 @@ func (r RefToCDragHandlerT) GetCDragHandlerT() *CDragHandlerT {
 
 func (r *RefToCDragHandlerT) setCDragHandlerT(p *CDragHandlerT) {
 	// prevValue = r.p_drag_handler
-	r.p_drag_handler.ForceUnref()
+	r.p_drag_handler.Unref()
 	r.p_drag_handler = p
 	// return prevValue
 }
@@ -12060,7 +12060,7 @@ func (r *RefToCDragHandlerT) TakeOverCDragHandlerT(src *CDragHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_drag_handler.ForceUnref()
+	r.p_drag_handler.Unref()
 	gop := src.pc_drag_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -12092,7 +12092,7 @@ func (r *RefToCDragHandlerT) NewRefCDragHandlerT(p *CDragHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_drag_handler.ForceUnref()
+	r.p_drag_handler.Unref()
 	gop := p.pc_drag_handler
 	BaseAddRef(gop)
 	r.p_drag_handler = newCDragHandlerT((*C.cef_drag_handler_t)(gop), byApp)
@@ -12126,7 +12126,7 @@ func (p *cCDragHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (drag_handler *CDragHandlerT) ForceUnref() (ret bool) {
+func (drag_handler *CDragHandlerT) Unref() (ret bool) {
 	if drag_handler == nil {
 		return
 	}
@@ -12302,7 +12302,7 @@ func (r RefToCExtensionT) GetCExtensionT() *CExtensionT {
 
 func (r *RefToCExtensionT) setCExtensionT(p *CExtensionT) {
 	// prevValue = r.p_extension
-	r.p_extension.ForceUnref()
+	r.p_extension.Unref()
 	r.p_extension = p
 	// return prevValue
 }
@@ -12311,7 +12311,7 @@ func (r *RefToCExtensionT) TakeOverCExtensionT(src *CExtensionT) {
 	if r == nil {
 		return
 	}
-	r.p_extension.ForceUnref()
+	r.p_extension.Unref()
 	gop := src.pc_extension
 	switch src.beUnrefed {
 	case byApp:
@@ -12343,7 +12343,7 @@ func (r *RefToCExtensionT) NewRefCExtensionT(p *CExtensionT) {
 	if r == nil {
 		return
 	}
-	r.p_extension.ForceUnref()
+	r.p_extension.Unref()
 	gop := p.pc_extension
 	BaseAddRef(gop)
 	r.p_extension = newCExtensionT((*C.cef_extension_t)(gop), byApp)
@@ -12377,7 +12377,7 @@ func (p *cCExtensionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (extension *CExtensionT) ForceUnref() (ret bool) {
+func (extension *CExtensionT) Unref() (ret bool) {
 	if extension == nil {
 		return
 	}
@@ -12540,7 +12540,7 @@ func (r RefToCGetExtensionResourceCallbackT) GetCGetExtensionResourceCallbackT()
 
 func (r *RefToCGetExtensionResourceCallbackT) setCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) {
 	// prevValue = r.p_get_extension_resource_callback
-	r.p_get_extension_resource_callback.ForceUnref()
+	r.p_get_extension_resource_callback.Unref()
 	r.p_get_extension_resource_callback = p
 	// return prevValue
 }
@@ -12549,7 +12549,7 @@ func (r *RefToCGetExtensionResourceCallbackT) TakeOverCGetExtensionResourceCallb
 	if r == nil {
 		return
 	}
-	r.p_get_extension_resource_callback.ForceUnref()
+	r.p_get_extension_resource_callback.Unref()
 	gop := src.pc_get_extension_resource_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -12581,7 +12581,7 @@ func (r *RefToCGetExtensionResourceCallbackT) NewRefCGetExtensionResourceCallbac
 	if r == nil {
 		return
 	}
-	r.p_get_extension_resource_callback.ForceUnref()
+	r.p_get_extension_resource_callback.Unref()
 	gop := p.pc_get_extension_resource_callback
 	BaseAddRef(gop)
 	r.p_get_extension_resource_callback = newCGetExtensionResourceCallbackT((*C.cef_get_extension_resource_callback_t)(gop), byApp)
@@ -12615,7 +12615,7 @@ func (p *cCGetExtensionResourceCallbackT) cast_to_p_base_ref_counted_t() *C.cef_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (get_extension_resource_callback *CGetExtensionResourceCallbackT) ForceUnref() (ret bool) {
+func (get_extension_resource_callback *CGetExtensionResourceCallbackT) Unref() (ret bool) {
 	if get_extension_resource_callback == nil {
 		return
 	}
@@ -12684,7 +12684,7 @@ func (r RefToCExtensionHandlerT) GetCExtensionHandlerT() *CExtensionHandlerT {
 
 func (r *RefToCExtensionHandlerT) setCExtensionHandlerT(p *CExtensionHandlerT) {
 	// prevValue = r.p_extension_handler
-	r.p_extension_handler.ForceUnref()
+	r.p_extension_handler.Unref()
 	r.p_extension_handler = p
 	// return prevValue
 }
@@ -12693,7 +12693,7 @@ func (r *RefToCExtensionHandlerT) TakeOverCExtensionHandlerT(src *CExtensionHand
 	if r == nil {
 		return
 	}
-	r.p_extension_handler.ForceUnref()
+	r.p_extension_handler.Unref()
 	gop := src.pc_extension_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -12725,7 +12725,7 @@ func (r *RefToCExtensionHandlerT) NewRefCExtensionHandlerT(p *CExtensionHandlerT
 	if r == nil {
 		return
 	}
-	r.p_extension_handler.ForceUnref()
+	r.p_extension_handler.Unref()
 	gop := p.pc_extension_handler
 	BaseAddRef(gop)
 	r.p_extension_handler = newCExtensionHandlerT((*C.cef_extension_handler_t)(gop), byApp)
@@ -12759,7 +12759,7 @@ func (p *cCExtensionHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (extension_handler *CExtensionHandlerT) ForceUnref() (ret bool) {
+func (extension_handler *CExtensionHandlerT) Unref() (ret bool) {
 	if extension_handler == nil {
 		return
 	}
@@ -13261,7 +13261,7 @@ func (r RefToCFillLayoutT) GetCFillLayoutT() *CFillLayoutT {
 
 func (r *RefToCFillLayoutT) setCFillLayoutT(p *CFillLayoutT) {
 	// prevValue = r.p_fill_layout
-	r.p_fill_layout.ForceUnref()
+	r.p_fill_layout.Unref()
 	r.p_fill_layout = p
 	// return prevValue
 }
@@ -13270,7 +13270,7 @@ func (r *RefToCFillLayoutT) TakeOverCFillLayoutT(src *CFillLayoutT) {
 	if r == nil {
 		return
 	}
-	r.p_fill_layout.ForceUnref()
+	r.p_fill_layout.Unref()
 	gop := src.pc_fill_layout
 	switch src.beUnrefed {
 	case byApp:
@@ -13302,7 +13302,7 @@ func (r *RefToCFillLayoutT) NewRefCFillLayoutT(p *CFillLayoutT) {
 	if r == nil {
 		return
 	}
-	r.p_fill_layout.ForceUnref()
+	r.p_fill_layout.Unref()
 	gop := p.pc_fill_layout
 	BaseAddRef(gop)
 	r.p_fill_layout = newCFillLayoutT((*C.cef_fill_layout_t)(gop), byApp)
@@ -13336,7 +13336,7 @@ func (p *cCFillLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (fill_layout *CFillLayoutT) ForceUnref() (ret bool) {
+func (fill_layout *CFillLayoutT) Unref() (ret bool) {
 	if fill_layout == nil {
 		return
 	}
@@ -13388,7 +13388,7 @@ func (r RefToCFindHandlerT) GetCFindHandlerT() *CFindHandlerT {
 
 func (r *RefToCFindHandlerT) setCFindHandlerT(p *CFindHandlerT) {
 	// prevValue = r.p_find_handler
-	r.p_find_handler.ForceUnref()
+	r.p_find_handler.Unref()
 	r.p_find_handler = p
 	// return prevValue
 }
@@ -13397,7 +13397,7 @@ func (r *RefToCFindHandlerT) TakeOverCFindHandlerT(src *CFindHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_find_handler.ForceUnref()
+	r.p_find_handler.Unref()
 	gop := src.pc_find_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -13429,7 +13429,7 @@ func (r *RefToCFindHandlerT) NewRefCFindHandlerT(p *CFindHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_find_handler.ForceUnref()
+	r.p_find_handler.Unref()
 	gop := p.pc_find_handler
 	BaseAddRef(gop)
 	r.p_find_handler = newCFindHandlerT((*C.cef_find_handler_t)(gop), byApp)
@@ -13463,7 +13463,7 @@ func (p *cCFindHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (find_handler *CFindHandlerT) ForceUnref() (ret bool) {
+func (find_handler *CFindHandlerT) Unref() (ret bool) {
 	if find_handler == nil {
 		return
 	}
@@ -13617,7 +13617,7 @@ func (r RefToCFocusHandlerT) GetCFocusHandlerT() *CFocusHandlerT {
 
 func (r *RefToCFocusHandlerT) setCFocusHandlerT(p *CFocusHandlerT) {
 	// prevValue = r.p_focus_handler
-	r.p_focus_handler.ForceUnref()
+	r.p_focus_handler.Unref()
 	r.p_focus_handler = p
 	// return prevValue
 }
@@ -13626,7 +13626,7 @@ func (r *RefToCFocusHandlerT) TakeOverCFocusHandlerT(src *CFocusHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_focus_handler.ForceUnref()
+	r.p_focus_handler.Unref()
 	gop := src.pc_focus_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -13658,7 +13658,7 @@ func (r *RefToCFocusHandlerT) NewRefCFocusHandlerT(p *CFocusHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_focus_handler.ForceUnref()
+	r.p_focus_handler.Unref()
 	gop := p.pc_focus_handler
 	BaseAddRef(gop)
 	r.p_focus_handler = newCFocusHandlerT((*C.cef_focus_handler_t)(gop), byApp)
@@ -13692,7 +13692,7 @@ func (p *cCFocusHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (focus_handler *CFocusHandlerT) ForceUnref() (ret bool) {
+func (focus_handler *CFocusHandlerT) Unref() (ret bool) {
 	if focus_handler == nil {
 		return
 	}
@@ -13885,7 +13885,7 @@ func (r RefToCFrameT) GetCFrameT() *CFrameT {
 
 func (r *RefToCFrameT) setCFrameT(p *CFrameT) {
 	// prevValue = r.p_frame
-	r.p_frame.ForceUnref()
+	r.p_frame.Unref()
 	r.p_frame = p
 	// return prevValue
 }
@@ -13894,7 +13894,7 @@ func (r *RefToCFrameT) TakeOverCFrameT(src *CFrameT) {
 	if r == nil {
 		return
 	}
-	r.p_frame.ForceUnref()
+	r.p_frame.Unref()
 	gop := src.pc_frame
 	switch src.beUnrefed {
 	case byApp:
@@ -13926,7 +13926,7 @@ func (r *RefToCFrameT) NewRefCFrameT(p *CFrameT) {
 	if r == nil {
 		return
 	}
-	r.p_frame.ForceUnref()
+	r.p_frame.Unref()
 	gop := p.pc_frame
 	BaseAddRef(gop)
 	r.p_frame = newCFrameT((*C.cef_frame_t)(gop), byApp)
@@ -13960,7 +13960,7 @@ func (p *cCFrameT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (frame *CFrameT) ForceUnref() (ret bool) {
+func (frame *CFrameT) Unref() (ret bool) {
 	if frame == nil {
 		return
 	}
@@ -14439,7 +14439,7 @@ func (r RefToCFrameHandlerT) GetCFrameHandlerT() *CFrameHandlerT {
 
 func (r *RefToCFrameHandlerT) setCFrameHandlerT(p *CFrameHandlerT) {
 	// prevValue = r.p_frame_handler
-	r.p_frame_handler.ForceUnref()
+	r.p_frame_handler.Unref()
 	r.p_frame_handler = p
 	// return prevValue
 }
@@ -14448,7 +14448,7 @@ func (r *RefToCFrameHandlerT) TakeOverCFrameHandlerT(src *CFrameHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_frame_handler.ForceUnref()
+	r.p_frame_handler.Unref()
 	gop := src.pc_frame_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -14480,7 +14480,7 @@ func (r *RefToCFrameHandlerT) NewRefCFrameHandlerT(p *CFrameHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_frame_handler.ForceUnref()
+	r.p_frame_handler.Unref()
 	gop := p.pc_frame_handler
 	BaseAddRef(gop)
 	r.p_frame_handler = newCFrameHandlerT((*C.cef_frame_handler_t)(gop), byApp)
@@ -14514,7 +14514,7 @@ func (p *cCFrameHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (frame_handler *CFrameHandlerT) ForceUnref() (ret bool) {
+func (frame_handler *CFrameHandlerT) Unref() (ret bool) {
 	if frame_handler == nil {
 		return
 	}
@@ -14676,7 +14676,7 @@ func (r RefToCImageT) GetCImageT() *CImageT {
 
 func (r *RefToCImageT) setCImageT(p *CImageT) {
 	// prevValue = r.p_image
-	r.p_image.ForceUnref()
+	r.p_image.Unref()
 	r.p_image = p
 	// return prevValue
 }
@@ -14685,7 +14685,7 @@ func (r *RefToCImageT) TakeOverCImageT(src *CImageT) {
 	if r == nil {
 		return
 	}
-	r.p_image.ForceUnref()
+	r.p_image.Unref()
 	gop := src.pc_image
 	switch src.beUnrefed {
 	case byApp:
@@ -14717,7 +14717,7 @@ func (r *RefToCImageT) NewRefCImageT(p *CImageT) {
 	if r == nil {
 		return
 	}
-	r.p_image.ForceUnref()
+	r.p_image.Unref()
 	gop := p.pc_image
 	BaseAddRef(gop)
 	r.p_image = newCImageT((*C.cef_image_t)(gop), byApp)
@@ -14751,7 +14751,7 @@ func (p *cCImageT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (image *CImageT) ForceUnref() (ret bool) {
+func (image *CImageT) Unref() (ret bool) {
 	if image == nil {
 		return
 	}
@@ -15047,7 +15047,7 @@ func (r RefToCJsdialogCallbackT) GetCJsdialogCallbackT() *CJsdialogCallbackT {
 
 func (r *RefToCJsdialogCallbackT) setCJsdialogCallbackT(p *CJsdialogCallbackT) {
 	// prevValue = r.p_jsdialog_callback
-	r.p_jsdialog_callback.ForceUnref()
+	r.p_jsdialog_callback.Unref()
 	r.p_jsdialog_callback = p
 	// return prevValue
 }
@@ -15056,7 +15056,7 @@ func (r *RefToCJsdialogCallbackT) TakeOverCJsdialogCallbackT(src *CJsdialogCallb
 	if r == nil {
 		return
 	}
-	r.p_jsdialog_callback.ForceUnref()
+	r.p_jsdialog_callback.Unref()
 	gop := src.pc_jsdialog_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -15088,7 +15088,7 @@ func (r *RefToCJsdialogCallbackT) NewRefCJsdialogCallbackT(p *CJsdialogCallbackT
 	if r == nil {
 		return
 	}
-	r.p_jsdialog_callback.ForceUnref()
+	r.p_jsdialog_callback.Unref()
 	gop := p.pc_jsdialog_callback
 	BaseAddRef(gop)
 	r.p_jsdialog_callback = newCJsdialogCallbackT((*C.cef_jsdialog_callback_t)(gop), byApp)
@@ -15122,7 +15122,7 @@ func (p *cCJsdialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (jsdialog_callback *CJsdialogCallbackT) ForceUnref() (ret bool) {
+func (jsdialog_callback *CJsdialogCallbackT) Unref() (ret bool) {
 	if jsdialog_callback == nil {
 		return
 	}
@@ -15179,7 +15179,7 @@ func (r RefToCJsdialogHandlerT) GetCJsdialogHandlerT() *CJsdialogHandlerT {
 
 func (r *RefToCJsdialogHandlerT) setCJsdialogHandlerT(p *CJsdialogHandlerT) {
 	// prevValue = r.p_jsdialog_handler
-	r.p_jsdialog_handler.ForceUnref()
+	r.p_jsdialog_handler.Unref()
 	r.p_jsdialog_handler = p
 	// return prevValue
 }
@@ -15188,7 +15188,7 @@ func (r *RefToCJsdialogHandlerT) TakeOverCJsdialogHandlerT(src *CJsdialogHandler
 	if r == nil {
 		return
 	}
-	r.p_jsdialog_handler.ForceUnref()
+	r.p_jsdialog_handler.Unref()
 	gop := src.pc_jsdialog_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -15220,7 +15220,7 @@ func (r *RefToCJsdialogHandlerT) NewRefCJsdialogHandlerT(p *CJsdialogHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_jsdialog_handler.ForceUnref()
+	r.p_jsdialog_handler.Unref()
 	gop := p.pc_jsdialog_handler
 	BaseAddRef(gop)
 	r.p_jsdialog_handler = newCJsdialogHandlerT((*C.cef_jsdialog_handler_t)(gop), byApp)
@@ -15254,7 +15254,7 @@ func (p *cCJsdialogHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (jsdialog_handler *CJsdialogHandlerT) ForceUnref() (ret bool) {
+func (jsdialog_handler *CJsdialogHandlerT) Unref() (ret bool) {
 	if jsdialog_handler == nil {
 		return
 	}
@@ -15487,7 +15487,7 @@ func (r RefToCKeyboardHandlerT) GetCKeyboardHandlerT() *CKeyboardHandlerT {
 
 func (r *RefToCKeyboardHandlerT) setCKeyboardHandlerT(p *CKeyboardHandlerT) {
 	// prevValue = r.p_keyboard_handler
-	r.p_keyboard_handler.ForceUnref()
+	r.p_keyboard_handler.Unref()
 	r.p_keyboard_handler = p
 	// return prevValue
 }
@@ -15496,7 +15496,7 @@ func (r *RefToCKeyboardHandlerT) TakeOverCKeyboardHandlerT(src *CKeyboardHandler
 	if r == nil {
 		return
 	}
-	r.p_keyboard_handler.ForceUnref()
+	r.p_keyboard_handler.Unref()
 	gop := src.pc_keyboard_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -15528,7 +15528,7 @@ func (r *RefToCKeyboardHandlerT) NewRefCKeyboardHandlerT(p *CKeyboardHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_keyboard_handler.ForceUnref()
+	r.p_keyboard_handler.Unref()
 	gop := p.pc_keyboard_handler
 	BaseAddRef(gop)
 	r.p_keyboard_handler = newCKeyboardHandlerT((*C.cef_keyboard_handler_t)(gop), byApp)
@@ -15562,7 +15562,7 @@ func (p *cCKeyboardHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (keyboard_handler *CKeyboardHandlerT) ForceUnref() (ret bool) {
+func (keyboard_handler *CKeyboardHandlerT) Unref() (ret bool) {
 	if keyboard_handler == nil {
 		return
 	}
@@ -15737,7 +15737,7 @@ func (r RefToCLabelButtonT) GetCLabelButtonT() *CLabelButtonT {
 
 func (r *RefToCLabelButtonT) setCLabelButtonT(p *CLabelButtonT) {
 	// prevValue = r.p_label_button
-	r.p_label_button.ForceUnref()
+	r.p_label_button.Unref()
 	r.p_label_button = p
 	// return prevValue
 }
@@ -15746,7 +15746,7 @@ func (r *RefToCLabelButtonT) TakeOverCLabelButtonT(src *CLabelButtonT) {
 	if r == nil {
 		return
 	}
-	r.p_label_button.ForceUnref()
+	r.p_label_button.Unref()
 	gop := src.pc_label_button
 	switch src.beUnrefed {
 	case byApp:
@@ -15778,7 +15778,7 @@ func (r *RefToCLabelButtonT) NewRefCLabelButtonT(p *CLabelButtonT) {
 	if r == nil {
 		return
 	}
-	r.p_label_button.ForceUnref()
+	r.p_label_button.Unref()
 	gop := p.pc_label_button
 	BaseAddRef(gop)
 	r.p_label_button = newCLabelButtonT((*C.cef_label_button_t)(gop), byApp)
@@ -15812,7 +15812,7 @@ func (p *cCLabelButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (label_button *CLabelButtonT) ForceUnref() (ret bool) {
+func (label_button *CLabelButtonT) Unref() (ret bool) {
 	if label_button == nil {
 		return
 	}
@@ -16037,7 +16037,7 @@ func (r RefToCLayoutT) GetCLayoutT() *CLayoutT {
 
 func (r *RefToCLayoutT) setCLayoutT(p *CLayoutT) {
 	// prevValue = r.p_layout
-	r.p_layout.ForceUnref()
+	r.p_layout.Unref()
 	r.p_layout = p
 	// return prevValue
 }
@@ -16046,7 +16046,7 @@ func (r *RefToCLayoutT) TakeOverCLayoutT(src *CLayoutT) {
 	if r == nil {
 		return
 	}
-	r.p_layout.ForceUnref()
+	r.p_layout.Unref()
 	gop := src.pc_layout
 	switch src.beUnrefed {
 	case byApp:
@@ -16078,7 +16078,7 @@ func (r *RefToCLayoutT) NewRefCLayoutT(p *CLayoutT) {
 	if r == nil {
 		return
 	}
-	r.p_layout.ForceUnref()
+	r.p_layout.Unref()
 	gop := p.pc_layout
 	BaseAddRef(gop)
 	r.p_layout = newCLayoutT((*C.cef_layout_t)(gop), byApp)
@@ -16112,7 +16112,7 @@ func (p *cCLayoutT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (layout *CLayoutT) ForceUnref() (ret bool) {
+func (layout *CLayoutT) Unref() (ret bool) {
 	if layout == nil {
 		return
 	}
@@ -16191,7 +16191,7 @@ func (r RefToCLifeSpanHandlerT) GetCLifeSpanHandlerT() *CLifeSpanHandlerT {
 
 func (r *RefToCLifeSpanHandlerT) setCLifeSpanHandlerT(p *CLifeSpanHandlerT) {
 	// prevValue = r.p_life_span_handler
-	r.p_life_span_handler.ForceUnref()
+	r.p_life_span_handler.Unref()
 	r.p_life_span_handler = p
 	// return prevValue
 }
@@ -16200,7 +16200,7 @@ func (r *RefToCLifeSpanHandlerT) TakeOverCLifeSpanHandlerT(src *CLifeSpanHandler
 	if r == nil {
 		return
 	}
-	r.p_life_span_handler.ForceUnref()
+	r.p_life_span_handler.Unref()
 	gop := src.pc_life_span_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -16232,7 +16232,7 @@ func (r *RefToCLifeSpanHandlerT) NewRefCLifeSpanHandlerT(p *CLifeSpanHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_life_span_handler.ForceUnref()
+	r.p_life_span_handler.Unref()
 	gop := p.pc_life_span_handler
 	BaseAddRef(gop)
 	r.p_life_span_handler = newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(gop), byApp)
@@ -16266,7 +16266,7 @@ func (p *cCLifeSpanHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (life_span_handler *CLifeSpanHandlerT) ForceUnref() (ret bool) {
+func (life_span_handler *CLifeSpanHandlerT) Unref() (ret bool) {
 	if life_span_handler == nil {
 		return
 	}
@@ -16601,7 +16601,7 @@ func (r RefToCLoadHandlerT) GetCLoadHandlerT() *CLoadHandlerT {
 
 func (r *RefToCLoadHandlerT) setCLoadHandlerT(p *CLoadHandlerT) {
 	// prevValue = r.p_load_handler
-	r.p_load_handler.ForceUnref()
+	r.p_load_handler.Unref()
 	r.p_load_handler = p
 	// return prevValue
 }
@@ -16610,7 +16610,7 @@ func (r *RefToCLoadHandlerT) TakeOverCLoadHandlerT(src *CLoadHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_load_handler.ForceUnref()
+	r.p_load_handler.Unref()
 	gop := src.pc_load_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -16642,7 +16642,7 @@ func (r *RefToCLoadHandlerT) NewRefCLoadHandlerT(p *CLoadHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_load_handler.ForceUnref()
+	r.p_load_handler.Unref()
 	gop := p.pc_load_handler
 	BaseAddRef(gop)
 	r.p_load_handler = newCLoadHandlerT((*C.cef_load_handler_t)(gop), byApp)
@@ -16676,7 +16676,7 @@ func (p *cCLoadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (load_handler *CLoadHandlerT) ForceUnref() (ret bool) {
+func (load_handler *CLoadHandlerT) Unref() (ret bool) {
 	if load_handler == nil {
 		return
 	}
@@ -16916,7 +16916,7 @@ func (r RefToCMediaRouterT) GetCMediaRouterT() *CMediaRouterT {
 
 func (r *RefToCMediaRouterT) setCMediaRouterT(p *CMediaRouterT) {
 	// prevValue = r.p_media_router
-	r.p_media_router.ForceUnref()
+	r.p_media_router.Unref()
 	r.p_media_router = p
 	// return prevValue
 }
@@ -16925,7 +16925,7 @@ func (r *RefToCMediaRouterT) TakeOverCMediaRouterT(src *CMediaRouterT) {
 	if r == nil {
 		return
 	}
-	r.p_media_router.ForceUnref()
+	r.p_media_router.Unref()
 	gop := src.pc_media_router
 	switch src.beUnrefed {
 	case byApp:
@@ -16957,7 +16957,7 @@ func (r *RefToCMediaRouterT) NewRefCMediaRouterT(p *CMediaRouterT) {
 	if r == nil {
 		return
 	}
-	r.p_media_router.ForceUnref()
+	r.p_media_router.Unref()
 	gop := p.pc_media_router
 	BaseAddRef(gop)
 	r.p_media_router = newCMediaRouterT((*C.cef_media_router_t)(gop), byApp)
@@ -16991,7 +16991,7 @@ func (p *cCMediaRouterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (media_router *CMediaRouterT) ForceUnref() (ret bool) {
+func (media_router *CMediaRouterT) Unref() (ret bool) {
 	if media_router == nil {
 		return
 	}
@@ -17145,7 +17145,7 @@ func (r RefToCMediaObserverT) GetCMediaObserverT() *CMediaObserverT {
 
 func (r *RefToCMediaObserverT) setCMediaObserverT(p *CMediaObserverT) {
 	// prevValue = r.p_media_observer
-	r.p_media_observer.ForceUnref()
+	r.p_media_observer.Unref()
 	r.p_media_observer = p
 	// return prevValue
 }
@@ -17154,7 +17154,7 @@ func (r *RefToCMediaObserverT) TakeOverCMediaObserverT(src *CMediaObserverT) {
 	if r == nil {
 		return
 	}
-	r.p_media_observer.ForceUnref()
+	r.p_media_observer.Unref()
 	gop := src.pc_media_observer
 	switch src.beUnrefed {
 	case byApp:
@@ -17186,7 +17186,7 @@ func (r *RefToCMediaObserverT) NewRefCMediaObserverT(p *CMediaObserverT) {
 	if r == nil {
 		return
 	}
-	r.p_media_observer.ForceUnref()
+	r.p_media_observer.Unref()
 	gop := p.pc_media_observer
 	BaseAddRef(gop)
 	r.p_media_observer = newCMediaObserverT((*C.cef_media_observer_t)(gop), byApp)
@@ -17220,7 +17220,7 @@ func (p *cCMediaObserverT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (media_observer *CMediaObserverT) ForceUnref() (ret bool) {
+func (media_observer *CMediaObserverT) Unref() (ret bool) {
 	if media_observer == nil {
 		return
 	}
@@ -17430,7 +17430,7 @@ func (r RefToCMediaRouteT) GetCMediaRouteT() *CMediaRouteT {
 
 func (r *RefToCMediaRouteT) setCMediaRouteT(p *CMediaRouteT) {
 	// prevValue = r.p_media_route
-	r.p_media_route.ForceUnref()
+	r.p_media_route.Unref()
 	r.p_media_route = p
 	// return prevValue
 }
@@ -17439,7 +17439,7 @@ func (r *RefToCMediaRouteT) TakeOverCMediaRouteT(src *CMediaRouteT) {
 	if r == nil {
 		return
 	}
-	r.p_media_route.ForceUnref()
+	r.p_media_route.Unref()
 	gop := src.pc_media_route
 	switch src.beUnrefed {
 	case byApp:
@@ -17471,7 +17471,7 @@ func (r *RefToCMediaRouteT) NewRefCMediaRouteT(p *CMediaRouteT) {
 	if r == nil {
 		return
 	}
-	r.p_media_route.ForceUnref()
+	r.p_media_route.Unref()
 	gop := p.pc_media_route
 	BaseAddRef(gop)
 	r.p_media_route = newCMediaRouteT((*C.cef_media_route_t)(gop), byApp)
@@ -17505,7 +17505,7 @@ func (p *cCMediaRouteT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (media_route *CMediaRouteT) ForceUnref() (ret bool) {
+func (media_route *CMediaRouteT) Unref() (ret bool) {
 	if media_route == nil {
 		return
 	}
@@ -17610,7 +17610,7 @@ func (r RefToCMediaRouteCreateCallbackT) GetCMediaRouteCreateCallbackT() *CMedia
 
 func (r *RefToCMediaRouteCreateCallbackT) setCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) {
 	// prevValue = r.p_media_route_create_callback
-	r.p_media_route_create_callback.ForceUnref()
+	r.p_media_route_create_callback.Unref()
 	r.p_media_route_create_callback = p
 	// return prevValue
 }
@@ -17619,7 +17619,7 @@ func (r *RefToCMediaRouteCreateCallbackT) TakeOverCMediaRouteCreateCallbackT(src
 	if r == nil {
 		return
 	}
-	r.p_media_route_create_callback.ForceUnref()
+	r.p_media_route_create_callback.Unref()
 	gop := src.pc_media_route_create_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -17651,7 +17651,7 @@ func (r *RefToCMediaRouteCreateCallbackT) NewRefCMediaRouteCreateCallbackT(p *CM
 	if r == nil {
 		return
 	}
-	r.p_media_route_create_callback.ForceUnref()
+	r.p_media_route_create_callback.Unref()
 	gop := p.pc_media_route_create_callback
 	BaseAddRef(gop)
 	r.p_media_route_create_callback = newCMediaRouteCreateCallbackT((*C.cef_media_route_create_callback_t)(gop), byApp)
@@ -17685,7 +17685,7 @@ func (p *cCMediaRouteCreateCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (media_route_create_callback *CMediaRouteCreateCallbackT) ForceUnref() (ret bool) {
+func (media_route_create_callback *CMediaRouteCreateCallbackT) Unref() (ret bool) {
 	if media_route_create_callback == nil {
 		return
 	}
@@ -17751,7 +17751,7 @@ func (r RefToCMediaSinkT) GetCMediaSinkT() *CMediaSinkT {
 
 func (r *RefToCMediaSinkT) setCMediaSinkT(p *CMediaSinkT) {
 	// prevValue = r.p_media_sink
-	r.p_media_sink.ForceUnref()
+	r.p_media_sink.Unref()
 	r.p_media_sink = p
 	// return prevValue
 }
@@ -17760,7 +17760,7 @@ func (r *RefToCMediaSinkT) TakeOverCMediaSinkT(src *CMediaSinkT) {
 	if r == nil {
 		return
 	}
-	r.p_media_sink.ForceUnref()
+	r.p_media_sink.Unref()
 	gop := src.pc_media_sink
 	switch src.beUnrefed {
 	case byApp:
@@ -17792,7 +17792,7 @@ func (r *RefToCMediaSinkT) NewRefCMediaSinkT(p *CMediaSinkT) {
 	if r == nil {
 		return
 	}
-	r.p_media_sink.ForceUnref()
+	r.p_media_sink.Unref()
 	gop := p.pc_media_sink
 	BaseAddRef(gop)
 	r.p_media_sink = newCMediaSinkT((*C.cef_media_sink_t)(gop), byApp)
@@ -17826,7 +17826,7 @@ func (p *cCMediaSinkT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (media_sink *CMediaSinkT) ForceUnref() (ret bool) {
+func (media_sink *CMediaSinkT) Unref() (ret bool) {
 	if media_sink == nil {
 		return
 	}
@@ -17984,7 +17984,7 @@ func (r RefToCMediaSinkDeviceInfoCallbackT) GetCMediaSinkDeviceInfoCallbackT() *
 
 func (r *RefToCMediaSinkDeviceInfoCallbackT) setCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) {
 	// prevValue = r.p_media_sink_device_info_callback
-	r.p_media_sink_device_info_callback.ForceUnref()
+	r.p_media_sink_device_info_callback.Unref()
 	r.p_media_sink_device_info_callback = p
 	// return prevValue
 }
@@ -17993,7 +17993,7 @@ func (r *RefToCMediaSinkDeviceInfoCallbackT) TakeOverCMediaSinkDeviceInfoCallbac
 	if r == nil {
 		return
 	}
-	r.p_media_sink_device_info_callback.ForceUnref()
+	r.p_media_sink_device_info_callback.Unref()
 	gop := src.pc_media_sink_device_info_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -18025,7 +18025,7 @@ func (r *RefToCMediaSinkDeviceInfoCallbackT) NewRefCMediaSinkDeviceInfoCallbackT
 	if r == nil {
 		return
 	}
-	r.p_media_sink_device_info_callback.ForceUnref()
+	r.p_media_sink_device_info_callback.Unref()
 	gop := p.pc_media_sink_device_info_callback
 	BaseAddRef(gop)
 	r.p_media_sink_device_info_callback = newCMediaSinkDeviceInfoCallbackT((*C.cef_media_sink_device_info_callback_t)(gop), byApp)
@@ -18059,7 +18059,7 @@ func (p *cCMediaSinkDeviceInfoCallbackT) cast_to_p_base_ref_counted_t() *C.cef_b
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT) ForceUnref() (ret bool) {
+func (media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT) Unref() (ret bool) {
 	if media_sink_device_info_callback == nil {
 		return
 	}
@@ -18116,7 +18116,7 @@ func (r RefToCMediaSourceT) GetCMediaSourceT() *CMediaSourceT {
 
 func (r *RefToCMediaSourceT) setCMediaSourceT(p *CMediaSourceT) {
 	// prevValue = r.p_media_source
-	r.p_media_source.ForceUnref()
+	r.p_media_source.Unref()
 	r.p_media_source = p
 	// return prevValue
 }
@@ -18125,7 +18125,7 @@ func (r *RefToCMediaSourceT) TakeOverCMediaSourceT(src *CMediaSourceT) {
 	if r == nil {
 		return
 	}
-	r.p_media_source.ForceUnref()
+	r.p_media_source.Unref()
 	gop := src.pc_media_source
 	switch src.beUnrefed {
 	case byApp:
@@ -18157,7 +18157,7 @@ func (r *RefToCMediaSourceT) NewRefCMediaSourceT(p *CMediaSourceT) {
 	if r == nil {
 		return
 	}
-	r.p_media_source.ForceUnref()
+	r.p_media_source.Unref()
 	gop := p.pc_media_source
 	BaseAddRef(gop)
 	r.p_media_source = newCMediaSourceT((*C.cef_media_source_t)(gop), byApp)
@@ -18191,7 +18191,7 @@ func (p *cCMediaSourceT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (media_source *CMediaSourceT) ForceUnref() (ret bool) {
+func (media_source *CMediaSourceT) Unref() (ret bool) {
 	if media_source == nil {
 		return
 	}
@@ -18276,7 +18276,7 @@ func (r RefToCMenuButtonT) GetCMenuButtonT() *CMenuButtonT {
 
 func (r *RefToCMenuButtonT) setCMenuButtonT(p *CMenuButtonT) {
 	// prevValue = r.p_menu_button
-	r.p_menu_button.ForceUnref()
+	r.p_menu_button.Unref()
 	r.p_menu_button = p
 	// return prevValue
 }
@@ -18285,7 +18285,7 @@ func (r *RefToCMenuButtonT) TakeOverCMenuButtonT(src *CMenuButtonT) {
 	if r == nil {
 		return
 	}
-	r.p_menu_button.ForceUnref()
+	r.p_menu_button.Unref()
 	gop := src.pc_menu_button
 	switch src.beUnrefed {
 	case byApp:
@@ -18317,7 +18317,7 @@ func (r *RefToCMenuButtonT) NewRefCMenuButtonT(p *CMenuButtonT) {
 	if r == nil {
 		return
 	}
-	r.p_menu_button.ForceUnref()
+	r.p_menu_button.Unref()
 	gop := p.pc_menu_button
 	BaseAddRef(gop)
 	r.p_menu_button = newCMenuButtonT((*C.cef_menu_button_t)(gop), byApp)
@@ -18351,7 +18351,7 @@ func (p *cCMenuButtonT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (menu_button *CMenuButtonT) ForceUnref() (ret bool) {
+func (menu_button *CMenuButtonT) Unref() (ret bool) {
 	if menu_button == nil {
 		return
 	}
@@ -18459,7 +18459,7 @@ func (r RefToCMenuButtonPressedLockT) GetCMenuButtonPressedLockT() *CMenuButtonP
 
 func (r *RefToCMenuButtonPressedLockT) setCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) {
 	// prevValue = r.p_menu_button_pressed_lock
-	r.p_menu_button_pressed_lock.ForceUnref()
+	r.p_menu_button_pressed_lock.Unref()
 	r.p_menu_button_pressed_lock = p
 	// return prevValue
 }
@@ -18468,7 +18468,7 @@ func (r *RefToCMenuButtonPressedLockT) TakeOverCMenuButtonPressedLockT(src *CMen
 	if r == nil {
 		return
 	}
-	r.p_menu_button_pressed_lock.ForceUnref()
+	r.p_menu_button_pressed_lock.Unref()
 	gop := src.pc_menu_button_pressed_lock
 	switch src.beUnrefed {
 	case byApp:
@@ -18500,7 +18500,7 @@ func (r *RefToCMenuButtonPressedLockT) NewRefCMenuButtonPressedLockT(p *CMenuBut
 	if r == nil {
 		return
 	}
-	r.p_menu_button_pressed_lock.ForceUnref()
+	r.p_menu_button_pressed_lock.Unref()
 	gop := p.pc_menu_button_pressed_lock
 	BaseAddRef(gop)
 	r.p_menu_button_pressed_lock = newCMenuButtonPressedLockT((*C.cef_menu_button_pressed_lock_t)(gop), byApp)
@@ -18534,7 +18534,7 @@ func (p *cCMenuButtonPressedLockT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (menu_button_pressed_lock *CMenuButtonPressedLockT) ForceUnref() (ret bool) {
+func (menu_button_pressed_lock *CMenuButtonPressedLockT) Unref() (ret bool) {
 	if menu_button_pressed_lock == nil {
 		return
 	}
@@ -18578,7 +18578,7 @@ func (r RefToCMenuButtonDelegateT) GetCMenuButtonDelegateT() *CMenuButtonDelegat
 
 func (r *RefToCMenuButtonDelegateT) setCMenuButtonDelegateT(p *CMenuButtonDelegateT) {
 	// prevValue = r.p_menu_button_delegate
-	r.p_menu_button_delegate.ForceUnref()
+	r.p_menu_button_delegate.Unref()
 	r.p_menu_button_delegate = p
 	// return prevValue
 }
@@ -18587,7 +18587,7 @@ func (r *RefToCMenuButtonDelegateT) TakeOverCMenuButtonDelegateT(src *CMenuButto
 	if r == nil {
 		return
 	}
-	r.p_menu_button_delegate.ForceUnref()
+	r.p_menu_button_delegate.Unref()
 	gop := src.pc_menu_button_delegate
 	switch src.beUnrefed {
 	case byApp:
@@ -18619,7 +18619,7 @@ func (r *RefToCMenuButtonDelegateT) NewRefCMenuButtonDelegateT(p *CMenuButtonDel
 	if r == nil {
 		return
 	}
-	r.p_menu_button_delegate.ForceUnref()
+	r.p_menu_button_delegate.Unref()
 	gop := p.pc_menu_button_delegate
 	BaseAddRef(gop)
 	r.p_menu_button_delegate = newCMenuButtonDelegateT((*C.cef_menu_button_delegate_t)(gop), byApp)
@@ -18653,7 +18653,7 @@ func (p *cCMenuButtonDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (menu_button_delegate *CMenuButtonDelegateT) ForceUnref() (ret bool) {
+func (menu_button_delegate *CMenuButtonDelegateT) Unref() (ret bool) {
 	if menu_button_delegate == nil {
 		return
 	}
@@ -18921,7 +18921,7 @@ func (r RefToCMenuModelT) GetCMenuModelT() *CMenuModelT {
 
 func (r *RefToCMenuModelT) setCMenuModelT(p *CMenuModelT) {
 	// prevValue = r.p_menu_model
-	r.p_menu_model.ForceUnref()
+	r.p_menu_model.Unref()
 	r.p_menu_model = p
 	// return prevValue
 }
@@ -18930,7 +18930,7 @@ func (r *RefToCMenuModelT) TakeOverCMenuModelT(src *CMenuModelT) {
 	if r == nil {
 		return
 	}
-	r.p_menu_model.ForceUnref()
+	r.p_menu_model.Unref()
 	gop := src.pc_menu_model
 	switch src.beUnrefed {
 	case byApp:
@@ -18962,7 +18962,7 @@ func (r *RefToCMenuModelT) NewRefCMenuModelT(p *CMenuModelT) {
 	if r == nil {
 		return
 	}
-	r.p_menu_model.ForceUnref()
+	r.p_menu_model.Unref()
 	gop := p.pc_menu_model
 	BaseAddRef(gop)
 	r.p_menu_model = newCMenuModelT((*C.cef_menu_model_t)(gop), byApp)
@@ -18996,7 +18996,7 @@ func (p *cCMenuModelT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (menu_model *CMenuModelT) ForceUnref() (ret bool) {
+func (menu_model *CMenuModelT) Unref() (ret bool) {
 	if menu_model == nil {
 		return
 	}
@@ -19922,7 +19922,7 @@ func (r RefToCMenuModelDelegateT) GetCMenuModelDelegateT() *CMenuModelDelegateT 
 
 func (r *RefToCMenuModelDelegateT) setCMenuModelDelegateT(p *CMenuModelDelegateT) {
 	// prevValue = r.p_menu_model_delegate
-	r.p_menu_model_delegate.ForceUnref()
+	r.p_menu_model_delegate.Unref()
 	r.p_menu_model_delegate = p
 	// return prevValue
 }
@@ -19931,7 +19931,7 @@ func (r *RefToCMenuModelDelegateT) TakeOverCMenuModelDelegateT(src *CMenuModelDe
 	if r == nil {
 		return
 	}
-	r.p_menu_model_delegate.ForceUnref()
+	r.p_menu_model_delegate.Unref()
 	gop := src.pc_menu_model_delegate
 	switch src.beUnrefed {
 	case byApp:
@@ -19963,7 +19963,7 @@ func (r *RefToCMenuModelDelegateT) NewRefCMenuModelDelegateT(p *CMenuModelDelega
 	if r == nil {
 		return
 	}
-	r.p_menu_model_delegate.ForceUnref()
+	r.p_menu_model_delegate.Unref()
 	gop := p.pc_menu_model_delegate
 	BaseAddRef(gop)
 	r.p_menu_model_delegate = newCMenuModelDelegateT((*C.cef_menu_model_delegate_t)(gop), byApp)
@@ -19997,7 +19997,7 @@ func (p *cCMenuModelDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (menu_model_delegate *CMenuModelDelegateT) ForceUnref() (ret bool) {
+func (menu_model_delegate *CMenuModelDelegateT) Unref() (ret bool) {
 	if menu_model_delegate == nil {
 		return
 	}
@@ -20271,7 +20271,7 @@ func (r RefToCNavigationEntryT) GetCNavigationEntryT() *CNavigationEntryT {
 
 func (r *RefToCNavigationEntryT) setCNavigationEntryT(p *CNavigationEntryT) {
 	// prevValue = r.p_navigation_entry
-	r.p_navigation_entry.ForceUnref()
+	r.p_navigation_entry.Unref()
 	r.p_navigation_entry = p
 	// return prevValue
 }
@@ -20280,7 +20280,7 @@ func (r *RefToCNavigationEntryT) TakeOverCNavigationEntryT(src *CNavigationEntry
 	if r == nil {
 		return
 	}
-	r.p_navigation_entry.ForceUnref()
+	r.p_navigation_entry.Unref()
 	gop := src.pc_navigation_entry
 	switch src.beUnrefed {
 	case byApp:
@@ -20312,7 +20312,7 @@ func (r *RefToCNavigationEntryT) NewRefCNavigationEntryT(p *CNavigationEntryT) {
 	if r == nil {
 		return
 	}
-	r.p_navigation_entry.ForceUnref()
+	r.p_navigation_entry.Unref()
 	gop := p.pc_navigation_entry
 	BaseAddRef(gop)
 	r.p_navigation_entry = newCNavigationEntryT((*C.cef_navigation_entry_t)(gop), byApp)
@@ -20346,7 +20346,7 @@ func (p *cCNavigationEntryT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (navigation_entry *CNavigationEntryT) ForceUnref() (ret bool) {
+func (navigation_entry *CNavigationEntryT) Unref() (ret bool) {
 	if navigation_entry == nil {
 		return
 	}
@@ -20615,7 +20615,7 @@ func (r RefToCPanelT) GetCPanelT() *CPanelT {
 
 func (r *RefToCPanelT) setCPanelT(p *CPanelT) {
 	// prevValue = r.p_panel
-	r.p_panel.ForceUnref()
+	r.p_panel.Unref()
 	r.p_panel = p
 	// return prevValue
 }
@@ -20624,7 +20624,7 @@ func (r *RefToCPanelT) TakeOverCPanelT(src *CPanelT) {
 	if r == nil {
 		return
 	}
-	r.p_panel.ForceUnref()
+	r.p_panel.Unref()
 	gop := src.pc_panel
 	switch src.beUnrefed {
 	case byApp:
@@ -20656,7 +20656,7 @@ func (r *RefToCPanelT) NewRefCPanelT(p *CPanelT) {
 	if r == nil {
 		return
 	}
-	r.p_panel.ForceUnref()
+	r.p_panel.Unref()
 	gop := p.pc_panel
 	BaseAddRef(gop)
 	r.p_panel = newCPanelT((*C.cef_panel_t)(gop), byApp)
@@ -20690,7 +20690,7 @@ func (p *cCPanelT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (panel *CPanelT) ForceUnref() (ret bool) {
+func (panel *CPanelT) Unref() (ret bool) {
 	if panel == nil {
 		return
 	}
@@ -20919,7 +20919,7 @@ func (r RefToCPanelDelegateT) GetCPanelDelegateT() *CPanelDelegateT {
 
 func (r *RefToCPanelDelegateT) setCPanelDelegateT(p *CPanelDelegateT) {
 	// prevValue = r.p_panel_delegate
-	r.p_panel_delegate.ForceUnref()
+	r.p_panel_delegate.Unref()
 	r.p_panel_delegate = p
 	// return prevValue
 }
@@ -20928,7 +20928,7 @@ func (r *RefToCPanelDelegateT) TakeOverCPanelDelegateT(src *CPanelDelegateT) {
 	if r == nil {
 		return
 	}
-	r.p_panel_delegate.ForceUnref()
+	r.p_panel_delegate.Unref()
 	gop := src.pc_panel_delegate
 	switch src.beUnrefed {
 	case byApp:
@@ -20960,7 +20960,7 @@ func (r *RefToCPanelDelegateT) NewRefCPanelDelegateT(p *CPanelDelegateT) {
 	if r == nil {
 		return
 	}
-	r.p_panel_delegate.ForceUnref()
+	r.p_panel_delegate.Unref()
 	gop := p.pc_panel_delegate
 	BaseAddRef(gop)
 	r.p_panel_delegate = newCPanelDelegateT((*C.cef_panel_delegate_t)(gop), byApp)
@@ -20994,7 +20994,7 @@ func (p *cCPanelDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (panel_delegate *CPanelDelegateT) ForceUnref() (ret bool) {
+func (panel_delegate *CPanelDelegateT) Unref() (ret bool) {
 	if panel_delegate == nil {
 		return
 	}
@@ -21214,7 +21214,7 @@ func (r RefToCPrintDialogCallbackT) GetCPrintDialogCallbackT() *CPrintDialogCall
 
 func (r *RefToCPrintDialogCallbackT) setCPrintDialogCallbackT(p *CPrintDialogCallbackT) {
 	// prevValue = r.p_print_dialog_callback
-	r.p_print_dialog_callback.ForceUnref()
+	r.p_print_dialog_callback.Unref()
 	r.p_print_dialog_callback = p
 	// return prevValue
 }
@@ -21223,7 +21223,7 @@ func (r *RefToCPrintDialogCallbackT) TakeOverCPrintDialogCallbackT(src *CPrintDi
 	if r == nil {
 		return
 	}
-	r.p_print_dialog_callback.ForceUnref()
+	r.p_print_dialog_callback.Unref()
 	gop := src.pc_print_dialog_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -21255,7 +21255,7 @@ func (r *RefToCPrintDialogCallbackT) NewRefCPrintDialogCallbackT(p *CPrintDialog
 	if r == nil {
 		return
 	}
-	r.p_print_dialog_callback.ForceUnref()
+	r.p_print_dialog_callback.Unref()
 	gop := p.pc_print_dialog_callback
 	BaseAddRef(gop)
 	r.p_print_dialog_callback = newCPrintDialogCallbackT((*C.cef_print_dialog_callback_t)(gop), byApp)
@@ -21289,7 +21289,7 @@ func (p *cCPrintDialogCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (print_dialog_callback *CPrintDialogCallbackT) ForceUnref() (ret bool) {
+func (print_dialog_callback *CPrintDialogCallbackT) Unref() (ret bool) {
 	if print_dialog_callback == nil {
 		return
 	}
@@ -21356,7 +21356,7 @@ func (r RefToCPrintJobCallbackT) GetCPrintJobCallbackT() *CPrintJobCallbackT {
 
 func (r *RefToCPrintJobCallbackT) setCPrintJobCallbackT(p *CPrintJobCallbackT) {
 	// prevValue = r.p_print_job_callback
-	r.p_print_job_callback.ForceUnref()
+	r.p_print_job_callback.Unref()
 	r.p_print_job_callback = p
 	// return prevValue
 }
@@ -21365,7 +21365,7 @@ func (r *RefToCPrintJobCallbackT) TakeOverCPrintJobCallbackT(src *CPrintJobCallb
 	if r == nil {
 		return
 	}
-	r.p_print_job_callback.ForceUnref()
+	r.p_print_job_callback.Unref()
 	gop := src.pc_print_job_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -21397,7 +21397,7 @@ func (r *RefToCPrintJobCallbackT) NewRefCPrintJobCallbackT(p *CPrintJobCallbackT
 	if r == nil {
 		return
 	}
-	r.p_print_job_callback.ForceUnref()
+	r.p_print_job_callback.Unref()
 	gop := p.pc_print_job_callback
 	BaseAddRef(gop)
 	r.p_print_job_callback = newCPrintJobCallbackT((*C.cef_print_job_callback_t)(gop), byApp)
@@ -21431,7 +21431,7 @@ func (p *cCPrintJobCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (print_job_callback *CPrintJobCallbackT) ForceUnref() (ret bool) {
+func (print_job_callback *CPrintJobCallbackT) Unref() (ret bool) {
 	if print_job_callback == nil {
 		return
 	}
@@ -21484,7 +21484,7 @@ func (r RefToCPrintHandlerT) GetCPrintHandlerT() *CPrintHandlerT {
 
 func (r *RefToCPrintHandlerT) setCPrintHandlerT(p *CPrintHandlerT) {
 	// prevValue = r.p_print_handler
-	r.p_print_handler.ForceUnref()
+	r.p_print_handler.Unref()
 	r.p_print_handler = p
 	// return prevValue
 }
@@ -21493,7 +21493,7 @@ func (r *RefToCPrintHandlerT) TakeOverCPrintHandlerT(src *CPrintHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_print_handler.ForceUnref()
+	r.p_print_handler.Unref()
 	gop := src.pc_print_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -21525,7 +21525,7 @@ func (r *RefToCPrintHandlerT) NewRefCPrintHandlerT(p *CPrintHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_print_handler.ForceUnref()
+	r.p_print_handler.Unref()
 	gop := p.pc_print_handler
 	BaseAddRef(gop)
 	r.p_print_handler = newCPrintHandlerT((*C.cef_print_handler_t)(gop), byApp)
@@ -21559,7 +21559,7 @@ func (p *cCPrintHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (print_handler *CPrintHandlerT) ForceUnref() (ret bool) {
+func (print_handler *CPrintHandlerT) Unref() (ret bool) {
 	if print_handler == nil {
 		return
 	}
@@ -21820,7 +21820,7 @@ func (r RefToCPrintSettingsT) GetCPrintSettingsT() *CPrintSettingsT {
 
 func (r *RefToCPrintSettingsT) setCPrintSettingsT(p *CPrintSettingsT) {
 	// prevValue = r.p_print_settings
-	r.p_print_settings.ForceUnref()
+	r.p_print_settings.Unref()
 	r.p_print_settings = p
 	// return prevValue
 }
@@ -21829,7 +21829,7 @@ func (r *RefToCPrintSettingsT) TakeOverCPrintSettingsT(src *CPrintSettingsT) {
 	if r == nil {
 		return
 	}
-	r.p_print_settings.ForceUnref()
+	r.p_print_settings.Unref()
 	gop := src.pc_print_settings
 	switch src.beUnrefed {
 	case byApp:
@@ -21861,7 +21861,7 @@ func (r *RefToCPrintSettingsT) NewRefCPrintSettingsT(p *CPrintSettingsT) {
 	if r == nil {
 		return
 	}
-	r.p_print_settings.ForceUnref()
+	r.p_print_settings.Unref()
 	gop := p.pc_print_settings
 	BaseAddRef(gop)
 	r.p_print_settings = newCPrintSettingsT((*C.cef_print_settings_t)(gop), byApp)
@@ -21895,7 +21895,7 @@ func (p *cCPrintSettingsT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (print_settings *CPrintSettingsT) ForceUnref() (ret bool) {
+func (print_settings *CPrintSettingsT) Unref() (ret bool) {
 	if print_settings == nil {
 		return
 	}
@@ -22194,7 +22194,7 @@ func (r RefToCProcessMessageT) GetCProcessMessageT() *CProcessMessageT {
 
 func (r *RefToCProcessMessageT) setCProcessMessageT(p *CProcessMessageT) {
 	// prevValue = r.p_process_message
-	r.p_process_message.ForceUnref()
+	r.p_process_message.Unref()
 	r.p_process_message = p
 	// return prevValue
 }
@@ -22203,7 +22203,7 @@ func (r *RefToCProcessMessageT) TakeOverCProcessMessageT(src *CProcessMessageT) 
 	if r == nil {
 		return
 	}
-	r.p_process_message.ForceUnref()
+	r.p_process_message.Unref()
 	gop := src.pc_process_message
 	switch src.beUnrefed {
 	case byApp:
@@ -22235,7 +22235,7 @@ func (r *RefToCProcessMessageT) NewRefCProcessMessageT(p *CProcessMessageT) {
 	if r == nil {
 		return
 	}
-	r.p_process_message.ForceUnref()
+	r.p_process_message.Unref()
 	gop := p.pc_process_message
 	BaseAddRef(gop)
 	r.p_process_message = newCProcessMessageT((*C.cef_process_message_t)(gop), byApp)
@@ -22269,7 +22269,7 @@ func (p *cCProcessMessageT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (process_message *CProcessMessageT) ForceUnref() (ret bool) {
+func (process_message *CProcessMessageT) Unref() (ret bool) {
 	if process_message == nil {
 		return
 	}
@@ -22389,7 +22389,7 @@ func (r RefToCRegistrationT) GetCRegistrationT() *CRegistrationT {
 
 func (r *RefToCRegistrationT) setCRegistrationT(p *CRegistrationT) {
 	// prevValue = r.p_registration
-	r.p_registration.ForceUnref()
+	r.p_registration.Unref()
 	r.p_registration = p
 	// return prevValue
 }
@@ -22398,7 +22398,7 @@ func (r *RefToCRegistrationT) TakeOverCRegistrationT(src *CRegistrationT) {
 	if r == nil {
 		return
 	}
-	r.p_registration.ForceUnref()
+	r.p_registration.Unref()
 	gop := src.pc_registration
 	switch src.beUnrefed {
 	case byApp:
@@ -22430,7 +22430,7 @@ func (r *RefToCRegistrationT) NewRefCRegistrationT(p *CRegistrationT) {
 	if r == nil {
 		return
 	}
-	r.p_registration.ForceUnref()
+	r.p_registration.Unref()
 	gop := p.pc_registration
 	BaseAddRef(gop)
 	r.p_registration = newCRegistrationT((*C.cef_registration_t)(gop), byApp)
@@ -22464,7 +22464,7 @@ func (p *cCRegistrationT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (registration *CRegistrationT) ForceUnref() (ret bool) {
+func (registration *CRegistrationT) Unref() (ret bool) {
 	if registration == nil {
 		return
 	}
@@ -22509,7 +22509,7 @@ func (r RefToCRenderHandlerT) GetCRenderHandlerT() *CRenderHandlerT {
 
 func (r *RefToCRenderHandlerT) setCRenderHandlerT(p *CRenderHandlerT) {
 	// prevValue = r.p_render_handler
-	r.p_render_handler.ForceUnref()
+	r.p_render_handler.Unref()
 	r.p_render_handler = p
 	// return prevValue
 }
@@ -22518,7 +22518,7 @@ func (r *RefToCRenderHandlerT) TakeOverCRenderHandlerT(src *CRenderHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_render_handler.ForceUnref()
+	r.p_render_handler.Unref()
 	gop := src.pc_render_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -22550,7 +22550,7 @@ func (r *RefToCRenderHandlerT) NewRefCRenderHandlerT(p *CRenderHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_render_handler.ForceUnref()
+	r.p_render_handler.Unref()
 	gop := p.pc_render_handler
 	BaseAddRef(gop)
 	r.p_render_handler = newCRenderHandlerT((*C.cef_render_handler_t)(gop), byApp)
@@ -22584,7 +22584,7 @@ func (p *cCRenderHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (render_handler *CRenderHandlerT) ForceUnref() (ret bool) {
+func (render_handler *CRenderHandlerT) Unref() (ret bool) {
 	if render_handler == nil {
 		return
 	}
@@ -23082,7 +23082,7 @@ func (r RefToCRenderProcessHandlerT) GetCRenderProcessHandlerT() *CRenderProcess
 
 func (r *RefToCRenderProcessHandlerT) setCRenderProcessHandlerT(p *CRenderProcessHandlerT) {
 	// prevValue = r.p_render_process_handler
-	r.p_render_process_handler.ForceUnref()
+	r.p_render_process_handler.Unref()
 	r.p_render_process_handler = p
 	// return prevValue
 }
@@ -23091,7 +23091,7 @@ func (r *RefToCRenderProcessHandlerT) TakeOverCRenderProcessHandlerT(src *CRende
 	if r == nil {
 		return
 	}
-	r.p_render_process_handler.ForceUnref()
+	r.p_render_process_handler.Unref()
 	gop := src.pc_render_process_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -23123,7 +23123,7 @@ func (r *RefToCRenderProcessHandlerT) NewRefCRenderProcessHandlerT(p *CRenderPro
 	if r == nil {
 		return
 	}
-	r.p_render_process_handler.ForceUnref()
+	r.p_render_process_handler.Unref()
 	gop := p.pc_render_process_handler
 	BaseAddRef(gop)
 	r.p_render_process_handler = newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(gop), byApp)
@@ -23157,7 +23157,7 @@ func (p *cCRenderProcessHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (render_process_handler *CRenderProcessHandlerT) ForceUnref() (ret bool) {
+func (render_process_handler *CRenderProcessHandlerT) Unref() (ret bool) {
 	if render_process_handler == nil {
 		return
 	}
@@ -23493,7 +23493,7 @@ func (r RefToCRequestCallbackT) GetCRequestCallbackT() *CRequestCallbackT {
 
 func (r *RefToCRequestCallbackT) setCRequestCallbackT(p *CRequestCallbackT) {
 	// prevValue = r.p_request_callback
-	r.p_request_callback.ForceUnref()
+	r.p_request_callback.Unref()
 	r.p_request_callback = p
 	// return prevValue
 }
@@ -23502,7 +23502,7 @@ func (r *RefToCRequestCallbackT) TakeOverCRequestCallbackT(src *CRequestCallback
 	if r == nil {
 		return
 	}
-	r.p_request_callback.ForceUnref()
+	r.p_request_callback.Unref()
 	gop := src.pc_request_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -23534,7 +23534,7 @@ func (r *RefToCRequestCallbackT) NewRefCRequestCallbackT(p *CRequestCallbackT) {
 	if r == nil {
 		return
 	}
-	r.p_request_callback.ForceUnref()
+	r.p_request_callback.Unref()
 	gop := p.pc_request_callback
 	BaseAddRef(gop)
 	r.p_request_callback = newCRequestCallbackT((*C.cef_request_callback_t)(gop), byApp)
@@ -23568,7 +23568,7 @@ func (p *cCRequestCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (request_callback *CRequestCallbackT) ForceUnref() (ret bool) {
+func (request_callback *CRequestCallbackT) Unref() (ret bool) {
 	if request_callback == nil {
 		return
 	}
@@ -23634,7 +23634,7 @@ func (r RefToCRequestT) GetCRequestT() *CRequestT {
 
 func (r *RefToCRequestT) setCRequestT(p *CRequestT) {
 	// prevValue = r.p_request
-	r.p_request.ForceUnref()
+	r.p_request.Unref()
 	r.p_request = p
 	// return prevValue
 }
@@ -23643,7 +23643,7 @@ func (r *RefToCRequestT) TakeOverCRequestT(src *CRequestT) {
 	if r == nil {
 		return
 	}
-	r.p_request.ForceUnref()
+	r.p_request.Unref()
 	gop := src.pc_request
 	switch src.beUnrefed {
 	case byApp:
@@ -23675,7 +23675,7 @@ func (r *RefToCRequestT) NewRefCRequestT(p *CRequestT) {
 	if r == nil {
 		return
 	}
-	r.p_request.ForceUnref()
+	r.p_request.Unref()
 	gop := p.pc_request
 	BaseAddRef(gop)
 	r.p_request = newCRequestT((*C.cef_request_t)(gop), byApp)
@@ -23709,7 +23709,7 @@ func (p *cCRequestT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (request *CRequestT) ForceUnref() (ret bool) {
+func (request *CRequestT) Unref() (ret bool) {
 	if request == nil {
 		return
 	}
@@ -24075,7 +24075,7 @@ func (r RefToCPostDataT) GetCPostDataT() *CPostDataT {
 
 func (r *RefToCPostDataT) setCPostDataT(p *CPostDataT) {
 	// prevValue = r.p_post_data
-	r.p_post_data.ForceUnref()
+	r.p_post_data.Unref()
 	r.p_post_data = p
 	// return prevValue
 }
@@ -24084,7 +24084,7 @@ func (r *RefToCPostDataT) TakeOverCPostDataT(src *CPostDataT) {
 	if r == nil {
 		return
 	}
-	r.p_post_data.ForceUnref()
+	r.p_post_data.Unref()
 	gop := src.pc_post_data
 	switch src.beUnrefed {
 	case byApp:
@@ -24116,7 +24116,7 @@ func (r *RefToCPostDataT) NewRefCPostDataT(p *CPostDataT) {
 	if r == nil {
 		return
 	}
-	r.p_post_data.ForceUnref()
+	r.p_post_data.Unref()
 	gop := p.pc_post_data
 	BaseAddRef(gop)
 	r.p_post_data = newCPostDataT((*C.cef_post_data_t)(gop), byApp)
@@ -24150,7 +24150,7 @@ func (p *cCPostDataT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (post_data *CPostDataT) ForceUnref() (ret bool) {
+func (post_data *CPostDataT) Unref() (ret bool) {
 	if post_data == nil {
 		return
 	}
@@ -24304,7 +24304,7 @@ func (r RefToCPostDataElementT) GetCPostDataElementT() *CPostDataElementT {
 
 func (r *RefToCPostDataElementT) setCPostDataElementT(p *CPostDataElementT) {
 	// prevValue = r.p_post_data_element
-	r.p_post_data_element.ForceUnref()
+	r.p_post_data_element.Unref()
 	r.p_post_data_element = p
 	// return prevValue
 }
@@ -24313,7 +24313,7 @@ func (r *RefToCPostDataElementT) TakeOverCPostDataElementT(src *CPostDataElement
 	if r == nil {
 		return
 	}
-	r.p_post_data_element.ForceUnref()
+	r.p_post_data_element.Unref()
 	gop := src.pc_post_data_element
 	switch src.beUnrefed {
 	case byApp:
@@ -24345,7 +24345,7 @@ func (r *RefToCPostDataElementT) NewRefCPostDataElementT(p *CPostDataElementT) {
 	if r == nil {
 		return
 	}
-	r.p_post_data_element.ForceUnref()
+	r.p_post_data_element.Unref()
 	gop := p.pc_post_data_element
 	BaseAddRef(gop)
 	r.p_post_data_element = newCPostDataElementT((*C.cef_post_data_element_t)(gop), byApp)
@@ -24379,7 +24379,7 @@ func (p *cCPostDataElementT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (post_data_element *CPostDataElementT) ForceUnref() (ret bool) {
+func (post_data_element *CPostDataElementT) Unref() (ret bool) {
 	if post_data_element == nil {
 		return
 	}
@@ -24534,7 +24534,7 @@ func (r RefToCResolveCallbackT) GetCResolveCallbackT() *CResolveCallbackT {
 
 func (r *RefToCResolveCallbackT) setCResolveCallbackT(p *CResolveCallbackT) {
 	// prevValue = r.p_resolve_callback
-	r.p_resolve_callback.ForceUnref()
+	r.p_resolve_callback.Unref()
 	r.p_resolve_callback = p
 	// return prevValue
 }
@@ -24543,7 +24543,7 @@ func (r *RefToCResolveCallbackT) TakeOverCResolveCallbackT(src *CResolveCallback
 	if r == nil {
 		return
 	}
-	r.p_resolve_callback.ForceUnref()
+	r.p_resolve_callback.Unref()
 	gop := src.pc_resolve_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -24575,7 +24575,7 @@ func (r *RefToCResolveCallbackT) NewRefCResolveCallbackT(p *CResolveCallbackT) {
 	if r == nil {
 		return
 	}
-	r.p_resolve_callback.ForceUnref()
+	r.p_resolve_callback.Unref()
 	gop := p.pc_resolve_callback
 	BaseAddRef(gop)
 	r.p_resolve_callback = newCResolveCallbackT((*C.cef_resolve_callback_t)(gop), byApp)
@@ -24609,7 +24609,7 @@ func (p *cCResolveCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (resolve_callback *CResolveCallbackT) ForceUnref() (ret bool) {
+func (resolve_callback *CResolveCallbackT) Unref() (ret bool) {
 	if resolve_callback == nil {
 		return
 	}
@@ -24678,7 +24678,7 @@ func (r RefToCRequestContextT) GetCRequestContextT() *CRequestContextT {
 
 func (r *RefToCRequestContextT) setCRequestContextT(p *CRequestContextT) {
 	// prevValue = r.p_request_context
-	r.p_request_context.ForceUnref()
+	r.p_request_context.Unref()
 	r.p_request_context = p
 	// return prevValue
 }
@@ -24687,7 +24687,7 @@ func (r *RefToCRequestContextT) TakeOverCRequestContextT(src *CRequestContextT) 
 	if r == nil {
 		return
 	}
-	r.p_request_context.ForceUnref()
+	r.p_request_context.Unref()
 	gop := src.pc_request_context
 	switch src.beUnrefed {
 	case byApp:
@@ -24719,7 +24719,7 @@ func (r *RefToCRequestContextT) NewRefCRequestContextT(p *CRequestContextT) {
 	if r == nil {
 		return
 	}
-	r.p_request_context.ForceUnref()
+	r.p_request_context.Unref()
 	gop := p.pc_request_context
 	BaseAddRef(gop)
 	r.p_request_context = newCRequestContextT((*C.cef_request_context_t)(gop), byApp)
@@ -24753,7 +24753,7 @@ func (p *cCRequestContextT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (request_context *CRequestContextT) ForceUnref() (ret bool) {
+func (request_context *CRequestContextT) Unref() (ret bool) {
 	if request_context == nil {
 		return
 	}
@@ -25340,7 +25340,7 @@ func (r RefToCRequestContextHandlerT) GetCRequestContextHandlerT() *CRequestCont
 
 func (r *RefToCRequestContextHandlerT) setCRequestContextHandlerT(p *CRequestContextHandlerT) {
 	// prevValue = r.p_request_context_handler
-	r.p_request_context_handler.ForceUnref()
+	r.p_request_context_handler.Unref()
 	r.p_request_context_handler = p
 	// return prevValue
 }
@@ -25349,7 +25349,7 @@ func (r *RefToCRequestContextHandlerT) TakeOverCRequestContextHandlerT(src *CReq
 	if r == nil {
 		return
 	}
-	r.p_request_context_handler.ForceUnref()
+	r.p_request_context_handler.Unref()
 	gop := src.pc_request_context_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -25381,7 +25381,7 @@ func (r *RefToCRequestContextHandlerT) NewRefCRequestContextHandlerT(p *CRequest
 	if r == nil {
 		return
 	}
-	r.p_request_context_handler.ForceUnref()
+	r.p_request_context_handler.Unref()
 	gop := p.pc_request_context_handler
 	BaseAddRef(gop)
 	r.p_request_context_handler = newCRequestContextHandlerT((*C.cef_request_context_handler_t)(gop), byApp)
@@ -25415,7 +25415,7 @@ func (p *cCRequestContextHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (request_context_handler *CRequestContextHandlerT) ForceUnref() (ret bool) {
+func (request_context_handler *CRequestContextHandlerT) Unref() (ret bool) {
 	if request_context_handler == nil {
 		return
 	}
@@ -25639,7 +25639,7 @@ func (r RefToCSelectClientCertificateCallbackT) GetCSelectClientCertificateCallb
 
 func (r *RefToCSelectClientCertificateCallbackT) setCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT) {
 	// prevValue = r.p_select_client_certificate_callback
-	r.p_select_client_certificate_callback.ForceUnref()
+	r.p_select_client_certificate_callback.Unref()
 	r.p_select_client_certificate_callback = p
 	// return prevValue
 }
@@ -25648,7 +25648,7 @@ func (r *RefToCSelectClientCertificateCallbackT) TakeOverCSelectClientCertificat
 	if r == nil {
 		return
 	}
-	r.p_select_client_certificate_callback.ForceUnref()
+	r.p_select_client_certificate_callback.Unref()
 	gop := src.pc_select_client_certificate_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -25680,7 +25680,7 @@ func (r *RefToCSelectClientCertificateCallbackT) NewRefCSelectClientCertificateC
 	if r == nil {
 		return
 	}
-	r.p_select_client_certificate_callback.ForceUnref()
+	r.p_select_client_certificate_callback.Unref()
 	gop := p.pc_select_client_certificate_callback
 	BaseAddRef(gop)
 	r.p_select_client_certificate_callback = newCSelectClientCertificateCallbackT((*C.cef_select_client_certificate_callback_t)(gop), byApp)
@@ -25714,7 +25714,7 @@ func (p *cCSelectClientCertificateCallbackT) cast_to_p_base_ref_counted_t() *C.c
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (select_client_certificate_callback *CSelectClientCertificateCallbackT) ForceUnref() (ret bool) {
+func (select_client_certificate_callback *CSelectClientCertificateCallbackT) Unref() (ret bool) {
 	if select_client_certificate_callback == nil {
 		return
 	}
@@ -25774,7 +25774,7 @@ func (r RefToCRequestHandlerT) GetCRequestHandlerT() *CRequestHandlerT {
 
 func (r *RefToCRequestHandlerT) setCRequestHandlerT(p *CRequestHandlerT) {
 	// prevValue = r.p_request_handler
-	r.p_request_handler.ForceUnref()
+	r.p_request_handler.Unref()
 	r.p_request_handler = p
 	// return prevValue
 }
@@ -25783,7 +25783,7 @@ func (r *RefToCRequestHandlerT) TakeOverCRequestHandlerT(src *CRequestHandlerT) 
 	if r == nil {
 		return
 	}
-	r.p_request_handler.ForceUnref()
+	r.p_request_handler.Unref()
 	gop := src.pc_request_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -25815,7 +25815,7 @@ func (r *RefToCRequestHandlerT) NewRefCRequestHandlerT(p *CRequestHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_request_handler.ForceUnref()
+	r.p_request_handler.Unref()
 	gop := p.pc_request_handler
 	BaseAddRef(gop)
 	r.p_request_handler = newCRequestHandlerT((*C.cef_request_handler_t)(gop), byApp)
@@ -25849,7 +25849,7 @@ func (p *cCRequestHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (request_handler *CRequestHandlerT) ForceUnref() (ret bool) {
+func (request_handler *CRequestHandlerT) Unref() (ret bool) {
 	if request_handler == nil {
 		return
 	}
@@ -26298,7 +26298,7 @@ func (r RefToCResourceBundleHandlerT) GetCResourceBundleHandlerT() *CResourceBun
 
 func (r *RefToCResourceBundleHandlerT) setCResourceBundleHandlerT(p *CResourceBundleHandlerT) {
 	// prevValue = r.p_resource_bundle_handler
-	r.p_resource_bundle_handler.ForceUnref()
+	r.p_resource_bundle_handler.Unref()
 	r.p_resource_bundle_handler = p
 	// return prevValue
 }
@@ -26307,7 +26307,7 @@ func (r *RefToCResourceBundleHandlerT) TakeOverCResourceBundleHandlerT(src *CRes
 	if r == nil {
 		return
 	}
-	r.p_resource_bundle_handler.ForceUnref()
+	r.p_resource_bundle_handler.Unref()
 	gop := src.pc_resource_bundle_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -26339,7 +26339,7 @@ func (r *RefToCResourceBundleHandlerT) NewRefCResourceBundleHandlerT(p *CResourc
 	if r == nil {
 		return
 	}
-	r.p_resource_bundle_handler.ForceUnref()
+	r.p_resource_bundle_handler.Unref()
 	gop := p.pc_resource_bundle_handler
 	BaseAddRef(gop)
 	r.p_resource_bundle_handler = newCResourceBundleHandlerT((*C.cef_resource_bundle_handler_t)(gop), byApp)
@@ -26373,7 +26373,7 @@ func (p *cCResourceBundleHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_re
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (resource_bundle_handler *CResourceBundleHandlerT) ForceUnref() (ret bool) {
+func (resource_bundle_handler *CResourceBundleHandlerT) Unref() (ret bool) {
 	if resource_bundle_handler == nil {
 		return
 	}
@@ -26570,7 +26570,7 @@ func (r RefToCResourceSkipCallbackT) GetCResourceSkipCallbackT() *CResourceSkipC
 
 func (r *RefToCResourceSkipCallbackT) setCResourceSkipCallbackT(p *CResourceSkipCallbackT) {
 	// prevValue = r.p_resource_skip_callback
-	r.p_resource_skip_callback.ForceUnref()
+	r.p_resource_skip_callback.Unref()
 	r.p_resource_skip_callback = p
 	// return prevValue
 }
@@ -26579,7 +26579,7 @@ func (r *RefToCResourceSkipCallbackT) TakeOverCResourceSkipCallbackT(src *CResou
 	if r == nil {
 		return
 	}
-	r.p_resource_skip_callback.ForceUnref()
+	r.p_resource_skip_callback.Unref()
 	gop := src.pc_resource_skip_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -26611,7 +26611,7 @@ func (r *RefToCResourceSkipCallbackT) NewRefCResourceSkipCallbackT(p *CResourceS
 	if r == nil {
 		return
 	}
-	r.p_resource_skip_callback.ForceUnref()
+	r.p_resource_skip_callback.Unref()
 	gop := p.pc_resource_skip_callback
 	BaseAddRef(gop)
 	r.p_resource_skip_callback = newCResourceSkipCallbackT((*C.cef_resource_skip_callback_t)(gop), byApp)
@@ -26645,7 +26645,7 @@ func (p *cCResourceSkipCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (resource_skip_callback *CResourceSkipCallbackT) ForceUnref() (ret bool) {
+func (resource_skip_callback *CResourceSkipCallbackT) Unref() (ret bool) {
 	if resource_skip_callback == nil {
 		return
 	}
@@ -26701,7 +26701,7 @@ func (r RefToCResourceReadCallbackT) GetCResourceReadCallbackT() *CResourceReadC
 
 func (r *RefToCResourceReadCallbackT) setCResourceReadCallbackT(p *CResourceReadCallbackT) {
 	// prevValue = r.p_resource_read_callback
-	r.p_resource_read_callback.ForceUnref()
+	r.p_resource_read_callback.Unref()
 	r.p_resource_read_callback = p
 	// return prevValue
 }
@@ -26710,7 +26710,7 @@ func (r *RefToCResourceReadCallbackT) TakeOverCResourceReadCallbackT(src *CResou
 	if r == nil {
 		return
 	}
-	r.p_resource_read_callback.ForceUnref()
+	r.p_resource_read_callback.Unref()
 	gop := src.pc_resource_read_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -26742,7 +26742,7 @@ func (r *RefToCResourceReadCallbackT) NewRefCResourceReadCallbackT(p *CResourceR
 	if r == nil {
 		return
 	}
-	r.p_resource_read_callback.ForceUnref()
+	r.p_resource_read_callback.Unref()
 	gop := p.pc_resource_read_callback
 	BaseAddRef(gop)
 	r.p_resource_read_callback = newCResourceReadCallbackT((*C.cef_resource_read_callback_t)(gop), byApp)
@@ -26776,7 +26776,7 @@ func (p *cCResourceReadCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (resource_read_callback *CResourceReadCallbackT) ForceUnref() (ret bool) {
+func (resource_read_callback *CResourceReadCallbackT) Unref() (ret bool) {
 	if resource_read_callback == nil {
 		return
 	}
@@ -26834,7 +26834,7 @@ func (r RefToCResourceHandlerT) GetCResourceHandlerT() *CResourceHandlerT {
 
 func (r *RefToCResourceHandlerT) setCResourceHandlerT(p *CResourceHandlerT) {
 	// prevValue = r.p_resource_handler
-	r.p_resource_handler.ForceUnref()
+	r.p_resource_handler.Unref()
 	r.p_resource_handler = p
 	// return prevValue
 }
@@ -26843,7 +26843,7 @@ func (r *RefToCResourceHandlerT) TakeOverCResourceHandlerT(src *CResourceHandler
 	if r == nil {
 		return
 	}
-	r.p_resource_handler.ForceUnref()
+	r.p_resource_handler.Unref()
 	gop := src.pc_resource_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -26875,7 +26875,7 @@ func (r *RefToCResourceHandlerT) NewRefCResourceHandlerT(p *CResourceHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_resource_handler.ForceUnref()
+	r.p_resource_handler.Unref()
 	gop := p.pc_resource_handler
 	BaseAddRef(gop)
 	r.p_resource_handler = newCResourceHandlerT((*C.cef_resource_handler_t)(gop), byApp)
@@ -26909,7 +26909,7 @@ func (p *cCResourceHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (resource_handler *CResourceHandlerT) ForceUnref() (ret bool) {
+func (resource_handler *CResourceHandlerT) Unref() (ret bool) {
 	if resource_handler == nil {
 		return
 	}
@@ -27198,7 +27198,7 @@ func (r RefToCResourceRequestHandlerT) GetCResourceRequestHandlerT() *CResourceR
 
 func (r *RefToCResourceRequestHandlerT) setCResourceRequestHandlerT(p *CResourceRequestHandlerT) {
 	// prevValue = r.p_resource_request_handler
-	r.p_resource_request_handler.ForceUnref()
+	r.p_resource_request_handler.Unref()
 	r.p_resource_request_handler = p
 	// return prevValue
 }
@@ -27207,7 +27207,7 @@ func (r *RefToCResourceRequestHandlerT) TakeOverCResourceRequestHandlerT(src *CR
 	if r == nil {
 		return
 	}
-	r.p_resource_request_handler.ForceUnref()
+	r.p_resource_request_handler.Unref()
 	gop := src.pc_resource_request_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -27239,7 +27239,7 @@ func (r *RefToCResourceRequestHandlerT) NewRefCResourceRequestHandlerT(p *CResou
 	if r == nil {
 		return
 	}
-	r.p_resource_request_handler.ForceUnref()
+	r.p_resource_request_handler.Unref()
 	gop := p.pc_resource_request_handler
 	BaseAddRef(gop)
 	r.p_resource_request_handler = newCResourceRequestHandlerT((*C.cef_resource_request_handler_t)(gop), byApp)
@@ -27273,7 +27273,7 @@ func (p *cCResourceRequestHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_r
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (resource_request_handler *CResourceRequestHandlerT) ForceUnref() (ret bool) {
+func (resource_request_handler *CResourceRequestHandlerT) Unref() (ret bool) {
 	if resource_request_handler == nil {
 		return
 	}
@@ -27638,7 +27638,7 @@ func (r RefToCCookieAccessFilterT) GetCCookieAccessFilterT() *CCookieAccessFilte
 
 func (r *RefToCCookieAccessFilterT) setCCookieAccessFilterT(p *CCookieAccessFilterT) {
 	// prevValue = r.p_cookie_access_filter
-	r.p_cookie_access_filter.ForceUnref()
+	r.p_cookie_access_filter.Unref()
 	r.p_cookie_access_filter = p
 	// return prevValue
 }
@@ -27647,7 +27647,7 @@ func (r *RefToCCookieAccessFilterT) TakeOverCCookieAccessFilterT(src *CCookieAcc
 	if r == nil {
 		return
 	}
-	r.p_cookie_access_filter.ForceUnref()
+	r.p_cookie_access_filter.Unref()
 	gop := src.pc_cookie_access_filter
 	switch src.beUnrefed {
 	case byApp:
@@ -27679,7 +27679,7 @@ func (r *RefToCCookieAccessFilterT) NewRefCCookieAccessFilterT(p *CCookieAccessF
 	if r == nil {
 		return
 	}
-	r.p_cookie_access_filter.ForceUnref()
+	r.p_cookie_access_filter.Unref()
 	gop := p.pc_cookie_access_filter
 	BaseAddRef(gop)
 	r.p_cookie_access_filter = newCCookieAccessFilterT((*C.cef_cookie_access_filter_t)(gop), byApp)
@@ -27713,7 +27713,7 @@ func (p *cCCookieAccessFilterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (cookie_access_filter *CCookieAccessFilterT) ForceUnref() (ret bool) {
+func (cookie_access_filter *CCookieAccessFilterT) Unref() (ret bool) {
 	if cookie_access_filter == nil {
 		return
 	}
@@ -27893,7 +27893,7 @@ func (r RefToCResponseT) GetCResponseT() *CResponseT {
 
 func (r *RefToCResponseT) setCResponseT(p *CResponseT) {
 	// prevValue = r.p_response
-	r.p_response.ForceUnref()
+	r.p_response.Unref()
 	r.p_response = p
 	// return prevValue
 }
@@ -27902,7 +27902,7 @@ func (r *RefToCResponseT) TakeOverCResponseT(src *CResponseT) {
 	if r == nil {
 		return
 	}
-	r.p_response.ForceUnref()
+	r.p_response.Unref()
 	gop := src.pc_response
 	switch src.beUnrefed {
 	case byApp:
@@ -27934,7 +27934,7 @@ func (r *RefToCResponseT) NewRefCResponseT(p *CResponseT) {
 	if r == nil {
 		return
 	}
-	r.p_response.ForceUnref()
+	r.p_response.Unref()
 	gop := p.pc_response
 	BaseAddRef(gop)
 	r.p_response = newCResponseT((*C.cef_response_t)(gop), byApp)
@@ -27968,7 +27968,7 @@ func (p *cCResponseT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (response *CResponseT) ForceUnref() (ret bool) {
+func (response *CResponseT) Unref() (ret bool) {
 	if response == nil {
 		return
 	}
@@ -28250,7 +28250,7 @@ func (r RefToCResponseFilterT) GetCResponseFilterT() *CResponseFilterT {
 
 func (r *RefToCResponseFilterT) setCResponseFilterT(p *CResponseFilterT) {
 	// prevValue = r.p_response_filter
-	r.p_response_filter.ForceUnref()
+	r.p_response_filter.Unref()
 	r.p_response_filter = p
 	// return prevValue
 }
@@ -28259,7 +28259,7 @@ func (r *RefToCResponseFilterT) TakeOverCResponseFilterT(src *CResponseFilterT) 
 	if r == nil {
 		return
 	}
-	r.p_response_filter.ForceUnref()
+	r.p_response_filter.Unref()
 	gop := src.pc_response_filter
 	switch src.beUnrefed {
 	case byApp:
@@ -28291,7 +28291,7 @@ func (r *RefToCResponseFilterT) NewRefCResponseFilterT(p *CResponseFilterT) {
 	if r == nil {
 		return
 	}
-	r.p_response_filter.ForceUnref()
+	r.p_response_filter.Unref()
 	gop := p.pc_response_filter
 	BaseAddRef(gop)
 	r.p_response_filter = newCResponseFilterT((*C.cef_response_filter_t)(gop), byApp)
@@ -28325,7 +28325,7 @@ func (p *cCResponseFilterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (response_filter *CResponseFilterT) ForceUnref() (ret bool) {
+func (response_filter *CResponseFilterT) Unref() (ret bool) {
 	if response_filter == nil {
 		return
 	}
@@ -28605,7 +28605,7 @@ func (r RefToCSchemeHandlerFactoryT) GetCSchemeHandlerFactoryT() *CSchemeHandler
 
 func (r *RefToCSchemeHandlerFactoryT) setCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) {
 	// prevValue = r.p_scheme_handler_factory
-	r.p_scheme_handler_factory.ForceUnref()
+	r.p_scheme_handler_factory.Unref()
 	r.p_scheme_handler_factory = p
 	// return prevValue
 }
@@ -28614,7 +28614,7 @@ func (r *RefToCSchemeHandlerFactoryT) TakeOverCSchemeHandlerFactoryT(src *CSchem
 	if r == nil {
 		return
 	}
-	r.p_scheme_handler_factory.ForceUnref()
+	r.p_scheme_handler_factory.Unref()
 	gop := src.pc_scheme_handler_factory
 	switch src.beUnrefed {
 	case byApp:
@@ -28646,7 +28646,7 @@ func (r *RefToCSchemeHandlerFactoryT) NewRefCSchemeHandlerFactoryT(p *CSchemeHan
 	if r == nil {
 		return
 	}
-	r.p_scheme_handler_factory.ForceUnref()
+	r.p_scheme_handler_factory.Unref()
 	gop := p.pc_scheme_handler_factory
 	BaseAddRef(gop)
 	r.p_scheme_handler_factory = newCSchemeHandlerFactoryT((*C.cef_scheme_handler_factory_t)(gop), byApp)
@@ -28680,7 +28680,7 @@ func (p *cCSchemeHandlerFactoryT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (scheme_handler_factory *CSchemeHandlerFactoryT) ForceUnref() (ret bool) {
+func (scheme_handler_factory *CSchemeHandlerFactoryT) Unref() (ret bool) {
 	if scheme_handler_factory == nil {
 		return
 	}
@@ -28882,7 +28882,7 @@ func (r RefToCScrollViewT) GetCScrollViewT() *CScrollViewT {
 
 func (r *RefToCScrollViewT) setCScrollViewT(p *CScrollViewT) {
 	// prevValue = r.p_scroll_view
-	r.p_scroll_view.ForceUnref()
+	r.p_scroll_view.Unref()
 	r.p_scroll_view = p
 	// return prevValue
 }
@@ -28891,7 +28891,7 @@ func (r *RefToCScrollViewT) TakeOverCScrollViewT(src *CScrollViewT) {
 	if r == nil {
 		return
 	}
-	r.p_scroll_view.ForceUnref()
+	r.p_scroll_view.Unref()
 	gop := src.pc_scroll_view
 	switch src.beUnrefed {
 	case byApp:
@@ -28923,7 +28923,7 @@ func (r *RefToCScrollViewT) NewRefCScrollViewT(p *CScrollViewT) {
 	if r == nil {
 		return
 	}
-	r.p_scroll_view.ForceUnref()
+	r.p_scroll_view.Unref()
 	gop := p.pc_scroll_view
 	BaseAddRef(gop)
 	r.p_scroll_view = newCScrollViewT((*C.cef_scroll_view_t)(gop), byApp)
@@ -28957,7 +28957,7 @@ func (p *cCScrollViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (scroll_view *CScrollViewT) ForceUnref() (ret bool) {
+func (scroll_view *CScrollViewT) Unref() (ret bool) {
 	if scroll_view == nil {
 		return
 	}
@@ -29109,7 +29109,7 @@ func (r RefToCSslinfoT) GetCSslinfoT() *CSslinfoT {
 
 func (r *RefToCSslinfoT) setCSslinfoT(p *CSslinfoT) {
 	// prevValue = r.p_sslinfo
-	r.p_sslinfo.ForceUnref()
+	r.p_sslinfo.Unref()
 	r.p_sslinfo = p
 	// return prevValue
 }
@@ -29118,7 +29118,7 @@ func (r *RefToCSslinfoT) TakeOverCSslinfoT(src *CSslinfoT) {
 	if r == nil {
 		return
 	}
-	r.p_sslinfo.ForceUnref()
+	r.p_sslinfo.Unref()
 	gop := src.pc_sslinfo
 	switch src.beUnrefed {
 	case byApp:
@@ -29150,7 +29150,7 @@ func (r *RefToCSslinfoT) NewRefCSslinfoT(p *CSslinfoT) {
 	if r == nil {
 		return
 	}
-	r.p_sslinfo.ForceUnref()
+	r.p_sslinfo.Unref()
 	gop := p.pc_sslinfo
 	BaseAddRef(gop)
 	r.p_sslinfo = newCSslinfoT((*C.cef_sslinfo_t)(gop), byApp)
@@ -29184,7 +29184,7 @@ func (p *cCSslinfoT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (sslinfo *CSslinfoT) ForceUnref() (ret bool) {
+func (sslinfo *CSslinfoT) Unref() (ret bool) {
 	if sslinfo == nil {
 		return
 	}
@@ -29264,7 +29264,7 @@ func (r RefToCSslstatusT) GetCSslstatusT() *CSslstatusT {
 
 func (r *RefToCSslstatusT) setCSslstatusT(p *CSslstatusT) {
 	// prevValue = r.p_sslstatus
-	r.p_sslstatus.ForceUnref()
+	r.p_sslstatus.Unref()
 	r.p_sslstatus = p
 	// return prevValue
 }
@@ -29273,7 +29273,7 @@ func (r *RefToCSslstatusT) TakeOverCSslstatusT(src *CSslstatusT) {
 	if r == nil {
 		return
 	}
-	r.p_sslstatus.ForceUnref()
+	r.p_sslstatus.Unref()
 	gop := src.pc_sslstatus
 	switch src.beUnrefed {
 	case byApp:
@@ -29305,7 +29305,7 @@ func (r *RefToCSslstatusT) NewRefCSslstatusT(p *CSslstatusT) {
 	if r == nil {
 		return
 	}
-	r.p_sslstatus.ForceUnref()
+	r.p_sslstatus.Unref()
 	gop := p.pc_sslstatus
 	BaseAddRef(gop)
 	r.p_sslstatus = newCSslstatusT((*C.cef_sslstatus_t)(gop), byApp)
@@ -29339,7 +29339,7 @@ func (p *cCSslstatusT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (sslstatus *CSslstatusT) ForceUnref() (ret bool) {
+func (sslstatus *CSslstatusT) Unref() (ret bool) {
 	if sslstatus == nil {
 		return
 	}
@@ -29440,7 +29440,7 @@ func (r RefToCReadHandlerT) GetCReadHandlerT() *CReadHandlerT {
 
 func (r *RefToCReadHandlerT) setCReadHandlerT(p *CReadHandlerT) {
 	// prevValue = r.p_read_handler
-	r.p_read_handler.ForceUnref()
+	r.p_read_handler.Unref()
 	r.p_read_handler = p
 	// return prevValue
 }
@@ -29449,7 +29449,7 @@ func (r *RefToCReadHandlerT) TakeOverCReadHandlerT(src *CReadHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_read_handler.ForceUnref()
+	r.p_read_handler.Unref()
 	gop := src.pc_read_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -29481,7 +29481,7 @@ func (r *RefToCReadHandlerT) NewRefCReadHandlerT(p *CReadHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_read_handler.ForceUnref()
+	r.p_read_handler.Unref()
 	gop := p.pc_read_handler
 	BaseAddRef(gop)
 	r.p_read_handler = newCReadHandlerT((*C.cef_read_handler_t)(gop), byApp)
@@ -29515,7 +29515,7 @@ func (p *cCReadHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (read_handler *CReadHandlerT) ForceUnref() (ret bool) {
+func (read_handler *CReadHandlerT) Unref() (ret bool) {
 	if read_handler == nil {
 		return
 	}
@@ -29740,7 +29740,7 @@ func (r RefToCStreamReaderT) GetCStreamReaderT() *CStreamReaderT {
 
 func (r *RefToCStreamReaderT) setCStreamReaderT(p *CStreamReaderT) {
 	// prevValue = r.p_stream_reader
-	r.p_stream_reader.ForceUnref()
+	r.p_stream_reader.Unref()
 	r.p_stream_reader = p
 	// return prevValue
 }
@@ -29749,7 +29749,7 @@ func (r *RefToCStreamReaderT) TakeOverCStreamReaderT(src *CStreamReaderT) {
 	if r == nil {
 		return
 	}
-	r.p_stream_reader.ForceUnref()
+	r.p_stream_reader.Unref()
 	gop := src.pc_stream_reader
 	switch src.beUnrefed {
 	case byApp:
@@ -29781,7 +29781,7 @@ func (r *RefToCStreamReaderT) NewRefCStreamReaderT(p *CStreamReaderT) {
 	if r == nil {
 		return
 	}
-	r.p_stream_reader.ForceUnref()
+	r.p_stream_reader.Unref()
 	gop := p.pc_stream_reader
 	BaseAddRef(gop)
 	r.p_stream_reader = newCStreamReaderT((*C.cef_stream_reader_t)(gop), byApp)
@@ -29815,7 +29815,7 @@ func (p *cCStreamReaderT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (stream_reader *CStreamReaderT) ForceUnref() (ret bool) {
+func (stream_reader *CStreamReaderT) Unref() (ret bool) {
 	if stream_reader == nil {
 		return
 	}
@@ -29971,7 +29971,7 @@ func (r RefToCWriteHandlerT) GetCWriteHandlerT() *CWriteHandlerT {
 
 func (r *RefToCWriteHandlerT) setCWriteHandlerT(p *CWriteHandlerT) {
 	// prevValue = r.p_write_handler
-	r.p_write_handler.ForceUnref()
+	r.p_write_handler.Unref()
 	r.p_write_handler = p
 	// return prevValue
 }
@@ -29980,7 +29980,7 @@ func (r *RefToCWriteHandlerT) TakeOverCWriteHandlerT(src *CWriteHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_write_handler.ForceUnref()
+	r.p_write_handler.Unref()
 	gop := src.pc_write_handler
 	switch src.beUnrefed {
 	case byApp:
@@ -30012,7 +30012,7 @@ func (r *RefToCWriteHandlerT) NewRefCWriteHandlerT(p *CWriteHandlerT) {
 	if r == nil {
 		return
 	}
-	r.p_write_handler.ForceUnref()
+	r.p_write_handler.Unref()
 	gop := p.pc_write_handler
 	BaseAddRef(gop)
 	r.p_write_handler = newCWriteHandlerT((*C.cef_write_handler_t)(gop), byApp)
@@ -30046,7 +30046,7 @@ func (p *cCWriteHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (write_handler *CWriteHandlerT) ForceUnref() (ret bool) {
+func (write_handler *CWriteHandlerT) Unref() (ret bool) {
 	if write_handler == nil {
 		return
 	}
@@ -30271,7 +30271,7 @@ func (r RefToCStreamWriterT) GetCStreamWriterT() *CStreamWriterT {
 
 func (r *RefToCStreamWriterT) setCStreamWriterT(p *CStreamWriterT) {
 	// prevValue = r.p_stream_writer
-	r.p_stream_writer.ForceUnref()
+	r.p_stream_writer.Unref()
 	r.p_stream_writer = p
 	// return prevValue
 }
@@ -30280,7 +30280,7 @@ func (r *RefToCStreamWriterT) TakeOverCStreamWriterT(src *CStreamWriterT) {
 	if r == nil {
 		return
 	}
-	r.p_stream_writer.ForceUnref()
+	r.p_stream_writer.Unref()
 	gop := src.pc_stream_writer
 	switch src.beUnrefed {
 	case byApp:
@@ -30312,7 +30312,7 @@ func (r *RefToCStreamWriterT) NewRefCStreamWriterT(p *CStreamWriterT) {
 	if r == nil {
 		return
 	}
-	r.p_stream_writer.ForceUnref()
+	r.p_stream_writer.Unref()
 	gop := p.pc_stream_writer
 	BaseAddRef(gop)
 	r.p_stream_writer = newCStreamWriterT((*C.cef_stream_writer_t)(gop), byApp)
@@ -30346,7 +30346,7 @@ func (p *cCStreamWriterT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (stream_writer *CStreamWriterT) ForceUnref() (ret bool) {
+func (stream_writer *CStreamWriterT) Unref() (ret bool) {
 	if stream_writer == nil {
 		return
 	}
@@ -30487,7 +30487,7 @@ func (r RefToCStringVisitorT) GetCStringVisitorT() *CStringVisitorT {
 
 func (r *RefToCStringVisitorT) setCStringVisitorT(p *CStringVisitorT) {
 	// prevValue = r.p_string_visitor
-	r.p_string_visitor.ForceUnref()
+	r.p_string_visitor.Unref()
 	r.p_string_visitor = p
 	// return prevValue
 }
@@ -30496,7 +30496,7 @@ func (r *RefToCStringVisitorT) TakeOverCStringVisitorT(src *CStringVisitorT) {
 	if r == nil {
 		return
 	}
-	r.p_string_visitor.ForceUnref()
+	r.p_string_visitor.Unref()
 	gop := src.pc_string_visitor
 	switch src.beUnrefed {
 	case byApp:
@@ -30528,7 +30528,7 @@ func (r *RefToCStringVisitorT) NewRefCStringVisitorT(p *CStringVisitorT) {
 	if r == nil {
 		return
 	}
-	r.p_string_visitor.ForceUnref()
+	r.p_string_visitor.Unref()
 	gop := p.pc_string_visitor
 	BaseAddRef(gop)
 	r.p_string_visitor = newCStringVisitorT((*C.cef_string_visitor_t)(gop), byApp)
@@ -30562,7 +30562,7 @@ func (p *cCStringVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (string_visitor *CStringVisitorT) ForceUnref() (ret bool) {
+func (string_visitor *CStringVisitorT) Unref() (ret bool) {
 	if string_visitor == nil {
 		return
 	}
@@ -30710,7 +30710,7 @@ func (r RefToCTaskT) GetCTaskT() *CTaskT {
 
 func (r *RefToCTaskT) setCTaskT(p *CTaskT) {
 	// prevValue = r.p_task
-	r.p_task.ForceUnref()
+	r.p_task.Unref()
 	r.p_task = p
 	// return prevValue
 }
@@ -30719,7 +30719,7 @@ func (r *RefToCTaskT) TakeOverCTaskT(src *CTaskT) {
 	if r == nil {
 		return
 	}
-	r.p_task.ForceUnref()
+	r.p_task.Unref()
 	gop := src.pc_task
 	switch src.beUnrefed {
 	case byApp:
@@ -30751,7 +30751,7 @@ func (r *RefToCTaskT) NewRefCTaskT(p *CTaskT) {
 	if r == nil {
 		return
 	}
-	r.p_task.ForceUnref()
+	r.p_task.Unref()
 	gop := p.pc_task
 	BaseAddRef(gop)
 	r.p_task = newCTaskT((*C.cef_task_t)(gop), byApp)
@@ -30785,7 +30785,7 @@ func (p *cCTaskT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (task *CTaskT) ForceUnref() (ret bool) {
+func (task *CTaskT) Unref() (ret bool) {
 	if task == nil {
 		return
 	}
@@ -30931,7 +30931,7 @@ func (r RefToCTaskRunnerT) GetCTaskRunnerT() *CTaskRunnerT {
 
 func (r *RefToCTaskRunnerT) setCTaskRunnerT(p *CTaskRunnerT) {
 	// prevValue = r.p_task_runner
-	r.p_task_runner.ForceUnref()
+	r.p_task_runner.Unref()
 	r.p_task_runner = p
 	// return prevValue
 }
@@ -30940,7 +30940,7 @@ func (r *RefToCTaskRunnerT) TakeOverCTaskRunnerT(src *CTaskRunnerT) {
 	if r == nil {
 		return
 	}
-	r.p_task_runner.ForceUnref()
+	r.p_task_runner.Unref()
 	gop := src.pc_task_runner
 	switch src.beUnrefed {
 	case byApp:
@@ -30972,7 +30972,7 @@ func (r *RefToCTaskRunnerT) NewRefCTaskRunnerT(p *CTaskRunnerT) {
 	if r == nil {
 		return
 	}
-	r.p_task_runner.ForceUnref()
+	r.p_task_runner.Unref()
 	gop := p.pc_task_runner
 	BaseAddRef(gop)
 	r.p_task_runner = newCTaskRunnerT((*C.cef_task_runner_t)(gop), byApp)
@@ -31006,7 +31006,7 @@ func (p *cCTaskRunnerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (task_runner *CTaskRunnerT) ForceUnref() (ret bool) {
+func (task_runner *CTaskRunnerT) Unref() (ret bool) {
 	if task_runner == nil {
 		return
 	}
@@ -31218,7 +31218,7 @@ func (r RefToCTextfieldT) GetCTextfieldT() *CTextfieldT {
 
 func (r *RefToCTextfieldT) setCTextfieldT(p *CTextfieldT) {
 	// prevValue = r.p_textfield
-	r.p_textfield.ForceUnref()
+	r.p_textfield.Unref()
 	r.p_textfield = p
 	// return prevValue
 }
@@ -31227,7 +31227,7 @@ func (r *RefToCTextfieldT) TakeOverCTextfieldT(src *CTextfieldT) {
 	if r == nil {
 		return
 	}
-	r.p_textfield.ForceUnref()
+	r.p_textfield.Unref()
 	gop := src.pc_textfield
 	switch src.beUnrefed {
 	case byApp:
@@ -31259,7 +31259,7 @@ func (r *RefToCTextfieldT) NewRefCTextfieldT(p *CTextfieldT) {
 	if r == nil {
 		return
 	}
-	r.p_textfield.ForceUnref()
+	r.p_textfield.Unref()
 	gop := p.pc_textfield
 	BaseAddRef(gop)
 	r.p_textfield = newCTextfieldT((*C.cef_textfield_t)(gop), byApp)
@@ -31293,7 +31293,7 @@ func (p *cCTextfieldT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (textfield *CTextfieldT) ForceUnref() (ret bool) {
+func (textfield *CTextfieldT) Unref() (ret bool) {
 	if textfield == nil {
 		return
 	}
@@ -31745,7 +31745,7 @@ func (r RefToCTextfieldDelegateT) GetCTextfieldDelegateT() *CTextfieldDelegateT 
 
 func (r *RefToCTextfieldDelegateT) setCTextfieldDelegateT(p *CTextfieldDelegateT) {
 	// prevValue = r.p_textfield_delegate
-	r.p_textfield_delegate.ForceUnref()
+	r.p_textfield_delegate.Unref()
 	r.p_textfield_delegate = p
 	// return prevValue
 }
@@ -31754,7 +31754,7 @@ func (r *RefToCTextfieldDelegateT) TakeOverCTextfieldDelegateT(src *CTextfieldDe
 	if r == nil {
 		return
 	}
-	r.p_textfield_delegate.ForceUnref()
+	r.p_textfield_delegate.Unref()
 	gop := src.pc_textfield_delegate
 	switch src.beUnrefed {
 	case byApp:
@@ -31786,7 +31786,7 @@ func (r *RefToCTextfieldDelegateT) NewRefCTextfieldDelegateT(p *CTextfieldDelega
 	if r == nil {
 		return
 	}
-	r.p_textfield_delegate.ForceUnref()
+	r.p_textfield_delegate.Unref()
 	gop := p.pc_textfield_delegate
 	BaseAddRef(gop)
 	r.p_textfield_delegate = newCTextfieldDelegateT((*C.cef_textfield_delegate_t)(gop), byApp)
@@ -31820,7 +31820,7 @@ func (p *cCTextfieldDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (textfield_delegate *CTextfieldDelegateT) ForceUnref() (ret bool) {
+func (textfield_delegate *CTextfieldDelegateT) Unref() (ret bool) {
 	if textfield_delegate == nil {
 		return
 	}
@@ -32085,7 +32085,7 @@ func (r RefToCEndTracingCallbackT) GetCEndTracingCallbackT() *CEndTracingCallbac
 
 func (r *RefToCEndTracingCallbackT) setCEndTracingCallbackT(p *CEndTracingCallbackT) {
 	// prevValue = r.p_end_tracing_callback
-	r.p_end_tracing_callback.ForceUnref()
+	r.p_end_tracing_callback.Unref()
 	r.p_end_tracing_callback = p
 	// return prevValue
 }
@@ -32094,7 +32094,7 @@ func (r *RefToCEndTracingCallbackT) TakeOverCEndTracingCallbackT(src *CEndTracin
 	if r == nil {
 		return
 	}
-	r.p_end_tracing_callback.ForceUnref()
+	r.p_end_tracing_callback.Unref()
 	gop := src.pc_end_tracing_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -32126,7 +32126,7 @@ func (r *RefToCEndTracingCallbackT) NewRefCEndTracingCallbackT(p *CEndTracingCal
 	if r == nil {
 		return
 	}
-	r.p_end_tracing_callback.ForceUnref()
+	r.p_end_tracing_callback.Unref()
 	gop := p.pc_end_tracing_callback
 	BaseAddRef(gop)
 	r.p_end_tracing_callback = newCEndTracingCallbackT((*C.cef_end_tracing_callback_t)(gop), byApp)
@@ -32160,7 +32160,7 @@ func (p *cCEndTracingCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_c
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (end_tracing_callback *CEndTracingCallbackT) ForceUnref() (ret bool) {
+func (end_tracing_callback *CEndTracingCallbackT) Unref() (ret bool) {
 	if end_tracing_callback == nil {
 		return
 	}
@@ -32386,7 +32386,7 @@ func (r RefToCUrlrequestT) GetCUrlrequestT() *CUrlrequestT {
 
 func (r *RefToCUrlrequestT) setCUrlrequestT(p *CUrlrequestT) {
 	// prevValue = r.p_urlrequest
-	r.p_urlrequest.ForceUnref()
+	r.p_urlrequest.Unref()
 	r.p_urlrequest = p
 	// return prevValue
 }
@@ -32395,7 +32395,7 @@ func (r *RefToCUrlrequestT) TakeOverCUrlrequestT(src *CUrlrequestT) {
 	if r == nil {
 		return
 	}
-	r.p_urlrequest.ForceUnref()
+	r.p_urlrequest.Unref()
 	gop := src.pc_urlrequest
 	switch src.beUnrefed {
 	case byApp:
@@ -32427,7 +32427,7 @@ func (r *RefToCUrlrequestT) NewRefCUrlrequestT(p *CUrlrequestT) {
 	if r == nil {
 		return
 	}
-	r.p_urlrequest.ForceUnref()
+	r.p_urlrequest.Unref()
 	gop := p.pc_urlrequest
 	BaseAddRef(gop)
 	r.p_urlrequest = newCUrlrequestT((*C.cef_urlrequest_t)(gop), byApp)
@@ -32461,7 +32461,7 @@ func (p *cCUrlrequestT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (urlrequest *CUrlrequestT) ForceUnref() (ret bool) {
+func (urlrequest *CUrlrequestT) Unref() (ret bool) {
 	if urlrequest == nil {
 		return
 	}
@@ -32626,7 +32626,7 @@ func (r RefToCUrlrequestClientT) GetCUrlrequestClientT() *CUrlrequestClientT {
 
 func (r *RefToCUrlrequestClientT) setCUrlrequestClientT(p *CUrlrequestClientT) {
 	// prevValue = r.p_urlrequest_client
-	r.p_urlrequest_client.ForceUnref()
+	r.p_urlrequest_client.Unref()
 	r.p_urlrequest_client = p
 	// return prevValue
 }
@@ -32635,7 +32635,7 @@ func (r *RefToCUrlrequestClientT) TakeOverCUrlrequestClientT(src *CUrlrequestCli
 	if r == nil {
 		return
 	}
-	r.p_urlrequest_client.ForceUnref()
+	r.p_urlrequest_client.Unref()
 	gop := src.pc_urlrequest_client
 	switch src.beUnrefed {
 	case byApp:
@@ -32667,7 +32667,7 @@ func (r *RefToCUrlrequestClientT) NewRefCUrlrequestClientT(p *CUrlrequestClientT
 	if r == nil {
 		return
 	}
-	r.p_urlrequest_client.ForceUnref()
+	r.p_urlrequest_client.Unref()
 	gop := p.pc_urlrequest_client
 	BaseAddRef(gop)
 	r.p_urlrequest_client = newCUrlrequestClientT((*C.cef_urlrequest_client_t)(gop), byApp)
@@ -32701,7 +32701,7 @@ func (p *cCUrlrequestClientT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_cou
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (urlrequest_client *CUrlrequestClientT) ForceUnref() (ret bool) {
+func (urlrequest_client *CUrlrequestClientT) Unref() (ret bool) {
 	if urlrequest_client == nil {
 		return
 	}
@@ -32955,7 +32955,7 @@ func (r RefToCV8contextT) GetCV8contextT() *CV8contextT {
 
 func (r *RefToCV8contextT) setCV8contextT(p *CV8contextT) {
 	// prevValue = r.p_v8context
-	r.p_v8context.ForceUnref()
+	r.p_v8context.Unref()
 	r.p_v8context = p
 	// return prevValue
 }
@@ -32964,7 +32964,7 @@ func (r *RefToCV8contextT) TakeOverCV8contextT(src *CV8contextT) {
 	if r == nil {
 		return
 	}
-	r.p_v8context.ForceUnref()
+	r.p_v8context.Unref()
 	gop := src.pc_v8context
 	switch src.beUnrefed {
 	case byApp:
@@ -32996,7 +32996,7 @@ func (r *RefToCV8contextT) NewRefCV8contextT(p *CV8contextT) {
 	if r == nil {
 		return
 	}
-	r.p_v8context.ForceUnref()
+	r.p_v8context.Unref()
 	gop := p.pc_v8context
 	BaseAddRef(gop)
 	r.p_v8context = newCV8contextT((*C.cef_v8context_t)(gop), byApp)
@@ -33030,7 +33030,7 @@ func (p *cCV8contextT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8context *CV8contextT) ForceUnref() (ret bool) {
+func (v8context *CV8contextT) Unref() (ret bool) {
 	if v8context == nil {
 		return
 	}
@@ -33242,7 +33242,7 @@ func (r RefToCV8handlerT) GetCV8handlerT() *CV8handlerT {
 
 func (r *RefToCV8handlerT) setCV8handlerT(p *CV8handlerT) {
 	// prevValue = r.p_v8handler
-	r.p_v8handler.ForceUnref()
+	r.p_v8handler.Unref()
 	r.p_v8handler = p
 	// return prevValue
 }
@@ -33251,7 +33251,7 @@ func (r *RefToCV8handlerT) TakeOverCV8handlerT(src *CV8handlerT) {
 	if r == nil {
 		return
 	}
-	r.p_v8handler.ForceUnref()
+	r.p_v8handler.Unref()
 	gop := src.pc_v8handler
 	switch src.beUnrefed {
 	case byApp:
@@ -33283,7 +33283,7 @@ func (r *RefToCV8handlerT) NewRefCV8handlerT(p *CV8handlerT) {
 	if r == nil {
 		return
 	}
-	r.p_v8handler.ForceUnref()
+	r.p_v8handler.Unref()
 	gop := p.pc_v8handler
 	BaseAddRef(gop)
 	r.p_v8handler = newCV8handlerT((*C.cef_v8handler_t)(gop), byApp)
@@ -33317,7 +33317,7 @@ func (p *cCV8handlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8handler *CV8handlerT) ForceUnref() (ret bool) {
+func (v8handler *CV8handlerT) Unref() (ret bool) {
 	if v8handler == nil {
 		return
 	}
@@ -33467,7 +33467,7 @@ func (r RefToCV8accessorT) GetCV8accessorT() *CV8accessorT {
 
 func (r *RefToCV8accessorT) setCV8accessorT(p *CV8accessorT) {
 	// prevValue = r.p_v8accessor
-	r.p_v8accessor.ForceUnref()
+	r.p_v8accessor.Unref()
 	r.p_v8accessor = p
 	// return prevValue
 }
@@ -33476,7 +33476,7 @@ func (r *RefToCV8accessorT) TakeOverCV8accessorT(src *CV8accessorT) {
 	if r == nil {
 		return
 	}
-	r.p_v8accessor.ForceUnref()
+	r.p_v8accessor.Unref()
 	gop := src.pc_v8accessor
 	switch src.beUnrefed {
 	case byApp:
@@ -33508,7 +33508,7 @@ func (r *RefToCV8accessorT) NewRefCV8accessorT(p *CV8accessorT) {
 	if r == nil {
 		return
 	}
-	r.p_v8accessor.ForceUnref()
+	r.p_v8accessor.Unref()
 	gop := p.pc_v8accessor
 	BaseAddRef(gop)
 	r.p_v8accessor = newCV8accessorT((*C.cef_v8accessor_t)(gop), byApp)
@@ -33542,7 +33542,7 @@ func (p *cCV8accessorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8accessor *CV8accessorT) ForceUnref() (ret bool) {
+func (v8accessor *CV8accessorT) Unref() (ret bool) {
 	if v8accessor == nil {
 		return
 	}
@@ -33719,7 +33719,7 @@ func (r RefToCV8interceptorT) GetCV8interceptorT() *CV8interceptorT {
 
 func (r *RefToCV8interceptorT) setCV8interceptorT(p *CV8interceptorT) {
 	// prevValue = r.p_v8interceptor
-	r.p_v8interceptor.ForceUnref()
+	r.p_v8interceptor.Unref()
 	r.p_v8interceptor = p
 	// return prevValue
 }
@@ -33728,7 +33728,7 @@ func (r *RefToCV8interceptorT) TakeOverCV8interceptorT(src *CV8interceptorT) {
 	if r == nil {
 		return
 	}
-	r.p_v8interceptor.ForceUnref()
+	r.p_v8interceptor.Unref()
 	gop := src.pc_v8interceptor
 	switch src.beUnrefed {
 	case byApp:
@@ -33760,7 +33760,7 @@ func (r *RefToCV8interceptorT) NewRefCV8interceptorT(p *CV8interceptorT) {
 	if r == nil {
 		return
 	}
-	r.p_v8interceptor.ForceUnref()
+	r.p_v8interceptor.Unref()
 	gop := p.pc_v8interceptor
 	BaseAddRef(gop)
 	r.p_v8interceptor = newCV8interceptorT((*C.cef_v8interceptor_t)(gop), byApp)
@@ -33794,7 +33794,7 @@ func (p *cCV8interceptorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8interceptor *CV8interceptorT) ForceUnref() (ret bool) {
+func (v8interceptor *CV8interceptorT) Unref() (ret bool) {
 	if v8interceptor == nil {
 		return
 	}
@@ -33963,7 +33963,7 @@ func (r RefToCV8exceptionT) GetCV8exceptionT() *CV8exceptionT {
 
 func (r *RefToCV8exceptionT) setCV8exceptionT(p *CV8exceptionT) {
 	// prevValue = r.p_v8exception
-	r.p_v8exception.ForceUnref()
+	r.p_v8exception.Unref()
 	r.p_v8exception = p
 	// return prevValue
 }
@@ -33972,7 +33972,7 @@ func (r *RefToCV8exceptionT) TakeOverCV8exceptionT(src *CV8exceptionT) {
 	if r == nil {
 		return
 	}
-	r.p_v8exception.ForceUnref()
+	r.p_v8exception.Unref()
 	gop := src.pc_v8exception
 	switch src.beUnrefed {
 	case byApp:
@@ -34004,7 +34004,7 @@ func (r *RefToCV8exceptionT) NewRefCV8exceptionT(p *CV8exceptionT) {
 	if r == nil {
 		return
 	}
-	r.p_v8exception.ForceUnref()
+	r.p_v8exception.Unref()
 	gop := p.pc_v8exception
 	BaseAddRef(gop)
 	r.p_v8exception = newCV8exceptionT((*C.cef_v8exception_t)(gop), byApp)
@@ -34038,7 +34038,7 @@ func (p *cCV8exceptionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8exception *CV8exceptionT) ForceUnref() (ret bool) {
+func (v8exception *CV8exceptionT) Unref() (ret bool) {
 	if v8exception == nil {
 		return
 	}
@@ -34189,7 +34189,7 @@ func (r RefToCV8arrayBufferReleaseCallbackT) GetCV8arrayBufferReleaseCallbackT()
 
 func (r *RefToCV8arrayBufferReleaseCallbackT) setCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) {
 	// prevValue = r.p_v8array_buffer_release_callback
-	r.p_v8array_buffer_release_callback.ForceUnref()
+	r.p_v8array_buffer_release_callback.Unref()
 	r.p_v8array_buffer_release_callback = p
 	// return prevValue
 }
@@ -34198,7 +34198,7 @@ func (r *RefToCV8arrayBufferReleaseCallbackT) TakeOverCV8arrayBufferReleaseCallb
 	if r == nil {
 		return
 	}
-	r.p_v8array_buffer_release_callback.ForceUnref()
+	r.p_v8array_buffer_release_callback.Unref()
 	gop := src.pc_v8array_buffer_release_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -34230,7 +34230,7 @@ func (r *RefToCV8arrayBufferReleaseCallbackT) NewRefCV8arrayBufferReleaseCallbac
 	if r == nil {
 		return
 	}
-	r.p_v8array_buffer_release_callback.ForceUnref()
+	r.p_v8array_buffer_release_callback.Unref()
 	gop := p.pc_v8array_buffer_release_callback
 	BaseAddRef(gop)
 	r.p_v8array_buffer_release_callback = newCV8arrayBufferReleaseCallbackT((*C.cef_v8array_buffer_release_callback_t)(gop), byApp)
@@ -34264,7 +34264,7 @@ func (p *cCV8arrayBufferReleaseCallbackT) cast_to_p_base_ref_counted_t() *C.cef_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) ForceUnref() (ret bool) {
+func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Unref() (ret bool) {
 	if v8array_buffer_release_callback == nil {
 		return
 	}
@@ -34411,7 +34411,7 @@ func (r RefToCV8valueT) GetCV8valueT() *CV8valueT {
 
 func (r *RefToCV8valueT) setCV8valueT(p *CV8valueT) {
 	// prevValue = r.p_v8value
-	r.p_v8value.ForceUnref()
+	r.p_v8value.Unref()
 	r.p_v8value = p
 	// return prevValue
 }
@@ -34420,7 +34420,7 @@ func (r *RefToCV8valueT) TakeOverCV8valueT(src *CV8valueT) {
 	if r == nil {
 		return
 	}
-	r.p_v8value.ForceUnref()
+	r.p_v8value.Unref()
 	gop := src.pc_v8value
 	switch src.beUnrefed {
 	case byApp:
@@ -34452,7 +34452,7 @@ func (r *RefToCV8valueT) NewRefCV8valueT(p *CV8valueT) {
 	if r == nil {
 		return
 	}
-	r.p_v8value.ForceUnref()
+	r.p_v8value.Unref()
 	gop := p.pc_v8value
 	BaseAddRef(gop)
 	r.p_v8value = newCV8valueT((*C.cef_v8value_t)(gop), byApp)
@@ -34486,7 +34486,7 @@ func (p *cCV8valueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8value *CV8valueT) ForceUnref() (ret bool) {
+func (v8value *CV8valueT) Unref() (ret bool) {
 	if v8value == nil {
 		return
 	}
@@ -35386,7 +35386,7 @@ func (r RefToCV8stackTraceT) GetCV8stackTraceT() *CV8stackTraceT {
 
 func (r *RefToCV8stackTraceT) setCV8stackTraceT(p *CV8stackTraceT) {
 	// prevValue = r.p_v8stack_trace
-	r.p_v8stack_trace.ForceUnref()
+	r.p_v8stack_trace.Unref()
 	r.p_v8stack_trace = p
 	// return prevValue
 }
@@ -35395,7 +35395,7 @@ func (r *RefToCV8stackTraceT) TakeOverCV8stackTraceT(src *CV8stackTraceT) {
 	if r == nil {
 		return
 	}
-	r.p_v8stack_trace.ForceUnref()
+	r.p_v8stack_trace.Unref()
 	gop := src.pc_v8stack_trace
 	switch src.beUnrefed {
 	case byApp:
@@ -35427,7 +35427,7 @@ func (r *RefToCV8stackTraceT) NewRefCV8stackTraceT(p *CV8stackTraceT) {
 	if r == nil {
 		return
 	}
-	r.p_v8stack_trace.ForceUnref()
+	r.p_v8stack_trace.Unref()
 	gop := p.pc_v8stack_trace
 	BaseAddRef(gop)
 	r.p_v8stack_trace = newCV8stackTraceT((*C.cef_v8stack_trace_t)(gop), byApp)
@@ -35461,7 +35461,7 @@ func (p *cCV8stackTraceT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8stack_trace *CV8stackTraceT) ForceUnref() (ret bool) {
+func (v8stack_trace *CV8stackTraceT) Unref() (ret bool) {
 	if v8stack_trace == nil {
 		return
 	}
@@ -35558,7 +35558,7 @@ func (r RefToCV8stackFrameT) GetCV8stackFrameT() *CV8stackFrameT {
 
 func (r *RefToCV8stackFrameT) setCV8stackFrameT(p *CV8stackFrameT) {
 	// prevValue = r.p_v8stack_frame
-	r.p_v8stack_frame.ForceUnref()
+	r.p_v8stack_frame.Unref()
 	r.p_v8stack_frame = p
 	// return prevValue
 }
@@ -35567,7 +35567,7 @@ func (r *RefToCV8stackFrameT) TakeOverCV8stackFrameT(src *CV8stackFrameT) {
 	if r == nil {
 		return
 	}
-	r.p_v8stack_frame.ForceUnref()
+	r.p_v8stack_frame.Unref()
 	gop := src.pc_v8stack_frame
 	switch src.beUnrefed {
 	case byApp:
@@ -35599,7 +35599,7 @@ func (r *RefToCV8stackFrameT) NewRefCV8stackFrameT(p *CV8stackFrameT) {
 	if r == nil {
 		return
 	}
-	r.p_v8stack_frame.ForceUnref()
+	r.p_v8stack_frame.Unref()
 	gop := p.pc_v8stack_frame
 	BaseAddRef(gop)
 	r.p_v8stack_frame = newCV8stackFrameT((*C.cef_v8stack_frame_t)(gop), byApp)
@@ -35633,7 +35633,7 @@ func (p *cCV8stackFrameT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (v8stack_frame *CV8stackFrameT) ForceUnref() (ret bool) {
+func (v8stack_frame *CV8stackFrameT) Unref() (ret bool) {
 	if v8stack_frame == nil {
 		return
 	}
@@ -35862,7 +35862,7 @@ func (r RefToCValueT) GetCValueT() *CValueT {
 
 func (r *RefToCValueT) setCValueT(p *CValueT) {
 	// prevValue = r.p_value
-	r.p_value.ForceUnref()
+	r.p_value.Unref()
 	r.p_value = p
 	// return prevValue
 }
@@ -35871,7 +35871,7 @@ func (r *RefToCValueT) TakeOverCValueT(src *CValueT) {
 	if r == nil {
 		return
 	}
-	r.p_value.ForceUnref()
+	r.p_value.Unref()
 	gop := src.pc_value
 	switch src.beUnrefed {
 	case byApp:
@@ -35903,7 +35903,7 @@ func (r *RefToCValueT) NewRefCValueT(p *CValueT) {
 	if r == nil {
 		return
 	}
-	r.p_value.ForceUnref()
+	r.p_value.Unref()
 	gop := p.pc_value
 	BaseAddRef(gop)
 	r.p_value = newCValueT((*C.cef_value_t)(gop), byApp)
@@ -35937,7 +35937,7 @@ func (p *cCValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (value *CValueT) ForceUnref() (ret bool) {
+func (value *CValueT) Unref() (ret bool) {
 	if value == nil {
 		return
 	}
@@ -36320,7 +36320,7 @@ func (r RefToCBinaryValueT) GetCBinaryValueT() *CBinaryValueT {
 
 func (r *RefToCBinaryValueT) setCBinaryValueT(p *CBinaryValueT) {
 	// prevValue = r.p_binary_value
-	r.p_binary_value.ForceUnref()
+	r.p_binary_value.Unref()
 	r.p_binary_value = p
 	// return prevValue
 }
@@ -36329,7 +36329,7 @@ func (r *RefToCBinaryValueT) TakeOverCBinaryValueT(src *CBinaryValueT) {
 	if r == nil {
 		return
 	}
-	r.p_binary_value.ForceUnref()
+	r.p_binary_value.Unref()
 	gop := src.pc_binary_value
 	switch src.beUnrefed {
 	case byApp:
@@ -36361,7 +36361,7 @@ func (r *RefToCBinaryValueT) NewRefCBinaryValueT(p *CBinaryValueT) {
 	if r == nil {
 		return
 	}
-	r.p_binary_value.ForceUnref()
+	r.p_binary_value.Unref()
 	gop := p.pc_binary_value
 	BaseAddRef(gop)
 	r.p_binary_value = newCBinaryValueT((*C.cef_binary_value_t)(gop), byApp)
@@ -36395,7 +36395,7 @@ func (p *cCBinaryValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (binary_value *CBinaryValueT) ForceUnref() (ret bool) {
+func (binary_value *CBinaryValueT) Unref() (ret bool) {
 	if binary_value == nil {
 		return
 	}
@@ -36556,7 +36556,7 @@ func (r RefToCDictionaryValueT) GetCDictionaryValueT() *CDictionaryValueT {
 
 func (r *RefToCDictionaryValueT) setCDictionaryValueT(p *CDictionaryValueT) {
 	// prevValue = r.p_dictionary_value
-	r.p_dictionary_value.ForceUnref()
+	r.p_dictionary_value.Unref()
 	r.p_dictionary_value = p
 	// return prevValue
 }
@@ -36565,7 +36565,7 @@ func (r *RefToCDictionaryValueT) TakeOverCDictionaryValueT(src *CDictionaryValue
 	if r == nil {
 		return
 	}
-	r.p_dictionary_value.ForceUnref()
+	r.p_dictionary_value.Unref()
 	gop := src.pc_dictionary_value
 	switch src.beUnrefed {
 	case byApp:
@@ -36597,7 +36597,7 @@ func (r *RefToCDictionaryValueT) NewRefCDictionaryValueT(p *CDictionaryValueT) {
 	if r == nil {
 		return
 	}
-	r.p_dictionary_value.ForceUnref()
+	r.p_dictionary_value.Unref()
 	gop := p.pc_dictionary_value
 	BaseAddRef(gop)
 	r.p_dictionary_value = newCDictionaryValueT((*C.cef_dictionary_value_t)(gop), byApp)
@@ -36631,7 +36631,7 @@ func (p *cCDictionaryValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (dictionary_value *CDictionaryValueT) ForceUnref() (ret bool) {
+func (dictionary_value *CDictionaryValueT) Unref() (ret bool) {
 	if dictionary_value == nil {
 		return
 	}
@@ -37159,7 +37159,7 @@ func (r RefToCListValueT) GetCListValueT() *CListValueT {
 
 func (r *RefToCListValueT) setCListValueT(p *CListValueT) {
 	// prevValue = r.p_list_value
-	r.p_list_value.ForceUnref()
+	r.p_list_value.Unref()
 	r.p_list_value = p
 	// return prevValue
 }
@@ -37168,7 +37168,7 @@ func (r *RefToCListValueT) TakeOverCListValueT(src *CListValueT) {
 	if r == nil {
 		return
 	}
-	r.p_list_value.ForceUnref()
+	r.p_list_value.Unref()
 	gop := src.pc_list_value
 	switch src.beUnrefed {
 	case byApp:
@@ -37200,7 +37200,7 @@ func (r *RefToCListValueT) NewRefCListValueT(p *CListValueT) {
 	if r == nil {
 		return
 	}
-	r.p_list_value.ForceUnref()
+	r.p_list_value.Unref()
 	gop := p.pc_list_value
 	BaseAddRef(gop)
 	r.p_list_value = newCListValueT((*C.cef_list_value_t)(gop), byApp)
@@ -37234,7 +37234,7 @@ func (p *cCListValueT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t 
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (list_value *CListValueT) ForceUnref() (ret bool) {
+func (list_value *CListValueT) Unref() (ret bool) {
 	if list_value == nil {
 		return
 	}
@@ -37731,7 +37731,7 @@ func (r RefToCViewT) GetCViewT() *CViewT {
 
 func (r *RefToCViewT) setCViewT(p *CViewT) {
 	// prevValue = r.p_view
-	r.p_view.ForceUnref()
+	r.p_view.Unref()
 	r.p_view = p
 	// return prevValue
 }
@@ -37740,7 +37740,7 @@ func (r *RefToCViewT) TakeOverCViewT(src *CViewT) {
 	if r == nil {
 		return
 	}
-	r.p_view.ForceUnref()
+	r.p_view.Unref()
 	gop := src.pc_view
 	switch src.beUnrefed {
 	case byApp:
@@ -37772,7 +37772,7 @@ func (r *RefToCViewT) NewRefCViewT(p *CViewT) {
 	if r == nil {
 		return
 	}
-	r.p_view.ForceUnref()
+	r.p_view.Unref()
 	gop := p.pc_view
 	BaseAddRef(gop)
 	r.p_view = newCViewT((*C.cef_view_t)(gop), byApp)
@@ -37806,7 +37806,7 @@ func (p *cCViewT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (view *CViewT) ForceUnref() (ret bool) {
+func (view *CViewT) Unref() (ret bool) {
 	if view == nil {
 		return
 	}
@@ -38487,7 +38487,7 @@ func (r RefToCViewDelegateT) GetCViewDelegateT() *CViewDelegateT {
 
 func (r *RefToCViewDelegateT) setCViewDelegateT(p *CViewDelegateT) {
 	// prevValue = r.p_view_delegate
-	r.p_view_delegate.ForceUnref()
+	r.p_view_delegate.Unref()
 	r.p_view_delegate = p
 	// return prevValue
 }
@@ -38496,7 +38496,7 @@ func (r *RefToCViewDelegateT) TakeOverCViewDelegateT(src *CViewDelegateT) {
 	if r == nil {
 		return
 	}
-	r.p_view_delegate.ForceUnref()
+	r.p_view_delegate.Unref()
 	gop := src.pc_view_delegate
 	switch src.beUnrefed {
 	case byApp:
@@ -38528,7 +38528,7 @@ func (r *RefToCViewDelegateT) NewRefCViewDelegateT(p *CViewDelegateT) {
 	if r == nil {
 		return
 	}
-	r.p_view_delegate.ForceUnref()
+	r.p_view_delegate.Unref()
 	gop := p.pc_view_delegate
 	BaseAddRef(gop)
 	r.p_view_delegate = newCViewDelegateT((*C.cef_view_delegate_t)(gop), byApp)
@@ -38562,7 +38562,7 @@ func (p *cCViewDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (view_delegate *CViewDelegateT) ForceUnref() (ret bool) {
+func (view_delegate *CViewDelegateT) Unref() (ret bool) {
 	if view_delegate == nil {
 		return
 	}
@@ -38884,7 +38884,7 @@ func (r RefToCWebPluginInfoT) GetCWebPluginInfoT() *CWebPluginInfoT {
 
 func (r *RefToCWebPluginInfoT) setCWebPluginInfoT(p *CWebPluginInfoT) {
 	// prevValue = r.p_web_plugin_info
-	r.p_web_plugin_info.ForceUnref()
+	r.p_web_plugin_info.Unref()
 	r.p_web_plugin_info = p
 	// return prevValue
 }
@@ -38893,7 +38893,7 @@ func (r *RefToCWebPluginInfoT) TakeOverCWebPluginInfoT(src *CWebPluginInfoT) {
 	if r == nil {
 		return
 	}
-	r.p_web_plugin_info.ForceUnref()
+	r.p_web_plugin_info.Unref()
 	gop := src.pc_web_plugin_info
 	switch src.beUnrefed {
 	case byApp:
@@ -38925,7 +38925,7 @@ func (r *RefToCWebPluginInfoT) NewRefCWebPluginInfoT(p *CWebPluginInfoT) {
 	if r == nil {
 		return
 	}
-	r.p_web_plugin_info.ForceUnref()
+	r.p_web_plugin_info.Unref()
 	gop := p.pc_web_plugin_info
 	BaseAddRef(gop)
 	r.p_web_plugin_info = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(gop), byApp)
@@ -38959,7 +38959,7 @@ func (p *cCWebPluginInfoT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counte
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (web_plugin_info *CWebPluginInfoT) ForceUnref() (ret bool) {
+func (web_plugin_info *CWebPluginInfoT) Unref() (ret bool) {
 	if web_plugin_info == nil {
 		return
 	}
@@ -39066,7 +39066,7 @@ func (r RefToCWebPluginInfoVisitorT) GetCWebPluginInfoVisitorT() *CWebPluginInfo
 
 func (r *RefToCWebPluginInfoVisitorT) setCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) {
 	// prevValue = r.p_web_plugin_info_visitor
-	r.p_web_plugin_info_visitor.ForceUnref()
+	r.p_web_plugin_info_visitor.Unref()
 	r.p_web_plugin_info_visitor = p
 	// return prevValue
 }
@@ -39075,7 +39075,7 @@ func (r *RefToCWebPluginInfoVisitorT) TakeOverCWebPluginInfoVisitorT(src *CWebPl
 	if r == nil {
 		return
 	}
-	r.p_web_plugin_info_visitor.ForceUnref()
+	r.p_web_plugin_info_visitor.Unref()
 	gop := src.pc_web_plugin_info_visitor
 	switch src.beUnrefed {
 	case byApp:
@@ -39107,7 +39107,7 @@ func (r *RefToCWebPluginInfoVisitorT) NewRefCWebPluginInfoVisitorT(p *CWebPlugin
 	if r == nil {
 		return
 	}
-	r.p_web_plugin_info_visitor.ForceUnref()
+	r.p_web_plugin_info_visitor.Unref()
 	gop := p.pc_web_plugin_info_visitor
 	BaseAddRef(gop)
 	r.p_web_plugin_info_visitor = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(gop), byApp)
@@ -39141,7 +39141,7 @@ func (p *cCWebPluginInfoVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (web_plugin_info_visitor *CWebPluginInfoVisitorT) ForceUnref() (ret bool) {
+func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Unref() (ret bool) {
 	if web_plugin_info_visitor == nil {
 		return
 	}
@@ -39288,7 +39288,7 @@ func (r RefToCWebPluginUnstableCallbackT) GetCWebPluginUnstableCallbackT() *CWeb
 
 func (r *RefToCWebPluginUnstableCallbackT) setCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) {
 	// prevValue = r.p_web_plugin_unstable_callback
-	r.p_web_plugin_unstable_callback.ForceUnref()
+	r.p_web_plugin_unstable_callback.Unref()
 	r.p_web_plugin_unstable_callback = p
 	// return prevValue
 }
@@ -39297,7 +39297,7 @@ func (r *RefToCWebPluginUnstableCallbackT) TakeOverCWebPluginUnstableCallbackT(s
 	if r == nil {
 		return
 	}
-	r.p_web_plugin_unstable_callback.ForceUnref()
+	r.p_web_plugin_unstable_callback.Unref()
 	gop := src.pc_web_plugin_unstable_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -39329,7 +39329,7 @@ func (r *RefToCWebPluginUnstableCallbackT) NewRefCWebPluginUnstableCallbackT(p *
 	if r == nil {
 		return
 	}
-	r.p_web_plugin_unstable_callback.ForceUnref()
+	r.p_web_plugin_unstable_callback.Unref()
 	gop := p.pc_web_plugin_unstable_callback
 	BaseAddRef(gop)
 	r.p_web_plugin_unstable_callback = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(gop), byApp)
@@ -39363,7 +39363,7 @@ func (p *cCWebPluginUnstableCallbackT) cast_to_p_base_ref_counted_t() *C.cef_bas
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) ForceUnref() (ret bool) {
+func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Unref() (ret bool) {
 	if web_plugin_unstable_callback == nil {
 		return
 	}
@@ -39509,7 +39509,7 @@ func (r RefToCRegisterCdmCallbackT) GetCRegisterCdmCallbackT() *CRegisterCdmCall
 
 func (r *RefToCRegisterCdmCallbackT) setCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) {
 	// prevValue = r.p_register_cdm_callback
-	r.p_register_cdm_callback.ForceUnref()
+	r.p_register_cdm_callback.Unref()
 	r.p_register_cdm_callback = p
 	// return prevValue
 }
@@ -39518,7 +39518,7 @@ func (r *RefToCRegisterCdmCallbackT) TakeOverCRegisterCdmCallbackT(src *CRegiste
 	if r == nil {
 		return
 	}
-	r.p_register_cdm_callback.ForceUnref()
+	r.p_register_cdm_callback.Unref()
 	gop := src.pc_register_cdm_callback
 	switch src.beUnrefed {
 	case byApp:
@@ -39550,7 +39550,7 @@ func (r *RefToCRegisterCdmCallbackT) NewRefCRegisterCdmCallbackT(p *CRegisterCdm
 	if r == nil {
 		return
 	}
-	r.p_register_cdm_callback.ForceUnref()
+	r.p_register_cdm_callback.Unref()
 	gop := p.pc_register_cdm_callback
 	BaseAddRef(gop)
 	r.p_register_cdm_callback = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(gop), byApp)
@@ -39584,7 +39584,7 @@ func (p *cCRegisterCdmCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (register_cdm_callback *CRegisterCdmCallbackT) ForceUnref() (ret bool) {
+func (register_cdm_callback *CRegisterCdmCallbackT) Unref() (ret bool) {
 	if register_cdm_callback == nil {
 		return
 	}
@@ -39866,7 +39866,7 @@ func (r RefToCWindowT) GetCWindowT() *CWindowT {
 
 func (r *RefToCWindowT) setCWindowT(p *CWindowT) {
 	// prevValue = r.p_window
-	r.p_window.ForceUnref()
+	r.p_window.Unref()
 	r.p_window = p
 	// return prevValue
 }
@@ -39875,7 +39875,7 @@ func (r *RefToCWindowT) TakeOverCWindowT(src *CWindowT) {
 	if r == nil {
 		return
 	}
-	r.p_window.ForceUnref()
+	r.p_window.Unref()
 	gop := src.pc_window
 	switch src.beUnrefed {
 	case byApp:
@@ -39907,7 +39907,7 @@ func (r *RefToCWindowT) NewRefCWindowT(p *CWindowT) {
 	if r == nil {
 		return
 	}
-	r.p_window.ForceUnref()
+	r.p_window.Unref()
 	gop := p.pc_window
 	BaseAddRef(gop)
 	r.p_window = newCWindowT((*C.cef_window_t)(gop), byApp)
@@ -39941,7 +39941,7 @@ func (p *cCWindowT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (window *CWindowT) ForceUnref() (ret bool) {
+func (window *CWindowT) Unref() (ret bool) {
 	if window == nil {
 		return
 	}
@@ -40446,7 +40446,7 @@ func (r RefToCWindowDelegateT) GetCWindowDelegateT() *CWindowDelegateT {
 
 func (r *RefToCWindowDelegateT) setCWindowDelegateT(p *CWindowDelegateT) {
 	// prevValue = r.p_window_delegate
-	r.p_window_delegate.ForceUnref()
+	r.p_window_delegate.Unref()
 	r.p_window_delegate = p
 	// return prevValue
 }
@@ -40455,7 +40455,7 @@ func (r *RefToCWindowDelegateT) TakeOverCWindowDelegateT(src *CWindowDelegateT) 
 	if r == nil {
 		return
 	}
-	r.p_window_delegate.ForceUnref()
+	r.p_window_delegate.Unref()
 	gop := src.pc_window_delegate
 	switch src.beUnrefed {
 	case byApp:
@@ -40487,7 +40487,7 @@ func (r *RefToCWindowDelegateT) NewRefCWindowDelegateT(p *CWindowDelegateT) {
 	if r == nil {
 		return
 	}
-	r.p_window_delegate.ForceUnref()
+	r.p_window_delegate.Unref()
 	gop := p.pc_window_delegate
 	BaseAddRef(gop)
 	r.p_window_delegate = newCWindowDelegateT((*C.cef_window_delegate_t)(gop), byApp)
@@ -40521,7 +40521,7 @@ func (p *cCWindowDelegateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_count
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (window_delegate *CWindowDelegateT) ForceUnref() (ret bool) {
+func (window_delegate *CWindowDelegateT) Unref() (ret bool) {
 	if window_delegate == nil {
 		return
 	}
@@ -40982,7 +40982,7 @@ func (r RefToCX509certPrincipalT) GetCX509certPrincipalT() *CX509certPrincipalT 
 
 func (r *RefToCX509certPrincipalT) setCX509certPrincipalT(p *CX509certPrincipalT) {
 	// prevValue = r.p_x509cert_principal
-	r.p_x509cert_principal.ForceUnref()
+	r.p_x509cert_principal.Unref()
 	r.p_x509cert_principal = p
 	// return prevValue
 }
@@ -40991,7 +40991,7 @@ func (r *RefToCX509certPrincipalT) TakeOverCX509certPrincipalT(src *CX509certPri
 	if r == nil {
 		return
 	}
-	r.p_x509cert_principal.ForceUnref()
+	r.p_x509cert_principal.Unref()
 	gop := src.pc_x509cert_principal
 	switch src.beUnrefed {
 	case byApp:
@@ -41023,7 +41023,7 @@ func (r *RefToCX509certPrincipalT) NewRefCX509certPrincipalT(p *CX509certPrincip
 	if r == nil {
 		return
 	}
-	r.p_x509cert_principal.ForceUnref()
+	r.p_x509cert_principal.Unref()
 	gop := p.pc_x509cert_principal
 	BaseAddRef(gop)
 	r.p_x509cert_principal = newCX509certPrincipalT((*C.cef_x509cert_principal_t)(gop), byApp)
@@ -41057,7 +41057,7 @@ func (p *cCX509certPrincipalT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_co
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (x509cert_principal *CX509certPrincipalT) ForceUnref() (ret bool) {
+func (x509cert_principal *CX509certPrincipalT) Unref() (ret bool) {
 	if x509cert_principal == nil {
 		return
 	}
@@ -41225,7 +41225,7 @@ func (r RefToCX509certificateT) GetCX509certificateT() *CX509certificateT {
 
 func (r *RefToCX509certificateT) setCX509certificateT(p *CX509certificateT) {
 	// prevValue = r.p_x509certificate
-	r.p_x509certificate.ForceUnref()
+	r.p_x509certificate.Unref()
 	r.p_x509certificate = p
 	// return prevValue
 }
@@ -41234,7 +41234,7 @@ func (r *RefToCX509certificateT) TakeOverCX509certificateT(src *CX509certificate
 	if r == nil {
 		return
 	}
-	r.p_x509certificate.ForceUnref()
+	r.p_x509certificate.Unref()
 	gop := src.pc_x509certificate
 	switch src.beUnrefed {
 	case byApp:
@@ -41266,7 +41266,7 @@ func (r *RefToCX509certificateT) NewRefCX509certificateT(p *CX509certificateT) {
 	if r == nil {
 		return
 	}
-	r.p_x509certificate.ForceUnref()
+	r.p_x509certificate.Unref()
 	gop := p.pc_x509certificate
 	BaseAddRef(gop)
 	r.p_x509certificate = newCX509certificateT((*C.cef_x509certificate_t)(gop), byApp)
@@ -41300,7 +41300,7 @@ func (p *cCX509certificateT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_coun
 	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
 }
 
-func (x509certificate *CX509certificateT) ForceUnref() (ret bool) {
+func (x509certificate *CX509certificateT) Unref() (ret bool) {
 	if x509certificate == nil {
 		return
 	}

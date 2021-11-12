@@ -9,7 +9,7 @@ parser/parse_string.go: parser/parse.go
 .PHONY: vet
 vet: template.qtpl.go *.go parser/parse_string.go
 	@# adjust path produced in error meesage
-	cd ../.. ; go vet tools/gen-cefingo
+	go vet .
 
 capi:
 	go generate github.com/turutcrane/cefingo/capi
