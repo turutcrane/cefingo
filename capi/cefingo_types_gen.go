@@ -461,7 +461,7 @@ func TimeDelta(
 	return ret
 }
 
-// cef_types.h, include/internal/cef_types.h:50:16,
+// cef_types.h, include/internal/cef_types.h:51:16,
 
 // 32-bit ARGB color value, not premultiplied. The color components are always
 // in a known order. Equivalent to the SkColor type.
@@ -784,18 +784,6 @@ func (st *CSettingsT) SetUncaughtExceptionStackSize(v int) {
 	st.uncaught_exception_stack_size = (C.int)(v)
 }
 
-func (st *CSettingsT) IgnoreCertificateErrors() bool {
-	return st.ignore_certificate_errors != 0
-}
-
-func (st *CSettingsT) SetIgnoreCertificateErrors(v bool) {
-	if v {
-		st.ignore_certificate_errors = 1
-	} else {
-		st.ignore_certificate_errors = 0
-	}
-}
-
 func (st *CSettingsT) BackgroundColor() CColorT {
 	return CColorT(st.background_color)
 }
@@ -877,18 +865,6 @@ func (st *CRequestContextSettingsT) SetPersistUserPreferences(v bool) {
 		st.persist_user_preferences = 1
 	} else {
 		st.persist_user_preferences = 0
-	}
-}
-
-func (st *CRequestContextSettingsT) IgnoreCertificateErrors() bool {
-	return st.ignore_certificate_errors != 0
-}
-
-func (st *CRequestContextSettingsT) SetIgnoreCertificateErrors(v bool) {
-	if v {
-		st.ignore_certificate_errors = 1
-	} else {
-		st.ignore_certificate_errors = 0
 	}
 }
 
@@ -1074,22 +1050,6 @@ func (st *CBrowserSettingsT) SetPlugins(v CStateT) {
 	st.plugins = (C.cef_state_t)(v)
 }
 
-func (st *CBrowserSettingsT) UniversalAccessFromFileUrls() CStateT {
-	return CStateT(st.universal_access_from_file_urls)
-}
-
-func (st *CBrowserSettingsT) SetUniversalAccessFromFileUrls(v CStateT) {
-	st.universal_access_from_file_urls = (C.cef_state_t)(v)
-}
-
-func (st *CBrowserSettingsT) FileAccessFromFileUrls() CStateT {
-	return CStateT(st.file_access_from_file_urls)
-}
-
-func (st *CBrowserSettingsT) SetFileAccessFromFileUrls(v CStateT) {
-	st.file_access_from_file_urls = (C.cef_state_t)(v)
-}
-
 func (st *CBrowserSettingsT) ImageLoading() CStateT {
 	return CStateT(st.image_loading)
 }
@@ -1136,14 +1096,6 @@ func (st *CBrowserSettingsT) Databases() CStateT {
 
 func (st *CBrowserSettingsT) SetDatabases(v CStateT) {
 	st.databases = (C.cef_state_t)(v)
-}
-
-func (st *CBrowserSettingsT) ApplicationCache() CStateT {
-	return CStateT(st.application_cache)
-}
-
-func (st *CBrowserSettingsT) SetApplicationCache(v CStateT) {
-	st.application_cache = (C.cef_state_t)(v)
 }
 
 func (st *CBrowserSettingsT) Webgl() CStateT {
@@ -1486,7 +1438,7 @@ const (
 
 	///
 	// "Application Data" directory under the user profile directory on Windows
-	// and "~/Library/Application Support" directory on Mac OS X.
+	// and "~/Library/Application Support" directory on MacOS.
 	///
 	PkUserData CPathKeyT = C.PK_USER_DATA
 
@@ -1549,106 +1501,111 @@ const (
 	ErrFailed          CErrorcodeT = C.ERR_FAILED
 	ErrAborted         CErrorcodeT = C.ERR_ABORTED
 	ErrInvalidArgument CErrorcodeT = C.ERR_INVALID_ARGUMENT
-	ErrInvalidHandle   CErrorcodeT = C.ERR_INVALID_HANDLE
-	ErrFileNotFound    CErrorcodeT = C.ERR_FILE_NOT_FOUND
-	ErrTimedOut        CErrorcodeT = C.ERR_TIMED_OUT
 
-	// 32-bit ARGB color value, not premultiplied. The color components are always
-	// in a known order. Equivalent to the SkColor type.
-	ErrFileTooBig CErrorcodeT = C.ERR_FILE_TOO_BIG
-	ErrUnexpected CErrorcodeT = C.ERR_UNEXPECTED
+	// Bring in platform-specific definitions.
+	ErrInvalidHandle CErrorcodeT = C.ERR_INVALID_HANDLE
+	ErrFileNotFound  CErrorcodeT = C.ERR_FILE_NOT_FOUND
+	ErrTimedOut      CErrorcodeT = C.ERR_TIMED_OUT
+	ErrFileTooBig    CErrorcodeT = C.ERR_FILE_TOO_BIG
 
-	// Return the green byte from a cef_color_t value.
-	ErrAccessDenied          CErrorcodeT = C.ERR_ACCESS_DENIED
-	ErrNotImplemented        CErrorcodeT = C.ERR_NOT_IMPLEMENTED
+	// Return the alpha byte from a cef_color_t value.
+	ErrUnexpected   CErrorcodeT = C.ERR_UNEXPECTED
+	ErrAccessDenied CErrorcodeT = C.ERR_ACCESS_DENIED
+
+	// Return the blue byte from a cef_color_t value.
+	ErrNotImplemented CErrorcodeT = C.ERR_NOT_IMPLEMENTED
+
+	// Return an cef_color_t value with the specified byte component values.
 	ErrInsufficientResources CErrorcodeT = C.ERR_INSUFFICIENT_RESOURCES
 	ErrOutOfMemory           CErrorcodeT = C.ERR_OUT_OF_MEMORY
 	ErrUploadFileChanged     CErrorcodeT = C.ERR_UPLOAD_FILE_CHANGED
 	ErrSocketNotConnected    CErrorcodeT = C.ERR_SOCKET_NOT_CONNECTED
-
-	// Return the high int32 value from an int64 value.
-	ErrFileExists        CErrorcodeT = C.ERR_FILE_EXISTS
-	ErrFilePathTooLong   CErrorcodeT = C.ERR_FILE_PATH_TOO_LONG
-	ErrFileNoSpace       CErrorcodeT = C.ERR_FILE_NO_SPACE
-	ErrFileVirusInfected CErrorcodeT = C.ERR_FILE_VIRUS_INFECTED
-	ErrBlockedByClient   CErrorcodeT = C.ERR_BLOCKED_BY_CLIENT
-	ErrNetworkChanged    CErrorcodeT = C.ERR_NETWORK_CHANGED
+	ErrFileExists            CErrorcodeT = C.ERR_FILE_EXISTS
+	ErrFilePathTooLong       CErrorcodeT = C.ERR_FILE_PATH_TOO_LONG
+	ErrFileNoSpace           CErrorcodeT = C.ERR_FILE_NO_SPACE
+	ErrFileVirusInfected     CErrorcodeT = C.ERR_FILE_VIRUS_INFECTED
+	ErrBlockedByClient       CErrorcodeT = C.ERR_BLOCKED_BY_CLIENT
 
 	///
-	// Verbose logging.
+	// Default logging (currently INFO logging).
 	///
+	ErrNetworkChanged                 CErrorcodeT = C.ERR_NETWORK_CHANGED
 	ErrBlockedByAdministrator         CErrorcodeT = C.ERR_BLOCKED_BY_ADMINISTRATOR
 	ErrSocketIsConnected              CErrorcodeT = C.ERR_SOCKET_IS_CONNECTED
 	ErrBlockedEnrollmentCheckPending  CErrorcodeT = C.ERR_BLOCKED_ENROLLMENT_CHECK_PENDING
 	ErrUploadStreamRewindNotSupported CErrorcodeT = C.ERR_UPLOAD_STREAM_REWIND_NOT_SUPPORTED
-	ErrContextShutDown                CErrorcodeT = C.ERR_CONTEXT_SHUT_DOWN
-	ErrBlockedByResponse              CErrorcodeT = C.ERR_BLOCKED_BY_RESPONSE
-	ErrCleartextNotPermitted          CErrorcodeT = C.ERR_CLEARTEXT_NOT_PERMITTED
-	ErrBlockedByCsp                   CErrorcodeT = C.ERR_BLOCKED_BY_CSP
-	ErrH2OrQuicRequired               CErrorcodeT = C.ERR_H2_OR_QUIC_REQUIRED
-	ErrConnectionClosed               CErrorcodeT = C.ERR_CONNECTION_CLOSED
-	ErrConnectionReset                CErrorcodeT = C.ERR_CONNECTION_RESET
-	ErrConnectionRefused              CErrorcodeT = C.ERR_CONNECTION_REFUSED
 
 	///
-	// Enable or allow the setting.
+	// WARNING logging.
 	///
-	ErrConnectionAborted              CErrorcodeT = C.ERR_CONNECTION_ABORTED
-	ErrConnectionFailed               CErrorcodeT = C.ERR_CONNECTION_FAILED
-	ErrNameNotResolved                CErrorcodeT = C.ERR_NAME_NOT_RESOLVED
-	ErrInternetDisconnected           CErrorcodeT = C.ERR_INTERNET_DISCONNECTED
-	ErrSslProtocolError               CErrorcodeT = C.ERR_SSL_PROTOCOL_ERROR
-	ErrAddressInvalid                 CErrorcodeT = C.ERR_ADDRESS_INVALID
-	ErrAddressUnreachable             CErrorcodeT = C.ERR_ADDRESS_UNREACHABLE
-	ErrSslClientAuthCertNeeded        CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NEEDED
-	ErrTunnelConnectionFailed         CErrorcodeT = C.ERR_TUNNEL_CONNECTION_FAILED
-	ErrNoSslVersionsEnabled           CErrorcodeT = C.ERR_NO_SSL_VERSIONS_ENABLED
-	ErrSslVersionOrCipherMismatch     CErrorcodeT = C.ERR_SSL_VERSION_OR_CIPHER_MISMATCH
-	ErrSslRenegotiationRequested      CErrorcodeT = C.ERR_SSL_RENEGOTIATION_REQUESTED
-	ErrProxyAuthUnsupported           CErrorcodeT = C.ERR_PROXY_AUTH_UNSUPPORTED
-	ErrCertErrorInSslRenegotiation    CErrorcodeT = C.ERR_CERT_ERROR_IN_SSL_RENEGOTIATION
-	ErrBadSslClientAuthCert           CErrorcodeT = C.ERR_BAD_SSL_CLIENT_AUTH_CERT
-	ErrConnectionTimedOut             CErrorcodeT = C.ERR_CONNECTION_TIMED_OUT
-	ErrHostResolverQueueTooLarge      CErrorcodeT = C.ERR_HOST_RESOLVER_QUEUE_TOO_LARGE
-	ErrSocksConnectionFailed          CErrorcodeT = C.ERR_SOCKS_CONNECTION_FAILED
-	ErrSocksConnectionHostUnreachable CErrorcodeT = C.ERR_SOCKS_CONNECTION_HOST_UNREACHABLE
+	ErrContextShutDown CErrorcodeT = C.ERR_CONTEXT_SHUT_DOWN
 
 	///
-	// Set to true (1) to have the browser process message loop run in a separate
-	// thread. If false (0) than the CefDoMessageLoopWork() function must be
-	// called from your application message loop. This option is only supported on
-	// Windows and Linux.
+	// ERROR logging.
 	///
-	ErrAlpnNegotiationFailed         CErrorcodeT = C.ERR_ALPN_NEGOTIATION_FAILED
-	ErrSslNoRenegotiation            CErrorcodeT = C.ERR_SSL_NO_RENEGOTIATION
-	ErrWinsockUnexpectedWrittenBytes CErrorcodeT = C.ERR_WINSOCK_UNEXPECTED_WRITTEN_BYTES
+	ErrBlockedByResponse     CErrorcodeT = C.ERR_BLOCKED_BY_RESPONSE
+	ErrCleartextNotPermitted CErrorcodeT = C.ERR_CLEARTEXT_NOT_PERMITTED
+	ErrBlockedByCsp          CErrorcodeT = C.ERR_BLOCKED_BY_CSP
+	ErrH2OrQuicRequired      CErrorcodeT = C.ERR_H2_OR_QUIC_REQUIRED
+	ErrConnectionClosed      CErrorcodeT = C.ERR_CONNECTION_CLOSED
+	ErrConnectionReset       CErrorcodeT = C.ERR_CONNECTION_RESET
 
 	///
-	// Set to true (1) to control browser process main (UI) thread message pump
-	// scheduling via the CefBrowserProcessHandler::OnScheduleMessagePumpWork()
-	// callback. This option is recommended for use in combination with the
-	// CefDoMessageLoopWork() function in cases where the CEF message loop must be
-	// integrated into an existing application message loop (see additional
-	// comments and warnings on CefDoMessageLoopWork). Enabling this option is not
-	// recommended for most users; leave this option disabled and use either the
-	// CefRunMessageLoop() function or multi_threaded_message_loop if possible.
+	// Use the default state for the setting.
 	///
-	ErrSslDecompressionFailureAlert CErrorcodeT = C.ERR_SSL_DECOMPRESSION_FAILURE_ALERT
-	ErrSslBadRecordMacAlert         CErrorcodeT = C.ERR_SSL_BAD_RECORD_MAC_ALERT
+	ErrConnectionRefused CErrorcodeT = C.ERR_CONNECTION_REFUSED
+	ErrConnectionAborted CErrorcodeT = C.ERR_CONNECTION_ABORTED
+	ErrConnectionFailed  CErrorcodeT = C.ERR_CONNECTION_FAILED
 
 	///
-	// Set to true (1) to enable windowless (off-screen) rendering support. Do not
-	// enable this value if the application does not use windowless rendering as
-	// it may reduce rendering performance on some systems.
+	// Disable or disallow the setting.
 	///
-	ErrProxyAuthRequested CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED
+	ErrNameNotResolved            CErrorcodeT = C.ERR_NAME_NOT_RESOLVED
+	ErrInternetDisconnected       CErrorcodeT = C.ERR_INTERNET_DISCONNECTED
+	ErrSslProtocolError           CErrorcodeT = C.ERR_SSL_PROTOCOL_ERROR
+	ErrAddressInvalid             CErrorcodeT = C.ERR_ADDRESS_INVALID
+	ErrAddressUnreachable         CErrorcodeT = C.ERR_ADDRESS_UNREACHABLE
+	ErrSslClientAuthCertNeeded    CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NEEDED
+	ErrTunnelConnectionFailed     CErrorcodeT = C.ERR_TUNNEL_CONNECTION_FAILED
+	ErrNoSslVersionsEnabled       CErrorcodeT = C.ERR_NO_SSL_VERSIONS_ENABLED
+	ErrSslVersionOrCipherMismatch CErrorcodeT = C.ERR_SSL_VERSION_OR_CIPHER_MISMATCH
 
 	///
-	// Set to true (1) to disable configuration of browser process features using
-	// standard CEF and Chromium command-line arguments. Configuration can still
-	// be specified using CEF data structures or via the
-	// CefApp::OnBeforeCommandLineProcessing() method.
+	// The path to a separate executable that will be launched for sub-processes.
+	// If this value is empty on Windows or Linux then the main process executable
+	// will be used. If this value is empty on macOS then a helper executable must
+	// exist at "Contents/Frameworks/<app> Helper.app/Contents/MacOS/<app> Helper"
+	// in the top-level app bundle. See the comments on CefExecuteProcess() for
+	// details. If this value is non-empty then it must be an absolute path. Also
+	// configurable using the "browser-subprocess-path" command-line switch.
 	///
+	ErrSslRenegotiationRequested   CErrorcodeT = C.ERR_SSL_RENEGOTIATION_REQUESTED
+	ErrProxyAuthUnsupported        CErrorcodeT = C.ERR_PROXY_AUTH_UNSUPPORTED
+	ErrCertErrorInSslRenegotiation CErrorcodeT = C.ERR_CERT_ERROR_IN_SSL_RENEGOTIATION
+	ErrBadSslClientAuthCert        CErrorcodeT = C.ERR_BAD_SSL_CLIENT_AUTH_CERT
+
+	///
+	// The path to the main bundle on macOS. If this value is empty then it
+	// defaults to the top-level app bundle. If this value is non-empty then it
+	// must be an absolute path. Also configurable using the "main-bundle-path"
+	// command-line switch.
+	///
+	ErrConnectionTimedOut        CErrorcodeT = C.ERR_CONNECTION_TIMED_OUT
+	ErrHostResolverQueueTooLarge CErrorcodeT = C.ERR_HOST_RESOLVER_QUEUE_TOO_LARGE
+
+	///
+	// Set to true (1) to enable use of the Chrome runtime in CEF. This feature is
+	// considered experimental and is not recommended for most users at this time.
+	// See issue #2969 for details.
+	///
+	ErrSocksConnectionFailed               CErrorcodeT = C.ERR_SOCKS_CONNECTION_FAILED
+	ErrSocksConnectionHostUnreachable      CErrorcodeT = C.ERR_SOCKS_CONNECTION_HOST_UNREACHABLE
+	ErrAlpnNegotiationFailed               CErrorcodeT = C.ERR_ALPN_NEGOTIATION_FAILED
+	ErrSslNoRenegotiation                  CErrorcodeT = C.ERR_SSL_NO_RENEGOTIATION
+	ErrWinsockUnexpectedWrittenBytes       CErrorcodeT = C.ERR_WINSOCK_UNEXPECTED_WRITTEN_BYTES
+	ErrSslDecompressionFailureAlert        CErrorcodeT = C.ERR_SSL_DECOMPRESSION_FAILURE_ALERT
+	ErrSslBadRecordMacAlert                CErrorcodeT = C.ERR_SSL_BAD_RECORD_MAC_ALERT
+	ErrProxyAuthRequested                  CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED
 	ErrProxyConnectionFailed               CErrorcodeT = C.ERR_PROXY_CONNECTION_FAILED
 	ErrMandatoryProxyConfigurationFailed   CErrorcodeT = C.ERR_MANDATORY_PROXY_CONFIGURATION_FAILED
 	ErrPreconnectMaxSocketLimit            CErrorcodeT = C.ERR_PRECONNECT_MAX_SOCKET_LIMIT
@@ -1658,32 +1615,64 @@ const (
 	ErrNameResolutionFailed                CErrorcodeT = C.ERR_NAME_RESOLUTION_FAILED
 	ErrNetworkAccessDenied                 CErrorcodeT = C.ERR_NETWORK_ACCESS_DENIED
 	ErrTemporarilyThrottled                CErrorcodeT = C.ERR_TEMPORARILY_THROTTLED
-	ErrHttpsProxyTunnelResponseRedirect    CErrorcodeT = C.ERR_HTTPS_PROXY_TUNNEL_RESPONSE_REDIRECT
-	ErrSslClientAuthSignatureFailed        CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_SIGNATURE_FAILED
-	ErrMsgTooBig                           CErrorcodeT = C.ERR_MSG_TOO_BIG
 
 	///
-	// To persist user preferences as a JSON file in the cache path directory set
-	// this value to true (1). A |cache_path| value must also be specified
-	// to enable this feature. Also configurable using the
-	// "persist-user-preferences" command-line switch. Can be overridden for
-	// individual CefRequestContext instances via the
-	// CefRequestContextSettings.persist_user_preferences value.
+	// The location where user data such as the Widevine CDM module and spell
+	// checking dictionary files will be stored on disk. If this value is empty
+	// then the default platform-specific user data directory will be used
+	// ("~/.config/cef_user_data" directory on Linux, "~/Library/Application
+	// Support/CEF/User Data" directory on MacOS, "AppData\Local\CEF\User Data"
+	// directory under the user profile directory on Windows). If this value is
+	// non-empty then it must be an absolute path. When using the Chrome runtime
+	// this value will be ignored in favor of the |root_cache_path| value.
 	///
-	ErrWsProtocolError                     CErrorcodeT = C.ERR_WS_PROTOCOL_ERROR
-	ErrAddressInUse                        CErrorcodeT = C.ERR_ADDRESS_IN_USE
-	ErrSslHandshakeNotCompleted            CErrorcodeT = C.ERR_SSL_HANDSHAKE_NOT_COMPLETED
-	ErrSslBadPeerPublicKey                 CErrorcodeT = C.ERR_SSL_BAD_PEER_PUBLIC_KEY
-	ErrSslPinnedKeyNotInCertChain          CErrorcodeT = C.ERR_SSL_PINNED_KEY_NOT_IN_CERT_CHAIN
-	ErrClientAuthCertTypeUnsupported       CErrorcodeT = C.ERR_CLIENT_AUTH_CERT_TYPE_UNSUPPORTED
-	ErrSslDecryptErrorAlert                CErrorcodeT = C.ERR_SSL_DECRYPT_ERROR_ALERT
-	ErrWsThrottleQueueTooLarge             CErrorcodeT = C.ERR_WS_THROTTLE_QUEUE_TOO_LARGE
+	ErrHttpsProxyTunnelResponseRedirect CErrorcodeT = C.ERR_HTTPS_PROXY_TUNNEL_RESPONSE_REDIRECT
+	ErrSslClientAuthSignatureFailed     CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_SIGNATURE_FAILED
+	ErrMsgTooBig                        CErrorcodeT = C.ERR_MSG_TOO_BIG
+	ErrWsProtocolError                  CErrorcodeT = C.ERR_WS_PROTOCOL_ERROR
+	ErrAddressInUse                     CErrorcodeT = C.ERR_ADDRESS_IN_USE
+
+	///
+	// Value that will be returned as the User-Agent HTTP header. If empty the
+	// default User-Agent string will be used. Also configurable using the
+	// "user-agent" command-line switch.
+	///
+	ErrSslHandshakeNotCompleted CErrorcodeT = C.ERR_SSL_HANDSHAKE_NOT_COMPLETED
+	ErrSslBadPeerPublicKey      CErrorcodeT = C.ERR_SSL_BAD_PEER_PUBLIC_KEY
+
+	///
+	// Value that will be inserted as the product portion of the default
+	// User-Agent string. If empty the Chromium product version will be used. If
+	// |userAgent| is specified this value will be ignored. Also configurable
+	// using the "user-agent-product" command-line switch.
+	///
+	ErrSslPinnedKeyNotInCertChain    CErrorcodeT = C.ERR_SSL_PINNED_KEY_NOT_IN_CERT_CHAIN
+	ErrClientAuthCertTypeUnsupported CErrorcodeT = C.ERR_CLIENT_AUTH_CERT_TYPE_UNSUPPORTED
+	ErrSslDecryptErrorAlert          CErrorcodeT = C.ERR_SSL_DECRYPT_ERROR_ALERT
+	ErrWsThrottleQueueTooLarge       CErrorcodeT = C.ERR_WS_THROTTLE_QUEUE_TOO_LARGE
+
+	///
+	// The directory and file name to use for the debug log. If empty a default
+	// log file name and location will be used. On Windows and Linux a "debug.log"
+	// file will be written in the main executable directory. On MacOS a
+	// "~/Library/Logs/<app name>_debug.log" file will be written where <app name>
+	// is the name of the main app executable. Also configurable using the
+	// "log-file" command-line switch.
+	///
 	ErrSslServerCertChanged                CErrorcodeT = C.ERR_SSL_SERVER_CERT_CHANGED
 	ErrSslUnrecognizedNameAlert            CErrorcodeT = C.ERR_SSL_UNRECOGNIZED_NAME_ALERT
 	ErrSocketSetReceiveBufferSizeError     CErrorcodeT = C.ERR_SOCKET_SET_RECEIVE_BUFFER_SIZE_ERROR
 	ErrSocketSetSendBufferSizeError        CErrorcodeT = C.ERR_SOCKET_SET_SEND_BUFFER_SIZE_ERROR
 	ErrSocketReceiveBufferSizeUnchangeable CErrorcodeT = C.ERR_SOCKET_RECEIVE_BUFFER_SIZE_UNCHANGEABLE
 	ErrSocketSendBufferSizeUnchangeable    CErrorcodeT = C.ERR_SOCKET_SEND_BUFFER_SIZE_UNCHANGEABLE
+
+	///
+	// The fully qualified path for the resources directory. If this value is
+	// empty the *.pak files must be located in the module directory on
+	// Windows/Linux or the app bundle Resources directory on MacOS. If this
+	// value is non-empty then it must be an absolute path. Also configurable
+	// using the "resources-dir-path" command-line switch.
+	///
 	ErrSslClientAuthCertBadFormat          CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_BAD_FORMAT
 	ErrIcannNameCollision                  CErrorcodeT = C.ERR_ICANN_NAME_COLLISION
 	ErrSslServerCertBadFormat              CErrorcodeT = C.ERR_SSL_SERVER_CERT_BAD_FORMAT
@@ -1706,104 +1695,133 @@ const (
 	ErrCertContainsErrors                  CErrorcodeT = C.ERR_CERT_CONTAINS_ERRORS
 	ErrCertNoRevocationMechanism           CErrorcodeT = C.ERR_CERT_NO_REVOCATION_MECHANISM
 	ErrCertUnableToCheckRevocation         CErrorcodeT = C.ERR_CERT_UNABLE_TO_CHECK_REVOCATION
-	ErrCertRevoked                         CErrorcodeT = C.ERR_CERT_REVOKED
-	ErrCertInvalid                         CErrorcodeT = C.ERR_CERT_INVALID
-	ErrCertWeakSignatureAlgorithm          CErrorcodeT = C.ERR_CERT_WEAK_SIGNATURE_ALGORITHM
-	ErrCertNonUniqueName                   CErrorcodeT = C.ERR_CERT_NON_UNIQUE_NAME
-	ErrCertWeakKey                         CErrorcodeT = C.ERR_CERT_WEAK_KEY
 
 	///
-	// Size of this structure.
+	// Browser initialization settings. Specify NULL or 0 to get the recommended
+	// default values. The consequences of using custom values may not be well
+	// tested. Many of these and other settings can also configured using command-
+	// line switches.
 	///
+	ErrCertRevoked                     CErrorcodeT = C.ERR_CERT_REVOKED
+	ErrCertInvalid                     CErrorcodeT = C.ERR_CERT_INVALID
+	ErrCertWeakSignatureAlgorithm      CErrorcodeT = C.ERR_CERT_WEAK_SIGNATURE_ALGORITHM
+	ErrCertNonUniqueName               CErrorcodeT = C.ERR_CERT_NON_UNIQUE_NAME
+	ErrCertWeakKey                     CErrorcodeT = C.ERR_CERT_WEAK_KEY
 	ErrCertNameConstraintViolation     CErrorcodeT = C.ERR_CERT_NAME_CONSTRAINT_VIOLATION
 	ErrCertValidityTooLong             CErrorcodeT = C.ERR_CERT_VALIDITY_TOO_LONG
 	ErrCertificateTransparencyRequired CErrorcodeT = C.ERR_CERTIFICATE_TRANSPARENCY_REQUIRED
-	ErrCertSymantecLegacy              CErrorcodeT = C.ERR_CERT_SYMANTEC_LEGACY
-	ErrCertKnownInterceptionBlocked    CErrorcodeT = C.ERR_CERT_KNOWN_INTERCEPTION_BLOCKED
-	ErrSslObsoleteVersion              CErrorcodeT = C.ERR_SSL_OBSOLETE_VERSION
-	ErrCertEnd                         CErrorcodeT = C.ERR_CERT_END
-	ErrInvalidUrl                      CErrorcodeT = C.ERR_INVALID_URL
-	ErrDisallowedUrlScheme             CErrorcodeT = C.ERR_DISALLOWED_URL_SCHEME
-	ErrUnknownUrlScheme                CErrorcodeT = C.ERR_UNKNOWN_URL_SCHEME
-	ErrInvalidRedirect                 CErrorcodeT = C.ERR_INVALID_REDIRECT
-	ErrTooManyRedirects                CErrorcodeT = C.ERR_TOO_MANY_REDIRECTS
-	ErrUnsafeRedirect                  CErrorcodeT = C.ERR_UNSAFE_REDIRECT
-	ErrUnsafePort                      CErrorcodeT = C.ERR_UNSAFE_PORT
-	ErrInvalidResponse                 CErrorcodeT = C.ERR_INVALID_RESPONSE
-	ErrInvalidChunkedEncoding          CErrorcodeT = C.ERR_INVALID_CHUNKED_ENCODING
-	ErrMethodNotSupported              CErrorcodeT = C.ERR_METHOD_NOT_SUPPORTED
-	ErrUnexpectedProxyAuth             CErrorcodeT = C.ERR_UNEXPECTED_PROXY_AUTH
-	ErrEmptyResponse                   CErrorcodeT = C.ERR_EMPTY_RESPONSE
-	ErrResponseHeadersTooBig           CErrorcodeT = C.ERR_RESPONSE_HEADERS_TOO_BIG
 
 	///
-	// Controls whether file URLs will have access to all URLs. Also configurable
-	// using the "allow-universal-access-from-files" command-line switch.
+	// Default encoding for Web content. If empty "ISO-8859-1" will be used. Also
+	// configurable using the "default-encoding" command-line switch.
 	///
-	ErrPacScriptFailed            CErrorcodeT = C.ERR_PAC_SCRIPT_FAILED
-	ErrRequestRangeNotSatisfiable CErrorcodeT = C.ERR_REQUEST_RANGE_NOT_SATISFIABLE
-	ErrMalformedIdentity          CErrorcodeT = C.ERR_MALFORMED_IDENTITY
-	ErrContentDecodingFailed      CErrorcodeT = C.ERR_CONTENT_DECODING_FAILED
-	ErrNetworkIoSuspended         CErrorcodeT = C.ERR_NETWORK_IO_SUSPENDED
-	ErrSynReplyNotReceived        CErrorcodeT = C.ERR_SYN_REPLY_NOT_RECEIVED
+	ErrCertSymantecLegacy           CErrorcodeT = C.ERR_CERT_SYMANTEC_LEGACY
+	ErrCertKnownInterceptionBlocked CErrorcodeT = C.ERR_CERT_KNOWN_INTERCEPTION_BLOCKED
+	ErrSslObsoleteVersion           CErrorcodeT = C.ERR_SSL_OBSOLETE_VERSION
+	ErrCertEnd                      CErrorcodeT = C.ERR_CERT_END
 
 	///
-	// Controls whether standalone images will be shrunk to fit the page. Also
-	// configurable using the "image-shrink-standalone-to-fit" command-line
+	// Controls whether JavaScript can be used to close windows that were not
+	// opened via JavaScript. JavaScript can still be used to close windows that
+	// were opened via JavaScript or that have no back/forward history. Also
+	// configurable using the "disable-javascript-close-windows" command-line
 	// switch.
 	///
-	ErrEncodingConversionFailed              CErrorcodeT = C.ERR_ENCODING_CONVERSION_FAILED
-	ErrUnrecognizedFtpDirectoryListingFormat CErrorcodeT = C.ERR_UNRECOGNIZED_FTP_DIRECTORY_LISTING_FORMAT
-	ErrNoSupportedProxies                    CErrorcodeT = C.ERR_NO_SUPPORTED_PROXIES
+	ErrInvalidUrl          CErrorcodeT = C.ERR_INVALID_URL
+	ErrDisallowedUrlScheme CErrorcodeT = C.ERR_DISALLOWED_URL_SCHEME
+
+	///
+	// Controls whether JavaScript can access the clipboard. Also configurable
+	// using the "disable-javascript-access-clipboard" command-line switch.
+	///
+	ErrUnknownUrlScheme       CErrorcodeT = C.ERR_UNKNOWN_URL_SCHEME
+	ErrInvalidRedirect        CErrorcodeT = C.ERR_INVALID_REDIRECT
+	ErrTooManyRedirects       CErrorcodeT = C.ERR_TOO_MANY_REDIRECTS
+	ErrUnsafeRedirect         CErrorcodeT = C.ERR_UNSAFE_REDIRECT
+	ErrUnsafePort             CErrorcodeT = C.ERR_UNSAFE_PORT
+	ErrInvalidResponse        CErrorcodeT = C.ERR_INVALID_RESPONSE
+	ErrInvalidChunkedEncoding CErrorcodeT = C.ERR_INVALID_CHUNKED_ENCODING
+	ErrMethodNotSupported     CErrorcodeT = C.ERR_METHOD_NOT_SUPPORTED
+	ErrUnexpectedProxyAuth    CErrorcodeT = C.ERR_UNEXPECTED_PROXY_AUTH
+	ErrEmptyResponse          CErrorcodeT = C.ERR_EMPTY_RESPONSE
+	ErrResponseHeadersTooBig  CErrorcodeT = C.ERR_RESPONSE_HEADERS_TOO_BIG
 
 	///
 	// Controls whether the tab key can advance focus to links. Also configurable
 	// using the "disable-tab-to-links" command-line switch.
 	///
-	ErrHttp2ProtocolError                        CErrorcodeT = C.ERR_HTTP2_PROTOCOL_ERROR
-	ErrInvalidAuthCredentials                    CErrorcodeT = C.ERR_INVALID_AUTH_CREDENTIALS
-	ErrUnsupportedAuthScheme                     CErrorcodeT = C.ERR_UNSUPPORTED_AUTH_SCHEME
-	ErrEncodingDetectionFailed                   CErrorcodeT = C.ERR_ENCODING_DETECTION_FAILED
-	ErrMissingAuthCredentials                    CErrorcodeT = C.ERR_MISSING_AUTH_CREDENTIALS
-	ErrUnexpectedSecurityLibraryStatus           CErrorcodeT = C.ERR_UNEXPECTED_SECURITY_LIBRARY_STATUS
-	ErrMisconfiguredAuthEnvironment              CErrorcodeT = C.ERR_MISCONFIGURED_AUTH_ENVIRONMENT
-	ErrUndocumentedSecurityLibraryStatus         CErrorcodeT = C.ERR_UNDOCUMENTED_SECURITY_LIBRARY_STATUS
-	ErrResponseBodyTooBigToDrain                 CErrorcodeT = C.ERR_RESPONSE_BODY_TOO_BIG_TO_DRAIN
-	ErrResponseHeadersMultipleContentLength      CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_LENGTH
-	ErrIncompleteHttp2Headers                    CErrorcodeT = C.ERR_INCOMPLETE_HTTP2_HEADERS
-	ErrPacNotInDhcp                              CErrorcodeT = C.ERR_PAC_NOT_IN_DHCP
-	ErrResponseHeadersMultipleContentDisposition CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_DISPOSITION
-	ErrResponseHeadersMultipleLocation           CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_LOCATION
+	ErrPacScriptFailed                       CErrorcodeT = C.ERR_PAC_SCRIPT_FAILED
+	ErrRequestRangeNotSatisfiable            CErrorcodeT = C.ERR_REQUEST_RANGE_NOT_SATISFIABLE
+	ErrMalformedIdentity                     CErrorcodeT = C.ERR_MALFORMED_IDENTITY
+	ErrContentDecodingFailed                 CErrorcodeT = C.ERR_CONTENT_DECODING_FAILED
+	ErrNetworkIoSuspended                    CErrorcodeT = C.ERR_NETWORK_IO_SUSPENDED
+	ErrSynReplyNotReceived                   CErrorcodeT = C.ERR_SYN_REPLY_NOT_RECEIVED
+	ErrEncodingConversionFailed              CErrorcodeT = C.ERR_ENCODING_CONVERSION_FAILED
+	ErrUnrecognizedFtpDirectoryListingFormat CErrorcodeT = C.ERR_UNRECOGNIZED_FTP_DIRECTORY_LISTING_FORMAT
+	ErrNoSupportedProxies                    CErrorcodeT = C.ERR_NO_SUPPORTED_PROXIES
+	ErrHttp2ProtocolError                    CErrorcodeT = C.ERR_HTTP2_PROTOCOL_ERROR
+	ErrInvalidAuthCredentials                CErrorcodeT = C.ERR_INVALID_AUTH_CREDENTIALS
+
+	///
+	// Comma delimited ordered list of language codes without any whitespace that
+	// will be used in the "Accept-Language" HTTP header. May be set globally
+	// using the CefSettings.accept_language_list value. If both values are
+	// empty then "en-US,en" will be used.
+	///
+	ErrUnsupportedAuthScheme   CErrorcodeT = C.ERR_UNSUPPORTED_AUTH_SCHEME
+	ErrEncodingDetectionFailed CErrorcodeT = C.ERR_ENCODING_DETECTION_FAILED
 
 	///
 	// Return value types.
 	///
-	ErrHttp2ServerRefusedStream           CErrorcodeT = C.ERR_HTTP2_SERVER_REFUSED_STREAM
-	ErrHttp2PingFailed                    CErrorcodeT = C.ERR_HTTP2_PING_FAILED
-	ErrContentLengthMismatch              CErrorcodeT = C.ERR_CONTENT_LENGTH_MISMATCH
-	ErrIncompleteChunkedEncoding          CErrorcodeT = C.ERR_INCOMPLETE_CHUNKED_ENCODING
-	ErrQuicProtocolError                  CErrorcodeT = C.ERR_QUIC_PROTOCOL_ERROR
-	ErrResponseHeadersTruncated           CErrorcodeT = C.ERR_RESPONSE_HEADERS_TRUNCATED
-	ErrQuicHandshakeFailed                CErrorcodeT = C.ERR_QUIC_HANDSHAKE_FAILED
-	ErrHttp2InadequateTransportSecurity   CErrorcodeT = C.ERR_HTTP2_INADEQUATE_TRANSPORT_SECURITY
-	ErrHttp2FlowControlError              CErrorcodeT = C.ERR_HTTP2_FLOW_CONTROL_ERROR
-	ErrHttp2FrameSizeError                CErrorcodeT = C.ERR_HTTP2_FRAME_SIZE_ERROR
+	ErrMissingAuthCredentials               CErrorcodeT = C.ERR_MISSING_AUTH_CREDENTIALS
+	ErrUnexpectedSecurityLibraryStatus      CErrorcodeT = C.ERR_UNEXPECTED_SECURITY_LIBRARY_STATUS
+	ErrMisconfiguredAuthEnvironment         CErrorcodeT = C.ERR_MISCONFIGURED_AUTH_ENVIRONMENT
+	ErrUndocumentedSecurityLibraryStatus    CErrorcodeT = C.ERR_UNDOCUMENTED_SECURITY_LIBRARY_STATUS
+	ErrResponseBodyTooBigToDrain            CErrorcodeT = C.ERR_RESPONSE_BODY_TOO_BIG_TO_DRAIN
+	ErrResponseHeadersMultipleContentLength CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_LENGTH
+
+	///
+	// URL component parts.
+	///
+	ErrIncompleteHttp2Headers                    CErrorcodeT = C.ERR_INCOMPLETE_HTTP2_HEADERS
+	ErrPacNotInDhcp                              CErrorcodeT = C.ERR_PAC_NOT_IN_DHCP
+	ErrResponseHeadersMultipleContentDisposition CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_DISPOSITION
+	ErrResponseHeadersMultipleLocation           CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_LOCATION
+	ErrHttp2ServerRefusedStream                  CErrorcodeT = C.ERR_HTTP2_SERVER_REFUSED_STREAM
+	ErrHttp2PingFailed                           CErrorcodeT = C.ERR_HTTP2_PING_FAILED
+	ErrContentLengthMismatch                     CErrorcodeT = C.ERR_CONTENT_LENGTH_MISMATCH
+	ErrIncompleteChunkedEncoding                 CErrorcodeT = C.ERR_INCOMPLETE_CHUNKED_ENCODING
+	ErrQuicProtocolError                         CErrorcodeT = C.ERR_QUIC_PROTOCOL_ERROR
+	ErrResponseHeadersTruncated                  CErrorcodeT = C.ERR_RESPONSE_HEADERS_TRUNCATED
+
+	///
+	// Path component including the first slash following the host.
+	///
+	ErrQuicHandshakeFailed              CErrorcodeT = C.ERR_QUIC_HANDSHAKE_FAILED
+	ErrHttp2InadequateTransportSecurity CErrorcodeT = C.ERR_HTTP2_INADEQUATE_TRANSPORT_SECURITY
+
+	///
+	// Fragment (hash) identifier component (i.e., the string following the '#').
+	///
+	ErrHttp2FlowControlError CErrorcodeT = C.ERR_HTTP2_FLOW_CONTROL_ERROR
+	ErrHttp2FrameSizeError   CErrorcodeT = C.ERR_HTTP2_FRAME_SIZE_ERROR
+
+	///
+	// Cookie priority values.
+	///
 	ErrHttp2CompressionError              CErrorcodeT = C.ERR_HTTP2_COMPRESSION_ERROR
 	ErrProxyAuthRequestedWithNoConnection CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED_WITH_NO_CONNECTION
 	ErrHttp11Required                     CErrorcodeT = C.ERR_HTTP_1_1_REQUIRED
 
 	///
-	// Port number component.
+	// Cookie same site values.
 	///
-	ErrProxyHttp11Required           CErrorcodeT = C.ERR_PROXY_HTTP_1_1_REQUIRED
-	ErrPacScriptTerminated           CErrorcodeT = C.ERR_PAC_SCRIPT_TERMINATED
-	ErrInvalidHttpResponse           CErrorcodeT = C.ERR_INVALID_HTTP_RESPONSE
-	ErrContentDecodingInitFailed     CErrorcodeT = C.ERR_CONTENT_DECODING_INIT_FAILED
-	ErrHttp2RstStreamNoErrorReceived CErrorcodeT = C.ERR_HTTP2_RST_STREAM_NO_ERROR_RECEIVED
-
-	///
-	// Fragment (hash) identifier component (i.e., the string following the '#').
-	///
+	ErrProxyHttp11Required                   CErrorcodeT = C.ERR_PROXY_HTTP_1_1_REQUIRED
+	ErrPacScriptTerminated                   CErrorcodeT = C.ERR_PAC_SCRIPT_TERMINATED
+	ErrInvalidHttpResponse                   CErrorcodeT = C.ERR_INVALID_HTTP_RESPONSE
+	ErrContentDecodingInitFailed             CErrorcodeT = C.ERR_CONTENT_DECODING_INIT_FAILED
+	ErrHttp2RstStreamNoErrorReceived         CErrorcodeT = C.ERR_HTTP2_RST_STREAM_NO_ERROR_RECEIVED
 	ErrHttp2PushedStreamNotAvailable         CErrorcodeT = C.ERR_HTTP2_PUSHED_STREAM_NOT_AVAILABLE
 	ErrHttp2ClaimedPushedStreamResetByServer CErrorcodeT = C.ERR_HTTP2_CLAIMED_PUSHED_STREAM_RESET_BY_SERVER
 	ErrTooManyRetries                        CErrorcodeT = C.ERR_TOO_MANY_RETRIES
@@ -1812,39 +1830,47 @@ const (
 	ErrHttp2PushedResponseDoesNotMatch       CErrorcodeT = C.ERR_HTTP2_PUSHED_RESPONSE_DOES_NOT_MATCH
 	ErrHttpResponseCodeFailure               CErrorcodeT = C.ERR_HTTP_RESPONSE_CODE_FAILURE
 	ErrQuicCertRootNotKnown                  CErrorcodeT = C.ERR_QUIC_CERT_ROOT_NOT_KNOWN
-	ErrQuicGoawayRequestCanBeRetried         CErrorcodeT = C.ERR_QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED
-	ErrCacheMiss                             CErrorcodeT = C.ERR_CACHE_MISS
-	ErrCacheReadFailure                      CErrorcodeT = C.ERR_CACHE_READ_FAILURE
-	ErrCacheWriteFailure                     CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
-	ErrCacheOperationNotSupported            CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
-	ErrCacheOpenFailure                      CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
-	ErrCacheCreateFailure                    CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
-	ErrCacheRace                             CErrorcodeT = C.ERR_CACHE_RACE
-	ErrCacheChecksumReadFailure              CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
-	ErrCacheChecksumMismatch                 CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
 
 	///
 	// The cookie expiration date is only valid if |has_expires| is true.
 	///
-	ErrCacheLockTimeout          CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
-	ErrCacheAuthFailureAfterRead CErrorcodeT = C.ERR_CACHE_AUTH_FAILURE_AFTER_READ
-	ErrCacheEntryNotSuitable     CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
-	ErrCacheDoomFailure          CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
-	ErrCacheOpenOrCreateFailure  CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
-	ErrInsecureResponse          CErrorcodeT = C.ERR_INSECURE_RESPONSE
-	ErrNoPrivateKeyForCert       CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
-	ErrAddUserCertFailed         CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
-	ErrInvalidSignedExchange     CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
+	ErrQuicGoawayRequestCanBeRetried CErrorcodeT = C.ERR_QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED
+	ErrCacheMiss                     CErrorcodeT = C.ERR_CACHE_MISS
 
 	///
-	// Segmentation fault.
+	// Same site.
 	///
-	ErrInvalidWebBundle          CErrorcodeT = C.ERR_INVALID_WEB_BUNDLE
-	ErrTrustTokenOperationFailed CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
+	ErrCacheReadFailure           CErrorcodeT = C.ERR_CACHE_READ_FAILURE
+	ErrCacheWriteFailure          CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
+	ErrCacheOperationNotSupported CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
+	ErrCacheOpenFailure           CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
+	ErrCacheCreateFailure         CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
+	ErrCacheRace                  CErrorcodeT = C.ERR_CACHE_RACE
+	ErrCacheChecksumReadFailure   CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
+	ErrCacheChecksumMismatch      CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
+	ErrCacheLockTimeout           CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
 
 	///
 	// Path key values.
 	///
+	ErrCacheAuthFailureAfterRead CErrorcodeT = C.ERR_CACHE_AUTH_FAILURE_AFTER_READ
+	ErrCacheEntryNotSuitable     CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
+	ErrCacheDoomFailure          CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
+	ErrCacheOpenOrCreateFailure  CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
+
+	///
+	// Directory containing PK_FILE_MODULE.
+	///
+	ErrInsecureResponse    CErrorcodeT = C.ERR_INSECURE_RESPONSE
+	ErrNoPrivateKeyForCert CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
+	ErrAddUserCertFailed   CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
+
+	///
+	// Path and filename of the current executable.
+	///
+	ErrInvalidSignedExchange                           CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
+	ErrInvalidWebBundle                                CErrorcodeT = C.ERR_INVALID_WEB_BUNDLE
+	ErrTrustTokenOperationFailed                       CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
 	ErrTrustTokenOperationSuccessWithoutSendingRequest CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_SUCCESS_WITHOUT_SENDING_REQUEST
 	ErrFtpFailed                                       CErrorcodeT = C.ERR_FTP_FAILED
 	ErrFtpServiceUnavailable                           CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
@@ -1852,58 +1878,47 @@ const (
 	ErrFtpFileBusy                                     CErrorcodeT = C.ERR_FTP_FILE_BUSY
 
 	///
-	// Path and filename of the current executable.
+	// Supported error code values.
 	///
-	ErrFtpSyntaxError         CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
-	ErrFtpCommandNotSupported CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
-	ErrFtpBadCommandSequence  CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
-
-	///
-	// "Local Settings\Application Data" directory under the user profile
-	// directory on Windows.
-	///
+	ErrFtpSyntaxError          CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
+	ErrFtpCommandNotSupported  CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
+	ErrFtpBadCommandSequence   CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
 	ErrPkcs12ImportBadPassword CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
-	ErrPkcs12ImportFailed      CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
 
 	///
-	// "Application Data" directory under the user profile directory on Windows
-	// and "~/Library/Application Support" directory on Mac OS X.
+	// Supported certificate status code values. See net\cert\cert_status_flags.h
+	// for more information. CERT_STATUS_NONE is new in CEF because we use an
+	// enum while cert_status_flags.h uses a typedef and static const variables.
 	///
+	ErrPkcs12ImportFailed      CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
 	ErrImportCaCertNotCa       CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
 	ErrImportCertAlreadyExists CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
 	ErrImportCaCertFailed      CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
 	ErrImportServerCertFailed  CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
 	ErrPkcs12ImportInvalidMac  CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
-	ErrPkcs12ImportInvalidFile CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
-
-	///
-	// Supported error code values.
-	///
-	ErrPkcs12ImportUnsupported        CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
-	ErrKeyGenerationFailed            CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
-	ErrPrivateKeyExportFailed         CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
-	ErrSelfSignedCertGenerationFailed CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
-	ErrCertDatabaseChanged            CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
-
-	// 1 << 3 is reserved for ERR_CERT_CONTAINS_ERRORS (not useful with WinHTTP).
-	ErrDnsMalformedResponse CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
-	ErrDnsServerRequiresTcp CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
 
 	// Bits 16 to 31 are for non-error statuses.
-	ErrDnsServerFailed CErrorcodeT = C.ERR_DNS_SERVER_FAILED
+	ErrPkcs12ImportInvalidFile CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
 
 	// Bit 18 was CERT_STATUS_IS_DNSSEC
-	ErrDnsTimedOut  CErrorcodeT = C.ERR_DNS_TIMED_OUT
-	ErrDnsCacheMiss CErrorcodeT = C.ERR_DNS_CACHE_MISS
-
-	///
-	// The manner in which a link click should be opened. These constants match
-	// their equivalents in Chromium's window_open_disposition.h and should not be
-	// renumbered.
-	///
+	ErrPkcs12ImportUnsupported                   CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
+	ErrKeyGenerationFailed                       CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
+	ErrPrivateKeyExportFailed                    CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
+	ErrSelfSignedCertGenerationFailed            CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
+	ErrCertDatabaseChanged                       CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
+	ErrDnsMalformedResponse                      CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
+	ErrDnsServerRequiresTcp                      CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
+	ErrDnsServerFailed                           CErrorcodeT = C.ERR_DNS_SERVER_FAILED
+	ErrDnsTimedOut                               CErrorcodeT = C.ERR_DNS_TIMED_OUT
+	ErrDnsCacheMiss                              CErrorcodeT = C.ERR_DNS_CACHE_MISS
 	ErrDnsSearchEmpty                            CErrorcodeT = C.ERR_DNS_SEARCH_EMPTY
 	ErrDnsSortError                              CErrorcodeT = C.ERR_DNS_SORT_ERROR
 	ErrDnsSecureResolverHostnameResolutionFailed CErrorcodeT = C.ERR_DNS_SECURE_RESOLVER_HOSTNAME_RESOLUTION_FAILED
+
+	///
+	// V8 access control values.
+	///
+	ErrDnsNameHttpsOnly CErrorcodeT = C.ERR_DNS_NAME_HTTPS_ONLY
 )
 
 ///
@@ -2136,6 +2151,16 @@ const (
 	// A resource that a plugin requested.
 	///
 	RtPluginResource CResourceTypeT = C.RT_PLUGIN_RESOURCE
+
+	///
+	// A main-frame service worker navigation preload request.
+	///
+	RtNavigationPreloadMainFrame CResourceTypeT = C.RT_NAVIGATION_PRELOAD_MAIN_FRAME
+
+	///
+	// A sub-frame service worker navigation preload request.
+	///
+	RtNavigationPreloadSubFrame CResourceTypeT = C.RT_NAVIGATION_PRELOAD_SUB_FRAME
 )
 
 ///
@@ -2344,169 +2369,6 @@ const (
 	UrFailed CUrlrequestStatusT = C.UR_FAILED
 )
 
-///
-// Structure representing a point.
-///
-type CPointT C.cef_point_t
-
-func NewCPointT() *CPointT {
-	s := &CPointT{}
-	return s
-}
-
-func (st *CPointT) X() int {
-	return int(st.x)
-}
-
-func (st *CPointT) SetX(v int) {
-	st.x = (C.int)(v)
-}
-
-func (st *CPointT) Y() int {
-	return int(st.y)
-}
-
-func (st *CPointT) SetY(v int) {
-	st.y = (C.int)(v)
-}
-
-///
-// Structure representing a rectangle.
-///
-type CRectT C.cef_rect_t
-
-func NewCRectT() *CRectT {
-	s := &CRectT{}
-	return s
-}
-
-func (st *CRectT) X() int {
-	return int(st.x)
-}
-
-func (st *CRectT) SetX(v int) {
-	st.x = (C.int)(v)
-}
-
-func (st *CRectT) Y() int {
-	return int(st.y)
-}
-
-func (st *CRectT) SetY(v int) {
-	st.y = (C.int)(v)
-}
-
-func (st *CRectT) Width() int {
-	return int(st.width)
-}
-
-func (st *CRectT) SetWidth(v int) {
-	st.width = (C.int)(v)
-}
-
-func (st *CRectT) Height() int {
-	return int(st.height)
-}
-
-func (st *CRectT) SetHeight(v int) {
-	st.height = (C.int)(v)
-}
-
-///
-// Structure representing a size.
-///
-type CSizeT C.cef_size_t
-
-func NewCSizeT() *CSizeT {
-	s := &CSizeT{}
-	return s
-}
-
-func (st *CSizeT) Width() int {
-	return int(st.width)
-}
-
-func (st *CSizeT) SetWidth(v int) {
-	st.width = (C.int)(v)
-}
-
-func (st *CSizeT) Height() int {
-	return int(st.height)
-}
-
-func (st *CSizeT) SetHeight(v int) {
-	st.height = (C.int)(v)
-}
-
-///
-// Structure representing a range.
-///
-type CRangeT C.cef_range_t
-
-func NewCRangeT() *CRangeT {
-	s := &CRangeT{}
-	return s
-}
-
-func (st *CRangeT) From() int {
-	return int(st.from)
-}
-
-func (st *CRangeT) SetFrom(v int) {
-	st.from = (C.int)(v)
-}
-
-func (st *CRangeT) To() int {
-	return int(st.to)
-}
-
-func (st *CRangeT) SetTo(v int) {
-	st.to = (C.int)(v)
-}
-
-///
-// Structure representing insets.
-///
-type CInsetsT C.cef_insets_t
-
-func NewCInsetsT() *CInsetsT {
-	s := &CInsetsT{}
-	return s
-}
-
-func (st *CInsetsT) Top() int {
-	return int(st.top)
-}
-
-func (st *CInsetsT) SetTop(v int) {
-	st.top = (C.int)(v)
-}
-
-func (st *CInsetsT) Left() int {
-	return int(st.left)
-}
-
-func (st *CInsetsT) SetLeft(v int) {
-	st.left = (C.int)(v)
-}
-
-func (st *CInsetsT) Bottom() int {
-	return int(st.bottom)
-}
-
-func (st *CInsetsT) SetBottom(v int) {
-	st.bottom = (C.int)(v)
-}
-
-func (st *CInsetsT) Right() int {
-	return int(st.right)
-}
-
-func (st *CInsetsT) SetRight(v int) {
-	st.right = (C.int)(v)
-}
-
-///
 // Structure representing a draggable region.
 ///
 type CDraggableRegionT C.cef_draggable_region_t
@@ -3031,6 +2893,7 @@ const (
 	EventflagIsLeft      CEventFlagsT = C.EVENTFLAG_IS_LEFT
 	EventflagIsRight     CEventFlagsT = C.EVENTFLAG_IS_RIGHT
 	EventflagAltgrDown   CEventFlagsT = C.EVENTFLAG_ALTGR_DOWN
+	EventflagIsRepeat    CEventFlagsT = C.EVENTFLAG_IS_REPEAT
 )
 
 ///
@@ -4492,32 +4355,30 @@ const (
 )
 
 ///
-// Error codes for CDM registration. See cef_web_plugin.h for details.
+// Structure representing a range.
 ///
-type CCdmRegistrationErrorT C.cef_cdm_registration_error_t
+type CRangeT C.cef_range_t
 
-const (
+func NewCRangeT() *CRangeT {
+	s := &CRangeT{}
+	return s
+}
 
-	///
-	// No error. Registration completed successfully.
-	///
-	CefCdmRegistrationErrorNone CCdmRegistrationErrorT = C.CEF_CDM_REGISTRATION_ERROR_NONE
+func (st *CRangeT) From() int {
+	return int(st.from)
+}
 
-	///
-	// Required files or manifest contents are missing.
-	///
-	CefCdmRegistrationErrorIncorrectContents CCdmRegistrationErrorT = C.CEF_CDM_REGISTRATION_ERROR_INCORRECT_CONTENTS
+func (st *CRangeT) SetFrom(v int) {
+	st.from = (C.int)(v)
+}
 
-	///
-	// The CDM is incompatible with the current Chromium version.
-	///
-	CefCdmRegistrationErrorIncompatible CCdmRegistrationErrorT = C.CEF_CDM_REGISTRATION_ERROR_INCOMPATIBLE
+func (st *CRangeT) To() int {
+	return int(st.to)
+}
 
-	///
-	// CDM registration is not supported at this time.
-	///
-	CefCdmRegistrationErrorNotSupported CCdmRegistrationErrorT = C.CEF_CDM_REGISTRATION_ERROR_NOT_SUPPORTED
-)
+func (st *CRangeT) SetTo(v int) {
+	st.to = (C.int)(v)
+}
 
 ///
 // Composition underline style.
@@ -4843,3 +4704,166 @@ const (
 	CefCttNormal   CChromeToolbarTypeT = C.CEF_CTT_NORMAL
 	CefCttLocation CChromeToolbarTypeT = C.CEF_CTT_LOCATION
 )
+
+///
+// Docking modes supported by CefWindow::AddOverlay.
+///
+type CDockingModeT C.cef_docking_mode_t
+
+const (
+	CefDockingModeTopLeft     CDockingModeT = C.CEF_DOCKING_MODE_TOP_LEFT
+	CefDockingModeTopRight    CDockingModeT = C.CEF_DOCKING_MODE_TOP_RIGHT
+	CefDockingModeBottomLeft  CDockingModeT = C.CEF_DOCKING_MODE_BOTTOM_LEFT
+	CefDockingModeBottomRight CDockingModeT = C.CEF_DOCKING_MODE_BOTTOM_RIGHT
+	CefDockingModeCustom      CDockingModeT = C.CEF_DOCKING_MODE_CUSTOM
+)
+
+///
+// Show states supported by CefWindowDelegate::GetInitialShowState.
+///
+type CShowStateT C.cef_show_state_t
+
+const (
+	CefShowStateNormal     CShowStateT = C.CEF_SHOW_STATE_NORMAL
+	CefShowStateMinimized  CShowStateT = C.CEF_SHOW_STATE_MINIMIZED
+	CefShowStateMaximized  CShowStateT = C.CEF_SHOW_STATE_MAXIMIZED
+	CefShowStateFullscreen CShowStateT = C.CEF_SHOW_STATE_FULLSCREEN
+)
+
+// cef_types_geometry.h, include/internal/cef_types_geometry.h:44:3,
+
+///
+// Structure representing a point.
+///
+type CPointT C.cef_point_t
+
+func NewCPointT() *CPointT {
+	s := &CPointT{}
+	return s
+}
+
+func (st *CPointT) X() int {
+	return int(st.x)
+}
+
+func (st *CPointT) SetX(v int) {
+	st.x = (C.int)(v)
+}
+
+func (st *CPointT) Y() int {
+	return int(st.y)
+}
+
+func (st *CPointT) SetY(v int) {
+	st.y = (C.int)(v)
+}
+
+///
+// Structure representing a rectangle.
+///
+type CRectT C.cef_rect_t
+
+func NewCRectT() *CRectT {
+	s := &CRectT{}
+	return s
+}
+
+func (st *CRectT) X() int {
+	return int(st.x)
+}
+
+func (st *CRectT) SetX(v int) {
+	st.x = (C.int)(v)
+}
+
+func (st *CRectT) Y() int {
+	return int(st.y)
+}
+
+func (st *CRectT) SetY(v int) {
+	st.y = (C.int)(v)
+}
+
+func (st *CRectT) Width() int {
+	return int(st.width)
+}
+
+func (st *CRectT) SetWidth(v int) {
+	st.width = (C.int)(v)
+}
+
+func (st *CRectT) Height() int {
+	return int(st.height)
+}
+
+func (st *CRectT) SetHeight(v int) {
+	st.height = (C.int)(v)
+}
+
+///
+// Structure representing a size.
+///
+type CSizeT C.cef_size_t
+
+func NewCSizeT() *CSizeT {
+	s := &CSizeT{}
+	return s
+}
+
+func (st *CSizeT) Width() int {
+	return int(st.width)
+}
+
+func (st *CSizeT) SetWidth(v int) {
+	st.width = (C.int)(v)
+}
+
+func (st *CSizeT) Height() int {
+	return int(st.height)
+}
+
+func (st *CSizeT) SetHeight(v int) {
+	st.height = (C.int)(v)
+}
+
+///
+// Structure representing insets.
+///
+type CInsetsT C.cef_insets_t
+
+func NewCInsetsT() *CInsetsT {
+	s := &CInsetsT{}
+	return s
+}
+
+func (st *CInsetsT) Top() int {
+	return int(st.top)
+}
+
+func (st *CInsetsT) SetTop(v int) {
+	st.top = (C.int)(v)
+}
+
+func (st *CInsetsT) Left() int {
+	return int(st.left)
+}
+
+func (st *CInsetsT) SetLeft(v int) {
+	st.left = (C.int)(v)
+}
+
+func (st *CInsetsT) Bottom() int {
+	return int(st.bottom)
+}
+
+func (st *CInsetsT) SetBottom(v int) {
+	st.bottom = (C.int)(v)
+}
+
+func (st *CInsetsT) Right() int {
+	return int(st.right)
+}
+
+func (st *CInsetsT) SetRight(v int) {
+	st.right = (C.int)(v)
+}

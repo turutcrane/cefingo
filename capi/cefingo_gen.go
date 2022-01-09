@@ -3252,21 +3252,6 @@ func (self *CBrowserHostT) SendTouchEvent(
 }
 
 ///
-// Send a focus event to the browser.
-///
-func (self *CBrowserHostT) SendFocusEvent(
-	setFocus bool,
-) {
-	var tmpsetFocus int
-	if setFocus {
-		tmpsetFocus = 1
-	}
-
-	C.cefingo_browser_host_send_focus_event((*C.cef_browser_host_t)(self.pc_browser_host), C.int(tmpsetFocus))
-
-}
-
-///
 // Send a capture lost event to the browser.
 ///
 func (self *CBrowserHostT) SendCaptureLostEvent() {
@@ -4444,6 +4429,7 @@ var browser_view_delegate_handlers = struct {
 	on_parent_view_changed_handler              map[*cCBrowserViewDelegateT]OnParentViewChangedHandler
 	on_child_view_changed_handler               map[*cCBrowserViewDelegateT]OnChildViewChangedHandler
 	on_window_changed_handler                   map[*cCBrowserViewDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler                   map[*cCBrowserViewDelegateT]OnLayoutChangedHandler
 	on_focus_handler                            map[*cCBrowserViewDelegateT]OnFocusHandler
 	on_blur_handler                             map[*cCBrowserViewDelegateT]OnBlurHandler
 }{
@@ -4460,6 +4446,7 @@ var browser_view_delegate_handlers = struct {
 	map[*cCBrowserViewDelegateT]OnParentViewChangedHandler{},
 	map[*cCBrowserViewDelegateT]OnChildViewChangedHandler{},
 	map[*cCBrowserViewDelegateT]OnWindowChangedHandler{},
+	map[*cCBrowserViewDelegateT]OnLayoutChangedHandler{},
 	map[*cCBrowserViewDelegateT]OnFocusHandler{},
 	map[*cCBrowserViewDelegateT]OnBlurHandler{},
 }
@@ -4490,6 +4477,7 @@ func AllocCBrowserViewDelegateT() *CBrowserViewDelegateT {
 		delete(browser_view_delegate_handlers.on_parent_view_changed_handler, cgop)
 		delete(browser_view_delegate_handlers.on_child_view_changed_handler, cgop)
 		delete(browser_view_delegate_handlers.on_window_changed_handler, cgop)
+		delete(browser_view_delegate_handlers.on_layout_changed_handler, cgop)
 		delete(browser_view_delegate_handlers.on_focus_handler, cgop)
 		delete(browser_view_delegate_handlers.on_blur_handler, cgop)
 	}))
@@ -4587,6 +4575,12 @@ func (browser_view_delegate *CBrowserViewDelegateT) Bind(a interface{}) *CBrowse
 		delete(browser_view_delegate_handlers.on_window_changed_handler, cp)
 	}
 
+	if h, ok := a.(OnLayoutChangedHandler); ok {
+		browser_view_delegate_handlers.on_layout_changed_handler[cp] = h
+	} else {
+		delete(browser_view_delegate_handlers.on_layout_changed_handler, cp)
+	}
+
 	if h, ok := a.(OnFocusHandler); ok {
 		browser_view_delegate_handlers.on_focus_handler[cp] = h
 	} else {
@@ -4632,6 +4626,7 @@ func (browser_view_delegate *CBrowserViewDelegateT) UnbindAll() {
 		delete(browser_view_delegate_handlers.on_parent_view_changed_handler, cp)
 		delete(browser_view_delegate_handlers.on_child_view_changed_handler, cp)
 		delete(browser_view_delegate_handlers.on_window_changed_handler, cp)
+		delete(browser_view_delegate_handlers.on_layout_changed_handler, cp)
 		delete(browser_view_delegate_handlers.on_focus_handler, cp)
 		delete(browser_view_delegate_handlers.on_blur_handler, cp)
 	}()
@@ -5005,6 +5000,7 @@ var button_delegate_handlers = struct {
 	on_parent_view_changed_handler  map[*cCButtonDelegateT]OnParentViewChangedHandler
 	on_child_view_changed_handler   map[*cCButtonDelegateT]OnChildViewChangedHandler
 	on_window_changed_handler       map[*cCButtonDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler       map[*cCButtonDelegateT]OnLayoutChangedHandler
 	on_focus_handler                map[*cCButtonDelegateT]OnFocusHandler
 	on_blur_handler                 map[*cCButtonDelegateT]OnBlurHandler
 }{
@@ -5018,6 +5014,7 @@ var button_delegate_handlers = struct {
 	map[*cCButtonDelegateT]OnParentViewChangedHandler{},
 	map[*cCButtonDelegateT]OnChildViewChangedHandler{},
 	map[*cCButtonDelegateT]OnWindowChangedHandler{},
+	map[*cCButtonDelegateT]OnLayoutChangedHandler{},
 	map[*cCButtonDelegateT]OnFocusHandler{},
 	map[*cCButtonDelegateT]OnBlurHandler{},
 }
@@ -5045,6 +5042,7 @@ func AllocCButtonDelegateT() *CButtonDelegateT {
 		delete(button_delegate_handlers.on_parent_view_changed_handler, cgop)
 		delete(button_delegate_handlers.on_child_view_changed_handler, cgop)
 		delete(button_delegate_handlers.on_window_changed_handler, cgop)
+		delete(button_delegate_handlers.on_layout_changed_handler, cgop)
 		delete(button_delegate_handlers.on_focus_handler, cgop)
 		delete(button_delegate_handlers.on_blur_handler, cgop)
 	}))
@@ -5124,6 +5122,12 @@ func (button_delegate *CButtonDelegateT) Bind(a interface{}) *CButtonDelegateT {
 		delete(button_delegate_handlers.on_window_changed_handler, cp)
 	}
 
+	if h, ok := a.(OnLayoutChangedHandler); ok {
+		button_delegate_handlers.on_layout_changed_handler[cp] = h
+	} else {
+		delete(button_delegate_handlers.on_layout_changed_handler, cp)
+	}
+
 	if h, ok := a.(OnFocusHandler); ok {
 		button_delegate_handlers.on_focus_handler[cp] = h
 	} else {
@@ -5166,6 +5170,7 @@ func (button_delegate *CButtonDelegateT) UnbindAll() {
 		delete(button_delegate_handlers.on_parent_view_changed_handler, cp)
 		delete(button_delegate_handlers.on_child_view_changed_handler, cp)
 		delete(button_delegate_handlers.on_window_changed_handler, cp)
+		delete(button_delegate_handlers.on_layout_changed_handler, cp)
 		delete(button_delegate_handlers.on_focus_handler, cp)
 		delete(button_delegate_handlers.on_blur_handler, cp)
 	}()
@@ -5980,7 +5985,7 @@ func (client *CClientT) Handler() interface{} {
 	return client_handlers.handler[cp]
 }
 
-// cef_command_line_capi.h, include/capi/cef_command_line_capi.h:197:3,
+// cef_command_line_capi.h, include/capi/cef_command_line_capi.h:198:3,
 
 ///
 // Structure used to create and/or parse command line arguments. Arguments with
@@ -5989,8 +5994,9 @@ func (client *CClientT) Handler() interface{} {
 // optionally have a value specified using the '=' delimiter (e.g.
 // "-switch=value"). An argument of "--" will terminate switch parsing with all
 // subsequent tokens, regardless of prefix, being interpreted as non-switch
-// arguments. Switch names are considered case-insensitive. This structure can
-// be used before cef_initialize() is called.
+// arguments. Switch names should be lowercase ASCII and will be converted to
+// such if necessary. Switch values will retain the original case and UTF8
+// encoding. This structure can be used before cef_initialize() is called.
 ///
 
 type cCCommandLineT C.cef_command_line_t
@@ -14329,7 +14335,7 @@ func (self *CFrameT) SendProcessMessage(
 
 }
 
-// cef_frame_handler_capi.h, include/capi/cef_frame_handler_capi.h:185:3,
+// cef_frame_handler_capi.h, include/capi/cef_frame_handler_capi.h:188:3,
 
 ///
 // Implement this structure to handle events related to cef_frame_t life span.
@@ -14553,11 +14559,14 @@ func (self *CFrameHandlerT) OnFrameCreated(
 
 ///
 // Called when a frame can begin routing commands to/from the associated
-// renderer process. Any commands that were queued have now been dispatched.
+// renderer process. |reattached| will be true (1) if the frame was re-
+// attached after exiting the BackForwardCache. Any commands that were queued
+// have now been dispatched.
 ///
 func (self *CFrameHandlerT) OnFrameAttached(
 	browser *CBrowserT,
 	frame *CFrameT,
+	reattached int,
 ) {
 	var goTmpbrowser *C.cef_browser_t
 	if browser != nil {
@@ -14570,7 +14579,7 @@ func (self *CFrameHandlerT) OnFrameAttached(
 		goTmpframe = (*C.cef_frame_t)(frame.pc_frame)
 	}
 
-	C.cefingo_frame_handler_on_frame_attached((*C.cef_frame_handler_t)(self.pc_frame_handler), goTmpbrowser, goTmpframe)
+	C.cefingo_frame_handler_on_frame_attached((*C.cef_frame_handler_t)(self.pc_frame_handler), goTmpbrowser, goTmpframe, (C.int)(reattached))
 
 }
 
@@ -18699,6 +18708,7 @@ var menu_button_delegate_handlers = struct {
 	on_parent_view_changed_handler  map[*cCMenuButtonDelegateT]OnParentViewChangedHandler
 	on_child_view_changed_handler   map[*cCMenuButtonDelegateT]OnChildViewChangedHandler
 	on_window_changed_handler       map[*cCMenuButtonDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler       map[*cCMenuButtonDelegateT]OnLayoutChangedHandler
 	on_focus_handler                map[*cCMenuButtonDelegateT]OnFocusHandler
 	on_blur_handler                 map[*cCMenuButtonDelegateT]OnBlurHandler
 }{
@@ -18713,6 +18723,7 @@ var menu_button_delegate_handlers = struct {
 	map[*cCMenuButtonDelegateT]OnParentViewChangedHandler{},
 	map[*cCMenuButtonDelegateT]OnChildViewChangedHandler{},
 	map[*cCMenuButtonDelegateT]OnWindowChangedHandler{},
+	map[*cCMenuButtonDelegateT]OnLayoutChangedHandler{},
 	map[*cCMenuButtonDelegateT]OnFocusHandler{},
 	map[*cCMenuButtonDelegateT]OnBlurHandler{},
 }
@@ -18741,6 +18752,7 @@ func AllocCMenuButtonDelegateT() *CMenuButtonDelegateT {
 		delete(menu_button_delegate_handlers.on_parent_view_changed_handler, cgop)
 		delete(menu_button_delegate_handlers.on_child_view_changed_handler, cgop)
 		delete(menu_button_delegate_handlers.on_window_changed_handler, cgop)
+		delete(menu_button_delegate_handlers.on_layout_changed_handler, cgop)
 		delete(menu_button_delegate_handlers.on_focus_handler, cgop)
 		delete(menu_button_delegate_handlers.on_blur_handler, cgop)
 	}))
@@ -18826,6 +18838,12 @@ func (menu_button_delegate *CMenuButtonDelegateT) Bind(a interface{}) *CMenuButt
 		delete(menu_button_delegate_handlers.on_window_changed_handler, cp)
 	}
 
+	if h, ok := a.(OnLayoutChangedHandler); ok {
+		menu_button_delegate_handlers.on_layout_changed_handler[cp] = h
+	} else {
+		delete(menu_button_delegate_handlers.on_layout_changed_handler, cp)
+	}
+
 	if h, ok := a.(OnFocusHandler); ok {
 		menu_button_delegate_handlers.on_focus_handler[cp] = h
 	} else {
@@ -18869,6 +18887,7 @@ func (menu_button_delegate *CMenuButtonDelegateT) UnbindAll() {
 		delete(menu_button_delegate_handlers.on_parent_view_changed_handler, cp)
 		delete(menu_button_delegate_handlers.on_child_view_changed_handler, cp)
 		delete(menu_button_delegate_handlers.on_window_changed_handler, cp)
+		delete(menu_button_delegate_handlers.on_layout_changed_handler, cp)
 		delete(menu_button_delegate_handlers.on_focus_handler, cp)
 		delete(menu_button_delegate_handlers.on_blur_handler, cp)
 	}()
@@ -20581,6 +20600,379 @@ func ClearCrossOriginWhitelist() (ret bool) {
 	return ret
 }
 
+// cef_overlay_controller_capi.h, include/capi/views/cef_overlay_controller_capi.h:210:3,
+
+///
+// Controller for an overlay that contains a contents View added via
+// cef_window_t::AddOverlayView. Methods exposed by this controller should be
+// called in preference to functions of the same name exposed by the contents
+// View unless otherwise indicated. Methods must be called on the browser
+// process UI thread unless otherwise indicated.
+///
+
+type cCOverlayControllerT C.cef_overlay_controller_t
+
+// Go type for cef_overlay_controller_t
+type COverlayControllerT struct {
+	noCopy                noCopy
+	pc_overlay_controller *cCOverlayControllerT
+	beUnrefed             unrefedBy
+}
+
+type RefToCOverlayControllerT struct {
+	p_overlay_controller *COverlayControllerT
+}
+
+type COverlayControllerTAccessor interface {
+	GetCOverlayControllerT() *COverlayControllerT
+	setCOverlayControllerT(*COverlayControllerT)
+	// TakeOverCOverlayControllerT(*COverlayControllerT)
+	// NewRefCOverlayControllerT(*COverlayControllerT)
+}
+
+func (r RefToCOverlayControllerT) GetCOverlayControllerT() *COverlayControllerT {
+	return r.p_overlay_controller
+}
+
+func (r *RefToCOverlayControllerT) setCOverlayControllerT(p *COverlayControllerT) {
+	// prevValue = r.p_overlay_controller
+	r.p_overlay_controller.Unref()
+	r.p_overlay_controller = p
+	// return prevValue
+}
+
+func (r *RefToCOverlayControllerT) TakeOverCOverlayControllerT(src *COverlayControllerT) {
+	if r == nil {
+		return
+	}
+	r.p_overlay_controller.Unref()
+	gop := src.pc_overlay_controller
+	switch src.beUnrefed {
+	case byApp:
+		src.beUnrefed = unrefed
+	case byApi:
+		BaseAddRef(gop)
+	default:
+		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
+	}
+
+	r.p_overlay_controller = newCOverlayControllerT((*C.cef_overlay_controller_t)(gop), byApp)
+}
+
+func PassCOverlayControllerT(p *COverlayControllerT) (ret *COverlayControllerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+		ret = newCOverlayControllerT((*C.cef_overlay_controller_t)(p.pc_overlay_controller), byCef)
+	case byApi:
+		ret = p
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+
+	return ret
+}
+
+func (r *RefToCOverlayControllerT) NewRefCOverlayControllerT(p *COverlayControllerT) {
+	if r == nil {
+		return
+	}
+	r.p_overlay_controller.Unref()
+	gop := p.pc_overlay_controller
+	BaseAddRef(gop)
+	r.p_overlay_controller = newCOverlayControllerT((*C.cef_overlay_controller_t)(gop), byApp)
+}
+
+// Go type COverlayControllerT wraps cef type *C.cef_overlay_controller_t
+func newCOverlayControllerT(p *C.cef_overlay_controller_t, unrefedBy unrefedBy) *COverlayControllerT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T392.1:")
+	pc := (*cCOverlayControllerT)(p)
+	go_overlay_controller := &COverlayControllerT{noCopy{}, pc, unrefedBy}
+	// BaseAddRef(pc)
+	runtime.SetFinalizer(go_overlay_controller, func(g *COverlayControllerT) {
+		if g.beUnrefed == byApp && g.pc_overlay_controller != nil {
+			Tracef(unsafe.Pointer(g.pc_overlay_controller), "T392.2:")
+			BaseRelease(g.pc_overlay_controller)
+		}
+	})
+
+	return go_overlay_controller
+}
+
+// *C.cef_overlay_controller_t has refCounted interface
+func (overlay_controller *COverlayControllerT) HasOneRef() bool {
+	return BaseHasOneRef(overlay_controller.pc_overlay_controller)
+}
+
+func (p *cCOverlayControllerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (overlay_controller *COverlayControllerT) Unref() (ret bool) {
+	if overlay_controller == nil {
+		return
+	}
+	if overlay_controller.beUnrefed == byApp {
+		ret = BaseRelease(overlay_controller.pc_overlay_controller)
+		overlay_controller.beUnrefed = unrefed
+	}
+	overlay_controller.pc_overlay_controller = nil
+	return ret
+}
+
+///
+// Returns true (1) if this object is valid.
+///
+func (self *COverlayControllerT) IsValid() (ret bool) {
+
+	cRet := C.cefingo_overlay_controller_is_valid((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Returns true (1) if this object is the same as |that| object.
+///
+func (self *COverlayControllerT) IsSame(
+	that *COverlayControllerT,
+) (ret bool) {
+	var goTmpthat *C.cef_overlay_controller_t
+	if that != nil {
+		BaseAddRef(that.pc_overlay_controller)
+		goTmpthat = (*C.cef_overlay_controller_t)(that.pc_overlay_controller)
+	}
+
+	cRet := C.cefingo_overlay_controller_is_same((*C.cef_overlay_controller_t)(self.pc_overlay_controller), goTmpthat)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Returns the contents View for this overlay.
+///
+func (self *COverlayControllerT) GetContentsView() (ret *CViewT) {
+
+	cRet := C.cefingo_overlay_controller_get_contents_view((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = newCViewT(cRet, byApp) // return GoObj
+	return ret
+}
+
+///
+// Returns the top-level Window hosting this overlay. Use this function
+// instead of calling get_window() on the contents View.
+///
+func (self *COverlayControllerT) GetWindow() (ret *CWindowT) {
+
+	cRet := C.cefingo_overlay_controller_get_window((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = newCWindowT(cRet, byApp) // return GoObj
+	return ret
+}
+
+///
+// Returns the docking mode for this overlay.
+///
+func (self *COverlayControllerT) GetDockingMode() (ret CDockingModeT) {
+
+	cRet := C.cefingo_overlay_controller_get_docking_mode((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = CDockingModeT(cRet) // return GoObj
+	return ret
+}
+
+///
+// Destroy this overlay.
+///
+func (self *COverlayControllerT) Destroy() {
+
+	C.cefingo_overlay_controller_destroy((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+}
+
+///
+// Sets the bounds (size and position) of this overlay. This will set the
+// bounds of the contents View to match and trigger a re-layout if necessary.
+// |bounds| is in parent coordinates and any insets configured on this overlay
+// will be ignored. Use this function only for overlays created with a docking
+// mode value of CEF_DOCKING_MODE_CUSTOM. With other docking modes modify the
+// insets of this overlay and/or layout of the contents View and call
+// size_to_preferred_size() instead to calculate the new size and re-position
+// the overlay if necessary.
+///
+func (self *COverlayControllerT) SetBounds(
+	bounds *CRectT,
+) {
+
+	C.cefingo_overlay_controller_set_bounds((*C.cef_overlay_controller_t)(self.pc_overlay_controller), (*C.cef_rect_t)(bounds))
+
+}
+
+///
+// Returns the bounds (size and position) of this overlay in parent
+// coordinates.
+///
+func (self *COverlayControllerT) GetBounds() (ret CRectT) {
+
+	cRet := C.cefingo_overlay_controller_get_bounds((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = (CRectT)(cRet) // return GoObj
+	return ret
+}
+
+///
+// Returns the bounds (size and position) of this overlay in DIP screen
+// coordinates.
+///
+func (self *COverlayControllerT) GetBoundsInScreen() (ret CRectT) {
+
+	cRet := C.cefingo_overlay_controller_get_bounds_in_screen((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = (CRectT)(cRet) // return GoObj
+	return ret
+}
+
+///
+// Sets the size of this overlay without changing the position. This will set
+// the size of the contents View to match and trigger a re-layout if
+// necessary. |size| is in parent coordinates and any insets configured on
+// this overlay will be ignored. Use this function only for overlays created
+// with a docking mode value of CEF_DOCKING_MODE_CUSTOM. With other docking
+// modes modify the insets of this overlay and/or layout of the contents View
+// and call size_to_preferred_size() instead to calculate the new size and re-
+// position the overlay if necessary.
+///
+func (self *COverlayControllerT) SetSize(
+	size *CSizeT,
+) {
+
+	C.cefingo_overlay_controller_set_size((*C.cef_overlay_controller_t)(self.pc_overlay_controller), (*C.cef_size_t)(size))
+
+}
+
+///
+// Returns the size of this overlay in parent coordinates.
+///
+func (self *COverlayControllerT) GetSize() (ret CSizeT) {
+
+	cRet := C.cefingo_overlay_controller_get_size((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = (CSizeT)(cRet) // return GoObj
+	return ret
+}
+
+///
+// Sets the position of this overlay without changing the size. |position| is
+// in parent coordinates and any insets configured on this overlay will be
+// ignored. Use this function only for overlays created with a docking mode
+// value of CEF_DOCKING_MODE_CUSTOM. With other docking modes modify the
+// insets of this overlay and/or layout of the contents View and call
+// size_to_preferred_size() instead to calculate the new size and re-position
+// the overlay if necessary.
+///
+func (self *COverlayControllerT) SetPosition(
+	position *CPointT,
+) {
+
+	C.cefingo_overlay_controller_set_position((*C.cef_overlay_controller_t)(self.pc_overlay_controller), (*C.cef_point_t)(position))
+
+}
+
+///
+// Returns the position of this overlay in parent coordinates.
+///
+func (self *COverlayControllerT) GetPosition() (ret CPointT) {
+
+	cRet := C.cefingo_overlay_controller_get_position((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = (CPointT)(cRet) // return GoObj
+	return ret
+}
+
+///
+// Sets the insets for this overlay. |insets| is in parent coordinates. Use
+// this function only for overlays created with a docking mode value other
+// than CEF_DOCKING_MODE_CUSTOM.
+///
+func (self *COverlayControllerT) SetInsets(
+	insets *CInsetsT,
+) {
+
+	C.cefingo_overlay_controller_set_insets((*C.cef_overlay_controller_t)(self.pc_overlay_controller), (*C.cef_insets_t)(insets))
+
+}
+
+///
+// Returns the insets for this overlay in parent coordinates.
+///
+func (self *COverlayControllerT) GetInsets() (ret CInsetsT) {
+
+	cRet := C.cefingo_overlay_controller_get_insets((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = (CInsetsT)(cRet) // return GoObj
+	return ret
+}
+
+///
+// Size this overlay to its preferred size and trigger a re-layout if
+// necessary. The position of overlays created with a docking mode value of
+// CEF_DOCKING_MODE_CUSTOM will not be modified by calling this function. With
+// other docking modes this function may re-position the overlay if necessary
+// to accommodate the new size and any insets configured on the contents View.
+///
+func (self *COverlayControllerT) SizeToPreferredSize() {
+
+	C.cefingo_overlay_controller_size_to_preferred_size((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+}
+
+///
+// Sets whether this overlay is visible. Overlays are hidden by default. If
+// this overlay is hidden then it and any child Views will not be drawn and,
+// if any of those Views currently have focus, then focus will also be
+// cleared. Painting is scheduled as needed.
+///
+func (self *COverlayControllerT) SetVisible(
+	visible int,
+) {
+
+	C.cefingo_overlay_controller_set_visible((*C.cef_overlay_controller_t)(self.pc_overlay_controller), (C.int)(visible))
+
+}
+
+///
+// Returns whether this overlay is visible. A View may be visible but still
+// not drawn in a Window if any parent Views are hidden. Call is_drawn() to
+// determine whether this overlay and all parent Views are visible and will be
+// drawn.
+///
+func (self *COverlayControllerT) IsVisible() (ret bool) {
+
+	cRet := C.cefingo_overlay_controller_is_visible((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+// Returns whether this overlay is visible and drawn in a Window. A View is
+// drawn if it and all parent Views are visible. To determine if the
+// containing Window is visible to the user on-screen call is_visible() on the
+// Window.
+///
+func (self *COverlayControllerT) IsDrawn() (ret bool) {
+
+	cRet := C.cefingo_overlay_controller_is_drawn((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
+
+	ret = cRet == 1
+	return ret
+}
+
 // cef_panel_capi.h, include/capi/views/cef_panel_capi.h:139:3,
 
 ///
@@ -21022,6 +21414,7 @@ var panel_delegate_handlers = struct {
 	on_parent_view_changed_handler map[*cCPanelDelegateT]OnParentViewChangedHandler
 	on_child_view_changed_handler  map[*cCPanelDelegateT]OnChildViewChangedHandler
 	on_window_changed_handler      map[*cCPanelDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler      map[*cCPanelDelegateT]OnLayoutChangedHandler
 	on_focus_handler               map[*cCPanelDelegateT]OnFocusHandler
 	on_blur_handler                map[*cCPanelDelegateT]OnBlurHandler
 }{
@@ -21033,6 +21426,7 @@ var panel_delegate_handlers = struct {
 	map[*cCPanelDelegateT]OnParentViewChangedHandler{},
 	map[*cCPanelDelegateT]OnChildViewChangedHandler{},
 	map[*cCPanelDelegateT]OnWindowChangedHandler{},
+	map[*cCPanelDelegateT]OnLayoutChangedHandler{},
 	map[*cCPanelDelegateT]OnFocusHandler{},
 	map[*cCPanelDelegateT]OnBlurHandler{},
 }
@@ -21058,6 +21452,7 @@ func AllocCPanelDelegateT() *CPanelDelegateT {
 		delete(panel_delegate_handlers.on_parent_view_changed_handler, cgop)
 		delete(panel_delegate_handlers.on_child_view_changed_handler, cgop)
 		delete(panel_delegate_handlers.on_window_changed_handler, cgop)
+		delete(panel_delegate_handlers.on_layout_changed_handler, cgop)
 		delete(panel_delegate_handlers.on_focus_handler, cgop)
 		delete(panel_delegate_handlers.on_blur_handler, cgop)
 	}))
@@ -21125,6 +21520,12 @@ func (panel_delegate *CPanelDelegateT) Bind(a interface{}) *CPanelDelegateT {
 		delete(panel_delegate_handlers.on_window_changed_handler, cp)
 	}
 
+	if h, ok := a.(OnLayoutChangedHandler); ok {
+		panel_delegate_handlers.on_layout_changed_handler[cp] = h
+	} else {
+		delete(panel_delegate_handlers.on_layout_changed_handler, cp)
+	}
+
 	if h, ok := a.(OnFocusHandler); ok {
 		panel_delegate_handlers.on_focus_handler[cp] = h
 	} else {
@@ -21165,6 +21566,7 @@ func (panel_delegate *CPanelDelegateT) UnbindAll() {
 		delete(panel_delegate_handlers.on_parent_view_changed_handler, cp)
 		delete(panel_delegate_handlers.on_child_view_changed_handler, cp)
 		delete(panel_delegate_handlers.on_window_changed_handler, cp)
+		delete(panel_delegate_handlers.on_layout_changed_handler, cp)
 		delete(panel_delegate_handlers.on_focus_handler, cp)
 		delete(panel_delegate_handlers.on_blur_handler, cp)
 	}()
@@ -23459,146 +23861,6 @@ func (render_process_handler *CRenderProcessHandlerT) Handler() interface{} {
 
 	cp := render_process_handler.pc_render_process_handler
 	return render_process_handler_handlers.handler[cp]
-}
-
-// cef_request_callback_capi.h, include/capi/cef_request_callback_capi.h:68:3,
-
-///
-// Callback structure used for asynchronous continuation of url requests.
-///
-
-type cCRequestCallbackT C.cef_request_callback_t
-
-// Go type for cef_request_callback_t
-type CRequestCallbackT struct {
-	noCopy              noCopy
-	pc_request_callback *cCRequestCallbackT
-	beUnrefed           unrefedBy
-}
-
-type RefToCRequestCallbackT struct {
-	p_request_callback *CRequestCallbackT
-}
-
-type CRequestCallbackTAccessor interface {
-	GetCRequestCallbackT() *CRequestCallbackT
-	setCRequestCallbackT(*CRequestCallbackT)
-	// TakeOverCRequestCallbackT(*CRequestCallbackT)
-	// NewRefCRequestCallbackT(*CRequestCallbackT)
-}
-
-func (r RefToCRequestCallbackT) GetCRequestCallbackT() *CRequestCallbackT {
-	return r.p_request_callback
-}
-
-func (r *RefToCRequestCallbackT) setCRequestCallbackT(p *CRequestCallbackT) {
-	// prevValue = r.p_request_callback
-	r.p_request_callback.Unref()
-	r.p_request_callback = p
-	// return prevValue
-}
-
-func (r *RefToCRequestCallbackT) TakeOverCRequestCallbackT(src *CRequestCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_request_callback.Unref()
-	gop := src.pc_request_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_request_callback = newCRequestCallbackT((*C.cef_request_callback_t)(gop), byApp)
-}
-
-func PassCRequestCallbackT(p *CRequestCallbackT) (ret *CRequestCallbackT) {
-	switch p.beUnrefed {
-	case byApp:
-		p.beUnrefed = unrefed
-		ret = newCRequestCallbackT((*C.cef_request_callback_t)(p.pc_request_callback), byCef)
-	case byApi:
-		ret = p
-	default:
-		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
-	}
-
-	return ret
-}
-
-func (r *RefToCRequestCallbackT) NewRefCRequestCallbackT(p *CRequestCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_request_callback.Unref()
-	gop := p.pc_request_callback
-	BaseAddRef(gop)
-	r.p_request_callback = newCRequestCallbackT((*C.cef_request_callback_t)(gop), byApp)
-}
-
-// Go type CRequestCallbackT wraps cef type *C.cef_request_callback_t
-func newCRequestCallbackT(p *C.cef_request_callback_t, unrefedBy unrefedBy) *CRequestCallbackT {
-	if p == nil {
-		return nil
-	}
-	Tracef(unsafe.Pointer(p), "T179.1:")
-	pc := (*cCRequestCallbackT)(p)
-	go_request_callback := &CRequestCallbackT{noCopy{}, pc, unrefedBy}
-	// BaseAddRef(pc)
-	runtime.SetFinalizer(go_request_callback, func(g *CRequestCallbackT) {
-		if g.beUnrefed == byApp && g.pc_request_callback != nil {
-			Tracef(unsafe.Pointer(g.pc_request_callback), "T179.2:")
-			BaseRelease(g.pc_request_callback)
-		}
-	})
-
-	return go_request_callback
-}
-
-// *C.cef_request_callback_t has refCounted interface
-func (request_callback *CRequestCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(request_callback.pc_request_callback)
-}
-
-func (p *cCRequestCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
-}
-
-func (request_callback *CRequestCallbackT) Unref() (ret bool) {
-	if request_callback == nil {
-		return
-	}
-	if request_callback.beUnrefed == byApp {
-		ret = BaseRelease(request_callback.pc_request_callback)
-		request_callback.beUnrefed = unrefed
-	}
-	request_callback.pc_request_callback = nil
-	return ret
-}
-
-///
-// Continue the url request. If |allow| is true (1) the request will be
-// continued. Otherwise, the request will be canceled.
-///
-func (self *CRequestCallbackT) Cont(
-	allow int,
-) {
-
-	C.cefingo_request_callback_cont((*C.cef_request_callback_t)(self.pc_request_callback), (C.int)(allow))
-
-}
-
-///
-// Cancel the url request.
-///
-func (self *CRequestCallbackT) Cancel() {
-
-	C.cefingo_request_callback_cancel((*C.cef_request_callback_t)(self.pc_request_callback))
-
 }
 
 // cef_request_capi.h, include/capi/cef_request_capi.h:217:3,
@@ -25970,8 +26232,8 @@ type CRequestHandlerTGetAuthCredentialsHandler interface {
 // size via the webkitStorageInfo.requestQuota function. |origin_url| is the
 // origin of the page making the request. |new_size| is the requested quota
 // size in bytes. Return true (1) to continue the request and call
-// cef_request_callback_t::cont() either in this function or at a later time
-// to grant or deny the request. Return false (0) to cancel the request
+// cef_callback_t functions either in this function or at a later time to
+// grant or deny the request. Return false (0) to cancel the request
 // immediately.
 ///
 type OnQuotaRequestHandler interface {
@@ -25980,15 +26242,15 @@ type OnQuotaRequestHandler interface {
 		browser *CBrowserT,
 		origin_url string,
 		new_size int64,
-		callback *CRequestCallbackT,
+		callback *CCallbackT,
 	) (ret bool)
 }
 
 ///
 // Called on the UI thread to handle requests for URLs with an invalid SSL
-// certificate. Return true (1) and call cef_request_callback_t::cont() either
-// in this function or at a later time to continue or cancel the request.
-// Return false (0) to cancel the request immediately. If
+// certificate. Return true (1) and call cef_callback_t functions either in
+// this function or at a later time to continue or cancel the request. Return
+// false (0) to cancel the request immediately. If
 // CefSettings.ignore_certificate_errors is set all invalid certificates will
 // be accepted without calling this function.
 ///
@@ -25999,7 +26261,7 @@ type OnCertificateErrorHandler interface {
 		cert_error CErrorcodeT,
 		request_url string,
 		ssl_info *CSslinfoT,
-		callback *CRequestCallbackT,
+		callback *CCallbackT,
 	) (ret bool)
 }
 
@@ -27309,8 +27571,8 @@ type GetCookieAccessFilterHandler interface {
 // or change the resource load optionally modify |request|. Modification of
 // the request URL will be treated as a redirect. Return RV_CONTINUE to
 // continue the request immediately. Return RV_CONTINUE_ASYNC and call
-// cef_request_callback_t:: cont() at a later time to continue or cancel the
-// request asynchronously. Return RV_CANCEL to cancel the request immediately.
+// cef_callback_t functions at a later time to continue or cancel the request
+// asynchronously. Return RV_CANCEL to cancel the request immediately.
 //
 ///
 type OnBeforeResourceLoadHandler interface {
@@ -27319,7 +27581,7 @@ type OnBeforeResourceLoadHandler interface {
 		browser *CBrowserT,
 		frame *CFrameT,
 		request *CRequestT,
-		callback *CRequestCallbackT,
+		callback *CCallbackT,
 	) (ret CReturnValueT)
 }
 
@@ -31873,6 +32135,7 @@ var textfield_delegate_handlers = struct {
 	on_parent_view_changed_handler map[*cCTextfieldDelegateT]OnParentViewChangedHandler
 	on_child_view_changed_handler  map[*cCTextfieldDelegateT]OnChildViewChangedHandler
 	on_window_changed_handler      map[*cCTextfieldDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler      map[*cCTextfieldDelegateT]OnLayoutChangedHandler
 	on_focus_handler               map[*cCTextfieldDelegateT]OnFocusHandler
 	on_blur_handler                map[*cCTextfieldDelegateT]OnBlurHandler
 }{
@@ -31886,6 +32149,7 @@ var textfield_delegate_handlers = struct {
 	map[*cCTextfieldDelegateT]OnParentViewChangedHandler{},
 	map[*cCTextfieldDelegateT]OnChildViewChangedHandler{},
 	map[*cCTextfieldDelegateT]OnWindowChangedHandler{},
+	map[*cCTextfieldDelegateT]OnLayoutChangedHandler{},
 	map[*cCTextfieldDelegateT]OnFocusHandler{},
 	map[*cCTextfieldDelegateT]OnBlurHandler{},
 }
@@ -31913,6 +32177,7 @@ func AllocCTextfieldDelegateT() *CTextfieldDelegateT {
 		delete(textfield_delegate_handlers.on_parent_view_changed_handler, cgop)
 		delete(textfield_delegate_handlers.on_child_view_changed_handler, cgop)
 		delete(textfield_delegate_handlers.on_window_changed_handler, cgop)
+		delete(textfield_delegate_handlers.on_layout_changed_handler, cgop)
 		delete(textfield_delegate_handlers.on_focus_handler, cgop)
 		delete(textfield_delegate_handlers.on_blur_handler, cgop)
 	}))
@@ -31992,6 +32257,12 @@ func (textfield_delegate *CTextfieldDelegateT) Bind(a interface{}) *CTextfieldDe
 		delete(textfield_delegate_handlers.on_window_changed_handler, cp)
 	}
 
+	if h, ok := a.(OnLayoutChangedHandler); ok {
+		textfield_delegate_handlers.on_layout_changed_handler[cp] = h
+	} else {
+		delete(textfield_delegate_handlers.on_layout_changed_handler, cp)
+	}
+
 	if h, ok := a.(OnFocusHandler); ok {
 		textfield_delegate_handlers.on_focus_handler[cp] = h
 	} else {
@@ -32034,6 +32305,7 @@ func (textfield_delegate *CTextfieldDelegateT) UnbindAll() {
 		delete(textfield_delegate_handlers.on_parent_view_changed_handler, cp)
 		delete(textfield_delegate_handlers.on_child_view_changed_handler, cp)
 		delete(textfield_delegate_handlers.on_window_changed_handler, cp)
+		delete(textfield_delegate_handlers.on_layout_changed_handler, cp)
 		delete(textfield_delegate_handlers.on_focus_handler, cp)
 		delete(textfield_delegate_handlers.on_blur_handler, cp)
 	}()
@@ -37696,7 +37968,7 @@ func ListValueCreate() (ret *CListValueT) {
 	return ret
 }
 
-// cef_view_capi.h, include/capi/views/cef_view_capi.h:391:3,
+// cef_view_capi.h, include/capi/views/cef_view_capi.h:404:3,
 
 ///
 // A View is a rectangle within the views View hierarchy. It is the base
@@ -38132,6 +38404,30 @@ func (self *CViewT) GetPosition() (ret CPointT) {
 }
 
 ///
+// Sets the insets for this View. |insets| is in parent coordinates, or DIP
+// screen coordinates if there is no parent.
+///
+func (self *CViewT) SetInsets(
+	insets *CInsetsT,
+) {
+
+	C.cefingo_view_set_insets((*C.cef_view_t)(self.pc_view), (*C.cef_insets_t)(insets))
+
+}
+
+///
+// Returns the insets for this View in parent coordinates, or DIP screen
+// coordinates if there is no parent.
+///
+func (self *CViewT) GetInsets() (ret CInsetsT) {
+
+	cRet := C.cefingo_view_get_insets((*C.cef_view_t)(self.pc_view))
+
+	ret = (CInsetsT)(cRet) // return GoObj
+	return ret
+}
+
+///
 // Returns the size this View would like to be if enough space is available.
 // Size is in parent coordinates, or DIP screen coordinates if there is no
 // parent.
@@ -38453,7 +38749,7 @@ func (self *CViewT) ConvertPointFromView(
 	return ret
 }
 
-// cef_view_delegate_capi.h, include/capi/views/cef_view_delegate_capi.h:135:3,
+// cef_view_delegate_capi.h, include/capi/views/cef_view_delegate_capi.h:142:3,
 
 ///
 // Implement this structure to handle view events. The functions of this
@@ -38664,6 +38960,17 @@ type OnWindowChangedHandler interface {
 }
 
 ///
+// Called when the layout of |view| has changed.
+///
+type OnLayoutChangedHandler interface {
+	OnLayoutChanged(
+		self *CViewDelegateT,
+		view *CViewT,
+		new_bounds *CRectT,
+	)
+}
+
+///
 // Called when |view| gains focus.
 ///
 type OnFocusHandler interface {
@@ -38692,6 +38999,7 @@ var view_delegate_handlers = struct {
 	on_parent_view_changed_handler map[*cCViewDelegateT]OnParentViewChangedHandler
 	on_child_view_changed_handler  map[*cCViewDelegateT]OnChildViewChangedHandler
 	on_window_changed_handler      map[*cCViewDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler      map[*cCViewDelegateT]OnLayoutChangedHandler
 	on_focus_handler               map[*cCViewDelegateT]OnFocusHandler
 	on_blur_handler                map[*cCViewDelegateT]OnBlurHandler
 }{
@@ -38703,6 +39011,7 @@ var view_delegate_handlers = struct {
 	map[*cCViewDelegateT]OnParentViewChangedHandler{},
 	map[*cCViewDelegateT]OnChildViewChangedHandler{},
 	map[*cCViewDelegateT]OnWindowChangedHandler{},
+	map[*cCViewDelegateT]OnLayoutChangedHandler{},
 	map[*cCViewDelegateT]OnFocusHandler{},
 	map[*cCViewDelegateT]OnBlurHandler{},
 }
@@ -38728,6 +39037,7 @@ func AllocCViewDelegateT() *CViewDelegateT {
 		delete(view_delegate_handlers.on_parent_view_changed_handler, cgop)
 		delete(view_delegate_handlers.on_child_view_changed_handler, cgop)
 		delete(view_delegate_handlers.on_window_changed_handler, cgop)
+		delete(view_delegate_handlers.on_layout_changed_handler, cgop)
 		delete(view_delegate_handlers.on_focus_handler, cgop)
 		delete(view_delegate_handlers.on_blur_handler, cgop)
 	}))
@@ -38795,6 +39105,12 @@ func (view_delegate *CViewDelegateT) Bind(a interface{}) *CViewDelegateT {
 		delete(view_delegate_handlers.on_window_changed_handler, cp)
 	}
 
+	if h, ok := a.(OnLayoutChangedHandler); ok {
+		view_delegate_handlers.on_layout_changed_handler[cp] = h
+	} else {
+		delete(view_delegate_handlers.on_layout_changed_handler, cp)
+	}
+
 	if h, ok := a.(OnFocusHandler); ok {
 		view_delegate_handlers.on_focus_handler[cp] = h
 	} else {
@@ -38835,6 +39151,7 @@ func (view_delegate *CViewDelegateT) UnbindAll() {
 		delete(view_delegate_handlers.on_parent_view_changed_handler, cp)
 		delete(view_delegate_handlers.on_child_view_changed_handler, cp)
 		delete(view_delegate_handlers.on_window_changed_handler, cp)
+		delete(view_delegate_handlers.on_layout_changed_handler, cp)
 		delete(view_delegate_handlers.on_focus_handler, cp)
 		delete(view_delegate_handlers.on_blur_handler, cp)
 	}()
@@ -39478,228 +39795,6 @@ func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Handler() inter
 }
 
 ///
-// Implement this structure to receive notification when CDM registration is
-// complete. The functions of this structure will be called on the browser
-// process UI thread.
-///
-
-type cCRegisterCdmCallbackT C.cef_register_cdm_callback_t
-
-// Go type for cef_register_cdm_callback_t
-type CRegisterCdmCallbackT struct {
-	noCopy                   noCopy
-	pc_register_cdm_callback *cCRegisterCdmCallbackT
-	beUnrefed                unrefedBy
-}
-
-type RefToCRegisterCdmCallbackT struct {
-	p_register_cdm_callback *CRegisterCdmCallbackT
-}
-
-type CRegisterCdmCallbackTAccessor interface {
-	GetCRegisterCdmCallbackT() *CRegisterCdmCallbackT
-	setCRegisterCdmCallbackT(*CRegisterCdmCallbackT)
-	// TakeOverCRegisterCdmCallbackT(*CRegisterCdmCallbackT)
-	// NewRefCRegisterCdmCallbackT(*CRegisterCdmCallbackT)
-}
-
-func (r RefToCRegisterCdmCallbackT) GetCRegisterCdmCallbackT() *CRegisterCdmCallbackT {
-	return r.p_register_cdm_callback
-}
-
-func (r *RefToCRegisterCdmCallbackT) setCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) {
-	// prevValue = r.p_register_cdm_callback
-	r.p_register_cdm_callback.Unref()
-	r.p_register_cdm_callback = p
-	// return prevValue
-}
-
-func (r *RefToCRegisterCdmCallbackT) TakeOverCRegisterCdmCallbackT(src *CRegisterCdmCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_register_cdm_callback.Unref()
-	gop := src.pc_register_cdm_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_register_cdm_callback = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(gop), byApp)
-}
-
-func PassCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) (ret *CRegisterCdmCallbackT) {
-	switch p.beUnrefed {
-	case byApp:
-		p.beUnrefed = unrefed
-		ret = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(p.pc_register_cdm_callback), byCef)
-	case byApi:
-		ret = p
-	default:
-		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
-	}
-
-	return ret
-}
-
-func (r *RefToCRegisterCdmCallbackT) NewRefCRegisterCdmCallbackT(p *CRegisterCdmCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_register_cdm_callback.Unref()
-	gop := p.pc_register_cdm_callback
-	BaseAddRef(gop)
-	r.p_register_cdm_callback = newCRegisterCdmCallbackT((*C.cef_register_cdm_callback_t)(gop), byApp)
-}
-
-// Go type CRegisterCdmCallbackT wraps cef type *C.cef_register_cdm_callback_t
-func newCRegisterCdmCallbackT(p *C.cef_register_cdm_callback_t, unrefedBy unrefedBy) *CRegisterCdmCallbackT {
-	if p == nil {
-		return nil
-	}
-	Tracef(unsafe.Pointer(p), "T230.1:")
-	pc := (*cCRegisterCdmCallbackT)(p)
-	go_register_cdm_callback := &CRegisterCdmCallbackT{noCopy{}, pc, unrefedBy}
-	// BaseAddRef(pc)
-	runtime.SetFinalizer(go_register_cdm_callback, func(g *CRegisterCdmCallbackT) {
-		if g.beUnrefed == byApp && g.pc_register_cdm_callback != nil {
-			Tracef(unsafe.Pointer(g.pc_register_cdm_callback), "T230.2:")
-			BaseRelease(g.pc_register_cdm_callback)
-		}
-	})
-
-	return go_register_cdm_callback
-}
-
-// *C.cef_register_cdm_callback_t has refCounted interface
-func (register_cdm_callback *CRegisterCdmCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(register_cdm_callback.pc_register_cdm_callback)
-}
-
-func (p *cCRegisterCdmCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
-}
-
-func (register_cdm_callback *CRegisterCdmCallbackT) Unref() (ret bool) {
-	if register_cdm_callback == nil {
-		return
-	}
-	if register_cdm_callback.beUnrefed == byApp {
-		ret = BaseRelease(register_cdm_callback.pc_register_cdm_callback)
-		register_cdm_callback.beUnrefed = unrefed
-	}
-	register_cdm_callback.pc_register_cdm_callback = nil
-	return ret
-}
-
-///
-// Method that will be called when CDM registration is complete. |result| will
-// be CEF_CDM_REGISTRATION_ERROR_NONE if registration completed successfully.
-// Otherwise, |result| and |error_message| will contain additional information
-// about why registration failed.
-///
-type OnCdmRegistrationCompleteHandler interface {
-	OnCdmRegistrationComplete(
-		self *CRegisterCdmCallbackT,
-		result CCdmRegistrationErrorT,
-		error_message string,
-	)
-}
-
-var register_cdm_callback_handlers = struct {
-	handler                              map[*cCRegisterCdmCallbackT]interface{}
-	on_cdm_registration_complete_handler map[*cCRegisterCdmCallbackT]OnCdmRegistrationCompleteHandler
-}{
-	map[*cCRegisterCdmCallbackT]interface{}{},
-	map[*cCRegisterCdmCallbackT]OnCdmRegistrationCompleteHandler{},
-}
-
-// AllocCRegisterCdmCallbackT allocates CRegisterCdmCallbackT and construct it
-func AllocCRegisterCdmCallbackT() *CRegisterCdmCallbackT {
-	up := c_calloc(1, C.sizeof_cefingo_register_cdm_callback_wrapper_t, "T230.3:")
-	cefp := C.cefingo_construct_register_cdm_callback((*C.cefingo_register_cdm_callback_wrapper_t)(up))
-	cgop := (*cCRegisterCdmCallbackT)(cefp)
-
-	registerDeassocer(up, DeassocFunc(func() {
-		// Do not have reference to cef_register_cdm_callback_t itself in DeassocFunc,
-		// or cef_register_cdm_callback_t is never GCed.
-		Tracef(up, "T230.4:")
-
-		cefingoIfaceAccess.Lock()
-		defer cefingoIfaceAccess.Unlock()
-		delete(register_cdm_callback_handlers.handler, cgop)
-		delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cgop)
-	}))
-
-	BaseAddRef(cgop)
-	return newCRegisterCdmCallbackT(cefp, byApp)
-}
-
-// BindCRegisterCdmCallbackT allocates CRegisterCdmCallbackT, construct and bind it
-func BindCRegisterCdmCallbackT(a interface{}) *CRegisterCdmCallbackT {
-	return AllocCRegisterCdmCallbackT().Bind(a)
-}
-
-func (register_cdm_callback *CRegisterCdmCallbackT) Bind(a interface{}) *CRegisterCdmCallbackT {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-
-	cp := register_cdm_callback.pc_register_cdm_callback
-	if oldGoObj, ok := register_cdm_callback_handlers.handler[cp]; ok {
-		if oldAcc, ok := oldGoObj.(CRegisterCdmCallbackTAccessor); ok {
-			oldAcc.setCRegisterCdmCallbackT(nil)
-		}
-	}
-	register_cdm_callback_handlers.handler[cp] = a
-
-	if h, ok := a.(OnCdmRegistrationCompleteHandler); ok {
-		register_cdm_callback_handlers.on_cdm_registration_complete_handler[cp] = h
-	} else {
-		delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cp)
-	}
-
-	if accessor, ok := a.(CRegisterCdmCallbackTAccessor); ok {
-		accessor.setCRegisterCdmCallbackT(register_cdm_callback)
-		Logf("T230.5:")
-	}
-
-	return register_cdm_callback
-}
-
-func (register_cdm_callback *CRegisterCdmCallbackT) UnbindAll() {
-	var hasAccessor bool
-	var accessor CRegisterCdmCallbackTAccessor
-	func() {
-		cefingoIfaceAccess.Lock()
-		defer cefingoIfaceAccess.Unlock()
-
-		cp := register_cdm_callback.pc_register_cdm_callback
-		if goHandler, ok := register_cdm_callback_handlers.handler[cp]; ok {
-			accessor, hasAccessor = goHandler.(CRegisterCdmCallbackTAccessor)
-		}
-		delete(register_cdm_callback_handlers.handler, cp)
-
-		delete(register_cdm_callback_handlers.on_cdm_registration_complete_handler, cp)
-	}()
-
-	if hasAccessor {
-		accessor.setCRegisterCdmCallbackT(nil)
-	}
-}
-
-func (register_cdm_callback *CRegisterCdmCallbackT) Handler() interface{} {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-
-	cp := register_cdm_callback.pc_register_cdm_callback
-	return register_cdm_callback_handlers.handler[cp]
-}
-
-///
 // Visit web plugin information. Can be called on any thread in the browser
 // process.
 ///
@@ -39773,64 +39868,7 @@ func IsWebPluginUnstable(
 
 }
 
-///
-// Register the Widevine CDM plugin.
-//
-// The client application is responsible for downloading an appropriate
-// platform-specific CDM binary distribution from Google, extracting the
-// contents, and building the required directory structure on the local machine.
-// The cef_browser_host_t::StartDownload function and CefZipArchive structure
-// can be used to implement this functionality in CEF. Contact Google via
-// https://www.widevine.com/contact.html for details on CDM download.
-//
-// |path| is a directory that must contain the following files:
-//   1. manifest.json file from the CDM binary distribution (see below).
-//   2. widevinecdm file from the CDM binary distribution (e.g.
-//      widevinecdm.dll on on Windows, libwidevinecdm.dylib on OS X,
-//      libwidevinecdm.so on Linux).
-//
-// If any of these files are missing or if the manifest file has incorrect
-// contents the registration will fail and |callback| will receive a |result|
-// value of CEF_CDM_REGISTRATION_ERROR_INCORRECT_CONTENTS.
-//
-// The manifest.json file must contain the following keys:
-//   A. "os": Supported OS (e.g. "mac", "win" or "linux").
-//   B. "arch": Supported architecture (e.g. "ia32" or "x64").
-//   C. "x-cdm-module-versions": Module API version (e.g. "4").
-//   D. "x-cdm-interface-versions": Interface API version (e.g. "8").
-//   E. "x-cdm-host-versions": Host API version (e.g. "8").
-//   F. "version": CDM version (e.g. "1.4.8.903").
-//   G. "x-cdm-codecs": List of supported codecs (e.g. "vp8,vp09,avc1").
-//
-// A through E are used to verify compatibility with the current Chromium
-// version. If the CDM is not compatible the registration will fail and
-// |callback| will receive a |result| value of
-// CEF_CDM_REGISTRATION_ERROR_INCOMPATIBLE.
-//
-// |callback| will be executed asynchronously once registration is complete.
-//
-// On Linux this function must be called before cef_initialize() and the
-// registration cannot be changed during runtime. If registration is not
-// supported at the time that cef_register_widevine_cdm() is called then
-// |callback| will receive a |result| value of
-// CEF_CDM_REGISTRATION_ERROR_NOT_SUPPORTED.
-///
-func RegisterWidevineCdm(
-	path string,
-	callback *CRegisterCdmCallbackT,
-) {
-	c_path := create_cef_string(path)
-	var goTmpcallback *C.cef_register_cdm_callback_t
-	if callback != nil {
-		BaseAddRef(callback.pc_register_cdm_callback)
-		goTmpcallback = (*C.cef_register_cdm_callback_t)(callback.pc_register_cdm_callback)
-	}
-
-	C.cef_register_widevine_cdm(c_path.p_cef_string_t, goTmpcallback)
-
-}
-
-// cef_window_capi.h, include/capi/views/cef_window_capi.h:302:3,
+// cef_window_capi.h, include/capi/views/cef_window_capi.h:337:3,
 
 ///
 // A Window is a top-level Window/widget in the Views hierarchy. By default it
@@ -40229,6 +40267,51 @@ func (self *CWindowT) GetWindowAppIcon() (ret *CImageT) {
 }
 
 ///
+// Add a View that will be overlayed on the Window contents with absolute
+// positioning and high z-order. Positioning is controlled by |docking_mode|
+// as described below. The returned cef_overlay_controller_t object is used to
+// control the overlay. Overlays are hidden by default.
+//
+// With CEF_DOCKING_MODE_CUSTOM:
+//   1. The overlay is initially hidden, sized to |view|&#39;s preferred size, and
+//      positioned in the top-left corner.
+//   2. Optionally change the overlay position and/or size by calling
+//      CefOverlayController methods.
+//   3. Call CefOverlayController::SetVisible(true) to show the overlay.
+//   4. The overlay will be automatically re-sized if |view|&#39;s layout changes.
+//      Optionally change the overlay position and/or size when
+//      OnLayoutChanged is called on the Window&#39;s delegate to indicate a
+//      change in Window bounds.
+//
+// With other docking modes:
+//   1. The overlay is initially hidden, sized to |view|&#39;s preferred size, and
+//      positioned based on |docking_mode|.
+//   2. Call CefOverlayController::SetVisible(true) to show the overlay.
+//   3. The overlay will be automatically re-sized if |view|&#39;s layout changes
+//      and re-positioned as appropriate when the Window resizes.
+//
+// Overlays created by this function will receive a higher z-order then any
+// child Views added previously. It is therefore recommended to call this
+// function last after all other child Views have been added so that the
+// overlay displays as the top-most child of the Window.
+///
+func (self *CWindowT) AddOverlayView(
+	view *CViewT,
+	docking_mode CDockingModeT,
+) (ret *COverlayControllerT) {
+	var goTmpview *C.cef_view_t
+	if view != nil {
+		BaseAddRef(view.pc_view)
+		goTmpview = (*C.cef_view_t)(view.pc_view)
+	}
+
+	cRet := C.cefingo_window_add_overlay_view((*C.cef_window_t)(self.pc_window), goTmpview, (C.cef_docking_mode_t)(docking_mode))
+
+	ret = newCOverlayControllerT(cRet, byApp) // return GoObj
+	return ret
+}
+
+///
 // Show a menu with contents |menu_model|. |screen_point| specifies the menu
 // position in screen coordinates. |anchor_position| specifies how the menu
 // will be anchored relative to |screen_point|.
@@ -40412,7 +40495,7 @@ func WindowCreateTopLevel(
 	return ret
 }
 
-// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:152:3,
+// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:159:3,
 
 ///
 // Implement this structure to handle window events. The functions of this
@@ -40593,6 +40676,16 @@ type GetInitialBoundsHandler interface {
 }
 
 ///
+// Return the initial show state for |window|.
+///
+type GetInitialShowStateHandler interface {
+	GetInitialShowState(
+		self *CWindowDelegateT,
+		window *CWindowT,
+	) (ret CShowStateT)
+}
+
+///
 // Return true (1) if |window| should be created without a frame or title bar.
 // The window will be resizable if can_resize() returns true (1). Use
 // cef_window_t::set_draggable_regions() to specify draggable regions.
@@ -40677,6 +40770,7 @@ var window_delegate_handlers = struct {
 	on_window_destroyed_handler    map[*cCWindowDelegateT]OnWindowDestroyedHandler
 	get_parent_window_handler      map[*cCWindowDelegateT]GetParentWindowHandler
 	get_initial_bounds_handler     map[*cCWindowDelegateT]GetInitialBoundsHandler
+	get_initial_show_state_handler map[*cCWindowDelegateT]GetInitialShowStateHandler
 	is_frameless_handler           map[*cCWindowDelegateT]IsFramelessHandler
 	can_resize_handler             map[*cCWindowDelegateT]CanResizeHandler
 	can_maximize_handler           map[*cCWindowDelegateT]CanMaximizeHandler
@@ -40691,6 +40785,7 @@ var window_delegate_handlers = struct {
 	on_parent_view_changed_handler map[*cCWindowDelegateT]OnParentViewChangedHandler
 	on_child_view_changed_handler  map[*cCWindowDelegateT]OnChildViewChangedHandler
 	on_window_changed_handler      map[*cCWindowDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler      map[*cCWindowDelegateT]OnLayoutChangedHandler
 	on_focus_handler               map[*cCWindowDelegateT]OnFocusHandler
 	on_blur_handler                map[*cCWindowDelegateT]OnBlurHandler
 }{
@@ -40699,6 +40794,7 @@ var window_delegate_handlers = struct {
 	map[*cCWindowDelegateT]OnWindowDestroyedHandler{},
 	map[*cCWindowDelegateT]GetParentWindowHandler{},
 	map[*cCWindowDelegateT]GetInitialBoundsHandler{},
+	map[*cCWindowDelegateT]GetInitialShowStateHandler{},
 	map[*cCWindowDelegateT]IsFramelessHandler{},
 	map[*cCWindowDelegateT]CanResizeHandler{},
 	map[*cCWindowDelegateT]CanMaximizeHandler{},
@@ -40713,6 +40809,7 @@ var window_delegate_handlers = struct {
 	map[*cCWindowDelegateT]OnParentViewChangedHandler{},
 	map[*cCWindowDelegateT]OnChildViewChangedHandler{},
 	map[*cCWindowDelegateT]OnWindowChangedHandler{},
+	map[*cCWindowDelegateT]OnLayoutChangedHandler{},
 	map[*cCWindowDelegateT]OnFocusHandler{},
 	map[*cCWindowDelegateT]OnBlurHandler{},
 }
@@ -40735,6 +40832,7 @@ func AllocCWindowDelegateT() *CWindowDelegateT {
 		delete(window_delegate_handlers.on_window_destroyed_handler, cgop)
 		delete(window_delegate_handlers.get_parent_window_handler, cgop)
 		delete(window_delegate_handlers.get_initial_bounds_handler, cgop)
+		delete(window_delegate_handlers.get_initial_show_state_handler, cgop)
 		delete(window_delegate_handlers.is_frameless_handler, cgop)
 		delete(window_delegate_handlers.can_resize_handler, cgop)
 		delete(window_delegate_handlers.can_maximize_handler, cgop)
@@ -40749,6 +40847,7 @@ func AllocCWindowDelegateT() *CWindowDelegateT {
 		delete(window_delegate_handlers.on_parent_view_changed_handler, cgop)
 		delete(window_delegate_handlers.on_child_view_changed_handler, cgop)
 		delete(window_delegate_handlers.on_window_changed_handler, cgop)
+		delete(window_delegate_handlers.on_layout_changed_handler, cgop)
 		delete(window_delegate_handlers.on_focus_handler, cgop)
 		delete(window_delegate_handlers.on_blur_handler, cgop)
 	}))
@@ -40796,6 +40895,12 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 		window_delegate_handlers.get_initial_bounds_handler[cp] = h
 	} else {
 		delete(window_delegate_handlers.get_initial_bounds_handler, cp)
+	}
+
+	if h, ok := a.(GetInitialShowStateHandler); ok {
+		window_delegate_handlers.get_initial_show_state_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.get_initial_show_state_handler, cp)
 	}
 
 	if h, ok := a.(IsFramelessHandler); ok {
@@ -40882,6 +40987,12 @@ func (window_delegate *CWindowDelegateT) Bind(a interface{}) *CWindowDelegateT {
 		delete(window_delegate_handlers.on_window_changed_handler, cp)
 	}
 
+	if h, ok := a.(OnLayoutChangedHandler); ok {
+		window_delegate_handlers.on_layout_changed_handler[cp] = h
+	} else {
+		delete(window_delegate_handlers.on_layout_changed_handler, cp)
+	}
+
 	if h, ok := a.(OnFocusHandler); ok {
 		window_delegate_handlers.on_focus_handler[cp] = h
 	} else {
@@ -40919,6 +41030,7 @@ func (window_delegate *CWindowDelegateT) UnbindAll() {
 		delete(window_delegate_handlers.on_window_destroyed_handler, cp)
 		delete(window_delegate_handlers.get_parent_window_handler, cp)
 		delete(window_delegate_handlers.get_initial_bounds_handler, cp)
+		delete(window_delegate_handlers.get_initial_show_state_handler, cp)
 		delete(window_delegate_handlers.is_frameless_handler, cp)
 		delete(window_delegate_handlers.can_resize_handler, cp)
 		delete(window_delegate_handlers.can_maximize_handler, cp)
@@ -40933,6 +41045,7 @@ func (window_delegate *CWindowDelegateT) UnbindAll() {
 		delete(window_delegate_handlers.on_parent_view_changed_handler, cp)
 		delete(window_delegate_handlers.on_child_view_changed_handler, cp)
 		delete(window_delegate_handlers.on_window_changed_handler, cp)
+		delete(window_delegate_handlers.on_layout_changed_handler, cp)
 		delete(window_delegate_handlers.on_focus_handler, cp)
 		delete(window_delegate_handlers.on_blur_handler, cp)
 	}()

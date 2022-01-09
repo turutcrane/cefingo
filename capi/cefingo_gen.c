@@ -32,7 +32,7 @@ cef_app_t *cefingo_construct_app(cefingo_app_wrapper_t* app)
 
 	// callbacks
 	app->body.on_before_command_line_processing =
-		(T_CEF_APP_T_ON_BEFORE_COMMAND_LINE_PROCESSING)cefingo_app_on_before_command_line_processing;
+		(/* T_CEF_APP_T_ON_BEFORE_COMMAND_LINE_PROCESSING */ void *)cefingo_app_on_before_command_line_processing;
 	app->body.on_register_custom_schemes =
 		cefingo_app_on_register_custom_schemes;
 	app->body.get_resource_bundle_handler =
@@ -67,11 +67,11 @@ cef_audio_handler_t *cefingo_construct_audio_handler(cefingo_audio_handler_wrapp
 	audio_handler->body.get_audio_parameters =
 		cefingo_audio_handler_get_audio_parameters;
 	audio_handler->body.on_audio_stream_started =
-		(T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_STARTED)cefingo_audio_handler_on_audio_stream_started;
+		(/* T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_STARTED */ void *)cefingo_audio_handler_on_audio_stream_started;
 	audio_handler->body.on_audio_stream_stopped =
 		cefingo_audio_handler_on_audio_stream_stopped;
 	audio_handler->body.on_audio_stream_error =
-		(T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_ERROR)cefingo_audio_handler_on_audio_stream_error;
+		(/* T_CEF_AUDIO_HANDLER_T_ON_AUDIO_STREAM_ERROR */ void *)cefingo_audio_handler_on_audio_stream_error;
 
 	return (cef_audio_handler_t*)audio_handler;
 }
@@ -352,7 +352,7 @@ cef_pdf_print_callback_t *cefingo_construct_pdf_print_callback(cefingo_pdf_print
 
 	// callbacks
 	pdf_print_callback->body.on_pdf_print_finished =
-		(T_CEF_PDF_PRINT_CALLBACK_T_ON_PDF_PRINT_FINISHED)cefingo_pdf_print_callback_on_pdf_print_finished;
+		(/* T_CEF_PDF_PRINT_CALLBACK_T_ON_PDF_PRINT_FINISHED */ void *)cefingo_pdf_print_callback_on_pdf_print_finished;
 
 	return (cef_pdf_print_callback_t*)pdf_print_callback;
 }
@@ -816,17 +816,6 @@ void cefingo_browser_host_send_touch_event(
 	);
 }
 
-void cefingo_browser_host_send_focus_event(
-	struct _cef_browser_host_t* self,
-	int setFocus
-)
-{
-	self->send_focus_event(
-		self,
-		setFocus
-	);
-}
-
 void cefingo_browser_host_send_capture_lost_event(
 	struct _cef_browser_host_t* self
 )
@@ -1133,7 +1122,7 @@ cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_bro
 	browser_view_delegate->body.on_browser_destroyed =
 		cefingo_browser_view_delegate_on_browser_destroyed;
 	browser_view_delegate->body.get_delegate_for_popup_browser_view =
-		(T_CEF_BROWSER_VIEW_DELEGATE_T_GET_DELEGATE_FOR_POPUP_BROWSER_VIEW)cefingo_browser_view_delegate_get_delegate_for_popup_browser_view;
+		(/* T_CEF_BROWSER_VIEW_DELEGATE_T_GET_DELEGATE_FOR_POPUP_BROWSER_VIEW */ void *)cefingo_browser_view_delegate_get_delegate_for_popup_browser_view;
 	browser_view_delegate->body.on_popup_browser_view_created =
 		cefingo_browser_view_delegate_on_popup_browser_view_created;
 	browser_view_delegate->body.get_chrome_toolbar_type =
@@ -1152,6 +1141,8 @@ cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_bro
 		cefingo_browser_view_delegate_on_child_view_changed;
 	browser_view_delegate->body.base.on_window_changed =
 		cefingo_browser_view_delegate_on_window_changed;
+	browser_view_delegate->body.base.on_layout_changed =
+		(/* T_CEF_VIEW_DELEGATE_T_ON_LAYOUT_CHANGED */ void *)cefingo_browser_view_delegate_on_layout_changed;
 	browser_view_delegate->body.base.on_focus =
 		cefingo_browser_view_delegate_on_focus;
 	browser_view_delegate->body.base.on_blur =
@@ -1248,6 +1239,8 @@ cef_button_delegate_t *cefingo_construct_button_delegate(cefingo_button_delegate
 		cefingo_button_delegate_on_child_view_changed;
 	button_delegate->body.base.on_window_changed =
 		cefingo_button_delegate_on_window_changed;
+	button_delegate->body.base.on_layout_changed =
+		(/* T_CEF_VIEW_DELEGATE_T_ON_LAYOUT_CHANGED */ void *)cefingo_button_delegate_on_layout_changed;
 	button_delegate->body.base.on_focus =
 		cefingo_button_delegate_on_focus;
 	button_delegate->body.base.on_blur =
@@ -1831,7 +1824,7 @@ cef_cookie_visitor_t *cefingo_construct_cookie_visitor(cefingo_cookie_visitor_wr
 
 	// callbacks
 	cookie_visitor->body.visit =
-		(T_CEF_COOKIE_VISITOR_T_VISIT)cefingo_cookie_visitor_visit;
+		(/* T_CEF_COOKIE_VISITOR_T_VISIT */ void *)cefingo_cookie_visitor_visit;
 
 	return (cef_cookie_visitor_t*)cookie_visitor;
 }
@@ -1894,11 +1887,11 @@ cef_dev_tools_message_observer_t *cefingo_construct_dev_tools_message_observer(c
 
 	// callbacks
 	dev_tools_message_observer->body.on_dev_tools_message =
-		(T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_MESSAGE)cefingo_dev_tools_message_observer_on_dev_tools_message;
+		(/* T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_MESSAGE */ void *)cefingo_dev_tools_message_observer_on_dev_tools_message;
 	dev_tools_message_observer->body.on_dev_tools_method_result =
-		(T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_METHOD_RESULT)cefingo_dev_tools_message_observer_on_dev_tools_method_result;
+		(/* T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_METHOD_RESULT */ void *)cefingo_dev_tools_message_observer_on_dev_tools_method_result;
 	dev_tools_message_observer->body.on_dev_tools_event =
-		(T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_EVENT)cefingo_dev_tools_message_observer_on_dev_tools_event;
+		(/* T_CEF_DEV_TOOLS_MESSAGE_OBSERVER_T_ON_DEV_TOOLS_EVENT */ void *)cefingo_dev_tools_message_observer_on_dev_tools_event;
 	dev_tools_message_observer->body.on_dev_tools_agent_attached =
 		cefingo_dev_tools_message_observer_on_dev_tools_agent_attached;
 	dev_tools_message_observer->body.on_dev_tools_agent_detached =
@@ -1948,7 +1941,7 @@ cef_dialog_handler_t *cefingo_construct_dialog_handler(cefingo_dialog_handler_wr
 
 	// callbacks
 	dialog_handler->body.on_file_dialog =
-		(T_CEF_DIALOG_HANDLER_T_ON_FILE_DIALOG)cefingo_dialog_handler_on_file_dialog;
+		(/* T_CEF_DIALOG_HANDLER_T_ON_FILE_DIALOG */ void *)cefingo_dialog_handler_on_file_dialog;
 
 	return (cef_dialog_handler_t*)dialog_handler;
 }
@@ -2065,9 +2058,9 @@ cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler
 
 	// callbacks
 	display_handler->body.on_address_change =
-		(T_CEF_DISPLAY_HANDLER_T_ON_ADDRESS_CHANGE)cefingo_display_handler_on_address_change;
+		(/* T_CEF_DISPLAY_HANDLER_T_ON_ADDRESS_CHANGE */ void *)cefingo_display_handler_on_address_change;
 	display_handler->body.on_title_change =
-		(T_CEF_DISPLAY_HANDLER_T_ON_TITLE_CHANGE)cefingo_display_handler_on_title_change;
+		(/* T_CEF_DISPLAY_HANDLER_T_ON_TITLE_CHANGE */ void *)cefingo_display_handler_on_title_change;
 	display_handler->body.on_favicon_urlchange =
 		cefingo_display_handler_on_favicon_urlchange;
 	display_handler->body.on_fullscreen_mode_change =
@@ -2075,15 +2068,15 @@ cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler
 	display_handler->body.on_tooltip =
 		cefingo_display_handler_on_tooltip;
 	display_handler->body.on_status_message =
-		(T_CEF_DISPLAY_HANDLER_T_ON_STATUS_MESSAGE)cefingo_display_handler_on_status_message;
+		(/* T_CEF_DISPLAY_HANDLER_T_ON_STATUS_MESSAGE */ void *)cefingo_display_handler_on_status_message;
 	display_handler->body.on_console_message =
-		(T_CEF_DISPLAY_HANDLER_T_ON_CONSOLE_MESSAGE)cefingo_display_handler_on_console_message;
+		(/* T_CEF_DISPLAY_HANDLER_T_ON_CONSOLE_MESSAGE */ void *)cefingo_display_handler_on_console_message;
 	display_handler->body.on_auto_resize =
-		(T_CEF_DISPLAY_HANDLER_T_ON_AUTO_RESIZE)cefingo_display_handler_on_auto_resize;
+		(/* T_CEF_DISPLAY_HANDLER_T_ON_AUTO_RESIZE */ void *)cefingo_display_handler_on_auto_resize;
 	display_handler->body.on_loading_progress_change =
 		cefingo_display_handler_on_loading_progress_change;
 	display_handler->body.on_cursor_change =
-		(T_CEF_DISPLAY_HANDLER_T_ON_CURSOR_CHANGE)cefingo_display_handler_on_cursor_change;
+		(/* T_CEF_DISPLAY_HANDLER_T_ON_CURSOR_CHANGE */ void *)cefingo_display_handler_on_cursor_change;
 
 	return (cef_display_handler_t*)display_handler;
 }
@@ -2536,7 +2529,7 @@ cef_download_handler_t *cefingo_construct_download_handler(cefingo_download_hand
 
 	// callbacks
 	download_handler->body.on_before_download =
-		(T_CEF_DOWNLOAD_HANDLER_T_ON_BEFORE_DOWNLOAD)cefingo_download_handler_on_before_download;
+		(/* T_CEF_DOWNLOAD_HANDLER_T_ON_BEFORE_DOWNLOAD */ void *)cefingo_download_handler_on_before_download;
 	download_handler->body.on_download_updated =
 		cefingo_download_handler_on_download_updated;
 
@@ -2959,7 +2952,7 @@ cef_drag_handler_t *cefingo_construct_drag_handler(cefingo_drag_handler_wrapper_
 	drag_handler->body.on_drag_enter =
 		cefingo_drag_handler_on_drag_enter;
 	drag_handler->body.on_draggable_regions_changed =
-		(T_CEF_DRAG_HANDLER_T_ON_DRAGGABLE_REGIONS_CHANGED)cefingo_drag_handler_on_draggable_regions_changed;
+		(/* T_CEF_DRAG_HANDLER_T_ON_DRAGGABLE_REGIONS_CHANGED */ void *)cefingo_drag_handler_on_draggable_regions_changed;
 
 	return (cef_drag_handler_t*)drag_handler;
 }
@@ -3099,15 +3092,15 @@ cef_extension_handler_t *cefingo_construct_extension_handler(cefingo_extension_h
 	extension_handler->body.on_extension_unloaded =
 		cefingo_extension_handler_on_extension_unloaded;
 	extension_handler->body.on_before_background_browser =
-		(T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BACKGROUND_BROWSER)cefingo_extension_handler_on_before_background_browser;
+		(/* T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BACKGROUND_BROWSER */ void *)cefingo_extension_handler_on_before_background_browser;
 	extension_handler->body.on_before_browser =
-		(T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BROWSER)cefingo_extension_handler_on_before_browser;
+		(/* T_CEF_EXTENSION_HANDLER_T_ON_BEFORE_BROWSER */ void *)cefingo_extension_handler_on_before_browser;
 	extension_handler->body.get_active_browser =
 		cefingo_extension_handler_get_active_browser;
 	extension_handler->body.can_access_browser =
 		cefingo_extension_handler_can_access_browser;
 	extension_handler->body.get_extension_resource =
-		(T_CEF_EXTENSION_HANDLER_T_GET_EXTENSION_RESOURCE)cefingo_extension_handler_get_extension_resource;
+		(/* T_CEF_EXTENSION_HANDLER_T_GET_EXTENSION_RESOURCE */ void *)cefingo_extension_handler_get_extension_resource;
 
 	return (cef_extension_handler_t*)extension_handler;
 }
@@ -3130,7 +3123,7 @@ cef_find_handler_t *cefingo_construct_find_handler(cefingo_find_handler_wrapper_
 
 	// callbacks
 	find_handler->body.on_find_result =
-		(T_CEF_FIND_HANDLER_T_ON_FIND_RESULT)cefingo_find_handler_on_find_result;
+		(/* T_CEF_FIND_HANDLER_T_ON_FIND_RESULT */ void *)cefingo_find_handler_on_find_result;
 
 	return (cef_find_handler_t*)find_handler;
 }
@@ -3418,13 +3411,15 @@ void cefingo_frame_handler_on_frame_created(
 void cefingo_frame_handler_on_frame_attached(
 	struct _cef_frame_handler_t* self,
 	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame
+	struct _cef_frame_t* frame,
+	int reattached
 )
 {
 	self->on_frame_attached(
 		self,
 		browser,
-		frame
+		frame,
+		reattached
 	);
 }
 
@@ -3678,9 +3673,9 @@ cef_jsdialog_handler_t *cefingo_construct_jsdialog_handler(cefingo_jsdialog_hand
 
 	// callbacks
 	jsdialog_handler->body.on_jsdialog =
-		(T_CEF_JSDIALOG_HANDLER_T_ON_JSDIALOG)cefingo_jsdialog_handler_on_jsdialog;
+		(/* T_CEF_JSDIALOG_HANDLER_T_ON_JSDIALOG */ void *)cefingo_jsdialog_handler_on_jsdialog;
 	jsdialog_handler->body.on_before_unload_dialog =
-		(T_CEF_JSDIALOG_HANDLER_T_ON_BEFORE_UNLOAD_DIALOG)cefingo_jsdialog_handler_on_before_unload_dialog;
+		(/* T_CEF_JSDIALOG_HANDLER_T_ON_BEFORE_UNLOAD_DIALOG */ void *)cefingo_jsdialog_handler_on_before_unload_dialog;
 	jsdialog_handler->body.on_reset_dialog_state =
 		cefingo_jsdialog_handler_on_reset_dialog_state;
 	jsdialog_handler->body.on_dialog_closed =
@@ -3711,9 +3706,9 @@ cef_keyboard_handler_t *cefingo_construct_keyboard_handler(cefingo_keyboard_hand
 
 	// callbacks
 	keyboard_handler->body.on_pre_key_event =
-		(T_CEF_KEYBOARD_HANDLER_T_ON_PRE_KEY_EVENT)cefingo_keyboard_handler_on_pre_key_event;
+		(/* T_CEF_KEYBOARD_HANDLER_T_ON_PRE_KEY_EVENT */ void *)cefingo_keyboard_handler_on_pre_key_event;
 	keyboard_handler->body.on_key_event =
-		(T_CEF_KEYBOARD_HANDLER_T_ON_KEY_EVENT)cefingo_keyboard_handler_on_key_event;
+		(/* T_CEF_KEYBOARD_HANDLER_T_ON_KEY_EVENT */ void *)cefingo_keyboard_handler_on_key_event;
 
 	return (cef_keyboard_handler_t*)keyboard_handler;
 }
@@ -3890,7 +3885,7 @@ cef_life_span_handler_t *cefingo_construct_life_span_handler(cefingo_life_span_h
 
 	// callbacks
 	life_span_handler->body.on_before_popup =
-		(T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)cefingo_life_span_handler_on_before_popup;
+		(/* T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP */ void *)cefingo_life_span_handler_on_before_popup;
 	life_span_handler->body.on_after_created =
 		cefingo_life_span_handler_on_after_created;
 	life_span_handler->body.do_close =
@@ -3924,7 +3919,7 @@ cef_load_handler_t *cefingo_construct_load_handler(cefingo_load_handler_wrapper_
 	load_handler->body.on_load_end =
 		cefingo_load_handler_on_load_end;
 	load_handler->body.on_load_error =
-		(T_CEF_LOAD_HANDLER_T_ON_LOAD_ERROR)cefingo_load_handler_on_load_error;
+		(/* T_CEF_LOAD_HANDLER_T_ON_LOAD_ERROR */ void *)cefingo_load_handler_on_load_error;
 
 	return (cef_load_handler_t*)load_handler;
 }
@@ -4009,13 +4004,13 @@ cef_media_observer_t *cefingo_construct_media_observer(cefingo_media_observer_wr
 
 	// callbacks
 	media_observer->body.on_sinks =
-		(T_CEF_MEDIA_OBSERVER_T_ON_SINKS)cefingo_media_observer_on_sinks;
+		(/* T_CEF_MEDIA_OBSERVER_T_ON_SINKS */ void *)cefingo_media_observer_on_sinks;
 	media_observer->body.on_routes =
-		(T_CEF_MEDIA_OBSERVER_T_ON_ROUTES)cefingo_media_observer_on_routes;
+		(/* T_CEF_MEDIA_OBSERVER_T_ON_ROUTES */ void *)cefingo_media_observer_on_routes;
 	media_observer->body.on_route_state_changed =
 		cefingo_media_observer_on_route_state_changed;
 	media_observer->body.on_route_message_received =
-		(T_CEF_MEDIA_OBSERVER_T_ON_ROUTE_MESSAGE_RECEIVED)cefingo_media_observer_on_route_message_received;
+		(/* T_CEF_MEDIA_OBSERVER_T_ON_ROUTE_MESSAGE_RECEIVED */ void *)cefingo_media_observer_on_route_message_received;
 
 	return (cef_media_observer_t*)media_observer;
 }
@@ -4237,7 +4232,7 @@ cef_menu_button_delegate_t *cefingo_construct_menu_button_delegate(cefingo_menu_
 
 	// callbacks
 	menu_button_delegate->body.on_menu_button_pressed =
-		(T_CEF_MENU_BUTTON_DELEGATE_T_ON_MENU_BUTTON_PRESSED)cefingo_menu_button_delegate_on_menu_button_pressed;
+		(/* T_CEF_MENU_BUTTON_DELEGATE_T_ON_MENU_BUTTON_PRESSED */ void *)cefingo_menu_button_delegate_on_menu_button_pressed;
 	menu_button_delegate->body.base.on_button_pressed =
 		cefingo_menu_button_delegate_on_button_pressed;
 	menu_button_delegate->body.base.on_button_state_changed =
@@ -4256,6 +4251,8 @@ cef_menu_button_delegate_t *cefingo_construct_menu_button_delegate(cefingo_menu_
 		cefingo_menu_button_delegate_on_child_view_changed;
 	menu_button_delegate->body.base.base.on_window_changed =
 		cefingo_menu_button_delegate_on_window_changed;
+	menu_button_delegate->body.base.base.on_layout_changed =
+		(/* T_CEF_VIEW_DELEGATE_T_ON_LAYOUT_CHANGED */ void *)cefingo_menu_button_delegate_on_layout_changed;
 	menu_button_delegate->body.base.base.on_focus =
 		cefingo_menu_button_delegate_on_focus;
 	menu_button_delegate->body.base.base.on_blur =
@@ -4990,7 +4987,7 @@ cef_menu_model_delegate_t *cefingo_construct_menu_model_delegate(cefingo_menu_mo
 	menu_model_delegate->body.execute_command =
 		cefingo_menu_model_delegate_execute_command;
 	menu_model_delegate->body.mouse_outside_menu =
-		(T_CEF_MENU_MODEL_DELEGATE_T_MOUSE_OUTSIDE_MENU)cefingo_menu_model_delegate_mouse_outside_menu;
+		(/* T_CEF_MENU_MODEL_DELEGATE_T_MOUSE_OUTSIDE_MENU */ void *)cefingo_menu_model_delegate_mouse_outside_menu;
 	menu_model_delegate->body.unhandled_open_submenu =
 		cefingo_menu_model_delegate_unhandled_open_submenu;
 	menu_model_delegate->body.unhandled_close_submenu =
@@ -5091,6 +5088,189 @@ struct _cef_sslstatus_t* cefingo_navigation_entry_get_sslstatus(
 )
 {
 	return	self->get_sslstatus(
+			self
+		);
+}
+
+int cefingo_overlay_controller_is_valid(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->is_valid(
+			self
+		);
+}
+
+int cefingo_overlay_controller_is_same(
+	struct _cef_overlay_controller_t* self,
+	struct _cef_overlay_controller_t* that
+)
+{
+	return	self->is_same(
+			self,
+			that
+		);
+}
+
+struct _cef_view_t* cefingo_overlay_controller_get_contents_view(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->get_contents_view(
+			self
+		);
+}
+
+struct _cef_window_t* cefingo_overlay_controller_get_window(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->get_window(
+			self
+		);
+}
+
+cef_docking_mode_t cefingo_overlay_controller_get_docking_mode(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->get_docking_mode(
+			self
+		);
+}
+
+void cefingo_overlay_controller_destroy(
+	struct _cef_overlay_controller_t* self
+)
+{
+	self->destroy(
+		self
+	);
+}
+
+void cefingo_overlay_controller_set_bounds(
+	struct _cef_overlay_controller_t* self,
+	const cef_rect_t* bounds
+)
+{
+	self->set_bounds(
+		self,
+		bounds
+	);
+}
+
+cef_rect_t cefingo_overlay_controller_get_bounds(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->get_bounds(
+			self
+		);
+}
+
+cef_rect_t cefingo_overlay_controller_get_bounds_in_screen(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->get_bounds_in_screen(
+			self
+		);
+}
+
+void cefingo_overlay_controller_set_size(
+	struct _cef_overlay_controller_t* self,
+	const cef_size_t* size
+)
+{
+	self->set_size(
+		self,
+		size
+	);
+}
+
+cef_size_t cefingo_overlay_controller_get_size(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->get_size(
+			self
+		);
+}
+
+void cefingo_overlay_controller_set_position(
+	struct _cef_overlay_controller_t* self,
+	const cef_point_t* position
+)
+{
+	self->set_position(
+		self,
+		position
+	);
+}
+
+cef_point_t cefingo_overlay_controller_get_position(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->get_position(
+			self
+		);
+}
+
+void cefingo_overlay_controller_set_insets(
+	struct _cef_overlay_controller_t* self,
+	const cef_insets_t* insets
+)
+{
+	self->set_insets(
+		self,
+		insets
+	);
+}
+
+cef_insets_t cefingo_overlay_controller_get_insets(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->get_insets(
+			self
+		);
+}
+
+void cefingo_overlay_controller_size_to_preferred_size(
+	struct _cef_overlay_controller_t* self
+)
+{
+	self->size_to_preferred_size(
+		self
+	);
+}
+
+void cefingo_overlay_controller_set_visible(
+	struct _cef_overlay_controller_t* self,
+	int visible
+)
+{
+	self->set_visible(
+		self,
+		visible
+	);
+}
+
+int cefingo_overlay_controller_is_visible(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->is_visible(
+			self
+		);
+}
+
+int cefingo_overlay_controller_is_drawn(
+	struct _cef_overlay_controller_t* self
+)
+{
+	return	self->is_drawn(
 			self
 		);
 }
@@ -5241,6 +5421,8 @@ cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wr
 		cefingo_panel_delegate_on_child_view_changed;
 	panel_delegate->body.base.on_window_changed =
 		cefingo_panel_delegate_on_window_changed;
+	panel_delegate->body.base.on_layout_changed =
+		(/* T_CEF_VIEW_DELEGATE_T_ON_LAYOUT_CHANGED */ void *)cefingo_panel_delegate_on_layout_changed;
 	panel_delegate->body.base.on_focus =
 		cefingo_panel_delegate_on_focus;
 	panel_delegate->body.base.on_blur =
@@ -5300,7 +5482,7 @@ cef_print_handler_t *cefingo_construct_print_handler(cefingo_print_handler_wrapp
 	print_handler->body.on_print_dialog =
 		cefingo_print_handler_on_print_dialog;
 	print_handler->body.on_print_job =
-		(T_CEF_PRINT_HANDLER_T_ON_PRINT_JOB)cefingo_print_handler_on_print_job;
+		(/* T_CEF_PRINT_HANDLER_T_ON_PRINT_JOB */ void *)cefingo_print_handler_on_print_job;
 	print_handler->body.on_print_reset =
 		cefingo_print_handler_on_print_reset;
 	print_handler->body.get_pdf_paper_size =
@@ -5626,11 +5808,11 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 	render_handler->body.on_popup_show =
 		cefingo_render_handler_on_popup_show;
 	render_handler->body.on_popup_size =
-		(T_CEF_RENDER_HANDLER_T_ON_POPUP_SIZE)cefingo_render_handler_on_popup_size;
+		(/* T_CEF_RENDER_HANDLER_T_ON_POPUP_SIZE */ void *)cefingo_render_handler_on_popup_size;
 	render_handler->body.on_paint =
-		(T_CEF_RENDER_HANDLER_T_ON_PAINT)cefingo_render_handler_on_paint;
+		(/* T_CEF_RENDER_HANDLER_T_ON_PAINT */ void *)cefingo_render_handler_on_paint;
 	render_handler->body.on_accelerated_paint =
-		(T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT)cefingo_render_handler_on_accelerated_paint;
+		(/* T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT */ void *)cefingo_render_handler_on_accelerated_paint;
 	render_handler->body.start_dragging =
 		cefingo_render_handler_start_dragging;
 	render_handler->body.update_drag_cursor =
@@ -5638,9 +5820,9 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 	render_handler->body.on_scroll_offset_changed =
 		cefingo_render_handler_on_scroll_offset_changed;
 	render_handler->body.on_ime_composition_range_changed =
-		(T_CEF_RENDER_HANDLER_T_ON_IME_COMPOSITION_RANGE_CHANGED)cefingo_render_handler_on_ime_composition_range_changed;
+		(/* T_CEF_RENDER_HANDLER_T_ON_IME_COMPOSITION_RANGE_CHANGED */ void *)cefingo_render_handler_on_ime_composition_range_changed;
 	render_handler->body.on_text_selection_changed =
-		(T_CEF_RENDER_HANDLER_T_ON_TEXT_SELECTION_CHANGED)cefingo_render_handler_on_text_selection_changed;
+		(/* T_CEF_RENDER_HANDLER_T_ON_TEXT_SELECTION_CHANGED */ void *)cefingo_render_handler_on_text_selection_changed;
 	render_handler->body.on_virtual_keyboard_requested =
 		cefingo_render_handler_on_virtual_keyboard_requested;
 
@@ -5675,26 +5857,6 @@ cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_r
 		cefingo_render_process_handler_on_process_message_received;
 
 	return (cef_render_process_handler_t*)render_process_handler;
-}
-
-void cefingo_request_callback_cont(
-	struct _cef_request_callback_t* self,
-	int allow
-)
-{
-	self->cont(
-		self,
-		allow
-	);
-}
-
-void cefingo_request_callback_cancel(
-	struct _cef_request_callback_t* self
-)
-{
-	self->cancel(
-		self
-	);
 }
 
 int cefingo_request_is_read_only(
@@ -6395,9 +6557,9 @@ cef_request_context_handler_t *cefingo_construct_request_context_handler(cefingo
 	request_context_handler->body.on_request_context_initialized =
 		cefingo_request_context_handler_on_request_context_initialized;
 	request_context_handler->body.on_before_plugin_load =
-		(T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)cefingo_request_context_handler_on_before_plugin_load;
+		(/* T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD */ void *)cefingo_request_context_handler_on_before_plugin_load;
 	request_context_handler->body.get_resource_request_handler =
-		(T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)cefingo_request_context_handler_get_resource_request_handler;
+		(/* T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER */ void *)cefingo_request_context_handler_get_resource_request_handler;
 
 	return (cef_request_context_handler_t*)request_context_handler;
 }
@@ -6447,7 +6609,7 @@ typedef int (*T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST)(
 	struct _cef_browser_t*,
 	const cef_string_t*,
 	int64,
-	struct _cef_request_callback_t*
+	struct _cef_callback_t*
 );
 typedef int (*T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)(
 	struct _cef_request_handler_t*,
@@ -6455,7 +6617,7 @@ typedef int (*T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)(
 	cef_errorcode_t,
 	const cef_string_t*,
 	struct _cef_sslinfo_t*,
-	struct _cef_request_callback_t*
+	struct _cef_callback_t*
 );
 typedef int (*T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE)(
 	struct _cef_request_handler_t*,
@@ -6483,19 +6645,19 @@ cef_request_handler_t *cefingo_construct_request_handler(cefingo_request_handler
 	request_handler->body.on_before_browse =
 		cefingo_request_handler_on_before_browse;
 	request_handler->body.on_open_urlfrom_tab =
-		(T_CEF_REQUEST_HANDLER_T_ON_OPEN_URLFROM_TAB)cefingo_request_handler_on_open_urlfrom_tab;
+		(/* T_CEF_REQUEST_HANDLER_T_ON_OPEN_URLFROM_TAB */ void *)cefingo_request_handler_on_open_urlfrom_tab;
 	request_handler->body.get_resource_request_handler =
-		(T_CEF_REQUEST_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)cefingo_request_handler_get_resource_request_handler;
+		(/* T_CEF_REQUEST_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER */ void *)cefingo_request_handler_get_resource_request_handler;
 	request_handler->body.get_auth_credentials =
-		(T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)cefingo_request_handler_get_auth_credentials;
+		(/* T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS */ void *)cefingo_request_handler_get_auth_credentials;
 	request_handler->body.on_quota_request =
-		(T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST)cefingo_request_handler_on_quota_request;
+		(/* T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST */ void *)cefingo_request_handler_on_quota_request;
 	request_handler->body.on_certificate_error =
-		(T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)cefingo_request_handler_on_certificate_error;
+		(/* T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR */ void *)cefingo_request_handler_on_certificate_error;
 	request_handler->body.on_select_client_certificate =
-		(T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE)cefingo_request_handler_on_select_client_certificate;
+		(/* T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE */ void *)cefingo_request_handler_on_select_client_certificate;
 	request_handler->body.on_plugin_crashed =
-		(T_CEF_REQUEST_HANDLER_T_ON_PLUGIN_CRASHED)cefingo_request_handler_on_plugin_crashed;
+		(/* T_CEF_REQUEST_HANDLER_T_ON_PLUGIN_CRASHED */ void *)cefingo_request_handler_on_plugin_crashed;
 	request_handler->body.on_render_view_ready =
 		cefingo_request_handler_on_render_view_ready;
 	request_handler->body.on_render_process_terminated =
@@ -6622,9 +6784,9 @@ cef_cookie_access_filter_t *cefingo_construct_cookie_access_filter(cefingo_cooki
 
 	// callbacks
 	cookie_access_filter->body.can_send_cookie =
-		(T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SEND_COOKIE)cefingo_cookie_access_filter_can_send_cookie;
+		(/* T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SEND_COOKIE */ void *)cefingo_cookie_access_filter_can_send_cookie;
 	cookie_access_filter->body.can_save_cookie =
-		(T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SAVE_COOKIE)cefingo_cookie_access_filter_can_save_cookie;
+		(/* T_CEF_COOKIE_ACCESS_FILTER_T_CAN_SAVE_COOKIE */ void *)cefingo_cookie_access_filter_can_save_cookie;
 
 	return (cef_cookie_access_filter_t*)cookie_access_filter;
 }
@@ -6851,7 +7013,7 @@ cef_scheme_handler_factory_t *cefingo_construct_scheme_handler_factory(cefingo_s
 
 	// callbacks
 	scheme_handler_factory->body.create =
-		(T_CEF_SCHEME_HANDLER_FACTORY_T_CREATE)cefingo_scheme_handler_factory_create;
+		(/* T_CEF_SCHEME_HANDLER_FACTORY_T_CREATE */ void *)cefingo_scheme_handler_factory_create;
 
 	return (cef_scheme_handler_factory_t*)scheme_handler_factory;
 }
@@ -7076,7 +7238,7 @@ cef_write_handler_t *cefingo_construct_write_handler(cefingo_write_handler_wrapp
 
 	// callbacks
 	write_handler->body.write =
-		(T_CEF_WRITE_HANDLER_T_WRITE)cefingo_write_handler_write;
+		(/* T_CEF_WRITE_HANDLER_T_WRITE */ void *)cefingo_write_handler_write;
 	write_handler->body.seek =
 		cefingo_write_handler_seek;
 	write_handler->body.tell =
@@ -7157,7 +7319,7 @@ cef_string_visitor_t *cefingo_construct_string_visitor(cefingo_string_visitor_wr
 
 	// callbacks
 	string_visitor->body.visit =
-		(T_CEF_STRING_VISITOR_T_VISIT)cefingo_string_visitor_visit;
+		(/* T_CEF_STRING_VISITOR_T_VISIT */ void *)cefingo_string_visitor_visit;
 
 	return (cef_string_visitor_t*)string_visitor;
 }
@@ -7566,7 +7728,7 @@ cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield
 
 	// callbacks
 	textfield_delegate->body.on_key_event =
-		(T_CEF_TEXTFIELD_DELEGATE_T_ON_KEY_EVENT)cefingo_textfield_delegate_on_key_event;
+		(/* T_CEF_TEXTFIELD_DELEGATE_T_ON_KEY_EVENT */ void *)cefingo_textfield_delegate_on_key_event;
 	textfield_delegate->body.on_after_user_action =
 		cefingo_textfield_delegate_on_after_user_action;
 	textfield_delegate->body.base.get_preferred_size =
@@ -7583,6 +7745,8 @@ cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield
 		cefingo_textfield_delegate_on_child_view_changed;
 	textfield_delegate->body.base.on_window_changed =
 		cefingo_textfield_delegate_on_window_changed;
+	textfield_delegate->body.base.on_layout_changed =
+		(/* T_CEF_VIEW_DELEGATE_T_ON_LAYOUT_CHANGED */ void *)cefingo_textfield_delegate_on_layout_changed;
 	textfield_delegate->body.base.on_focus =
 		cefingo_textfield_delegate_on_focus;
 	textfield_delegate->body.base.on_blur =
@@ -7604,7 +7768,7 @@ cef_end_tracing_callback_t *cefingo_construct_end_tracing_callback(cefingo_end_t
 
 	// callbacks
 	end_tracing_callback->body.on_end_tracing_complete =
-		(T_CEF_END_TRACING_CALLBACK_T_ON_END_TRACING_COMPLETE)cefingo_end_tracing_callback_on_end_tracing_complete;
+		(/* T_CEF_END_TRACING_CALLBACK_T_ON_END_TRACING_COMPLETE */ void *)cefingo_end_tracing_callback_on_end_tracing_complete;
 
 	return (cef_end_tracing_callback_t*)end_tracing_callback;
 }
@@ -7702,9 +7866,9 @@ cef_urlrequest_client_t *cefingo_construct_urlrequest_client(cefingo_urlrequest_
 	urlrequest_client->body.on_download_progress =
 		cefingo_urlrequest_client_on_download_progress;
 	urlrequest_client->body.on_download_data =
-		(T_CEF_URLREQUEST_CLIENT_T_ON_DOWNLOAD_DATA)cefingo_urlrequest_client_on_download_data;
+		(/* T_CEF_URLREQUEST_CLIENT_T_ON_DOWNLOAD_DATA */ void *)cefingo_urlrequest_client_on_download_data;
 	urlrequest_client->body.get_auth_credentials =
-		(T_CEF_URLREQUEST_CLIENT_T_GET_AUTH_CREDENTIALS)cefingo_urlrequest_client_get_auth_credentials;
+		(/* T_CEF_URLREQUEST_CLIENT_T_GET_AUTH_CREDENTIALS */ void *)cefingo_urlrequest_client_get_auth_credentials;
 
 	return (cef_urlrequest_client_t*)urlrequest_client;
 }
@@ -7820,7 +7984,7 @@ cef_v8handler_t *cefingo_construct_v8handler(cefingo_v8handler_wrapper_t* v8hand
 
 	// callbacks
 	v8handler->body.execute =
-		(T_CEF_V8HANDLER_T_EXECUTE)cefingo_v8handler_execute;
+		(/* T_CEF_V8HANDLER_T_EXECUTE */ void *)cefingo_v8handler_execute;
 
 	return (cef_v8handler_t*)v8handler;
 }
@@ -7848,9 +8012,9 @@ cef_v8accessor_t *cefingo_construct_v8accessor(cefingo_v8accessor_wrapper_t* v8a
 
 	// callbacks
 	v8accessor->body.get =
-		(T_CEF_V8ACCESSOR_T_GET)cefingo_v8accessor_get;
+		(/* T_CEF_V8ACCESSOR_T_GET */ void *)cefingo_v8accessor_get;
 	v8accessor->body.set =
-		(T_CEF_V8ACCESSOR_T_SET)cefingo_v8accessor_set;
+		(/* T_CEF_V8ACCESSOR_T_SET */ void *)cefingo_v8accessor_set;
 
 	return (cef_v8accessor_t*)v8accessor;
 }
@@ -9732,6 +9896,26 @@ cef_point_t cefingo_view_get_position(
 		);
 }
 
+void cefingo_view_set_insets(
+	struct _cef_view_t* self,
+	const cef_insets_t* insets
+)
+{
+	self->set_insets(
+		self,
+		insets
+	);
+}
+
+cef_insets_t cefingo_view_get_insets(
+	struct _cef_view_t* self
+)
+{
+	return	self->get_insets(
+			self
+		);
+}
+
 cef_size_t cefingo_view_get_preferred_size(
 	struct _cef_view_t* self
 )
@@ -9965,6 +10149,11 @@ int cefingo_view_convert_point_from_view(
 		);
 }
 
+typedef void (*T_CEF_VIEW_DELEGATE_T_ON_LAYOUT_CHANGED)(
+	struct _cef_view_delegate_t*,
+	struct _cef_view_t*,
+	const cef_rect_t*
+);
 
 cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapper_t* view_delegate)
 {
@@ -9987,6 +10176,8 @@ cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapp
 		cefingo_view_delegate_on_child_view_changed;
 	view_delegate->body.on_window_changed =
 		cefingo_view_delegate_on_window_changed;
+	view_delegate->body.on_layout_changed =
+		(/* T_CEF_VIEW_DELEGATE_T_ON_LAYOUT_CHANGED */ void *)cefingo_view_delegate_on_layout_changed;
 	view_delegate->body.on_focus =
 		cefingo_view_delegate_on_focus;
 	view_delegate->body.on_blur =
@@ -10059,28 +10250,9 @@ cef_web_plugin_unstable_callback_t *cefingo_construct_web_plugin_unstable_callba
 
 	// callbacks
 	web_plugin_unstable_callback->body.is_unstable =
-		(T_CEF_WEB_PLUGIN_UNSTABLE_CALLBACK_T_IS_UNSTABLE)cefingo_web_plugin_unstable_callback_is_unstable;
+		(/* T_CEF_WEB_PLUGIN_UNSTABLE_CALLBACK_T_IS_UNSTABLE */ void *)cefingo_web_plugin_unstable_callback_is_unstable;
 
 	return (cef_web_plugin_unstable_callback_t*)web_plugin_unstable_callback;
-}
-
-typedef void (*T_CEF_REGISTER_CDM_CALLBACK_T_ON_CDM_REGISTRATION_COMPLETE)(
-	struct _cef_register_cdm_callback_t*,
-	cef_cdm_registration_error_t,
-	const cef_string_t*
-);
-
-cef_register_cdm_callback_t *cefingo_construct_register_cdm_callback(cefingo_register_cdm_callback_wrapper_t* register_cdm_callback)
-{
-	initialize_cefingo_base_ref_counted(
-		offsetof(__typeof__(*register_cdm_callback), counter),
-		(cef_base_ref_counted_t*) register_cdm_callback);
-
-	// callbacks
-	register_cdm_callback->body.on_cdm_registration_complete =
-		(T_CEF_REGISTER_CDM_CALLBACK_T_ON_CDM_REGISTRATION_COMPLETE)cefingo_register_cdm_callback_on_cdm_registration_complete;
-
-	return (cef_register_cdm_callback_t*)register_cdm_callback;
 }
 
 void cefingo_window_show(
@@ -10311,6 +10483,19 @@ struct _cef_image_t* cefingo_window_get_window_app_icon(
 		);
 }
 
+struct _cef_overlay_controller_t* cefingo_window_add_overlay_view(
+	struct _cef_window_t* self,
+	struct _cef_view_t* view,
+	cef_docking_mode_t docking_mode
+)
+{
+	return	self->add_overlay_view(
+			self,
+			view,
+			docking_mode
+		);
+}
+
 void cefingo_window_show_menu(
 	struct _cef_window_t* self,
 	struct _cef_menu_model_t* menu_model,
@@ -10476,6 +10661,8 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 		cefingo_window_delegate_get_parent_window;
 	window_delegate->body.get_initial_bounds =
 		cefingo_window_delegate_get_initial_bounds;
+	window_delegate->body.get_initial_show_state =
+		cefingo_window_delegate_get_initial_show_state;
 	window_delegate->body.is_frameless =
 		cefingo_window_delegate_is_frameless;
 	window_delegate->body.can_resize =
@@ -10489,7 +10676,7 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 	window_delegate->body.on_accelerator =
 		cefingo_window_delegate_on_accelerator;
 	window_delegate->body.on_key_event =
-		(T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT)cefingo_window_delegate_on_key_event;
+		(/* T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT */ void *)cefingo_window_delegate_on_key_event;
 	window_delegate->body.base.base.get_preferred_size =
 		cefingo_window_delegate_get_preferred_size;
 	window_delegate->body.base.base.get_minimum_size =
@@ -10504,6 +10691,8 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 		cefingo_window_delegate_on_child_view_changed;
 	window_delegate->body.base.base.on_window_changed =
 		cefingo_window_delegate_on_window_changed;
+	window_delegate->body.base.base.on_layout_changed =
+		(/* T_CEF_VIEW_DELEGATE_T_ON_LAYOUT_CHANGED */ void *)cefingo_window_delegate_on_layout_changed;
 	window_delegate->body.base.base.on_focus =
 		cefingo_window_delegate_on_focus;
 	window_delegate->body.base.base.on_blur =

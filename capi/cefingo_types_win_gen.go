@@ -7,7 +7,7 @@ package capi
 // #include "cefingo.h"
 import "C"
 
-// cef_types_win.h, include/internal/cef_types_win.h:56:57,
+// cef_types_win.h, include/internal/cef_types_win.h:60:3,
 
 ///
 // Structure representing CefExecuteProcess arguments.
@@ -61,36 +61,12 @@ func (st *CWindowInfoT) SetStyle(v WinDword) {
 	st.style = (C.DWORD)(v)
 }
 
-func (st *CWindowInfoT) X() int {
-	return int(st.x)
+func (st *CWindowInfoT) Bounds() CRectT {
+	return CRectT(st.bounds)
 }
 
-func (st *CWindowInfoT) SetX(v int) {
-	st.x = (C.int)(v)
-}
-
-func (st *CWindowInfoT) Y() int {
-	return int(st.y)
-}
-
-func (st *CWindowInfoT) SetY(v int) {
-	st.y = (C.int)(v)
-}
-
-func (st *CWindowInfoT) Width() int {
-	return int(st.width)
-}
-
-func (st *CWindowInfoT) SetWidth(v int) {
-	st.width = (C.int)(v)
-}
-
-func (st *CWindowInfoT) Height() int {
-	return int(st.height)
-}
-
-func (st *CWindowInfoT) SetHeight(v int) {
-	st.height = (C.int)(v)
+func (st *CWindowInfoT) SetBounds(v CRectT) {
+	st.bounds = (C.cef_rect_t)(v)
 }
 
 func (st *CWindowInfoT) ParentWindow() CWindowHandleT {

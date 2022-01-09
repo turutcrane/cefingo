@@ -335,11 +335,6 @@ extern void cefingo_browser_host_send_touch_event(
 	const struct _cef_touch_event_t* event
 );
 
-extern void cefingo_browser_host_send_focus_event(
-	struct _cef_browser_host_t* self,
-	int setFocus
-);
-
 extern void cefingo_browser_host_send_capture_lost_event(
 	struct _cef_browser_host_t* self
 );
@@ -1330,7 +1325,8 @@ extern void cefingo_frame_handler_on_frame_created(
 extern void cefingo_frame_handler_on_frame_attached(
 	struct _cef_frame_handler_t* self,
 	struct _cef_browser_t* browser,
-	struct _cef_frame_t* frame
+	struct _cef_frame_t* frame,
+	int reattached
 );
 
 extern void cefingo_frame_handler_on_frame_detached(
@@ -2008,6 +2004,88 @@ extern struct _cef_sslstatus_t* cefingo_navigation_entry_get_sslstatus(
 	struct _cef_navigation_entry_t* self
 );
 
+extern int cefingo_overlay_controller_is_valid(
+	struct _cef_overlay_controller_t* self
+);
+
+extern int cefingo_overlay_controller_is_same(
+	struct _cef_overlay_controller_t* self,
+	struct _cef_overlay_controller_t* that
+);
+
+extern struct _cef_view_t* cefingo_overlay_controller_get_contents_view(
+	struct _cef_overlay_controller_t* self
+);
+
+extern struct _cef_window_t* cefingo_overlay_controller_get_window(
+	struct _cef_overlay_controller_t* self
+);
+
+extern cef_docking_mode_t cefingo_overlay_controller_get_docking_mode(
+	struct _cef_overlay_controller_t* self
+);
+
+extern void cefingo_overlay_controller_destroy(
+	struct _cef_overlay_controller_t* self
+);
+
+extern void cefingo_overlay_controller_set_bounds(
+	struct _cef_overlay_controller_t* self,
+	const cef_rect_t* bounds
+);
+
+extern cef_rect_t cefingo_overlay_controller_get_bounds(
+	struct _cef_overlay_controller_t* self
+);
+
+extern cef_rect_t cefingo_overlay_controller_get_bounds_in_screen(
+	struct _cef_overlay_controller_t* self
+);
+
+extern void cefingo_overlay_controller_set_size(
+	struct _cef_overlay_controller_t* self,
+	const cef_size_t* size
+);
+
+extern cef_size_t cefingo_overlay_controller_get_size(
+	struct _cef_overlay_controller_t* self
+);
+
+extern void cefingo_overlay_controller_set_position(
+	struct _cef_overlay_controller_t* self,
+	const cef_point_t* position
+);
+
+extern cef_point_t cefingo_overlay_controller_get_position(
+	struct _cef_overlay_controller_t* self
+);
+
+extern void cefingo_overlay_controller_set_insets(
+	struct _cef_overlay_controller_t* self,
+	const cef_insets_t* insets
+);
+
+extern cef_insets_t cefingo_overlay_controller_get_insets(
+	struct _cef_overlay_controller_t* self
+);
+
+extern void cefingo_overlay_controller_size_to_preferred_size(
+	struct _cef_overlay_controller_t* self
+);
+
+extern void cefingo_overlay_controller_set_visible(
+	struct _cef_overlay_controller_t* self,
+	int visible
+);
+
+extern int cefingo_overlay_controller_is_visible(
+	struct _cef_overlay_controller_t* self
+);
+
+extern int cefingo_overlay_controller_is_drawn(
+	struct _cef_overlay_controller_t* self
+);
+
 extern struct _cef_window_t* cefingo_panel_as_window(
 	struct _cef_panel_t* self
 );
@@ -2205,15 +2283,6 @@ extern cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_han
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_render_process_handler_t, cefingo_render_process_handler_wrapper_t);
 extern cef_render_process_handler_t *cefingo_construct_render_process_handler(cefingo_render_process_handler_wrapper_t* render_process_handler);
-
-extern void cefingo_request_callback_cont(
-	struct _cef_request_callback_t* self,
-	int allow
-);
-
-extern void cefingo_request_callback_cancel(
-	struct _cef_request_callback_t* self
-);
 
 extern int cefingo_request_is_read_only(
 	struct _cef_request_t* self
@@ -3862,6 +3931,15 @@ extern cef_point_t cefingo_view_get_position(
 	struct _cef_view_t* self
 );
 
+extern void cefingo_view_set_insets(
+	struct _cef_view_t* self,
+	const cef_insets_t* insets
+);
+
+extern cef_insets_t cefingo_view_get_insets(
+	struct _cef_view_t* self
+);
+
 extern cef_size_t cefingo_view_get_preferred_size(
 	struct _cef_view_t* self
 );
@@ -3992,9 +4070,6 @@ extern cef_web_plugin_info_visitor_t *cefingo_construct_web_plugin_info_visitor(
 CEFINGO_REF_COUNTER_WRAPPER(cef_web_plugin_unstable_callback_t, cefingo_web_plugin_unstable_callback_wrapper_t);
 extern cef_web_plugin_unstable_callback_t *cefingo_construct_web_plugin_unstable_callback(cefingo_web_plugin_unstable_callback_wrapper_t* web_plugin_unstable_callback);
 
-CEFINGO_REF_COUNTER_WRAPPER(cef_register_cdm_callback_t, cefingo_register_cdm_callback_wrapper_t);
-extern cef_register_cdm_callback_t *cefingo_construct_register_cdm_callback(cefingo_register_cdm_callback_wrapper_t* register_cdm_callback);
-
 extern void cefingo_window_show(
 	struct _cef_window_t* self
 );
@@ -4095,6 +4170,12 @@ extern void cefingo_window_set_window_app_icon(
 
 extern struct _cef_image_t* cefingo_window_get_window_app_icon(
 	struct _cef_window_t* self
+);
+
+extern struct _cef_overlay_controller_t* cefingo_window_add_overlay_view(
+	struct _cef_window_t* self,
+	struct _cef_view_t* view,
+	cef_docking_mode_t docking_mode
 );
 
 extern void cefingo_window_show_menu(
