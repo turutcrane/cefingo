@@ -396,7 +396,7 @@ typedef {%s m.ReturnType().CType() -%}
 	{%- for c := st; c != nil; c = c.GetBase() -%}
 	{%- for _, m := range c.Methods -%}
 	{%s st.BaseName() %}->body{%s base %}.{%s m.Funcname.Name() %} =
-		{% if m.HasConstParams() %}({%s methodCTypeName(m) %}){% endif %}cefingo_{%s st.BaseName() %}_{%s m.Funcname.Name() %};
+		{% if m.HasConstParams() %}(/* {%s methodCTypeName(m) %} */ void *){% endif %}cefingo_{%s st.BaseName() %}_{%s m.Funcname.Name() %};
 	{%- endfor -%}
 	{%- code base = base + ".base"-%}
 	{%- endfor -%}

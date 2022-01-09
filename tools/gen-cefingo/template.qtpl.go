@@ -1998,11 +1998,11 @@ func StreamCConstruct(qw422016 *qt422016.Writer, st *parser.CefClassDecl, lt *Lo
 //line template.qtpl:399
 			if m.HasConstParams() {
 //line template.qtpl:399
-				qw422016.N().S(`(`)
+				qw422016.N().S(`(/* `)
 //line template.qtpl:399
 				qw422016.E().S(methodCTypeName(m))
 //line template.qtpl:399
-				qw422016.N().S(`)`)
+				qw422016.N().S(` */ void *)`)
 //line template.qtpl:399
 			}
 //line template.qtpl:399

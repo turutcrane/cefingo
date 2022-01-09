@@ -28,6 +28,7 @@ var targetFileList = map[string]void{
 	"cef_types.h":           setElement,
 	"cef_types_win.h":       setElement,
 	"cef_thread_internal.h": setElement,
+	"cef_types_geometry.h":  setElement,
 }
 
 var handlerClasses = map[string]void{

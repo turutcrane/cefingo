@@ -124,6 +124,7 @@
 		"CNavigationEntryT": 168,
 		"CNavigationEntryVisitorT": 108,
 		"CNowFromSystemTraceTime": 384,
+		"COverlayControllerT": 392,
 		"CPanelCreate": 261,
 		"CPanelDelegateT": 170,
 		"CPanelT": 169,
@@ -292,5 +293,5 @@
 		"CZipReaderCreate": 390,
 		"CZipReaderT": 389
 	},
-	"MaxTag": 391
+	"MaxTag": 392
 }
