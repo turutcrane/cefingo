@@ -7042,71 +7042,6 @@ func cefingo_request_context_handler_on_request_context_initialized(
 }
 
 ///
-// Called on multiple browser process threads before a plugin instance is
-// loaded. |mime_type| is the mime type of the plugin that will be loaded.
-// |plugin_url| is the content URL that the plugin will load and may be NULL.
-// |is_main_frame| will be true (1) if the plugin is being loaded in the main
-// (top-level) frame, |top_origin_url| is the URL for the top-level frame that
-// contains the plugin when loading a specific plugin instance or NULL when
-// building the initial list of enabled plugins for &#39;navigator.plugins&#39;
-// JavaScript state. |plugin_info| includes additional information about the
-// plugin that will be loaded. |plugin_policy| is the recommended policy.
-// Modify |plugin_policy| and return true (1) to change the policy. Return
-// false (0) to use the recommended policy. The default plugin policy can be
-// set at runtime using the `--plugin-policy=[allow|detect|block]` command-
-// line flag. Decisions to mark a plugin as disabled by setting
-// |plugin_policy| to PLUGIN_POLICY_DISABLED may be cached when
-// |top_origin_url| is NULL. To purge the plugin list cache and potentially
-// trigger new calls to this function call
-// cef_request_context_t::PurgePluginListCache.
-///
-//export cefingo_request_context_handler_on_before_plugin_load
-func cefingo_request_context_handler_on_before_plugin_load(
-	self *C.cef_request_context_handler_t,
-	mime_type *C.cef_string_t,
-	plugin_url *C.cef_string_t,
-	is_main_frame C.int,
-	top_origin_url *C.cef_string_t,
-	plugin_info *C.cef_web_plugin_info_t,
-	plugin_policy *C.cef_plugin_policy_t,
-) (cRet C.int) {
-	runtime.LockOSThread()
-	defer runtime.UnlockOSThread()
-
-	Tracef(unsafe.Pointer(self), "T185.8:")
-	cefingoIfaceAccess.Lock()
-	f := request_context_handler_handlers.on_before_plugin_load_handler[(*cCRequestContextHandlerT)(self)]
-	cefingoIfaceAccess.Unlock()
-
-	if f != nil {
-		// !p.IsOutParam
-		goTmpself := newCRequestContextHandlerT(self, byApi)
-		// !p.IsOutParam
-		goTmpmime_type := string_from_cef_string(mime_type)
-		// !p.IsOutParam
-		goTmpplugin_url := string_from_cef_string(plugin_url)
-		// !p.IsOutParam
-		goTmpis_main_frame := (int)(is_main_frame)
-		// !p.IsOutParam
-		goTmptop_origin_url := string_from_cef_string(top_origin_url)
-		// !p.IsOutParam
-		goTmpplugin_info := newCWebPluginInfoT(plugin_info, byApi)
-
-		goRet, goTmpplugin_policyOut := f.OnBeforePluginLoad(goTmpself, goTmpmime_type, goTmpplugin_url, goTmpis_main_frame, goTmptop_origin_url, goTmpplugin_info)
-		*plugin_policy = (C.cef_plugin_policy_t)(goTmpplugin_policyOut)
-
-		if goRet {
-			cRet = 1
-		}
-	} else {
-		Logf("T185.9: on_before_plugin_load: Noo!")
-	}
-	BaseRelease((*cCWebPluginInfoT)(plugin_info)) // byApi
-
-	return cRet
-}
-
-///
 // Called on the browser process IO thread before a resource request is
 // initiated. The |browser| and |frame| values represent the source of the
 // request, and may be NULL for requests originating from service workers or
@@ -7138,7 +7073,7 @@ func cefingo_request_context_handler_get_resource_request_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T185.10:")
+	Tracef(unsafe.Pointer(self), "T185.8:")
 	cefingoIfaceAccess.Lock()
 	f := request_context_handler_handlers.get_resource_request_handler_handler[(*cCRequestContextHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -7172,7 +7107,7 @@ func cefingo_request_context_handler_get_resource_request_handler(
 			cRet = (*C.cef_resource_request_handler_t)(goRet.pc_resource_request_handler)
 		}
 	} else {
-		Logf("T185.11: get_resource_request_handler: Noo!")
+		Logf("T185.9: get_resource_request_handler: Noo!")
 	}
 	BaseRelease((*cCBrowserT)(browser)) // byApi
 	BaseRelease((*cCFrameT)(frame))     // byApi

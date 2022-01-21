@@ -49,6 +49,13 @@ func (r *RefToCAccessibilityHandlerT) setCAccessibilityHandlerT(p *CAccessibilit
 	// return prevValue
 }
 
+func (r *RefToCAccessibilityHandlerT) UnrefCAccessibilityHandlerT() {
+	// prevValue = r.p_accessibility_handler
+	r.p_accessibility_handler.Unref()
+	r.p_accessibility_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCAccessibilityHandlerT) TakeOverCAccessibilityHandlerT(src *CAccessibilityHandlerT) {
 	if r == nil {
 		return
@@ -287,6 +294,13 @@ func (r *RefToCAppT) setCAppT(p *CAppT) {
 	// prevValue = r.p_app
 	r.p_app.Unref()
 	r.p_app = p
+	// return prevValue
+}
+
+func (r *RefToCAppT) UnrefCAppT() {
+	// prevValue = r.p_app
+	r.p_app.Unref()
+	r.p_app = nil
 	// return prevValue
 }
 
@@ -739,6 +753,13 @@ func (r *RefToCAudioHandlerT) setCAudioHandlerT(p *CAudioHandlerT) {
 	// return prevValue
 }
 
+func (r *RefToCAudioHandlerT) UnrefCAudioHandlerT() {
+	// prevValue = r.p_audio_handler
+	r.p_audio_handler.Unref()
+	r.p_audio_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCAudioHandlerT) TakeOverCAudioHandlerT(src *CAudioHandlerT) {
 	if r == nil {
 		return
@@ -1034,6 +1055,13 @@ func (r *RefToCAuthCallbackT) setCAuthCallbackT(p *CAuthCallbackT) {
 	// return prevValue
 }
 
+func (r *RefToCAuthCallbackT) UnrefCAuthCallbackT() {
+	// prevValue = r.p_auth_callback
+	r.p_auth_callback.Unref()
+	r.p_auth_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCAuthCallbackT) TakeOverCAuthCallbackT(src *CAuthCallbackT) {
 	if r == nil {
 		return
@@ -1178,6 +1206,13 @@ func (r *RefToCBoxLayoutT) setCBoxLayoutT(p *CBoxLayoutT) {
 	// prevValue = r.p_box_layout
 	r.p_box_layout.Unref()
 	r.p_box_layout = p
+	// return prevValue
+}
+
+func (r *RefToCBoxLayoutT) UnrefCBoxLayoutT() {
+	// prevValue = r.p_box_layout
+	r.p_box_layout.Unref()
+	r.p_box_layout = nil
 	// return prevValue
 }
 
@@ -1345,6 +1380,13 @@ func (r *RefToCBrowserT) setCBrowserT(p *CBrowserT) {
 	// prevValue = r.p_browser
 	r.p_browser.Unref()
 	r.p_browser = p
+	// return prevValue
+}
+
+func (r *RefToCBrowserT) UnrefCBrowserT() {
+	// prevValue = r.p_browser
+	r.p_browser.Unref()
+	r.p_browser = nil
 	// return prevValue
 }
 
@@ -1698,6 +1740,13 @@ func (r *RefToCRunFileDialogCallbackT) setCRunFileDialogCallbackT(p *CRunFileDia
 	// return prevValue
 }
 
+func (r *RefToCRunFileDialogCallbackT) UnrefCRunFileDialogCallbackT() {
+	// prevValue = r.p_run_file_dialog_callback
+	r.p_run_file_dialog_callback.Unref()
+	r.p_run_file_dialog_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCRunFileDialogCallbackT) TakeOverCRunFileDialogCallbackT(src *CRunFileDialogCallbackT) {
 	if r == nil {
 		return
@@ -1917,6 +1966,13 @@ func (r *RefToCNavigationEntryVisitorT) setCNavigationEntryVisitorT(p *CNavigati
 	// prevValue = r.p_navigation_entry_visitor
 	r.p_navigation_entry_visitor.Unref()
 	r.p_navigation_entry_visitor = p
+	// return prevValue
+}
+
+func (r *RefToCNavigationEntryVisitorT) UnrefCNavigationEntryVisitorT() {
+	// prevValue = r.p_navigation_entry_visitor
+	r.p_navigation_entry_visitor.Unref()
+	r.p_navigation_entry_visitor = nil
 	// return prevValue
 }
 
@@ -2144,6 +2200,13 @@ func (r *RefToCPdfPrintCallbackT) setCPdfPrintCallbackT(p *CPdfPrintCallbackT) {
 	// return prevValue
 }
 
+func (r *RefToCPdfPrintCallbackT) UnrefCPdfPrintCallbackT() {
+	// prevValue = r.p_pdf_print_callback
+	r.p_pdf_print_callback.Unref()
+	r.p_pdf_print_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCPdfPrintCallbackT) TakeOverCPdfPrintCallbackT(src *CPdfPrintCallbackT) {
 	if r == nil {
 		return
@@ -2364,6 +2427,13 @@ func (r *RefToCDownloadImageCallbackT) setCDownloadImageCallbackT(p *CDownloadIm
 	// return prevValue
 }
 
+func (r *RefToCDownloadImageCallbackT) UnrefCDownloadImageCallbackT() {
+	// prevValue = r.p_download_image_callback
+	r.p_download_image_callback.Unref()
+	r.p_download_image_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCDownloadImageCallbackT) TakeOverCDownloadImageCallbackT(src *CDownloadImageCallbackT) {
 	if r == nil {
 		return
@@ -2503,6 +2573,13 @@ func (r *RefToCBrowserHostT) setCBrowserHostT(p *CBrowserHostT) {
 	// prevValue = r.p_browser_host
 	r.p_browser_host.Unref()
 	r.p_browser_host = p
+	// return prevValue
+}
+
+func (r *RefToCBrowserHostT) UnrefCBrowserHostT() {
+	// prevValue = r.p_browser_host
+	r.p_browser_host.Unref()
+	r.p_browser_host = nil
 	// return prevValue
 }
 
@@ -3718,6 +3795,13 @@ func (r *RefToCBrowserProcessHandlerT) setCBrowserProcessHandlerT(p *CBrowserPro
 	// return prevValue
 }
 
+func (r *RefToCBrowserProcessHandlerT) UnrefCBrowserProcessHandlerT() {
+	// prevValue = r.p_browser_process_handler
+	r.p_browser_process_handler.Unref()
+	r.p_browser_process_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCBrowserProcessHandlerT) TakeOverCBrowserProcessHandlerT(src *CBrowserProcessHandlerT) {
 	if r == nil {
 		return
@@ -4014,6 +4098,13 @@ func (r *RefToCBrowserViewT) setCBrowserViewT(p *CBrowserViewT) {
 	// return prevValue
 }
 
+func (r *RefToCBrowserViewT) UnrefCBrowserViewT() {
+	// prevValue = r.p_browser_view
+	r.p_browser_view.Unref()
+	r.p_browser_view = nil
+	// return prevValue
+}
+
 func (r *RefToCBrowserViewT) TakeOverCBrowserViewT(src *CBrowserViewT) {
 	if r == nil {
 		return
@@ -4249,6 +4340,13 @@ func (r *RefToCBrowserViewDelegateT) setCBrowserViewDelegateT(p *CBrowserViewDel
 	// prevValue = r.p_browser_view_delegate
 	r.p_browser_view_delegate.Unref()
 	r.p_browser_view_delegate = p
+	// return prevValue
+}
+
+func (r *RefToCBrowserViewDelegateT) UnrefCBrowserViewDelegateT() {
+	// prevValue = r.p_browser_view_delegate
+	r.p_browser_view_delegate.Unref()
+	r.p_browser_view_delegate = nil
 	// return prevValue
 }
 
@@ -4683,6 +4781,13 @@ func (r *RefToCButtonT) setCButtonT(p *CButtonT) {
 	// return prevValue
 }
 
+func (r *RefToCButtonT) UnrefCButtonT() {
+	// prevValue = r.p_button
+	r.p_button.Unref()
+	r.p_button = nil
+	// return prevValue
+}
+
 func (r *RefToCButtonT) TakeOverCButtonT(src *CButtonT) {
 	if r == nil {
 		return
@@ -4877,6 +4982,13 @@ func (r *RefToCButtonDelegateT) setCButtonDelegateT(p *CButtonDelegateT) {
 	// prevValue = r.p_button_delegate
 	r.p_button_delegate.Unref()
 	r.p_button_delegate = p
+	// return prevValue
+}
+
+func (r *RefToCButtonDelegateT) UnrefCButtonDelegateT() {
+	// prevValue = r.p_button_delegate
+	r.p_button_delegate.Unref()
+	r.p_button_delegate = nil
 	// return prevValue
 }
 
@@ -5225,6 +5337,13 @@ func (r *RefToCCallbackT) setCCallbackT(p *CCallbackT) {
 	// return prevValue
 }
 
+func (r *RefToCCallbackT) UnrefCCallbackT() {
+	// prevValue = r.p_callback
+	r.p_callback.Unref()
+	r.p_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCCallbackT) TakeOverCCallbackT(src *CCallbackT) {
 	if r == nil {
 		return
@@ -5360,6 +5479,13 @@ func (r *RefToCCompletionCallbackT) setCCompletionCallbackT(p *CCompletionCallba
 	// return prevValue
 }
 
+func (r *RefToCCompletionCallbackT) UnrefCCompletionCallbackT() {
+	// prevValue = r.p_completion_callback
+	r.p_completion_callback.Unref()
+	r.p_completion_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCCompletionCallbackT) TakeOverCCompletionCallbackT(src *CCompletionCallbackT) {
 	if r == nil {
 		return
@@ -5485,6 +5611,13 @@ func (r *RefToCClientT) setCClientT(p *CClientT) {
 	// prevValue = r.p_client
 	r.p_client.Unref()
 	r.p_client = p
+	// return prevValue
+}
+
+func (r *RefToCClientT) UnrefCClientT() {
+	// prevValue = r.p_client
+	r.p_client.Unref()
+	r.p_client = nil
 	// return prevValue
 }
 
@@ -6030,6 +6163,13 @@ func (r *RefToCCommandLineT) setCCommandLineT(p *CCommandLineT) {
 	// return prevValue
 }
 
+func (r *RefToCCommandLineT) UnrefCCommandLineT() {
+	// prevValue = r.p_command_line
+	r.p_command_line.Unref()
+	r.p_command_line = nil
+	// return prevValue
+}
+
 func (r *RefToCCommandLineT) TakeOverCCommandLineT(src *CCommandLineT) {
 	if r == nil {
 		return
@@ -6418,6 +6558,13 @@ func (r *RefToCRunContextMenuCallbackT) setCRunContextMenuCallbackT(p *CRunConte
 	// return prevValue
 }
 
+func (r *RefToCRunContextMenuCallbackT) UnrefCRunContextMenuCallbackT() {
+	// prevValue = r.p_run_context_menu_callback
+	r.p_run_context_menu_callback.Unref()
+	r.p_run_context_menu_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCRunContextMenuCallbackT) TakeOverCRunContextMenuCallbackT(src *CRunContextMenuCallbackT) {
 	if r == nil {
 		return
@@ -6555,6 +6702,13 @@ func (r *RefToCContextMenuHandlerT) setCContextMenuHandlerT(p *CContextMenuHandl
 	// prevValue = r.p_context_menu_handler
 	r.p_context_menu_handler.Unref()
 	r.p_context_menu_handler = p
+	// return prevValue
+}
+
+func (r *RefToCContextMenuHandlerT) UnrefCContextMenuHandlerT() {
+	// prevValue = r.p_context_menu_handler
+	r.p_context_menu_handler.Unref()
+	r.p_context_menu_handler = nil
 	// return prevValue
 }
 
@@ -6860,6 +7014,13 @@ func (r *RefToCContextMenuParamsT) setCContextMenuParamsT(p *CContextMenuParamsT
 	// prevValue = r.p_context_menu_params
 	r.p_context_menu_params.Unref()
 	r.p_context_menu_params = p
+	// return prevValue
+}
+
+func (r *RefToCContextMenuParamsT) UnrefCContextMenuParamsT() {
+	// prevValue = r.p_context_menu_params
+	r.p_context_menu_params.Unref()
+	r.p_context_menu_params = nil
 	// return prevValue
 }
 
@@ -7268,6 +7429,13 @@ func (r *RefToCCookieManagerT) setCCookieManagerT(p *CCookieManagerT) {
 	// return prevValue
 }
 
+func (r *RefToCCookieManagerT) UnrefCCookieManagerT() {
+	// prevValue = r.p_cookie_manager
+	r.p_cookie_manager.Unref()
+	r.p_cookie_manager = nil
+	// return prevValue
+}
+
 func (r *RefToCCookieManagerT) TakeOverCCookieManagerT(src *CCookieManagerT) {
 	if r == nil {
 		return
@@ -7531,6 +7699,13 @@ func (r *RefToCCookieVisitorT) setCCookieVisitorT(p *CCookieVisitorT) {
 	// return prevValue
 }
 
+func (r *RefToCCookieVisitorT) UnrefCCookieVisitorT() {
+	// prevValue = r.p_cookie_visitor
+	r.p_cookie_visitor.Unref()
+	r.p_cookie_visitor = nil
+	// return prevValue
+}
+
 func (r *RefToCCookieVisitorT) TakeOverCCookieVisitorT(src *CCookieVisitorT) {
 	if r == nil {
 		return
@@ -7754,6 +7929,13 @@ func (r *RefToCSetCookieCallbackT) setCSetCookieCallbackT(p *CSetCookieCallbackT
 	// return prevValue
 }
 
+func (r *RefToCSetCookieCallbackT) UnrefCSetCookieCallbackT() {
+	// prevValue = r.p_set_cookie_callback
+	r.p_set_cookie_callback.Unref()
+	r.p_set_cookie_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCSetCookieCallbackT) TakeOverCSetCookieCallbackT(src *CSetCookieCallbackT) {
 	if r == nil {
 		return
@@ -7969,6 +8151,13 @@ func (r *RefToCDeleteCookiesCallbackT) setCDeleteCookiesCallbackT(p *CDeleteCook
 	// prevValue = r.p_delete_cookies_callback
 	r.p_delete_cookies_callback.Unref()
 	r.p_delete_cookies_callback = p
+	// return prevValue
+}
+
+func (r *RefToCDeleteCookiesCallbackT) UnrefCDeleteCookiesCallbackT() {
+	// prevValue = r.p_delete_cookies_callback
+	r.p_delete_cookies_callback.Unref()
+	r.p_delete_cookies_callback = nil
 	// return prevValue
 }
 
@@ -8303,6 +8492,13 @@ func (r *RefToCDevToolsMessageObserverT) setCDevToolsMessageObserverT(p *CDevToo
 	// prevValue = r.p_dev_tools_message_observer
 	r.p_dev_tools_message_observer.Unref()
 	r.p_dev_tools_message_observer = p
+	// return prevValue
+}
+
+func (r *RefToCDevToolsMessageObserverT) UnrefCDevToolsMessageObserverT() {
+	// prevValue = r.p_dev_tools_message_observer
+	r.p_dev_tools_message_observer.Unref()
+	r.p_dev_tools_message_observer = nil
 	// return prevValue
 }
 
@@ -8647,6 +8843,13 @@ func (r *RefToCFileDialogCallbackT) setCFileDialogCallbackT(p *CFileDialogCallba
 	// return prevValue
 }
 
+func (r *RefToCFileDialogCallbackT) UnrefCFileDialogCallbackT() {
+	// prevValue = r.p_file_dialog_callback
+	r.p_file_dialog_callback.Unref()
+	r.p_file_dialog_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCFileDialogCallbackT) TakeOverCFileDialogCallbackT(src *CFileDialogCallbackT) {
 	if r == nil {
 		return
@@ -8787,6 +8990,13 @@ func (r *RefToCDialogHandlerT) setCDialogHandlerT(p *CDialogHandlerT) {
 	// prevValue = r.p_dialog_handler
 	r.p_dialog_handler.Unref()
 	r.p_dialog_handler = p
+	// return prevValue
+}
+
+func (r *RefToCDialogHandlerT) UnrefCDialogHandlerT() {
+	// prevValue = r.p_dialog_handler
+	r.p_dialog_handler.Unref()
+	r.p_dialog_handler = nil
 	// return prevValue
 }
 
@@ -9028,6 +9238,13 @@ func (r *RefToCDisplayT) setCDisplayT(p *CDisplayT) {
 	// prevValue = r.p_display
 	r.p_display.Unref()
 	r.p_display = p
+	// return prevValue
+}
+
+func (r *RefToCDisplayT) UnrefCDisplayT() {
+	// prevValue = r.p_display
+	r.p_display.Unref()
+	r.p_display = nil
 	// return prevValue
 }
 
@@ -9305,6 +9522,13 @@ func (r *RefToCDisplayHandlerT) setCDisplayHandlerT(p *CDisplayHandlerT) {
 	// prevValue = r.p_display_handler
 	r.p_display_handler.Unref()
 	r.p_display_handler = p
+	// return prevValue
+}
+
+func (r *RefToCDisplayHandlerT) UnrefCDisplayHandlerT() {
+	// prevValue = r.p_display_handler
+	r.p_display_handler.Unref()
+	r.p_display_handler = nil
 	// return prevValue
 }
 
@@ -9741,6 +9965,13 @@ func (r *RefToCDomvisitorT) setCDomvisitorT(p *CDomvisitorT) {
 	// return prevValue
 }
 
+func (r *RefToCDomvisitorT) UnrefCDomvisitorT() {
+	// prevValue = r.p_domvisitor
+	r.p_domvisitor.Unref()
+	r.p_domvisitor = nil
+	// return prevValue
+}
+
 func (r *RefToCDomvisitorT) TakeOverCDomvisitorT(src *CDomvisitorT) {
 	if r == nil {
 		return
@@ -9959,6 +10190,13 @@ func (r *RefToCDomdocumentT) setCDomdocumentT(p *CDomdocumentT) {
 	// prevValue = r.p_domdocument
 	r.p_domdocument.Unref()
 	r.p_domdocument = p
+	// return prevValue
+}
+
+func (r *RefToCDomdocumentT) UnrefCDomdocumentT() {
+	// prevValue = r.p_domdocument
+	r.p_domdocument.Unref()
+	r.p_domdocument = nil
 	// return prevValue
 }
 
@@ -10263,6 +10501,13 @@ func (r *RefToCDomnodeT) setCDomnodeT(p *CDomnodeT) {
 	// prevValue = r.p_domnode
 	r.p_domnode.Unref()
 	r.p_domnode = p
+	// return prevValue
+}
+
+func (r *RefToCDomnodeT) UnrefCDomnodeT() {
+	// prevValue = r.p_domnode
+	r.p_domnode.Unref()
+	r.p_domnode = nil
 	// return prevValue
 }
 
@@ -10729,6 +10974,13 @@ func (r *RefToCBeforeDownloadCallbackT) setCBeforeDownloadCallbackT(p *CBeforeDo
 	// return prevValue
 }
 
+func (r *RefToCBeforeDownloadCallbackT) UnrefCBeforeDownloadCallbackT() {
+	// prevValue = r.p_before_download_callback
+	r.p_before_download_callback.Unref()
+	r.p_before_download_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCBeforeDownloadCallbackT) TakeOverCBeforeDownloadCallbackT(src *CBeforeDownloadCallbackT) {
 	if r == nil {
 		return
@@ -10859,6 +11111,13 @@ func (r *RefToCDownloadItemCallbackT) setCDownloadItemCallbackT(p *CDownloadItem
 	// prevValue = r.p_download_item_callback
 	r.p_download_item_callback.Unref()
 	r.p_download_item_callback = p
+	// return prevValue
+}
+
+func (r *RefToCDownloadItemCallbackT) UnrefCDownloadItemCallbackT() {
+	// prevValue = r.p_download_item_callback
+	r.p_download_item_callback.Unref()
+	r.p_download_item_callback = nil
 	// return prevValue
 }
 
@@ -11004,6 +11263,13 @@ func (r *RefToCDownloadHandlerT) setCDownloadHandlerT(p *CDownloadHandlerT) {
 	// prevValue = r.p_download_handler
 	r.p_download_handler.Unref()
 	r.p_download_handler = p
+	// return prevValue
+}
+
+func (r *RefToCDownloadHandlerT) UnrefCDownloadHandlerT() {
+	// prevValue = r.p_download_handler
+	r.p_download_handler.Unref()
+	r.p_download_handler = nil
 	// return prevValue
 }
 
@@ -11255,6 +11521,13 @@ func (r *RefToCDownloadItemT) setCDownloadItemT(p *CDownloadItemT) {
 	// prevValue = r.p_download_item
 	r.p_download_item.Unref()
 	r.p_download_item = p
+	// return prevValue
+}
+
+func (r *RefToCDownloadItemT) UnrefCDownloadItemT() {
+	// prevValue = r.p_download_item
+	r.p_download_item.Unref()
+	r.p_download_item = nil
 	// return prevValue
 }
 
@@ -11594,6 +11867,13 @@ func (r *RefToCDragDataT) setCDragDataT(p *CDragDataT) {
 	// prevValue = r.p_drag_data
 	r.p_drag_data.Unref()
 	r.p_drag_data = p
+	// return prevValue
+}
+
+func (r *RefToCDragDataT) UnrefCDragDataT() {
+	// prevValue = r.p_drag_data
+	r.p_drag_data.Unref()
+	r.p_drag_data = nil
 	// return prevValue
 }
 
@@ -12062,6 +12342,13 @@ func (r *RefToCDragHandlerT) setCDragHandlerT(p *CDragHandlerT) {
 	// return prevValue
 }
 
+func (r *RefToCDragHandlerT) UnrefCDragHandlerT() {
+	// prevValue = r.p_drag_handler
+	r.p_drag_handler.Unref()
+	r.p_drag_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCDragHandlerT) TakeOverCDragHandlerT(src *CDragHandlerT) {
 	if r == nil {
 		return
@@ -12313,6 +12600,13 @@ func (r *RefToCExtensionT) setCExtensionT(p *CExtensionT) {
 	// return prevValue
 }
 
+func (r *RefToCExtensionT) UnrefCExtensionT() {
+	// prevValue = r.p_extension
+	r.p_extension.Unref()
+	r.p_extension = nil
+	// return prevValue
+}
+
 func (r *RefToCExtensionT) TakeOverCExtensionT(src *CExtensionT) {
 	if r == nil {
 		return
@@ -12551,6 +12845,13 @@ func (r *RefToCGetExtensionResourceCallbackT) setCGetExtensionResourceCallbackT(
 	// return prevValue
 }
 
+func (r *RefToCGetExtensionResourceCallbackT) UnrefCGetExtensionResourceCallbackT() {
+	// prevValue = r.p_get_extension_resource_callback
+	r.p_get_extension_resource_callback.Unref()
+	r.p_get_extension_resource_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCGetExtensionResourceCallbackT) TakeOverCGetExtensionResourceCallbackT(src *CGetExtensionResourceCallbackT) {
 	if r == nil {
 		return
@@ -12692,6 +12993,13 @@ func (r *RefToCExtensionHandlerT) setCExtensionHandlerT(p *CExtensionHandlerT) {
 	// prevValue = r.p_extension_handler
 	r.p_extension_handler.Unref()
 	r.p_extension_handler = p
+	// return prevValue
+}
+
+func (r *RefToCExtensionHandlerT) UnrefCExtensionHandlerT() {
+	// prevValue = r.p_extension_handler
+	r.p_extension_handler.Unref()
+	r.p_extension_handler = nil
 	// return prevValue
 }
 
@@ -13272,6 +13580,13 @@ func (r *RefToCFillLayoutT) setCFillLayoutT(p *CFillLayoutT) {
 	// return prevValue
 }
 
+func (r *RefToCFillLayoutT) UnrefCFillLayoutT() {
+	// prevValue = r.p_fill_layout
+	r.p_fill_layout.Unref()
+	r.p_fill_layout = nil
+	// return prevValue
+}
+
 func (r *RefToCFillLayoutT) TakeOverCFillLayoutT(src *CFillLayoutT) {
 	if r == nil {
 		return
@@ -13396,6 +13711,13 @@ func (r *RefToCFindHandlerT) setCFindHandlerT(p *CFindHandlerT) {
 	// prevValue = r.p_find_handler
 	r.p_find_handler.Unref()
 	r.p_find_handler = p
+	// return prevValue
+}
+
+func (r *RefToCFindHandlerT) UnrefCFindHandlerT() {
+	// prevValue = r.p_find_handler
+	r.p_find_handler.Unref()
+	r.p_find_handler = nil
 	// return prevValue
 }
 
@@ -13625,6 +13947,13 @@ func (r *RefToCFocusHandlerT) setCFocusHandlerT(p *CFocusHandlerT) {
 	// prevValue = r.p_focus_handler
 	r.p_focus_handler.Unref()
 	r.p_focus_handler = p
+	// return prevValue
+}
+
+func (r *RefToCFocusHandlerT) UnrefCFocusHandlerT() {
+	// prevValue = r.p_focus_handler
+	r.p_focus_handler.Unref()
+	r.p_focus_handler = nil
 	// return prevValue
 }
 
@@ -13893,6 +14222,13 @@ func (r *RefToCFrameT) setCFrameT(p *CFrameT) {
 	// prevValue = r.p_frame
 	r.p_frame.Unref()
 	r.p_frame = p
+	// return prevValue
+}
+
+func (r *RefToCFrameT) UnrefCFrameT() {
+	// prevValue = r.p_frame
+	r.p_frame.Unref()
+	r.p_frame = nil
 	// return prevValue
 }
 
@@ -14450,6 +14786,13 @@ func (r *RefToCFrameHandlerT) setCFrameHandlerT(p *CFrameHandlerT) {
 	// return prevValue
 }
 
+func (r *RefToCFrameHandlerT) UnrefCFrameHandlerT() {
+	// prevValue = r.p_frame_handler
+	r.p_frame_handler.Unref()
+	r.p_frame_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCFrameHandlerT) TakeOverCFrameHandlerT(src *CFrameHandlerT) {
 	if r == nil {
 		return
@@ -14687,6 +15030,13 @@ func (r *RefToCImageT) setCImageT(p *CImageT) {
 	// prevValue = r.p_image
 	r.p_image.Unref()
 	r.p_image = p
+	// return prevValue
+}
+
+func (r *RefToCImageT) UnrefCImageT() {
+	// prevValue = r.p_image
+	r.p_image.Unref()
+	r.p_image = nil
 	// return prevValue
 }
 
@@ -15061,6 +15411,13 @@ func (r *RefToCJsdialogCallbackT) setCJsdialogCallbackT(p *CJsdialogCallbackT) {
 	// return prevValue
 }
 
+func (r *RefToCJsdialogCallbackT) UnrefCJsdialogCallbackT() {
+	// prevValue = r.p_jsdialog_callback
+	r.p_jsdialog_callback.Unref()
+	r.p_jsdialog_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCJsdialogCallbackT) TakeOverCJsdialogCallbackT(src *CJsdialogCallbackT) {
 	if r == nil {
 		return
@@ -15190,6 +15547,13 @@ func (r *RefToCJsdialogHandlerT) setCJsdialogHandlerT(p *CJsdialogHandlerT) {
 	// prevValue = r.p_jsdialog_handler
 	r.p_jsdialog_handler.Unref()
 	r.p_jsdialog_handler = p
+	// return prevValue
+}
+
+func (r *RefToCJsdialogHandlerT) UnrefCJsdialogHandlerT() {
+	// prevValue = r.p_jsdialog_handler
+	r.p_jsdialog_handler.Unref()
+	r.p_jsdialog_handler = nil
 	// return prevValue
 }
 
@@ -15501,6 +15865,13 @@ func (r *RefToCKeyboardHandlerT) setCKeyboardHandlerT(p *CKeyboardHandlerT) {
 	// return prevValue
 }
 
+func (r *RefToCKeyboardHandlerT) UnrefCKeyboardHandlerT() {
+	// prevValue = r.p_keyboard_handler
+	r.p_keyboard_handler.Unref()
+	r.p_keyboard_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCKeyboardHandlerT) TakeOverCKeyboardHandlerT(src *CKeyboardHandlerT) {
 	if r == nil {
 		return
@@ -15748,6 +16119,13 @@ func (r *RefToCLabelButtonT) setCLabelButtonT(p *CLabelButtonT) {
 	// prevValue = r.p_label_button
 	r.p_label_button.Unref()
 	r.p_label_button = p
+	// return prevValue
+}
+
+func (r *RefToCLabelButtonT) UnrefCLabelButtonT() {
+	// prevValue = r.p_label_button
+	r.p_label_button.Unref()
+	r.p_label_button = nil
 	// return prevValue
 }
 
@@ -16051,6 +16429,13 @@ func (r *RefToCLayoutT) setCLayoutT(p *CLayoutT) {
 	// return prevValue
 }
 
+func (r *RefToCLayoutT) UnrefCLayoutT() {
+	// prevValue = r.p_layout
+	r.p_layout.Unref()
+	r.p_layout = nil
+	// return prevValue
+}
+
 func (r *RefToCLayoutT) TakeOverCLayoutT(src *CLayoutT) {
 	if r == nil {
 		return
@@ -16202,6 +16587,13 @@ func (r *RefToCLifeSpanHandlerT) setCLifeSpanHandlerT(p *CLifeSpanHandlerT) {
 	// prevValue = r.p_life_span_handler
 	r.p_life_span_handler.Unref()
 	r.p_life_span_handler = p
+	// return prevValue
+}
+
+func (r *RefToCLifeSpanHandlerT) UnrefCLifeSpanHandlerT() {
+	// prevValue = r.p_life_span_handler
+	r.p_life_span_handler.Unref()
+	r.p_life_span_handler = nil
 	// return prevValue
 }
 
@@ -16615,6 +17007,13 @@ func (r *RefToCLoadHandlerT) setCLoadHandlerT(p *CLoadHandlerT) {
 	// return prevValue
 }
 
+func (r *RefToCLoadHandlerT) UnrefCLoadHandlerT() {
+	// prevValue = r.p_load_handler
+	r.p_load_handler.Unref()
+	r.p_load_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCLoadHandlerT) TakeOverCLoadHandlerT(src *CLoadHandlerT) {
 	if r == nil {
 		return
@@ -16930,6 +17329,13 @@ func (r *RefToCMediaRouterT) setCMediaRouterT(p *CMediaRouterT) {
 	// return prevValue
 }
 
+func (r *RefToCMediaRouterT) UnrefCMediaRouterT() {
+	// prevValue = r.p_media_router
+	r.p_media_router.Unref()
+	r.p_media_router = nil
+	// return prevValue
+}
+
 func (r *RefToCMediaRouterT) TakeOverCMediaRouterT(src *CMediaRouterT) {
 	if r == nil {
 		return
@@ -17156,6 +17562,13 @@ func (r *RefToCMediaObserverT) setCMediaObserverT(p *CMediaObserverT) {
 	// prevValue = r.p_media_observer
 	r.p_media_observer.Unref()
 	r.p_media_observer = p
+	// return prevValue
+}
+
+func (r *RefToCMediaObserverT) UnrefCMediaObserverT() {
+	// prevValue = r.p_media_observer
+	r.p_media_observer.Unref()
+	r.p_media_observer = nil
 	// return prevValue
 }
 
@@ -17444,6 +17857,13 @@ func (r *RefToCMediaRouteT) setCMediaRouteT(p *CMediaRouteT) {
 	// return prevValue
 }
 
+func (r *RefToCMediaRouteT) UnrefCMediaRouteT() {
+	// prevValue = r.p_media_route
+	r.p_media_route.Unref()
+	r.p_media_route = nil
+	// return prevValue
+}
+
 func (r *RefToCMediaRouteT) TakeOverCMediaRouteT(src *CMediaRouteT) {
 	if r == nil {
 		return
@@ -17624,6 +18044,13 @@ func (r *RefToCMediaRouteCreateCallbackT) setCMediaRouteCreateCallbackT(p *CMedi
 	// return prevValue
 }
 
+func (r *RefToCMediaRouteCreateCallbackT) UnrefCMediaRouteCreateCallbackT() {
+	// prevValue = r.p_media_route_create_callback
+	r.p_media_route_create_callback.Unref()
+	r.p_media_route_create_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCMediaRouteCreateCallbackT) TakeOverCMediaRouteCreateCallbackT(src *CMediaRouteCreateCallbackT) {
 	if r == nil {
 		return
@@ -17762,6 +18189,13 @@ func (r *RefToCMediaSinkT) setCMediaSinkT(p *CMediaSinkT) {
 	// prevValue = r.p_media_sink
 	r.p_media_sink.Unref()
 	r.p_media_sink = p
+	// return prevValue
+}
+
+func (r *RefToCMediaSinkT) UnrefCMediaSinkT() {
+	// prevValue = r.p_media_sink
+	r.p_media_sink.Unref()
+	r.p_media_sink = nil
 	// return prevValue
 }
 
@@ -17998,6 +18432,13 @@ func (r *RefToCMediaSinkDeviceInfoCallbackT) setCMediaSinkDeviceInfoCallbackT(p 
 	// return prevValue
 }
 
+func (r *RefToCMediaSinkDeviceInfoCallbackT) UnrefCMediaSinkDeviceInfoCallbackT() {
+	// prevValue = r.p_media_sink_device_info_callback
+	r.p_media_sink_device_info_callback.Unref()
+	r.p_media_sink_device_info_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCMediaSinkDeviceInfoCallbackT) TakeOverCMediaSinkDeviceInfoCallbackT(src *CMediaSinkDeviceInfoCallbackT) {
 	if r == nil {
 		return
@@ -18127,6 +18568,13 @@ func (r *RefToCMediaSourceT) setCMediaSourceT(p *CMediaSourceT) {
 	// prevValue = r.p_media_source
 	r.p_media_source.Unref()
 	r.p_media_source = p
+	// return prevValue
+}
+
+func (r *RefToCMediaSourceT) UnrefCMediaSourceT() {
+	// prevValue = r.p_media_source
+	r.p_media_source.Unref()
+	r.p_media_source = nil
 	// return prevValue
 }
 
@@ -18287,6 +18735,13 @@ func (r *RefToCMenuButtonT) setCMenuButtonT(p *CMenuButtonT) {
 	// prevValue = r.p_menu_button
 	r.p_menu_button.Unref()
 	r.p_menu_button = p
+	// return prevValue
+}
+
+func (r *RefToCMenuButtonT) UnrefCMenuButtonT() {
+	// prevValue = r.p_menu_button
+	r.p_menu_button.Unref()
+	r.p_menu_button = nil
 	// return prevValue
 }
 
@@ -18473,6 +18928,13 @@ func (r *RefToCMenuButtonPressedLockT) setCMenuButtonPressedLockT(p *CMenuButton
 	// return prevValue
 }
 
+func (r *RefToCMenuButtonPressedLockT) UnrefCMenuButtonPressedLockT() {
+	// prevValue = r.p_menu_button_pressed_lock
+	r.p_menu_button_pressed_lock.Unref()
+	r.p_menu_button_pressed_lock = nil
+	// return prevValue
+}
+
 func (r *RefToCMenuButtonPressedLockT) TakeOverCMenuButtonPressedLockT(src *CMenuButtonPressedLockT) {
 	if r == nil {
 		return
@@ -18589,6 +19051,13 @@ func (r *RefToCMenuButtonDelegateT) setCMenuButtonDelegateT(p *CMenuButtonDelega
 	// prevValue = r.p_menu_button_delegate
 	r.p_menu_button_delegate.Unref()
 	r.p_menu_button_delegate = p
+	// return prevValue
+}
+
+func (r *RefToCMenuButtonDelegateT) UnrefCMenuButtonDelegateT() {
+	// prevValue = r.p_menu_button_delegate
+	r.p_menu_button_delegate.Unref()
+	r.p_menu_button_delegate = nil
 	// return prevValue
 }
 
@@ -18942,6 +19411,13 @@ func (r *RefToCMenuModelT) setCMenuModelT(p *CMenuModelT) {
 	// prevValue = r.p_menu_model
 	r.p_menu_model.Unref()
 	r.p_menu_model = p
+	// return prevValue
+}
+
+func (r *RefToCMenuModelT) UnrefCMenuModelT() {
+	// prevValue = r.p_menu_model
+	r.p_menu_model.Unref()
+	r.p_menu_model = nil
 	// return prevValue
 }
 
@@ -19946,6 +20422,13 @@ func (r *RefToCMenuModelDelegateT) setCMenuModelDelegateT(p *CMenuModelDelegateT
 	// return prevValue
 }
 
+func (r *RefToCMenuModelDelegateT) UnrefCMenuModelDelegateT() {
+	// prevValue = r.p_menu_model_delegate
+	r.p_menu_model_delegate.Unref()
+	r.p_menu_model_delegate = nil
+	// return prevValue
+}
+
 func (r *RefToCMenuModelDelegateT) TakeOverCMenuModelDelegateT(src *CMenuModelDelegateT) {
 	if r == nil {
 		return
@@ -20295,6 +20778,13 @@ func (r *RefToCNavigationEntryT) setCNavigationEntryT(p *CNavigationEntryT) {
 	// return prevValue
 }
 
+func (r *RefToCNavigationEntryT) UnrefCNavigationEntryT() {
+	// prevValue = r.p_navigation_entry
+	r.p_navigation_entry.Unref()
+	r.p_navigation_entry = nil
+	// return prevValue
+}
+
 func (r *RefToCNavigationEntryT) TakeOverCNavigationEntryT(src *CNavigationEntryT) {
 	if r == nil {
 		return
@@ -20638,6 +21128,13 @@ func (r *RefToCOverlayControllerT) setCOverlayControllerT(p *COverlayControllerT
 	// prevValue = r.p_overlay_controller
 	r.p_overlay_controller.Unref()
 	r.p_overlay_controller = p
+	// return prevValue
+}
+
+func (r *RefToCOverlayControllerT) UnrefCOverlayControllerT() {
+	// prevValue = r.p_overlay_controller
+	r.p_overlay_controller.Unref()
+	r.p_overlay_controller = nil
 	// return prevValue
 }
 
@@ -21012,6 +21509,13 @@ func (r *RefToCPanelT) setCPanelT(p *CPanelT) {
 	// return prevValue
 }
 
+func (r *RefToCPanelT) UnrefCPanelT() {
+	// prevValue = r.p_panel
+	r.p_panel.Unref()
+	r.p_panel = nil
+	// return prevValue
+}
+
 func (r *RefToCPanelT) TakeOverCPanelT(src *CPanelT) {
 	if r == nil {
 		return
@@ -21313,6 +21817,13 @@ func (r *RefToCPanelDelegateT) setCPanelDelegateT(p *CPanelDelegateT) {
 	// prevValue = r.p_panel_delegate
 	r.p_panel_delegate.Unref()
 	r.p_panel_delegate = p
+	// return prevValue
+}
+
+func (r *RefToCPanelDelegateT) UnrefCPanelDelegateT() {
+	// prevValue = r.p_panel_delegate
+	r.p_panel_delegate.Unref()
+	r.p_panel_delegate = nil
 	// return prevValue
 }
 
@@ -21621,6 +22132,13 @@ func (r *RefToCPrintDialogCallbackT) setCPrintDialogCallbackT(p *CPrintDialogCal
 	// return prevValue
 }
 
+func (r *RefToCPrintDialogCallbackT) UnrefCPrintDialogCallbackT() {
+	// prevValue = r.p_print_dialog_callback
+	r.p_print_dialog_callback.Unref()
+	r.p_print_dialog_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCPrintDialogCallbackT) TakeOverCPrintDialogCallbackT(src *CPrintDialogCallbackT) {
 	if r == nil {
 		return
@@ -21763,6 +22281,13 @@ func (r *RefToCPrintJobCallbackT) setCPrintJobCallbackT(p *CPrintJobCallbackT) {
 	// return prevValue
 }
 
+func (r *RefToCPrintJobCallbackT) UnrefCPrintJobCallbackT() {
+	// prevValue = r.p_print_job_callback
+	r.p_print_job_callback.Unref()
+	r.p_print_job_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCPrintJobCallbackT) TakeOverCPrintJobCallbackT(src *CPrintJobCallbackT) {
 	if r == nil {
 		return
@@ -21888,6 +22413,13 @@ func (r *RefToCPrintHandlerT) setCPrintHandlerT(p *CPrintHandlerT) {
 	// prevValue = r.p_print_handler
 	r.p_print_handler.Unref()
 	r.p_print_handler = p
+	// return prevValue
+}
+
+func (r *RefToCPrintHandlerT) UnrefCPrintHandlerT() {
+	// prevValue = r.p_print_handler
+	r.p_print_handler.Unref()
+	r.p_print_handler = nil
 	// return prevValue
 }
 
@@ -22224,6 +22756,13 @@ func (r *RefToCPrintSettingsT) setCPrintSettingsT(p *CPrintSettingsT) {
 	// prevValue = r.p_print_settings
 	r.p_print_settings.Unref()
 	r.p_print_settings = p
+	// return prevValue
+}
+
+func (r *RefToCPrintSettingsT) UnrefCPrintSettingsT() {
+	// prevValue = r.p_print_settings
+	r.p_print_settings.Unref()
+	r.p_print_settings = nil
 	// return prevValue
 }
 
@@ -22601,6 +23140,13 @@ func (r *RefToCProcessMessageT) setCProcessMessageT(p *CProcessMessageT) {
 	// return prevValue
 }
 
+func (r *RefToCProcessMessageT) UnrefCProcessMessageT() {
+	// prevValue = r.p_process_message
+	r.p_process_message.Unref()
+	r.p_process_message = nil
+	// return prevValue
+}
+
 func (r *RefToCProcessMessageT) TakeOverCProcessMessageT(src *CProcessMessageT) {
 	if r == nil {
 		return
@@ -22796,6 +23342,13 @@ func (r *RefToCRegistrationT) setCRegistrationT(p *CRegistrationT) {
 	// return prevValue
 }
 
+func (r *RefToCRegistrationT) UnrefCRegistrationT() {
+	// prevValue = r.p_registration
+	r.p_registration.Unref()
+	r.p_registration = nil
+	// return prevValue
+}
+
 func (r *RefToCRegistrationT) TakeOverCRegistrationT(src *CRegistrationT) {
 	if r == nil {
 		return
@@ -22913,6 +23466,13 @@ func (r *RefToCRenderHandlerT) setCRenderHandlerT(p *CRenderHandlerT) {
 	// prevValue = r.p_render_handler
 	r.p_render_handler.Unref()
 	r.p_render_handler = p
+	// return prevValue
+}
+
+func (r *RefToCRenderHandlerT) UnrefCRenderHandlerT() {
+	// prevValue = r.p_render_handler
+	r.p_render_handler.Unref()
+	r.p_render_handler = nil
 	// return prevValue
 }
 
@@ -23489,6 +24049,13 @@ func (r *RefToCRenderProcessHandlerT) setCRenderProcessHandlerT(p *CRenderProces
 	// return prevValue
 }
 
+func (r *RefToCRenderProcessHandlerT) UnrefCRenderProcessHandlerT() {
+	// prevValue = r.p_render_process_handler
+	r.p_render_process_handler.Unref()
+	r.p_render_process_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCRenderProcessHandlerT) TakeOverCRenderProcessHandlerT(src *CRenderProcessHandlerT) {
 	if r == nil {
 		return
@@ -23898,6 +24465,13 @@ func (r *RefToCRequestT) setCRequestT(p *CRequestT) {
 	// prevValue = r.p_request
 	r.p_request.Unref()
 	r.p_request = p
+	// return prevValue
+}
+
+func (r *RefToCRequestT) UnrefCRequestT() {
+	// prevValue = r.p_request
+	r.p_request.Unref()
+	r.p_request = nil
 	// return prevValue
 }
 
@@ -24342,6 +24916,13 @@ func (r *RefToCPostDataT) setCPostDataT(p *CPostDataT) {
 	// return prevValue
 }
 
+func (r *RefToCPostDataT) UnrefCPostDataT() {
+	// prevValue = r.p_post_data
+	r.p_post_data.Unref()
+	r.p_post_data = nil
+	// return prevValue
+}
+
 func (r *RefToCPostDataT) TakeOverCPostDataT(src *CPostDataT) {
 	if r == nil {
 		return
@@ -24568,6 +25149,13 @@ func (r *RefToCPostDataElementT) setCPostDataElementT(p *CPostDataElementT) {
 	// prevValue = r.p_post_data_element
 	r.p_post_data_element.Unref()
 	r.p_post_data_element = p
+	// return prevValue
+}
+
+func (r *RefToCPostDataElementT) UnrefCPostDataElementT() {
+	// prevValue = r.p_post_data_element
+	r.p_post_data_element.Unref()
+	r.p_post_data_element = nil
 	// return prevValue
 }
 
@@ -24801,6 +25389,13 @@ func (r *RefToCResolveCallbackT) setCResolveCallbackT(p *CResolveCallbackT) {
 	// return prevValue
 }
 
+func (r *RefToCResolveCallbackT) UnrefCResolveCallbackT() {
+	// prevValue = r.p_resolve_callback
+	r.p_resolve_callback.Unref()
+	r.p_resolve_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCResolveCallbackT) TakeOverCResolveCallbackT(src *CResolveCallbackT) {
 	if r == nil {
 		return
@@ -24942,6 +25537,13 @@ func (r *RefToCRequestContextT) setCRequestContextT(p *CRequestContextT) {
 	// prevValue = r.p_request_context
 	r.p_request_context.Unref()
 	r.p_request_context = p
+	// return prevValue
+}
+
+func (r *RefToCRequestContextT) UnrefCRequestContextT() {
+	// prevValue = r.p_request_context
+	r.p_request_context.Unref()
+	r.p_request_context = nil
 	// return prevValue
 }
 
@@ -25168,21 +25770,6 @@ func (self *CRequestContextT) ClearSchemeHandlerFactories() (ret bool) {
 
 	ret = cRet == 1
 	return ret
-}
-
-///
-// Tells all renderer processes associated with this context to throw away
-// their plugin list cache. If |reload_pages| is true (1) they will also
-// reload all pages with plugins.
-// cef_request_context_handler_t::OnBeforePluginLoad may be called to rebuild
-// the plugin list cache.
-///
-func (self *CRequestContextT) PurgePluginListCache(
-	reload_pages int,
-) {
-
-	C.cefingo_request_context_purge_plugin_list_cache((*C.cef_request_context_t)(self.pc_request_context), (C.int)(reload_pages))
-
 }
 
 ///
@@ -25568,7 +26155,7 @@ func CreateContextShared(
 	return ret
 }
 
-// cef_request_context_handler_capi.h, include/capi/cef_request_context_handler_capi.h:129:3,
+// cef_request_context_handler_capi.h, include/capi/cef_request_context_handler_capi.h:101:3,
 
 ///
 // Implement this structure to provide handler implementations. The handler
@@ -25604,6 +26191,13 @@ func (r *RefToCRequestContextHandlerT) setCRequestContextHandlerT(p *CRequestCon
 	// prevValue = r.p_request_context_handler
 	r.p_request_context_handler.Unref()
 	r.p_request_context_handler = p
+	// return prevValue
+}
+
+func (r *RefToCRequestContextHandlerT) UnrefCRequestContextHandlerT() {
+	// prevValue = r.p_request_context_handler
+	r.p_request_context_handler.Unref()
+	r.p_request_context_handler = nil
 	// return prevValue
 }
 
@@ -25701,36 +26295,6 @@ type OnRequestContextInitializedHandler interface {
 }
 
 ///
-// Called on multiple browser process threads before a plugin instance is
-// loaded. |mime_type| is the mime type of the plugin that will be loaded.
-// |plugin_url| is the content URL that the plugin will load and may be NULL.
-// |is_main_frame| will be true (1) if the plugin is being loaded in the main
-// (top-level) frame, |top_origin_url| is the URL for the top-level frame that
-// contains the plugin when loading a specific plugin instance or NULL when
-// building the initial list of enabled plugins for &#39;navigator.plugins&#39;
-// JavaScript state. |plugin_info| includes additional information about the
-// plugin that will be loaded. |plugin_policy| is the recommended policy.
-// Modify |plugin_policy| and return true (1) to change the policy. Return
-// false (0) to use the recommended policy. The default plugin policy can be
-// set at runtime using the `--plugin-policy=[allow|detect|block]` command-
-// line flag. Decisions to mark a plugin as disabled by setting
-// |plugin_policy| to PLUGIN_POLICY_DISABLED may be cached when
-// |top_origin_url| is NULL. To purge the plugin list cache and potentially
-// trigger new calls to this function call
-// cef_request_context_t::PurgePluginListCache.
-///
-type OnBeforePluginLoadHandler interface {
-	OnBeforePluginLoad(
-		self *CRequestContextHandlerT,
-		mime_type string,
-		plugin_url string,
-		is_main_frame int,
-		top_origin_url string,
-		plugin_info *CWebPluginInfoT,
-	) (ret bool, plugin_policy CPluginPolicyT)
-}
-
-///
 // Called on the browser process IO thread before a resource request is
 // initiated. The |browser| and |frame| values represent the source of the
 // request, and may be NULL for requests originating from service workers or
@@ -25763,12 +26327,10 @@ type CRequestContextHandlerTGetResourceRequestHandlerHandler interface {
 var request_context_handler_handlers = struct {
 	handler                                map[*cCRequestContextHandlerT]interface{}
 	on_request_context_initialized_handler map[*cCRequestContextHandlerT]OnRequestContextInitializedHandler
-	on_before_plugin_load_handler          map[*cCRequestContextHandlerT]OnBeforePluginLoadHandler
 	get_resource_request_handler_handler   map[*cCRequestContextHandlerT]CRequestContextHandlerTGetResourceRequestHandlerHandler
 }{
 	map[*cCRequestContextHandlerT]interface{}{},
 	map[*cCRequestContextHandlerT]OnRequestContextInitializedHandler{},
-	map[*cCRequestContextHandlerT]OnBeforePluginLoadHandler{},
 	map[*cCRequestContextHandlerT]CRequestContextHandlerTGetResourceRequestHandlerHandler{},
 }
 
@@ -25787,7 +26349,6 @@ func AllocCRequestContextHandlerT() *CRequestContextHandlerT {
 		defer cefingoIfaceAccess.Unlock()
 		delete(request_context_handler_handlers.handler, cgop)
 		delete(request_context_handler_handlers.on_request_context_initialized_handler, cgop)
-		delete(request_context_handler_handlers.on_before_plugin_load_handler, cgop)
 		delete(request_context_handler_handlers.get_resource_request_handler_handler, cgop)
 	}))
 
@@ -25818,12 +26379,6 @@ func (request_context_handler *CRequestContextHandlerT) Bind(a interface{}) *CRe
 		delete(request_context_handler_handlers.on_request_context_initialized_handler, cp)
 	}
 
-	if h, ok := a.(OnBeforePluginLoadHandler); ok {
-		request_context_handler_handlers.on_before_plugin_load_handler[cp] = h
-	} else {
-		delete(request_context_handler_handlers.on_before_plugin_load_handler, cp)
-	}
-
 	if h, ok := a.(CRequestContextHandlerTGetResourceRequestHandlerHandler); ok {
 		request_context_handler_handlers.get_resource_request_handler_handler[cp] = h
 	} else {
@@ -25852,7 +26407,6 @@ func (request_context_handler *CRequestContextHandlerT) UnbindAll() {
 		delete(request_context_handler_handlers.handler, cp)
 
 		delete(request_context_handler_handlers.on_request_context_initialized_handler, cp)
-		delete(request_context_handler_handlers.on_before_plugin_load_handler, cp)
 		delete(request_context_handler_handlers.get_resource_request_handler_handler, cp)
 	}()
 
@@ -25903,6 +26457,13 @@ func (r *RefToCSelectClientCertificateCallbackT) setCSelectClientCertificateCall
 	// prevValue = r.p_select_client_certificate_callback
 	r.p_select_client_certificate_callback.Unref()
 	r.p_select_client_certificate_callback = p
+	// return prevValue
+}
+
+func (r *RefToCSelectClientCertificateCallbackT) UnrefCSelectClientCertificateCallbackT() {
+	// prevValue = r.p_select_client_certificate_callback
+	r.p_select_client_certificate_callback.Unref()
+	r.p_select_client_certificate_callback = nil
 	// return prevValue
 }
 
@@ -26038,6 +26599,13 @@ func (r *RefToCRequestHandlerT) setCRequestHandlerT(p *CRequestHandlerT) {
 	// prevValue = r.p_request_handler
 	r.p_request_handler.Unref()
 	r.p_request_handler = p
+	// return prevValue
+}
+
+func (r *RefToCRequestHandlerT) UnrefCRequestHandlerT() {
+	// prevValue = r.p_request_handler
+	r.p_request_handler.Unref()
+	r.p_request_handler = nil
 	// return prevValue
 }
 
@@ -26565,6 +27133,13 @@ func (r *RefToCResourceBundleHandlerT) setCResourceBundleHandlerT(p *CResourceBu
 	// return prevValue
 }
 
+func (r *RefToCResourceBundleHandlerT) UnrefCResourceBundleHandlerT() {
+	// prevValue = r.p_resource_bundle_handler
+	r.p_resource_bundle_handler.Unref()
+	r.p_resource_bundle_handler = nil
+	// return prevValue
+}
+
 func (r *RefToCResourceBundleHandlerT) TakeOverCResourceBundleHandlerT(src *CResourceBundleHandlerT) {
 	if r == nil {
 		return
@@ -26837,6 +27412,13 @@ func (r *RefToCResourceSkipCallbackT) setCResourceSkipCallbackT(p *CResourceSkip
 	// return prevValue
 }
 
+func (r *RefToCResourceSkipCallbackT) UnrefCResourceSkipCallbackT() {
+	// prevValue = r.p_resource_skip_callback
+	r.p_resource_skip_callback.Unref()
+	r.p_resource_skip_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCResourceSkipCallbackT) TakeOverCResourceSkipCallbackT(src *CResourceSkipCallbackT) {
 	if r == nil {
 		return
@@ -26965,6 +27547,13 @@ func (r *RefToCResourceReadCallbackT) setCResourceReadCallbackT(p *CResourceRead
 	// prevValue = r.p_resource_read_callback
 	r.p_resource_read_callback.Unref()
 	r.p_resource_read_callback = p
+	// return prevValue
+}
+
+func (r *RefToCResourceReadCallbackT) UnrefCResourceReadCallbackT() {
+	// prevValue = r.p_resource_read_callback
+	r.p_resource_read_callback.Unref()
+	r.p_resource_read_callback = nil
 	// return prevValue
 }
 
@@ -27098,6 +27687,13 @@ func (r *RefToCResourceHandlerT) setCResourceHandlerT(p *CResourceHandlerT) {
 	// prevValue = r.p_resource_handler
 	r.p_resource_handler.Unref()
 	r.p_resource_handler = p
+	// return prevValue
+}
+
+func (r *RefToCResourceHandlerT) UnrefCResourceHandlerT() {
+	// prevValue = r.p_resource_handler
+	r.p_resource_handler.Unref()
+	r.p_resource_handler = nil
 	// return prevValue
 }
 
@@ -27462,6 +28058,13 @@ func (r *RefToCResourceRequestHandlerT) setCResourceRequestHandlerT(p *CResource
 	// prevValue = r.p_resource_request_handler
 	r.p_resource_request_handler.Unref()
 	r.p_resource_request_handler = p
+	// return prevValue
+}
+
+func (r *RefToCResourceRequestHandlerT) UnrefCResourceRequestHandlerT() {
+	// prevValue = r.p_resource_request_handler
+	r.p_resource_request_handler.Unref()
+	r.p_resource_request_handler = nil
 	// return prevValue
 }
 
@@ -27905,6 +28508,13 @@ func (r *RefToCCookieAccessFilterT) setCCookieAccessFilterT(p *CCookieAccessFilt
 	// return prevValue
 }
 
+func (r *RefToCCookieAccessFilterT) UnrefCCookieAccessFilterT() {
+	// prevValue = r.p_cookie_access_filter
+	r.p_cookie_access_filter.Unref()
+	r.p_cookie_access_filter = nil
+	// return prevValue
+}
+
 func (r *RefToCCookieAccessFilterT) TakeOverCCookieAccessFilterT(src *CCookieAccessFilterT) {
 	if r == nil {
 		return
@@ -28157,6 +28767,13 @@ func (r *RefToCResponseT) setCResponseT(p *CResponseT) {
 	// prevValue = r.p_response
 	r.p_response.Unref()
 	r.p_response = p
+	// return prevValue
+}
+
+func (r *RefToCResponseT) UnrefCResponseT() {
+	// prevValue = r.p_response
+	r.p_response.Unref()
+	r.p_response = nil
 	// return prevValue
 }
 
@@ -28517,6 +29134,13 @@ func (r *RefToCResponseFilterT) setCResponseFilterT(p *CResponseFilterT) {
 	// return prevValue
 }
 
+func (r *RefToCResponseFilterT) UnrefCResponseFilterT() {
+	// prevValue = r.p_response_filter
+	r.p_response_filter.Unref()
+	r.p_response_filter = nil
+	// return prevValue
+}
+
 func (r *RefToCResponseFilterT) TakeOverCResponseFilterT(src *CResponseFilterT) {
 	if r == nil {
 		return
@@ -28782,6 +29406,12 @@ func (r *RefToCSchemeRegistrarT) setCSchemeRegistrarT(p *CSchemeRegistrarT) {
 	// return prevValue
 }
 
+func (r *RefToCSchemeRegistrarT) UnrefCSchemeRegistrarT() {
+	// prevValue = r.p_scheme_registrar
+	r.p_scheme_registrar = nil
+	// return prevValue
+}
+
 func (r *RefToCSchemeRegistrarT) TakeOverCSchemeRegistrarT(src *CSchemeRegistrarT) {
 	if r == nil {
 		return
@@ -28869,6 +29499,13 @@ func (r *RefToCSchemeHandlerFactoryT) setCSchemeHandlerFactoryT(p *CSchemeHandle
 	// prevValue = r.p_scheme_handler_factory
 	r.p_scheme_handler_factory.Unref()
 	r.p_scheme_handler_factory = p
+	// return prevValue
+}
+
+func (r *RefToCSchemeHandlerFactoryT) UnrefCSchemeHandlerFactoryT() {
+	// prevValue = r.p_scheme_handler_factory
+	r.p_scheme_handler_factory.Unref()
+	r.p_scheme_handler_factory = nil
 	// return prevValue
 }
 
@@ -29149,6 +29786,13 @@ func (r *RefToCScrollViewT) setCScrollViewT(p *CScrollViewT) {
 	// return prevValue
 }
 
+func (r *RefToCScrollViewT) UnrefCScrollViewT() {
+	// prevValue = r.p_scroll_view
+	r.p_scroll_view.Unref()
+	r.p_scroll_view = nil
+	// return prevValue
+}
+
 func (r *RefToCScrollViewT) TakeOverCScrollViewT(src *CScrollViewT) {
 	if r == nil {
 		return
@@ -29376,6 +30020,13 @@ func (r *RefToCSslinfoT) setCSslinfoT(p *CSslinfoT) {
 	// return prevValue
 }
 
+func (r *RefToCSslinfoT) UnrefCSslinfoT() {
+	// prevValue = r.p_sslinfo
+	r.p_sslinfo.Unref()
+	r.p_sslinfo = nil
+	// return prevValue
+}
+
 func (r *RefToCSslinfoT) TakeOverCSslinfoT(src *CSslinfoT) {
 	if r == nil {
 		return
@@ -29528,6 +30179,13 @@ func (r *RefToCSslstatusT) setCSslstatusT(p *CSslstatusT) {
 	// prevValue = r.p_sslstatus
 	r.p_sslstatus.Unref()
 	r.p_sslstatus = p
+	// return prevValue
+}
+
+func (r *RefToCSslstatusT) UnrefCSslstatusT() {
+	// prevValue = r.p_sslstatus
+	r.p_sslstatus.Unref()
+	r.p_sslstatus = nil
 	// return prevValue
 }
 
@@ -29704,6 +30362,13 @@ func (r *RefToCReadHandlerT) setCReadHandlerT(p *CReadHandlerT) {
 	// prevValue = r.p_read_handler
 	r.p_read_handler.Unref()
 	r.p_read_handler = p
+	// return prevValue
+}
+
+func (r *RefToCReadHandlerT) UnrefCReadHandlerT() {
+	// prevValue = r.p_read_handler
+	r.p_read_handler.Unref()
+	r.p_read_handler = nil
 	// return prevValue
 }
 
@@ -30007,6 +30672,13 @@ func (r *RefToCStreamReaderT) setCStreamReaderT(p *CStreamReaderT) {
 	// return prevValue
 }
 
+func (r *RefToCStreamReaderT) UnrefCStreamReaderT() {
+	// prevValue = r.p_stream_reader
+	r.p_stream_reader.Unref()
+	r.p_stream_reader = nil
+	// return prevValue
+}
+
 func (r *RefToCStreamReaderT) TakeOverCStreamReaderT(src *CStreamReaderT) {
 	if r == nil {
 		return
@@ -30235,6 +30907,13 @@ func (r *RefToCWriteHandlerT) setCWriteHandlerT(p *CWriteHandlerT) {
 	// prevValue = r.p_write_handler
 	r.p_write_handler.Unref()
 	r.p_write_handler = p
+	// return prevValue
+}
+
+func (r *RefToCWriteHandlerT) UnrefCWriteHandlerT() {
+	// prevValue = r.p_write_handler
+	r.p_write_handler.Unref()
+	r.p_write_handler = nil
 	// return prevValue
 }
 
@@ -30538,6 +31217,13 @@ func (r *RefToCStreamWriterT) setCStreamWriterT(p *CStreamWriterT) {
 	// return prevValue
 }
 
+func (r *RefToCStreamWriterT) UnrefCStreamWriterT() {
+	// prevValue = r.p_stream_writer
+	r.p_stream_writer.Unref()
+	r.p_stream_writer = nil
+	// return prevValue
+}
+
 func (r *RefToCStreamWriterT) TakeOverCStreamWriterT(src *CStreamWriterT) {
 	if r == nil {
 		return
@@ -30751,6 +31437,13 @@ func (r *RefToCStringVisitorT) setCStringVisitorT(p *CStringVisitorT) {
 	// prevValue = r.p_string_visitor
 	r.p_string_visitor.Unref()
 	r.p_string_visitor = p
+	// return prevValue
+}
+
+func (r *RefToCStringVisitorT) UnrefCStringVisitorT() {
+	// prevValue = r.p_string_visitor
+	r.p_string_visitor.Unref()
+	r.p_string_visitor = nil
 	// return prevValue
 }
 
@@ -30977,6 +31670,13 @@ func (r *RefToCTaskT) setCTaskT(p *CTaskT) {
 	// return prevValue
 }
 
+func (r *RefToCTaskT) UnrefCTaskT() {
+	// prevValue = r.p_task
+	r.p_task.Unref()
+	r.p_task = nil
+	// return prevValue
+}
+
 func (r *RefToCTaskT) TakeOverCTaskT(src *CTaskT) {
 	if r == nil {
 		return
@@ -31195,6 +31895,13 @@ func (r *RefToCTaskRunnerT) setCTaskRunnerT(p *CTaskRunnerT) {
 	// prevValue = r.p_task_runner
 	r.p_task_runner.Unref()
 	r.p_task_runner = p
+	// return prevValue
+}
+
+func (r *RefToCTaskRunnerT) UnrefCTaskRunnerT() {
+	// prevValue = r.p_task_runner
+	r.p_task_runner.Unref()
+	r.p_task_runner = nil
 	// return prevValue
 }
 
@@ -31482,6 +32189,13 @@ func (r *RefToCTextfieldT) setCTextfieldT(p *CTextfieldT) {
 	// prevValue = r.p_textfield
 	r.p_textfield.Unref()
 	r.p_textfield = p
+	// return prevValue
+}
+
+func (r *RefToCTextfieldT) UnrefCTextfieldT() {
+	// prevValue = r.p_textfield
+	r.p_textfield.Unref()
+	r.p_textfield = nil
 	// return prevValue
 }
 
@@ -32012,6 +32726,13 @@ func (r *RefToCTextfieldDelegateT) setCTextfieldDelegateT(p *CTextfieldDelegateT
 	// return prevValue
 }
 
+func (r *RefToCTextfieldDelegateT) UnrefCTextfieldDelegateT() {
+	// prevValue = r.p_textfield_delegate
+	r.p_textfield_delegate.Unref()
+	r.p_textfield_delegate = nil
+	// return prevValue
+}
+
 func (r *RefToCTextfieldDelegateT) TakeOverCTextfieldDelegateT(src *CTextfieldDelegateT) {
 	if r == nil {
 		return
@@ -32362,6 +33083,13 @@ func (r *RefToCEndTracingCallbackT) setCEndTracingCallbackT(p *CEndTracingCallba
 	// return prevValue
 }
 
+func (r *RefToCEndTracingCallbackT) UnrefCEndTracingCallbackT() {
+	// prevValue = r.p_end_tracing_callback
+	r.p_end_tracing_callback.Unref()
+	r.p_end_tracing_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCEndTracingCallbackT) TakeOverCEndTracingCallbackT(src *CEndTracingCallbackT) {
 	if r == nil {
 		return
@@ -32663,6 +33391,13 @@ func (r *RefToCUrlrequestT) setCUrlrequestT(p *CUrlrequestT) {
 	// return prevValue
 }
 
+func (r *RefToCUrlrequestT) UnrefCUrlrequestT() {
+	// prevValue = r.p_urlrequest
+	r.p_urlrequest.Unref()
+	r.p_urlrequest = nil
+	// return prevValue
+}
+
 func (r *RefToCUrlrequestT) TakeOverCUrlrequestT(src *CUrlrequestT) {
 	if r == nil {
 		return
@@ -32900,6 +33635,13 @@ func (r *RefToCUrlrequestClientT) setCUrlrequestClientT(p *CUrlrequestClientT) {
 	// prevValue = r.p_urlrequest_client
 	r.p_urlrequest_client.Unref()
 	r.p_urlrequest_client = p
+	// return prevValue
+}
+
+func (r *RefToCUrlrequestClientT) UnrefCUrlrequestClientT() {
+	// prevValue = r.p_urlrequest_client
+	r.p_urlrequest_client.Unref()
+	r.p_urlrequest_client = nil
 	// return prevValue
 }
 
@@ -33232,6 +33974,13 @@ func (r *RefToCV8contextT) setCV8contextT(p *CV8contextT) {
 	// return prevValue
 }
 
+func (r *RefToCV8contextT) UnrefCV8contextT() {
+	// prevValue = r.p_v8context
+	r.p_v8context.Unref()
+	r.p_v8context = nil
+	// return prevValue
+}
+
 func (r *RefToCV8contextT) TakeOverCV8contextT(src *CV8contextT) {
 	if r == nil {
 		return
@@ -33519,6 +34268,13 @@ func (r *RefToCV8handlerT) setCV8handlerT(p *CV8handlerT) {
 	// return prevValue
 }
 
+func (r *RefToCV8handlerT) UnrefCV8handlerT() {
+	// prevValue = r.p_v8handler
+	r.p_v8handler.Unref()
+	r.p_v8handler = nil
+	// return prevValue
+}
+
 func (r *RefToCV8handlerT) TakeOverCV8handlerT(src *CV8handlerT) {
 	if r == nil {
 		return
@@ -33741,6 +34497,13 @@ func (r *RefToCV8accessorT) setCV8accessorT(p *CV8accessorT) {
 	// prevValue = r.p_v8accessor
 	r.p_v8accessor.Unref()
 	r.p_v8accessor = p
+	// return prevValue
+}
+
+func (r *RefToCV8accessorT) UnrefCV8accessorT() {
+	// prevValue = r.p_v8accessor
+	r.p_v8accessor.Unref()
+	r.p_v8accessor = nil
 	// return prevValue
 }
 
@@ -33996,6 +34759,13 @@ func (r *RefToCV8interceptorT) setCV8interceptorT(p *CV8interceptorT) {
 	// return prevValue
 }
 
+func (r *RefToCV8interceptorT) UnrefCV8interceptorT() {
+	// prevValue = r.p_v8interceptor
+	r.p_v8interceptor.Unref()
+	r.p_v8interceptor = nil
+	// return prevValue
+}
+
 func (r *RefToCV8interceptorT) TakeOverCV8interceptorT(src *CV8interceptorT) {
 	if r == nil {
 		return
@@ -34240,6 +35010,13 @@ func (r *RefToCV8exceptionT) setCV8exceptionT(p *CV8exceptionT) {
 	// return prevValue
 }
 
+func (r *RefToCV8exceptionT) UnrefCV8exceptionT() {
+	// prevValue = r.p_v8exception
+	r.p_v8exception.Unref()
+	r.p_v8exception = nil
+	// return prevValue
+}
+
 func (r *RefToCV8exceptionT) TakeOverCV8exceptionT(src *CV8exceptionT) {
 	if r == nil {
 		return
@@ -34466,6 +35243,13 @@ func (r *RefToCV8arrayBufferReleaseCallbackT) setCV8arrayBufferReleaseCallbackT(
 	// return prevValue
 }
 
+func (r *RefToCV8arrayBufferReleaseCallbackT) UnrefCV8arrayBufferReleaseCallbackT() {
+	// prevValue = r.p_v8array_buffer_release_callback
+	r.p_v8array_buffer_release_callback.Unref()
+	r.p_v8array_buffer_release_callback = nil
+	// return prevValue
+}
+
 func (r *RefToCV8arrayBufferReleaseCallbackT) TakeOverCV8arrayBufferReleaseCallbackT(src *CV8arrayBufferReleaseCallbackT) {
 	if r == nil {
 		return
@@ -34685,6 +35469,13 @@ func (r *RefToCV8valueT) setCV8valueT(p *CV8valueT) {
 	// prevValue = r.p_v8value
 	r.p_v8value.Unref()
 	r.p_v8value = p
+	// return prevValue
+}
+
+func (r *RefToCV8valueT) UnrefCV8valueT() {
+	// prevValue = r.p_v8value
+	r.p_v8value.Unref()
+	r.p_v8value = nil
 	// return prevValue
 }
 
@@ -35663,6 +36454,13 @@ func (r *RefToCV8stackTraceT) setCV8stackTraceT(p *CV8stackTraceT) {
 	// return prevValue
 }
 
+func (r *RefToCV8stackTraceT) UnrefCV8stackTraceT() {
+	// prevValue = r.p_v8stack_trace
+	r.p_v8stack_trace.Unref()
+	r.p_v8stack_trace = nil
+	// return prevValue
+}
+
 func (r *RefToCV8stackTraceT) TakeOverCV8stackTraceT(src *CV8stackTraceT) {
 	if r == nil {
 		return
@@ -35832,6 +36630,13 @@ func (r *RefToCV8stackFrameT) setCV8stackFrameT(p *CV8stackFrameT) {
 	// prevValue = r.p_v8stack_frame
 	r.p_v8stack_frame.Unref()
 	r.p_v8stack_frame = p
+	// return prevValue
+}
+
+func (r *RefToCV8stackFrameT) UnrefCV8stackFrameT() {
+	// prevValue = r.p_v8stack_frame
+	r.p_v8stack_frame.Unref()
+	r.p_v8stack_frame = nil
 	// return prevValue
 }
 
@@ -36136,6 +36941,13 @@ func (r *RefToCValueT) setCValueT(p *CValueT) {
 	// prevValue = r.p_value
 	r.p_value.Unref()
 	r.p_value = p
+	// return prevValue
+}
+
+func (r *RefToCValueT) UnrefCValueT() {
+	// prevValue = r.p_value
+	r.p_value.Unref()
+	r.p_value = nil
 	// return prevValue
 }
 
@@ -36597,6 +37409,13 @@ func (r *RefToCBinaryValueT) setCBinaryValueT(p *CBinaryValueT) {
 	// return prevValue
 }
 
+func (r *RefToCBinaryValueT) UnrefCBinaryValueT() {
+	// prevValue = r.p_binary_value
+	r.p_binary_value.Unref()
+	r.p_binary_value = nil
+	// return prevValue
+}
+
 func (r *RefToCBinaryValueT) TakeOverCBinaryValueT(src *CBinaryValueT) {
 	if r == nil {
 		return
@@ -36830,6 +37649,13 @@ func (r *RefToCDictionaryValueT) setCDictionaryValueT(p *CDictionaryValueT) {
 	// prevValue = r.p_dictionary_value
 	r.p_dictionary_value.Unref()
 	r.p_dictionary_value = p
+	// return prevValue
+}
+
+func (r *RefToCDictionaryValueT) UnrefCDictionaryValueT() {
+	// prevValue = r.p_dictionary_value
+	r.p_dictionary_value.Unref()
+	r.p_dictionary_value = nil
 	// return prevValue
 }
 
@@ -37436,6 +38262,13 @@ func (r *RefToCListValueT) setCListValueT(p *CListValueT) {
 	// return prevValue
 }
 
+func (r *RefToCListValueT) UnrefCListValueT() {
+	// prevValue = r.p_list_value
+	r.p_list_value.Unref()
+	r.p_list_value = nil
+	// return prevValue
+}
+
 func (r *RefToCListValueT) TakeOverCListValueT(src *CListValueT) {
 	if r == nil {
 		return
@@ -38005,6 +38838,13 @@ func (r *RefToCViewT) setCViewT(p *CViewT) {
 	// prevValue = r.p_view
 	r.p_view.Unref()
 	r.p_view = p
+	// return prevValue
+}
+
+func (r *RefToCViewT) UnrefCViewT() {
+	// prevValue = r.p_view
+	r.p_view.Unref()
+	r.p_view = nil
 	// return prevValue
 }
 
@@ -38788,6 +39628,13 @@ func (r *RefToCViewDelegateT) setCViewDelegateT(p *CViewDelegateT) {
 	// return prevValue
 }
 
+func (r *RefToCViewDelegateT) UnrefCViewDelegateT() {
+	// prevValue = r.p_view_delegate
+	r.p_view_delegate.Unref()
+	r.p_view_delegate = nil
+	// return prevValue
+}
+
 func (r *RefToCViewDelegateT) TakeOverCViewDelegateT(src *CViewDelegateT) {
 	if r == nil {
 		return
@@ -39206,6 +40053,13 @@ func (r *RefToCWebPluginInfoT) setCWebPluginInfoT(p *CWebPluginInfoT) {
 	// return prevValue
 }
 
+func (r *RefToCWebPluginInfoT) UnrefCWebPluginInfoT() {
+	// prevValue = r.p_web_plugin_info
+	r.p_web_plugin_info.Unref()
+	r.p_web_plugin_info = nil
+	// return prevValue
+}
+
 func (r *RefToCWebPluginInfoT) TakeOverCWebPluginInfoT(src *CWebPluginInfoT) {
 	if r == nil {
 		return
@@ -39385,6 +40239,13 @@ func (r *RefToCWebPluginInfoVisitorT) setCWebPluginInfoVisitorT(p *CWebPluginInf
 	// prevValue = r.p_web_plugin_info_visitor
 	r.p_web_plugin_info_visitor.Unref()
 	r.p_web_plugin_info_visitor = p
+	// return prevValue
+}
+
+func (r *RefToCWebPluginInfoVisitorT) UnrefCWebPluginInfoVisitorT() {
+	// prevValue = r.p_web_plugin_info_visitor
+	r.p_web_plugin_info_visitor.Unref()
+	r.p_web_plugin_info_visitor = nil
 	// return prevValue
 }
 
@@ -39607,6 +40468,13 @@ func (r *RefToCWebPluginUnstableCallbackT) setCWebPluginUnstableCallbackT(p *CWe
 	// prevValue = r.p_web_plugin_unstable_callback
 	r.p_web_plugin_unstable_callback.Unref()
 	r.p_web_plugin_unstable_callback = p
+	// return prevValue
+}
+
+func (r *RefToCWebPluginUnstableCallbackT) UnrefCWebPluginUnstableCallbackT() {
+	// prevValue = r.p_web_plugin_unstable_callback
+	r.p_web_plugin_unstable_callback.Unref()
+	r.p_web_plugin_unstable_callback = nil
 	// return prevValue
 }
 
@@ -39906,6 +40774,13 @@ func (r *RefToCWindowT) setCWindowT(p *CWindowT) {
 	// prevValue = r.p_window
 	r.p_window.Unref()
 	r.p_window = p
+	// return prevValue
+}
+
+func (r *RefToCWindowT) UnrefCWindowT() {
+	// prevValue = r.p_window
+	r.p_window.Unref()
+	r.p_window = nil
 	// return prevValue
 }
 
@@ -40534,6 +41409,13 @@ func (r *RefToCWindowDelegateT) setCWindowDelegateT(p *CWindowDelegateT) {
 	// return prevValue
 }
 
+func (r *RefToCWindowDelegateT) UnrefCWindowDelegateT() {
+	// prevValue = r.p_window_delegate
+	r.p_window_delegate.Unref()
+	r.p_window_delegate = nil
+	// return prevValue
+}
+
 func (r *RefToCWindowDelegateT) TakeOverCWindowDelegateT(src *CWindowDelegateT) {
 	if r == nil {
 		return
@@ -41100,6 +41982,13 @@ func (r *RefToCX509certPrincipalT) setCX509certPrincipalT(p *CX509certPrincipalT
 	// return prevValue
 }
 
+func (r *RefToCX509certPrincipalT) UnrefCX509certPrincipalT() {
+	// prevValue = r.p_x509cert_principal
+	r.p_x509cert_principal.Unref()
+	r.p_x509cert_principal = nil
+	// return prevValue
+}
+
 func (r *RefToCX509certPrincipalT) TakeOverCX509certPrincipalT(src *CX509certPrincipalT) {
 	if r == nil {
 		return
@@ -41340,6 +42229,13 @@ func (r *RefToCX509certificateT) setCX509certificateT(p *CX509certificateT) {
 	// prevValue = r.p_x509certificate
 	r.p_x509certificate.Unref()
 	r.p_x509certificate = p
+	// return prevValue
+}
+
+func (r *RefToCX509certificateT) UnrefCX509certificateT() {
+	// prevValue = r.p_x509certificate
+	r.p_x509certificate.Unref()
+	r.p_x509certificate = nil
 	// return prevValue
 }
 

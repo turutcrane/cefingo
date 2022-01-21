@@ -697,6 +697,15 @@ func (r *RefTo{%s d.GoName() %}) set{%s d.GoName() %}(p {%s d.GoType() %}) {
 	// return prevValue
 }
 
+func (r *RefTo{%s d.GoName() %}) Unref{%s d.GoName() %}() {
+	// prevValue = r.p_{%s d.BaseName() %}
+	{%- if d.St == parser.StRefCounted -%}
+	r.p_{%s d.BaseName() %}.Unref()
+	{%- endif -%}
+	r.p_{%s d.BaseName() %} = nil
+	// return prevValue
+}
+
 func (r *RefTo{%s d.GoName() %}) TakeOver{%s d.GoName() %}(src {%s d.GoType() %}) {
 	if r == nil {
 		return

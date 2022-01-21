@@ -6341,17 +6341,6 @@ int cefingo_request_context_clear_scheme_handler_factories(
 		);
 }
 
-void cefingo_request_context_purge_plugin_list_cache(
-	struct _cef_request_context_t* self,
-	int reload_pages
-)
-{
-	self->purge_plugin_list_cache(
-		self,
-		reload_pages
-	);
-}
-
 int cefingo_request_context_has_preference(
 	struct _cef_request_context_t* self,
 	const cef_string_t* name
@@ -6527,15 +6516,6 @@ struct _cef_media_router_t* cefingo_request_context_get_media_router(
 		);
 }
 
-typedef int (*T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD)(
-	struct _cef_request_context_handler_t*,
-	const cef_string_t*,
-	const cef_string_t*,
-	int,
-	const cef_string_t*,
-	struct _cef_web_plugin_info_t*,
-	cef_plugin_policy_t*
-);
 typedef struct _cef_resource_request_handler_t* (*T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)(
 	struct _cef_request_context_handler_t*,
 	struct _cef_browser_t*,
@@ -6556,8 +6536,6 @@ cef_request_context_handler_t *cefingo_construct_request_context_handler(cefingo
 	// callbacks
 	request_context_handler->body.on_request_context_initialized =
 		cefingo_request_context_handler_on_request_context_initialized;
-	request_context_handler->body.on_before_plugin_load =
-		(/* T_CEF_REQUEST_CONTEXT_HANDLER_T_ON_BEFORE_PLUGIN_LOAD */ void *)cefingo_request_context_handler_on_before_plugin_load;
 	request_context_handler->body.get_resource_request_handler =
 		(/* T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER */ void *)cefingo_request_context_handler_get_resource_request_handler;
 

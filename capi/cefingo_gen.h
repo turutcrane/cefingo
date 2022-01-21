@@ -2502,11 +2502,6 @@ extern int cefingo_request_context_clear_scheme_handler_factories(
 	struct _cef_request_context_t* self
 );
 
-extern void cefingo_request_context_purge_plugin_list_cache(
-	struct _cef_request_context_t* self,
-	int reload_pages
-);
-
 extern int cefingo_request_context_has_preference(
 	struct _cef_request_context_t* self,
 	const cef_string_t* name
