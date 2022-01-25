@@ -56,24 +56,6 @@ func (r *RefToCAccessibilityHandlerT) UnrefCAccessibilityHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCAccessibilityHandlerT) TakeOverCAccessibilityHandlerT(src *CAccessibilityHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_accessibility_handler.Unref()
-	gop := src.pc_accessibility_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_accessibility_handler = newCAccessibilityHandlerT((*C.cef_accessibility_handler_t)(gop), byApp)
-}
-
 func PassCAccessibilityHandlerT(p *CAccessibilityHandlerT) (ret *CAccessibilityHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -302,24 +284,6 @@ func (r *RefToCAppT) UnrefCAppT() {
 	r.p_app.Unref()
 	r.p_app = nil
 	// return prevValue
-}
-
-func (r *RefToCAppT) TakeOverCAppT(src *CAppT) {
-	if r == nil {
-		return
-	}
-	r.p_app.Unref()
-	gop := src.pc_app
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_app = newCAppT((*C.cef_app_t)(gop), byApp)
 }
 
 func PassCAppT(p *CAppT) (ret *CAppT) {
@@ -760,24 +724,6 @@ func (r *RefToCAudioHandlerT) UnrefCAudioHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCAudioHandlerT) TakeOverCAudioHandlerT(src *CAudioHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_audio_handler.Unref()
-	gop := src.pc_audio_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_audio_handler = newCAudioHandlerT((*C.cef_audio_handler_t)(gop), byApp)
-}
-
 func PassCAudioHandlerT(p *CAudioHandlerT) (ret *CAudioHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -1062,24 +1008,6 @@ func (r *RefToCAuthCallbackT) UnrefCAuthCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCAuthCallbackT) TakeOverCAuthCallbackT(src *CAuthCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_auth_callback.Unref()
-	gop := src.pc_auth_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_auth_callback = newCAuthCallbackT((*C.cef_auth_callback_t)(gop), byApp)
-}
-
 func PassCAuthCallbackT(p *CAuthCallbackT) (ret *CAuthCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -1214,24 +1142,6 @@ func (r *RefToCBoxLayoutT) UnrefCBoxLayoutT() {
 	r.p_box_layout.Unref()
 	r.p_box_layout = nil
 	// return prevValue
-}
-
-func (r *RefToCBoxLayoutT) TakeOverCBoxLayoutT(src *CBoxLayoutT) {
-	if r == nil {
-		return
-	}
-	r.p_box_layout.Unref()
-	gop := src.pc_box_layout
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_box_layout = newCBoxLayoutT((*C.cef_box_layout_t)(gop), byApp)
 }
 
 func PassCBoxLayoutT(p *CBoxLayoutT) (ret *CBoxLayoutT) {
@@ -1388,24 +1298,6 @@ func (r *RefToCBrowserT) UnrefCBrowserT() {
 	r.p_browser.Unref()
 	r.p_browser = nil
 	// return prevValue
-}
-
-func (r *RefToCBrowserT) TakeOverCBrowserT(src *CBrowserT) {
-	if r == nil {
-		return
-	}
-	r.p_browser.Unref()
-	gop := src.pc_browser
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_browser = newCBrowserT((*C.cef_browser_t)(gop), byApp)
 }
 
 func PassCBrowserT(p *CBrowserT) (ret *CBrowserT) {
@@ -1747,24 +1639,6 @@ func (r *RefToCRunFileDialogCallbackT) UnrefCRunFileDialogCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCRunFileDialogCallbackT) TakeOverCRunFileDialogCallbackT(src *CRunFileDialogCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_run_file_dialog_callback.Unref()
-	gop := src.pc_run_file_dialog_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_run_file_dialog_callback = newCRunFileDialogCallbackT((*C.cef_run_file_dialog_callback_t)(gop), byApp)
-}
-
 func PassCRunFileDialogCallbackT(p *CRunFileDialogCallbackT) (ret *CRunFileDialogCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -1974,24 +1848,6 @@ func (r *RefToCNavigationEntryVisitorT) UnrefCNavigationEntryVisitorT() {
 	r.p_navigation_entry_visitor.Unref()
 	r.p_navigation_entry_visitor = nil
 	// return prevValue
-}
-
-func (r *RefToCNavigationEntryVisitorT) TakeOverCNavigationEntryVisitorT(src *CNavigationEntryVisitorT) {
-	if r == nil {
-		return
-	}
-	r.p_navigation_entry_visitor.Unref()
-	gop := src.pc_navigation_entry_visitor
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_navigation_entry_visitor = newCNavigationEntryVisitorT((*C.cef_navigation_entry_visitor_t)(gop), byApp)
 }
 
 func PassCNavigationEntryVisitorT(p *CNavigationEntryVisitorT) (ret *CNavigationEntryVisitorT) {
@@ -2207,24 +2063,6 @@ func (r *RefToCPdfPrintCallbackT) UnrefCPdfPrintCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCPdfPrintCallbackT) TakeOverCPdfPrintCallbackT(src *CPdfPrintCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_pdf_print_callback.Unref()
-	gop := src.pc_pdf_print_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_pdf_print_callback = newCPdfPrintCallbackT((*C.cef_pdf_print_callback_t)(gop), byApp)
-}
-
 func PassCPdfPrintCallbackT(p *CPdfPrintCallbackT) (ret *CPdfPrintCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -2434,24 +2272,6 @@ func (r *RefToCDownloadImageCallbackT) UnrefCDownloadImageCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCDownloadImageCallbackT) TakeOverCDownloadImageCallbackT(src *CDownloadImageCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_download_image_callback.Unref()
-	gop := src.pc_download_image_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_download_image_callback = newCDownloadImageCallbackT((*C.cef_download_image_callback_t)(gop), byApp)
-}
-
 func PassCDownloadImageCallbackT(p *CDownloadImageCallbackT) (ret *CDownloadImageCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -2581,24 +2401,6 @@ func (r *RefToCBrowserHostT) UnrefCBrowserHostT() {
 	r.p_browser_host.Unref()
 	r.p_browser_host = nil
 	// return prevValue
-}
-
-func (r *RefToCBrowserHostT) TakeOverCBrowserHostT(src *CBrowserHostT) {
-	if r == nil {
-		return
-	}
-	r.p_browser_host.Unref()
-	gop := src.pc_browser_host
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_browser_host = newCBrowserHostT((*C.cef_browser_host_t)(gop), byApp)
 }
 
 func PassCBrowserHostT(p *CBrowserHostT) (ret *CBrowserHostT) {
@@ -3802,24 +3604,6 @@ func (r *RefToCBrowserProcessHandlerT) UnrefCBrowserProcessHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCBrowserProcessHandlerT) TakeOverCBrowserProcessHandlerT(src *CBrowserProcessHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_browser_process_handler.Unref()
-	gop := src.pc_browser_process_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_browser_process_handler = newCBrowserProcessHandlerT((*C.cef_browser_process_handler_t)(gop), byApp)
-}
-
 func PassCBrowserProcessHandlerT(p *CBrowserProcessHandlerT) (ret *CBrowserProcessHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -4105,24 +3889,6 @@ func (r *RefToCBrowserViewT) UnrefCBrowserViewT() {
 	// return prevValue
 }
 
-func (r *RefToCBrowserViewT) TakeOverCBrowserViewT(src *CBrowserViewT) {
-	if r == nil {
-		return
-	}
-	r.p_browser_view.Unref()
-	gop := src.pc_browser_view
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_browser_view = newCBrowserViewT((*C.cef_browser_view_t)(gop), byApp)
-}
-
 func PassCBrowserViewT(p *CBrowserViewT) (ret *CBrowserViewT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -4348,24 +4114,6 @@ func (r *RefToCBrowserViewDelegateT) UnrefCBrowserViewDelegateT() {
 	r.p_browser_view_delegate.Unref()
 	r.p_browser_view_delegate = nil
 	// return prevValue
-}
-
-func (r *RefToCBrowserViewDelegateT) TakeOverCBrowserViewDelegateT(src *CBrowserViewDelegateT) {
-	if r == nil {
-		return
-	}
-	r.p_browser_view_delegate.Unref()
-	gop := src.pc_browser_view_delegate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_browser_view_delegate = newCBrowserViewDelegateT((*C.cef_browser_view_delegate_t)(gop), byApp)
 }
 
 func PassCBrowserViewDelegateT(p *CBrowserViewDelegateT) (ret *CBrowserViewDelegateT) {
@@ -4788,24 +4536,6 @@ func (r *RefToCButtonT) UnrefCButtonT() {
 	// return prevValue
 }
 
-func (r *RefToCButtonT) TakeOverCButtonT(src *CButtonT) {
-	if r == nil {
-		return
-	}
-	r.p_button.Unref()
-	gop := src.pc_button
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_button = newCButtonT((*C.cef_button_t)(gop), byApp)
-}
-
 func PassCButtonT(p *CButtonT) (ret *CButtonT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -4990,24 +4720,6 @@ func (r *RefToCButtonDelegateT) UnrefCButtonDelegateT() {
 	r.p_button_delegate.Unref()
 	r.p_button_delegate = nil
 	// return prevValue
-}
-
-func (r *RefToCButtonDelegateT) TakeOverCButtonDelegateT(src *CButtonDelegateT) {
-	if r == nil {
-		return
-	}
-	r.p_button_delegate.Unref()
-	gop := src.pc_button_delegate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_button_delegate = newCButtonDelegateT((*C.cef_button_delegate_t)(gop), byApp)
 }
 
 func PassCButtonDelegateT(p *CButtonDelegateT) (ret *CButtonDelegateT) {
@@ -5344,24 +5056,6 @@ func (r *RefToCCallbackT) UnrefCCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCCallbackT) TakeOverCCallbackT(src *CCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_callback.Unref()
-	gop := src.pc_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_callback = newCCallbackT((*C.cef_callback_t)(gop), byApp)
-}
-
 func PassCCallbackT(p *CCallbackT) (ret *CCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -5486,24 +5180,6 @@ func (r *RefToCCompletionCallbackT) UnrefCCompletionCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCCompletionCallbackT) TakeOverCCompletionCallbackT(src *CCompletionCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_completion_callback.Unref()
-	gop := src.pc_completion_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_completion_callback = newCCompletionCallbackT((*C.cef_completion_callback_t)(gop), byApp)
-}
-
 func PassCCompletionCallbackT(p *CCompletionCallbackT) (ret *CCompletionCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -5619,24 +5295,6 @@ func (r *RefToCClientT) UnrefCClientT() {
 	r.p_client.Unref()
 	r.p_client = nil
 	// return prevValue
-}
-
-func (r *RefToCClientT) TakeOverCClientT(src *CClientT) {
-	if r == nil {
-		return
-	}
-	r.p_client.Unref()
-	gop := src.pc_client
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_client = newCClientT((*C.cef_client_t)(gop), byApp)
 }
 
 func PassCClientT(p *CClientT) (ret *CClientT) {
@@ -6170,24 +5828,6 @@ func (r *RefToCCommandLineT) UnrefCCommandLineT() {
 	// return prevValue
 }
 
-func (r *RefToCCommandLineT) TakeOverCCommandLineT(src *CCommandLineT) {
-	if r == nil {
-		return
-	}
-	r.p_command_line.Unref()
-	gop := src.pc_command_line
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_command_line = newCCommandLineT((*C.cef_command_line_t)(gop), byApp)
-}
-
 func PassCCommandLineT(p *CCommandLineT) (ret *CCommandLineT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -6565,24 +6205,6 @@ func (r *RefToCRunContextMenuCallbackT) UnrefCRunContextMenuCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCRunContextMenuCallbackT) TakeOverCRunContextMenuCallbackT(src *CRunContextMenuCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_run_context_menu_callback.Unref()
-	gop := src.pc_run_context_menu_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_run_context_menu_callback = newCRunContextMenuCallbackT((*C.cef_run_context_menu_callback_t)(gop), byApp)
-}
-
 func PassCRunContextMenuCallbackT(p *CRunContextMenuCallbackT) (ret *CRunContextMenuCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -6710,24 +6332,6 @@ func (r *RefToCContextMenuHandlerT) UnrefCContextMenuHandlerT() {
 	r.p_context_menu_handler.Unref()
 	r.p_context_menu_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCContextMenuHandlerT) TakeOverCContextMenuHandlerT(src *CContextMenuHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_context_menu_handler.Unref()
-	gop := src.pc_context_menu_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_context_menu_handler = newCContextMenuHandlerT((*C.cef_context_menu_handler_t)(gop), byApp)
 }
 
 func PassCContextMenuHandlerT(p *CContextMenuHandlerT) (ret *CContextMenuHandlerT) {
@@ -7022,24 +6626,6 @@ func (r *RefToCContextMenuParamsT) UnrefCContextMenuParamsT() {
 	r.p_context_menu_params.Unref()
 	r.p_context_menu_params = nil
 	// return prevValue
-}
-
-func (r *RefToCContextMenuParamsT) TakeOverCContextMenuParamsT(src *CContextMenuParamsT) {
-	if r == nil {
-		return
-	}
-	r.p_context_menu_params.Unref()
-	gop := src.pc_context_menu_params
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_context_menu_params = newCContextMenuParamsT((*C.cef_context_menu_params_t)(gop), byApp)
 }
 
 func PassCContextMenuParamsT(p *CContextMenuParamsT) (ret *CContextMenuParamsT) {
@@ -7436,24 +7022,6 @@ func (r *RefToCCookieManagerT) UnrefCCookieManagerT() {
 	// return prevValue
 }
 
-func (r *RefToCCookieManagerT) TakeOverCCookieManagerT(src *CCookieManagerT) {
-	if r == nil {
-		return
-	}
-	r.p_cookie_manager.Unref()
-	gop := src.pc_cookie_manager
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_cookie_manager = newCCookieManagerT((*C.cef_cookie_manager_t)(gop), byApp)
-}
-
 func PassCCookieManagerT(p *CCookieManagerT) (ret *CCookieManagerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -7706,24 +7274,6 @@ func (r *RefToCCookieVisitorT) UnrefCCookieVisitorT() {
 	// return prevValue
 }
 
-func (r *RefToCCookieVisitorT) TakeOverCCookieVisitorT(src *CCookieVisitorT) {
-	if r == nil {
-		return
-	}
-	r.p_cookie_visitor.Unref()
-	gop := src.pc_cookie_visitor
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_cookie_visitor = newCCookieVisitorT((*C.cef_cookie_visitor_t)(gop), byApp)
-}
-
 func PassCCookieVisitorT(p *CCookieVisitorT) (ret *CCookieVisitorT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -7936,24 +7486,6 @@ func (r *RefToCSetCookieCallbackT) UnrefCSetCookieCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCSetCookieCallbackT) TakeOverCSetCookieCallbackT(src *CSetCookieCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_set_cookie_callback.Unref()
-	gop := src.pc_set_cookie_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_set_cookie_callback = newCSetCookieCallbackT((*C.cef_set_cookie_callback_t)(gop), byApp)
-}
-
 func PassCSetCookieCallbackT(p *CSetCookieCallbackT) (ret *CSetCookieCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -8159,24 +7691,6 @@ func (r *RefToCDeleteCookiesCallbackT) UnrefCDeleteCookiesCallbackT() {
 	r.p_delete_cookies_callback.Unref()
 	r.p_delete_cookies_callback = nil
 	// return prevValue
-}
-
-func (r *RefToCDeleteCookiesCallbackT) TakeOverCDeleteCookiesCallbackT(src *CDeleteCookiesCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_delete_cookies_callback.Unref()
-	gop := src.pc_delete_cookies_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_delete_cookies_callback = newCDeleteCookiesCallbackT((*C.cef_delete_cookies_callback_t)(gop), byApp)
 }
 
 func PassCDeleteCookiesCallbackT(p *CDeleteCookiesCallbackT) (ret *CDeleteCookiesCallbackT) {
@@ -8500,24 +8014,6 @@ func (r *RefToCDevToolsMessageObserverT) UnrefCDevToolsMessageObserverT() {
 	r.p_dev_tools_message_observer.Unref()
 	r.p_dev_tools_message_observer = nil
 	// return prevValue
-}
-
-func (r *RefToCDevToolsMessageObserverT) TakeOverCDevToolsMessageObserverT(src *CDevToolsMessageObserverT) {
-	if r == nil {
-		return
-	}
-	r.p_dev_tools_message_observer.Unref()
-	gop := src.pc_dev_tools_message_observer
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_dev_tools_message_observer = newCDevToolsMessageObserverT((*C.cef_dev_tools_message_observer_t)(gop), byApp)
 }
 
 func PassCDevToolsMessageObserverT(p *CDevToolsMessageObserverT) (ret *CDevToolsMessageObserverT) {
@@ -8850,24 +8346,6 @@ func (r *RefToCFileDialogCallbackT) UnrefCFileDialogCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCFileDialogCallbackT) TakeOverCFileDialogCallbackT(src *CFileDialogCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_file_dialog_callback.Unref()
-	gop := src.pc_file_dialog_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_file_dialog_callback = newCFileDialogCallbackT((*C.cef_file_dialog_callback_t)(gop), byApp)
-}
-
 func PassCFileDialogCallbackT(p *CFileDialogCallbackT) (ret *CFileDialogCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -8998,24 +8476,6 @@ func (r *RefToCDialogHandlerT) UnrefCDialogHandlerT() {
 	r.p_dialog_handler.Unref()
 	r.p_dialog_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCDialogHandlerT) TakeOverCDialogHandlerT(src *CDialogHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_dialog_handler.Unref()
-	gop := src.pc_dialog_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_dialog_handler = newCDialogHandlerT((*C.cef_dialog_handler_t)(gop), byApp)
 }
 
 func PassCDialogHandlerT(p *CDialogHandlerT) (ret *CDialogHandlerT) {
@@ -9246,24 +8706,6 @@ func (r *RefToCDisplayT) UnrefCDisplayT() {
 	r.p_display.Unref()
 	r.p_display = nil
 	// return prevValue
-}
-
-func (r *RefToCDisplayT) TakeOverCDisplayT(src *CDisplayT) {
-	if r == nil {
-		return
-	}
-	r.p_display.Unref()
-	gop := src.pc_display
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_display = newCDisplayT((*C.cef_display_t)(gop), byApp)
 }
 
 func PassCDisplayT(p *CDisplayT) (ret *CDisplayT) {
@@ -9530,24 +8972,6 @@ func (r *RefToCDisplayHandlerT) UnrefCDisplayHandlerT() {
 	r.p_display_handler.Unref()
 	r.p_display_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCDisplayHandlerT) TakeOverCDisplayHandlerT(src *CDisplayHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_display_handler.Unref()
-	gop := src.pc_display_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_display_handler = newCDisplayHandlerT((*C.cef_display_handler_t)(gop), byApp)
 }
 
 func PassCDisplayHandlerT(p *CDisplayHandlerT) (ret *CDisplayHandlerT) {
@@ -9972,24 +9396,6 @@ func (r *RefToCDomvisitorT) UnrefCDomvisitorT() {
 	// return prevValue
 }
 
-func (r *RefToCDomvisitorT) TakeOverCDomvisitorT(src *CDomvisitorT) {
-	if r == nil {
-		return
-	}
-	r.p_domvisitor.Unref()
-	gop := src.pc_domvisitor
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_domvisitor = newCDomvisitorT((*C.cef_domvisitor_t)(gop), byApp)
-}
-
 func PassCDomvisitorT(p *CDomvisitorT) (ret *CDomvisitorT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -10198,24 +9604,6 @@ func (r *RefToCDomdocumentT) UnrefCDomdocumentT() {
 	r.p_domdocument.Unref()
 	r.p_domdocument = nil
 	// return prevValue
-}
-
-func (r *RefToCDomdocumentT) TakeOverCDomdocumentT(src *CDomdocumentT) {
-	if r == nil {
-		return
-	}
-	r.p_domdocument.Unref()
-	gop := src.pc_domdocument
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_domdocument = newCDomdocumentT((*C.cef_domdocument_t)(gop), byApp)
 }
 
 func PassCDomdocumentT(p *CDomdocumentT) (ret *CDomdocumentT) {
@@ -10509,24 +9897,6 @@ func (r *RefToCDomnodeT) UnrefCDomnodeT() {
 	r.p_domnode.Unref()
 	r.p_domnode = nil
 	// return prevValue
-}
-
-func (r *RefToCDomnodeT) TakeOverCDomnodeT(src *CDomnodeT) {
-	if r == nil {
-		return
-	}
-	r.p_domnode.Unref()
-	gop := src.pc_domnode
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_domnode = newCDomnodeT((*C.cef_domnode_t)(gop), byApp)
 }
 
 func PassCDomnodeT(p *CDomnodeT) (ret *CDomnodeT) {
@@ -10981,24 +10351,6 @@ func (r *RefToCBeforeDownloadCallbackT) UnrefCBeforeDownloadCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCBeforeDownloadCallbackT) TakeOverCBeforeDownloadCallbackT(src *CBeforeDownloadCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_before_download_callback.Unref()
-	gop := src.pc_before_download_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_before_download_callback = newCBeforeDownloadCallbackT((*C.cef_before_download_callback_t)(gop), byApp)
-}
-
 func PassCBeforeDownloadCallbackT(p *CBeforeDownloadCallbackT) (ret *CBeforeDownloadCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -11119,24 +10471,6 @@ func (r *RefToCDownloadItemCallbackT) UnrefCDownloadItemCallbackT() {
 	r.p_download_item_callback.Unref()
 	r.p_download_item_callback = nil
 	// return prevValue
-}
-
-func (r *RefToCDownloadItemCallbackT) TakeOverCDownloadItemCallbackT(src *CDownloadItemCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_download_item_callback.Unref()
-	gop := src.pc_download_item_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_download_item_callback = newCDownloadItemCallbackT((*C.cef_download_item_callback_t)(gop), byApp)
 }
 
 func PassCDownloadItemCallbackT(p *CDownloadItemCallbackT) (ret *CDownloadItemCallbackT) {
@@ -11271,24 +10605,6 @@ func (r *RefToCDownloadHandlerT) UnrefCDownloadHandlerT() {
 	r.p_download_handler.Unref()
 	r.p_download_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCDownloadHandlerT) TakeOverCDownloadHandlerT(src *CDownloadHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_download_handler.Unref()
-	gop := src.pc_download_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_download_handler = newCDownloadHandlerT((*C.cef_download_handler_t)(gop), byApp)
 }
 
 func PassCDownloadHandlerT(p *CDownloadHandlerT) (ret *CDownloadHandlerT) {
@@ -11529,24 +10845,6 @@ func (r *RefToCDownloadItemT) UnrefCDownloadItemT() {
 	r.p_download_item.Unref()
 	r.p_download_item = nil
 	// return prevValue
-}
-
-func (r *RefToCDownloadItemT) TakeOverCDownloadItemT(src *CDownloadItemT) {
-	if r == nil {
-		return
-	}
-	r.p_download_item.Unref()
-	gop := src.pc_download_item
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_download_item = newCDownloadItemT((*C.cef_download_item_t)(gop), byApp)
 }
 
 func PassCDownloadItemT(p *CDownloadItemT) (ret *CDownloadItemT) {
@@ -11875,24 +11173,6 @@ func (r *RefToCDragDataT) UnrefCDragDataT() {
 	r.p_drag_data.Unref()
 	r.p_drag_data = nil
 	// return prevValue
-}
-
-func (r *RefToCDragDataT) TakeOverCDragDataT(src *CDragDataT) {
-	if r == nil {
-		return
-	}
-	r.p_drag_data.Unref()
-	gop := src.pc_drag_data
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_drag_data = newCDragDataT((*C.cef_drag_data_t)(gop), byApp)
 }
 
 func PassCDragDataT(p *CDragDataT) (ret *CDragDataT) {
@@ -12349,24 +11629,6 @@ func (r *RefToCDragHandlerT) UnrefCDragHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCDragHandlerT) TakeOverCDragHandlerT(src *CDragHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_drag_handler.Unref()
-	gop := src.pc_drag_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_drag_handler = newCDragHandlerT((*C.cef_drag_handler_t)(gop), byApp)
-}
-
 func PassCDragHandlerT(p *CDragHandlerT) (ret *CDragHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -12607,24 +11869,6 @@ func (r *RefToCExtensionT) UnrefCExtensionT() {
 	// return prevValue
 }
 
-func (r *RefToCExtensionT) TakeOverCExtensionT(src *CExtensionT) {
-	if r == nil {
-		return
-	}
-	r.p_extension.Unref()
-	gop := src.pc_extension
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_extension = newCExtensionT((*C.cef_extension_t)(gop), byApp)
-}
-
 func PassCExtensionT(p *CExtensionT) (ret *CExtensionT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -12852,24 +12096,6 @@ func (r *RefToCGetExtensionResourceCallbackT) UnrefCGetExtensionResourceCallback
 	// return prevValue
 }
 
-func (r *RefToCGetExtensionResourceCallbackT) TakeOverCGetExtensionResourceCallbackT(src *CGetExtensionResourceCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_get_extension_resource_callback.Unref()
-	gop := src.pc_get_extension_resource_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_get_extension_resource_callback = newCGetExtensionResourceCallbackT((*C.cef_get_extension_resource_callback_t)(gop), byApp)
-}
-
 func PassCGetExtensionResourceCallbackT(p *CGetExtensionResourceCallbackT) (ret *CGetExtensionResourceCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -13001,24 +12227,6 @@ func (r *RefToCExtensionHandlerT) UnrefCExtensionHandlerT() {
 	r.p_extension_handler.Unref()
 	r.p_extension_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCExtensionHandlerT) TakeOverCExtensionHandlerT(src *CExtensionHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_extension_handler.Unref()
-	gop := src.pc_extension_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_extension_handler = newCExtensionHandlerT((*C.cef_extension_handler_t)(gop), byApp)
 }
 
 func PassCExtensionHandlerT(p *CExtensionHandlerT) (ret *CExtensionHandlerT) {
@@ -13587,24 +12795,6 @@ func (r *RefToCFillLayoutT) UnrefCFillLayoutT() {
 	// return prevValue
 }
 
-func (r *RefToCFillLayoutT) TakeOverCFillLayoutT(src *CFillLayoutT) {
-	if r == nil {
-		return
-	}
-	r.p_fill_layout.Unref()
-	gop := src.pc_fill_layout
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_fill_layout = newCFillLayoutT((*C.cef_fill_layout_t)(gop), byApp)
-}
-
 func PassCFillLayoutT(p *CFillLayoutT) (ret *CFillLayoutT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -13719,24 +12909,6 @@ func (r *RefToCFindHandlerT) UnrefCFindHandlerT() {
 	r.p_find_handler.Unref()
 	r.p_find_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCFindHandlerT) TakeOverCFindHandlerT(src *CFindHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_find_handler.Unref()
-	gop := src.pc_find_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_find_handler = newCFindHandlerT((*C.cef_find_handler_t)(gop), byApp)
 }
 
 func PassCFindHandlerT(p *CFindHandlerT) (ret *CFindHandlerT) {
@@ -13955,24 +13127,6 @@ func (r *RefToCFocusHandlerT) UnrefCFocusHandlerT() {
 	r.p_focus_handler.Unref()
 	r.p_focus_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCFocusHandlerT) TakeOverCFocusHandlerT(src *CFocusHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_focus_handler.Unref()
-	gop := src.pc_focus_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_focus_handler = newCFocusHandlerT((*C.cef_focus_handler_t)(gop), byApp)
 }
 
 func PassCFocusHandlerT(p *CFocusHandlerT) (ret *CFocusHandlerT) {
@@ -14230,24 +13384,6 @@ func (r *RefToCFrameT) UnrefCFrameT() {
 	r.p_frame.Unref()
 	r.p_frame = nil
 	// return prevValue
-}
-
-func (r *RefToCFrameT) TakeOverCFrameT(src *CFrameT) {
-	if r == nil {
-		return
-	}
-	r.p_frame.Unref()
-	gop := src.pc_frame
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_frame = newCFrameT((*C.cef_frame_t)(gop), byApp)
 }
 
 func PassCFrameT(p *CFrameT) (ret *CFrameT) {
@@ -14793,24 +13929,6 @@ func (r *RefToCFrameHandlerT) UnrefCFrameHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCFrameHandlerT) TakeOverCFrameHandlerT(src *CFrameHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_frame_handler.Unref()
-	gop := src.pc_frame_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_frame_handler = newCFrameHandlerT((*C.cef_frame_handler_t)(gop), byApp)
-}
-
 func PassCFrameHandlerT(p *CFrameHandlerT) (ret *CFrameHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -15038,24 +14156,6 @@ func (r *RefToCImageT) UnrefCImageT() {
 	r.p_image.Unref()
 	r.p_image = nil
 	// return prevValue
-}
-
-func (r *RefToCImageT) TakeOverCImageT(src *CImageT) {
-	if r == nil {
-		return
-	}
-	r.p_image.Unref()
-	gop := src.pc_image
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_image = newCImageT((*C.cef_image_t)(gop), byApp)
 }
 
 func PassCImageT(p *CImageT) (ret *CImageT) {
@@ -15418,24 +14518,6 @@ func (r *RefToCJsdialogCallbackT) UnrefCJsdialogCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCJsdialogCallbackT) TakeOverCJsdialogCallbackT(src *CJsdialogCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_jsdialog_callback.Unref()
-	gop := src.pc_jsdialog_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_jsdialog_callback = newCJsdialogCallbackT((*C.cef_jsdialog_callback_t)(gop), byApp)
-}
-
 func PassCJsdialogCallbackT(p *CJsdialogCallbackT) (ret *CJsdialogCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -15555,24 +14637,6 @@ func (r *RefToCJsdialogHandlerT) UnrefCJsdialogHandlerT() {
 	r.p_jsdialog_handler.Unref()
 	r.p_jsdialog_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCJsdialogHandlerT) TakeOverCJsdialogHandlerT(src *CJsdialogHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_jsdialog_handler.Unref()
-	gop := src.pc_jsdialog_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_jsdialog_handler = newCJsdialogHandlerT((*C.cef_jsdialog_handler_t)(gop), byApp)
 }
 
 func PassCJsdialogHandlerT(p *CJsdialogHandlerT) (ret *CJsdialogHandlerT) {
@@ -15872,24 +14936,6 @@ func (r *RefToCKeyboardHandlerT) UnrefCKeyboardHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCKeyboardHandlerT) TakeOverCKeyboardHandlerT(src *CKeyboardHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_keyboard_handler.Unref()
-	gop := src.pc_keyboard_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_keyboard_handler = newCKeyboardHandlerT((*C.cef_keyboard_handler_t)(gop), byApp)
-}
-
 func PassCKeyboardHandlerT(p *CKeyboardHandlerT) (ret *CKeyboardHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -16127,24 +15173,6 @@ func (r *RefToCLabelButtonT) UnrefCLabelButtonT() {
 	r.p_label_button.Unref()
 	r.p_label_button = nil
 	// return prevValue
-}
-
-func (r *RefToCLabelButtonT) TakeOverCLabelButtonT(src *CLabelButtonT) {
-	if r == nil {
-		return
-	}
-	r.p_label_button.Unref()
-	gop := src.pc_label_button
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_label_button = newCLabelButtonT((*C.cef_label_button_t)(gop), byApp)
 }
 
 func PassCLabelButtonT(p *CLabelButtonT) (ret *CLabelButtonT) {
@@ -16436,24 +15464,6 @@ func (r *RefToCLayoutT) UnrefCLayoutT() {
 	// return prevValue
 }
 
-func (r *RefToCLayoutT) TakeOverCLayoutT(src *CLayoutT) {
-	if r == nil {
-		return
-	}
-	r.p_layout.Unref()
-	gop := src.pc_layout
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_layout = newCLayoutT((*C.cef_layout_t)(gop), byApp)
-}
-
 func PassCLayoutT(p *CLayoutT) (ret *CLayoutT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -16595,24 +15605,6 @@ func (r *RefToCLifeSpanHandlerT) UnrefCLifeSpanHandlerT() {
 	r.p_life_span_handler.Unref()
 	r.p_life_span_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCLifeSpanHandlerT) TakeOverCLifeSpanHandlerT(src *CLifeSpanHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_life_span_handler.Unref()
-	gop := src.pc_life_span_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_life_span_handler = newCLifeSpanHandlerT((*C.cef_life_span_handler_t)(gop), byApp)
 }
 
 func PassCLifeSpanHandlerT(p *CLifeSpanHandlerT) (ret *CLifeSpanHandlerT) {
@@ -17014,24 +16006,6 @@ func (r *RefToCLoadHandlerT) UnrefCLoadHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCLoadHandlerT) TakeOverCLoadHandlerT(src *CLoadHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_load_handler.Unref()
-	gop := src.pc_load_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_load_handler = newCLoadHandlerT((*C.cef_load_handler_t)(gop), byApp)
-}
-
 func PassCLoadHandlerT(p *CLoadHandlerT) (ret *CLoadHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -17336,24 +16310,6 @@ func (r *RefToCMediaRouterT) UnrefCMediaRouterT() {
 	// return prevValue
 }
 
-func (r *RefToCMediaRouterT) TakeOverCMediaRouterT(src *CMediaRouterT) {
-	if r == nil {
-		return
-	}
-	r.p_media_router.Unref()
-	gop := src.pc_media_router
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_media_router = newCMediaRouterT((*C.cef_media_router_t)(gop), byApp)
-}
-
 func PassCMediaRouterT(p *CMediaRouterT) (ret *CMediaRouterT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -17570,24 +16526,6 @@ func (r *RefToCMediaObserverT) UnrefCMediaObserverT() {
 	r.p_media_observer.Unref()
 	r.p_media_observer = nil
 	// return prevValue
-}
-
-func (r *RefToCMediaObserverT) TakeOverCMediaObserverT(src *CMediaObserverT) {
-	if r == nil {
-		return
-	}
-	r.p_media_observer.Unref()
-	gop := src.pc_media_observer
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_media_observer = newCMediaObserverT((*C.cef_media_observer_t)(gop), byApp)
 }
 
 func PassCMediaObserverT(p *CMediaObserverT) (ret *CMediaObserverT) {
@@ -17864,24 +16802,6 @@ func (r *RefToCMediaRouteT) UnrefCMediaRouteT() {
 	// return prevValue
 }
 
-func (r *RefToCMediaRouteT) TakeOverCMediaRouteT(src *CMediaRouteT) {
-	if r == nil {
-		return
-	}
-	r.p_media_route.Unref()
-	gop := src.pc_media_route
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_media_route = newCMediaRouteT((*C.cef_media_route_t)(gop), byApp)
-}
-
 func PassCMediaRouteT(p *CMediaRouteT) (ret *CMediaRouteT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -18051,24 +16971,6 @@ func (r *RefToCMediaRouteCreateCallbackT) UnrefCMediaRouteCreateCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCMediaRouteCreateCallbackT) TakeOverCMediaRouteCreateCallbackT(src *CMediaRouteCreateCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_media_route_create_callback.Unref()
-	gop := src.pc_media_route_create_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_media_route_create_callback = newCMediaRouteCreateCallbackT((*C.cef_media_route_create_callback_t)(gop), byApp)
-}
-
 func PassCMediaRouteCreateCallbackT(p *CMediaRouteCreateCallbackT) (ret *CMediaRouteCreateCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -18197,24 +17099,6 @@ func (r *RefToCMediaSinkT) UnrefCMediaSinkT() {
 	r.p_media_sink.Unref()
 	r.p_media_sink = nil
 	// return prevValue
-}
-
-func (r *RefToCMediaSinkT) TakeOverCMediaSinkT(src *CMediaSinkT) {
-	if r == nil {
-		return
-	}
-	r.p_media_sink.Unref()
-	gop := src.pc_media_sink
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_media_sink = newCMediaSinkT((*C.cef_media_sink_t)(gop), byApp)
 }
 
 func PassCMediaSinkT(p *CMediaSinkT) (ret *CMediaSinkT) {
@@ -18439,24 +17323,6 @@ func (r *RefToCMediaSinkDeviceInfoCallbackT) UnrefCMediaSinkDeviceInfoCallbackT(
 	// return prevValue
 }
 
-func (r *RefToCMediaSinkDeviceInfoCallbackT) TakeOverCMediaSinkDeviceInfoCallbackT(src *CMediaSinkDeviceInfoCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_media_sink_device_info_callback.Unref()
-	gop := src.pc_media_sink_device_info_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_media_sink_device_info_callback = newCMediaSinkDeviceInfoCallbackT((*C.cef_media_sink_device_info_callback_t)(gop), byApp)
-}
-
 func PassCMediaSinkDeviceInfoCallbackT(p *CMediaSinkDeviceInfoCallbackT) (ret *CMediaSinkDeviceInfoCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -18576,24 +17442,6 @@ func (r *RefToCMediaSourceT) UnrefCMediaSourceT() {
 	r.p_media_source.Unref()
 	r.p_media_source = nil
 	// return prevValue
-}
-
-func (r *RefToCMediaSourceT) TakeOverCMediaSourceT(src *CMediaSourceT) {
-	if r == nil {
-		return
-	}
-	r.p_media_source.Unref()
-	gop := src.pc_media_source
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_media_source = newCMediaSourceT((*C.cef_media_source_t)(gop), byApp)
 }
 
 func PassCMediaSourceT(p *CMediaSourceT) (ret *CMediaSourceT) {
@@ -18743,24 +17591,6 @@ func (r *RefToCMenuButtonT) UnrefCMenuButtonT() {
 	r.p_menu_button.Unref()
 	r.p_menu_button = nil
 	// return prevValue
-}
-
-func (r *RefToCMenuButtonT) TakeOverCMenuButtonT(src *CMenuButtonT) {
-	if r == nil {
-		return
-	}
-	r.p_menu_button.Unref()
-	gop := src.pc_menu_button
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_menu_button = newCMenuButtonT((*C.cef_menu_button_t)(gop), byApp)
 }
 
 func PassCMenuButtonT(p *CMenuButtonT) (ret *CMenuButtonT) {
@@ -18935,24 +17765,6 @@ func (r *RefToCMenuButtonPressedLockT) UnrefCMenuButtonPressedLockT() {
 	// return prevValue
 }
 
-func (r *RefToCMenuButtonPressedLockT) TakeOverCMenuButtonPressedLockT(src *CMenuButtonPressedLockT) {
-	if r == nil {
-		return
-	}
-	r.p_menu_button_pressed_lock.Unref()
-	gop := src.pc_menu_button_pressed_lock
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_menu_button_pressed_lock = newCMenuButtonPressedLockT((*C.cef_menu_button_pressed_lock_t)(gop), byApp)
-}
-
 func PassCMenuButtonPressedLockT(p *CMenuButtonPressedLockT) (ret *CMenuButtonPressedLockT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -19059,24 +17871,6 @@ func (r *RefToCMenuButtonDelegateT) UnrefCMenuButtonDelegateT() {
 	r.p_menu_button_delegate.Unref()
 	r.p_menu_button_delegate = nil
 	// return prevValue
-}
-
-func (r *RefToCMenuButtonDelegateT) TakeOverCMenuButtonDelegateT(src *CMenuButtonDelegateT) {
-	if r == nil {
-		return
-	}
-	r.p_menu_button_delegate.Unref()
-	gop := src.pc_menu_button_delegate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_menu_button_delegate = newCMenuButtonDelegateT((*C.cef_menu_button_delegate_t)(gop), byApp)
 }
 
 func PassCMenuButtonDelegateT(p *CMenuButtonDelegateT) (ret *CMenuButtonDelegateT) {
@@ -19419,24 +18213,6 @@ func (r *RefToCMenuModelT) UnrefCMenuModelT() {
 	r.p_menu_model.Unref()
 	r.p_menu_model = nil
 	// return prevValue
-}
-
-func (r *RefToCMenuModelT) TakeOverCMenuModelT(src *CMenuModelT) {
-	if r == nil {
-		return
-	}
-	r.p_menu_model.Unref()
-	gop := src.pc_menu_model
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_menu_model = newCMenuModelT((*C.cef_menu_model_t)(gop), byApp)
 }
 
 func PassCMenuModelT(p *CMenuModelT) (ret *CMenuModelT) {
@@ -20429,24 +19205,6 @@ func (r *RefToCMenuModelDelegateT) UnrefCMenuModelDelegateT() {
 	// return prevValue
 }
 
-func (r *RefToCMenuModelDelegateT) TakeOverCMenuModelDelegateT(src *CMenuModelDelegateT) {
-	if r == nil {
-		return
-	}
-	r.p_menu_model_delegate.Unref()
-	gop := src.pc_menu_model_delegate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_menu_model_delegate = newCMenuModelDelegateT((*C.cef_menu_model_delegate_t)(gop), byApp)
-}
-
 func PassCMenuModelDelegateT(p *CMenuModelDelegateT) (ret *CMenuModelDelegateT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -20785,24 +19543,6 @@ func (r *RefToCNavigationEntryT) UnrefCNavigationEntryT() {
 	// return prevValue
 }
 
-func (r *RefToCNavigationEntryT) TakeOverCNavigationEntryT(src *CNavigationEntryT) {
-	if r == nil {
-		return
-	}
-	r.p_navigation_entry.Unref()
-	gop := src.pc_navigation_entry
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_navigation_entry = newCNavigationEntryT((*C.cef_navigation_entry_t)(gop), byApp)
-}
-
 func PassCNavigationEntryT(p *CNavigationEntryT) (ret *CNavigationEntryT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -21136,24 +19876,6 @@ func (r *RefToCOverlayControllerT) UnrefCOverlayControllerT() {
 	r.p_overlay_controller.Unref()
 	r.p_overlay_controller = nil
 	// return prevValue
-}
-
-func (r *RefToCOverlayControllerT) TakeOverCOverlayControllerT(src *COverlayControllerT) {
-	if r == nil {
-		return
-	}
-	r.p_overlay_controller.Unref()
-	gop := src.pc_overlay_controller
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_overlay_controller = newCOverlayControllerT((*C.cef_overlay_controller_t)(gop), byApp)
 }
 
 func PassCOverlayControllerT(p *COverlayControllerT) (ret *COverlayControllerT) {
@@ -21516,24 +20238,6 @@ func (r *RefToCPanelT) UnrefCPanelT() {
 	// return prevValue
 }
 
-func (r *RefToCPanelT) TakeOverCPanelT(src *CPanelT) {
-	if r == nil {
-		return
-	}
-	r.p_panel.Unref()
-	gop := src.pc_panel
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_panel = newCPanelT((*C.cef_panel_t)(gop), byApp)
-}
-
 func PassCPanelT(p *CPanelT) (ret *CPanelT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -21825,24 +20529,6 @@ func (r *RefToCPanelDelegateT) UnrefCPanelDelegateT() {
 	r.p_panel_delegate.Unref()
 	r.p_panel_delegate = nil
 	// return prevValue
-}
-
-func (r *RefToCPanelDelegateT) TakeOverCPanelDelegateT(src *CPanelDelegateT) {
-	if r == nil {
-		return
-	}
-	r.p_panel_delegate.Unref()
-	gop := src.pc_panel_delegate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_panel_delegate = newCPanelDelegateT((*C.cef_panel_delegate_t)(gop), byApp)
 }
 
 func PassCPanelDelegateT(p *CPanelDelegateT) (ret *CPanelDelegateT) {
@@ -22139,24 +20825,6 @@ func (r *RefToCPrintDialogCallbackT) UnrefCPrintDialogCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCPrintDialogCallbackT) TakeOverCPrintDialogCallbackT(src *CPrintDialogCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_print_dialog_callback.Unref()
-	gop := src.pc_print_dialog_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_print_dialog_callback = newCPrintDialogCallbackT((*C.cef_print_dialog_callback_t)(gop), byApp)
-}
-
 func PassCPrintDialogCallbackT(p *CPrintDialogCallbackT) (ret *CPrintDialogCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -22288,24 +20956,6 @@ func (r *RefToCPrintJobCallbackT) UnrefCPrintJobCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCPrintJobCallbackT) TakeOverCPrintJobCallbackT(src *CPrintJobCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_print_job_callback.Unref()
-	gop := src.pc_print_job_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_print_job_callback = newCPrintJobCallbackT((*C.cef_print_job_callback_t)(gop), byApp)
-}
-
 func PassCPrintJobCallbackT(p *CPrintJobCallbackT) (ret *CPrintJobCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -22421,24 +21071,6 @@ func (r *RefToCPrintHandlerT) UnrefCPrintHandlerT() {
 	r.p_print_handler.Unref()
 	r.p_print_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCPrintHandlerT) TakeOverCPrintHandlerT(src *CPrintHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_print_handler.Unref()
-	gop := src.pc_print_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_print_handler = newCPrintHandlerT((*C.cef_print_handler_t)(gop), byApp)
 }
 
 func PassCPrintHandlerT(p *CPrintHandlerT) (ret *CPrintHandlerT) {
@@ -22764,24 +21396,6 @@ func (r *RefToCPrintSettingsT) UnrefCPrintSettingsT() {
 	r.p_print_settings.Unref()
 	r.p_print_settings = nil
 	// return prevValue
-}
-
-func (r *RefToCPrintSettingsT) TakeOverCPrintSettingsT(src *CPrintSettingsT) {
-	if r == nil {
-		return
-	}
-	r.p_print_settings.Unref()
-	gop := src.pc_print_settings
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_print_settings = newCPrintSettingsT((*C.cef_print_settings_t)(gop), byApp)
 }
 
 func PassCPrintSettingsT(p *CPrintSettingsT) (ret *CPrintSettingsT) {
@@ -23147,24 +21761,6 @@ func (r *RefToCProcessMessageT) UnrefCProcessMessageT() {
 	// return prevValue
 }
 
-func (r *RefToCProcessMessageT) TakeOverCProcessMessageT(src *CProcessMessageT) {
-	if r == nil {
-		return
-	}
-	r.p_process_message.Unref()
-	gop := src.pc_process_message
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_process_message = newCProcessMessageT((*C.cef_process_message_t)(gop), byApp)
-}
-
 func PassCProcessMessageT(p *CProcessMessageT) (ret *CProcessMessageT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -23349,24 +21945,6 @@ func (r *RefToCRegistrationT) UnrefCRegistrationT() {
 	// return prevValue
 }
 
-func (r *RefToCRegistrationT) TakeOverCRegistrationT(src *CRegistrationT) {
-	if r == nil {
-		return
-	}
-	r.p_registration.Unref()
-	gop := src.pc_registration
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_registration = newCRegistrationT((*C.cef_registration_t)(gop), byApp)
-}
-
 func PassCRegistrationT(p *CRegistrationT) (ret *CRegistrationT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -23474,24 +22052,6 @@ func (r *RefToCRenderHandlerT) UnrefCRenderHandlerT() {
 	r.p_render_handler.Unref()
 	r.p_render_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCRenderHandlerT) TakeOverCRenderHandlerT(src *CRenderHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_render_handler.Unref()
-	gop := src.pc_render_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_render_handler = newCRenderHandlerT((*C.cef_render_handler_t)(gop), byApp)
 }
 
 func PassCRenderHandlerT(p *CRenderHandlerT) (ret *CRenderHandlerT) {
@@ -24056,24 +22616,6 @@ func (r *RefToCRenderProcessHandlerT) UnrefCRenderProcessHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCRenderProcessHandlerT) TakeOverCRenderProcessHandlerT(src *CRenderProcessHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_render_process_handler.Unref()
-	gop := src.pc_render_process_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_render_process_handler = newCRenderProcessHandlerT((*C.cef_render_process_handler_t)(gop), byApp)
-}
-
 func PassCRenderProcessHandlerT(p *CRenderProcessHandlerT) (ret *CRenderProcessHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -24473,24 +23015,6 @@ func (r *RefToCRequestT) UnrefCRequestT() {
 	r.p_request.Unref()
 	r.p_request = nil
 	// return prevValue
-}
-
-func (r *RefToCRequestT) TakeOverCRequestT(src *CRequestT) {
-	if r == nil {
-		return
-	}
-	r.p_request.Unref()
-	gop := src.pc_request
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_request = newCRequestT((*C.cef_request_t)(gop), byApp)
 }
 
 func PassCRequestT(p *CRequestT) (ret *CRequestT) {
@@ -24923,24 +23447,6 @@ func (r *RefToCPostDataT) UnrefCPostDataT() {
 	// return prevValue
 }
 
-func (r *RefToCPostDataT) TakeOverCPostDataT(src *CPostDataT) {
-	if r == nil {
-		return
-	}
-	r.p_post_data.Unref()
-	gop := src.pc_post_data
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_post_data = newCPostDataT((*C.cef_post_data_t)(gop), byApp)
-}
-
 func PassCPostDataT(p *CPostDataT) (ret *CPostDataT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -25157,24 +23663,6 @@ func (r *RefToCPostDataElementT) UnrefCPostDataElementT() {
 	r.p_post_data_element.Unref()
 	r.p_post_data_element = nil
 	// return prevValue
-}
-
-func (r *RefToCPostDataElementT) TakeOverCPostDataElementT(src *CPostDataElementT) {
-	if r == nil {
-		return
-	}
-	r.p_post_data_element.Unref()
-	gop := src.pc_post_data_element
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_post_data_element = newCPostDataElementT((*C.cef_post_data_element_t)(gop), byApp)
 }
 
 func PassCPostDataElementT(p *CPostDataElementT) (ret *CPostDataElementT) {
@@ -25396,24 +23884,6 @@ func (r *RefToCResolveCallbackT) UnrefCResolveCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCResolveCallbackT) TakeOverCResolveCallbackT(src *CResolveCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_resolve_callback.Unref()
-	gop := src.pc_resolve_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_resolve_callback = newCResolveCallbackT((*C.cef_resolve_callback_t)(gop), byApp)
-}
-
 func PassCResolveCallbackT(p *CResolveCallbackT) (ret *CResolveCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -25545,24 +24015,6 @@ func (r *RefToCRequestContextT) UnrefCRequestContextT() {
 	r.p_request_context.Unref()
 	r.p_request_context = nil
 	// return prevValue
-}
-
-func (r *RefToCRequestContextT) TakeOverCRequestContextT(src *CRequestContextT) {
-	if r == nil {
-		return
-	}
-	r.p_request_context.Unref()
-	gop := src.pc_request_context
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_request_context = newCRequestContextT((*C.cef_request_context_t)(gop), byApp)
 }
 
 func PassCRequestContextT(p *CRequestContextT) (ret *CRequestContextT) {
@@ -26201,24 +24653,6 @@ func (r *RefToCRequestContextHandlerT) UnrefCRequestContextHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCRequestContextHandlerT) TakeOverCRequestContextHandlerT(src *CRequestContextHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_request_context_handler.Unref()
-	gop := src.pc_request_context_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_request_context_handler = newCRequestContextHandlerT((*C.cef_request_context_handler_t)(gop), byApp)
-}
-
 func PassCRequestContextHandlerT(p *CRequestContextHandlerT) (ret *CRequestContextHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -26467,24 +24901,6 @@ func (r *RefToCSelectClientCertificateCallbackT) UnrefCSelectClientCertificateCa
 	// return prevValue
 }
 
-func (r *RefToCSelectClientCertificateCallbackT) TakeOverCSelectClientCertificateCallbackT(src *CSelectClientCertificateCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_select_client_certificate_callback.Unref()
-	gop := src.pc_select_client_certificate_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_select_client_certificate_callback = newCSelectClientCertificateCallbackT((*C.cef_select_client_certificate_callback_t)(gop), byApp)
-}
-
 func PassCSelectClientCertificateCallbackT(p *CSelectClientCertificateCallbackT) (ret *CSelectClientCertificateCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -26607,24 +25023,6 @@ func (r *RefToCRequestHandlerT) UnrefCRequestHandlerT() {
 	r.p_request_handler.Unref()
 	r.p_request_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCRequestHandlerT) TakeOverCRequestHandlerT(src *CRequestHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_request_handler.Unref()
-	gop := src.pc_request_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_request_handler = newCRequestHandlerT((*C.cef_request_handler_t)(gop), byApp)
 }
 
 func PassCRequestHandlerT(p *CRequestHandlerT) (ret *CRequestHandlerT) {
@@ -27140,24 +25538,6 @@ func (r *RefToCResourceBundleHandlerT) UnrefCResourceBundleHandlerT() {
 	// return prevValue
 }
 
-func (r *RefToCResourceBundleHandlerT) TakeOverCResourceBundleHandlerT(src *CResourceBundleHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_resource_bundle_handler.Unref()
-	gop := src.pc_resource_bundle_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_resource_bundle_handler = newCResourceBundleHandlerT((*C.cef_resource_bundle_handler_t)(gop), byApp)
-}
-
 func PassCResourceBundleHandlerT(p *CResourceBundleHandlerT) (ret *CResourceBundleHandlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -27419,24 +25799,6 @@ func (r *RefToCResourceSkipCallbackT) UnrefCResourceSkipCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCResourceSkipCallbackT) TakeOverCResourceSkipCallbackT(src *CResourceSkipCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_resource_skip_callback.Unref()
-	gop := src.pc_resource_skip_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_resource_skip_callback = newCResourceSkipCallbackT((*C.cef_resource_skip_callback_t)(gop), byApp)
-}
-
 func PassCResourceSkipCallbackT(p *CResourceSkipCallbackT) (ret *CResourceSkipCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -27555,24 +25917,6 @@ func (r *RefToCResourceReadCallbackT) UnrefCResourceReadCallbackT() {
 	r.p_resource_read_callback.Unref()
 	r.p_resource_read_callback = nil
 	// return prevValue
-}
-
-func (r *RefToCResourceReadCallbackT) TakeOverCResourceReadCallbackT(src *CResourceReadCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_resource_read_callback.Unref()
-	gop := src.pc_resource_read_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_resource_read_callback = newCResourceReadCallbackT((*C.cef_resource_read_callback_t)(gop), byApp)
 }
 
 func PassCResourceReadCallbackT(p *CResourceReadCallbackT) (ret *CResourceReadCallbackT) {
@@ -27695,24 +26039,6 @@ func (r *RefToCResourceHandlerT) UnrefCResourceHandlerT() {
 	r.p_resource_handler.Unref()
 	r.p_resource_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCResourceHandlerT) TakeOverCResourceHandlerT(src *CResourceHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_resource_handler.Unref()
-	gop := src.pc_resource_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_resource_handler = newCResourceHandlerT((*C.cef_resource_handler_t)(gop), byApp)
 }
 
 func PassCResourceHandlerT(p *CResourceHandlerT) (ret *CResourceHandlerT) {
@@ -28066,24 +26392,6 @@ func (r *RefToCResourceRequestHandlerT) UnrefCResourceRequestHandlerT() {
 	r.p_resource_request_handler.Unref()
 	r.p_resource_request_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCResourceRequestHandlerT) TakeOverCResourceRequestHandlerT(src *CResourceRequestHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_resource_request_handler.Unref()
-	gop := src.pc_resource_request_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_resource_request_handler = newCResourceRequestHandlerT((*C.cef_resource_request_handler_t)(gop), byApp)
 }
 
 func PassCResourceRequestHandlerT(p *CResourceRequestHandlerT) (ret *CResourceRequestHandlerT) {
@@ -28515,24 +26823,6 @@ func (r *RefToCCookieAccessFilterT) UnrefCCookieAccessFilterT() {
 	// return prevValue
 }
 
-func (r *RefToCCookieAccessFilterT) TakeOverCCookieAccessFilterT(src *CCookieAccessFilterT) {
-	if r == nil {
-		return
-	}
-	r.p_cookie_access_filter.Unref()
-	gop := src.pc_cookie_access_filter
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_cookie_access_filter = newCCookieAccessFilterT((*C.cef_cookie_access_filter_t)(gop), byApp)
-}
-
 func PassCCookieAccessFilterT(p *CCookieAccessFilterT) (ret *CCookieAccessFilterT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -28775,24 +27065,6 @@ func (r *RefToCResponseT) UnrefCResponseT() {
 	r.p_response.Unref()
 	r.p_response = nil
 	// return prevValue
-}
-
-func (r *RefToCResponseT) TakeOverCResponseT(src *CResponseT) {
-	if r == nil {
-		return
-	}
-	r.p_response.Unref()
-	gop := src.pc_response
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_response = newCResponseT((*C.cef_response_t)(gop), byApp)
 }
 
 func PassCResponseT(p *CResponseT) (ret *CResponseT) {
@@ -29141,24 +27413,6 @@ func (r *RefToCResponseFilterT) UnrefCResponseFilterT() {
 	// return prevValue
 }
 
-func (r *RefToCResponseFilterT) TakeOverCResponseFilterT(src *CResponseFilterT) {
-	if r == nil {
-		return
-	}
-	r.p_response_filter.Unref()
-	gop := src.pc_response_filter
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_response_filter = newCResponseFilterT((*C.cef_response_filter_t)(gop), byApp)
-}
-
 func PassCResponseFilterT(p *CResponseFilterT) (ret *CResponseFilterT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -29412,13 +27666,6 @@ func (r *RefToCSchemeRegistrarT) UnrefCSchemeRegistrarT() {
 	// return prevValue
 }
 
-func (r *RefToCSchemeRegistrarT) TakeOverCSchemeRegistrarT(src *CSchemeRegistrarT) {
-	if r == nil {
-		return
-	}
-	r.setCSchemeRegistrarT(src)
-}
-
 func PassCSchemeRegistrarT(p *CSchemeRegistrarT) (ret *CSchemeRegistrarT) {
 	ret = p
 
@@ -29507,24 +27754,6 @@ func (r *RefToCSchemeHandlerFactoryT) UnrefCSchemeHandlerFactoryT() {
 	r.p_scheme_handler_factory.Unref()
 	r.p_scheme_handler_factory = nil
 	// return prevValue
-}
-
-func (r *RefToCSchemeHandlerFactoryT) TakeOverCSchemeHandlerFactoryT(src *CSchemeHandlerFactoryT) {
-	if r == nil {
-		return
-	}
-	r.p_scheme_handler_factory.Unref()
-	gop := src.pc_scheme_handler_factory
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_scheme_handler_factory = newCSchemeHandlerFactoryT((*C.cef_scheme_handler_factory_t)(gop), byApp)
 }
 
 func PassCSchemeHandlerFactoryT(p *CSchemeHandlerFactoryT) (ret *CSchemeHandlerFactoryT) {
@@ -29793,24 +28022,6 @@ func (r *RefToCScrollViewT) UnrefCScrollViewT() {
 	// return prevValue
 }
 
-func (r *RefToCScrollViewT) TakeOverCScrollViewT(src *CScrollViewT) {
-	if r == nil {
-		return
-	}
-	r.p_scroll_view.Unref()
-	gop := src.pc_scroll_view
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_scroll_view = newCScrollViewT((*C.cef_scroll_view_t)(gop), byApp)
-}
-
 func PassCScrollViewT(p *CScrollViewT) (ret *CScrollViewT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -30027,24 +28238,6 @@ func (r *RefToCSslinfoT) UnrefCSslinfoT() {
 	// return prevValue
 }
 
-func (r *RefToCSslinfoT) TakeOverCSslinfoT(src *CSslinfoT) {
-	if r == nil {
-		return
-	}
-	r.p_sslinfo.Unref()
-	gop := src.pc_sslinfo
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_sslinfo = newCSslinfoT((*C.cef_sslinfo_t)(gop), byApp)
-}
-
 func PassCSslinfoT(p *CSslinfoT) (ret *CSslinfoT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -30187,24 +28380,6 @@ func (r *RefToCSslstatusT) UnrefCSslstatusT() {
 	r.p_sslstatus.Unref()
 	r.p_sslstatus = nil
 	// return prevValue
-}
-
-func (r *RefToCSslstatusT) TakeOverCSslstatusT(src *CSslstatusT) {
-	if r == nil {
-		return
-	}
-	r.p_sslstatus.Unref()
-	gop := src.pc_sslstatus
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_sslstatus = newCSslstatusT((*C.cef_sslstatus_t)(gop), byApp)
 }
 
 func PassCSslstatusT(p *CSslstatusT) (ret *CSslstatusT) {
@@ -30370,24 +28545,6 @@ func (r *RefToCReadHandlerT) UnrefCReadHandlerT() {
 	r.p_read_handler.Unref()
 	r.p_read_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCReadHandlerT) TakeOverCReadHandlerT(src *CReadHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_read_handler.Unref()
-	gop := src.pc_read_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_read_handler = newCReadHandlerT((*C.cef_read_handler_t)(gop), byApp)
 }
 
 func PassCReadHandlerT(p *CReadHandlerT) (ret *CReadHandlerT) {
@@ -30679,24 +28836,6 @@ func (r *RefToCStreamReaderT) UnrefCStreamReaderT() {
 	// return prevValue
 }
 
-func (r *RefToCStreamReaderT) TakeOverCStreamReaderT(src *CStreamReaderT) {
-	if r == nil {
-		return
-	}
-	r.p_stream_reader.Unref()
-	gop := src.pc_stream_reader
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_stream_reader = newCStreamReaderT((*C.cef_stream_reader_t)(gop), byApp)
-}
-
 func PassCStreamReaderT(p *CStreamReaderT) (ret *CStreamReaderT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -30915,24 +29054,6 @@ func (r *RefToCWriteHandlerT) UnrefCWriteHandlerT() {
 	r.p_write_handler.Unref()
 	r.p_write_handler = nil
 	// return prevValue
-}
-
-func (r *RefToCWriteHandlerT) TakeOverCWriteHandlerT(src *CWriteHandlerT) {
-	if r == nil {
-		return
-	}
-	r.p_write_handler.Unref()
-	gop := src.pc_write_handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_write_handler = newCWriteHandlerT((*C.cef_write_handler_t)(gop), byApp)
 }
 
 func PassCWriteHandlerT(p *CWriteHandlerT) (ret *CWriteHandlerT) {
@@ -31224,24 +29345,6 @@ func (r *RefToCStreamWriterT) UnrefCStreamWriterT() {
 	// return prevValue
 }
 
-func (r *RefToCStreamWriterT) TakeOverCStreamWriterT(src *CStreamWriterT) {
-	if r == nil {
-		return
-	}
-	r.p_stream_writer.Unref()
-	gop := src.pc_stream_writer
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_stream_writer = newCStreamWriterT((*C.cef_stream_writer_t)(gop), byApp)
-}
-
 func PassCStreamWriterT(p *CStreamWriterT) (ret *CStreamWriterT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -31445,24 +29548,6 @@ func (r *RefToCStringVisitorT) UnrefCStringVisitorT() {
 	r.p_string_visitor.Unref()
 	r.p_string_visitor = nil
 	// return prevValue
-}
-
-func (r *RefToCStringVisitorT) TakeOverCStringVisitorT(src *CStringVisitorT) {
-	if r == nil {
-		return
-	}
-	r.p_string_visitor.Unref()
-	gop := src.pc_string_visitor
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_string_visitor = newCStringVisitorT((*C.cef_string_visitor_t)(gop), byApp)
 }
 
 func PassCStringVisitorT(p *CStringVisitorT) (ret *CStringVisitorT) {
@@ -31677,24 +29762,6 @@ func (r *RefToCTaskT) UnrefCTaskT() {
 	// return prevValue
 }
 
-func (r *RefToCTaskT) TakeOverCTaskT(src *CTaskT) {
-	if r == nil {
-		return
-	}
-	r.p_task.Unref()
-	gop := src.pc_task
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_task = newCTaskT((*C.cef_task_t)(gop), byApp)
-}
-
 func PassCTaskT(p *CTaskT) (ret *CTaskT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -31903,24 +29970,6 @@ func (r *RefToCTaskRunnerT) UnrefCTaskRunnerT() {
 	r.p_task_runner.Unref()
 	r.p_task_runner = nil
 	// return prevValue
-}
-
-func (r *RefToCTaskRunnerT) TakeOverCTaskRunnerT(src *CTaskRunnerT) {
-	if r == nil {
-		return
-	}
-	r.p_task_runner.Unref()
-	gop := src.pc_task_runner
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_task_runner = newCTaskRunnerT((*C.cef_task_runner_t)(gop), byApp)
 }
 
 func PassCTaskRunnerT(p *CTaskRunnerT) (ret *CTaskRunnerT) {
@@ -32197,24 +30246,6 @@ func (r *RefToCTextfieldT) UnrefCTextfieldT() {
 	r.p_textfield.Unref()
 	r.p_textfield = nil
 	// return prevValue
-}
-
-func (r *RefToCTextfieldT) TakeOverCTextfieldT(src *CTextfieldT) {
-	if r == nil {
-		return
-	}
-	r.p_textfield.Unref()
-	gop := src.pc_textfield
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_textfield = newCTextfieldT((*C.cef_textfield_t)(gop), byApp)
 }
 
 func PassCTextfieldT(p *CTextfieldT) (ret *CTextfieldT) {
@@ -32733,24 +30764,6 @@ func (r *RefToCTextfieldDelegateT) UnrefCTextfieldDelegateT() {
 	// return prevValue
 }
 
-func (r *RefToCTextfieldDelegateT) TakeOverCTextfieldDelegateT(src *CTextfieldDelegateT) {
-	if r == nil {
-		return
-	}
-	r.p_textfield_delegate.Unref()
-	gop := src.pc_textfield_delegate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_textfield_delegate = newCTextfieldDelegateT((*C.cef_textfield_delegate_t)(gop), byApp)
-}
-
 func PassCTextfieldDelegateT(p *CTextfieldDelegateT) (ret *CTextfieldDelegateT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -33090,24 +31103,6 @@ func (r *RefToCEndTracingCallbackT) UnrefCEndTracingCallbackT() {
 	// return prevValue
 }
 
-func (r *RefToCEndTracingCallbackT) TakeOverCEndTracingCallbackT(src *CEndTracingCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_end_tracing_callback.Unref()
-	gop := src.pc_end_tracing_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_end_tracing_callback = newCEndTracingCallbackT((*C.cef_end_tracing_callback_t)(gop), byApp)
-}
-
 func PassCEndTracingCallbackT(p *CEndTracingCallbackT) (ret *CEndTracingCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -33398,24 +31393,6 @@ func (r *RefToCUrlrequestT) UnrefCUrlrequestT() {
 	// return prevValue
 }
 
-func (r *RefToCUrlrequestT) TakeOverCUrlrequestT(src *CUrlrequestT) {
-	if r == nil {
-		return
-	}
-	r.p_urlrequest.Unref()
-	gop := src.pc_urlrequest
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_urlrequest = newCUrlrequestT((*C.cef_urlrequest_t)(gop), byApp)
-}
-
 func PassCUrlrequestT(p *CUrlrequestT) (ret *CUrlrequestT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -33643,24 +31620,6 @@ func (r *RefToCUrlrequestClientT) UnrefCUrlrequestClientT() {
 	r.p_urlrequest_client.Unref()
 	r.p_urlrequest_client = nil
 	// return prevValue
-}
-
-func (r *RefToCUrlrequestClientT) TakeOverCUrlrequestClientT(src *CUrlrequestClientT) {
-	if r == nil {
-		return
-	}
-	r.p_urlrequest_client.Unref()
-	gop := src.pc_urlrequest_client
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_urlrequest_client = newCUrlrequestClientT((*C.cef_urlrequest_client_t)(gop), byApp)
 }
 
 func PassCUrlrequestClientT(p *CUrlrequestClientT) (ret *CUrlrequestClientT) {
@@ -33981,24 +31940,6 @@ func (r *RefToCV8contextT) UnrefCV8contextT() {
 	// return prevValue
 }
 
-func (r *RefToCV8contextT) TakeOverCV8contextT(src *CV8contextT) {
-	if r == nil {
-		return
-	}
-	r.p_v8context.Unref()
-	gop := src.pc_v8context
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8context = newCV8contextT((*C.cef_v8context_t)(gop), byApp)
-}
-
 func PassCV8contextT(p *CV8contextT) (ret *CV8contextT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -34275,24 +32216,6 @@ func (r *RefToCV8handlerT) UnrefCV8handlerT() {
 	// return prevValue
 }
 
-func (r *RefToCV8handlerT) TakeOverCV8handlerT(src *CV8handlerT) {
-	if r == nil {
-		return
-	}
-	r.p_v8handler.Unref()
-	gop := src.pc_v8handler
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8handler = newCV8handlerT((*C.cef_v8handler_t)(gop), byApp)
-}
-
 func PassCV8handlerT(p *CV8handlerT) (ret *CV8handlerT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -34505,24 +32428,6 @@ func (r *RefToCV8accessorT) UnrefCV8accessorT() {
 	r.p_v8accessor.Unref()
 	r.p_v8accessor = nil
 	// return prevValue
-}
-
-func (r *RefToCV8accessorT) TakeOverCV8accessorT(src *CV8accessorT) {
-	if r == nil {
-		return
-	}
-	r.p_v8accessor.Unref()
-	gop := src.pc_v8accessor
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8accessor = newCV8accessorT((*C.cef_v8accessor_t)(gop), byApp)
 }
 
 func PassCV8accessorT(p *CV8accessorT) (ret *CV8accessorT) {
@@ -34766,24 +32671,6 @@ func (r *RefToCV8interceptorT) UnrefCV8interceptorT() {
 	// return prevValue
 }
 
-func (r *RefToCV8interceptorT) TakeOverCV8interceptorT(src *CV8interceptorT) {
-	if r == nil {
-		return
-	}
-	r.p_v8interceptor.Unref()
-	gop := src.pc_v8interceptor
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8interceptor = newCV8interceptorT((*C.cef_v8interceptor_t)(gop), byApp)
-}
-
 func PassCV8interceptorT(p *CV8interceptorT) (ret *CV8interceptorT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -35017,24 +32904,6 @@ func (r *RefToCV8exceptionT) UnrefCV8exceptionT() {
 	// return prevValue
 }
 
-func (r *RefToCV8exceptionT) TakeOverCV8exceptionT(src *CV8exceptionT) {
-	if r == nil {
-		return
-	}
-	r.p_v8exception.Unref()
-	gop := src.pc_v8exception
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8exception = newCV8exceptionT((*C.cef_v8exception_t)(gop), byApp)
-}
-
 func PassCV8exceptionT(p *CV8exceptionT) (ret *CV8exceptionT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -35250,24 +33119,6 @@ func (r *RefToCV8arrayBufferReleaseCallbackT) UnrefCV8arrayBufferReleaseCallback
 	// return prevValue
 }
 
-func (r *RefToCV8arrayBufferReleaseCallbackT) TakeOverCV8arrayBufferReleaseCallbackT(src *CV8arrayBufferReleaseCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_v8array_buffer_release_callback.Unref()
-	gop := src.pc_v8array_buffer_release_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8array_buffer_release_callback = newCV8arrayBufferReleaseCallbackT((*C.cef_v8array_buffer_release_callback_t)(gop), byApp)
-}
-
 func PassCV8arrayBufferReleaseCallbackT(p *CV8arrayBufferReleaseCallbackT) (ret *CV8arrayBufferReleaseCallbackT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -35477,24 +33328,6 @@ func (r *RefToCV8valueT) UnrefCV8valueT() {
 	r.p_v8value.Unref()
 	r.p_v8value = nil
 	// return prevValue
-}
-
-func (r *RefToCV8valueT) TakeOverCV8valueT(src *CV8valueT) {
-	if r == nil {
-		return
-	}
-	r.p_v8value.Unref()
-	gop := src.pc_v8value
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8value = newCV8valueT((*C.cef_v8value_t)(gop), byApp)
 }
 
 func PassCV8valueT(p *CV8valueT) (ret *CV8valueT) {
@@ -36461,24 +34294,6 @@ func (r *RefToCV8stackTraceT) UnrefCV8stackTraceT() {
 	// return prevValue
 }
 
-func (r *RefToCV8stackTraceT) TakeOverCV8stackTraceT(src *CV8stackTraceT) {
-	if r == nil {
-		return
-	}
-	r.p_v8stack_trace.Unref()
-	gop := src.pc_v8stack_trace
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8stack_trace = newCV8stackTraceT((*C.cef_v8stack_trace_t)(gop), byApp)
-}
-
 func PassCV8stackTraceT(p *CV8stackTraceT) (ret *CV8stackTraceT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -36638,24 +34453,6 @@ func (r *RefToCV8stackFrameT) UnrefCV8stackFrameT() {
 	r.p_v8stack_frame.Unref()
 	r.p_v8stack_frame = nil
 	// return prevValue
-}
-
-func (r *RefToCV8stackFrameT) TakeOverCV8stackFrameT(src *CV8stackFrameT) {
-	if r == nil {
-		return
-	}
-	r.p_v8stack_frame.Unref()
-	gop := src.pc_v8stack_frame
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_v8stack_frame = newCV8stackFrameT((*C.cef_v8stack_frame_t)(gop), byApp)
 }
 
 func PassCV8stackFrameT(p *CV8stackFrameT) (ret *CV8stackFrameT) {
@@ -36949,24 +34746,6 @@ func (r *RefToCValueT) UnrefCValueT() {
 	r.p_value.Unref()
 	r.p_value = nil
 	// return prevValue
-}
-
-func (r *RefToCValueT) TakeOverCValueT(src *CValueT) {
-	if r == nil {
-		return
-	}
-	r.p_value.Unref()
-	gop := src.pc_value
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_value = newCValueT((*C.cef_value_t)(gop), byApp)
 }
 
 func PassCValueT(p *CValueT) (ret *CValueT) {
@@ -37416,24 +35195,6 @@ func (r *RefToCBinaryValueT) UnrefCBinaryValueT() {
 	// return prevValue
 }
 
-func (r *RefToCBinaryValueT) TakeOverCBinaryValueT(src *CBinaryValueT) {
-	if r == nil {
-		return
-	}
-	r.p_binary_value.Unref()
-	gop := src.pc_binary_value
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_binary_value = newCBinaryValueT((*C.cef_binary_value_t)(gop), byApp)
-}
-
 func PassCBinaryValueT(p *CBinaryValueT) (ret *CBinaryValueT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -37657,24 +35418,6 @@ func (r *RefToCDictionaryValueT) UnrefCDictionaryValueT() {
 	r.p_dictionary_value.Unref()
 	r.p_dictionary_value = nil
 	// return prevValue
-}
-
-func (r *RefToCDictionaryValueT) TakeOverCDictionaryValueT(src *CDictionaryValueT) {
-	if r == nil {
-		return
-	}
-	r.p_dictionary_value.Unref()
-	gop := src.pc_dictionary_value
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_dictionary_value = newCDictionaryValueT((*C.cef_dictionary_value_t)(gop), byApp)
 }
 
 func PassCDictionaryValueT(p *CDictionaryValueT) (ret *CDictionaryValueT) {
@@ -38269,24 +36012,6 @@ func (r *RefToCListValueT) UnrefCListValueT() {
 	// return prevValue
 }
 
-func (r *RefToCListValueT) TakeOverCListValueT(src *CListValueT) {
-	if r == nil {
-		return
-	}
-	r.p_list_value.Unref()
-	gop := src.pc_list_value
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_list_value = newCListValueT((*C.cef_list_value_t)(gop), byApp)
-}
-
 func PassCListValueT(p *CListValueT) (ret *CListValueT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -38846,24 +36571,6 @@ func (r *RefToCViewT) UnrefCViewT() {
 	r.p_view.Unref()
 	r.p_view = nil
 	// return prevValue
-}
-
-func (r *RefToCViewT) TakeOverCViewT(src *CViewT) {
-	if r == nil {
-		return
-	}
-	r.p_view.Unref()
-	gop := src.pc_view
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_view = newCViewT((*C.cef_view_t)(gop), byApp)
 }
 
 func PassCViewT(p *CViewT) (ret *CViewT) {
@@ -39635,24 +37342,6 @@ func (r *RefToCViewDelegateT) UnrefCViewDelegateT() {
 	// return prevValue
 }
 
-func (r *RefToCViewDelegateT) TakeOverCViewDelegateT(src *CViewDelegateT) {
-	if r == nil {
-		return
-	}
-	r.p_view_delegate.Unref()
-	gop := src.pc_view_delegate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_view_delegate = newCViewDelegateT((*C.cef_view_delegate_t)(gop), byApp)
-}
-
 func PassCViewDelegateT(p *CViewDelegateT) (ret *CViewDelegateT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -40060,24 +37749,6 @@ func (r *RefToCWebPluginInfoT) UnrefCWebPluginInfoT() {
 	// return prevValue
 }
 
-func (r *RefToCWebPluginInfoT) TakeOverCWebPluginInfoT(src *CWebPluginInfoT) {
-	if r == nil {
-		return
-	}
-	r.p_web_plugin_info.Unref()
-	gop := src.pc_web_plugin_info
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_web_plugin_info = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(gop), byApp)
-}
-
 func PassCWebPluginInfoT(p *CWebPluginInfoT) (ret *CWebPluginInfoT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -40247,24 +37918,6 @@ func (r *RefToCWebPluginInfoVisitorT) UnrefCWebPluginInfoVisitorT() {
 	r.p_web_plugin_info_visitor.Unref()
 	r.p_web_plugin_info_visitor = nil
 	// return prevValue
-}
-
-func (r *RefToCWebPluginInfoVisitorT) TakeOverCWebPluginInfoVisitorT(src *CWebPluginInfoVisitorT) {
-	if r == nil {
-		return
-	}
-	r.p_web_plugin_info_visitor.Unref()
-	gop := src.pc_web_plugin_info_visitor
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_web_plugin_info_visitor = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(gop), byApp)
 }
 
 func PassCWebPluginInfoVisitorT(p *CWebPluginInfoVisitorT) (ret *CWebPluginInfoVisitorT) {
@@ -40476,24 +38129,6 @@ func (r *RefToCWebPluginUnstableCallbackT) UnrefCWebPluginUnstableCallbackT() {
 	r.p_web_plugin_unstable_callback.Unref()
 	r.p_web_plugin_unstable_callback = nil
 	// return prevValue
-}
-
-func (r *RefToCWebPluginUnstableCallbackT) TakeOverCWebPluginUnstableCallbackT(src *CWebPluginUnstableCallbackT) {
-	if r == nil {
-		return
-	}
-	r.p_web_plugin_unstable_callback.Unref()
-	gop := src.pc_web_plugin_unstable_callback
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_web_plugin_unstable_callback = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(gop), byApp)
 }
 
 func PassCWebPluginUnstableCallbackT(p *CWebPluginUnstableCallbackT) (ret *CWebPluginUnstableCallbackT) {
@@ -40782,24 +38417,6 @@ func (r *RefToCWindowT) UnrefCWindowT() {
 	r.p_window.Unref()
 	r.p_window = nil
 	// return prevValue
-}
-
-func (r *RefToCWindowT) TakeOverCWindowT(src *CWindowT) {
-	if r == nil {
-		return
-	}
-	r.p_window.Unref()
-	gop := src.pc_window
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_window = newCWindowT((*C.cef_window_t)(gop), byApp)
 }
 
 func PassCWindowT(p *CWindowT) (ret *CWindowT) {
@@ -41416,24 +39033,6 @@ func (r *RefToCWindowDelegateT) UnrefCWindowDelegateT() {
 	// return prevValue
 }
 
-func (r *RefToCWindowDelegateT) TakeOverCWindowDelegateT(src *CWindowDelegateT) {
-	if r == nil {
-		return
-	}
-	r.p_window_delegate.Unref()
-	gop := src.pc_window_delegate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_window_delegate = newCWindowDelegateT((*C.cef_window_delegate_t)(gop), byApp)
-}
-
 func PassCWindowDelegateT(p *CWindowDelegateT) (ret *CWindowDelegateT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -41989,24 +39588,6 @@ func (r *RefToCX509certPrincipalT) UnrefCX509certPrincipalT() {
 	// return prevValue
 }
 
-func (r *RefToCX509certPrincipalT) TakeOverCX509certPrincipalT(src *CX509certPrincipalT) {
-	if r == nil {
-		return
-	}
-	r.p_x509cert_principal.Unref()
-	gop := src.pc_x509cert_principal
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_x509cert_principal = newCX509certPrincipalT((*C.cef_x509cert_principal_t)(gop), byApp)
-}
-
 func PassCX509certPrincipalT(p *CX509certPrincipalT) (ret *CX509certPrincipalT) {
 	switch p.beUnrefed {
 	case byApp:
@@ -42237,24 +39818,6 @@ func (r *RefToCX509certificateT) UnrefCX509certificateT() {
 	r.p_x509certificate.Unref()
 	r.p_x509certificate = nil
 	// return prevValue
-}
-
-func (r *RefToCX509certificateT) TakeOverCX509certificateT(src *CX509certificateT) {
-	if r == nil {
-		return
-	}
-	r.p_x509certificate.Unref()
-	gop := src.pc_x509certificate
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_x509certificate = newCX509certificateT((*C.cef_x509certificate_t)(gop), byApp)
 }
 
 func PassCX509certificateT(p *CX509certificateT) (ret *CX509certificateT) {

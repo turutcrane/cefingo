@@ -706,28 +706,6 @@ func (r *RefTo{%s d.GoName() %}) Unref{%s d.GoName() %}() {
 	// return prevValue
 }
 
-func (r *RefTo{%s d.GoName() %}) TakeOver{%s d.GoName() %}(src {%s d.GoType() %}) {
-	if r == nil {
-		return
-	}
-	{%- if d.St == parser.StRefCounted -%}
-	r.p_{%s d.BaseName() %}.Unref()
-	gop := src.pc_{%s d.BaseName() %}
-	switch src.beUnrefed {
-	case byApp:
-		src.beUnrefed = unrefed
-	case byApi:
-		BaseAddRef(gop)
-	default:
-		Panicln("F715: Unsupported Ref Taked Over", src.beUnrefed)
-	}
-
-	r.p_{%s d.BaseName() %} = new{%s d.GoName() %}(({%s d.GoCType() %})(gop), byApp)
-	{%- else -%}
-	r.set{%s d.GoName() %}(src)
-	{%- endif -%}
-}
-
 func Pass{%s d.GoName() %}(p {%s d.GoType() %}) (ret {%s d.GoType() %}) {
 	{%- if d.St == parser.StRefCounted -%}
 	switch p.beUnrefed {
