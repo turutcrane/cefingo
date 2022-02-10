@@ -12,14 +12,14 @@ import (
 
 type browserQueryInfo struct {
 	valid      bool
-	browser    *capi.CBrowserT
-	frame      *capi.CFrameT
+	browser    capi.RefToCBrowserT
+	frame      capi.RefToCFrameT
 	queryId    BrowserQueryId
 	msgPrefix  string
 	routerId   routerId
 	request    requestId
 	persistent bool
-	hander     BrowserQueryHandler
+	handler    BrowserQueryHandler
 }
 
 type BrowserQueryId int64
@@ -115,16 +115,22 @@ func BrowserOnProcessMessageReceived(
 		query_id := getNextQueryId()
 
 		// PromptHandler::OnQuery
-		info := &browserQueryInfo{true,
-			browser, frame,
-			query_id,
-			msgPrefix,
-			routerId, request, persistent,
-			handler,
+		info := &browserQueryInfo{
+			valid: true,
+			// browser: capi.RefToCBrowserT{},
+			// frame:  capi.RefToCFrameT{},
+			queryId:    query_id,
+			msgPrefix:  msgPrefix,
+			routerId:   routerId,
+			request:    request,
+			persistent: persistent,
+			handler:    handler,
 		}
-		if handler.OnQuery(browser, frame, request_str, persistent, query_id, info) {
-			addQueryInfoMap(browser_id, query_id, info)
-		} else {
+		info.browser.NewRefCBrowserT(browser)
+		info.frame.NewRefCFrameT(frame)
+
+		addQueryInfoMap(browser_id, query_id, info)
+		if !handler.OnQuery(browser, frame, request_str, persistent, query_id, info) {
 			cancelUnhandledQuery(info)
 		}
 		return true
@@ -148,9 +154,9 @@ func (info *browserQueryInfo) Success(response string) {
 
 	if info.valid {
 		if info.persistent {
-			info = getQueryInfo(info.browser.GetIdentifier(), info.queryId)
+			info = getQueryInfo(info.browser.GetCBrowserT().GetIdentifier(), info.queryId)
 		} else {
-			info = getAndDelteQueryInfo(info.browser.GetIdentifier(), info.queryId)
+			info = getAndDelteQueryInfo(info.browser.GetCBrowserT().GetIdentifier(), info.queryId)
 		}
 		if info != nil {
 			cef.PostTask(capi.TidUi, cef.TaskFunc(func() {
@@ -167,7 +173,11 @@ func sendQuerySuccess(info *browserQueryInfo, response string) {
 	args.SetInt(1, int(info.request))
 	args.SetBool(2, true)
 	args.SetString(3, response)
-	info.frame.SendProcessMessage(capi.PidRenderer, message)
+	info.frame.GetCFrameT().SendProcessMessage(capi.PidRenderer, message)
+	if !info.persistent {
+		info.browser.UnrefCBrowserT()
+		info.frame.UnrefCFrameT()
+	}
 }
 
 func (info *browserQueryInfo) Failure(errorCode int, errorMessage string) {
@@ -177,7 +187,7 @@ func (info *browserQueryInfo) Failure(errorCode int, errorMessage string) {
 		}))
 	}
 	if info.valid {
-		info := getAndDelteQueryInfo(info.browser.GetIdentifier(), info.queryId)
+		info := getAndDelteQueryInfo(info.browser.GetCBrowserT().GetIdentifier(), info.queryId)
 		if info != nil {
 			cef.PostTask(capi.TidUi, cef.TaskFunc(func() {
 				sendQueryFailure(info,
@@ -201,7 +211,7 @@ func sendQueryFailure(info *browserQueryInfo, errorCode int, errorMessage string
 	args.SetBool(2, false)
 	args.SetInt(3, errorCode)
 	args.SetString(4, errorMessage)
-	info.frame.SendProcessMessage(capi.PidRenderer, message)
+	info.frame.GetCFrameT().SendProcessMessage(capi.PidRenderer, message)
 }
 
 const (
@@ -211,6 +221,8 @@ const (
 
 func cancelUnhandledQuery(info *browserQueryInfo) {
 	sendQueryFailure(info, kCanceledErrorCode, kCanceledErrorMessage)
+	info.browser.UnrefCBrowserT()
+	info.frame.UnrefCFrameT()
 }
 
 func cancelPendingRequest(browser_id int, routerId routerId, request requestId) {
@@ -260,6 +272,8 @@ func cancelQuery(queryId BrowserQueryId, info *browserQueryInfo, notifyRederer b
 	if notifyRederer {
 		sendQueryFailure(info, kCanceledErrorCode, kCanceledErrorMessage)
 	}
-	info.hander.OnQueryCanceled(info.browser, info.frame, queryId)
+	info.handler.OnQueryCanceled(info.browser.GetCBrowserT(), info.frame.GetCFrameT(), queryId)
 	info.valid = false
+	info.browser.UnrefCBrowserT()
+	info.frame.UnrefCFrameT()
 }

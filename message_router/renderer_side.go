@@ -171,7 +171,9 @@ func (router *RendererMessageRouter) QueryHandler() v8.HandlerFunction {
 		queryArgs.SetInt(1, int(request_id))
 		queryArgs.SetString(2, requestVal.GetStringValue())
 		queryArgs.SetBool(3, persistent)
-		context.GetFrame().SendProcessMessage(capi.PidBrowser, message)
+		frame := context.GetFrame()
+		defer frame.Unref()
+		frame.SendProcessMessage(capi.PidBrowser, message)
 		retVal := v8.NewValue(capi.V8valueCreateInt(int32(request_id)))
 		return retVal, nil
 	})
@@ -188,7 +190,9 @@ func (router *RendererMessageRouter) QueryCancelHandler() v8.HandlerFunction {
 		context := capi.V8contextGetCurrentContext()
 		browser := context.GetBrowser()
 		if request_id != 0 {
-			result = sendCancel(router, browser, context.GetFrame(), request_id)
+			frame := context.GetFrame()
+			defer frame.Unref()
+			result = sendCancel(router, browser, frame, request_id)
 		}
 
 		retVal := v8.CreateBool(result)
@@ -330,7 +334,9 @@ func (router *RendererMessageRouter) OnContextReleased(
 	for _, k := range keys {
 		if _, loaded := requestInfoMap.LoadAndDelete(k); loaded {
 			// info := i.(*requestInfo)
-			sendCancel(router, browser, context.GetFrame(), k.request)
+			frame := context.GetFrame()
+			defer frame.Unref()
+			sendCancel(router, browser, frame, k.request)
 		}
 	}
 }

@@ -262,7 +262,15 @@ var sliceParameter = map[string]string{
 	"::cef_display_get_alls::displays":                                  "displaysCount",
 }
 
+
 var sliceLengthParameter = map[string]string{}
+
+var sliceSizeExp = map[string]string{
+	"cef_post_data_t::get_elements::elements": "self.GetElementCount()",
+	"cef_x509certificate_t::get_derencoded_issuer_chain::chain":         "self.GetIssuerChainSize()",
+	"cef_x509certificate_t::get_pemencoded_issuer_chain::chain":         "self.GetIssuerChainSize()",
+	"::cef_display_get_alls::displays":                                  "DisplayGetCount()",
+}
 
 func init() {
 	for bs, length := range byteSliceParameter {
@@ -1580,6 +1588,13 @@ func (p Param) IsSliceParam() (isSlice bool, maxLengthArg string) {
 func (p Param) IsSliceLengthParam() (isSliceLength bool) {
 	_, isSliceLength = sliceLengthParameter[p.CalleeName()+"::"+p.Name()]
 	return isSliceLength
+}
+
+func (p Param) SliceSizeExp() string {
+	if e, ok := sliceSizeExp[p.CalleeName()+"::"+p.Name()]; ok {
+		return e
+	}
+	return ""
 }
 
 func (p Param) IsBoolParam() (isBool bool) {

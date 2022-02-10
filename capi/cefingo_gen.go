@@ -8915,11 +8915,15 @@ func DisplayGetCount() (ret int64) {
 // intended to return distinct, usable displays.
 ///
 func DisplayGetAlls() (displays []*CDisplayT) {
-	var _displaysCount C.size_t
+	_displaysCount := C.size_t(DisplayGetCount()) // =SizeFunc ::cef_display_get_alls:displays
+	if _displaysCount == 0 {
+		return
+	}
 	displaysCount := &_displaysCount
-	var tmpdisplays *C.cef_display_t
+	tmpdisplays := unsafe.Pointer(c_calloc(_displaysCount, 8, "T254.1"))
+	defer C.free(tmpdisplays)
 
-	C.cef_display_get_alls((*C.size_t)(displaysCount), &tmpdisplays)
+	C.cef_display_get_alls((*C.size_t)(displaysCount), (**C.cef_display_t)(tmpdisplays))
 
 	displays = make([]*CDisplayT, *displaysCount)
 	_tmpdisplays := (*[1 << 30](*C.cef_display_t))(unsafe.Pointer(tmpdisplays))[:*displaysCount:*displaysCount]
@@ -23551,11 +23555,15 @@ func (self *CPostDataT) GetElementCount() (ret int64) {
 // Retrieve the post data elements.
 ///
 func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
-	var _elementsCount C.size_t
+	_elementsCount := C.size_t(self.GetElementCount()) // =SizeFunc cef_post_data_t::get_elements:elements
+	if _elementsCount == 0 {
+		return
+	}
 	elementsCount := &_elementsCount
-	var tmpelements *C.cef_post_data_element_t
+	tmpelements := unsafe.Pointer(c_calloc(_elementsCount, 8, "T181.3"))
+	defer C.free(tmpelements)
 
-	C.cefingo_post_data_get_elements((*C.cef_post_data_t)(self.pc_post_data), (*C.size_t)(elementsCount), &tmpelements)
+	C.cefingo_post_data_get_elements((*C.cef_post_data_t)(self.pc_post_data), (*C.size_t)(elementsCount), (**C.cef_post_data_element_t)(tmpelements))
 
 	elements = make([]*CPostDataElementT, *elementsCount)
 	_tmpelements := (*[1 << 30](*C.cef_post_data_element_t))(unsafe.Pointer(tmpelements))[:*elementsCount:*elementsCount]
@@ -39984,11 +39992,15 @@ func (self *CX509certificateT) GetIssuerChainSize() (ret int64) {
 // is an NULL string.
 ///
 func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValueT) {
-	var _chainCount C.size_t
+	_chainCount := C.size_t(self.GetIssuerChainSize()) // =SizeFunc cef_x509certificate_t::get_derencoded_issuer_chain:chain
+	if _chainCount == 0 {
+		return
+	}
 	chainCount := &_chainCount
-	var tmpchain *C.cef_binary_value_t
+	tmpchain := unsafe.Pointer(c_calloc(_chainCount, 8, "T234.3"))
+	defer C.free(tmpchain)
 
-	C.cefingo_x509certificate_get_derencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), &tmpchain)
+	C.cefingo_x509certificate_get_derencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), (**C.cef_binary_value_t)(tmpchain))
 
 	chain = make([]*CBinaryValueT, *chainCount)
 	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
@@ -40004,11 +40016,15 @@ func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValue
 // is an NULL string.
 ///
 func (self *CX509certificateT) GetPemencodedIssuerChain() (chain []*CBinaryValueT) {
-	var _chainCount C.size_t
+	_chainCount := C.size_t(self.GetIssuerChainSize()) // =SizeFunc cef_x509certificate_t::get_pemencoded_issuer_chain:chain
+	if _chainCount == 0 {
+		return
+	}
 	chainCount := &_chainCount
-	var tmpchain *C.cef_binary_value_t
+	tmpchain := unsafe.Pointer(c_calloc(_chainCount, 8, "T234.4"))
+	defer C.free(tmpchain)
 
-	C.cefingo_x509certificate_get_pemencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), &tmpchain)
+	C.cefingo_x509certificate_get_pemencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), (**C.cef_binary_value_t)(tmpchain))
 
 	chain = make([]*CBinaryValueT, *chainCount)
 	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]

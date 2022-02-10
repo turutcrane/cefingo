@@ -416,9 +416,13 @@ extern {%s constructorName(st) %};
 	{%s argLen %} := len({%s goParamName(p) %})
 	{%s cTempName(p) %} := c_calloc(C.size_t({%s argLen %}), 1, "{%s lt.NextTag() %}:{%s p.CalleeName() + "::" + p.Name() %}")
 	{%- elseif isSlice, argLen := p.IsSliceParam(); isSlice -%}
-	var _{%s argLen %} C.size_t
+	_{%s argLen %} := C.size_t({%s p.SliceSizeExp() %}) // =SizeFunc {%s p.CalleeName() %}:{%s p.Name() %}
+	if _{%s argLen %} == 0 {
+		return
+	}
 	{%s argLen %} := &_{%s argLen %}
-	var {%s cTempName(p) %} {%s p.Type().Deref().GoCType() %}
+	{%s cTempName(p) %} := unsafe.Pointer(c_calloc(_{%s argLen %}, 8, "{%s lt.NextTag() %}"))
+	defer C.free({%s cTempName(p) %})
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
 	{%s cTempName(p) %} := create_cef_string("")
 	{%- else -%}
@@ -473,9 +477,11 @@ tmp{%= cName(p) -%}
 {% func convToC(p parser.Param, lt *LogTag) -%}
 {% if p.IsOutParam() -%}
 	{%- if ok, _ := p.IsByteSliceParam(); ok -%}
-	{%-s= cTempName(p) -%}
+	{%-= cTempName(p) -%}
 	{%- elseif p.Type().Ty == parser.TyStringT -%}
-	{%-s= cTempName(p) %}.{%s "p_cef_string_t" -%}
+	{%-= cTempName(p) %}.{%s "p_cef_string_t" -%}
+	{%- elseif ok, _ := p.IsSliceParam(); ok -%}
+	{%-s= "(*" + p.Type().Deref().GoCType() + ")(" + cTempName(p) + ")"  -%}
 	{%- else -%}
 	{%-s= "&" + cTempName(p) -%}
 	{%- endif -%}
