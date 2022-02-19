@@ -32,27 +32,6 @@ This is experimental go binding for CEF.
     Cflags: -I${includedir}
     Libs: -L${libdir} -lcef
     ```
-
-1. go install gencefingo . (in msys2 mingw64 environment)
-
-    ```
-    $ go install github.com/turutcrane/gencefingo@latest
-    ```
-
-1. make cefingo dir and go mod init (in msys2 mingw64 environment)
-
-    ```
-    $ cd cefingo
-    $ go mod init gtihub.com/turutcrane/cefingo
-    ```
-
-
-1. generate cefingo package (in msys2 mingw64 environment)
-
-   ```
-   $ cd cefingo-dir
-   $ gencefingo -pkgdir .
-   ```
 ## Example
   https://github.com/turutcrane/cefingo-sample
 
