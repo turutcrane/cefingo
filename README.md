@@ -2,10 +2,13 @@
 This is experimental go binding for CEF.
 
 ## Supported Environment
-* Windows 10 64bit (msys2 environment is recomended)
+* Windows 10 64bit
+* msys2/mingw64
 
-## How to Start
-1. Download Spotify's Autobuild Image http://opensource.spotify.com/cefbuilds/cef_binary_80.1.2%2Bg9d2a31e%2Bchromium-80.0.3987.149_windows64.tar.bz2
+## How to Use
+1. Download Spotify's Autobuild Image (windos 64bit)
+
+    https://cef-builds.spotifycdn.com/index.html#windows64
 
 1. Expand it.
 
@@ -30,16 +33,32 @@ This is experimental go binding for CEF.
     Libs: -L${libdir} -lcef
     ```
 
-1. go get this packages.
+1. go install gencefingo . (in msys2 mingw64 environment)
 
-    ```bat
-    C:\> go get github.com/turutcrane/cefingo/...
+    ```
+    $ go install github.com/turutcrane/gencefingo@latest
+    ```
+
+1. make cefingo dir and go mod init (in msys2 mingw64 environment)
+
+    ```
+    $ cd cefingo
+    $ go mod init gtihub.com/turutcrane/cefingo
     ```
 
 
+1. generate cefingo package (in msys2 mingw64 environment)
+
+   ```
+   $ cd cefingo-dir
+   $ gencefingo -pkgdir .
+   ```
 ## Example
   https://github.com/turutcrane/cefingo-sample
 
+## Caution
+
+Some functions and methods of cef has thread constraint. Any functions and methods in this package are not disable goroutine preemption. So thread error may be produced.
 ## License
 This project is licensed under the MIT License.
 
