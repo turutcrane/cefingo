@@ -1,7 +1,5 @@
 package capi
 
-//go:generate go run github.com/turutcrane/cefingo/tools/gen-cefingo -capidir .
-
 import (
 	"log"
 	"os"

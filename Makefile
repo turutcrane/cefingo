@@ -1,4 +1,4 @@
 
 .PHONY: capi
 capi:
-	go generate github.com/turutcrane/cefingo/capi
+	go run github.com/turutcrane/gencefingo@latest -pkgdir .
