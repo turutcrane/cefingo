@@ -162,11 +162,11 @@ func (v Value) AddEventListener(e EventType, h capi.CV8handlerTExecuteHandler) (
 		return fmt.Errorf("L112: addEventListener is not function?")
 	}
 
-	eHander := capi.AllocCV8handlerT().Bind(h)
+	eHander := capi.NewCV8handlerT(h)
 
 	eType := capi.V8valueCreateString(string(e))
 
-	eFunc := capi.V8valueCreateFunction("eh", eHander)
+	eFunc := capi.V8valueCreateFunction("eh", eHander.Pass())
 
 	args := []Value{NewValue(eType), NewValue(eFunc)}
 	_, err = Function(f).ExecuteFunction(v, args)
@@ -202,8 +202,8 @@ func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 }
 
 func NewFunction(name string, f capi.CV8handlerTExecuteHandler) Value {
-	h := capi.AllocCV8handlerT().Bind(f)
-	v8f := capi.V8valueCreateFunction(name, h)
+	h := capi.NewCV8handlerT(f)
+	v8f := capi.V8valueCreateFunction(name, h.Pass())
 	return NewValue(v8f)
 }
 

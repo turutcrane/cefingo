@@ -19,7 +19,7 @@ func (f v8arrayBufferRelaseCallback) ReleaseBuffer(
 func CreateArrayBuffer(
 	buffer []byte,
 ) *CV8valueT {
-	releaseCallback := AllocCV8arrayBufferReleaseCallbackT().Bind(
+	releaseCallback := NewCV8arrayBufferReleaseCallbackT(
 		v8arrayBufferRelaseCallback(func(self *CV8arrayBufferReleaseCallbackT, buffer unsafe.Pointer) {
 			Logf("T34: %v\n", buffer)
 			C.free(buffer)

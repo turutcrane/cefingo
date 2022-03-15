@@ -12,8 +12,8 @@ import (
 
 type browserQueryInfo struct {
 	valid      bool
-	browser    capi.RefToCBrowserT
-	frame      capi.RefToCFrameT
+	browser    *capi.CBrowserT
+	frame      *capi.CFrameT
 	queryId    BrowserQueryId
 	msgPrefix  string
 	routerId   routerId
@@ -102,7 +102,6 @@ func BrowserOnProcessMessageReceived(
 		log.Panicln("T380")
 	}
 	message_name := message.GetName()
-	log.Println("T106:", message_name)
 	args := message.GetArgumentList()
 	browser_id := browser.GetIdentifier()
 	switch message_name {
@@ -126,8 +125,8 @@ func BrowserOnProcessMessageReceived(
 			persistent: persistent,
 			handler:    handler,
 		}
-		info.browser.NewRefCBrowserT(browser)
-		info.frame.NewRefCFrameT(frame)
+		info.browser = browser.NewRef() // .NewRefCBrowserT(browser)
+		info.frame = frame.NewRef() // .NewRefCFrameT(frame)
 
 		addQueryInfoMap(browser_id, query_id, info)
 		if !handler.OnQuery(browser, frame, request_str, persistent, query_id, info) {
@@ -154,9 +153,9 @@ func (info *browserQueryInfo) Success(response string) {
 
 	if info.valid {
 		if info.persistent {
-			info = getQueryInfo(info.browser.GetCBrowserT().GetIdentifier(), info.queryId)
+			info = getQueryInfo(info.browser.GetIdentifier(), info.queryId)
 		} else {
-			info = getAndDelteQueryInfo(info.browser.GetCBrowserT().GetIdentifier(), info.queryId)
+			info = getAndDelteQueryInfo(info.browser.GetIdentifier(), info.queryId)
 		}
 		if info != nil {
 			cef.PostTask(capi.TidUi, cef.TaskFunc(func() {
@@ -173,10 +172,10 @@ func sendQuerySuccess(info *browserQueryInfo, response string) {
 	args.SetInt(1, int(info.request))
 	args.SetBool(2, true)
 	args.SetString(3, response)
-	info.frame.GetCFrameT().SendProcessMessage(capi.PidRenderer, message)
+	info.frame.SendProcessMessage(capi.PidRenderer, message)
 	if !info.persistent {
-		info.browser.UnrefCBrowserT()
-		info.frame.UnrefCFrameT()
+		info.browser.Unref()
+		info.frame.Unref()
 	}
 }
 
@@ -187,7 +186,7 @@ func (info *browserQueryInfo) Failure(errorCode int, errorMessage string) {
 		}))
 	}
 	if info.valid {
-		info := getAndDelteQueryInfo(info.browser.GetCBrowserT().GetIdentifier(), info.queryId)
+		info := getAndDelteQueryInfo(info.browser.GetIdentifier(), info.queryId)
 		if info != nil {
 			cef.PostTask(capi.TidUi, cef.TaskFunc(func() {
 				sendQueryFailure(info,
@@ -211,7 +210,7 @@ func sendQueryFailure(info *browserQueryInfo, errorCode int, errorMessage string
 	args.SetBool(2, false)
 	args.SetInt(3, errorCode)
 	args.SetString(4, errorMessage)
-	info.frame.GetCFrameT().SendProcessMessage(capi.PidRenderer, message)
+	info.frame.SendProcessMessage(capi.PidRenderer, message)
 }
 
 const (
@@ -221,8 +220,8 @@ const (
 
 func cancelUnhandledQuery(info *browserQueryInfo) {
 	sendQueryFailure(info, kCanceledErrorCode, kCanceledErrorMessage)
-	info.browser.UnrefCBrowserT()
-	info.frame.UnrefCFrameT()
+	info.browser.Unref()
+	info.frame.Unref()
 }
 
 func cancelPendingRequest(browser_id int, routerId routerId, request requestId) {
@@ -272,8 +271,8 @@ func cancelQuery(queryId BrowserQueryId, info *browserQueryInfo, notifyRederer b
 	if notifyRederer {
 		sendQueryFailure(info, kCanceledErrorCode, kCanceledErrorMessage)
 	}
-	info.handler.OnQueryCanceled(info.browser.GetCBrowserT(), info.frame.GetCFrameT(), queryId)
+	info.handler.OnQueryCanceled(info.browser, info.frame, queryId)
 	info.valid = false
-	info.browser.UnrefCBrowserT()
-	info.frame.UnrefCFrameT()
+	info.browser.Unref()
+	info.frame.Unref()
 }
