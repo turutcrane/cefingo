@@ -2338,18 +2338,15 @@ func (self *CBrowserHostT) PrintToPdf(
 }
 
 ///
-// Search for |searchText|. |identifier| must be a unique ID and these IDs
-// must strictly increase so that newer requests always have greater IDs than
-// older requests. If |identifier| is zero or less than the previous ID value
-// then it will be automatically assigned a new valid ID. |forward| indicates
-// whether to search forward or backward within the page. |matchCase|
-// indicates whether the search should be case-sensitive. |findNext| indicates
-// whether this is the first request or a follow-up. The cef_find_handler_t
-// instance, if any, returned via cef_client_t::GetFindHandler will be called
-// to report find results.
+// Search for |searchText|. |forward| indicates whether to search forward or
+// backward within the page. |matchCase| indicates whether the search should
+// be case-sensitive. |findNext| indicates whether this is the first request
+// or a follow-up. The search will be restarted if |searchText| or |matchCase|
+// change. The search will be stopped if |searchText| is NULL. The
+// cef_find_handler_t instance, if any, returned via
+// cef_client_t::GetFindHandler will be called to report find results.
 ///
 func (self *CBrowserHostT) Find(
-	identifier int,
 	searchText string,
 	forward bool,
 	matchCase bool,
@@ -2369,7 +2366,7 @@ func (self *CBrowserHostT) Find(
 		tmpfindNext = 1
 	}
 
-	C.cefingo_browser_host_find((*C.cef_browser_host_t)(self.pc_browser_host), (C.int)(identifier), c_searchText.p_cef_string_t, C.int(tmpforward), C.int(tmpmatchCase), C.int(tmpfindNext))
+	C.cefingo_browser_host_find((*C.cef_browser_host_t)(self.pc_browser_host), c_searchText.p_cef_string_t, C.int(tmpforward), C.int(tmpmatchCase), C.int(tmpfindNext))
 
 }
 
@@ -11295,7 +11292,7 @@ func (fill_layout *CFillLayoutT) ToCLayoutT() *CLayoutT {
 	return newCLayoutT(p, byApp)
 }
 
-// cef_find_handler_capi.h, include/capi/cef_find_handler_capi.h:75:3,
+// cef_find_handler_capi.h, include/capi/cef_find_handler_capi.h:76:3,
 
 ///
 // Implement this structure to handle events related to find results. The
@@ -11378,11 +11375,12 @@ func (find_handler *CFindHandlerT) Unref() (ret bool) {
 
 ///
 // Called to report find results returned by cef_browser_host_t::find().
-// |identifer| is the identifier passed to find(), |count| is the number of
-// matches currently identified, |selectionRect| is the location of where the
-// match was found (in window coordinates), |activeMatchOrdinal| is the
-// current position in the search results, and |finalUpdate| is true (1) if
-// this is the last find notification.
+// |identifer| is a unique incremental identifier for the currently active
+// search, |count| is the number of matches currently identified,
+// |selectionRect| is the location of where the match was found (in window
+// coordinates), |activeMatchOrdinal| is the current position in the search
+// results, and |finalUpdate| is true (1) if this is the last find
+// notification.
 ///
 type OnFindResultHandler interface {
 	OnFindResult(

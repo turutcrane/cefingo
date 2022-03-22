@@ -3755,11 +3755,12 @@ func cefingo_extension_handler_get_extension_resource(
 
 ///
 // Called to report find results returned by cef_browser_host_t::find().
-// |identifer| is the identifier passed to find(), |count| is the number of
-// matches currently identified, |selectionRect| is the location of where the
-// match was found (in window coordinates), |activeMatchOrdinal| is the
-// current position in the search results, and |finalUpdate| is true (1) if
-// this is the last find notification.
+// |identifer| is a unique incremental identifier for the currently active
+// search, |count| is the number of matches currently identified,
+// |selectionRect| is the location of where the match was found (in window
+// coordinates), |activeMatchOrdinal| is the current position in the search
+// results, and |finalUpdate| is true (1) if this is the last find
+// notification.
 ///
 //export cefingo_find_handler_on_find_result
 func cefingo_find_handler_on_find_result(

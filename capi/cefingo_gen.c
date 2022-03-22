@@ -554,7 +554,6 @@ void cefingo_browser_host_print_to_pdf(
 
 void cefingo_browser_host_find(
 	struct _cef_browser_host_t* self,
-	int identifier,
 	const cef_string_t* searchText,
 	int forward,
 	int matchCase,
@@ -563,7 +562,6 @@ void cefingo_browser_host_find(
 {
 	self->find(
 		self,
-		identifier,
 		searchText,
 		forward,
 		matchCase,
