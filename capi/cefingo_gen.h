@@ -507,6 +507,13 @@ extern void cefingo_completion_callback_on_complete(
 CEFINGO_REF_COUNTER_WRAPPER(cef_client_t, cefingo_client_wrapper_t);
 extern cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client);
 
+extern int cefingo_command_handler_on_chrome_command(
+	struct _cef_command_handler_t* self,
+	struct _cef_browser_t* browser,
+	int command_id,
+	cef_window_open_disposition_t disposition
+);
+
 extern int cefingo_command_line_is_valid(
 	struct _cef_command_line_t* self
 );
@@ -1135,6 +1142,10 @@ extern void cefingo_drag_data_add_file(
 	struct _cef_drag_data_t* self,
 	const cef_string_t* path,
 	const cef_string_t* display_name
+);
+
+extern void cefingo_drag_data_clear_filenames(
+	struct _cef_drag_data_t* self
 );
 
 extern struct _cef_image_t* cefingo_drag_data_get_image(
@@ -4041,28 +4052,6 @@ extern int cefingo_view_convert_point_from_view(
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_view_delegate_t, cefingo_view_delegate_wrapper_t);
 extern cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapper_t* view_delegate);
-
-extern cef_string_userfree_t cefingo_web_plugin_info_get_name(
-	struct _cef_web_plugin_info_t* self
-);
-
-extern cef_string_userfree_t cefingo_web_plugin_info_get_path(
-	struct _cef_web_plugin_info_t* self
-);
-
-extern cef_string_userfree_t cefingo_web_plugin_info_get_version(
-	struct _cef_web_plugin_info_t* self
-);
-
-extern cef_string_userfree_t cefingo_web_plugin_info_get_description(
-	struct _cef_web_plugin_info_t* self
-);
-
-CEFINGO_REF_COUNTER_WRAPPER(cef_web_plugin_info_visitor_t, cefingo_web_plugin_info_visitor_wrapper_t);
-extern cef_web_plugin_info_visitor_t *cefingo_construct_web_plugin_info_visitor(cefingo_web_plugin_info_visitor_wrapper_t* web_plugin_info_visitor);
-
-CEFINGO_REF_COUNTER_WRAPPER(cef_web_plugin_unstable_callback_t, cefingo_web_plugin_unstable_callback_wrapper_t);
-extern cef_web_plugin_unstable_callback_t *cefingo_construct_web_plugin_unstable_callback(cefingo_web_plugin_unstable_callback_wrapper_t* web_plugin_unstable_callback);
 
 extern void cefingo_window_show(
 	struct _cef_window_t* self

@@ -1284,6 +1284,8 @@ cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 	// callbacks
 	client->body.get_audio_handler =
 		cefingo_client_get_audio_handler;
+	client->body.get_command_handler =
+		cefingo_client_get_command_handler;
 	client->body.get_context_menu_handler =
 		cefingo_client_get_context_menu_handler;
 	client->body.get_dialog_handler =
@@ -1318,6 +1320,21 @@ cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 		cefingo_client_on_process_message_received;
 
 	return (cef_client_t*)client;
+}
+
+int cefingo_command_handler_on_chrome_command(
+	struct _cef_command_handler_t* self,
+	struct _cef_browser_t* browser,
+	int command_id,
+	cef_window_open_disposition_t disposition
+)
+{
+	return	self->on_chrome_command(
+			self,
+			browser,
+			command_id,
+			disposition
+		);
 }
 
 int cefingo_command_line_is_valid(
@@ -2511,6 +2528,12 @@ void cefingo_download_item_callback_resume(
 	);
 }
 
+typedef int (*T_CEF_DOWNLOAD_HANDLER_T_CAN_DOWNLOAD)(
+	struct _cef_download_handler_t*,
+	struct _cef_browser_t*,
+	const cef_string_t*,
+	const cef_string_t*
+);
 typedef void (*T_CEF_DOWNLOAD_HANDLER_T_ON_BEFORE_DOWNLOAD)(
 	struct _cef_download_handler_t*,
 	struct _cef_browser_t*,
@@ -2526,6 +2549,8 @@ cef_download_handler_t *cefingo_construct_download_handler(cefingo_download_hand
 		(cef_base_ref_counted_t*) download_handler);
 
 	// callbacks
+	download_handler->body.can_download =
+		(/* T_CEF_DOWNLOAD_HANDLER_T_CAN_DOWNLOAD */ void *)cefingo_download_handler_can_download;
 	download_handler->body.on_before_download =
 		(/* T_CEF_DOWNLOAD_HANDLER_T_ON_BEFORE_DOWNLOAD */ void *)cefingo_download_handler_on_before_download;
 	download_handler->body.on_download_updated =
@@ -2902,6 +2927,15 @@ void cefingo_drag_data_add_file(
 		self,
 		path,
 		display_name
+	);
+}
+
+void cefingo_drag_data_clear_filenames(
+	struct _cef_drag_data_t* self
+)
+{
+	self->clear_filenames(
+		self
 	);
 }
 
@@ -6605,11 +6639,6 @@ typedef int (*T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE)(
 	struct _cef_x509certificate_t* const *,
 	struct _cef_select_client_certificate_callback_t*
 );
-typedef void (*T_CEF_REQUEST_HANDLER_T_ON_PLUGIN_CRASHED)(
-	struct _cef_request_handler_t*,
-	struct _cef_browser_t*,
-	const cef_string_t*
-);
 
 cef_request_handler_t *cefingo_construct_request_handler(cefingo_request_handler_wrapper_t* request_handler)
 {
@@ -6632,8 +6661,6 @@ cef_request_handler_t *cefingo_construct_request_handler(cefingo_request_handler
 		(/* T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR */ void *)cefingo_request_handler_on_certificate_error;
 	request_handler->body.on_select_client_certificate =
 		(/* T_CEF_REQUEST_HANDLER_T_ON_SELECT_CLIENT_CERTIFICATE */ void *)cefingo_request_handler_on_select_client_certificate;
-	request_handler->body.on_plugin_crashed =
-		(/* T_CEF_REQUEST_HANDLER_T_ON_PLUGIN_CRASHED */ void *)cefingo_request_handler_on_plugin_crashed;
 	request_handler->body.on_render_view_ready =
 		cefingo_request_handler_on_render_view_ready;
 	request_handler->body.on_render_process_terminated =
@@ -10160,75 +10187,6 @@ cef_view_delegate_t *cefingo_construct_view_delegate(cefingo_view_delegate_wrapp
 		cefingo_view_delegate_on_blur;
 
 	return (cef_view_delegate_t*)view_delegate;
-}
-
-cef_string_userfree_t cefingo_web_plugin_info_get_name(
-	struct _cef_web_plugin_info_t* self
-)
-{
-	return	self->get_name(
-			self
-		);
-}
-
-cef_string_userfree_t cefingo_web_plugin_info_get_path(
-	struct _cef_web_plugin_info_t* self
-)
-{
-	return	self->get_path(
-			self
-		);
-}
-
-cef_string_userfree_t cefingo_web_plugin_info_get_version(
-	struct _cef_web_plugin_info_t* self
-)
-{
-	return	self->get_version(
-			self
-		);
-}
-
-cef_string_userfree_t cefingo_web_plugin_info_get_description(
-	struct _cef_web_plugin_info_t* self
-)
-{
-	return	self->get_description(
-			self
-		);
-}
-
-
-cef_web_plugin_info_visitor_t *cefingo_construct_web_plugin_info_visitor(cefingo_web_plugin_info_visitor_wrapper_t* web_plugin_info_visitor)
-{
-	initialize_cefingo_base_ref_counted(
-		offsetof(__typeof__(*web_plugin_info_visitor), counter),
-		(cef_base_ref_counted_t*) web_plugin_info_visitor);
-
-	// callbacks
-	web_plugin_info_visitor->body.visit =
-		cefingo_web_plugin_info_visitor_visit;
-
-	return (cef_web_plugin_info_visitor_t*)web_plugin_info_visitor;
-}
-
-typedef void (*T_CEF_WEB_PLUGIN_UNSTABLE_CALLBACK_T_IS_UNSTABLE)(
-	struct _cef_web_plugin_unstable_callback_t*,
-	const cef_string_t*,
-	int
-);
-
-cef_web_plugin_unstable_callback_t *cefingo_construct_web_plugin_unstable_callback(cefingo_web_plugin_unstable_callback_wrapper_t* web_plugin_unstable_callback)
-{
-	initialize_cefingo_base_ref_counted(
-		offsetof(__typeof__(*web_plugin_unstable_callback), counter),
-		(cef_base_ref_counted_t*) web_plugin_unstable_callback);
-
-	// callbacks
-	web_plugin_unstable_callback->body.is_unstable =
-		(/* T_CEF_WEB_PLUGIN_UNSTABLE_CALLBACK_T_IS_UNSTABLE */ void *)cefingo_web_plugin_unstable_callback_is_unstable;
-
-	return (cef_web_plugin_unstable_callback_t*)web_plugin_unstable_callback;
 }
 
 void cefingo_window_show(

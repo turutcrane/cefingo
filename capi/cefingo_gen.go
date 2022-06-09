@@ -690,7 +690,7 @@ type GetAudioParametersHandler interface {
 
 ///
 // Called on a browser audio capture thread when the browser starts streaming
-// audio. OnAudioSteamStopped will always be called after
+// audio. OnAudioStreamStopped will always be called after
 // OnAudioStreamStarted; both functions may be called multiple times for the
 // same browser. |params| contains the audio parameters like sample rate and
 // channel layout. |channels| is the number of channels.
@@ -3252,9 +3252,9 @@ type OnContextInitializedHandler interface {
 ///
 // Called before a child process is launched. Will be called on the browser
 // process UI thread when launching a render process and on the browser
-// process IO thread when launching a GPU or plugin process. Provides an
-// opportunity to modify the child process command line. Do not keep a
-// reference to |command_line| outside of this function.
+// process IO thread when launching a GPU process. Provides an opportunity to
+// modify the child process command line. Do not keep a reference to
+// |command_line| outside of this function.
 ///
 type OnBeforeChildProcessLaunchHandler interface {
 	OnBeforeChildProcessLaunch(
@@ -4611,7 +4611,7 @@ func (self *CCompletionCallbackT) OnComplete() {
 
 }
 
-// cef_client_capi.h, include/capi/cef_client_capi.h:189:3,
+// cef_client_capi.h, include/capi/cef_client_capi.h:197:3,
 
 ///
 // Implement this structure to provide handler implementations.
@@ -4698,6 +4698,16 @@ type GetAudioHandlerHandler interface {
 	GetAudioHandler(
 		self *CClientT,
 	) (ret *CAudioHandlerT)
+}
+
+///
+// Return the handler for commands. If no handler is provided the default
+// implementation will be used.
+///
+type GetCommandHandlerHandler interface {
+	GetCommandHandler(
+		self *CClientT,
+	) (ret *CCommandHandlerT)
 }
 
 ///
@@ -4860,6 +4870,7 @@ type CClientTOnProcessMessageReceivedHandler interface {
 var client_handlers = struct {
 	handler                             map[*cCClientT]interface{}
 	get_audio_handler_handler           map[*cCClientT]GetAudioHandlerHandler
+	get_command_handler_handler         map[*cCClientT]GetCommandHandlerHandler
 	get_context_menu_handler_handler    map[*cCClientT]GetContextMenuHandlerHandler
 	get_dialog_handler_handler          map[*cCClientT]GetDialogHandlerHandler
 	get_display_handler_handler         map[*cCClientT]GetDisplayHandlerHandler
@@ -4879,6 +4890,7 @@ var client_handlers = struct {
 }{
 	map[*cCClientT]interface{}{},
 	map[*cCClientT]GetAudioHandlerHandler{},
+	map[*cCClientT]GetCommandHandlerHandler{},
 	map[*cCClientT]GetContextMenuHandlerHandler{},
 	map[*cCClientT]GetDialogHandlerHandler{},
 	map[*cCClientT]GetDisplayHandlerHandler{},
@@ -4932,6 +4944,13 @@ func (client *CClientT) bind(a interface{}) *CClientT {
 		noBind = false
 	} else {
 		delete(client_handlers.get_audio_handler_handler, cp)
+	}
+
+	if h, ok := a.(GetCommandHandlerHandler); ok {
+		client_handlers.get_command_handler_handler[cp] = h
+		noBind = false
+	} else {
+		delete(client_handlers.get_command_handler_handler, cp)
 	}
 
 	if h, ok := a.(GetContextMenuHandlerHandler); ok {
@@ -5060,6 +5079,7 @@ func unbindAllCClientT(cp *cCClientT) {
 	delete(client_handlers.handler, cp)
 
 	delete(client_handlers.get_audio_handler_handler, cp)
+	delete(client_handlers.get_command_handler_handler, cp)
 	delete(client_handlers.get_context_menu_handler_handler, cp)
 	delete(client_handlers.get_dialog_handler_handler, cp)
 	delete(client_handlers.get_display_handler_handler, cp)
@@ -5089,6 +5109,113 @@ func (client *CClientT) Handler() interface{} {
 
 	cp := client.pc_client
 	return client_handlers.handler[cp]
+}
+
+// cef_command_handler_capi.h, include/capi/cef_command_handler_capi.h:74:3,
+
+///
+// Implement this structure to handle events related to commands. The functions
+// of this structure will be called on the UI thread.
+///
+
+type cCCommandHandlerT C.cef_command_handler_t
+
+// Go type for cef_command_handler_t
+type CCommandHandlerT struct {
+	noCopy             noCopy
+	pc_command_handler *cCCommandHandlerT
+	beUnrefed          unrefedBy
+}
+
+func (p *CCommandHandlerT) Pass() (ret *CCommandHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+		ret = newCCommandHandlerT((*C.cef_command_handler_t)(p.pc_command_handler), byCef)
+	case byApi, byCef:
+		ret = p
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+
+	return ret
+}
+
+func (self *CCommandHandlerT) NewRef() (newP *CCommandHandlerT) {
+	if self == nil {
+		return newP
+	}
+	gop := self.pc_command_handler
+	BaseAddRef(gop)
+	newP = newCCommandHandlerT((*C.cef_command_handler_t)(gop), byApp)
+	return newP
+}
+
+// Go type CCommandHandlerT wraps cef type *C.cef_command_handler_t
+func newCCommandHandlerT(p *C.cef_command_handler_t, unrefedBy unrefedBy) *CCommandHandlerT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T393.1:")
+	pc := (*cCCommandHandlerT)(p)
+	go_command_handler := &CCommandHandlerT{noCopy{}, pc, unrefedBy}
+	// BaseAddRef(pc)
+	runtime.SetFinalizer(go_command_handler, func(g *CCommandHandlerT) {
+		// same as g.Unref()
+		if g.beUnrefed == byApp && g.pc_command_handler != nil {
+			Tracef(unsafe.Pointer(g.pc_command_handler), "T393.2:")
+			BaseRelease(g.pc_command_handler)
+		}
+	})
+
+	return go_command_handler
+}
+
+// *C.cef_command_handler_t has refCounted interface
+func (command_handler *CCommandHandlerT) HasOneRef() bool {
+	return BaseHasOneRef(command_handler.pc_command_handler)
+}
+
+func (p *cCCommandHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (command_handler *CCommandHandlerT) Unref() (ret bool) {
+	if command_handler == nil {
+		return
+	}
+	if command_handler.beUnrefed == byApp {
+		ret = BaseRelease(command_handler.pc_command_handler)
+		command_handler.beUnrefed = unrefed
+	}
+	command_handler.pc_command_handler = nil
+	return ret
+}
+
+///
+// Called to execute a Chrome command triggered via menu selection or keyboard
+// shortcut. Values for |command_id| can be found in the cef_command_ids.h
+// file. |disposition| provides information about the intended command target.
+// Return true (1) if the command was handled or false (0) for the default
+// implementation. For context menu commands this will be called after
+// cef_context_menu_handler_t::OnContextMenuCommand. Only used with the Chrome
+// runtime.
+///
+func (self *CCommandHandlerT) OnChromeCommand(
+	browser *CBrowserT,
+	command_id int,
+	disposition CWindowOpenDispositionT,
+) (ret bool) {
+	var goTmpbrowser *C.cef_browser_t
+	if browser != nil {
+		BaseAddRef(browser.pc_browser)
+		goTmpbrowser = (*C.cef_browser_t)(browser.pc_browser)
+	}
+
+	cRet := C.cefingo_command_handler_on_chrome_command((*C.cef_command_handler_t)(self.pc_command_handler), goTmpbrowser, (C.int)(command_id), (C.cef_window_open_disposition_t)(disposition))
+
+	ret = cRet == 1
+	return ret
 }
 
 // cef_command_line_capi.h, include/capi/cef_command_line_capi.h:198:3,
@@ -6154,8 +6281,7 @@ func (self *CContextMenuParamsT) GetEditStateFlags() (ret CContextMenuEditStateF
 
 ///
 // Returns true (1) if the context menu contains items specified by the
-// renderer process (for example, plugin placeholder or pepper plugin menu
-// items).
+// renderer process.
 ///
 func (self *CContextMenuParamsT) IsCustomMenu() (ret bool) {
 
@@ -9339,6 +9465,22 @@ func (download_handler *CDownloadHandlerT) Unref() (ret bool) {
 }
 
 ///
+// Called before a download begins in response to a user-initiated action
+// (e.g. alt + link click or link click that returns a `Content-Disposition:
+// attachment` response from the server). |url| is the target download URL and
+// |request_function| is the target function (GET, POST, etc). Return true (1)
+// to proceed with the download or false (0) to cancel the download.
+///
+type CanDownloadHandler interface {
+	CanDownload(
+		self *CDownloadHandlerT,
+		browser *CBrowserT,
+		url string,
+		request_method string,
+	) (ret bool)
+}
+
+///
 // Called before a download begins. |suggested_name| is the suggested name for
 // the download file. By default the download will be canceled. Execute
 // |callback| either asynchronously or in this function to continue the
@@ -9373,10 +9515,12 @@ type OnDownloadUpdatedHandler interface {
 
 var download_handler_handlers = struct {
 	handler                     map[*cCDownloadHandlerT]interface{}
+	can_download_handler        map[*cCDownloadHandlerT]CanDownloadHandler
 	on_before_download_handler  map[*cCDownloadHandlerT]OnBeforeDownloadHandler
 	on_download_updated_handler map[*cCDownloadHandlerT]OnDownloadUpdatedHandler
 }{
 	map[*cCDownloadHandlerT]interface{}{},
+	map[*cCDownloadHandlerT]CanDownloadHandler{},
 	map[*cCDownloadHandlerT]OnBeforeDownloadHandler{},
 	map[*cCDownloadHandlerT]OnDownloadUpdatedHandler{},
 }
@@ -9411,6 +9555,13 @@ func (download_handler *CDownloadHandlerT) bind(a interface{}) *CDownloadHandler
 	cp := download_handler.pc_download_handler
 	download_handler_handlers.handler[cp] = a
 
+	if h, ok := a.(CanDownloadHandler); ok {
+		download_handler_handlers.can_download_handler[cp] = h
+		noBind = false
+	} else {
+		delete(download_handler_handlers.can_download_handler, cp)
+	}
+
 	if h, ok := a.(OnBeforeDownloadHandler); ok {
 		download_handler_handlers.on_before_download_handler[cp] = h
 		noBind = false
@@ -9438,6 +9589,7 @@ func unbindAllCDownloadHandlerT(cp *cCDownloadHandlerT) {
 	// cp := download_handler.pc_download_handler
 	delete(download_handler_handlers.handler, cp)
 
+	delete(download_handler_handlers.can_download_handler, cp)
 	delete(download_handler_handlers.on_before_download_handler, cp)
 	delete(download_handler_handlers.on_download_updated_handler, cp)
 }
@@ -9754,7 +9906,7 @@ func (self *CDownloadItemT) GetMimeType() (ret string) {
 	return ret
 }
 
-// cef_drag_data_capi.h, include/capi/cef_drag_data_capi.h:217:3,
+// cef_drag_data_capi.h, include/capi/cef_drag_data_capi.h:222:3,
 
 ///
 // Structure used to represent drag data. The functions of this structure may be
@@ -10132,6 +10284,15 @@ func (self *CDragDataT) AddFile(
 	c_display_name := create_cef_string(display_name)
 
 	C.cefingo_drag_data_add_file((*C.cef_drag_data_t)(self.pc_drag_data), c_path.p_cef_string_t, c_display_name.p_cef_string_t)
+
+}
+
+///
+// Clear list of filenames.
+///
+func (self *CDragDataT) ClearFilenames() {
+
+	C.cefingo_drag_data_clear_filenames((*C.cef_drag_data_t)(self.pc_drag_data))
 
 }
 
@@ -21695,7 +21856,7 @@ func CreateContextShared(
 	return ret
 }
 
-// cef_request_context_handler_capi.h, include/capi/cef_request_context_handler_capi.h:101:3,
+// cef_request_context_handler_capi.h, include/capi/cef_request_context_handler_capi.h:100:3,
 
 ///
 // Implement this structure to provide handler implementations. The handler
@@ -22246,18 +22407,6 @@ type OnSelectClientCertificateHandler interface {
 }
 
 ///
-// Called on the browser process UI thread when a plugin has crashed.
-// |plugin_path| is the path of the plugin that crashed.
-///
-type OnPluginCrashedHandler interface {
-	OnPluginCrashed(
-		self *CRequestHandlerT,
-		browser *CBrowserT,
-		plugin_path string,
-	)
-}
-
-///
 // Called on the browser process UI thread when the render view associated
 // with |browser| is ready to receive/handle IPC messages in the render
 // process.
@@ -22301,7 +22450,6 @@ var request_handler_handlers = struct {
 	on_quota_request_handler                    map[*cCRequestHandlerT]OnQuotaRequestHandler
 	on_certificate_error_handler                map[*cCRequestHandlerT]OnCertificateErrorHandler
 	on_select_client_certificate_handler        map[*cCRequestHandlerT]OnSelectClientCertificateHandler
-	on_plugin_crashed_handler                   map[*cCRequestHandlerT]OnPluginCrashedHandler
 	on_render_view_ready_handler                map[*cCRequestHandlerT]OnRenderViewReadyHandler
 	on_render_process_terminated_handler        map[*cCRequestHandlerT]OnRenderProcessTerminatedHandler
 	on_document_available_in_main_frame_handler map[*cCRequestHandlerT]OnDocumentAvailableInMainFrameHandler
@@ -22314,7 +22462,6 @@ var request_handler_handlers = struct {
 	map[*cCRequestHandlerT]OnQuotaRequestHandler{},
 	map[*cCRequestHandlerT]OnCertificateErrorHandler{},
 	map[*cCRequestHandlerT]OnSelectClientCertificateHandler{},
-	map[*cCRequestHandlerT]OnPluginCrashedHandler{},
 	map[*cCRequestHandlerT]OnRenderViewReadyHandler{},
 	map[*cCRequestHandlerT]OnRenderProcessTerminatedHandler{},
 	map[*cCRequestHandlerT]OnDocumentAvailableInMainFrameHandler{},
@@ -22399,13 +22546,6 @@ func (request_handler *CRequestHandlerT) bind(a interface{}) *CRequestHandlerT {
 		delete(request_handler_handlers.on_select_client_certificate_handler, cp)
 	}
 
-	if h, ok := a.(OnPluginCrashedHandler); ok {
-		request_handler_handlers.on_plugin_crashed_handler[cp] = h
-		noBind = false
-	} else {
-		delete(request_handler_handlers.on_plugin_crashed_handler, cp)
-	}
-
 	if h, ok := a.(OnRenderViewReadyHandler); ok {
 		request_handler_handlers.on_render_view_ready_handler[cp] = h
 		noBind = false
@@ -22447,7 +22587,6 @@ func unbindAllCRequestHandlerT(cp *cCRequestHandlerT) {
 	delete(request_handler_handlers.on_quota_request_handler, cp)
 	delete(request_handler_handlers.on_certificate_error_handler, cp)
 	delete(request_handler_handlers.on_select_client_certificate_handler, cp)
-	delete(request_handler_handlers.on_plugin_crashed_handler, cp)
 	delete(request_handler_handlers.on_render_view_ready_handler, cp)
 	delete(request_handler_handlers.on_render_process_terminated_handler, cp)
 	delete(request_handler_handlers.on_document_available_in_main_frame_handler, cp)
@@ -33304,558 +33443,6 @@ func (view_delegate *CViewDelegateT) Handler() interface{} {
 
 	cp := view_delegate.pc_view_delegate
 	return view_delegate_handlers.handler[cp]
-}
-
-// cef_web_plugin_capi.h, include/capi/cef_web_plugin_capi.h:87:3,
-
-///
-// Information about a specific web plugin.
-///
-
-type cCWebPluginInfoT C.cef_web_plugin_info_t
-
-// Go type for cef_web_plugin_info_t
-type CWebPluginInfoT struct {
-	noCopy             noCopy
-	pc_web_plugin_info *cCWebPluginInfoT
-	beUnrefed          unrefedBy
-}
-
-func (p *CWebPluginInfoT) Pass() (ret *CWebPluginInfoT) {
-	switch p.beUnrefed {
-	case byApp:
-		p.beUnrefed = unrefed
-		ret = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(p.pc_web_plugin_info), byCef)
-	case byApi, byCef:
-		ret = p
-	default:
-		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
-	}
-
-	return ret
-}
-
-func (self *CWebPluginInfoT) NewRef() (newP *CWebPluginInfoT) {
-	if self == nil {
-		return newP
-	}
-	gop := self.pc_web_plugin_info
-	BaseAddRef(gop)
-	newP = newCWebPluginInfoT((*C.cef_web_plugin_info_t)(gop), byApp)
-	return newP
-}
-
-// Go type CWebPluginInfoT wraps cef type *C.cef_web_plugin_info_t
-func newCWebPluginInfoT(p *C.cef_web_plugin_info_t, unrefedBy unrefedBy) *CWebPluginInfoT {
-	if p == nil {
-		return nil
-	}
-	Tracef(unsafe.Pointer(p), "T227.1:")
-	pc := (*cCWebPluginInfoT)(p)
-	go_web_plugin_info := &CWebPluginInfoT{noCopy{}, pc, unrefedBy}
-	// BaseAddRef(pc)
-	runtime.SetFinalizer(go_web_plugin_info, func(g *CWebPluginInfoT) {
-		// same as g.Unref()
-		if g.beUnrefed == byApp && g.pc_web_plugin_info != nil {
-			Tracef(unsafe.Pointer(g.pc_web_plugin_info), "T227.2:")
-			BaseRelease(g.pc_web_plugin_info)
-		}
-	})
-
-	return go_web_plugin_info
-}
-
-// *C.cef_web_plugin_info_t has refCounted interface
-func (web_plugin_info *CWebPluginInfoT) HasOneRef() bool {
-	return BaseHasOneRef(web_plugin_info.pc_web_plugin_info)
-}
-
-func (p *cCWebPluginInfoT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
-}
-
-func (web_plugin_info *CWebPluginInfoT) Unref() (ret bool) {
-	if web_plugin_info == nil {
-		return
-	}
-	if web_plugin_info.beUnrefed == byApp {
-		ret = BaseRelease(web_plugin_info.pc_web_plugin_info)
-		web_plugin_info.beUnrefed = unrefed
-	}
-	web_plugin_info.pc_web_plugin_info = nil
-	return ret
-}
-
-///
-// Returns the plugin name.
-///
-// The resulting string must be freed by calling cef_string_userfree_free().
-func (self *CWebPluginInfoT) GetName() (ret string) {
-
-	cRet := C.cefingo_web_plugin_info_get_name((*C.cef_web_plugin_info_t)(self.pc_web_plugin_info))
-
-	s := string_from_cef_string(cRet)
-	if cRet != nil {
-		C.cef_string_userfree_free(cRet)
-	}
-	ret = s
-	return ret
-}
-
-///
-// Returns the plugin file path (DLL/bundle/library).
-///
-// The resulting string must be freed by calling cef_string_userfree_free().
-func (self *CWebPluginInfoT) GetPath() (ret string) {
-
-	cRet := C.cefingo_web_plugin_info_get_path((*C.cef_web_plugin_info_t)(self.pc_web_plugin_info))
-
-	s := string_from_cef_string(cRet)
-	if cRet != nil {
-		C.cef_string_userfree_free(cRet)
-	}
-	ret = s
-	return ret
-}
-
-///
-// Returns the version of the plugin (may be OS-specific).
-///
-// The resulting string must be freed by calling cef_string_userfree_free().
-func (self *CWebPluginInfoT) GetVersion() (ret string) {
-
-	cRet := C.cefingo_web_plugin_info_get_version((*C.cef_web_plugin_info_t)(self.pc_web_plugin_info))
-
-	s := string_from_cef_string(cRet)
-	if cRet != nil {
-		C.cef_string_userfree_free(cRet)
-	}
-	ret = s
-	return ret
-}
-
-///
-// Returns a description of the plugin from the version information.
-///
-// The resulting string must be freed by calling cef_string_userfree_free().
-func (self *CWebPluginInfoT) GetDescription() (ret string) {
-
-	cRet := C.cefingo_web_plugin_info_get_description((*C.cef_web_plugin_info_t)(self.pc_web_plugin_info))
-
-	s := string_from_cef_string(cRet)
-	if cRet != nil {
-		C.cef_string_userfree_free(cRet)
-	}
-	ret = s
-	return ret
-}
-
-///
-// Structure to implement for visiting web plugin information. The functions of
-// this structure will be called on the browser process UI thread.
-///
-
-type cCWebPluginInfoVisitorT C.cef_web_plugin_info_visitor_t
-
-// Go type for cef_web_plugin_info_visitor_t
-type CWebPluginInfoVisitorT struct {
-	noCopy                     noCopy
-	pc_web_plugin_info_visitor *cCWebPluginInfoVisitorT
-	beUnrefed                  unrefedBy
-}
-
-func (p *CWebPluginInfoVisitorT) Pass() (ret *CWebPluginInfoVisitorT) {
-	switch p.beUnrefed {
-	case byApp:
-		p.beUnrefed = unrefed
-		ret = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(p.pc_web_plugin_info_visitor), byCef)
-	case byApi, byCef:
-		ret = p
-	default:
-		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
-	}
-
-	return ret
-}
-
-func (self *CWebPluginInfoVisitorT) NewRef() (newP *CWebPluginInfoVisitorT) {
-	if self == nil {
-		return newP
-	}
-	gop := self.pc_web_plugin_info_visitor
-	BaseAddRef(gop)
-	newP = newCWebPluginInfoVisitorT((*C.cef_web_plugin_info_visitor_t)(gop), byApp)
-	return newP
-}
-
-// Go type CWebPluginInfoVisitorT wraps cef type *C.cef_web_plugin_info_visitor_t
-func newCWebPluginInfoVisitorT(p *C.cef_web_plugin_info_visitor_t, unrefedBy unrefedBy) *CWebPluginInfoVisitorT {
-	if p == nil {
-		return nil
-	}
-	Tracef(unsafe.Pointer(p), "T228.1:")
-	pc := (*cCWebPluginInfoVisitorT)(p)
-	go_web_plugin_info_visitor := &CWebPluginInfoVisitorT{noCopy{}, pc, unrefedBy}
-	// BaseAddRef(pc)
-	runtime.SetFinalizer(go_web_plugin_info_visitor, func(g *CWebPluginInfoVisitorT) {
-		// same as g.Unref()
-		if g.beUnrefed == byApp && g.pc_web_plugin_info_visitor != nil {
-			Tracef(unsafe.Pointer(g.pc_web_plugin_info_visitor), "T228.2:")
-			BaseRelease(g.pc_web_plugin_info_visitor)
-		}
-	})
-
-	return go_web_plugin_info_visitor
-}
-
-// *C.cef_web_plugin_info_visitor_t has refCounted interface
-func (web_plugin_info_visitor *CWebPluginInfoVisitorT) HasOneRef() bool {
-	return BaseHasOneRef(web_plugin_info_visitor.pc_web_plugin_info_visitor)
-}
-
-func (p *cCWebPluginInfoVisitorT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
-}
-
-func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Unref() (ret bool) {
-	if web_plugin_info_visitor == nil {
-		return
-	}
-	if web_plugin_info_visitor.beUnrefed == byApp {
-		ret = BaseRelease(web_plugin_info_visitor.pc_web_plugin_info_visitor)
-		web_plugin_info_visitor.beUnrefed = unrefed
-	}
-	web_plugin_info_visitor.pc_web_plugin_info_visitor = nil
-	return ret
-}
-
-///
-// Method that will be called once for each plugin. |count| is the 0-based
-// index for the current plugin. |total| is the total number of plugins.
-// Return false (0) to stop visiting plugins. This function may never be
-// called if no plugins are found.
-///
-type CWebPluginInfoVisitorTVisitHandler interface {
-	Visit(
-		self *CWebPluginInfoVisitorT,
-		info *CWebPluginInfoT,
-		count int,
-		total int,
-	) (ret bool)
-}
-
-var web_plugin_info_visitor_handlers = struct {
-	handler       map[*cCWebPluginInfoVisitorT]interface{}
-	visit_handler map[*cCWebPluginInfoVisitorT]CWebPluginInfoVisitorTVisitHandler
-}{
-	map[*cCWebPluginInfoVisitorT]interface{}{},
-	map[*cCWebPluginInfoVisitorT]CWebPluginInfoVisitorTVisitHandler{},
-}
-
-// allocCWebPluginInfoVisitorT allocates CWebPluginInfoVisitorT and construct it
-func allocCWebPluginInfoVisitorT() *CWebPluginInfoVisitorT {
-	up := c_calloc(1, C.sizeof_cefingo_web_plugin_info_visitor_wrapper_t, "T228.3:")
-	cefp := C.cefingo_construct_web_plugin_info_visitor((*C.cefingo_web_plugin_info_visitor_wrapper_t)(up))
-	cgop := (*cCWebPluginInfoVisitorT)(cefp)
-
-	registerDeassocer(up, DeassocFunc(func() {
-		// Do not have reference to cef_web_plugin_info_visitor_t itself in DeassocFunc,
-		// or cef_web_plugin_info_visitor_t is never GCed.
-		Tracef(up, "T228.4:")
-		unbindAllCWebPluginInfoVisitorT(cgop)
-	}))
-
-	BaseAddRef(cgop)
-	return newCWebPluginInfoVisitorT(cefp, byApp)
-}
-
-// NewCWebPluginInfoVisitorT allocates CWebPluginInfoVisitorT, construct and bind it
-func NewCWebPluginInfoVisitorT(a interface{}) *CWebPluginInfoVisitorT {
-	return allocCWebPluginInfoVisitorT().bind(a)
-}
-
-func (web_plugin_info_visitor *CWebPluginInfoVisitorT) bind(a interface{}) *CWebPluginInfoVisitorT {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-	noBind := true
-
-	cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
-	web_plugin_info_visitor_handlers.handler[cp] = a
-
-	if h, ok := a.(CWebPluginInfoVisitorTVisitHandler); ok {
-		web_plugin_info_visitor_handlers.visit_handler[cp] = h
-		noBind = false
-	} else {
-		delete(web_plugin_info_visitor_handlers.visit_handler, cp)
-	}
-
-	if noBind {
-		Panicln("F229: *CWebPluginInfoVisitorT No bind")
-	}
-	return web_plugin_info_visitor
-}
-
-func unbindAllCWebPluginInfoVisitorT(cp *cCWebPluginInfoVisitorT) {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-
-	// cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
-	delete(web_plugin_info_visitor_handlers.handler, cp)
-
-	delete(web_plugin_info_visitor_handlers.visit_handler, cp)
-}
-
-func (web_plugin_info_visitor *CWebPluginInfoVisitorT) UnbindAll() {
-	unbindAllCWebPluginInfoVisitorT(web_plugin_info_visitor.pc_web_plugin_info_visitor)
-	web_plugin_info_visitor.Unref()
-}
-
-func (web_plugin_info_visitor *CWebPluginInfoVisitorT) Handler() interface{} {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-
-	cp := web_plugin_info_visitor.pc_web_plugin_info_visitor
-	return web_plugin_info_visitor_handlers.handler[cp]
-}
-
-///
-// Structure to implement for receiving unstable plugin information. The
-// functions of this structure will be called on the browser process IO thread.
-///
-
-type cCWebPluginUnstableCallbackT C.cef_web_plugin_unstable_callback_t
-
-// Go type for cef_web_plugin_unstable_callback_t
-type CWebPluginUnstableCallbackT struct {
-	noCopy                          noCopy
-	pc_web_plugin_unstable_callback *cCWebPluginUnstableCallbackT
-	beUnrefed                       unrefedBy
-}
-
-func (p *CWebPluginUnstableCallbackT) Pass() (ret *CWebPluginUnstableCallbackT) {
-	switch p.beUnrefed {
-	case byApp:
-		p.beUnrefed = unrefed
-		ret = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(p.pc_web_plugin_unstable_callback), byCef)
-	case byApi, byCef:
-		ret = p
-	default:
-		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
-	}
-
-	return ret
-}
-
-func (self *CWebPluginUnstableCallbackT) NewRef() (newP *CWebPluginUnstableCallbackT) {
-	if self == nil {
-		return newP
-	}
-	gop := self.pc_web_plugin_unstable_callback
-	BaseAddRef(gop)
-	newP = newCWebPluginUnstableCallbackT((*C.cef_web_plugin_unstable_callback_t)(gop), byApp)
-	return newP
-}
-
-// Go type CWebPluginUnstableCallbackT wraps cef type *C.cef_web_plugin_unstable_callback_t
-func newCWebPluginUnstableCallbackT(p *C.cef_web_plugin_unstable_callback_t, unrefedBy unrefedBy) *CWebPluginUnstableCallbackT {
-	if p == nil {
-		return nil
-	}
-	Tracef(unsafe.Pointer(p), "T229.1:")
-	pc := (*cCWebPluginUnstableCallbackT)(p)
-	go_web_plugin_unstable_callback := &CWebPluginUnstableCallbackT{noCopy{}, pc, unrefedBy}
-	// BaseAddRef(pc)
-	runtime.SetFinalizer(go_web_plugin_unstable_callback, func(g *CWebPluginUnstableCallbackT) {
-		// same as g.Unref()
-		if g.beUnrefed == byApp && g.pc_web_plugin_unstable_callback != nil {
-			Tracef(unsafe.Pointer(g.pc_web_plugin_unstable_callback), "T229.2:")
-			BaseRelease(g.pc_web_plugin_unstable_callback)
-		}
-	})
-
-	return go_web_plugin_unstable_callback
-}
-
-// *C.cef_web_plugin_unstable_callback_t has refCounted interface
-func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) HasOneRef() bool {
-	return BaseHasOneRef(web_plugin_unstable_callback.pc_web_plugin_unstable_callback)
-}
-
-func (p *cCWebPluginUnstableCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
-	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
-}
-
-func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Unref() (ret bool) {
-	if web_plugin_unstable_callback == nil {
-		return
-	}
-	if web_plugin_unstable_callback.beUnrefed == byApp {
-		ret = BaseRelease(web_plugin_unstable_callback.pc_web_plugin_unstable_callback)
-		web_plugin_unstable_callback.beUnrefed = unrefed
-	}
-	web_plugin_unstable_callback.pc_web_plugin_unstable_callback = nil
-	return ret
-}
-
-///
-// Method that will be called for the requested plugin. |unstable| will be
-// true (1) if the plugin has reached the crash count threshold of 3 times in
-// 120 seconds.
-///
-type IsUnstableHandler interface {
-	IsUnstable(
-		self *CWebPluginUnstableCallbackT,
-		path string,
-		unstable int,
-	)
-}
-
-var web_plugin_unstable_callback_handlers = struct {
-	handler             map[*cCWebPluginUnstableCallbackT]interface{}
-	is_unstable_handler map[*cCWebPluginUnstableCallbackT]IsUnstableHandler
-}{
-	map[*cCWebPluginUnstableCallbackT]interface{}{},
-	map[*cCWebPluginUnstableCallbackT]IsUnstableHandler{},
-}
-
-// allocCWebPluginUnstableCallbackT allocates CWebPluginUnstableCallbackT and construct it
-func allocCWebPluginUnstableCallbackT() *CWebPluginUnstableCallbackT {
-	up := c_calloc(1, C.sizeof_cefingo_web_plugin_unstable_callback_wrapper_t, "T229.3:")
-	cefp := C.cefingo_construct_web_plugin_unstable_callback((*C.cefingo_web_plugin_unstable_callback_wrapper_t)(up))
-	cgop := (*cCWebPluginUnstableCallbackT)(cefp)
-
-	registerDeassocer(up, DeassocFunc(func() {
-		// Do not have reference to cef_web_plugin_unstable_callback_t itself in DeassocFunc,
-		// or cef_web_plugin_unstable_callback_t is never GCed.
-		Tracef(up, "T229.4:")
-		unbindAllCWebPluginUnstableCallbackT(cgop)
-	}))
-
-	BaseAddRef(cgop)
-	return newCWebPluginUnstableCallbackT(cefp, byApp)
-}
-
-// NewCWebPluginUnstableCallbackT allocates CWebPluginUnstableCallbackT, construct and bind it
-func NewCWebPluginUnstableCallbackT(a interface{}) *CWebPluginUnstableCallbackT {
-	return allocCWebPluginUnstableCallbackT().bind(a)
-}
-
-func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) bind(a interface{}) *CWebPluginUnstableCallbackT {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-	noBind := true
-
-	cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
-	web_plugin_unstable_callback_handlers.handler[cp] = a
-
-	if h, ok := a.(IsUnstableHandler); ok {
-		web_plugin_unstable_callback_handlers.is_unstable_handler[cp] = h
-		noBind = false
-	} else {
-		delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cp)
-	}
-
-	if noBind {
-		Panicln("F229: *CWebPluginUnstableCallbackT No bind")
-	}
-	return web_plugin_unstable_callback
-}
-
-func unbindAllCWebPluginUnstableCallbackT(cp *cCWebPluginUnstableCallbackT) {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-
-	// cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
-	delete(web_plugin_unstable_callback_handlers.handler, cp)
-
-	delete(web_plugin_unstable_callback_handlers.is_unstable_handler, cp)
-}
-
-func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) UnbindAll() {
-	unbindAllCWebPluginUnstableCallbackT(web_plugin_unstable_callback.pc_web_plugin_unstable_callback)
-	web_plugin_unstable_callback.Unref()
-}
-
-func (web_plugin_unstable_callback *CWebPluginUnstableCallbackT) Handler() interface{} {
-	cefingoIfaceAccess.Lock()
-	defer cefingoIfaceAccess.Unlock()
-
-	cp := web_plugin_unstable_callback.pc_web_plugin_unstable_callback
-	return web_plugin_unstable_callback_handlers.handler[cp]
-}
-
-///
-// Visit web plugin information. Can be called on any thread in the browser
-// process.
-///
-func VisitWebPluginInfo(
-	visitor *CWebPluginInfoVisitorT,
-) {
-	var goTmpvisitor *C.cef_web_plugin_info_visitor_t
-	if visitor != nil {
-		BaseAddRef(visitor.pc_web_plugin_info_visitor)
-		goTmpvisitor = (*C.cef_web_plugin_info_visitor_t)(visitor.pc_web_plugin_info_visitor)
-	}
-
-	C.cef_visit_web_plugin_info(goTmpvisitor)
-
-}
-
-///
-// Cause the plugin list to refresh the next time it is accessed regardless of
-// whether it has already been loaded. Can be called on any thread in the
-// browser process.
-///
-func RefreshWebPlugins() {
-
-	C.cef_refresh_web_plugins()
-
-}
-
-///
-// Unregister an internal plugin. This may be undone the next time
-// cef_refresh_web_plugins() is called. Can be called on any thread in the
-// browser process.
-///
-func UnregisterInternalWebPlugin(
-	path string,
-) {
-	c_path := create_cef_string(path)
-
-	C.cef_unregister_internal_web_plugin(c_path.p_cef_string_t)
-
-}
-
-///
-// Register a plugin crash. Can be called on any thread in the browser process
-// but will be executed on the IO thread.
-///
-func RegisterWebPluginCrash(
-	path string,
-) {
-	c_path := create_cef_string(path)
-
-	C.cef_register_web_plugin_crash(c_path.p_cef_string_t)
-
-}
-
-///
-// Query if a plugin is unstable. Can be called on any thread in the browser
-// process.
-///
-func IsWebPluginUnstable(
-	path string,
-	callback *CWebPluginUnstableCallbackT,
-) {
-	c_path := create_cef_string(path)
-	var goTmpcallback *C.cef_web_plugin_unstable_callback_t
-	if callback != nil {
-		BaseAddRef(callback.pc_web_plugin_unstable_callback)
-		goTmpcallback = (*C.cef_web_plugin_unstable_callback_t)(callback.pc_web_plugin_unstable_callback)
-	}
-
-	C.cef_is_web_plugin_unstable(c_path.p_cef_string_t, goTmpcallback)
-
 }
 
 // cef_window_capi.h, include/capi/views/cef_window_capi.h:337:3,

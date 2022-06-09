@@ -27,6 +27,7 @@
 		"CClearCrossOriginWhitelist": 358,
 		"CClearSchemeHandlerFactories": 272,
 		"CClientT": 119,
+		"CCommandHandlerT": 393,
 		"CCommandLineCreate": 247,
 		"CCommandLineGetGlobal": 248,
 		"CCommandLineT": 120,
@@ -293,5 +294,5 @@
 		"CZipReaderCreate": 390,
 		"CZipReaderT": 389
 	},
-	"MaxTag": 392
+	"MaxTag": 393
 }
