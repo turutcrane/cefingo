@@ -483,7 +483,6 @@ void cefingo_browser_host_run_file_dialog(
 	const cef_string_t* title,
 	const cef_string_t* default_file_path,
 	cef_string_list_t accept_filters,
-	int selected_accept_filter,
 	struct _cef_run_file_dialog_callback_t* callback
 )
 {
@@ -493,7 +492,6 @@ void cefingo_browser_host_run_file_dialog(
 		title,
 		default_file_path,
 		accept_filters,
-		selected_accept_filter,
 		callback
 	);
 }
@@ -1917,13 +1915,11 @@ cef_dev_tools_message_observer_t *cefingo_construct_dev_tools_message_observer(c
 
 void cefingo_file_dialog_callback_cont(
 	struct _cef_file_dialog_callback_t* self,
-	int selected_accept_filter,
 	cef_string_list_t file_paths
 )
 {
 	self->cont(
 		self,
-		selected_accept_filter,
 		file_paths
 	);
 }
@@ -1944,7 +1940,6 @@ typedef int (*T_CEF_DIALOG_HANDLER_T_ON_FILE_DIALOG)(
 	const cef_string_t*,
 	const cef_string_t*,
 	cef_string_list_t,
-	int,
 	struct _cef_file_dialog_callback_t*
 );
 
@@ -10591,6 +10586,8 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 		cefingo_window_delegate_on_window_created;
 	window_delegate->body.on_window_destroyed =
 		cefingo_window_delegate_on_window_destroyed;
+	window_delegate->body.on_window_activation_changed =
+		cefingo_window_delegate_on_window_activation_changed;
 	window_delegate->body.get_parent_window =
 		cefingo_window_delegate_get_parent_window;
 	window_delegate->body.get_initial_bounds =

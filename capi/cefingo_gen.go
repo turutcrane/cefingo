@@ -92,10 +92,10 @@ func (accessibility_handler *CAccessibilityHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called after renderer process sends accessibility tree changes to the
 // browser process.
-///
+// /
 type OnAccessibilityTreeChangeHandler interface {
 	OnAccessibilityTreeChange(
 		self *CAccessibilityHandlerT,
@@ -103,10 +103,10 @@ type OnAccessibilityTreeChangeHandler interface {
 	)
 }
 
-///
+// /
 // Called after renderer process sends accessibility location changes to the
 // browser process.
-///
+// /
 type OnAccessibilityLocationChangeHandler interface {
 	OnAccessibilityLocationChange(
 		self *CAccessibilityHandlerT,
@@ -279,7 +279,7 @@ func (app *CAppT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Provides an opportunity to view and/or modify command-line arguments before
 // processing by CEF and Chromium. The |process_type| value will be NULL for
 // the browser process. Do not keep a reference to the cef_command_line_t
@@ -289,7 +289,7 @@ func (app *CAppT) Unref() (ret bool) {
 // before this function is called. Be cautious when using this function to
 // modify command-line arguments for non-browser processes as this may result
 // in undefined behavior including crashes.
-///
+// /
 type OnBeforeCommandLineProcessingHandler interface {
 	OnBeforeCommandLineProcessing(
 		self *CAppT,
@@ -298,12 +298,12 @@ type OnBeforeCommandLineProcessingHandler interface {
 	)
 }
 
-///
+// /
 // Provides an opportunity to register custom schemes. Do not keep a reference
 // to the |registrar| object. This function is called on the main thread for
 // each process and the registered schemes should be the same across all
 // processes.
-///
+// /
 type OnRegisterCustomSchemesHandler interface {
 	OnRegisterCustomSchemes(
 		self *CAppT,
@@ -311,32 +311,32 @@ type OnRegisterCustomSchemesHandler interface {
 	)
 }
 
-///
+// /
 // Return the handler for resource bundle events. If
 // CefSettings.pack_loading_disabled is true (1) a handler must be returned.
 // If no handler is returned resources will be loaded from pack files. This
 // function is called by the browser and render processes on multiple threads.
-///
+// /
 type GetResourceBundleHandlerHandler interface {
 	GetResourceBundleHandler(
 		self *CAppT,
 	) (ret *CResourceBundleHandlerT)
 }
 
-///
+// /
 // Return the handler for functionality specific to the browser process. This
 // function is called on multiple threads in the browser process.
-///
+// /
 type GetBrowserProcessHandlerHandler interface {
 	GetBrowserProcessHandler(
 		self *CAppT,
 	) (ret *CBrowserProcessHandlerT)
 }
 
-///
+// /
 // Return the handler for functionality specific to the render process. This
 // function is called on the render process main thread.
-///
+// /
 type GetRenderProcessHandlerHandler interface {
 	GetRenderProcessHandler(
 		self *CAppT,
@@ -457,7 +457,7 @@ func (app *CAppT) Handler() interface{} {
 	return app_handlers.handler[cp]
 }
 
-///
+// /
 // This function should be called from the application entry point function to
 // execute a secondary process. It can be used to run secondary processes from
 // the browser client executable (default behavior) or from a separate
@@ -468,7 +468,7 @@ func (app *CAppT) Handler() interface{} {
 // the process exit code. The |application| parameter may be NULL. The
 // |windows_sandbox_info| parameter is only used on Windows and may be NULL (see
 // cef_sandbox_win.h for details).
-///
+// /
 func ExecuteProcess(
 	args *CMainArgsT,
 	application *CAppT,
@@ -486,13 +486,13 @@ func ExecuteProcess(
 	return ret
 }
 
-///
+// /
 // This function should be called on the main application thread to initialize
 // the CEF browser process. The |application| parameter may be NULL. A return
 // value of true (1) indicates that it succeeded and false (0) indicates that it
 // failed. The |windows_sandbox_info| parameter is only used on Windows and may
 // be NULL (see cef_sandbox_win.h for details).
-///
+// /
 func Initialize(
 	args *CMainArgsT,
 	settings *CSettingsT,
@@ -511,17 +511,17 @@ func Initialize(
 	return ret
 }
 
-///
+// /
 // This function should be called on the main application thread to shut down
 // the CEF browser process before the application exits.
-///
+// /
 func Shutdown() {
 
 	C.cef_shutdown()
 
 }
 
-///
+// /
 // Perform a single iteration of CEF message loop processing. This function is
 // provided for cases where the CEF message loop must be integrated into an
 // existing application message loop. Use of this function is not recommended
@@ -535,42 +535,42 @@ func Shutdown() {
 // main application thread and only if cef_initialize() is called with a
 // CefSettings.multi_threaded_message_loop value of false (0). This function
 // will not block.
-///
+// /
 func DoMessageLoopWork() {
 
 	C.cef_do_message_loop_work()
 
 }
 
-///
+// /
 // Run the CEF message loop. Use this function instead of an application-
 // provided message loop to get the best balance between performance and CPU
 // usage. This function should only be called on the main application thread and
 // only if cef_initialize() is called with a
 // CefSettings.multi_threaded_message_loop value of false (0). This function
 // will block until a quit message is received by the system.
-///
+// /
 func RunMessageLoop() {
 
 	C.cef_run_message_loop()
 
 }
 
-///
+// /
 // Quit the CEF message loop that was started by calling cef_run_message_loop().
 // This function should only be called on the main application thread and only
 // if cef_run_message_loop() was used.
-///
+// /
 func QuitMessageLoop() {
 
 	C.cef_quit_message_loop()
 
 }
 
-///
+// /
 // Set to true (1) before calling Windows APIs like TrackPopupMenu that enter a
 // modal message loop. Set to false (0) after exiting the modal message loop.
-///
+// /
 func SetOsmodalLoop(
 	osModalLoop bool,
 ) {
@@ -583,11 +583,11 @@ func SetOsmodalLoop(
 
 }
 
-///
+// /
 // Call during process startup to enable High-DPI support on Windows 7 or newer.
 // Older versions of Windows should be left DPI-unaware because they do not
 // support DirectWrite and GDI fonts are kerned very badly.
-///
+// /
 func EnableHighdpiSupport() {
 
 	C.cef_enable_highdpi_support()
@@ -674,12 +674,12 @@ func (audio_handler *CAudioHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called on the UI thread to allow configuration of audio stream parameters.
 // Return true (1) to proceed with audio stream capture, or false (0) to
 // cancel it. All members of |params| can optionally be configured here, but
 // they are also pre-filled with some sensible defaults.
-///
+// /
 type GetAudioParametersHandler interface {
 	GetAudioParameters(
 		self *CAudioHandlerT,
@@ -688,13 +688,13 @@ type GetAudioParametersHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on a browser audio capture thread when the browser starts streaming
 // audio. OnAudioStreamStopped will always be called after
 // OnAudioStreamStarted; both functions may be called multiple times for the
 // same browser. |params| contains the audio parameters like sample rate and
 // channel layout. |channels| is the number of channels.
-///
+// /
 type OnAudioStreamStartedHandler interface {
 	OnAudioStreamStarted(
 		self *CAudioHandlerT,
@@ -704,11 +704,11 @@ type OnAudioStreamStartedHandler interface {
 	)
 }
 
-///
+// /
 // Called on the UI thread when the stream has stopped. OnAudioSteamStopped
 // will always be called after OnAudioStreamStarted; both functions may be
 // called multiple times for the same stream.
-///
+// /
 type OnAudioStreamStoppedHandler interface {
 	OnAudioStreamStopped(
 		self *CAudioHandlerT,
@@ -716,12 +716,12 @@ type OnAudioStreamStoppedHandler interface {
 	)
 }
 
-///
+// /
 // Called on the UI or audio stream thread when an error occurred. During the
 // stream creation phase this callback will be called on the UI thread while
 // in the capturing phase it will be called on the audio stream thread. The
 // stream will be stopped immediately.
-///
+// /
 type OnAudioStreamErrorHandler interface {
 	OnAudioStreamError(
 		self *CAudioHandlerT,
@@ -915,9 +915,9 @@ func (auth_callback *CAuthCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Continue the authentication request.
-///
+// /
 func (self *CAuthCallbackT) Cont(
 	username string,
 	password string,
@@ -929,9 +929,9 @@ func (self *CAuthCallbackT) Cont(
 
 }
 
-///
+// /
 // Cancel the authentication request.
-///
+// /
 func (self *CAuthCallbackT) Cancel() {
 
 	C.cefingo_auth_callback_cancel((*C.cef_auth_callback_t)(self.pc_auth_callback))
@@ -1030,13 +1030,13 @@ func (box_layout *CBoxLayoutT) ToCLayoutT() *CLayoutT {
 	return newCLayoutT(p, byApp)
 }
 
-///
+// /
 // Set the flex weight for the given |view|. Using the preferred size as the
 // basis, free space along the main axis is distributed to views in the ratio
 // of their flex weights. Similarly, if the views will overflow the parent,
 // space is subtracted in these ratios. A flex of 0 means this view is not
 // resized. Flex values must not be negative.
-///
+// /
 func (self *CBoxLayoutT) SetFlexForView(
 	view *CViewT,
 	flex int,
@@ -1051,10 +1051,10 @@ func (self *CBoxLayoutT) SetFlexForView(
 
 }
 
-///
+// /
 // Clears the flex for the given |view|, causing it to use the default flex
 // specified via cef_box_layout_tSettings.default_flex.
-///
+// /
 func (self *CBoxLayoutT) ClearFlexForView(
 	view *CViewT,
 ) {
@@ -1151,10 +1151,10 @@ func (browser *CBrowserT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if this object is currently valid. This will return false (0) after
 // cef_life_span_handler_t::OnBeforeClose is called.
-///
+// /
 func (self *CBrowserT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_browser_is_valid((*C.cef_browser_t)(self.pc_browser))
@@ -1163,10 +1163,10 @@ func (self *CBrowserT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the browser host object. This function can only be called in the
 // browser process.
-///
+// /
 func (self *CBrowserT) GetHost() (ret *CBrowserHostT) {
 
 	cRet := C.cefingo_browser_get_host((*C.cef_browser_t)(self.pc_browser))
@@ -1175,9 +1175,9 @@ func (self *CBrowserT) GetHost() (ret *CBrowserHostT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the browser can navigate backwards.
-///
+// /
 func (self *CBrowserT) CanGoBack() (ret bool) {
 
 	cRet := C.cefingo_browser_can_go_back((*C.cef_browser_t)(self.pc_browser))
@@ -1186,18 +1186,18 @@ func (self *CBrowserT) CanGoBack() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Navigate backwards.
-///
+// /
 func (self *CBrowserT) GoBack() {
 
 	C.cefingo_browser_go_back((*C.cef_browser_t)(self.pc_browser))
 
 }
 
-///
+// /
 // Returns true (1) if the browser can navigate forwards.
-///
+// /
 func (self *CBrowserT) CanGoForward() (ret bool) {
 
 	cRet := C.cefingo_browser_can_go_forward((*C.cef_browser_t)(self.pc_browser))
@@ -1206,18 +1206,18 @@ func (self *CBrowserT) CanGoForward() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Navigate forwards.
-///
+// /
 func (self *CBrowserT) GoForward() {
 
 	C.cefingo_browser_go_forward((*C.cef_browser_t)(self.pc_browser))
 
 }
 
-///
+// /
 // Returns true (1) if the browser is currently loading.
-///
+// /
 func (self *CBrowserT) IsLoading() (ret bool) {
 
 	cRet := C.cefingo_browser_is_loading((*C.cef_browser_t)(self.pc_browser))
@@ -1226,37 +1226,37 @@ func (self *CBrowserT) IsLoading() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Reload the current page.
-///
+// /
 func (self *CBrowserT) Reload() {
 
 	C.cefingo_browser_reload((*C.cef_browser_t)(self.pc_browser))
 
 }
 
-///
+// /
 // Reload the current page ignoring any cached data.
-///
+// /
 func (self *CBrowserT) ReloadIgnoreCache() {
 
 	C.cefingo_browser_reload_ignore_cache((*C.cef_browser_t)(self.pc_browser))
 
 }
 
-///
+// /
 // Stop loading the page.
-///
+// /
 func (self *CBrowserT) StopLoad() {
 
 	C.cefingo_browser_stop_load((*C.cef_browser_t)(self.pc_browser))
 
 }
 
-///
+// /
 // Returns the globally unique identifier for this browser. This value is also
 // used as the tabId for extension APIs.
-///
+// /
 func (self *CBrowserT) GetIdentifier() (ret int) {
 
 	cRet := C.cefingo_browser_get_identifier((*C.cef_browser_t)(self.pc_browser))
@@ -1265,10 +1265,10 @@ func (self *CBrowserT) GetIdentifier() (ret int) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is pointing to the same handle as |that|
 // object.
-///
+// /
 func (self *CBrowserT) IsSame(
 	that *CBrowserT,
 ) (ret bool) {
@@ -1284,9 +1284,9 @@ func (self *CBrowserT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the browser is a popup.
-///
+// /
 func (self *CBrowserT) IsPopup() (ret bool) {
 
 	cRet := C.cefingo_browser_is_popup((*C.cef_browser_t)(self.pc_browser))
@@ -1295,9 +1295,9 @@ func (self *CBrowserT) IsPopup() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if a document has been loaded in the browser.
-///
+// /
 func (self *CBrowserT) HasDocument() (ret bool) {
 
 	cRet := C.cefingo_browser_has_document((*C.cef_browser_t)(self.pc_browser))
@@ -1306,7 +1306,7 @@ func (self *CBrowserT) HasDocument() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the main (top-level) frame for the browser. In the browser process
 // this will return a valid object until after
 // cef_life_span_handler_t::OnBeforeClose is called. In the renderer process
@@ -1314,7 +1314,7 @@ func (self *CBrowserT) HasDocument() (ret bool) {
 // process (e.g. for cross-origin sub-frames). The main frame object will
 // change during cross-origin navigation or re-navigation after renderer
 // process termination (due to crashes, etc).
-///
+// /
 func (self *CBrowserT) GetMainFrame() (ret *CFrameT) {
 
 	cRet := C.cefingo_browser_get_main_frame((*C.cef_browser_t)(self.pc_browser))
@@ -1323,9 +1323,9 @@ func (self *CBrowserT) GetMainFrame() (ret *CFrameT) {
 	return ret
 }
 
-///
+// /
 // Returns the focused frame for the browser.
-///
+// /
 func (self *CBrowserT) GetFocusedFrame() (ret *CFrameT) {
 
 	cRet := C.cefingo_browser_get_focused_frame((*C.cef_browser_t)(self.pc_browser))
@@ -1334,9 +1334,9 @@ func (self *CBrowserT) GetFocusedFrame() (ret *CFrameT) {
 	return ret
 }
 
-///
+// /
 // Returns the frame with the specified identifier, or NULL if not found.
-///
+// /
 func (self *CBrowserT) GetFrameByident(
 	identifier int64,
 ) (ret *CFrameT) {
@@ -1347,9 +1347,9 @@ func (self *CBrowserT) GetFrameByident(
 	return ret
 }
 
-///
+// /
 // Returns the frame with the specified name, or NULL if not found.
-///
+// /
 func (self *CBrowserT) GetFrame(
 	name string,
 ) (ret *CFrameT) {
@@ -1361,9 +1361,9 @@ func (self *CBrowserT) GetFrame(
 	return ret
 }
 
-///
+// /
 // Returns the number of frames that currently exist.
-///
+// /
 func (self *CBrowserT) GetFrameCount() (ret int64) {
 
 	cRet := C.cefingo_browser_get_frame_count((*C.cef_browser_t)(self.pc_browser))
@@ -1372,9 +1372,9 @@ func (self *CBrowserT) GetFrameCount() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns the names of all existing frames.
-///
+// /
 func (self *CBrowserT) GetFrameNames(
 	names CStringListT,
 ) {
@@ -1462,17 +1462,14 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
-// Called asynchronously after the file dialog is dismissed.
-// |selected_accept_filter| is the 0-based index of the value selected from
-// the accept filters array passed to cef_browser_host_t::RunFileDialog.
-// |file_paths| will be a single value or a list of values depending on the
-// dialog mode. If the selection was cancelled |file_paths| will be NULL.
-///
+// /
+// Called asynchronously after the file dialog is dismissed. |file_paths| will
+// be a single value or a list of values depending on the dialog mode. If the
+// selection was cancelled |file_paths| will be NULL.
+// /
 type OnFileDialogDismissedHandler interface {
 	OnFileDialogDismissed(
 		self *CRunFileDialogCallbackT,
-		selected_accept_filter int,
 		file_paths CStringListT,
 	)
 }
@@ -1630,13 +1627,13 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be executed. Do not keep a reference to |entry| outside of
 // this callback. Return true (1) to continue visiting entries or false (0) to
 // stop. |current| is true (1) if this entry is the currently loaded
 // navigation entry. |index| is the 0-based index of this entry and |total| is
 // the total number of entries.
-///
+// /
 type CNavigationEntryVisitorTVisitHandler interface {
 	Visit(
 		self *CNavigationEntryVisitorT,
@@ -1800,11 +1797,11 @@ func (pdf_print_callback *CPdfPrintCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be executed when the PDF printing has completed. |path| is
 // the output path. |ok| will be true (1) if the printing completed
 // successfully or false (0) otherwise.
-///
+// /
 type OnPdfPrintFinishedHandler interface {
 	OnPdfPrintFinished(
 		self *CPdfPrintCallbackT,
@@ -1966,12 +1963,12 @@ func (download_image_callback *CDownloadImageCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be executed when the image download has completed.
 // |image_url| is the URL that was downloaded and |http_status_code| is the
 // resulting HTTP status code. |image| is the resulting image, possibly at
 // multiple scale factors, or NULL if the download failed.
-///
+// /
 func (self *CDownloadImageCallbackT) OnDownloadImageFinished(
 	image_url string,
 	http_status_code int,
@@ -2069,9 +2066,9 @@ func (browser_host *CBrowserHostT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the hosted browser object.
-///
+// /
 func (self *CBrowserHostT) GetBrowser() (ret *CBrowserT) {
 
 	cRet := C.cefingo_browser_host_get_browser((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2080,7 +2077,7 @@ func (self *CBrowserHostT) GetBrowser() (ret *CBrowserT) {
 	return ret
 }
 
-///
+// /
 // Request that the browser close. The JavaScript &#39;onbeforeunload&#39; event will
 // be fired. If |force_close| is false (0) the event handler, if any, will be
 // allowed to prompt the user and the user can optionally cancel the close. If
@@ -2089,7 +2086,7 @@ func (self *CBrowserHostT) GetBrowser() (ret *CBrowserT) {
 // the event handler allows the close or if |force_close| is true (1). See
 // cef_life_span_handler_t::do_close() documentation for additional usage
 // information.
-///
+// /
 func (self *CBrowserHostT) CloseBrowser(
 	force_close bool,
 ) {
@@ -2102,7 +2099,7 @@ func (self *CBrowserHostT) CloseBrowser(
 
 }
 
-///
+// /
 // Helper for closing a browser. Call this function from the top-level window
 // close handler (if any). Internally this calls CloseBrowser(false (0)) if
 // the close has not yet been initiated. This function returns false (0) while
@@ -2110,7 +2107,7 @@ func (self *CBrowserHostT) CloseBrowser(
 // close_browser() and cef_life_span_handler_t::do_close() documentation for
 // additional usage information. This function must be called on the browser
 // process UI thread.
-///
+// /
 func (self *CBrowserHostT) TryCloseBrowser() (ret bool) {
 
 	cRet := C.cefingo_browser_host_try_close_browser((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2119,9 +2116,9 @@ func (self *CBrowserHostT) TryCloseBrowser() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set whether the browser is focused.
-///
+// /
 func (self *CBrowserHostT) SetFocus(
 	focus bool,
 ) {
@@ -2134,12 +2131,12 @@ func (self *CBrowserHostT) SetFocus(
 
 }
 
-///
+// /
 // Retrieve the window handle (if any) for this browser. If this browser is
 // wrapped in a cef_browser_view_t this function should be called on the
 // browser process UI thread and it will return the handle for the top-level
 // native window.
-///
+// /
 func (self *CBrowserHostT) GetWindowHandle() (ret CWindowHandleT) {
 
 	cRet := C.cefingo_browser_host_get_window_handle((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2148,12 +2145,12 @@ func (self *CBrowserHostT) GetWindowHandle() (ret CWindowHandleT) {
 	return ret
 }
 
-///
+// /
 // Retrieve the window handle (if any) of the browser that opened this
 // browser. Will return NULL for non-popup browsers or if this browser is
 // wrapped in a cef_browser_view_t. This function can be used in combination
 // with custom handling of modal windows.
-///
+// /
 func (self *CBrowserHostT) GetOpenerWindowHandle() (ret CWindowHandleT) {
 
 	cRet := C.cefingo_browser_host_get_opener_window_handle((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2162,9 +2159,9 @@ func (self *CBrowserHostT) GetOpenerWindowHandle() (ret CWindowHandleT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this browser is wrapped in a cef_browser_view_t.
-///
+// /
 func (self *CBrowserHostT) HasView() (ret bool) {
 
 	cRet := C.cefingo_browser_host_has_view((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2173,9 +2170,9 @@ func (self *CBrowserHostT) HasView() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the client for this browser.
-///
+// /
 func (self *CBrowserHostT) GetClient() (ret *CClientT) {
 
 	cRet := C.cefingo_browser_host_get_client((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2184,9 +2181,9 @@ func (self *CBrowserHostT) GetClient() (ret *CClientT) {
 	return ret
 }
 
-///
+// /
 // Returns the request context for this browser.
-///
+// /
 func (self *CBrowserHostT) GetRequestContext() (ret *CRequestContextT) {
 
 	cRet := C.cefingo_browser_host_get_request_context((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2195,10 +2192,10 @@ func (self *CBrowserHostT) GetRequestContext() (ret *CRequestContextT) {
 	return ret
 }
 
-///
+// /
 // Get the current zoom level. The default zoom level is 0.0. This function
 // can only be called on the UI thread.
-///
+// /
 func (self *CBrowserHostT) GetZoomLevel() (ret float64) {
 
 	cRet := C.cefingo_browser_host_get_zoom_level((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2207,11 +2204,11 @@ func (self *CBrowserHostT) GetZoomLevel() (ret float64) {
 	return ret
 }
 
-///
+// /
 // Change the zoom level to the specified value. Specify 0.0 to reset the zoom
 // level. If called on the UI thread the change will be applied immediately.
 // Otherwise, the change will be applied asynchronously on the UI thread.
-///
+// /
 func (self *CBrowserHostT) SetZoomLevel(
 	zoomLevel float64,
 ) {
@@ -2220,7 +2217,7 @@ func (self *CBrowserHostT) SetZoomLevel(
 
 }
 
-///
+// /
 // Call to run a file chooser dialog. Only a single file chooser dialog may be
 // pending at any given time. |mode| represents the type of dialog to display.
 // |title| to the title to be used for the dialog and may be NULL to show the
@@ -2230,18 +2227,16 @@ func (self *CBrowserHostT) SetZoomLevel(
 // selectable file types and may any combination of (a) valid lower-cased MIME
 // types (e.g. &quot;text/*&quot; or &quot;image/*&quot;), (b) individual file extensions (e.g.
 // &quot;.txt&quot; or &quot;.png&quot;), or (c) combined description and file extension delimited
-// using &quot;|&quot; and &quot;;&quot; (e.g. &quot;Image Types|.png;.gif;.jpg&quot;).
-// |selected_accept_filter| is the 0-based index of the filter that will be
-// selected by default. |callback| will be executed after the dialog is
-// dismissed or immediately if another dialog is already pending. The dialog
-// will be initiated asynchronously on the UI thread.
-///
+// using &quot;|&quot; and &quot;;&quot; (e.g. &quot;Image Types|.png;.gif;.jpg&quot;). |callback| will be
+// executed after the dialog is dismissed or immediately if another dialog is
+// already pending. The dialog will be initiated asynchronously on the UI
+// thread.
+// /
 func (self *CBrowserHostT) RunFileDialog(
 	mode CFileDialogModeT,
 	title string,
 	default_file_path string,
 	accept_filters CStringListT,
-	selected_accept_filter int,
 	callback *CRunFileDialogCallbackT,
 ) {
 	c_title := create_cef_string(title)
@@ -2252,13 +2247,13 @@ func (self *CBrowserHostT) RunFileDialog(
 		goTmpcallback = (*C.cef_run_file_dialog_callback_t)(callback.pc_run_file_dialog_callback)
 	}
 
-	C.cefingo_browser_host_run_file_dialog((*C.cef_browser_host_t)(self.pc_browser_host), (C.cef_file_dialog_mode_t)(mode), c_title.p_cef_string_t, c_default_file_path.p_cef_string_t, (C.cef_string_list_t)(accept_filters), (C.int)(selected_accept_filter), goTmpcallback)
+	C.cefingo_browser_host_run_file_dialog((*C.cef_browser_host_t)(self.pc_browser_host), (C.cef_file_dialog_mode_t)(mode), c_title.p_cef_string_t, c_default_file_path.p_cef_string_t, (C.cef_string_list_t)(accept_filters), goTmpcallback)
 
 }
 
-///
+// /
 // Download the file at |url| using cef_download_handler_t.
-///
+// /
 func (self *CBrowserHostT) StartDownload(
 	url string,
 ) {
@@ -2268,7 +2263,7 @@ func (self *CBrowserHostT) StartDownload(
 
 }
 
-///
+// /
 // Download |image_url| and execute |callback| on completion with the images
 // received from the renderer. If |is_favicon| is true (1) then cookies are
 // not sent and not accepted during download. Images with density independent
@@ -2279,7 +2274,7 @@ func (self *CBrowserHostT) StartDownload(
 // to |max_image_size| and is the only result. A |max_image_size| of 0 means
 // unlimited. If |bypass_cache| is true (1) then |image_url| is requested from
 // the server even if it is present in the browser cache.
-///
+// /
 func (self *CBrowserHostT) DownloadImage(
 	image_url string,
 	is_favicon bool,
@@ -2306,21 +2301,21 @@ func (self *CBrowserHostT) DownloadImage(
 
 }
 
-///
+// /
 // Print the current browser contents.
-///
+// /
 func (self *CBrowserHostT) Print() {
 
 	C.cefingo_browser_host_print((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Print the current browser contents to the PDF file specified by |path| and
 // execute |callback| on completion. The caller is responsible for deleting
 // |path| when done. For PDF printing to work on Linux you must implement the
 // cef_print_handler_t::GetPdfPaperSize function.
-///
+// /
 func (self *CBrowserHostT) PrintToPdf(
 	path string,
 	settings *CPdfPrintSettingsT,
@@ -2337,7 +2332,7 @@ func (self *CBrowserHostT) PrintToPdf(
 
 }
 
-///
+// /
 // Search for |searchText|. |forward| indicates whether to search forward or
 // backward within the page. |matchCase| indicates whether the search should
 // be case-sensitive. |findNext| indicates whether this is the first request
@@ -2345,7 +2340,7 @@ func (self *CBrowserHostT) PrintToPdf(
 // change. The search will be stopped if |searchText| is NULL. The
 // cef_find_handler_t instance, if any, returned via
 // cef_client_t::GetFindHandler will be called to report find results.
-///
+// /
 func (self *CBrowserHostT) Find(
 	searchText string,
 	forward bool,
@@ -2370,9 +2365,9 @@ func (self *CBrowserHostT) Find(
 
 }
 
-///
+// /
 // Cancel all searches that are currently going on.
-///
+// /
 func (self *CBrowserHostT) StopFinding(
 	clearSelection bool,
 ) {
@@ -2385,7 +2380,7 @@ func (self *CBrowserHostT) StopFinding(
 
 }
 
-///
+// /
 // Open developer tools (DevTools) in its own browser. The DevTools browser
 // will remain associated with this browser. If the DevTools browser is
 // already open then it will be focused, in which case the |windowInfo|,
@@ -2393,7 +2388,7 @@ func (self *CBrowserHostT) StopFinding(
 // is non-NULL then the element at the specified (x,y) location will be
 // inspected. The |windowInfo| parameter will be ignored if this browser is
 // wrapped in a cef_browser_view_t.
-///
+// /
 func (self *CBrowserHostT) ShowDevTools(
 	windowInfo *CWindowInfoT,
 	client *CClientT,
@@ -2410,19 +2405,19 @@ func (self *CBrowserHostT) ShowDevTools(
 
 }
 
-///
+// /
 // Explicitly close the associated DevTools browser, if any.
-///
+// /
 func (self *CBrowserHostT) CloseDevTools() {
 
 	C.cefingo_browser_host_close_dev_tools((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Returns true (1) if this browser currently has an associated DevTools
 // browser. Must be called on the browser process UI thread.
-///
+// /
 func (self *CBrowserHostT) HasDevTools() (ret bool) {
 
 	cRet := C.cefingo_browser_host_has_dev_tools((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2431,7 +2426,7 @@ func (self *CBrowserHostT) HasDevTools() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Send a function call message over the DevTools protocol. |message| must be
 // a UTF8-encoded JSON dictionary that contains &quot;id&quot; (int), &quot;function&quot;
 // (string) and &quot;params&quot; (dictionary, optional) values. See the DevTools
@@ -2463,7 +2458,7 @@ func (self *CBrowserHostT) HasDevTools() (ret bool) {
 // Communication with the DevTools front-end (when displayed) can be logged
 // for development purposes by passing the `--devtools-protocol-log-
 // file=&lt;path&gt;` command-line flag.
-///
+// /
 func (self *CBrowserHostT) SendDevToolsMessage(
 	message []byte,
 ) (ret bool) {
@@ -2477,7 +2472,7 @@ func (self *CBrowserHostT) SendDevToolsMessage(
 	return ret
 }
 
-///
+// /
 // Execute a function call over the DevTools protocol. This is a more
 // structured version of SendDevToolsMessage. |message_id| is an incremental
 // number that uniquely identifies the message (pass 0 to have the next number
@@ -2488,7 +2483,7 @@ func (self *CBrowserHostT) SendDevToolsMessage(
 // return the assigned message ID if called on the UI thread and the message
 // was successfully submitted for validation, otherwise 0. See the
 // SendDevToolsMessage documentation for additional usage information.
-///
+// /
 func (self *CBrowserHostT) ExecuteDevToolsMethod(
 	message_id int,
 	method string,
@@ -2507,12 +2502,12 @@ func (self *CBrowserHostT) ExecuteDevToolsMethod(
 	return ret
 }
 
-///
+// /
 // Add an observer for DevTools protocol messages (function results and
 // events). The observer will remain registered until the returned
 // Registration object is destroyed. See the SendDevToolsMessage documentation
 // for additional usage information.
-///
+// /
 func (self *CBrowserHostT) AddDevToolsMessageObserver(
 	observer *CDevToolsMessageObserverT,
 ) (ret *CRegistrationT) {
@@ -2528,12 +2523,12 @@ func (self *CBrowserHostT) AddDevToolsMessageObserver(
 	return ret
 }
 
-///
+// /
 // Retrieve a snapshot of current navigation entries as values sent to the
 // specified visitor. If |current_only| is true (1) only the current
 // navigation entry will be sent, otherwise all navigation entries will be
 // sent.
-///
+// /
 func (self *CBrowserHostT) GetNavigationEntries(
 	visitor *CNavigationEntryVisitorT,
 	current_only bool,
@@ -2552,10 +2547,10 @@ func (self *CBrowserHostT) GetNavigationEntries(
 
 }
 
-///
+// /
 // If a misspelled word is currently selected in an editable node calling this
 // function will replace it with the specified |word|.
-///
+// /
 func (self *CBrowserHostT) ReplaceMisspelling(
 	word string,
 ) {
@@ -2565,9 +2560,9 @@ func (self *CBrowserHostT) ReplaceMisspelling(
 
 }
 
-///
+// /
 // Add the specified |word| to the spelling dictionary.
-///
+// /
 func (self *CBrowserHostT) AddWordToDictionary(
 	word string,
 ) {
@@ -2577,9 +2572,9 @@ func (self *CBrowserHostT) AddWordToDictionary(
 
 }
 
-///
+// /
 // Returns true (1) if window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) IsWindowRenderingDisabled() (ret bool) {
 
 	cRet := C.cefingo_browser_host_is_window_rendering_disabled((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2588,23 +2583,23 @@ func (self *CBrowserHostT) IsWindowRenderingDisabled() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Notify the browser that the widget has been resized. The browser will first
 // call cef_render_handler_t::GetViewRect to get the new size and then call
 // cef_render_handler_t::OnPaint asynchronously with the updated regions. This
 // function is only used when window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) WasResized() {
 
 	C.cefingo_browser_host_was_resized((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Notify the browser that it has been hidden or shown. Layouting and
 // cef_render_handler_t::OnPaint notification will stop when the browser is
 // hidden. This function is only used when window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) WasHidden(
 	hidden bool,
 ) {
@@ -2617,25 +2612,25 @@ func (self *CBrowserHostT) WasHidden(
 
 }
 
-///
+// /
 // Send a notification to the browser that the screen info has changed. The
 // browser will then call cef_render_handler_t::GetScreenInfo to update the
 // screen information with the new values. This simulates moving the webview
 // window from one display to another, or changing the properties of the
 // current display. This function is only used when window rendering is
 // disabled.
-///
+// /
 func (self *CBrowserHostT) NotifyScreenInfoChanged() {
 
 	C.cefingo_browser_host_notify_screen_info_changed((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Invalidate the view. The browser will call cef_render_handler_t::OnPaint
 // asynchronously. This function is only used when window rendering is
 // disabled.
-///
+// /
 func (self *CBrowserHostT) Invalidate(
 	ctype CPaintElementTypeT,
 ) {
@@ -2644,19 +2639,19 @@ func (self *CBrowserHostT) Invalidate(
 
 }
 
-///
+// /
 // Issue a BeginFrame request to Chromium.  Only valid when
 // cef_window_tInfo::external_begin_frame_enabled is set to true (1).
-///
+// /
 func (self *CBrowserHostT) SendExternalBeginFrame() {
 
 	C.cefingo_browser_host_send_external_begin_frame((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Send a key event to the browser.
-///
+// /
 func (self *CBrowserHostT) SendKeyEvent(
 	event *CKeyEventT,
 ) {
@@ -2665,10 +2660,10 @@ func (self *CBrowserHostT) SendKeyEvent(
 
 }
 
-///
+// /
 // Send a mouse click event to the browser. The |x| and |y| coordinates are
 // relative to the upper-left corner of the view.
-///
+// /
 func (self *CBrowserHostT) SendMouseClickEvent(
 	event *CMouseEventT,
 	ctype CMouseButtonTypeT,
@@ -2684,10 +2679,10 @@ func (self *CBrowserHostT) SendMouseClickEvent(
 
 }
 
-///
+// /
 // Send a mouse move event to the browser. The |x| and |y| coordinates are
 // relative to the upper-left corner of the view.
-///
+// /
 func (self *CBrowserHostT) SendMouseMoveEvent(
 	event *CMouseEventT,
 	mouseLeave bool,
@@ -2701,13 +2696,13 @@ func (self *CBrowserHostT) SendMouseMoveEvent(
 
 }
 
-///
+// /
 // Send a mouse wheel event to the browser. The |x| and |y| coordinates are
 // relative to the upper-left corner of the view. The |deltaX| and |deltaY|
 // values represent the movement delta in the X and Y directions respectively.
 // In order to scroll inside select popups with window rendering disabled
 // cef_render_handler_t::GetScreenPoint should be implemented properly.
-///
+// /
 func (self *CBrowserHostT) SendMouseWheelEvent(
 	event *CMouseEventT,
 	deltaX int,
@@ -2718,9 +2713,9 @@ func (self *CBrowserHostT) SendMouseWheelEvent(
 
 }
 
-///
+// /
 // Send a touch event to the browser for a windowless browser.
-///
+// /
 func (self *CBrowserHostT) SendTouchEvent(
 	event *CTouchEventT,
 ) {
@@ -2729,32 +2724,32 @@ func (self *CBrowserHostT) SendTouchEvent(
 
 }
 
-///
+// /
 // Send a capture lost event to the browser.
-///
+// /
 func (self *CBrowserHostT) SendCaptureLostEvent() {
 
 	C.cefingo_browser_host_send_capture_lost_event((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Notify the browser that the window hosting it is about to be moved or
 // resized. This function is only used on Windows and Linux.
-///
+// /
 func (self *CBrowserHostT) NotifyMoveOrResizeStarted() {
 
 	C.cefingo_browser_host_notify_move_or_resize_started((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Returns the maximum rate in frames per second (fps) that
 // cef_render_handler_t:: OnPaint will be called for a windowless browser. The
 // actual fps may be lower if the browser cannot generate frames at the
 // requested rate. The minimum value is 1 and the maximum value is 60 (default
 // 30). This function can only be called on the UI thread.
-///
+// /
 func (self *CBrowserHostT) GetWindowlessFrameRate() (ret int) {
 
 	cRet := C.cefingo_browser_host_get_windowless_frame_rate((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2763,13 +2758,13 @@ func (self *CBrowserHostT) GetWindowlessFrameRate() (ret int) {
 	return ret
 }
 
-///
+// /
 // Set the maximum rate in frames per second (fps) that cef_render_handler_t::
 // OnPaint will be called for a windowless browser. The actual fps may be
 // lower if the browser cannot generate frames at the requested rate. The
 // minimum value is 1 and the maximum value is 60 (default 30). Can also be
 // set at browser creation via cef_browser_tSettings.windowless_frame_rate.
-///
+// /
 func (self *CBrowserHostT) SetWindowlessFrameRate(
 	frame_rate int,
 ) {
@@ -2778,7 +2773,7 @@ func (self *CBrowserHostT) SetWindowlessFrameRate(
 
 }
 
-///
+// /
 // Begins a new composition or updates the existing composition. Blink has a
 // special node (a composition node) that allows the input function to change
 // text without affecting other DOM nodes. |text| is the optional text that
@@ -2794,13 +2789,14 @@ func (self *CBrowserHostT) SetWindowlessFrameRate(
 // or completed. To cancel the composition call ImeCancelComposition. To
 // complete the composition call either ImeCommitText or
 // ImeFinishComposingText. Completion is usually signaled when:
-//   A. The client receives a WM_IME_COMPOSITION message with a GCS_RESULTSTR
-//      flag (on Windows), or;
-//   B. The client receives a &quot;commit&quot; signal of GtkIMContext (on Linux), or;
-//   C. insertText of NSTextInput is called (on Mac).
+//
+//	A. The client receives a WM_IME_COMPOSITION message with a GCS_RESULTSTR
+//	   flag (on Windows), or;
+//	B. The client receives a &quot;commit&quot; signal of GtkIMContext (on Linux), or;
+//	C. insertText of NSTextInput is called (on Mac).
 //
 // This function is only used when window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) ImeSetComposition(
 	text string,
 	underlinesCount int64,
@@ -2814,7 +2810,7 @@ func (self *CBrowserHostT) ImeSetComposition(
 
 }
 
-///
+// /
 // Completes the existing composition by optionally inserting the specified
 // |text| into the composition node. |replacement_range| is an optional range
 // of the existing text that will be replaced. |relative_cursor_pos| is where
@@ -2822,7 +2818,7 @@ func (self *CBrowserHostT) ImeSetComposition(
 // comments on ImeSetComposition for usage. The |replacement_range| and
 // |relative_cursor_pos| values are only used on OS X. This function is only
 // used when window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) ImeCommitText(
 	text string,
 	replacement_range *CRangeT,
@@ -2834,12 +2830,12 @@ func (self *CBrowserHostT) ImeCommitText(
 
 }
 
-///
+// /
 // Completes the existing composition by applying the current composition node
 // contents. If |keep_selection| is false (0) the current selection, if any,
 // will be discarded. See comments on ImeSetComposition for usage. This
 // function is only used when window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) ImeFinishComposingText(
 	keep_selection bool,
 ) {
@@ -2852,18 +2848,18 @@ func (self *CBrowserHostT) ImeFinishComposingText(
 
 }
 
-///
+// /
 // Cancels the existing composition and discards the composition node contents
 // without applying them. See comments on ImeSetComposition for usage. This
 // function is only used when window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) ImeCancelComposition() {
 
 	C.cefingo_browser_host_ime_cancel_composition((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Call this function when the user drags the mouse into the web view (before
 // calling DragTargetDragOver/DragTargetLeave/DragTargetDrop). |drag_data|
 // should not contain file contents as this type of data is not allowed to be
@@ -2871,7 +2867,7 @@ func (self *CBrowserHostT) ImeCancelComposition() {
 // cef_drag_data_t::ResetFileContents (for example, if |drag_data| comes from
 // cef_render_handler_t::StartDragging). This function is only used when
 // window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) DragTargetDragEnter(
 	drag_data *CDragDataT,
 	event *CMouseEventT,
@@ -2887,12 +2883,12 @@ func (self *CBrowserHostT) DragTargetDragEnter(
 
 }
 
-///
+// /
 // Call this function each time the mouse is moved across the web view during
 // a drag operation (after calling DragTargetDragEnter and before calling
 // DragTargetDragLeave/DragTargetDrop). This function is only used when window
 // rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) DragTargetDragOver(
 	event *CMouseEventT,
 	allowed_ops CDragOperationsMaskT,
@@ -2902,24 +2898,24 @@ func (self *CBrowserHostT) DragTargetDragOver(
 
 }
 
-///
+// /
 // Call this function when the user drags the mouse out of the web view (after
 // calling DragTargetDragEnter). This function is only used when window
 // rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) DragTargetDragLeave() {
 
 	C.cefingo_browser_host_drag_target_drag_leave((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Call this function when the user completes the drag operation by dropping
 // the object onto the web view (after calling DragTargetDragEnter). The
 // object being dropped is |drag_data|, given as an argument to the previous
 // DragTargetDragEnter call. This function is only used when window rendering
 // is disabled.
-///
+// /
 func (self *CBrowserHostT) DragTargetDrop(
 	event *CMouseEventT,
 ) {
@@ -2928,7 +2924,7 @@ func (self *CBrowserHostT) DragTargetDrop(
 
 }
 
-///
+// /
 // Call this function when the drag operation started by a
 // cef_render_handler_t::StartDragging call has ended either in a drop or by
 // being cancelled. |x| and |y| are mouse coordinates relative to the upper-
@@ -2936,7 +2932,7 @@ func (self *CBrowserHostT) DragTargetDrop(
 // drag target then all DragTarget* functions should be called before
 // DragSource* mthods. This function is only used when window rendering is
 // disabled.
-///
+// /
 func (self *CBrowserHostT) DragSourceEndedAt(
 	x int,
 	y int,
@@ -2947,24 +2943,24 @@ func (self *CBrowserHostT) DragSourceEndedAt(
 
 }
 
-///
+// /
 // Call this function when the drag operation started by a
 // cef_render_handler_t::StartDragging call has completed. This function may
 // be called immediately without first calling DragSourceEndedAt to cancel a
 // drag operation. If the web view is both the drag source and the drag target
 // then all DragTarget* functions should be called before DragSource* mthods.
 // This function is only used when window rendering is disabled.
-///
+// /
 func (self *CBrowserHostT) DragSourceSystemDragEnded() {
 
 	C.cefingo_browser_host_drag_source_system_drag_ended((*C.cef_browser_host_t)(self.pc_browser_host))
 
 }
 
-///
+// /
 // Returns the current visible navigation entry for this browser. This
 // function can only be called on the UI thread.
-///
+// /
 func (self *CBrowserHostT) GetVisibleNavigationEntry() (ret *CNavigationEntryT) {
 
 	cRet := C.cefingo_browser_host_get_visible_navigation_entry((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -2973,7 +2969,7 @@ func (self *CBrowserHostT) GetVisibleNavigationEntry() (ret *CNavigationEntryT) 
 	return ret
 }
 
-///
+// /
 // Set accessibility state for all frames. |accessibility_state| may be
 // default, enabled or disabled. If |accessibility_state| is STATE_DEFAULT
 // then accessibility will be disabled by default and the state may be further
@@ -2997,7 +2993,7 @@ func (self *CBrowserHostT) GetVisibleNavigationEntry() (ret *CNavigationEntryT) 
 // events are passed to CefAccessibiltyHandler, but platform accessibility
 // objects are not created. The client may implement platform accessibility
 // objects using CefAccessibiltyHandler callbacks if desired.
-///
+// /
 func (self *CBrowserHostT) SetAccessibilityState(
 	accessibility_state CStateT,
 ) {
@@ -3006,11 +3002,11 @@ func (self *CBrowserHostT) SetAccessibilityState(
 
 }
 
-///
+// /
 // Enable notifications of auto resize via
 // cef_display_handler_t::OnAutoResize. Notifications are disabled by default.
 // |min_size| and |max_size| define the range of allowed sizes.
-///
+// /
 func (self *CBrowserHostT) SetAutoResizeEnabled(
 	enabled bool,
 	min_size *CSizeT,
@@ -3025,10 +3021,10 @@ func (self *CBrowserHostT) SetAutoResizeEnabled(
 
 }
 
-///
+// /
 // Returns the extension hosted in this browser or NULL if no extension is
 // hosted. See cef_request_context_t::LoadExtension for details.
-///
+// /
 func (self *CBrowserHostT) GetExtension() (ret *CExtensionT) {
 
 	cRet := C.cefingo_browser_host_get_extension((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -3037,11 +3033,11 @@ func (self *CBrowserHostT) GetExtension() (ret *CExtensionT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this browser is hosting an extension background script.
 // Background hosts do not have a window and are not displayable. See
 // cef_request_context_t::LoadExtension for details.
-///
+// /
 func (self *CBrowserHostT) IsBackgroundHost() (ret bool) {
 
 	cRet := C.cefingo_browser_host_is_background_host((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -3050,9 +3046,11 @@ func (self *CBrowserHostT) IsBackgroundHost() (ret bool) {
 	return ret
 }
 
-///
-//  Set whether the browser&#39;s audio is muted.
-///
+// /
+//
+//	Set whether the browser&#39;s audio is muted.
+//
+// /
 func (self *CBrowserHostT) SetAudioMuted(
 	mute bool,
 ) {
@@ -3065,10 +3063,10 @@ func (self *CBrowserHostT) SetAudioMuted(
 
 }
 
-///
+// /
 // Returns true (1) if the browser&#39;s audio is muted.  This function can only
 // be called on the UI thread.
-///
+// /
 func (self *CBrowserHostT) IsAudioMuted() (ret bool) {
 
 	cRet := C.cefingo_browser_host_is_audio_muted((*C.cef_browser_host_t)(self.pc_browser_host))
@@ -3077,7 +3075,7 @@ func (self *CBrowserHostT) IsAudioMuted() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Create a new browser using the window parameters specified by |windowInfo|.
 // All values will be copied internally and the actual window (if any) will be
 // created on the UI thread. If |request_context| is NULL the global request
@@ -3086,7 +3084,7 @@ func (self *CBrowserHostT) IsAudioMuted() (ret bool) {
 // opportunity to specify extra information specific to the created browser that
 // will be passed to cef_render_process_handler_t::on_browser_created() in the
 // render process.
-///
+// /
 func BrowserHostCreateBrowser(
 	windowInfo *CWindowInfoT,
 	client *CClientT,
@@ -3118,14 +3116,14 @@ func BrowserHostCreateBrowser(
 	return ret
 }
 
-///
+// /
 // Create a new browser using the window parameters specified by |windowInfo|.
 // If |request_context| is NULL the global request context will be used. This
 // function can only be called on the browser process UI thread. The optional
 // |extra_info| parameter provides an opportunity to specify extra information
 // specific to the created browser that will be passed to
 // cef_render_process_handler_t::on_browser_created() in the render process.
-///
+// /
 func BrowserHostCreateBrowserSync(
 	windowInfo *CWindowInfoT,
 	client *CClientT,
@@ -3239,23 +3237,23 @@ func (browser_process_handler *CBrowserProcessHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called on the browser process UI thread immediately after the CEF context
 // has been initialized.
-///
+// /
 type OnContextInitializedHandler interface {
 	OnContextInitialized(
 		self *CBrowserProcessHandlerT,
 	)
 }
 
-///
+// /
 // Called before a child process is launched. Will be called on the browser
 // process UI thread when launching a render process and on the browser
 // process IO thread when launching a GPU process. Provides an opportunity to
 // modify the child process command line. Do not keep a reference to
 // |command_line| outside of this function.
-///
+// /
 type OnBeforeChildProcessLaunchHandler interface {
 	OnBeforeChildProcessLaunch(
 		self *CBrowserProcessHandlerT,
@@ -3263,7 +3261,7 @@ type OnBeforeChildProcessLaunchHandler interface {
 	)
 }
 
-///
+// /
 // Called from any thread when work has been scheduled for the browser process
 // main (UI) thread. This callback is used in combination with CefSettings.
 // external_message_pump and cef_do_message_loop_work() in cases where the CEF
@@ -3275,7 +3273,7 @@ type OnBeforeChildProcessLaunchHandler interface {
 // |delay_ms| is &gt; 0 then the call should be scheduled to happen after the
 // specified delay and any currently pending scheduled call should be
 // cancelled.
-///
+// /
 type OnScheduleMessagePumpWorkHandler interface {
 	OnScheduleMessagePumpWork(
 		self *CBrowserProcessHandlerT,
@@ -3283,13 +3281,13 @@ type OnScheduleMessagePumpWorkHandler interface {
 	)
 }
 
-///
+// /
 // Return the default client for use with a newly created browser window. If
 // null is returned the browser will be unmanaged (no callbacks will be
 // executed for that browser) and application shutdown will be blocked until
 // the browser window is closed manually. This function is currently only used
 // with the chrome runtime.
-///
+// /
 type GetDefaultClientHandler interface {
 	GetDefaultClient(
 		self *CBrowserProcessHandlerT,
@@ -3488,10 +3486,10 @@ func (browser_view *CBrowserViewT) ToCViewT() *CViewT {
 	return newCViewT(p, byApp)
 }
 
-///
+// /
 // Returns the cef_browser_t hosted by this BrowserView. Will return NULL if
 // the browser has not yet been created or has already been destroyed.
-///
+// /
 func (self *CBrowserViewT) GetBrowser() (ret *CBrowserT) {
 
 	cRet := C.cefingo_browser_view_get_browser((*C.cef_browser_view_t)(self.pc_browser_view))
@@ -3500,14 +3498,14 @@ func (self *CBrowserViewT) GetBrowser() (ret *CBrowserT) {
 	return ret
 }
 
-///
+// /
 // Returns the Chrome toolbar associated with this BrowserView. Only supported
 // when using the Chrome runtime. The cef_browser_view_delegate_t::
 // get_chrome_toolbar_type() function must return a value other than
 // CEF_CTT_NONE and the toolbar will not be available until after this
 // BrowserView is added to a cef_window_t and
 // cef_view_delegate_t::on_window_changed() has been called.
-///
+// /
 func (self *CBrowserViewT) GetChromeToolbar() (ret *CViewT) {
 
 	cRet := C.cefingo_browser_view_get_chrome_toolbar((*C.cef_browser_view_t)(self.pc_browser_view))
@@ -3516,7 +3514,7 @@ func (self *CBrowserViewT) GetChromeToolbar() (ret *CViewT) {
 	return ret
 }
 
-///
+// /
 // Sets whether accelerators registered with cef_window_t::SetAccelerator are
 // triggered before or after the event is sent to the cef_browser_t. If
 // |prefer_accelerators| is true (1) then the matching accelerator will be
@@ -3524,7 +3522,7 @@ func (self *CBrowserViewT) GetChromeToolbar() (ret *CViewT) {
 // If |prefer_accelerators| is false (0) then the matching accelerator will
 // only be triggered if the event is not handled by web content or by
 // cef_keyboard_handler_t. The default value is false (0).
-///
+// /
 func (self *CBrowserViewT) SetPreferAccelerators(
 	prefer_accelerators bool,
 ) {
@@ -3537,13 +3535,13 @@ func (self *CBrowserViewT) SetPreferAccelerators(
 
 }
 
-///
+// /
 // Create a new BrowserView. The underlying cef_browser_t will not be created
 // until this view is added to the views hierarchy. The optional |extra_info|
 // parameter provides an opportunity to specify extra information specific to
 // the created browser that will be passed to
 // cef_render_process_handler_t::on_browser_created() in the render process.
-///
+// /
 func BrowserViewCreate(
 	client *CClientT,
 	url string,
@@ -3580,9 +3578,9 @@ func BrowserViewCreate(
 	return ret
 }
 
-///
+// /
 // Returns the BrowserView associated with |browser|.
-///
+// /
 func BrowserViewGetForBrowser(
 	browser *CBrowserT,
 ) (ret *CBrowserViewT) {
@@ -3687,12 +3685,12 @@ func (browser_view_delegate *CBrowserViewDelegateT) ToCViewDelegateT() *CViewDel
 	return newCViewDelegateT(p, byApp)
 }
 
-///
+// /
 // Called when |browser| associated with |browser_view| is created. This
 // function will be called after cef_life_span_handler_t::on_after_created()
 // is called for |browser| and before on_popup_browser_view_created() is
 // called for |browser|&#39;s parent delegate if |browser| is a popup.
-///
+// /
 type CBrowserViewDelegateTOnBrowserCreatedHandler interface {
 	OnBrowserCreated(
 		self *CBrowserViewDelegateT,
@@ -3701,12 +3699,12 @@ type CBrowserViewDelegateTOnBrowserCreatedHandler interface {
 	)
 }
 
-///
+// /
 // Called when |browser| associated with |browser_view| is destroyed. Release
 // all references to |browser| and do not attempt to execute any functions on
 // |browser| after this callback returns. This function will be called before
 // cef_life_span_handler_t::on_before_close() is called for |browser|.
-///
+// /
 type CBrowserViewDelegateTOnBrowserDestroyedHandler interface {
 	OnBrowserDestroyed(
 		self *CBrowserViewDelegateT,
@@ -3715,13 +3713,13 @@ type CBrowserViewDelegateTOnBrowserDestroyedHandler interface {
 	)
 }
 
-///
+// /
 // Called before a new popup BrowserView is created. The popup originated from
 // |browser_view|. |settings| and |client| are the values returned from
 // cef_life_span_handler_t::on_before_popup(). |is_devtools| will be true (1)
 // if the popup will be a DevTools browser. Return the delegate that will be
 // used for the new popup BrowserView.
-///
+// /
 type GetDelegateForPopupBrowserViewHandler interface {
 	GetDelegateForPopupBrowserView(
 		self *CBrowserViewDelegateT,
@@ -3732,7 +3730,7 @@ type GetDelegateForPopupBrowserViewHandler interface {
 	) (ret *CBrowserViewDelegateT)
 }
 
-///
+// /
 // Called after |popup_browser_view| is created. This function will be called
 // after cef_life_span_handler_t::on_after_created() and on_browser_created()
 // are called for the new popup browser. The popup originated from
@@ -3740,7 +3738,7 @@ type GetDelegateForPopupBrowserViewHandler interface {
 // browser. Optionally add |popup_browser_view| to the views hierarchy
 // yourself and return true (1). Otherwise return false (0) and a default
 // cef_window_t will be created for the popup.
-///
+// /
 type OnPopupBrowserViewCreatedHandler interface {
 	OnPopupBrowserViewCreated(
 		self *CBrowserViewDelegateT,
@@ -3750,11 +3748,11 @@ type OnPopupBrowserViewCreatedHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Returns the Chrome toolbar type that will be available via
 // cef_browser_view_t::get_chrome_toolbar(). See that function for related
 // documentation.
-///
+// /
 type GetChromeToolbarTypeHandler interface {
 	GetChromeToolbarType(
 		self *CBrowserViewDelegateT,
@@ -4064,9 +4062,9 @@ func (button *CButtonT) ToCViewT() *CViewT {
 	return newCViewT(p, byApp)
 }
 
-///
+// /
 // Returns this Button as a LabelButton or NULL if this is not a LabelButton.
-///
+// /
 func (self *CButtonT) AsLabelButton() (ret *CLabelButtonT) {
 
 	cRet := C.cefingo_button_as_label_button((*C.cef_button_t)(self.pc_button))
@@ -4075,9 +4073,9 @@ func (self *CButtonT) AsLabelButton() (ret *CLabelButtonT) {
 	return ret
 }
 
-///
+// /
 // Sets the current display state of the Button.
-///
+// /
 func (self *CButtonT) SetState(
 	state CButtonStateT,
 ) {
@@ -4086,9 +4084,9 @@ func (self *CButtonT) SetState(
 
 }
 
-///
+// /
 // Returns the current display state of the Button.
-///
+// /
 func (self *CButtonT) GetState() (ret CButtonStateT) {
 
 	cRet := C.cefingo_button_get_state((*C.cef_button_t)(self.pc_button))
@@ -4097,9 +4095,9 @@ func (self *CButtonT) GetState() (ret CButtonStateT) {
 	return ret
 }
 
-///
+// /
 // Sets the Button will use an ink drop effect for displaying state changes.
-///
+// /
 func (self *CButtonT) SetInkDropEnabled(
 	enabled int,
 ) {
@@ -4108,10 +4106,10 @@ func (self *CButtonT) SetInkDropEnabled(
 
 }
 
-///
+// /
 // Sets the tooltip text that will be displayed when the user hovers the mouse
 // cursor over the Button.
-///
+// /
 func (self *CButtonT) SetTooltipText(
 	tooltip_text string,
 ) {
@@ -4121,9 +4119,9 @@ func (self *CButtonT) SetTooltipText(
 
 }
 
-///
+// /
 // Sets the accessible name that will be exposed to assistive technology (AT).
-///
+// /
 func (self *CButtonT) SetAccessibleName(
 	name string,
 ) {
@@ -4222,9 +4220,9 @@ func (button_delegate *CButtonDelegateT) ToCViewDelegateT() *CViewDelegateT {
 	return newCViewDelegateT(p, byApp)
 }
 
-///
+// /
 // Called when |button| is pressed.
-///
+// /
 type OnButtonPressedHandler interface {
 	OnButtonPressed(
 		self *CButtonDelegateT,
@@ -4232,9 +4230,9 @@ type OnButtonPressedHandler interface {
 	)
 }
 
-///
+// /
 // Called when the state of |button| changes.
-///
+// /
 type OnButtonStateChangedHandler interface {
 	OnButtonStateChanged(
 		self *CButtonDelegateT,
@@ -4506,18 +4504,18 @@ func (callback *CCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Continue processing.
-///
+// /
 func (self *CCallbackT) Cont() {
 
 	C.cefingo_callback_cont((*C.cef_callback_t)(self.pc_callback))
 
 }
 
-///
+// /
 // Cancel processing.
-///
+// /
 func (self *CCallbackT) Cancel() {
 
 	C.cefingo_callback_cancel((*C.cef_callback_t)(self.pc_callback))
@@ -4602,9 +4600,9 @@ func (completion_callback *CCompletionCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be called once the task is complete.
-///
+// /
 func (self *CCompletionCallbackT) OnComplete() {
 
 	C.cefingo_completion_callback_on_complete((*C.cef_completion_callback_t)(self.pc_completion_callback))
@@ -4691,172 +4689,172 @@ func (client *CClientT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Return the handler for audio rendering events.
-///
+// /
 type GetAudioHandlerHandler interface {
 	GetAudioHandler(
 		self *CClientT,
 	) (ret *CAudioHandlerT)
 }
 
-///
+// /
 // Return the handler for commands. If no handler is provided the default
 // implementation will be used.
-///
+// /
 type GetCommandHandlerHandler interface {
 	GetCommandHandler(
 		self *CClientT,
 	) (ret *CCommandHandlerT)
 }
 
-///
+// /
 // Return the handler for context menus. If no handler is provided the default
 // implementation will be used.
-///
+// /
 type GetContextMenuHandlerHandler interface {
 	GetContextMenuHandler(
 		self *CClientT,
 	) (ret *CContextMenuHandlerT)
 }
 
-///
+// /
 // Return the handler for dialogs. If no handler is provided the default
 // implementation will be used.
-///
+// /
 type GetDialogHandlerHandler interface {
 	GetDialogHandler(
 		self *CClientT,
 	) (ret *CDialogHandlerT)
 }
 
-///
+// /
 // Return the handler for browser display state events.
-///
+// /
 type GetDisplayHandlerHandler interface {
 	GetDisplayHandler(
 		self *CClientT,
 	) (ret *CDisplayHandlerT)
 }
 
-///
+// /
 // Return the handler for download events. If no handler is returned downloads
 // will not be allowed.
-///
+// /
 type GetDownloadHandlerHandler interface {
 	GetDownloadHandler(
 		self *CClientT,
 	) (ret *CDownloadHandlerT)
 }
 
-///
+// /
 // Return the handler for drag events.
-///
+// /
 type GetDragHandlerHandler interface {
 	GetDragHandler(
 		self *CClientT,
 	) (ret *CDragHandlerT)
 }
 
-///
+// /
 // Return the handler for find result events.
-///
+// /
 type GetFindHandlerHandler interface {
 	GetFindHandler(
 		self *CClientT,
 	) (ret *CFindHandlerT)
 }
 
-///
+// /
 // Return the handler for focus events.
-///
+// /
 type GetFocusHandlerHandler interface {
 	GetFocusHandler(
 		self *CClientT,
 	) (ret *CFocusHandlerT)
 }
 
-///
+// /
 // Return the handler for events related to cef_frame_t lifespan. This
 // function will be called once during cef_browser_t creation and the result
 // will be cached for performance reasons.
-///
+// /
 type GetFrameHandlerHandler interface {
 	GetFrameHandler(
 		self *CClientT,
 	) (ret *CFrameHandlerT)
 }
 
-///
+// /
 // Return the handler for JavaScript dialogs. If no handler is provided the
 // default implementation will be used.
-///
+// /
 type GetJsdialogHandlerHandler interface {
 	GetJsdialogHandler(
 		self *CClientT,
 	) (ret *CJsdialogHandlerT)
 }
 
-///
+// /
 // Return the handler for keyboard events.
-///
+// /
 type GetKeyboardHandlerHandler interface {
 	GetKeyboardHandler(
 		self *CClientT,
 	) (ret *CKeyboardHandlerT)
 }
 
-///
+// /
 // Return the handler for browser life span events.
-///
+// /
 type GetLifeSpanHandlerHandler interface {
 	GetLifeSpanHandler(
 		self *CClientT,
 	) (ret *CLifeSpanHandlerT)
 }
 
-///
+// /
 // Return the handler for browser load status events.
-///
+// /
 type CClientTGetLoadHandlerHandler interface {
 	GetLoadHandler(
 		self *CClientT,
 	) (ret *CLoadHandlerT)
 }
 
-///
+// /
 // Return the handler for printing on Linux. If a print handler is not
 // provided then printing will not be supported on the Linux platform.
-///
+// /
 type GetPrintHandlerHandler interface {
 	GetPrintHandler(
 		self *CClientT,
 	) (ret *CPrintHandlerT)
 }
 
-///
+// /
 // Return the handler for off-screen rendering events.
-///
+// /
 type GetRenderHandlerHandler interface {
 	GetRenderHandler(
 		self *CClientT,
 	) (ret *CRenderHandlerT)
 }
 
-///
+// /
 // Return the handler for browser request events.
-///
+// /
 type GetRequestHandlerHandler interface {
 	GetRequestHandler(
 		self *CClientT,
 	) (ret *CRequestHandlerT)
 }
 
-///
+// /
 // Called when a new message is received from a different process. Return true
 // (1) if the message was handled or false (0) otherwise.  It is safe to keep
 // a reference to |message| outside of this callback.
-///
+// /
 type CClientTOnProcessMessageReceivedHandler interface {
 	OnProcessMessageReceived(
 		self *CClientT,
@@ -5192,7 +5190,7 @@ func (command_handler *CCommandHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called to execute a Chrome command triggered via menu selection or keyboard
 // shortcut. Values for |command_id| can be found in the cef_command_ids.h
 // file. |disposition| provides information about the intended command target.
@@ -5200,7 +5198,7 @@ func (command_handler *CCommandHandlerT) Unref() (ret bool) {
 // implementation. For context menu commands this will be called after
 // cef_context_menu_handler_t::OnContextMenuCommand. Only used with the Chrome
 // runtime.
-///
+// /
 func (self *CCommandHandlerT) OnChromeCommand(
 	browser *CBrowserT,
 	command_id int,
@@ -5306,10 +5304,10 @@ func (command_line *CCommandLineT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid. Do not call any other functions
 // if this function returns false (0).
-///
+// /
 func (self *CCommandLineT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_command_line_is_valid((*C.cef_command_line_t)(self.pc_command_line))
@@ -5318,10 +5316,10 @@ func (self *CCommandLineT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the values of this object are read-only. Some APIs may
 // expose read-only objects.
-///
+// /
 func (self *CCommandLineT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_command_line_is_read_only((*C.cef_command_line_t)(self.pc_command_line))
@@ -5330,9 +5328,9 @@ func (self *CCommandLineT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns a writable copy of this object.
-///
+// /
 func (self *CCommandLineT) Copy() (ret *CCommandLineT) {
 
 	cRet := C.cefingo_command_line_copy((*C.cef_command_line_t)(self.pc_command_line))
@@ -5341,10 +5339,10 @@ func (self *CCommandLineT) Copy() (ret *CCommandLineT) {
 	return ret
 }
 
-///
+// /
 // Initialize the command line with the string returned by calling
 // GetCommandLineW(). This function is only supported on Windows.
-///
+// /
 func (self *CCommandLineT) InitFromString(
 	command_line string,
 ) {
@@ -5354,20 +5352,20 @@ func (self *CCommandLineT) InitFromString(
 
 }
 
-///
+// /
 // Reset the command-line switches and arguments but leave the program
 // component unchanged.
-///
+// /
 func (self *CCommandLineT) Reset() {
 
 	C.cefingo_command_line_reset((*C.cef_command_line_t)(self.pc_command_line))
 
 }
 
-///
+// /
 // Retrieve the original command line string as a vector of strings. The argv
 // array: { program, [(--|-|/)switch[=value]]*, [--], [argument]* }
-///
+// /
 func (self *CCommandLineT) GetArgv(
 	argv CStringListT,
 ) {
@@ -5376,10 +5374,10 @@ func (self *CCommandLineT) GetArgv(
 
 }
 
-///
+// /
 // Constructs and returns the represented command line string. Use this
 // function cautiously because quoting behavior is unclear.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CCommandLineT) GetCommandLineString() (ret string) {
 
@@ -5393,9 +5391,9 @@ func (self *CCommandLineT) GetCommandLineString() (ret string) {
 	return ret
 }
 
-///
+// /
 // Get the program part of the command line string (the first item).
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CCommandLineT) GetProgram() (ret string) {
 
@@ -5409,9 +5407,9 @@ func (self *CCommandLineT) GetProgram() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the program part of the command line string (the first item).
-///
+// /
 func (self *CCommandLineT) SetProgram(
 	program string,
 ) {
@@ -5421,9 +5419,9 @@ func (self *CCommandLineT) SetProgram(
 
 }
 
-///
+// /
 // Returns true (1) if the command line has switches.
-///
+// /
 func (self *CCommandLineT) HasSwitches() (ret bool) {
 
 	cRet := C.cefingo_command_line_has_switches((*C.cef_command_line_t)(self.pc_command_line))
@@ -5432,9 +5430,9 @@ func (self *CCommandLineT) HasSwitches() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the command line contains the given switch.
-///
+// /
 func (self *CCommandLineT) HasSwitch(
 	name string,
 ) (ret bool) {
@@ -5446,10 +5444,10 @@ func (self *CCommandLineT) HasSwitch(
 	return ret
 }
 
-///
+// /
 // Returns the value associated with the given switch. If the switch has no
 // value or isn&#39;t present this function returns the NULL string.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CCommandLineT) GetSwitchValue(
 	name string,
@@ -5466,10 +5464,10 @@ func (self *CCommandLineT) GetSwitchValue(
 	return ret
 }
 
-///
+// /
 // Returns the map of switch names and values. If a switch has no value an
 // NULL string is returned.
-///
+// /
 func (self *CCommandLineT) GetSwitches(
 	switches CStringMapT,
 ) {
@@ -5478,10 +5476,10 @@ func (self *CCommandLineT) GetSwitches(
 
 }
 
-///
+// /
 // Add a switch to the end of the command line. If the switch has no value
 // pass an NULL value string.
-///
+// /
 func (self *CCommandLineT) AppendSwitch(
 	name string,
 ) {
@@ -5491,9 +5489,9 @@ func (self *CCommandLineT) AppendSwitch(
 
 }
 
-///
+// /
 // Add a switch with the specified value to the end of the command line.
-///
+// /
 func (self *CCommandLineT) AppendSwitchWithValue(
 	name string,
 	value string,
@@ -5505,9 +5503,9 @@ func (self *CCommandLineT) AppendSwitchWithValue(
 
 }
 
-///
+// /
 // True if there are remaining command line arguments.
-///
+// /
 func (self *CCommandLineT) HasArguments() (ret bool) {
 
 	cRet := C.cefingo_command_line_has_arguments((*C.cef_command_line_t)(self.pc_command_line))
@@ -5516,9 +5514,9 @@ func (self *CCommandLineT) HasArguments() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Get the remaining command line arguments.
-///
+// /
 func (self *CCommandLineT) GetArguments(
 	arguments CStringListT,
 ) {
@@ -5527,9 +5525,9 @@ func (self *CCommandLineT) GetArguments(
 
 }
 
-///
+// /
 // Add an argument to the end of the command line.
-///
+// /
 func (self *CCommandLineT) AppendArgument(
 	argument string,
 ) {
@@ -5539,10 +5537,10 @@ func (self *CCommandLineT) AppendArgument(
 
 }
 
-///
+// /
 // Insert a command before the current command. Common for debuggers, like
 // &quot;valgrind&quot; or &quot;gdb --args&quot;.
-///
+// /
 func (self *CCommandLineT) PrependWrapper(
 	wrapper string,
 ) {
@@ -5552,9 +5550,9 @@ func (self *CCommandLineT) PrependWrapper(
 
 }
 
-///
+// /
 // Create a new cef_command_line_t instance.
-///
+// /
 func CommandLineCreate() (ret *CCommandLineT) {
 
 	cRet := C.cef_command_line_create()
@@ -5563,10 +5561,10 @@ func CommandLineCreate() (ret *CCommandLineT) {
 	return ret
 }
 
-///
+// /
 // Returns the singleton global cef_command_line_t object. The returned object
 // will be read-only.
-///
+// /
 func CommandLineGetGlobal() (ret *CCommandLineT) {
 
 	cRet := C.cef_command_line_get_global()
@@ -5655,10 +5653,10 @@ func (run_context_menu_callback *CRunContextMenuCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Complete context menu display by selecting the specified |command_id| and
 // |event_flags|.
-///
+// /
 func (self *CRunContextMenuCallbackT) Cont(
 	command_id int,
 	event_flags CEventFlagsT,
@@ -5668,9 +5666,9 @@ func (self *CRunContextMenuCallbackT) Cont(
 
 }
 
-///
+// /
 // Cancel context menu display.
-///
+// /
 func (self *CRunContextMenuCallbackT) Cancel() {
 
 	C.cefingo_run_context_menu_callback_cancel((*C.cef_run_context_menu_callback_t)(self.pc_run_context_menu_callback))
@@ -5756,13 +5754,13 @@ func (context_menu_handler *CContextMenuHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called before a context menu is displayed. |params| provides information
 // about the context menu state. |model| initially contains the default
 // context menu. The |model| can be cleared to show no context menu or
 // modified to show a custom menu. Do not keep references to |params| or
 // |model| outside of this callback.
-///
+// /
 type OnBeforeContextMenuHandler interface {
 	OnBeforeContextMenu(
 		self *CContextMenuHandlerT,
@@ -5773,14 +5771,14 @@ type OnBeforeContextMenuHandler interface {
 	)
 }
 
-///
+// /
 // Called to allow custom display of the context menu. |params| provides
 // information about the context menu state. |model| contains the context menu
 // model resulting from OnBeforeContextMenu. For custom display return true
 // (1) and execute |callback| either synchronously or asynchronously with the
 // selected command ID. For default display return false (0). Do not keep
 // references to |params| or |model| outside of this callback.
-///
+// /
 type RunContextMenuHandler interface {
 	RunContextMenu(
 		self *CContextMenuHandlerT,
@@ -5792,7 +5790,7 @@ type RunContextMenuHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called to execute a command selected from the context menu. Return true (1)
 // if the command was handled or false (0) for the default implementation. See
 // cef_menu_id_t for the command ids that have default implementations. All
@@ -5800,7 +5798,7 @@ type RunContextMenuHandler interface {
 // MENU_ID_USER_LAST. |params| will have the same values as what was passed to
 // on_before_context_menu(). Do not keep a reference to |params| outside of
 // this callback.
-///
+// /
 type OnContextMenuCommandHandler interface {
 	OnContextMenuCommand(
 		self *CContextMenuHandlerT,
@@ -5812,10 +5810,10 @@ type OnContextMenuCommandHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called when the context menu is dismissed irregardless of whether the menu
 // was NULL or a command was selected.
-///
+// /
 type OnContextMenuDismissedHandler interface {
 	OnContextMenuDismissed(
 		self *CContextMenuHandlerT,
@@ -6007,10 +6005,10 @@ func (context_menu_params *CContextMenuParamsT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the X coordinate of the mouse where the context menu was invoked.
 // Coords are relative to the associated RenderView&#39;s origin.
-///
+// /
 func (self *CContextMenuParamsT) GetXcoord() (ret bool) {
 
 	cRet := C.cefingo_context_menu_params_get_xcoord((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6019,10 +6017,10 @@ func (self *CContextMenuParamsT) GetXcoord() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the Y coordinate of the mouse where the context menu was invoked.
 // Coords are relative to the associated RenderView&#39;s origin.
-///
+// /
 func (self *CContextMenuParamsT) GetYcoord() (ret bool) {
 
 	cRet := C.cefingo_context_menu_params_get_ycoord((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6031,10 +6029,10 @@ func (self *CContextMenuParamsT) GetYcoord() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns flags representing the type of node that the context menu was
 // invoked on.
-///
+// /
 func (self *CContextMenuParamsT) GetTypeFlags() (ret CContextMenuTypeFlagsT) {
 
 	cRet := C.cefingo_context_menu_params_get_type_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6043,10 +6041,10 @@ func (self *CContextMenuParamsT) GetTypeFlags() (ret CContextMenuTypeFlagsT) {
 	return ret
 }
 
-///
+// /
 // Returns the URL of the link, if any, that encloses the node that the
 // context menu was invoked on.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetLinkUrl() (ret string) {
 
@@ -6060,10 +6058,10 @@ func (self *CContextMenuParamsT) GetLinkUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the link URL, if any, to be used ONLY for &quot;copy link address&quot;. We
 // don&#39;t validate this field in the frontend process.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetUnfilteredLinkUrl() (ret string) {
 
@@ -6077,10 +6075,10 @@ func (self *CContextMenuParamsT) GetUnfilteredLinkUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the source URL, if any, for the element that the context menu was
 // invoked on. Example of elements with source URLs are img, audio, and video.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetSourceUrl() (ret string) {
 
@@ -6094,10 +6092,10 @@ func (self *CContextMenuParamsT) GetSourceUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the context menu was invoked on an image which has non-
 // NULL contents.
-///
+// /
 func (self *CContextMenuParamsT) HasImageContents() (ret bool) {
 
 	cRet := C.cefingo_context_menu_params_has_image_contents((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6106,10 +6104,10 @@ func (self *CContextMenuParamsT) HasImageContents() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the title text or the alt text if the context menu was invoked on
 // an image.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetTitleText() (ret string) {
 
@@ -6123,9 +6121,9 @@ func (self *CContextMenuParamsT) GetTitleText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the URL of the top level page that the context menu was invoked on.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetPageUrl() (ret string) {
 
@@ -6139,9 +6137,9 @@ func (self *CContextMenuParamsT) GetPageUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the URL of the subframe that the context menu was invoked on.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetFrameUrl() (ret string) {
 
@@ -6155,10 +6153,10 @@ func (self *CContextMenuParamsT) GetFrameUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the character encoding of the subframe that the context menu was
 // invoked on.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetFrameCharset() (ret string) {
 
@@ -6172,9 +6170,9 @@ func (self *CContextMenuParamsT) GetFrameCharset() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the type of context node that the context menu was invoked on.
-///
+// /
 func (self *CContextMenuParamsT) GetMediaType() (ret CContextMenuMediaTypeT) {
 
 	cRet := C.cefingo_context_menu_params_get_media_type((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6183,10 +6181,10 @@ func (self *CContextMenuParamsT) GetMediaType() (ret CContextMenuMediaTypeT) {
 	return ret
 }
 
-///
+// /
 // Returns flags representing the actions supported by the media element, if
 // any, that the context menu was invoked on.
-///
+// /
 func (self *CContextMenuParamsT) GetMediaStateFlags() (ret CContextMenuMediaStateFlagsT) {
 
 	cRet := C.cefingo_context_menu_params_get_media_state_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6195,10 +6193,10 @@ func (self *CContextMenuParamsT) GetMediaStateFlags() (ret CContextMenuMediaStat
 	return ret
 }
 
-///
+// /
 // Returns the text of the selection, if any, that the context menu was
 // invoked on.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetSelectionText() (ret string) {
 
@@ -6212,10 +6210,10 @@ func (self *CContextMenuParamsT) GetSelectionText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the text of the misspelled word, if any, that the context menu was
 // invoked on.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetMisspelledWord() (ret string) {
 
@@ -6229,11 +6227,11 @@ func (self *CContextMenuParamsT) GetMisspelledWord() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if suggestions exist, false (0) otherwise. Fills in
 // |suggestions| from the spell check service for the misspelled word if there
 // is one.
-///
+// /
 func (self *CContextMenuParamsT) GetDictionarySuggestions(
 	suggestions CStringListT,
 ) (ret bool) {
@@ -6244,9 +6242,9 @@ func (self *CContextMenuParamsT) GetDictionarySuggestions(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the context menu was invoked on an editable node.
-///
+// /
 func (self *CContextMenuParamsT) IsEditable() (ret bool) {
 
 	cRet := C.cefingo_context_menu_params_is_editable((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6255,10 +6253,10 @@ func (self *CContextMenuParamsT) IsEditable() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the context menu was invoked on an editable node where
 // spell-check is enabled.
-///
+// /
 func (self *CContextMenuParamsT) IsSpellCheckEnabled() (ret bool) {
 
 	cRet := C.cefingo_context_menu_params_is_spell_check_enabled((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6267,10 +6265,10 @@ func (self *CContextMenuParamsT) IsSpellCheckEnabled() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns flags representing the actions supported by the editable node, if
 // any, that the context menu was invoked on.
-///
+// /
 func (self *CContextMenuParamsT) GetEditStateFlags() (ret CContextMenuEditStateFlagsT) {
 
 	cRet := C.cefingo_context_menu_params_get_edit_state_flags((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6279,10 +6277,10 @@ func (self *CContextMenuParamsT) GetEditStateFlags() (ret CContextMenuEditStateF
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the context menu contains items specified by the
 // renderer process.
-///
+// /
 func (self *CContextMenuParamsT) IsCustomMenu() (ret bool) {
 
 	cRet := C.cefingo_context_menu_params_is_custom_menu((*C.cef_context_menu_params_t)(self.pc_context_menu_params))
@@ -6372,11 +6370,11 @@ func (cookie_manager *CCookieManagerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Visit all cookies on the UI thread. The returned cookies are ordered by
 // longest path, then by earliest creation date. Returns false (0) if cookies
 // cannot be accessed.
-///
+// /
 func (self *CCookieManagerT) VisitAllCookies(
 	visitor *CCookieVisitorT,
 ) (ret bool) {
@@ -6392,13 +6390,13 @@ func (self *CCookieManagerT) VisitAllCookies(
 	return ret
 }
 
-///
+// /
 // Visit a subset of cookies on the UI thread. The results are filtered by the
 // given url scheme, host, domain and path. If |includeHttpOnly| is true (1)
 // HTTP-only cookies will also be included in the results. The returned
 // cookies are ordered by longest path, then by earliest creation date.
 // Returns false (0) if cookies cannot be accessed.
-///
+// /
 func (self *CCookieManagerT) VisitUrlCookies(
 	url string,
 	includeHttpOnly int,
@@ -6417,7 +6415,7 @@ func (self *CCookieManagerT) VisitUrlCookies(
 	return ret
 }
 
-///
+// /
 // Sets a cookie given a valid URL and explicit user-provided cookie
 // attributes. This function expects each attribute to be well-formed. It will
 // check for disallowed characters (e.g. the &#39;;&#39; character is disallowed
@@ -6425,7 +6423,7 @@ func (self *CCookieManagerT) VisitUrlCookies(
 // such characters are found. If |callback| is non-NULL it will be executed
 // asnychronously on the UI thread after the cookie has been set. Returns
 // false (0) if an invalid URL is specified or if cookies cannot be accessed.
-///
+// /
 func (self *CCookieManagerT) SetCookie(
 	url string,
 	cookie *CCookieT,
@@ -6444,7 +6442,7 @@ func (self *CCookieManagerT) SetCookie(
 	return ret
 }
 
-///
+// /
 // Delete all cookies that match the specified parameters. If both |url| and
 // |cookie_name| values are specified all host and domain cookies matching
 // both will be deleted. If only |url| is specified all host cookies (but not
@@ -6454,7 +6452,7 @@ func (self *CCookieManagerT) SetCookie(
 // have been deleted. Returns false (0) if a non-NULL invalid URL is specified
 // or if cookies cannot be accessed. Cookies can alternately be deleted using
 // the Visit*Cookies() functions.
-///
+// /
 func (self *CCookieManagerT) DeleteCookies(
 	url string,
 	cookie_name string,
@@ -6474,11 +6472,11 @@ func (self *CCookieManagerT) DeleteCookies(
 	return ret
 }
 
-///
+// /
 // Flush the backing store (if any) to disk. If |callback| is non-NULL it will
 // be executed asnychronously on the UI thread after the flush is complete.
 // Returns false (0) if cookies cannot be accessed.
-///
+// /
 func (self *CCookieManagerT) FlushStore(
 	callback *CCompletionCallbackT,
 ) (ret bool) {
@@ -6494,14 +6492,14 @@ func (self *CCookieManagerT) FlushStore(
 	return ret
 }
 
-///
+// /
 // Returns the global cookie manager. By default data will be stored at
 // CefSettings.cache_path if specified or in memory otherwise. If |callback| is
 // non-NULL it will be executed asnychronously on the UI thread after the
 // manager's storage has been initialized. Using this function is equivalent to
 // calling cef_request_context_t::cef_request_context_get_global_context()->GetD
 // efaultCookieManager().
-///
+// /
 func CookieManagerGetGlobalManager(
 	callback *CCompletionCallbackT,
 ) (ret *CCookieManagerT) {
@@ -6596,13 +6594,13 @@ func (cookie_visitor *CCookieVisitorT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be called once for each cookie. |count| is the 0-based
 // index for the current cookie. |total| is the total number of cookies. Set
 // |deleteCookie| to true (1) to delete the cookie currently being visited.
 // Return false (0) to stop visiting cookies. This function may never be
 // called if no cookies are found.
-///
+// /
 type CCookieVisitorTVisitHandler interface {
 	Visit(
 		self *CCookieVisitorT,
@@ -6765,10 +6763,10 @@ func (set_cookie_callback *CSetCookieCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be called upon completion. |success| will be true (1) if
 // the cookie was set successfully.
-///
+// /
 type CSetCookieCallbackTOnCompleteHandler interface {
 	OnComplete(
 		self *CSetCookieCallbackT,
@@ -6929,10 +6927,10 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be called upon completion. |num_deleted| will be the
 // number of cookies that were deleted.
-///
+// /
 type CDeleteCookiesCallbackTOnCompleteHandler interface {
 	OnComplete(
 		self *CDeleteCookiesCallbackT,
@@ -7016,37 +7014,37 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Handler() interface{} {
 
 // cef_crash_util_capi.h, include/capi/cef_crash_util_capi.h:139:16,
 
-///
+// /
 // Crash reporting is configured using an INI-style config file named
 // "crash_reporter.cfg". On Windows and Linux this file must be placed next to
 // the main application executable. On macOS this file must be placed in the
 // top-level app bundle Resources directory (e.g.
 // "<appname>.app/Contents/Resources"). File contents are as follows:
 //
-//  # Comments start with a hash character and must be on their own line.
+//	# Comments start with a hash character and must be on their own line.
 //
-//  [Config]
-//  ProductName=<Value of the "prod" crash key; defaults to "cef">
-//  ProductVersion=<Value of the "ver" crash key; defaults to the CEF version>
-//  AppName=<Windows only; App-specific folder name component for storing crash
-//           information; default to "CEF">
-//  ExternalHandler=<Windows only; Name of the external handler exe to use
-//                   instead of re-launching the main exe; default to empty>
-//  BrowserCrashForwardingEnabled=<macOS only; True if browser process crashes
-//                                 should be forwarded to the system crash
-//                                 reporter; default to false>
-//  ServerURL=<crash server URL; default to empty>
-//  RateLimitEnabled=<True if uploads should be rate limited; default to true>
-//  MaxUploadsPerDay=<Max uploads per 24 hours, used if rate limit is enabled;
-//                    default to 5>
-//  MaxDatabaseSizeInMb=<Total crash report disk usage greater than this value
-//                       will cause older reports to be deleted; default to 20>
-//  MaxDatabaseAgeInDays=<Crash reports older than this value will be deleted;
-//                        default to 5>
+//	[Config]
+//	ProductName=<Value of the "prod" crash key; defaults to "cef">
+//	ProductVersion=<Value of the "ver" crash key; defaults to the CEF version>
+//	AppName=<Windows only; App-specific folder name component for storing crash
+//	         information; default to "CEF">
+//	ExternalHandler=<Windows only; Name of the external handler exe to use
+//	                 instead of re-launching the main exe; default to empty>
+//	BrowserCrashForwardingEnabled=<macOS only; True if browser process crashes
+//	                               should be forwarded to the system crash
+//	                               reporter; default to false>
+//	ServerURL=<crash server URL; default to empty>
+//	RateLimitEnabled=<True if uploads should be rate limited; default to true>
+//	MaxUploadsPerDay=<Max uploads per 24 hours, used if rate limit is enabled;
+//	                  default to 5>
+//	MaxDatabaseSizeInMb=<Total crash report disk usage greater than this value
+//	                     will cause older reports to be deleted; default to 20>
+//	MaxDatabaseAgeInDays=<Crash reports older than this value will be deleted;
+//	                      default to 5>
 //
-//  [CrashKeys]
-//  my_key1=<small|medium|large>
-//  my_key2=<small|medium|large>
+//	[CrashKeys]
+//	my_key1=<small|medium|large>
+//	my_key2=<small|medium|large>
 //
 // Config section:
 //
@@ -7087,6 +7085,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Handler() interface{} {
 //     "MaxUploadsPerDay" value will be reduced to 1 until the client is
 //     restarted. This helps to avoid an upload flood when the network or
 //     server error is resolved.
+//
 // Rate limiting is not supported on Linux.
 //
 // If "MaxDatabaseSizeInMb" is set to a positive value then crash report storage
@@ -7105,7 +7104,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Handler() interface{} {
 // crash keys can be set from any thread or process using the
 // CefSetCrashKeyValue function. These key/value pairs will be sent to the crash
 // server along with the crash dump file.
-///
+// /
 func CrashReportingEnabled() (ret bool) {
 
 	cRet := C.cef_crash_reporting_enabled()
@@ -7114,9 +7113,9 @@ func CrashReportingEnabled() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Sets or clears a specific key-value pair from the crash metadata.
-///
+// /
 func SetCrashKeyValue(
 	key string,
 	value string,
@@ -7209,7 +7208,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Unref() (ret bool) 
 	return ret
 }
 
-///
+// /
 // Method that will be called on receipt of a DevTools protocol message.
 // |browser| is the originating browser instance. |message| is a UTF8-encoded
 // JSON dictionary representing either a function result or an event.
@@ -7229,7 +7228,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Unref() (ret bool) 
 // dictionary contents. JSON dictionaries can be parsed using the CefParseJSON
 // function if desired, however be aware of performance considerations when
 // parsing large messages (some of which may exceed 1MB in size).
-///
+// /
 type OnDevToolsMessageHandler interface {
 	OnDevToolsMessage(
 		self *CDevToolsMessageObserverT,
@@ -7238,7 +7237,7 @@ type OnDevToolsMessageHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Method that will be called after attempted execution of a DevTools protocol
 // function. |browser| is the originating browser instance. |message_id| is
 // the &quot;id&quot; value that identifies the originating function call message. If
@@ -7249,7 +7248,7 @@ type OnDevToolsMessageHandler interface {
 // scope of this callback and should be copied if necessary. See the
 // OnDevToolsMessage documentation for additional details on |result|
 // contents.
-///
+// /
 type OnDevToolsMethodResultHandler interface {
 	OnDevToolsMethodResult(
 		self *CDevToolsMessageObserverT,
@@ -7260,14 +7259,14 @@ type OnDevToolsMethodResultHandler interface {
 	)
 }
 
-///
+// /
 // Method that will be called on receipt of a DevTools protocol event.
 // |browser| is the originating browser instance. |function| is the &quot;function&quot;
 // value. |params| is the UTF8-encoded JSON &quot;params&quot; dictionary value (which
 // may be NULL). |params| is only valid for the scope of this callback and
 // should be copied if necessary. See the OnDevToolsMessage documentation for
 // additional details on |params| contents.
-///
+// /
 type OnDevToolsEventHandler interface {
 	OnDevToolsEvent(
 		self *CDevToolsMessageObserverT,
@@ -7277,11 +7276,11 @@ type OnDevToolsEventHandler interface {
 	)
 }
 
-///
+// /
 // Method that will be called when the DevTools agent has attached. |browser|
 // is the originating browser instance. This will generally occur in response
 // to the first message sent while the agent is detached.
-///
+// /
 type OnDevToolsAgentAttachedHandler interface {
 	OnDevToolsAgentAttached(
 		self *CDevToolsMessageObserverT,
@@ -7289,12 +7288,12 @@ type OnDevToolsAgentAttachedHandler interface {
 	)
 }
 
-///
+// /
 // Method that will be called when the DevTools agent has detached. |browser|
 // is the originating browser instance. Any function results that were pending
 // before the agent became detached will not be delivered, and any active
 // event subscriptions will be canceled.
-///
+// /
 type OnDevToolsAgentDetachedHandler interface {
 	OnDevToolsAgentDetached(
 		self *CDevToolsMessageObserverT,
@@ -7416,7 +7415,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Handler() interface
 	return dev_tools_message_observer_handlers.handler[cp]
 }
 
-// cef_dialog_handler_capi.h, include/capi/cef_dialog_handler_capi.h:74:3,
+// cef_dialog_handler_capi.h, include/capi/cef_dialog_handler_capi.h:71:3,
 
 ///
 // Callback structure for asynchronous continuation of file dialog requests.
@@ -7496,25 +7495,22 @@ func (file_dialog_callback *CFileDialogCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
-// Continue the file selection. |selected_accept_filter| should be the 0-based
-// index of the value selected from the accept filters array passed to
-// cef_dialog_handler_t::OnFileDialog. |file_paths| should be a single value
-// or a list of values depending on the dialog mode. An NULL |file_paths|
-// value is treated the same as calling cancel().
-///
+// /
+// Continue the file selection. |file_paths| should be a single value or a
+// list of values depending on the dialog mode. An NULL |file_paths| value is
+// treated the same as calling cancel().
+// /
 func (self *CFileDialogCallbackT) Cont(
-	selected_accept_filter int,
 	file_paths CStringListT,
 ) {
 
-	C.cefingo_file_dialog_callback_cont((*C.cef_file_dialog_callback_t)(self.pc_file_dialog_callback), (C.int)(selected_accept_filter), (C.cef_string_list_t)(file_paths))
+	C.cefingo_file_dialog_callback_cont((*C.cef_file_dialog_callback_t)(self.pc_file_dialog_callback), (C.cef_string_list_t)(file_paths))
 
 }
 
-///
+// /
 // Cancel the file selection.
-///
+// /
 func (self *CFileDialogCallbackT) Cancel() {
 
 	C.cefingo_file_dialog_callback_cancel((*C.cef_file_dialog_callback_t)(self.pc_file_dialog_callback))
@@ -7600,7 +7596,7 @@ func (dialog_handler *CDialogHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called to run a file chooser dialog. |mode| represents the type of dialog
 // to display. |title| to the title to be used for the dialog and may be NULL
 // to show the default title (&quot;Open&quot; or &quot;Save&quot; depending on the mode).
@@ -7610,11 +7606,10 @@ func (dialog_handler *CDialogHandlerT) Unref() (ret bool) {
 // (a) valid lower-cased MIME types (e.g. &quot;text/*&quot; or &quot;image/*&quot;), (b)
 // individual file extensions (e.g. &quot;.txt&quot; or &quot;.png&quot;), or (c) combined
 // description and file extension delimited using &quot;|&quot; and &quot;;&quot; (e.g. &quot;Image
-// Types|.png;.gif;.jpg&quot;). |selected_accept_filter| is the 0-based index of
-// the filter that should be selected by default. To display a custom dialog
-// return true (1) and execute |callback| either inline or at a later time. To
-// display the default dialog return false (0).
-///
+// Types|.png;.gif;.jpg&quot;). To display a custom dialog return true (1) and
+// execute |callback| either inline or at a later time. To display the default
+// dialog return false (0).
+// /
 type OnFileDialogHandler interface {
 	OnFileDialog(
 		self *CDialogHandlerT,
@@ -7623,7 +7618,6 @@ type OnFileDialogHandler interface {
 		title string,
 		default_file_path string,
 		accept_filters CStringListT,
-		selected_accept_filter int,
 		callback *CFileDialogCallbackT,
 	) (ret bool)
 }
@@ -7787,9 +7781,9 @@ func (display *CDisplayT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the unique identifier for this Display.
-///
+// /
 func (self *CDisplayT) GetId() (ret int64) {
 
 	cRet := C.cefingo_display_get_id((*C.cef_display_t)(self.pc_display))
@@ -7798,12 +7792,12 @@ func (self *CDisplayT) GetId() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns this Display&#39;s device pixel scale factor. This specifies how much
 // the UI should be scaled when the actual output has more pixels than
 // standard displays (which is around 100~120dpi). The potential return values
 // differ by platform.
-///
+// /
 func (self *CDisplayT) GetDeviceScaleFactor() (ret float32) {
 
 	cRet := C.cefingo_display_get_device_scale_factor((*C.cef_display_t)(self.pc_display))
@@ -7812,10 +7806,10 @@ func (self *CDisplayT) GetDeviceScaleFactor() (ret float32) {
 	return ret
 }
 
-///
+// /
 // Convert |point| from DIP coordinates to pixel coordinates using this
 // Display&#39;s device scale factor.
-///
+// /
 func (self *CDisplayT) ConvertPointToPixels(
 	point *CPointT,
 ) {
@@ -7824,10 +7818,10 @@ func (self *CDisplayT) ConvertPointToPixels(
 
 }
 
-///
+// /
 // Convert |point| from pixel coordinates to DIP coordinates using this
 // Display&#39;s device scale factor.
-///
+// /
 func (self *CDisplayT) ConvertPointFromPixels(
 	point *CPointT,
 ) {
@@ -7836,10 +7830,10 @@ func (self *CDisplayT) ConvertPointFromPixels(
 
 }
 
-///
+// /
 // Returns this Display&#39;s bounds in DIP screen coordinates. This is the full
 // size of the display.
-///
+// /
 func (self *CDisplayT) GetBounds() (ret CRectT) {
 
 	cRet := C.cefingo_display_get_bounds((*C.cef_display_t)(self.pc_display))
@@ -7848,10 +7842,10 @@ func (self *CDisplayT) GetBounds() (ret CRectT) {
 	return ret
 }
 
-///
+// /
 // Returns this Display&#39;s work area in DIP screen coordinates. This excludes
 // areas of the display that are occupied with window manager toolbars, etc.
-///
+// /
 func (self *CDisplayT) GetWorkArea() (ret CRectT) {
 
 	cRet := C.cefingo_display_get_work_area((*C.cef_display_t)(self.pc_display))
@@ -7860,9 +7854,9 @@ func (self *CDisplayT) GetWorkArea() (ret CRectT) {
 	return ret
 }
 
-///
+// /
 // Returns this Display&#39;s rotation in degrees.
-///
+// /
 func (self *CDisplayT) GetRotation() (ret bool) {
 
 	cRet := C.cefingo_display_get_rotation((*C.cef_display_t)(self.pc_display))
@@ -7871,9 +7865,9 @@ func (self *CDisplayT) GetRotation() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the primary Display.
-///
+// /
 func DisplayGetPrimary() (ret *CDisplayT) {
 
 	cRet := C.cef_display_get_primary()
@@ -7882,10 +7876,10 @@ func DisplayGetPrimary() (ret *CDisplayT) {
 	return ret
 }
 
-///
+// /
 // Returns the Display nearest |point|. Set |input_pixel_coords| to true (1) if
 // |point| is in pixel screen coordinates instead of DIP screen coordinates.
-///
+// /
 func DisplayGetNearestPoint(
 	point *CPointT,
 	input_pixel_coords int,
@@ -7897,11 +7891,11 @@ func DisplayGetNearestPoint(
 	return ret
 }
 
-///
+// /
 // Returns the Display that most closely intersects |bounds|.  Set
 // |input_pixel_coords| to true (1) if |bounds| is in pixel screen coordinates
 // instead of DIP screen coordinates.
-///
+// /
 func DisplayGetMatchingBounds(
 	bounds *CRectT,
 	input_pixel_coords int,
@@ -7913,10 +7907,10 @@ func DisplayGetMatchingBounds(
 	return ret
 }
 
-///
+// /
 // Returns the total number of Displays. Mirrored displays are excluded; this
 // function is intended to return the number of distinct, usable displays.
-///
+// /
 func DisplayGetCount() (ret int64) {
 
 	cRet := C.cef_display_get_count()
@@ -7925,10 +7919,10 @@ func DisplayGetCount() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns all Displays. Mirrored displays are excluded; this function is
 // intended to return distinct, usable displays.
-///
+// /
 func DisplayGetAlls() (displays []*CDisplayT) {
 	_displaysCount := C.size_t(DisplayGetCount()) // =SizeFunc ::cef_display_get_alls:displays
 	if _displaysCount == 0 {
@@ -8029,9 +8023,9 @@ func (display_handler *CDisplayHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called when a frame&#39;s address has changed.
-///
+// /
 type OnAddressChangeHandler interface {
 	OnAddressChange(
 		self *CDisplayHandlerT,
@@ -8041,9 +8035,9 @@ type OnAddressChangeHandler interface {
 	)
 }
 
-///
+// /
 // Called when the page title changes.
-///
+// /
 type OnTitleChangeHandler interface {
 	OnTitleChange(
 		self *CDisplayHandlerT,
@@ -8052,9 +8046,9 @@ type OnTitleChangeHandler interface {
 	)
 }
 
-///
+// /
 // Called when the page icon changes.
-///
+// /
 type OnFaviconUrlchangeHandler interface {
 	OnFaviconUrlchange(
 		self *CDisplayHandlerT,
@@ -8063,13 +8057,13 @@ type OnFaviconUrlchangeHandler interface {
 	)
 }
 
-///
+// /
 // Called when web content in the page has toggled fullscreen mode. If
 // |fullscreen| is true (1) the content will automatically be sized to fill
 // the browser content area. If |fullscreen| is false (0) the content will
 // automatically return to its original size and position. The client is
 // responsible for resizing the browser if desired.
-///
+// /
 type OnFullscreenModeChangeHandler interface {
 	OnFullscreenModeChange(
 		self *CDisplayHandlerT,
@@ -8078,14 +8072,14 @@ type OnFullscreenModeChangeHandler interface {
 	)
 }
 
-///
+// /
 // Called when the browser is about to display a tooltip. |text| contains the
 // text that will be displayed in the tooltip. To handle the display of the
 // tooltip yourself return true (1). Otherwise, you can optionally modify
 // |text| and then return false (0) to allow the browser to display the
 // tooltip. When window rendering is disabled the application is responsible
 // for drawing tooltips and the return value is ignored.
-///
+// /
 type OnTooltipHandler interface {
 	OnTooltip(
 		self *CDisplayHandlerT,
@@ -8094,10 +8088,10 @@ type OnTooltipHandler interface {
 	) (ret bool, textOut string)
 }
 
-///
+// /
 // Called when the browser receives a status message. |value| contains the
 // text that will be displayed in the status message.
-///
+// /
 type OnStatusMessageHandler interface {
 	OnStatusMessage(
 		self *CDisplayHandlerT,
@@ -8106,10 +8100,10 @@ type OnStatusMessageHandler interface {
 	)
 }
 
-///
+// /
 // Called to display a console message. Return true (1) to stop the message
 // from being output to the console.
-///
+// /
 type OnConsoleMessageHandler interface {
 	OnConsoleMessage(
 		self *CDisplayHandlerT,
@@ -8121,12 +8115,12 @@ type OnConsoleMessageHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called when auto-resize is enabled via
 // cef_browser_host_t::SetAutoResizeEnabled and the contents have auto-
 // resized. |new_size| will be the desired size in view coordinates. Return
 // true (1) if the resize was handled or false (0) for default handling.
-///
+// /
 type OnAutoResizeHandler interface {
 	OnAutoResize(
 		self *CDisplayHandlerT,
@@ -8135,10 +8129,10 @@ type OnAutoResizeHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called when the overall page loading progress has changed. |progress|
 // ranges from 0.0 to 1.0.
-///
+// /
 type OnLoadingProgressChangeHandler interface {
 	OnLoadingProgressChange(
 		self *CDisplayHandlerT,
@@ -8147,12 +8141,12 @@ type OnLoadingProgressChangeHandler interface {
 	)
 }
 
-///
+// /
 // Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
 // |custom_cursor_info| will be populated with the custom cursor information.
 // Return true (1) if the cursor change was handled or false (0) for default
 // handling.
-///
+// /
 type OnCursorChangeHandler interface {
 	OnCursorChange(
 		self *CDisplayHandlerT,
@@ -8408,13 +8402,13 @@ func (domvisitor *CDomvisitorT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method executed for visiting the DOM. The document object passed to this
 // function represents a snapshot of the DOM at the time this function is
 // executed. DOM objects are only valid for the scope of this function. Do not
 // keep references to or attempt to access any DOM objects outside the scope
 // of this function.
-///
+// /
 type CDomvisitorTVisitHandler interface {
 	Visit(
 		self *CDomvisitorT,
@@ -8575,9 +8569,9 @@ func (domdocument *CDomdocumentT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the document type.
-///
+// /
 func (self *CDomdocumentT) GetType() (ret CDomDocumentTypeT) {
 
 	cRet := C.cefingo_domdocument_get_type((*C.cef_domdocument_t)(self.pc_domdocument))
@@ -8586,9 +8580,9 @@ func (self *CDomdocumentT) GetType() (ret CDomDocumentTypeT) {
 	return ret
 }
 
-///
+// /
 // Returns the root document node.
-///
+// /
 func (self *CDomdocumentT) GetDocument() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domdocument_get_document((*C.cef_domdocument_t)(self.pc_domdocument))
@@ -8597,9 +8591,9 @@ func (self *CDomdocumentT) GetDocument() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns the BODY node of an HTML document.
-///
+// /
 func (self *CDomdocumentT) GetBody() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domdocument_get_body((*C.cef_domdocument_t)(self.pc_domdocument))
@@ -8608,9 +8602,9 @@ func (self *CDomdocumentT) GetBody() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns the HEAD node of an HTML document.
-///
+// /
 func (self *CDomdocumentT) GetHead() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domdocument_get_head((*C.cef_domdocument_t)(self.pc_domdocument))
@@ -8619,9 +8613,9 @@ func (self *CDomdocumentT) GetHead() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns the title of an HTML document.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetTitle() (ret string) {
 
@@ -8635,9 +8629,9 @@ func (self *CDomdocumentT) GetTitle() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the document element with the specified ID value.
-///
+// /
 func (self *CDomdocumentT) GetElementById(
 	id string,
 ) (ret *CDomnodeT) {
@@ -8649,9 +8643,9 @@ func (self *CDomdocumentT) GetElementById(
 	return ret
 }
 
-///
+// /
 // Returns the node that currently has keyboard focus.
-///
+// /
 func (self *CDomdocumentT) GetFocusedNode() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domdocument_get_focused_node((*C.cef_domdocument_t)(self.pc_domdocument))
@@ -8660,9 +8654,9 @@ func (self *CDomdocumentT) GetFocusedNode() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if a portion of the document is selected.
-///
+// /
 func (self *CDomdocumentT) HasSelection() (ret bool) {
 
 	cRet := C.cefingo_domdocument_has_selection((*C.cef_domdocument_t)(self.pc_domdocument))
@@ -8671,9 +8665,9 @@ func (self *CDomdocumentT) HasSelection() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the selection offset within the start node.
-///
+// /
 func (self *CDomdocumentT) GetSelectionStartOffset() (ret bool) {
 
 	cRet := C.cefingo_domdocument_get_selection_start_offset((*C.cef_domdocument_t)(self.pc_domdocument))
@@ -8682,9 +8676,9 @@ func (self *CDomdocumentT) GetSelectionStartOffset() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the selection offset within the end node.
-///
+// /
 func (self *CDomdocumentT) GetSelectionEndOffset() (ret bool) {
 
 	cRet := C.cefingo_domdocument_get_selection_end_offset((*C.cef_domdocument_t)(self.pc_domdocument))
@@ -8693,9 +8687,9 @@ func (self *CDomdocumentT) GetSelectionEndOffset() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the contents of this selection as markup.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetSelectionAsMarkup() (ret string) {
 
@@ -8709,9 +8703,9 @@ func (self *CDomdocumentT) GetSelectionAsMarkup() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the contents of this selection as text.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetSelectionAsText() (ret string) {
 
@@ -8725,9 +8719,9 @@ func (self *CDomdocumentT) GetSelectionAsText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the base URL for the document.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetBaseUrl() (ret string) {
 
@@ -8741,10 +8735,10 @@ func (self *CDomdocumentT) GetBaseUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns a complete URL based on the document base URL and the specified
 // partial URL.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetCompleteUrl(
 	partialURL string,
@@ -8840,9 +8834,9 @@ func (domnode *CDomnodeT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the type for this node.
-///
+// /
 func (self *CDomnodeT) GetType() (ret CDomNodeTypeT) {
 
 	cRet := C.cefingo_domnode_get_type((*C.cef_domnode_t)(self.pc_domnode))
@@ -8851,9 +8845,9 @@ func (self *CDomnodeT) GetType() (ret CDomNodeTypeT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this is a text node.
-///
+// /
 func (self *CDomnodeT) IsText() (ret bool) {
 
 	cRet := C.cefingo_domnode_is_text((*C.cef_domnode_t)(self.pc_domnode))
@@ -8862,9 +8856,9 @@ func (self *CDomnodeT) IsText() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this is an element node.
-///
+// /
 func (self *CDomnodeT) IsElement() (ret bool) {
 
 	cRet := C.cefingo_domnode_is_element((*C.cef_domnode_t)(self.pc_domnode))
@@ -8873,9 +8867,9 @@ func (self *CDomnodeT) IsElement() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this is an editable node.
-///
+// /
 func (self *CDomnodeT) IsEditable() (ret bool) {
 
 	cRet := C.cefingo_domnode_is_editable((*C.cef_domnode_t)(self.pc_domnode))
@@ -8884,9 +8878,9 @@ func (self *CDomnodeT) IsEditable() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this is a form control element node.
-///
+// /
 func (self *CDomnodeT) IsFormControlElement() (ret bool) {
 
 	cRet := C.cefingo_domnode_is_form_control_element((*C.cef_domnode_t)(self.pc_domnode))
@@ -8895,9 +8889,9 @@ func (self *CDomnodeT) IsFormControlElement() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the type of this form control element node.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetFormControlElementType() (ret string) {
 
@@ -8911,10 +8905,10 @@ func (self *CDomnodeT) GetFormControlElementType() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is pointing to the same handle as |that|
 // object.
-///
+// /
 func (self *CDomnodeT) IsSame(
 	that *CDomnodeT,
 ) (ret bool) {
@@ -8930,9 +8924,9 @@ func (self *CDomnodeT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns the name of this node.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetName() (ret string) {
 
@@ -8946,9 +8940,9 @@ func (self *CDomnodeT) GetName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the value of this node.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetValue() (ret string) {
 
@@ -8962,9 +8956,9 @@ func (self *CDomnodeT) GetValue() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the value of this node. Returns true (1) on success.
-///
+// /
 func (self *CDomnodeT) SetValue(
 	value string,
 ) (ret bool) {
@@ -8976,9 +8970,9 @@ func (self *CDomnodeT) SetValue(
 	return ret
 }
 
-///
+// /
 // Returns the contents of this node as markup.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetAsMarkup() (ret string) {
 
@@ -8992,9 +8986,9 @@ func (self *CDomnodeT) GetAsMarkup() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the document associated with this node.
-///
+// /
 func (self *CDomnodeT) GetDocument() (ret *CDomdocumentT) {
 
 	cRet := C.cefingo_domnode_get_document((*C.cef_domnode_t)(self.pc_domnode))
@@ -9003,9 +8997,9 @@ func (self *CDomnodeT) GetDocument() (ret *CDomdocumentT) {
 	return ret
 }
 
-///
+// /
 // Returns the parent node.
-///
+// /
 func (self *CDomnodeT) GetParent() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_parent((*C.cef_domnode_t)(self.pc_domnode))
@@ -9014,9 +9008,9 @@ func (self *CDomnodeT) GetParent() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns the previous sibling node.
-///
+// /
 func (self *CDomnodeT) GetPreviousSibling() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_previous_sibling((*C.cef_domnode_t)(self.pc_domnode))
@@ -9025,9 +9019,9 @@ func (self *CDomnodeT) GetPreviousSibling() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns the next sibling node.
-///
+// /
 func (self *CDomnodeT) GetNextSibling() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_next_sibling((*C.cef_domnode_t)(self.pc_domnode))
@@ -9036,9 +9030,9 @@ func (self *CDomnodeT) GetNextSibling() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this node has child nodes.
-///
+// /
 func (self *CDomnodeT) HasChildren() (ret bool) {
 
 	cRet := C.cefingo_domnode_has_children((*C.cef_domnode_t)(self.pc_domnode))
@@ -9047,9 +9041,9 @@ func (self *CDomnodeT) HasChildren() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Return the first child node.
-///
+// /
 func (self *CDomnodeT) GetFirstChild() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_first_child((*C.cef_domnode_t)(self.pc_domnode))
@@ -9058,9 +9052,9 @@ func (self *CDomnodeT) GetFirstChild() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns the last child node.
-///
+// /
 func (self *CDomnodeT) GetLastChild() (ret *CDomnodeT) {
 
 	cRet := C.cefingo_domnode_get_last_child((*C.cef_domnode_t)(self.pc_domnode))
@@ -9069,9 +9063,9 @@ func (self *CDomnodeT) GetLastChild() (ret *CDomnodeT) {
 	return ret
 }
 
-///
+// /
 // Returns the tag name of this element.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetElementTagName() (ret string) {
 
@@ -9085,9 +9079,9 @@ func (self *CDomnodeT) GetElementTagName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this element has attributes.
-///
+// /
 func (self *CDomnodeT) HasElementAttributes() (ret bool) {
 
 	cRet := C.cefingo_domnode_has_element_attributes((*C.cef_domnode_t)(self.pc_domnode))
@@ -9096,9 +9090,9 @@ func (self *CDomnodeT) HasElementAttributes() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this element has an attribute named |attrName|.
-///
+// /
 func (self *CDomnodeT) HasElementAttribute(
 	attrName string,
 ) (ret bool) {
@@ -9110,9 +9104,9 @@ func (self *CDomnodeT) HasElementAttribute(
 	return ret
 }
 
-///
+// /
 // Returns the element attribute named |attrName|.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetElementAttribute(
 	attrName string,
@@ -9129,9 +9123,9 @@ func (self *CDomnodeT) GetElementAttribute(
 	return ret
 }
 
-///
+// /
 // Returns a map of all element attributes.
-///
+// /
 func (self *CDomnodeT) GetElementAttributes(
 	attrMap CStringMapT,
 ) {
@@ -9140,10 +9134,10 @@ func (self *CDomnodeT) GetElementAttributes(
 
 }
 
-///
+// /
 // Set the value for the element attribute named |attrName|. Returns true (1)
 // on success.
-///
+// /
 func (self *CDomnodeT) SetElementAttribute(
 	attrName string,
 	value string,
@@ -9157,9 +9151,9 @@ func (self *CDomnodeT) SetElementAttribute(
 	return ret
 }
 
-///
+// /
 // Returns the inner text of the element.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetElementInnerText() (ret string) {
 
@@ -9173,9 +9167,9 @@ func (self *CDomnodeT) GetElementInnerText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the bounds of the element.
-///
+// /
 func (self *CDomnodeT) GetElementBounds() (ret CRectT) {
 
 	cRet := C.cefingo_domnode_get_element_bounds((*C.cef_domnode_t)(self.pc_domnode))
@@ -9264,12 +9258,12 @@ func (before_download_callback *CBeforeDownloadCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Call to continue the download. Set |download_path| to the full file path
 // for the download including the file name or leave blank to use the
 // suggested name and the default temp directory. Set |show_dialog| to true
 // (1) if you do wish to show the default &quot;Save As&quot; dialog.
-///
+// /
 func (self *CBeforeDownloadCallbackT) Cont(
 	download_path string,
 	show_dialog int,
@@ -9358,27 +9352,27 @@ func (download_item_callback *CDownloadItemCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Call to cancel the download.
-///
+// /
 func (self *CDownloadItemCallbackT) Cancel() {
 
 	C.cefingo_download_item_callback_cancel((*C.cef_download_item_callback_t)(self.pc_download_item_callback))
 
 }
 
-///
+// /
 // Call to pause the download.
-///
+// /
 func (self *CDownloadItemCallbackT) Pause() {
 
 	C.cefingo_download_item_callback_pause((*C.cef_download_item_callback_t)(self.pc_download_item_callback))
 
 }
 
-///
+// /
 // Call to resume the download.
-///
+// /
 func (self *CDownloadItemCallbackT) Resume() {
 
 	C.cefingo_download_item_callback_resume((*C.cef_download_item_callback_t)(self.pc_download_item_callback))
@@ -9464,13 +9458,13 @@ func (download_handler *CDownloadHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called before a download begins in response to a user-initiated action
 // (e.g. alt + link click or link click that returns a `Content-Disposition:
 // attachment` response from the server). |url| is the target download URL and
 // |request_function| is the target function (GET, POST, etc). Return true (1)
 // to proceed with the download or false (0) to cancel the download.
-///
+// /
 type CanDownloadHandler interface {
 	CanDownload(
 		self *CDownloadHandlerT,
@@ -9480,13 +9474,13 @@ type CanDownloadHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called before a download begins. |suggested_name| is the suggested name for
 // the download file. By default the download will be canceled. Execute
 // |callback| either asynchronously or in this function to continue the
 // download if desired. Do not keep a reference to |download_item| outside of
 // this function.
-///
+// /
 type OnBeforeDownloadHandler interface {
 	OnBeforeDownload(
 		self *CDownloadHandlerT,
@@ -9497,13 +9491,13 @@ type OnBeforeDownloadHandler interface {
 	)
 }
 
-///
+// /
 // Called when a download&#39;s status or progress information has been updated.
 // This may be called multiple times before and after on_before_download().
 // Execute |callback| either asynchronously or in this function to cancel the
 // download if desired. Do not keep a reference to |download_item| outside of
 // this function.
-///
+// /
 type OnDownloadUpdatedHandler interface {
 	OnDownloadUpdated(
 		self *CDownloadHandlerT,
@@ -9687,10 +9681,10 @@ func (download_item *CDownloadItemT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid. Do not call any other functions
 // if this function returns false (0).
-///
+// /
 func (self *CDownloadItemT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_download_item_is_valid((*C.cef_download_item_t)(self.pc_download_item))
@@ -9699,9 +9693,9 @@ func (self *CDownloadItemT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the download is in progress.
-///
+// /
 func (self *CDownloadItemT) IsInProgress() (ret bool) {
 
 	cRet := C.cefingo_download_item_is_in_progress((*C.cef_download_item_t)(self.pc_download_item))
@@ -9710,9 +9704,9 @@ func (self *CDownloadItemT) IsInProgress() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the download is complete.
-///
+// /
 func (self *CDownloadItemT) IsComplete() (ret bool) {
 
 	cRet := C.cefingo_download_item_is_complete((*C.cef_download_item_t)(self.pc_download_item))
@@ -9721,9 +9715,9 @@ func (self *CDownloadItemT) IsComplete() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the download has been canceled or interrupted.
-///
+// /
 func (self *CDownloadItemT) IsCanceled() (ret bool) {
 
 	cRet := C.cefingo_download_item_is_canceled((*C.cef_download_item_t)(self.pc_download_item))
@@ -9732,9 +9726,9 @@ func (self *CDownloadItemT) IsCanceled() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns a simple speed estimate in bytes/s.
-///
+// /
 func (self *CDownloadItemT) GetCurrentSpeed() (ret int64) {
 
 	cRet := C.cefingo_download_item_get_current_speed((*C.cef_download_item_t)(self.pc_download_item))
@@ -9743,10 +9737,10 @@ func (self *CDownloadItemT) GetCurrentSpeed() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns the rough percent complete or -1 if the receive total size is
 // unknown.
-///
+// /
 func (self *CDownloadItemT) GetPercentComplete() (ret bool) {
 
 	cRet := C.cefingo_download_item_get_percent_complete((*C.cef_download_item_t)(self.pc_download_item))
@@ -9755,9 +9749,9 @@ func (self *CDownloadItemT) GetPercentComplete() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the total number of bytes.
-///
+// /
 func (self *CDownloadItemT) GetTotalBytes() (ret int64) {
 
 	cRet := C.cefingo_download_item_get_total_bytes((*C.cef_download_item_t)(self.pc_download_item))
@@ -9766,9 +9760,9 @@ func (self *CDownloadItemT) GetTotalBytes() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns the number of received bytes.
-///
+// /
 func (self *CDownloadItemT) GetReceivedBytes() (ret int64) {
 
 	cRet := C.cefingo_download_item_get_received_bytes((*C.cef_download_item_t)(self.pc_download_item))
@@ -9777,9 +9771,9 @@ func (self *CDownloadItemT) GetReceivedBytes() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns the time that the download started.
-///
+// /
 func (self *CDownloadItemT) GetStartTime() (ret CTimeT) {
 
 	cRet := C.cefingo_download_item_get_start_time((*C.cef_download_item_t)(self.pc_download_item))
@@ -9788,9 +9782,9 @@ func (self *CDownloadItemT) GetStartTime() (ret CTimeT) {
 	return ret
 }
 
-///
+// /
 // Returns the time that the download ended.
-///
+// /
 func (self *CDownloadItemT) GetEndTime() (ret CTimeT) {
 
 	cRet := C.cefingo_download_item_get_end_time((*C.cef_download_item_t)(self.pc_download_item))
@@ -9799,9 +9793,9 @@ func (self *CDownloadItemT) GetEndTime() (ret CTimeT) {
 	return ret
 }
 
-///
+// /
 // Returns the full path to the downloaded or downloading file.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetFullPath() (ret string) {
 
@@ -9815,9 +9809,9 @@ func (self *CDownloadItemT) GetFullPath() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the unique identifier for this download.
-///
+// /
 func (self *CDownloadItemT) GetId() (ret uint32) {
 
 	cRet := C.cefingo_download_item_get_id((*C.cef_download_item_t)(self.pc_download_item))
@@ -9826,9 +9820,9 @@ func (self *CDownloadItemT) GetId() (ret uint32) {
 	return ret
 }
 
-///
+// /
 // Returns the URL.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetUrl() (ret string) {
 
@@ -9842,9 +9836,9 @@ func (self *CDownloadItemT) GetUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the original URL before any redirections.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetOriginalUrl() (ret string) {
 
@@ -9858,9 +9852,9 @@ func (self *CDownloadItemT) GetOriginalUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the suggested file name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetSuggestedFileName() (ret string) {
 
@@ -9874,9 +9868,9 @@ func (self *CDownloadItemT) GetSuggestedFileName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the content disposition.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetContentDisposition() (ret string) {
 
@@ -9890,9 +9884,9 @@ func (self *CDownloadItemT) GetContentDisposition() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the mime type.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetMimeType() (ret string) {
 
@@ -9987,9 +9981,9 @@ func (drag_data *CDragDataT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns a copy of the current object.
-///
+// /
 func (self *CDragDataT) Clone() (ret *CDragDataT) {
 
 	cRet := C.cefingo_drag_data_clone((*C.cef_drag_data_t)(self.pc_drag_data))
@@ -9998,9 +9992,9 @@ func (self *CDragDataT) Clone() (ret *CDragDataT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is read-only.
-///
+// /
 func (self *CDragDataT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_drag_data_is_read_only((*C.cef_drag_data_t)(self.pc_drag_data))
@@ -10009,9 +10003,9 @@ func (self *CDragDataT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the drag data is a link.
-///
+// /
 func (self *CDragDataT) IsLink() (ret bool) {
 
 	cRet := C.cefingo_drag_data_is_link((*C.cef_drag_data_t)(self.pc_drag_data))
@@ -10020,9 +10014,9 @@ func (self *CDragDataT) IsLink() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the drag data is a text or html fragment.
-///
+// /
 func (self *CDragDataT) IsFragment() (ret bool) {
 
 	cRet := C.cefingo_drag_data_is_fragment((*C.cef_drag_data_t)(self.pc_drag_data))
@@ -10031,9 +10025,9 @@ func (self *CDragDataT) IsFragment() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the drag data is a file.
-///
+// /
 func (self *CDragDataT) IsFile() (ret bool) {
 
 	cRet := C.cefingo_drag_data_is_file((*C.cef_drag_data_t)(self.pc_drag_data))
@@ -10042,9 +10036,9 @@ func (self *CDragDataT) IsFile() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Return the link URL that is being dragged.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkUrl() (ret string) {
 
@@ -10058,9 +10052,9 @@ func (self *CDragDataT) GetLinkUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Return the title associated with the link being dragged.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkTitle() (ret string) {
 
@@ -10074,9 +10068,9 @@ func (self *CDragDataT) GetLinkTitle() (ret string) {
 	return ret
 }
 
-///
+// /
 // Return the metadata, if any, associated with the link being dragged.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkMetadata() (ret string) {
 
@@ -10090,9 +10084,9 @@ func (self *CDragDataT) GetLinkMetadata() (ret string) {
 	return ret
 }
 
-///
+// /
 // Return the plain text fragment that is being dragged.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentText() (ret string) {
 
@@ -10106,9 +10100,9 @@ func (self *CDragDataT) GetFragmentText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Return the text/html fragment that is being dragged.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentHtml() (ret string) {
 
@@ -10122,10 +10116,10 @@ func (self *CDragDataT) GetFragmentHtml() (ret string) {
 	return ret
 }
 
-///
+// /
 // Return the base URL that the fragment came from. This value is used for
 // resolving relative URLs and may be NULL.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentBaseUrl() (ret string) {
 
@@ -10139,9 +10133,9 @@ func (self *CDragDataT) GetFragmentBaseUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Return the name of the file being dragged out of the browser window.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFileName() (ret string) {
 
@@ -10155,12 +10149,12 @@ func (self *CDragDataT) GetFileName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Write the contents of the file being dragged out of the web view into
 // |writer|. Returns the number of bytes sent to |writer|. If |writer| is NULL
 // this function will return the size of the file contents in bytes. Call
 // get_file_name() to get a suggested name for the file.
-///
+// /
 func (self *CDragDataT) GetFileContents(
 	writer *CStreamWriterT,
 ) (ret int64) {
@@ -10176,10 +10170,10 @@ func (self *CDragDataT) GetFileContents(
 	return ret
 }
 
-///
+// /
 // Retrieve the list of file names that are being dragged into the browser
 // window.
-///
+// /
 func (self *CDragDataT) GetFileNames(
 	names CStringListT,
 ) (ret bool) {
@@ -10190,9 +10184,9 @@ func (self *CDragDataT) GetFileNames(
 	return ret
 }
 
-///
+// /
 // Set the link URL that is being dragged.
-///
+// /
 func (self *CDragDataT) SetLinkUrl(
 	url string,
 ) {
@@ -10202,9 +10196,9 @@ func (self *CDragDataT) SetLinkUrl(
 
 }
 
-///
+// /
 // Set the title associated with the link being dragged.
-///
+// /
 func (self *CDragDataT) SetLinkTitle(
 	title string,
 ) {
@@ -10214,9 +10208,9 @@ func (self *CDragDataT) SetLinkTitle(
 
 }
 
-///
+// /
 // Set the metadata associated with the link being dragged.
-///
+// /
 func (self *CDragDataT) SetLinkMetadata(
 	data string,
 ) {
@@ -10226,9 +10220,9 @@ func (self *CDragDataT) SetLinkMetadata(
 
 }
 
-///
+// /
 // Set the plain text fragment that is being dragged.
-///
+// /
 func (self *CDragDataT) SetFragmentText(
 	text string,
 ) {
@@ -10238,9 +10232,9 @@ func (self *CDragDataT) SetFragmentText(
 
 }
 
-///
+// /
 // Set the text/html fragment that is being dragged.
-///
+// /
 func (self *CDragDataT) SetFragmentHtml(
 	html string,
 ) {
@@ -10250,9 +10244,9 @@ func (self *CDragDataT) SetFragmentHtml(
 
 }
 
-///
+// /
 // Set the base URL that the fragment came from.
-///
+// /
 func (self *CDragDataT) SetFragmentBaseUrl(
 	base_url string,
 ) {
@@ -10262,20 +10256,20 @@ func (self *CDragDataT) SetFragmentBaseUrl(
 
 }
 
-///
+// /
 // Reset the file contents. You should do this before calling
 // cef_browser_host_t::DragTargetDragEnter as the web view does not allow us
 // to drag in this kind of data.
-///
+// /
 func (self *CDragDataT) ResetFileContents() {
 
 	C.cefingo_drag_data_reset_file_contents((*C.cef_drag_data_t)(self.pc_drag_data))
 
 }
 
-///
+// /
 // Add a file that is being dragged into the webview.
-///
+// /
 func (self *CDragDataT) AddFile(
 	path string,
 	display_name string,
@@ -10287,19 +10281,19 @@ func (self *CDragDataT) AddFile(
 
 }
 
-///
+// /
 // Clear list of filenames.
-///
+// /
 func (self *CDragDataT) ClearFilenames() {
 
 	C.cefingo_drag_data_clear_filenames((*C.cef_drag_data_t)(self.pc_drag_data))
 
 }
 
-///
+// /
 // Get the image representation of drag data. May return NULL if no image
 // representation is available.
-///
+// /
 func (self *CDragDataT) GetImage() (ret *CImageT) {
 
 	cRet := C.cefingo_drag_data_get_image((*C.cef_drag_data_t)(self.pc_drag_data))
@@ -10308,9 +10302,9 @@ func (self *CDragDataT) GetImage() (ret *CImageT) {
 	return ret
 }
 
-///
+// /
 // Get the image hotspot (drag start location relative to image dimensions).
-///
+// /
 func (self *CDragDataT) GetImageHotspot() (ret CPointT) {
 
 	cRet := C.cefingo_drag_data_get_image_hotspot((*C.cef_drag_data_t)(self.pc_drag_data))
@@ -10319,9 +10313,9 @@ func (self *CDragDataT) GetImageHotspot() (ret CPointT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if an image representation of drag data is available.
-///
+// /
 func (self *CDragDataT) HasImage() (ret bool) {
 
 	cRet := C.cefingo_drag_data_has_image((*C.cef_drag_data_t)(self.pc_drag_data))
@@ -10330,9 +10324,9 @@ func (self *CDragDataT) HasImage() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Create a new cef_drag_data_t object.
-///
+// /
 func DragDataCreate() (ret *CDragDataT) {
 
 	cRet := C.cef_drag_data_create()
@@ -10422,12 +10416,12 @@ func (drag_handler *CDragHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called when an external drag event enters the browser window. |dragData|
 // contains the drag event data and |mask| represents the type of drag
 // operation. Return false (0) for default drag handling behavior or true (1)
 // to cancel the drag event.
-///
+// /
 type OnDragEnterHandler interface {
 	OnDragEnter(
 		self *CDragHandlerT,
@@ -10437,13 +10431,13 @@ type OnDragEnterHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called whenever draggable regions for the browser window change. These can
 // be specified using the &#39;-webkit-app-region: drag/no-drag&#39; CSS-property. If
 // draggable regions are never defined in a document this function will also
 // never be called. If the last draggable region is removed from a document
 // this function will be called with an NULL vector.
-///
+// /
 type OnDraggableRegionsChangedHandler interface {
 	OnDraggableRegionsChanged(
 		self *CDragHandlerT,
@@ -10619,11 +10613,11 @@ func (extension *CExtensionT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the unique extension identifier. This is calculated based on the
 // extension public key, if available, or on the extension path. See
 // https://developer.chrome.com/extensions/manifest/key for details.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CExtensionT) GetIdentifier() (ret string) {
 
@@ -10637,11 +10631,11 @@ func (self *CExtensionT) GetIdentifier() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the absolute path to the extension directory on disk. This value
 // will be prefixed with PK_DIR_RESOURCES if a relative path was passed to
 // cef_request_context_t::LoadExtension.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CExtensionT) GetPath() (ret string) {
 
@@ -10655,10 +10649,10 @@ func (self *CExtensionT) GetPath() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the extension manifest contents as a cef_dictionary_value_t object.
 // See https://developer.chrome.com/extensions/manifest for details.
-///
+// /
 func (self *CExtensionT) GetManifest() (ret *CDictionaryValueT) {
 
 	cRet := C.cefingo_extension_get_manifest((*C.cef_extension_t)(self.pc_extension))
@@ -10667,11 +10661,11 @@ func (self *CExtensionT) GetManifest() (ret *CDictionaryValueT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is the same extension as |that| object.
 // Extensions are considered the same if identifier, path and loader context
 // match.
-///
+// /
 func (self *CExtensionT) IsSame(
 	that *CExtensionT,
 ) (ret bool) {
@@ -10687,11 +10681,11 @@ func (self *CExtensionT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns the handler for this extension. Will return NULL for internal
 // extensions or if no handler was passed to
 // cef_request_context_t::LoadExtension.
-///
+// /
 func (self *CExtensionT) GetHandler() (ret *CExtensionHandlerT) {
 
 	cRet := C.cefingo_extension_get_handler((*C.cef_extension_t)(self.pc_extension))
@@ -10700,12 +10694,12 @@ func (self *CExtensionT) GetHandler() (ret *CExtensionHandlerT) {
 	return ret
 }
 
-///
+// /
 // Returns the request context that loaded this extension. Will return NULL
 // for internal extensions or if the extension has been unloaded. See the
 // cef_request_context_t::LoadExtension documentation for more information
 // about loader contexts. Must be called on the browser process UI thread.
-///
+// /
 func (self *CExtensionT) GetLoaderContext() (ret *CRequestContextT) {
 
 	cRet := C.cefingo_extension_get_loader_context((*C.cef_extension_t)(self.pc_extension))
@@ -10714,10 +10708,10 @@ func (self *CExtensionT) GetLoaderContext() (ret *CRequestContextT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this extension is currently loaded. Must be called on
 // the browser process UI thread.
-///
+// /
 func (self *CExtensionT) IsLoaded() (ret bool) {
 
 	cRet := C.cefingo_extension_is_loaded((*C.cef_extension_t)(self.pc_extension))
@@ -10726,11 +10720,11 @@ func (self *CExtensionT) IsLoaded() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Unload this extension if it is not an internal extension and is currently
 // loaded. Will result in a call to
 // cef_extension_handler_t::OnExtensionUnloaded on success.
-///
+// /
 func (self *CExtensionT) Unload() {
 
 	C.cefingo_extension_unload((*C.cef_extension_t)(self.pc_extension))
@@ -10818,9 +10812,9 @@ func (get_extension_resource_callback *CGetExtensionResourceCallbackT) Unref() (
 	return ret
 }
 
-///
+// /
 // Continue the request. Read the resource contents from |stream|.
-///
+// /
 func (self *CGetExtensionResourceCallbackT) Cont(
 	stream *CStreamReaderT,
 ) {
@@ -10834,9 +10828,9 @@ func (self *CGetExtensionResourceCallbackT) Cont(
 
 }
 
-///
+// /
 // Cancel the request.
-///
+// /
 func (self *CGetExtensionResourceCallbackT) Cancel() {
 
 	C.cefingo_get_extension_resource_callback_cancel((*C.cef_get_extension_resource_callback_t)(self.pc_get_extension_resource_callback))
@@ -10923,10 +10917,10 @@ func (extension_handler *CExtensionHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called if the cef_request_context_t::LoadExtension request fails. |result|
 // will be the error code.
-///
+// /
 type OnExtensionLoadFailedHandler interface {
 	OnExtensionLoadFailed(
 		self *CExtensionHandlerT,
@@ -10934,10 +10928,10 @@ type OnExtensionLoadFailedHandler interface {
 	)
 }
 
-///
+// /
 // Called if the cef_request_context_t::LoadExtension request succeeds.
 // |extension| is the loaded extension.
-///
+// /
 type OnExtensionLoadedHandler interface {
 	OnExtensionLoaded(
 		self *CExtensionHandlerT,
@@ -10945,9 +10939,9 @@ type OnExtensionLoadedHandler interface {
 	)
 }
 
-///
+// /
 // Called after the cef_extension_t::Unload request has completed.
-///
+// /
 type OnExtensionUnloadedHandler interface {
 	OnExtensionUnloaded(
 		self *CExtensionHandlerT,
@@ -10955,7 +10949,7 @@ type OnExtensionUnloadedHandler interface {
 	)
 }
 
-///
+// /
 // Called when an extension needs a browser to host a background script
 // specified via the &quot;background&quot; manifest key. The browser will have no
 // visible window and cannot be displayed. |extension| is the extension that
@@ -10969,7 +10963,7 @@ type OnExtensionUnloadedHandler interface {
 // cef_browser_host_t::IsBackgroundHost will return true (1) for the resulting
 // browser. See https://developer.chrome.com/extensions/event_pages for more
 // information about extension background script usage.
-///
+// /
 type OnBeforeBackgroundBrowserHandler interface {
 	OnBeforeBackgroundBrowser(
 		self *CExtensionHandlerT,
@@ -10980,7 +10974,7 @@ type OnBeforeBackgroundBrowserHandler interface {
 	) (ret bool, clientOut *CClientT, settingsOut CBrowserSettingsT)
 }
 
-///
+// /
 // Called when an extension API (e.g. chrome.tabs.create) requests creation of
 // a new browser. |extension| and |browser| are the source of the API call.
 // |active_browser| may optionally be specified via the windowId property or
@@ -10994,7 +10988,7 @@ type OnBeforeBackgroundBrowserHandler interface {
 // indicated by a call to cef_life_span_handler_t::OnAfterCreated. Any
 // modifications to |windowInfo| will be ignored if |active_browser| is
 // wrapped in a cef_browser_view_t.
-///
+// /
 type OnBeforeBrowserHandler interface {
 	OnBeforeBrowser(
 		self *CExtensionHandlerT,
@@ -11010,7 +11004,7 @@ type OnBeforeBrowserHandler interface {
 	) (ret bool, windowInfoOut CWindowInfoT, clientOut *CClientT, settingsOut CBrowserSettingsT)
 }
 
-///
+// /
 // Called when no tabId is specified to an extension API call that accepts a
 // tabId parameter (e.g. chrome.tabs.*). |extension| and |browser| are the
 // source of the API call. Return the browser that will be acted on by the API
@@ -11018,7 +11012,7 @@ type OnBeforeBrowserHandler interface {
 // the same cef_request_context_t as |browser|. Incognito browsers should not
 // be considered unless the source extension has incognito access enabled, in
 // which case |include_incognito| will be true (1).
-///
+// /
 type GetActiveBrowserHandler interface {
 	GetActiveBrowser(
 		self *CExtensionHandlerT,
@@ -11028,14 +11022,14 @@ type GetActiveBrowserHandler interface {
 	) (ret *CBrowserT)
 }
 
-///
+// /
 // Called when the tabId associated with |target_browser| is specified to an
 // extension API call that accepts a tabId parameter (e.g. chrome.tabs.*).
 // |extension| and |browser| are the source of the API call. Return true (1)
 // to allow access of false (0) to deny access. Access to incognito browsers
 // should not be allowed unless the source extension has incognito access
 // enabled, in which case |include_incognito| will be true (1).
-///
+// /
 type CanAccessBrowserHandler interface {
 	CanAccessBrowser(
 		self *CExtensionHandlerT,
@@ -11046,7 +11040,7 @@ type CanAccessBrowserHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called to retrieve an extension resource that would normally be loaded from
 // disk (e.g. if a file parameter is specified to chrome.tabs.executeScript).
 // |extension| and |browser| are the source of the resource request. |file| is
@@ -11055,7 +11049,7 @@ type CanAccessBrowserHandler interface {
 // the default behavior which reads the resource from the extension directory
 // on disk return false (0). Localization substitutions will not be applied to
 // resources handled via this function.
-///
+// /
 type GetExtensionResourceHandler interface {
 	GetExtensionResource(
 		self *CExtensionHandlerT,
@@ -11212,12 +11206,12 @@ func (extension_handler *CExtensionHandlerT) Handler() interface{} {
 
 // cef_file_util_capi.h, include/capi/cef_file_util_capi.h:55:16,
 
-///
+// /
 // Creates a directory and all parent directories if they don't already exist.
 // Returns true (1) on successful creation or if the directory already exists.
 // The directory is only readable by the current user. Calling this function on
 // the browser process UI or IO threads is not allowed.
-///
+// /
 func CreateDirectory(
 	full_path string,
 ) (ret bool) {
@@ -11229,14 +11223,14 @@ func CreateDirectory(
 	return ret
 }
 
-///
+// /
 // Get the temporary directory provided by the system.
 //
 // WARNING: In general, you should use the temp directory variants below instead
 // of this function. Those variants will ensure that the proper permissions are
 // set so that other users on the system can't edit them while they're open
 // (which could lead to security issues).
-///
+// /
 func GetTempDirectory(
 	temp_dir string,
 ) (ret bool) {
@@ -11248,13 +11242,13 @@ func GetTempDirectory(
 	return ret
 }
 
-///
+// /
 // Creates a new directory. On Windows if |prefix| is provided the new directory
 // name is in the format of "prefixyyyy". Returns true (1) on success and sets
 // |new_temp_path| to the full path of the directory that was created. The
 // directory is only readable by the current user. Calling this function on the
 // browser process UI or IO threads is not allowed.
-///
+// /
 func CreateNewTempDirectory(
 	prefix string,
 	new_temp_path string,
@@ -11268,14 +11262,14 @@ func CreateNewTempDirectory(
 	return ret
 }
 
-///
+// /
 // Creates a directory within another directory. Extra characters will be
 // appended to |prefix| to ensure that the new directory does not have the same
 // name as an existing directory. Returns true (1) on success and sets |new_dir|
 // to the full path of the directory that was created. The directory is only
 // readable by the current user. Calling this function on the browser process UI
 // or IO threads is not allowed.
-///
+// /
 func CreateTempDirectoryInDirectory(
 	base_dir string,
 	prefix string,
@@ -11291,10 +11285,10 @@ func CreateTempDirectoryInDirectory(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the given path exists and is a directory. Calling this
 // function on the browser process UI or IO threads is not allowed.
-///
+// /
 func DirectoryExists(
 	path string,
 ) (ret bool) {
@@ -11306,7 +11300,7 @@ func DirectoryExists(
 	return ret
 }
 
-///
+// /
 // Deletes the given path whether it's a file or a directory. If |path| is a
 // directory all contents will be deleted.  If |recursive| is true (1) any sub-
 // directories and their contents will also be deleted (equivalent to executing
@@ -11314,7 +11308,7 @@ func DirectoryExists(
 // link then only the symlink will be deleted. Returns true (1) on successful
 // deletion or if |path| does not exist. Calling this function on the browser
 // process UI or IO threads is not allowed.
-///
+// /
 func DeleteFile(
 	path string,
 	recursive int,
@@ -11327,12 +11321,12 @@ func DeleteFile(
 	return ret
 }
 
-///
+// /
 // Writes the contents of |src_dir| into a zip archive at |dest_file|. If
 // |include_hidden_files| is true (1) files starting with "." will be included.
 // Returns true (1) on success.  Calling this function on the browser process UI
 // or IO threads is not allowed.
-///
+// /
 func ZipDirectory(
 	src_dir string,
 	dest_file string,
@@ -11347,14 +11341,14 @@ func ZipDirectory(
 	return ret
 }
 
-///
+// /
 // Loads the existing "Certificate Revocation Lists" file that is managed by
 // Google Chrome. This file can generally be found in Chrome's User Data
 // directory (e.g. "C:\Users\[User]\AppData\Local\Google\Chrome\User Data\" on
 // Windows) and is updated periodically by Chrome's component updater service.
 // Must be called in the browser process after the context has been initialized.
 // See https://dev.chromium.org/Home/chromium-security/crlsets for background.
-///
+// /
 func LoadCrlsetsFile(
 	path string,
 ) {
@@ -11534,7 +11528,7 @@ func (find_handler *CFindHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called to report find results returned by cef_browser_host_t::find().
 // |identifer| is a unique incremental identifier for the currently active
 // search, |count| is the number of matches currently identified,
@@ -11542,7 +11536,7 @@ func (find_handler *CFindHandlerT) Unref() (ret bool) {
 // coordinates), |activeMatchOrdinal| is the current position in the search
 // results, and |finalUpdate| is true (1) if this is the last find
 // notification.
-///
+// /
 type OnFindResultHandler interface {
 	OnFindResult(
 		self *CFindHandlerT,
@@ -11710,12 +11704,12 @@ func (focus_handler *CFocusHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called when the browser component is about to loose focus. For instance, if
 // focus was on the last HTML element and the user pressed the TAB key. |next|
 // will be true (1) if the browser is giving focus to the next component and
 // false (0) if the browser is giving focus to the previous component.
-///
+// /
 type OnTakeFocusHandler interface {
 	OnTakeFocus(
 		self *CFocusHandlerT,
@@ -11724,11 +11718,11 @@ type OnTakeFocusHandler interface {
 	)
 }
 
-///
+// /
 // Called when the browser component is requesting focus. |source| indicates
 // where the focus request is originating from. Return false (0) to allow the
 // focus to be set or true (1) to cancel setting the focus.
-///
+// /
 type OnSetFocusHandler interface {
 	OnSetFocus(
 		self *CFocusHandlerT,
@@ -11737,9 +11731,9 @@ type OnSetFocusHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called when the browser component has received focus.
-///
+// /
 type OnGotFocusHandler interface {
 	OnGotFocus(
 		self *CFocusHandlerT,
@@ -11924,9 +11918,9 @@ func (frame *CFrameT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if this object is currently attached to a valid frame.
-///
+// /
 func (self *CFrameT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_frame_is_valid((*C.cef_frame_t)(self.pc_frame))
@@ -11935,84 +11929,84 @@ func (self *CFrameT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Execute undo in this frame.
-///
+// /
 func (self *CFrameT) Undo() {
 
 	C.cefingo_frame_undo((*C.cef_frame_t)(self.pc_frame))
 
 }
 
-///
+// /
 // Execute redo in this frame.
-///
+// /
 func (self *CFrameT) Redo() {
 
 	C.cefingo_frame_redo((*C.cef_frame_t)(self.pc_frame))
 
 }
 
-///
+// /
 // Execute cut in this frame.
-///
+// /
 func (self *CFrameT) Cut() {
 
 	C.cefingo_frame_cut((*C.cef_frame_t)(self.pc_frame))
 
 }
 
-///
+// /
 // Execute copy in this frame.
-///
+// /
 func (self *CFrameT) Copy() {
 
 	C.cefingo_frame_copy((*C.cef_frame_t)(self.pc_frame))
 
 }
 
-///
+// /
 // Execute paste in this frame.
-///
+// /
 func (self *CFrameT) Paste() {
 
 	C.cefingo_frame_paste((*C.cef_frame_t)(self.pc_frame))
 
 }
 
-///
+// /
 // Execute delete in this frame.
-///
+// /
 func (self *CFrameT) Del() {
 
 	C.cefingo_frame_del((*C.cef_frame_t)(self.pc_frame))
 
 }
 
-///
+// /
 // Execute select all in this frame.
-///
+// /
 func (self *CFrameT) SelectAll() {
 
 	C.cefingo_frame_select_all((*C.cef_frame_t)(self.pc_frame))
 
 }
 
-///
+// /
 // Save this frame&#39;s HTML source to a temporary file and open it in the
 // default text viewing application. This function can only be called from the
 // browser process.
-///
+// /
 func (self *CFrameT) ViewSource() {
 
 	C.cefingo_frame_view_source((*C.cef_frame_t)(self.pc_frame))
 
 }
 
-///
+// /
 // Retrieve this frame&#39;s HTML source as a string sent to the specified
 // visitor.
-///
+// /
 func (self *CFrameT) GetSource(
 	visitor *CStringVisitorT,
 ) {
@@ -12026,10 +12020,10 @@ func (self *CFrameT) GetSource(
 
 }
 
-///
+// /
 // Retrieve this frame&#39;s display text as a string sent to the specified
 // visitor.
-///
+// /
 func (self *CFrameT) GetText(
 	visitor *CStringVisitorT,
 ) {
@@ -12043,13 +12037,13 @@ func (self *CFrameT) GetText(
 
 }
 
-///
+// /
 // Load the request represented by the |request| object.
 //
 // WARNING: This function will fail with &quot;bad IPC message&quot; reason
 // INVALID_INITIATOR_ORIGIN (213) unless you first navigate to the request
 // origin using some other mechanism (LoadURL, link click, etc).
-///
+// /
 func (self *CFrameT) LoadRequest(
 	request *CRequestT,
 ) {
@@ -12063,9 +12057,9 @@ func (self *CFrameT) LoadRequest(
 
 }
 
-///
+// /
 // Load the specified |url|.
-///
+// /
 func (self *CFrameT) LoadUrl(
 	url string,
 ) {
@@ -12075,13 +12069,13 @@ func (self *CFrameT) LoadUrl(
 
 }
 
-///
+// /
 // Execute a string of JavaScript code in this frame. The |script_url|
 // parameter is the URL where the script in question can be found, if any. The
 // renderer may request this URL to show the developer the source of the
 // error.  The |start_line| parameter is the base line number to use for error
 // reporting.
-///
+// /
 func (self *CFrameT) ExecuteJavaScript(
 	code string,
 	script_url string,
@@ -12094,9 +12088,9 @@ func (self *CFrameT) ExecuteJavaScript(
 
 }
 
-///
+// /
 // Returns true (1) if this is the main (top-level) frame.
-///
+// /
 func (self *CFrameT) IsMain() (ret bool) {
 
 	cRet := C.cefingo_frame_is_main((*C.cef_frame_t)(self.pc_frame))
@@ -12105,9 +12099,9 @@ func (self *CFrameT) IsMain() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this is the focused frame.
-///
+// /
 func (self *CFrameT) IsFocused() (ret bool) {
 
 	cRet := C.cefingo_frame_is_focused((*C.cef_frame_t)(self.pc_frame))
@@ -12116,13 +12110,13 @@ func (self *CFrameT) IsFocused() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the name for this frame. If the frame has an assigned name (for
 // example, set via the iframe &quot;name&quot; attribute) then that value will be
 // returned. Otherwise a unique name will be constructed based on the frame
 // parent hierarchy. The main (top-level) frame will always have an NULL name
 // value.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CFrameT) GetName() (ret string) {
 
@@ -12136,10 +12130,10 @@ func (self *CFrameT) GetName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the globally unique identifier for this frame or &lt; 0 if the
 // underlying frame does not yet exist.
-///
+// /
 func (self *CFrameT) GetIdentifier() (ret int64) {
 
 	cRet := C.cefingo_frame_get_identifier((*C.cef_frame_t)(self.pc_frame))
@@ -12148,10 +12142,10 @@ func (self *CFrameT) GetIdentifier() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns the parent of this frame or NULL if this is the main (top-level)
 // frame.
-///
+// /
 func (self *CFrameT) GetParent() (ret *CFrameT) {
 
 	cRet := C.cefingo_frame_get_parent((*C.cef_frame_t)(self.pc_frame))
@@ -12160,9 +12154,9 @@ func (self *CFrameT) GetParent() (ret *CFrameT) {
 	return ret
 }
 
-///
+// /
 // Returns the URL currently loaded in this frame.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CFrameT) GetUrl() (ret string) {
 
@@ -12176,9 +12170,9 @@ func (self *CFrameT) GetUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the browser that this frame belongs to.
-///
+// /
 func (self *CFrameT) GetBrowser() (ret *CBrowserT) {
 
 	cRet := C.cefingo_frame_get_browser((*C.cef_frame_t)(self.pc_frame))
@@ -12187,10 +12181,10 @@ func (self *CFrameT) GetBrowser() (ret *CBrowserT) {
 	return ret
 }
 
-///
+// /
 // Get the V8 context associated with the frame. This function can only be
 // called from the render process.
-///
+// /
 func (self *CFrameT) GetV8context() (ret *CV8contextT) {
 
 	cRet := C.cefingo_frame_get_v8context((*C.cef_frame_t)(self.pc_frame))
@@ -12199,10 +12193,10 @@ func (self *CFrameT) GetV8context() (ret *CV8contextT) {
 	return ret
 }
 
-///
+// /
 // Visit the DOM document. This function can only be called from the render
 // process.
-///
+// /
 func (self *CFrameT) VisitDom(
 	visitor *CDomvisitorT,
 ) {
@@ -12216,7 +12210,7 @@ func (self *CFrameT) VisitDom(
 
 }
 
-///
+// /
 // Create a new URL request that will be treated as originating from this
 // frame and the associated browser. This request may be intercepted by the
 // client via cef_resource_request_handler_t or cef_scheme_handler_factory_t.
@@ -12228,6 +12222,7 @@ func (self *CFrameT) VisitDom(
 // For requests originating from the browser process:
 //   - POST data may only contain a single element of type PDE_TYPE_FILE or
 //     PDE_TYPE_BYTES.
+//
 // For requests originating from the render process:
 //   - POST data may only contain a single element of type PDE_TYPE_BYTES.
 //   - If the response contains Content-Disposition or Mime-Type header values
@@ -12237,7 +12232,7 @@ func (self *CFrameT) VisitDom(
 //
 // The |request| object will be marked as read-only after calling this
 // function.
-///
+// /
 func (self *CFrameT) CreateUrlrequest(
 	request *CRequestT,
 	client *CUrlrequestClientT,
@@ -12259,14 +12254,14 @@ func (self *CFrameT) CreateUrlrequest(
 	return ret
 }
 
-///
+// /
 // Send a message to the specified |target_process|. Ownership of the message
 // contents will be transferred and the |message| reference will be
 // invalidated. Message delivery is not guaranteed in all cases (for example,
 // if the browser is closing, navigating, or if the target process crashes).
 // Send an ACK message back from the target process if confirmation is
 // required.
-///
+// /
 func (self *CFrameT) SendProcessMessage(
 	target_process CProcessIdT,
 	message *CProcessMessageT,
@@ -12439,12 +12434,12 @@ func (frame_handler *CFrameHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called when a new frame is created. This will be the first notification
 // that references |frame|. Any commands that require transport to the
 // associated renderer process (LoadRequest, SendProcessMessage, GetSource,
 // etc.) will be queued until OnFrameAttached is called for |frame|.
-///
+// /
 func (self *CFrameHandlerT) OnFrameCreated(
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -12464,12 +12459,12 @@ func (self *CFrameHandlerT) OnFrameCreated(
 
 }
 
-///
+// /
 // Called when a frame can begin routing commands to/from the associated
 // renderer process. |reattached| will be true (1) if the frame was re-
 // attached after exiting the BackForwardCache. Any commands that were queued
 // have now been dispatched.
-///
+// /
 func (self *CFrameHandlerT) OnFrameAttached(
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -12490,13 +12485,13 @@ func (self *CFrameHandlerT) OnFrameAttached(
 
 }
 
-///
+// /
 // Called when a frame loses its connection to the renderer process and will
 // be destroyed. Any pending or future commands will be discarded and
 // cef_frame_t::is_valid() will now return false (0) for |frame|. If called
 // after cef_life_span_handler_t::on_before_close() during browser destruction
 // then cef_browser_t::is_valid() will return false (0) for |browser|.
-///
+// /
 func (self *CFrameHandlerT) OnFrameDetached(
 	browser *CBrowserT,
 	frame *CFrameT,
@@ -12516,7 +12511,7 @@ func (self *CFrameHandlerT) OnFrameDetached(
 
 }
 
-///
+// /
 // Called when the main frame changes due to (a) initial browser creation, (b)
 // final browser destruction, (c) cross-origin navigation or (d) re-navigation
 // after renderer process termination (due to crashes, etc). |old_frame| will
@@ -12529,7 +12524,7 @@ func (self *CFrameHandlerT) OnFrameDetached(
 // after on_frame_detached() for |old_frame|. If called after
 // cef_life_span_handler_t::on_before_close() during browser destruction then
 // cef_browser_t::is_valid() will return false (0) for |browser|.
-///
+// /
 func (self *CFrameHandlerT) OnMainFrameChanged(
 	browser *CBrowserT,
 	old_frame *CFrameT,
@@ -12640,9 +12635,9 @@ func (image *CImageT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this Image is NULL.
-///
+// /
 func (self *CImageT) IsEmpty() (ret bool) {
 
 	cRet := C.cefingo_image_is_empty((*C.cef_image_t)(self.pc_image))
@@ -12651,10 +12646,10 @@ func (self *CImageT) IsEmpty() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this Image and |that| Image share the same underlying
 // storage. Will also return true (1) if both images are NULL.
-///
+// /
 func (self *CImageT) IsSame(
 	that *CImageT,
 ) (ret bool) {
@@ -12670,13 +12665,13 @@ func (self *CImageT) IsSame(
 	return ret
 }
 
-///
+// /
 // Add a bitmap image representation for |scale_factor|. Only 32-bit RGBA/BGRA
 // formats are supported. |pixel_width| and |pixel_height| are the bitmap
 // representation size in pixel coordinates. |pixel_data| is the array of
 // pixel data and should be |pixel_width| x |pixel_height| x 4 bytes in size.
 // |color_type| and |alpha_type| values specify the pixel format.
-///
+// /
 func (self *CImageT) AddBitmap(
 	scale_factor float32,
 	pixel_width int,
@@ -12695,11 +12690,11 @@ func (self *CImageT) AddBitmap(
 	return ret
 }
 
-///
+// /
 // Add a PNG image representation for |scale_factor|. |png_data| is the image
 // data of size |png_data_size|. Any alpha transparency in the PNG data will
 // be maintained.
-///
+// /
 func (self *CImageT) AddPng(
 	scale_factor float32,
 	png_data []byte,
@@ -12714,11 +12709,11 @@ func (self *CImageT) AddPng(
 	return ret
 }
 
-///
+// /
 // Create a JPEG image representation for |scale_factor|. |jpeg_data| is the
 // image data of size |jpeg_data_size|. The JPEG format does not support
 // transparency so the alpha byte will be set to 0xFF for all pixels.
-///
+// /
 func (self *CImageT) AddJpeg(
 	scale_factor float32,
 	jpeg_data []byte,
@@ -12733,9 +12728,9 @@ func (self *CImageT) AddJpeg(
 	return ret
 }
 
-///
+// /
 // Returns the image width in density independent pixel (DIP) units.
-///
+// /
 func (self *CImageT) GetWidth() (ret int64) {
 
 	cRet := C.cefingo_image_get_width((*C.cef_image_t)(self.pc_image))
@@ -12744,9 +12739,9 @@ func (self *CImageT) GetWidth() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns the image height in density independent pixel (DIP) units.
-///
+// /
 func (self *CImageT) GetHeight() (ret int64) {
 
 	cRet := C.cefingo_image_get_height((*C.cef_image_t)(self.pc_image))
@@ -12755,10 +12750,10 @@ func (self *CImageT) GetHeight() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this image contains a representation for
 // |scale_factor|.
-///
+// /
 func (self *CImageT) HasRepresentation(
 	scale_factor float32,
 ) (ret bool) {
@@ -12769,9 +12764,9 @@ func (self *CImageT) HasRepresentation(
 	return ret
 }
 
-///
+// /
 // Removes the representation for |scale_factor|. Returns true (1) on success.
-///
+// /
 func (self *CImageT) RemoveRepresentation(
 	scale_factor float32,
 ) (ret bool) {
@@ -12782,12 +12777,12 @@ func (self *CImageT) RemoveRepresentation(
 	return ret
 }
 
-///
+// /
 // Returns information for the representation that most closely matches
 // |scale_factor|. |actual_scale_factor| is the actual scale factor for the
 // representation. |pixel_width| and |pixel_height| are the representation
 // size in pixel coordinates. Returns true (1) on success.
-///
+// /
 func (self *CImageT) GetRepresentationInfo(
 	scale_factor float32,
 ) (ret bool, actual_scale_factor float32, pixel_width int, pixel_height int) {
@@ -12805,14 +12800,14 @@ func (self *CImageT) GetRepresentationInfo(
 	return ret, actual_scale_factor, pixel_width, pixel_height
 }
 
-///
+// /
 // Returns the bitmap representation that most closely matches |scale_factor|.
 // Only 32-bit RGBA/BGRA formats are supported. |color_type| and |alpha_type|
 // values specify the desired output pixel format. |pixel_width| and
 // |pixel_height| are the output representation size in pixel coordinates.
 // Returns a cef_binary_value_t containing the pixel data on success or NULL
 // on failure.
-///
+// /
 func (self *CImageT) GetAsBitmap(
 	scale_factor float32,
 	color_type CColorTypeT,
@@ -12830,14 +12825,14 @@ func (self *CImageT) GetAsBitmap(
 	return ret, pixel_width, pixel_height
 }
 
-///
+// /
 // Returns the PNG representation that most closely matches |scale_factor|. If
 // |with_transparency| is true (1) any alpha transparency in the image will be
 // represented in the resulting PNG data. |pixel_width| and |pixel_height| are
 // the output representation size in pixel coordinates. Returns a
 // cef_binary_value_t containing the PNG image data on success or NULL on
 // failure.
-///
+// /
 func (self *CImageT) GetAsPng(
 	scale_factor float32,
 	with_transparency int,
@@ -12854,7 +12849,7 @@ func (self *CImageT) GetAsPng(
 	return ret, pixel_width, pixel_height
 }
 
-///
+// /
 // Returns the JPEG representation that most closely matches |scale_factor|.
 // |quality| determines the compression level with 0 == lowest and 100 ==
 // highest. The JPEG format does not support alpha transparency and the alpha
@@ -12862,7 +12857,7 @@ func (self *CImageT) GetAsPng(
 // the output representation size in pixel coordinates. Returns a
 // cef_binary_value_t containing the JPEG image data on success or NULL on
 // failure.
-///
+// /
 func (self *CImageT) GetAsJpeg(
 	scale_factor float32,
 	quality int,
@@ -12879,10 +12874,10 @@ func (self *CImageT) GetAsJpeg(
 	return ret, pixel_width, pixel_height
 }
 
-///
+// /
 // Create a new cef_image_t. It will initially be NULL. Use the Add*() functions
 // to add representations at different scale factors.
-///
+// /
 func ImageCreate() (ret *CImageT) {
 
 	cRet := C.cef_image_create()
@@ -12972,10 +12967,10 @@ func (jsdialog_callback *CJsdialogCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Continue the JS dialog request. Set |success| to true (1) if the OK button
 // was pressed. The |user_input| value should be specified for prompt dialogs.
-///
+// /
 func (self *CJsdialogCallbackT) Cont(
 	success int,
 	user_input string,
@@ -13065,7 +13060,7 @@ func (jsdialog_handler *CJsdialogHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called to run a JavaScript dialog. If |origin_url| is non-NULL it can be
 // passed to the CefFormatUrlForSecurityDisplay function to retrieve a secure
 // and user-friendly display string. The |default_prompt_text| value will be
@@ -13081,7 +13076,7 @@ func (jsdialog_handler *CJsdialogHandlerT) Unref() (ret bool) {
 // Custom dialogs may be either modal or modeless. If a custom dialog is used
 // the application must execute |callback| once the custom dialog is
 // dismissed.
-///
+// /
 type OnJsdialogHandler interface {
 	OnJsdialog(
 		self *CJsdialogHandlerT,
@@ -13094,14 +13089,14 @@ type OnJsdialogHandler interface {
 	) (ret bool, suppress_message int)
 }
 
-///
+// /
 // Called to run a dialog asking the user if they want to leave a page. Return
 // false (0) to use the default dialog implementation. Return true (1) if the
 // application will use a custom dialog or if the callback has been executed
 // immediately. Custom dialogs may be either modal or modeless. If a custom
 // dialog is used the application must execute |callback| once the custom
 // dialog is dismissed.
-///
+// /
 type OnBeforeUnloadDialogHandler interface {
 	OnBeforeUnloadDialog(
 		self *CJsdialogHandlerT,
@@ -13112,11 +13107,11 @@ type OnBeforeUnloadDialogHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called to cancel any pending dialogs and reset any saved dialog state. Will
 // be called due to events like page navigation irregardless of whether any
 // dialogs are currently pending.
-///
+// /
 type OnResetDialogStateHandler interface {
 	OnResetDialogState(
 		self *CJsdialogHandlerT,
@@ -13124,9 +13119,9 @@ type OnResetDialogStateHandler interface {
 	)
 }
 
-///
+// /
 // Called when the default implementation dialog is closed.
-///
+// /
 type OnDialogClosedHandler interface {
 	OnDialogClosed(
 		self *CJsdialogHandlerT,
@@ -13319,13 +13314,13 @@ func (keyboard_handler *CKeyboardHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called before a keyboard event is sent to the renderer. |event| contains
 // information about the keyboard event. |os_event| is the operating system
 // event message, if any. Return true (1) if the event was handled or false
 // (0) otherwise. If the event will be handled in on_key_event() as a keyboard
 // shortcut set |is_keyboard_shortcut| to true (1) and return false (0).
-///
+// /
 type OnPreKeyEventHandler interface {
 	OnPreKeyEvent(
 		self *CKeyboardHandlerT,
@@ -13335,12 +13330,12 @@ type OnPreKeyEventHandler interface {
 	) (ret bool, is_keyboard_shortcut int)
 }
 
-///
+// /
 // Called after the renderer and JavaScript in the page has had a chance to
 // handle the event. |event| contains information about the keyboard event.
 // |os_event| is the operating system event message, if any. Return true (1)
 // if the keyboard event was handled or false (0) otherwise.
-///
+// /
 type CKeyboardHandlerTOnKeyEventHandler interface {
 	OnKeyEvent(
 		self *CKeyboardHandlerT,
@@ -13522,10 +13517,10 @@ func (label_button *CLabelButtonT) ToCButtonT() *CButtonT {
 	return newCButtonT(p, byApp)
 }
 
-///
+// /
 // Returns this LabelButton as a MenuButton or NULL if this is not a
 // MenuButton.
-///
+// /
 func (self *CLabelButtonT) AsMenuButton() (ret *CMenuButtonT) {
 
 	cRet := C.cefingo_label_button_as_menu_button((*C.cef_label_button_t)(self.pc_label_button))
@@ -13534,10 +13529,10 @@ func (self *CLabelButtonT) AsMenuButton() (ret *CMenuButtonT) {
 	return ret
 }
 
-///
+// /
 // Sets the text shown on the LabelButton. By default |text| will also be used
 // as the accessible name.
-///
+// /
 func (self *CLabelButtonT) SetText(
 	text string,
 ) {
@@ -13547,9 +13542,9 @@ func (self *CLabelButtonT) SetText(
 
 }
 
-///
+// /
 // Returns the text shown on the LabelButton.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CLabelButtonT) GetText() (ret string) {
 
@@ -13563,11 +13558,11 @@ func (self *CLabelButtonT) GetText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Sets the image shown for |button_state|. When this Button is drawn if no
 // image exists for the current state then the image for
 // CEF_BUTTON_STATE_NORMAL, if any, will be shown.
-///
+// /
 func (self *CLabelButtonT) SetImage(
 	button_state CButtonStateT,
 	image *CImageT,
@@ -13582,10 +13577,10 @@ func (self *CLabelButtonT) SetImage(
 
 }
 
-///
+// /
 // Returns the image shown for |button_state|. If no image exists for that
 // state then the image for CEF_BUTTON_STATE_NORMAL will be returned.
-///
+// /
 func (self *CLabelButtonT) GetImage(
 	button_state CButtonStateT,
 ) (ret *CImageT) {
@@ -13596,9 +13591,9 @@ func (self *CLabelButtonT) GetImage(
 	return ret
 }
 
-///
+// /
 // Sets the text color shown for the specified button |for_state| to |color|.
-///
+// /
 func (self *CLabelButtonT) SetTextColor(
 	for_state CButtonStateT,
 	color CColorT,
@@ -13608,9 +13603,9 @@ func (self *CLabelButtonT) SetTextColor(
 
 }
 
-///
+// /
 // Sets the text colors shown for the non-disabled states to |color|.
-///
+// /
 func (self *CLabelButtonT) SetEnabledTextColors(
 	color CColorT,
 ) {
@@ -13619,16 +13614,18 @@ func (self *CLabelButtonT) SetEnabledTextColors(
 
 }
 
-///
+// /
 // Sets the font list. The format is &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;,
 // where: - FONT_FAMILY_LIST is a comma-separated list of font family names, -
 // STYLES is an optional space-separated list of style names (case-sensitive
-//   &quot;Bold&quot; and &quot;Italic&quot; are supported), and
+//
+//	&quot;Bold&quot; and &quot;Italic&quot; are supported), and
+//
 // - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
 //
 // Here are examples of valid font description strings: - &quot;Arial, Helvetica,
 // Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
-///
+// /
 func (self *CLabelButtonT) SetFontList(
 	font_list string,
 ) {
@@ -13638,10 +13635,10 @@ func (self *CLabelButtonT) SetFontList(
 
 }
 
-///
+// /
 // Sets the horizontal alignment; reversed in RTL. Default is
 // CEF_HORIZONTAL_ALIGNMENT_CENTER.
-///
+// /
 func (self *CLabelButtonT) SetHorizontalAlignment(
 	alignment CHorizontalAlignmentT,
 ) {
@@ -13650,9 +13647,9 @@ func (self *CLabelButtonT) SetHorizontalAlignment(
 
 }
 
-///
+// /
 // Reset the minimum size of this LabelButton to |size|.
-///
+// /
 func (self *CLabelButtonT) SetMinimumSize(
 	size *CSizeT,
 ) {
@@ -13661,9 +13658,9 @@ func (self *CLabelButtonT) SetMinimumSize(
 
 }
 
-///
+// /
 // Reset the maximum size of this LabelButton to |size|.
-///
+// /
 func (self *CLabelButtonT) SetMaximumSize(
 	size *CSizeT,
 ) {
@@ -13672,11 +13669,11 @@ func (self *CLabelButtonT) SetMaximumSize(
 
 }
 
-///
+// /
 // Create a new LabelButton. A |delegate| must be provided to handle the button
 // click. |text| will be shown on the LabelButton and used as the default
 // accessible name.
-///
+// /
 func LabelButtonCreate(
 	delegate *CButtonDelegateT,
 	text string,
@@ -13776,9 +13773,9 @@ func (layout *CLayoutT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns this Layout as a BoxLayout or NULL if this is not a BoxLayout.
-///
+// /
 func (self *CLayoutT) AsBoxLayout() (ret *CBoxLayoutT) {
 
 	cRet := C.cefingo_layout_as_box_layout((*C.cef_layout_t)(self.pc_layout))
@@ -13787,9 +13784,9 @@ func (self *CLayoutT) AsBoxLayout() (ret *CBoxLayoutT) {
 	return ret
 }
 
-///
+// /
 // Returns this Layout as a FillLayout or NULL if this is not a FillLayout.
-///
+// /
 func (self *CLayoutT) AsFillLayout() (ret *CFillLayoutT) {
 
 	cRet := C.cefingo_layout_as_fill_layout((*C.cef_layout_t)(self.pc_layout))
@@ -13798,9 +13795,9 @@ func (self *CLayoutT) AsFillLayout() (ret *CFillLayoutT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this Layout is valid.
-///
+// /
 func (self *CLayoutT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_layout_is_valid((*C.cef_layout_t)(self.pc_layout))
@@ -13891,7 +13888,7 @@ func (life_span_handler *CLifeSpanHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called on the UI thread before a new popup browser is created. The
 // |browser| and |frame| values represent the source of the popup request. The
 // |target_url| and |target_frame_name| values indicate where the popup
@@ -13915,7 +13912,7 @@ func (life_span_handler *CLifeSpanHandlerT) Unref() (ret bool) {
 // |extra_info| parameter provides an opportunity to specify extra information
 // specific to the created popup browser that will be passed to
 // cef_render_process_handler_t::on_browser_created() in the render process.
-///
+// /
 type OnBeforePopupHandler interface {
 	OnBeforePopup(
 		self *CLifeSpanHandlerT,
@@ -13933,12 +13930,12 @@ type OnBeforePopupHandler interface {
 	) (ret bool, windowInfoOut CWindowInfoT, clientOut *CClientT, settingsOut CBrowserSettingsT, extra_info *CDictionaryValueT, no_javascript_accessOut bool)
 }
 
-///
+// /
 // Called after a new browser is created. It is now safe to begin performing
 // actions with |browser|. cef_frame_handler_t callbacks related to initial
 // main frame creation will arrive before this callback. See
 // cef_frame_handler_t documentation for additional usage information.
-///
+// /
 type OnAfterCreatedHandler interface {
 	OnAfterCreated(
 		self *CLifeSpanHandlerT,
@@ -13946,7 +13943,7 @@ type OnAfterCreatedHandler interface {
 	)
 }
 
-///
+// /
 // Called when a browser has recieved a request to close. This may result
 // directly from a call to cef_browser_host_t::*close_browser() or indirectly
 // if the browser is parented to a top-level window created by CEF and the
@@ -13989,52 +13986,67 @@ type OnAfterCreatedHandler interface {
 // recommended for clients using standard close handling and windows created
 // on the browser process UI thread. 1.  User clicks the window close button
 // which sends a close notification to
-//     the application&#39;s top-level window.
-// 2.  Application&#39;s top-level window receives the close notification and
+//
+//	the application&#39;s top-level window.
+//  2. Application&#39;s top-level window receives the close notification and
 //     calls TryCloseBrowser() (which internally calls CloseBrowser(false)).
 //     TryCloseBrowser() returns false so the client cancels the window close.
-// 3.  JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
+//  3. JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
 //     confirmation dialog (which can be overridden via
 //     CefJSDialogHandler::OnBeforeUnloadDialog()).
-// 4.  User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes. 6.
+//  4. User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes. 6.
+//
 // CEF sends a close notification to the application&#39;s top-level window
-//     (because DoClose() returned false by default).
-// 7.  Application&#39;s top-level window receives the close notification and
+//
+//	(because DoClose() returned false by default).
+//  7. Application&#39;s top-level window receives the close notification and
 //     calls TryCloseBrowser(). TryCloseBrowser() returns true so the client
 //     allows the window close.
-// 8.  Application&#39;s top-level window is destroyed. 9.  Application&#39;s
+//  8. Application&#39;s top-level window is destroyed. 9.  Application&#39;s
+//
 // on_before_close() handler is called and the browser object
-//     is destroyed.
+//
+//	is destroyed.
+//
 // 10. Application exits by calling cef_quit_message_loop() if no other
 // browsers
-//     exist.
+//
+//	exist.
 //
 // Example 2: Using cef_browser_host_t::CloseBrowser(false (0)) and
 // implementing the do_close() callback. This is recommended for clients using
 // non-standard close handling or windows that were not created on the browser
 // process UI thread. 1.  User clicks the window close button which sends a
 // close notification to
-//     the application&#39;s top-level window.
-// 2.  Application&#39;s top-level window receives the close notification and:
+//
+//	the application&#39;s top-level window.
+//  2. Application&#39;s top-level window receives the close notification and:
 //     A. Calls CefBrowserHost::CloseBrowser(false).
 //     B. Cancels the window close.
-// 3.  JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
+//  3. JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
 //     confirmation dialog (which can be overridden via
 //     CefJSDialogHandler::OnBeforeUnloadDialog()).
-// 4.  User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes. 6.
+//  4. User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes. 6.
+//
 // Application&#39;s do_close() handler is called. Application will:
-//     A. Set a flag to indicate that the next close attempt will be allowed.
-//     B. Return false.
-// 7.  CEF sends an close notification to the application&#39;s top-level window.
-// 8.  Application&#39;s top-level window receives the close notification and
+//
+//	A. Set a flag to indicate that the next close attempt will be allowed.
+//	B. Return false.
+//  7. CEF sends an close notification to the application&#39;s top-level window.
+//  8. Application&#39;s top-level window receives the close notification and
 //     allows the window to close based on the flag from #6B.
-// 9.  Application&#39;s top-level window is destroyed. 10. Application&#39;s
+//  9. Application&#39;s top-level window is destroyed. 10. Application&#39;s
+//
 // on_before_close() handler is called and the browser object
-//     is destroyed.
+//
+//	is destroyed.
+//
 // 11. Application exits by calling cef_quit_message_loop() if no other
 // browsers
-//     exist.
-///
+//
+//	exist.
+//
+// /
 type DoCloseHandler interface {
 	DoClose(
 		self *CLifeSpanHandlerT,
@@ -14042,7 +14054,7 @@ type DoCloseHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called just before a browser is destroyed. Release all references to the
 // browser object and do not attempt to execute any functions on the browser
 // object (other than IsValid, GetIdentifier or IsSame) after this callback
@@ -14053,7 +14065,7 @@ type DoCloseHandler interface {
 // cef_resource_request_handler_t callbacks related to those requests may
 // still arrive on the IO thread after this callback. See cef_frame_handler_t
 // and do_close() documentation for additional usage information.
-///
+// /
 type OnBeforeCloseHandler interface {
 	OnBeforeClose(
 		self *CLifeSpanHandlerT,
@@ -14247,13 +14259,13 @@ func (load_handler *CLoadHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called when the loading state has changed. This callback will be executed
 // twice -- once when loading is initiated either programmatically or by user
 // action, and once when loading is terminated due to completion, cancellation
 // of failure. It will be called before any calls to OnLoadStart and after all
 // calls to OnLoadError and/or OnLoadEnd.
-///
+// /
 type OnLoadingStateChangeHandler interface {
 	OnLoadingStateChange(
 		self *CLoadHandlerT,
@@ -14264,7 +14276,7 @@ type OnLoadingStateChangeHandler interface {
 	)
 }
 
-///
+// /
 // Called after a navigation has been committed and before the browser begins
 // loading contents in the frame. The |frame| value will never be NULL -- call
 // the is_main() function to check if this frame is the main frame.
@@ -14275,7 +14287,7 @@ type OnLoadingStateChangeHandler interface {
 // called for same page navigations (fragments, history state, etc.) or for
 // navigations that fail or are canceled before commit. For notification of
 // overall browser load status use OnLoadingStateChange instead.
-///
+// /
 type OnLoadStartHandler interface {
 	OnLoadStart(
 		self *CLoadHandlerT,
@@ -14285,7 +14297,7 @@ type OnLoadStartHandler interface {
 	)
 }
 
-///
+// /
 // Called when the browser is done loading a frame. The |frame| value will
 // never be NULL -- call the is_main() function to check if this frame is the
 // main frame. Multiple frames may be loading at the same time. Sub-frames may
@@ -14294,7 +14306,7 @@ type OnLoadStartHandler interface {
 // state, etc.) or for navigations that fail or are canceled before commit.
 // For notification of overall browser load status use OnLoadingStateChange
 // instead.
-///
+// /
 type OnLoadEndHandler interface {
 	OnLoadEnd(
 		self *CLoadHandlerT,
@@ -14304,13 +14316,13 @@ type OnLoadEndHandler interface {
 	)
 }
 
-///
+// /
 // Called when a navigation fails or is canceled. This function may be called
 // by itself if before commit or in combination with OnLoadStart/OnLoadEnd if
 // after commit. |errorCode| is the error code number, |errorText| is the
 // error text and |failedUrl| is the URL that failed to load. See
 // net\base\net_error_list.h for complete descriptions of the error codes.
-///
+// /
 type OnLoadErrorHandler interface {
 	OnLoadError(
 		self *CLoadHandlerT,
@@ -14508,10 +14520,10 @@ func (media_router *CMediaRouterT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Add an observer for MediaRouter events. The observer will remain registered
 // until the returned Registration object is destroyed.
-///
+// /
 func (self *CMediaRouterT) AddObserver(
 	observer *CMediaObserverT,
 ) (ret *CRegistrationT) {
@@ -14527,11 +14539,11 @@ func (self *CMediaRouterT) AddObserver(
 	return ret
 }
 
-///
+// /
 // Returns a MediaSource object for the specified media source URN. Supported
 // URN schemes include &quot;cast:&quot; and &quot;dial:&quot;, and will be already known by the
 // client application (e.g. &quot;cast:&lt;appId&gt;?clientId=&lt;clientId&gt;&quot;).
-///
+// /
 func (self *CMediaRouterT) GetSource(
 	urn string,
 ) (ret *CMediaSourceT) {
@@ -14543,24 +14555,24 @@ func (self *CMediaRouterT) GetSource(
 	return ret
 }
 
-///
+// /
 // Trigger an asynchronous call to cef_media_observer_t::OnSinks on all
 // registered observers.
-///
+// /
 func (self *CMediaRouterT) NotifyCurrentSinks() {
 
 	C.cefingo_media_router_notify_current_sinks((*C.cef_media_router_t)(self.pc_media_router))
 
 }
 
-///
+// /
 // Create a new route between |source| and |sink|. Source and sink must be
 // valid, compatible (as reported by cef_media_sink_t::IsCompatibleWith), and
 // a route between them must not already exist. |callback| will be executed on
 // success or failure. If route creation succeeds it will also trigger an
 // asynchronous call to cef_media_observer_t::OnRoutes on all registered
 // observers.
-///
+// /
 func (self *CMediaRouterT) CreateRoute(
 	source *CMediaSourceT,
 	sink *CMediaSinkT,
@@ -14586,23 +14598,23 @@ func (self *CMediaRouterT) CreateRoute(
 
 }
 
-///
+// /
 // Trigger an asynchronous call to cef_media_observer_t::OnRoutes on all
 // registered observers.
-///
+// /
 func (self *CMediaRouterT) NotifyCurrentRoutes() {
 
 	C.cefingo_media_router_notify_current_routes((*C.cef_media_router_t)(self.pc_media_router))
 
 }
 
-///
+// /
 // Returns the MediaRouter object associated with the global request context. If
 // |callback| is non-NULL it will be executed asnychronously on the UI thread
 // after the manager's storage has been initialized. Equivalent to calling cef_r
 // equest_context_t::cef_request_context_get_global_context()->get_media_router(
 // ).
-///
+// /
 func MediaRouterGetGlobal(
 	callback *CCompletionCallbackT,
 ) (ret *CMediaRouterT) {
@@ -14698,10 +14710,10 @@ func (media_observer *CMediaObserverT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // The list of available media sinks has changed or
 // cef_media_router_t::NotifyCurrentSinks was called.
-///
+// /
 type OnSinksHandler interface {
 	OnSinks(
 		self *CMediaObserverT,
@@ -14709,10 +14721,10 @@ type OnSinksHandler interface {
 	)
 }
 
-///
+// /
 // The list of available media routes has changed or
 // cef_media_router_t::NotifyCurrentRoutes was called.
-///
+// /
 type OnRoutesHandler interface {
 	OnRoutes(
 		self *CMediaObserverT,
@@ -14720,9 +14732,9 @@ type OnRoutesHandler interface {
 	)
 }
 
-///
+// /
 // The connection state of |route| has changed.
-///
+// /
 type OnRouteStateChangedHandler interface {
 	OnRouteStateChanged(
 		self *CMediaObserverT,
@@ -14731,10 +14743,10 @@ type OnRouteStateChangedHandler interface {
 	)
 }
 
-///
+// /
 // A message was recieved over |route|. |message| is only valid for the scope
 // of this callback and should be copied if necessary.
-///
+// /
 type OnRouteMessageReceivedHandler interface {
 	OnRouteMessageReceived(
 		self *CMediaObserverT,
@@ -14929,9 +14941,9 @@ func (media_route *CMediaRouteT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the ID for this route.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaRouteT) GetId() (ret string) {
 
@@ -14945,9 +14957,9 @@ func (self *CMediaRouteT) GetId() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the source associated with this route.
-///
+// /
 func (self *CMediaRouteT) GetSource() (ret *CMediaSourceT) {
 
 	cRet := C.cefingo_media_route_get_source((*C.cef_media_route_t)(self.pc_media_route))
@@ -14956,9 +14968,9 @@ func (self *CMediaRouteT) GetSource() (ret *CMediaSourceT) {
 	return ret
 }
 
-///
+// /
 // Returns the sink associated with this route.
-///
+// /
 func (self *CMediaRouteT) GetSink() (ret *CMediaSinkT) {
 
 	cRet := C.cefingo_media_route_get_sink((*C.cef_media_route_t)(self.pc_media_route))
@@ -14967,9 +14979,9 @@ func (self *CMediaRouteT) GetSink() (ret *CMediaSinkT) {
 	return ret
 }
 
-///
+// /
 // Send a message over this route. |message| will be copied if necessary.
-///
+// /
 func (self *CMediaRouteT) SendRouteMessage(
 	message []byte,
 ) {
@@ -14981,10 +14993,10 @@ func (self *CMediaRouteT) SendRouteMessage(
 
 }
 
-///
+// /
 // Terminate this route. Will result in an asynchronous call to
 // cef_media_observer_t::OnRoutes on all registered observers.
-///
+// /
 func (self *CMediaRouteT) Terminate() {
 
 	C.cefingo_media_route_terminate((*C.cef_media_route_t)(self.pc_media_route))
@@ -15070,12 +15082,12 @@ func (media_route_create_callback *CMediaRouteCreateCallbackT) Unref() (ret bool
 	return ret
 }
 
-///
+// /
 // Method that will be executed when the route creation has finished. |result|
 // will be CEF_MRCR_OK if the route creation succeeded. |error| will be a
 // description of the error if the route creation failed. |route| is the
 // resulting route, or NULL if the route creation failed.
-///
+// /
 func (self *CMediaRouteCreateCallbackT) OnMediaRouteCreateFinished(
 	result CMediaRouteCreateResultT,
 	error string,
@@ -15172,9 +15184,9 @@ func (media_sink *CMediaSinkT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the ID for this sink.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetId() (ret string) {
 
@@ -15188,9 +15200,9 @@ func (self *CMediaSinkT) GetId() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the name of this sink.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetName() (ret string) {
 
@@ -15204,9 +15216,9 @@ func (self *CMediaSinkT) GetName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the description of this sink.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetDescription() (ret string) {
 
@@ -15220,9 +15232,9 @@ func (self *CMediaSinkT) GetDescription() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the icon type for this sink.
-///
+// /
 func (self *CMediaSinkT) GetIconType() (ret CMediaSinkIconTypeT) {
 
 	cRet := C.cefingo_media_sink_get_icon_type((*C.cef_media_sink_t)(self.pc_media_sink))
@@ -15231,9 +15243,9 @@ func (self *CMediaSinkT) GetIconType() (ret CMediaSinkIconTypeT) {
 	return ret
 }
 
-///
+// /
 // Asynchronously retrieves device info.
-///
+// /
 func (self *CMediaSinkT) GetDeviceInfo(
 	callback *CMediaSinkDeviceInfoCallbackT,
 ) {
@@ -15247,9 +15259,9 @@ func (self *CMediaSinkT) GetDeviceInfo(
 
 }
 
-///
+// /
 // Returns true (1) if this sink accepts content via Cast.
-///
+// /
 func (self *CMediaSinkT) IsCastSink() (ret bool) {
 
 	cRet := C.cefingo_media_sink_is_cast_sink((*C.cef_media_sink_t)(self.pc_media_sink))
@@ -15258,9 +15270,9 @@ func (self *CMediaSinkT) IsCastSink() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this sink accepts content via DIAL.
-///
+// /
 func (self *CMediaSinkT) IsDialSink() (ret bool) {
 
 	cRet := C.cefingo_media_sink_is_dial_sink((*C.cef_media_sink_t)(self.pc_media_sink))
@@ -15269,9 +15281,9 @@ func (self *CMediaSinkT) IsDialSink() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this sink is compatible with |source|.
-///
+// /
 func (self *CMediaSinkT) IsCompatibleWith(
 	source *CMediaSourceT,
 ) (ret bool) {
@@ -15366,10 +15378,10 @@ func (media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT) Unref() (r
 	return ret
 }
 
-///
+// /
 // Method that will be executed asyncronously once device information has been
 // retrieved.
-///
+// /
 func (self *CMediaSinkDeviceInfoCallbackT) OnMediaSinkDeviceInfo(
 	device_info *CMediaSinkDeviceInfoT,
 ) {
@@ -15459,9 +15471,9 @@ func (media_source *CMediaSourceT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the ID (media source URN or URL) for this source.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSourceT) GetId() (ret string) {
 
@@ -15475,9 +15487,9 @@ func (self *CMediaSourceT) GetId() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this source outputs its content via Cast.
-///
+// /
 func (self *CMediaSourceT) IsCastSource() (ret bool) {
 
 	cRet := C.cefingo_media_source_is_cast_source((*C.cef_media_source_t)(self.pc_media_source))
@@ -15486,9 +15498,9 @@ func (self *CMediaSourceT) IsCastSource() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this source outputs its content via DIAL.
-///
+// /
 func (self *CMediaSourceT) IsDialSource() (ret bool) {
 
 	cRet := C.cefingo_media_source_is_dial_source((*C.cef_media_source_t)(self.pc_media_source))
@@ -15587,12 +15599,12 @@ func (menu_button *CMenuButtonT) ToCLabelButtonT() *CLabelButtonT {
 	return newCLabelButtonT(p, byApp)
 }
 
-///
+// /
 // Show a menu with contents |menu_model|. |screen_point| specifies the menu
 // position in screen coordinates. |anchor_position| specifies how the menu
 // will be anchored relative to |screen_point|. This function should be called
 // from cef_menu_button_delegate_t::on_menu_button_pressed().
-///
+// /
 func (self *CMenuButtonT) ShowMenu(
 	menu_model *CMenuModelT,
 	screen_point *CPointT,
@@ -15608,17 +15620,17 @@ func (self *CMenuButtonT) ShowMenu(
 
 }
 
-///
+// /
 // Show the menu for this button. Results in a call to
 // cef_menu_button_delegate_t::on_menu_button_pressed().
-///
+// /
 func (self *CMenuButtonT) TriggerMenu() {
 
 	C.cefingo_menu_button_trigger_menu((*C.cef_menu_button_t)(self.pc_menu_button))
 
 }
 
-///
+// /
 // Create a new MenuButton. A |delegate| must be provided to call show_menu()
 // when the button is clicked. |text| will be shown on the MenuButton and used
 // as the default accessible name. If |with_frame| is true (1) the button will
@@ -15626,7 +15638,7 @@ func (self *CMenuButtonT) TriggerMenu() {
 // default minimum size of 70x33 DIP. If |with_frame| is false (0) the button
 // will only have a visible frame on hover/press, left alignment, less padding
 // and no default minimum size.
-///
+// /
 func MenuButtonCreate(
 	delegate *CMenuButtonDelegateT,
 	text string,
@@ -15811,12 +15823,12 @@ func (menu_button_delegate *CMenuButtonDelegateT) ToCButtonDelegateT() *CButtonD
 	return newCButtonDelegateT(p, byApp)
 }
 
-///
+// /
 // Called when |button| is pressed. Call cef_menu_button_t::show_menu() to
 // show a popup menu at |screen_point|. When showing a custom popup such as a
 // window keep a reference to |button_pressed_lock| until the popup is hidden
 // to maintain the pressed button state.
-///
+// /
 type OnMenuButtonPressedHandler interface {
 	OnMenuButtonPressed(
 		self *CMenuButtonDelegateT,
@@ -16103,9 +16115,9 @@ func (menu_model *CMenuModelT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this menu is a submenu.
-///
+// /
 func (self *CMenuModelT) IsSubMenu() (ret bool) {
 
 	cRet := C.cefingo_menu_model_is_sub_menu((*C.cef_menu_model_t)(self.pc_menu_model))
@@ -16114,9 +16126,9 @@ func (self *CMenuModelT) IsSubMenu() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Clears the menu. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) Clear() (ret bool) {
 
 	cRet := C.cefingo_menu_model_clear((*C.cef_menu_model_t)(self.pc_menu_model))
@@ -16125,9 +16137,9 @@ func (self *CMenuModelT) Clear() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the number of items in this menu.
-///
+// /
 func (self *CMenuModelT) GetCount() (ret bool) {
 
 	cRet := C.cefingo_menu_model_get_count((*C.cef_menu_model_t)(self.pc_menu_model))
@@ -16136,9 +16148,9 @@ func (self *CMenuModelT) GetCount() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Add a separator to the menu. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) AddSeparator() (ret bool) {
 
 	cRet := C.cefingo_menu_model_add_separator((*C.cef_menu_model_t)(self.pc_menu_model))
@@ -16147,9 +16159,9 @@ func (self *CMenuModelT) AddSeparator() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Add an item to the menu. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) AddItem(
 	command_id int,
 	label string,
@@ -16162,9 +16174,9 @@ func (self *CMenuModelT) AddItem(
 	return ret
 }
 
-///
+// /
 // Add a check item to the menu. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) AddCheckItem(
 	command_id int,
 	label string,
@@ -16177,10 +16189,10 @@ func (self *CMenuModelT) AddCheckItem(
 	return ret
 }
 
-///
+// /
 // Add a radio item to the menu. Only a single item with the specified
 // |group_id| can be checked at a time. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) AddRadioItem(
 	command_id int,
 	label string,
@@ -16194,9 +16206,9 @@ func (self *CMenuModelT) AddRadioItem(
 	return ret
 }
 
-///
+// /
 // Add a sub-menu to the menu. The new sub-menu is returned.
-///
+// /
 func (self *CMenuModelT) AddSubMenu(
 	command_id int,
 	label string,
@@ -16209,10 +16221,10 @@ func (self *CMenuModelT) AddSubMenu(
 	return ret
 }
 
-///
+// /
 // Insert a separator in the menu at the specified |index|. Returns true (1)
 // on success.
-///
+// /
 func (self *CMenuModelT) InsertSeparatorAt(
 	index int,
 ) (ret bool) {
@@ -16223,10 +16235,10 @@ func (self *CMenuModelT) InsertSeparatorAt(
 	return ret
 }
 
-///
+// /
 // Insert an item in the menu at the specified |index|. Returns true (1) on
 // success.
-///
+// /
 func (self *CMenuModelT) InsertItemAt(
 	index int,
 	command_id int,
@@ -16240,10 +16252,10 @@ func (self *CMenuModelT) InsertItemAt(
 	return ret
 }
 
-///
+// /
 // Insert a check item in the menu at the specified |index|. Returns true (1)
 // on success.
-///
+// /
 func (self *CMenuModelT) InsertCheckItemAt(
 	index int,
 	command_id int,
@@ -16257,11 +16269,11 @@ func (self *CMenuModelT) InsertCheckItemAt(
 	return ret
 }
 
-///
+// /
 // Insert a radio item in the menu at the specified |index|. Only a single
 // item with the specified |group_id| can be checked at a time. Returns true
 // (1) on success.
-///
+// /
 func (self *CMenuModelT) InsertRadioItemAt(
 	index int,
 	command_id int,
@@ -16276,10 +16288,10 @@ func (self *CMenuModelT) InsertRadioItemAt(
 	return ret
 }
 
-///
+// /
 // Insert a sub-menu in the menu at the specified |index|. The new sub-menu is
 // returned.
-///
+// /
 func (self *CMenuModelT) InsertSubMenuAt(
 	index int,
 	command_id int,
@@ -16293,10 +16305,10 @@ func (self *CMenuModelT) InsertSubMenuAt(
 	return ret
 }
 
-///
+// /
 // Removes the item with the specified |command_id|. Returns true (1) on
 // success.
-///
+// /
 func (self *CMenuModelT) Remove(
 	command_id int,
 ) (ret bool) {
@@ -16307,9 +16319,9 @@ func (self *CMenuModelT) Remove(
 	return ret
 }
 
-///
+// /
 // Removes the item at the specified |index|. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) RemoveAt(
 	index int,
 ) (ret bool) {
@@ -16320,10 +16332,10 @@ func (self *CMenuModelT) RemoveAt(
 	return ret
 }
 
-///
+// /
 // Returns the index associated with the specified |command_id| or -1 if not
 // found due to the command id not existing in the menu.
-///
+// /
 func (self *CMenuModelT) GetIndexOf(
 	command_id int,
 ) (ret bool) {
@@ -16334,10 +16346,10 @@ func (self *CMenuModelT) GetIndexOf(
 	return ret
 }
 
-///
+// /
 // Returns the command id at the specified |index| or -1 if not found due to
 // invalid range or the index being a separator.
-///
+// /
 func (self *CMenuModelT) GetCommandIdAt(
 	index int,
 ) (ret bool) {
@@ -16348,9 +16360,9 @@ func (self *CMenuModelT) GetCommandIdAt(
 	return ret
 }
 
-///
+// /
 // Sets the command id at the specified |index|. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetCommandIdAt(
 	index int,
 	command_id int,
@@ -16362,9 +16374,9 @@ func (self *CMenuModelT) SetCommandIdAt(
 	return ret
 }
 
-///
+// /
 // Returns the label for the specified |command_id| or NULL if not found.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMenuModelT) GetLabel(
 	command_id int,
@@ -16380,10 +16392,10 @@ func (self *CMenuModelT) GetLabel(
 	return ret
 }
 
-///
+// /
 // Returns the label at the specified |index| or NULL if not found due to
 // invalid range or the index being a separator.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMenuModelT) GetLabelAt(
 	index int,
@@ -16399,9 +16411,9 @@ func (self *CMenuModelT) GetLabelAt(
 	return ret
 }
 
-///
+// /
 // Sets the label for the specified |command_id|. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetLabel(
 	command_id int,
 	label string,
@@ -16414,9 +16426,9 @@ func (self *CMenuModelT) SetLabel(
 	return ret
 }
 
-///
+// /
 // Set the label at the specified |index|. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetLabelAt(
 	index int,
 	label string,
@@ -16429,9 +16441,9 @@ func (self *CMenuModelT) SetLabelAt(
 	return ret
 }
 
-///
+// /
 // Returns the item type for the specified |command_id|.
-///
+// /
 func (self *CMenuModelT) GetType(
 	command_id int,
 ) (ret CMenuItemTypeT) {
@@ -16442,9 +16454,9 @@ func (self *CMenuModelT) GetType(
 	return ret
 }
 
-///
+// /
 // Returns the item type at the specified |index|.
-///
+// /
 func (self *CMenuModelT) GetTypeAt(
 	index int,
 ) (ret CMenuItemTypeT) {
@@ -16455,9 +16467,9 @@ func (self *CMenuModelT) GetTypeAt(
 	return ret
 }
 
-///
+// /
 // Returns the group id for the specified |command_id| or -1 if invalid.
-///
+// /
 func (self *CMenuModelT) GetGroupId(
 	command_id int,
 ) (ret bool) {
@@ -16468,9 +16480,9 @@ func (self *CMenuModelT) GetGroupId(
 	return ret
 }
 
-///
+// /
 // Returns the group id at the specified |index| or -1 if invalid.
-///
+// /
 func (self *CMenuModelT) GetGroupIdAt(
 	index int,
 ) (ret bool) {
@@ -16481,10 +16493,10 @@ func (self *CMenuModelT) GetGroupIdAt(
 	return ret
 }
 
-///
+// /
 // Sets the group id for the specified |command_id|. Returns true (1) on
 // success.
-///
+// /
 func (self *CMenuModelT) SetGroupId(
 	command_id int,
 	group_id int,
@@ -16496,9 +16508,9 @@ func (self *CMenuModelT) SetGroupId(
 	return ret
 }
 
-///
+// /
 // Sets the group id at the specified |index|. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetGroupIdAt(
 	index int,
 	group_id int,
@@ -16510,9 +16522,9 @@ func (self *CMenuModelT) SetGroupIdAt(
 	return ret
 }
 
-///
+// /
 // Returns the submenu for the specified |command_id| or NULL if invalid.
-///
+// /
 func (self *CMenuModelT) GetSubMenu(
 	command_id int,
 ) (ret *CMenuModelT) {
@@ -16523,9 +16535,9 @@ func (self *CMenuModelT) GetSubMenu(
 	return ret
 }
 
-///
+// /
 // Returns the submenu at the specified |index| or NULL if invalid.
-///
+// /
 func (self *CMenuModelT) GetSubMenuAt(
 	index int,
 ) (ret *CMenuModelT) {
@@ -16536,9 +16548,9 @@ func (self *CMenuModelT) GetSubMenuAt(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the specified |command_id| is visible.
-///
+// /
 func (self *CMenuModelT) IsVisible(
 	command_id int,
 ) (ret bool) {
@@ -16549,9 +16561,9 @@ func (self *CMenuModelT) IsVisible(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the specified |index| is visible.
-///
+// /
 func (self *CMenuModelT) IsVisibleAt(
 	index int,
 ) (ret bool) {
@@ -16562,10 +16574,10 @@ func (self *CMenuModelT) IsVisibleAt(
 	return ret
 }
 
-///
+// /
 // Change the visibility of the specified |command_id|. Returns true (1) on
 // success.
-///
+// /
 func (self *CMenuModelT) SetVisible(
 	command_id int,
 	visible int,
@@ -16577,10 +16589,10 @@ func (self *CMenuModelT) SetVisible(
 	return ret
 }
 
-///
+// /
 // Change the visibility at the specified |index|. Returns true (1) on
 // success.
-///
+// /
 func (self *CMenuModelT) SetVisibleAt(
 	index int,
 	visible int,
@@ -16592,9 +16604,9 @@ func (self *CMenuModelT) SetVisibleAt(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the specified |command_id| is enabled.
-///
+// /
 func (self *CMenuModelT) IsEnabled(
 	command_id int,
 ) (ret bool) {
@@ -16605,9 +16617,9 @@ func (self *CMenuModelT) IsEnabled(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the specified |index| is enabled.
-///
+// /
 func (self *CMenuModelT) IsEnabledAt(
 	index int,
 ) (ret bool) {
@@ -16618,10 +16630,10 @@ func (self *CMenuModelT) IsEnabledAt(
 	return ret
 }
 
-///
+// /
 // Change the enabled status of the specified |command_id|. Returns true (1)
 // on success.
-///
+// /
 func (self *CMenuModelT) SetEnabled(
 	command_id int,
 	enabled int,
@@ -16633,10 +16645,10 @@ func (self *CMenuModelT) SetEnabled(
 	return ret
 }
 
-///
+// /
 // Change the enabled status at the specified |index|. Returns true (1) on
 // success.
-///
+// /
 func (self *CMenuModelT) SetEnabledAt(
 	index int,
 	enabled int,
@@ -16648,10 +16660,10 @@ func (self *CMenuModelT) SetEnabledAt(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the specified |command_id| is checked. Only applies to
 // check and radio items.
-///
+// /
 func (self *CMenuModelT) IsChecked(
 	command_id int,
 ) (ret bool) {
@@ -16662,10 +16674,10 @@ func (self *CMenuModelT) IsChecked(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the specified |index| is checked. Only applies to check
 // and radio items.
-///
+// /
 func (self *CMenuModelT) IsCheckedAt(
 	index int,
 ) (ret bool) {
@@ -16676,10 +16688,10 @@ func (self *CMenuModelT) IsCheckedAt(
 	return ret
 }
 
-///
+// /
 // Check the specified |command_id|. Only applies to check and radio items.
 // Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetChecked(
 	command_id int,
 	checked int,
@@ -16691,10 +16703,10 @@ func (self *CMenuModelT) SetChecked(
 	return ret
 }
 
-///
+// /
 // Check the specified |index|. Only applies to check and radio items. Returns
 // true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetCheckedAt(
 	index int,
 	checked int,
@@ -16706,10 +16718,10 @@ func (self *CMenuModelT) SetCheckedAt(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the specified |command_id| has a keyboard accelerator
 // assigned.
-///
+// /
 func (self *CMenuModelT) HasAccelerator(
 	command_id int,
 ) (ret bool) {
@@ -16720,10 +16732,10 @@ func (self *CMenuModelT) HasAccelerator(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the specified |index| has a keyboard accelerator
 // assigned.
-///
+// /
 func (self *CMenuModelT) HasAcceleratorAt(
 	index int,
 ) (ret bool) {
@@ -16734,10 +16746,10 @@ func (self *CMenuModelT) HasAcceleratorAt(
 	return ret
 }
 
-///
+// /
 // Set the keyboard accelerator for the specified |command_id|. |key_code| can
 // be any virtual key or character value. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetAccelerator(
 	command_id int,
 	key_code int,
@@ -16752,10 +16764,10 @@ func (self *CMenuModelT) SetAccelerator(
 	return ret
 }
 
-///
+// /
 // Set the keyboard accelerator at the specified |index|. |key_code| can be
 // any virtual key or character value. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetAcceleratorAt(
 	index int,
 	key_code int,
@@ -16770,10 +16782,10 @@ func (self *CMenuModelT) SetAcceleratorAt(
 	return ret
 }
 
-///
+// /
 // Remove the keyboard accelerator for the specified |command_id|. Returns
 // true (1) on success.
-///
+// /
 func (self *CMenuModelT) RemoveAccelerator(
 	command_id int,
 ) (ret bool) {
@@ -16784,10 +16796,10 @@ func (self *CMenuModelT) RemoveAccelerator(
 	return ret
 }
 
-///
+// /
 // Remove the keyboard accelerator at the specified |index|. Returns true (1)
 // on success.
-///
+// /
 func (self *CMenuModelT) RemoveAcceleratorAt(
 	index int,
 ) (ret bool) {
@@ -16798,10 +16810,10 @@ func (self *CMenuModelT) RemoveAcceleratorAt(
 	return ret
 }
 
-///
+// /
 // Retrieves the keyboard accelerator for the specified |command_id|. Returns
 // true (1) on success.
-///
+// /
 func (self *CMenuModelT) GetAccelerator(
 	command_id int,
 ) (ret bool, key_code int, shift_pressed int, ctrl_pressed int, alt_pressed int) {
@@ -16821,10 +16833,10 @@ func (self *CMenuModelT) GetAccelerator(
 	return ret, key_code, shift_pressed, ctrl_pressed, alt_pressed
 }
 
-///
+// /
 // Retrieves the keyboard accelerator for the specified |index|. Returns true
 // (1) on success.
-///
+// /
 func (self *CMenuModelT) GetAcceleratorAt(
 	index int,
 ) (ret bool, key_code int, shift_pressed int, ctrl_pressed int, alt_pressed int) {
@@ -16844,12 +16856,12 @@ func (self *CMenuModelT) GetAcceleratorAt(
 	return ret, key_code, shift_pressed, ctrl_pressed, alt_pressed
 }
 
-///
+// /
 // Set the explicit color for |command_id| and |color_type| to |color|.
 // Specify a |color| value of 0 to remove the explicit color. If no explicit
 // color or default color is set for |color_type| then the system color will
 // be used. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetColor(
 	command_id int,
 	color_type CMenuColorTypeT,
@@ -16862,13 +16874,13 @@ func (self *CMenuModelT) SetColor(
 	return ret
 }
 
-///
+// /
 // Set the explicit color for |command_id| and |index| to |color|. Specify a
 // |color| value of 0 to remove the explicit color. Specify an |index| value
 // of -1 to set the default color for items that do not have an explicit color
 // set. If no explicit color or default color is set for |color_type| then the
 // system color will be used. Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) SetColorAt(
 	index int,
 	color_type CMenuColorTypeT,
@@ -16881,11 +16893,11 @@ func (self *CMenuModelT) SetColorAt(
 	return ret
 }
 
-///
+// /
 // Returns in |color| the color that was explicitly set for |command_id| and
 // |color_type|. If a color was not set then 0 will be returned in |color|.
 // Returns true (1) on success.
-///
+// /
 func (self *CMenuModelT) GetColor(
 	command_id int,
 	color_type CMenuColorTypeT,
@@ -16898,12 +16910,12 @@ func (self *CMenuModelT) GetColor(
 	return ret
 }
 
-///
+// /
 // Returns in |color| the color that was explicitly set for |command_id| and
 // |color_type|. Specify an |index| value of -1 to return the default color in
 // |color|. If a color was not set then 0 will be returned in |color|. Returns
 // true (1) on success.
-///
+// /
 func (self *CMenuModelT) GetColorAt(
 	index int,
 	color_type CMenuColorTypeT,
@@ -16916,18 +16928,20 @@ func (self *CMenuModelT) GetColorAt(
 	return ret
 }
 
-///
+// /
 // Sets the font list for the specified |command_id|. If |font_list| is NULL
 // the system font will be used. Returns true (1) on success. The format is
 // &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;, where: - FONT_FAMILY_LIST is a comma-
 // separated list of font family names, - STYLES is an optional space-
 // separated list of style names (case-sensitive
-//   &quot;Bold&quot; and &quot;Italic&quot; are supported), and
+//
+//	&quot;Bold&quot; and &quot;Italic&quot; are supported), and
+//
 // - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
 //
 // Here are examples of valid font description strings: - &quot;Arial, Helvetica,
 // Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
-///
+// /
 func (self *CMenuModelT) SetFontList(
 	command_id int,
 	font_list string,
@@ -16940,19 +16954,21 @@ func (self *CMenuModelT) SetFontList(
 	return ret
 }
 
-///
+// /
 // Sets the font list for the specified |index|. Specify an |index| value of
 // -1 to set the default font. If |font_list| is NULL the system font will be
 // used. Returns true (1) on success. The format is
 // &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;, where: - FONT_FAMILY_LIST is a comma-
 // separated list of font family names, - STYLES is an optional space-
 // separated list of style names (case-sensitive
-//   &quot;Bold&quot; and &quot;Italic&quot; are supported), and
+//
+//	&quot;Bold&quot; and &quot;Italic&quot; are supported), and
+//
 // - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
 //
 // Here are examples of valid font description strings: - &quot;Arial, Helvetica,
 // Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
-///
+// /
 func (self *CMenuModelT) SetFontListAt(
 	index int,
 	font_list string,
@@ -16965,9 +16981,9 @@ func (self *CMenuModelT) SetFontListAt(
 	return ret
 }
 
-///
+// /
 // Create a new MenuModel with the specified |delegate|.
-///
+// /
 func MenuModelCreate(
 	delegate *CMenuModelDelegateT,
 ) (ret *CMenuModelT) {
@@ -17065,10 +17081,10 @@ func (menu_model_delegate *CMenuModelDelegateT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Perform the action associated with the specified |command_id| and optional
 // |event_flags|.
-///
+// /
 type ExecuteCommandHandler interface {
 	ExecuteCommand(
 		self *CMenuModelDelegateT,
@@ -17078,10 +17094,10 @@ type ExecuteCommandHandler interface {
 	)
 }
 
-///
+// /
 // Called when the user moves the mouse outside the menu and over the owning
 // window.
-///
+// /
 type MouseOutsideMenuHandler interface {
 	MouseOutsideMenu(
 		self *CMenuModelDelegateT,
@@ -17090,10 +17106,10 @@ type MouseOutsideMenuHandler interface {
 	)
 }
 
-///
+// /
 // Called on unhandled open submenu keyboard commands. |is_rtl| will be true
 // (1) if the menu is displaying a right-to-left language.
-///
+// /
 type UnhandledOpenSubmenuHandler interface {
 	UnhandledOpenSubmenu(
 		self *CMenuModelDelegateT,
@@ -17102,10 +17118,10 @@ type UnhandledOpenSubmenuHandler interface {
 	)
 }
 
-///
+// /
 // Called on unhandled close submenu keyboard commands. |is_rtl| will be true
 // (1) if the menu is displaying a right-to-left language.
-///
+// /
 type UnhandledCloseSubmenuHandler interface {
 	UnhandledCloseSubmenu(
 		self *CMenuModelDelegateT,
@@ -17114,9 +17130,9 @@ type UnhandledCloseSubmenuHandler interface {
 	)
 }
 
-///
+// /
 // The menu is about to show.
-///
+// /
 type MenuWillShowHandler interface {
 	MenuWillShow(
 		self *CMenuModelDelegateT,
@@ -17124,9 +17140,9 @@ type MenuWillShowHandler interface {
 	)
 }
 
-///
+// /
 // The menu has closed.
-///
+// /
 type MenuClosedHandler interface {
 	MenuClosed(
 		self *CMenuModelDelegateT,
@@ -17134,10 +17150,10 @@ type MenuClosedHandler interface {
 	)
 }
 
-///
+// /
 // Optionally modify a menu item label. Return true (1) if |label| was
 // modified.
-///
+// /
 type FormatLabelHandler interface {
 	FormatLabel(
 		self *CMenuModelDelegateT,
@@ -17360,10 +17376,10 @@ func (navigation_entry *CNavigationEntryT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid. Do not call any other functions
 // if this function returns false (0).
-///
+// /
 func (self *CNavigationEntryT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_navigation_entry_is_valid((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
@@ -17372,10 +17388,10 @@ func (self *CNavigationEntryT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the actual URL of the page. For some pages this may be data: URL or
 // similar. Use get_display_url() to return a display-friendly version.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetUrl() (ret string) {
 
@@ -17389,9 +17405,9 @@ func (self *CNavigationEntryT) GetUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns a display-friendly version of the URL.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetDisplayUrl() (ret string) {
 
@@ -17405,9 +17421,9 @@ func (self *CNavigationEntryT) GetDisplayUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the original URL that was entered by the user before any redirects.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetOriginalUrl() (ret string) {
 
@@ -17421,9 +17437,9 @@ func (self *CNavigationEntryT) GetOriginalUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the title set by the page. This value may be NULL.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetTitle() (ret string) {
 
@@ -17437,10 +17453,10 @@ func (self *CNavigationEntryT) GetTitle() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the transition type which indicates what the user did to move to
 // this page from the previous page.
-///
+// /
 func (self *CNavigationEntryT) GetTransitionType() (ret CTransitionTypeT) {
 
 	cRet := C.cefingo_navigation_entry_get_transition_type((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
@@ -17449,9 +17465,9 @@ func (self *CNavigationEntryT) GetTransitionType() (ret CTransitionTypeT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this navigation includes post data.
-///
+// /
 func (self *CNavigationEntryT) HasPostData() (ret bool) {
 
 	cRet := C.cefingo_navigation_entry_has_post_data((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
@@ -17460,11 +17476,11 @@ func (self *CNavigationEntryT) HasPostData() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the time for the last known successful navigation completion. A
 // navigation may be completed more than once if the page is reloaded. May be
 // 0 if the navigation has not yet completed.
-///
+// /
 func (self *CNavigationEntryT) GetCompletionTime() (ret CTimeT) {
 
 	cRet := C.cefingo_navigation_entry_get_completion_time((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
@@ -17473,11 +17489,11 @@ func (self *CNavigationEntryT) GetCompletionTime() (ret CTimeT) {
 	return ret
 }
 
-///
+// /
 // Returns the HTTP status code for the last known successful navigation
 // response. May be 0 if the response has not yet been received or if the
 // navigation has not yet completed.
-///
+// /
 func (self *CNavigationEntryT) GetHttpStatusCode() (ret bool) {
 
 	cRet := C.cefingo_navigation_entry_get_http_status_code((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
@@ -17486,9 +17502,9 @@ func (self *CNavigationEntryT) GetHttpStatusCode() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the SSL information for this navigation entry.
-///
+// /
 func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 
 	cRet := C.cefingo_navigation_entry_get_sslstatus((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
@@ -17499,7 +17515,7 @@ func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 
 // cef_origin_whitelist_capi.h, include/capi/cef_origin_whitelist_capi.h:85:16,
 
-///
+// /
 // Add an entry to the cross-origin access whitelist.
 //
 // The same-origin policy restricts how scripts hosted from different origins
@@ -17534,7 +17550,7 @@ func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 //
 // This function may be called on any thread. Returns false (0) if
 // |source_origin| is invalid or the whitelist cannot be accessed.
-///
+// /
 func AddCrossOriginWhitelistEntry(
 	source_origin string,
 	target_protocol string,
@@ -17551,10 +17567,10 @@ func AddCrossOriginWhitelistEntry(
 	return ret
 }
 
-///
+// /
 // Remove an entry from the cross-origin access whitelist. Returns false (0) if
 // |source_origin| is invalid or the whitelist cannot be accessed.
-///
+// /
 func RemoveCrossOriginWhitelistEntry(
 	source_origin string,
 	target_protocol string,
@@ -17571,10 +17587,10 @@ func RemoveCrossOriginWhitelistEntry(
 	return ret
 }
 
-///
+// /
 // Remove all entries from the cross-origin access whitelist. Returns false (0)
 // if the whitelist cannot be accessed.
-///
+// /
 func ClearCrossOriginWhitelist() (ret bool) {
 
 	cRet := C.cef_clear_cross_origin_whitelist()
@@ -17667,9 +17683,9 @@ func (overlay_controller *COverlayControllerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid.
-///
+// /
 func (self *COverlayControllerT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_overlay_controller_is_valid((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17678,9 +17694,9 @@ func (self *COverlayControllerT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is the same as |that| object.
-///
+// /
 func (self *COverlayControllerT) IsSame(
 	that *COverlayControllerT,
 ) (ret bool) {
@@ -17696,9 +17712,9 @@ func (self *COverlayControllerT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns the contents View for this overlay.
-///
+// /
 func (self *COverlayControllerT) GetContentsView() (ret *CViewT) {
 
 	cRet := C.cefingo_overlay_controller_get_contents_view((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17707,10 +17723,10 @@ func (self *COverlayControllerT) GetContentsView() (ret *CViewT) {
 	return ret
 }
 
-///
+// /
 // Returns the top-level Window hosting this overlay. Use this function
 // instead of calling get_window() on the contents View.
-///
+// /
 func (self *COverlayControllerT) GetWindow() (ret *CWindowT) {
 
 	cRet := C.cefingo_overlay_controller_get_window((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17719,9 +17735,9 @@ func (self *COverlayControllerT) GetWindow() (ret *CWindowT) {
 	return ret
 }
 
-///
+// /
 // Returns the docking mode for this overlay.
-///
+// /
 func (self *COverlayControllerT) GetDockingMode() (ret CDockingModeT) {
 
 	cRet := C.cefingo_overlay_controller_get_docking_mode((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17730,16 +17746,16 @@ func (self *COverlayControllerT) GetDockingMode() (ret CDockingModeT) {
 	return ret
 }
 
-///
+// /
 // Destroy this overlay.
-///
+// /
 func (self *COverlayControllerT) Destroy() {
 
 	C.cefingo_overlay_controller_destroy((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
 
 }
 
-///
+// /
 // Sets the bounds (size and position) of this overlay. This will set the
 // bounds of the contents View to match and trigger a re-layout if necessary.
 // |bounds| is in parent coordinates and any insets configured on this overlay
@@ -17748,7 +17764,7 @@ func (self *COverlayControllerT) Destroy() {
 // insets of this overlay and/or layout of the contents View and call
 // size_to_preferred_size() instead to calculate the new size and re-position
 // the overlay if necessary.
-///
+// /
 func (self *COverlayControllerT) SetBounds(
 	bounds *CRectT,
 ) {
@@ -17757,10 +17773,10 @@ func (self *COverlayControllerT) SetBounds(
 
 }
 
-///
+// /
 // Returns the bounds (size and position) of this overlay in parent
 // coordinates.
-///
+// /
 func (self *COverlayControllerT) GetBounds() (ret CRectT) {
 
 	cRet := C.cefingo_overlay_controller_get_bounds((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17769,10 +17785,10 @@ func (self *COverlayControllerT) GetBounds() (ret CRectT) {
 	return ret
 }
 
-///
+// /
 // Returns the bounds (size and position) of this overlay in DIP screen
 // coordinates.
-///
+// /
 func (self *COverlayControllerT) GetBoundsInScreen() (ret CRectT) {
 
 	cRet := C.cefingo_overlay_controller_get_bounds_in_screen((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17781,7 +17797,7 @@ func (self *COverlayControllerT) GetBoundsInScreen() (ret CRectT) {
 	return ret
 }
 
-///
+// /
 // Sets the size of this overlay without changing the position. This will set
 // the size of the contents View to match and trigger a re-layout if
 // necessary. |size| is in parent coordinates and any insets configured on
@@ -17790,7 +17806,7 @@ func (self *COverlayControllerT) GetBoundsInScreen() (ret CRectT) {
 // modes modify the insets of this overlay and/or layout of the contents View
 // and call size_to_preferred_size() instead to calculate the new size and re-
 // position the overlay if necessary.
-///
+// /
 func (self *COverlayControllerT) SetSize(
 	size *CSizeT,
 ) {
@@ -17799,9 +17815,9 @@ func (self *COverlayControllerT) SetSize(
 
 }
 
-///
+// /
 // Returns the size of this overlay in parent coordinates.
-///
+// /
 func (self *COverlayControllerT) GetSize() (ret CSizeT) {
 
 	cRet := C.cefingo_overlay_controller_get_size((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17810,7 +17826,7 @@ func (self *COverlayControllerT) GetSize() (ret CSizeT) {
 	return ret
 }
 
-///
+// /
 // Sets the position of this overlay without changing the size. |position| is
 // in parent coordinates and any insets configured on this overlay will be
 // ignored. Use this function only for overlays created with a docking mode
@@ -17818,7 +17834,7 @@ func (self *COverlayControllerT) GetSize() (ret CSizeT) {
 // insets of this overlay and/or layout of the contents View and call
 // size_to_preferred_size() instead to calculate the new size and re-position
 // the overlay if necessary.
-///
+// /
 func (self *COverlayControllerT) SetPosition(
 	position *CPointT,
 ) {
@@ -17827,9 +17843,9 @@ func (self *COverlayControllerT) SetPosition(
 
 }
 
-///
+// /
 // Returns the position of this overlay in parent coordinates.
-///
+// /
 func (self *COverlayControllerT) GetPosition() (ret CPointT) {
 
 	cRet := C.cefingo_overlay_controller_get_position((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17838,11 +17854,11 @@ func (self *COverlayControllerT) GetPosition() (ret CPointT) {
 	return ret
 }
 
-///
+// /
 // Sets the insets for this overlay. |insets| is in parent coordinates. Use
 // this function only for overlays created with a docking mode value other
 // than CEF_DOCKING_MODE_CUSTOM.
-///
+// /
 func (self *COverlayControllerT) SetInsets(
 	insets *CInsetsT,
 ) {
@@ -17851,9 +17867,9 @@ func (self *COverlayControllerT) SetInsets(
 
 }
 
-///
+// /
 // Returns the insets for this overlay in parent coordinates.
-///
+// /
 func (self *COverlayControllerT) GetInsets() (ret CInsetsT) {
 
 	cRet := C.cefingo_overlay_controller_get_insets((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17862,25 +17878,25 @@ func (self *COverlayControllerT) GetInsets() (ret CInsetsT) {
 	return ret
 }
 
-///
+// /
 // Size this overlay to its preferred size and trigger a re-layout if
 // necessary. The position of overlays created with a docking mode value of
 // CEF_DOCKING_MODE_CUSTOM will not be modified by calling this function. With
 // other docking modes this function may re-position the overlay if necessary
 // to accommodate the new size and any insets configured on the contents View.
-///
+// /
 func (self *COverlayControllerT) SizeToPreferredSize() {
 
 	C.cefingo_overlay_controller_size_to_preferred_size((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
 
 }
 
-///
+// /
 // Sets whether this overlay is visible. Overlays are hidden by default. If
 // this overlay is hidden then it and any child Views will not be drawn and,
 // if any of those Views currently have focus, then focus will also be
 // cleared. Painting is scheduled as needed.
-///
+// /
 func (self *COverlayControllerT) SetVisible(
 	visible int,
 ) {
@@ -17889,12 +17905,12 @@ func (self *COverlayControllerT) SetVisible(
 
 }
 
-///
+// /
 // Returns whether this overlay is visible. A View may be visible but still
 // not drawn in a Window if any parent Views are hidden. Call is_drawn() to
 // determine whether this overlay and all parent Views are visible and will be
 // drawn.
-///
+// /
 func (self *COverlayControllerT) IsVisible() (ret bool) {
 
 	cRet := C.cefingo_overlay_controller_is_visible((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -17903,12 +17919,12 @@ func (self *COverlayControllerT) IsVisible() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns whether this overlay is visible and drawn in a Window. A View is
 // drawn if it and all parent Views are visible. To determine if the
 // containing Window is visible to the user on-screen call is_visible() on the
 // Window.
-///
+// /
 func (self *COverlayControllerT) IsDrawn() (ret bool) {
 
 	cRet := C.cefingo_overlay_controller_is_drawn((*C.cef_overlay_controller_t)(self.pc_overlay_controller))
@@ -18006,9 +18022,9 @@ func (panel *CPanelT) ToCViewT() *CViewT {
 	return newCViewT(p, byApp)
 }
 
-///
+// /
 // Returns this Panel as a Window or NULL if this is not a Window.
-///
+// /
 func (self *CPanelT) AsWindow() (ret *CWindowT) {
 
 	cRet := C.cefingo_panel_as_window((*C.cef_panel_t)(self.pc_panel))
@@ -18017,9 +18033,9 @@ func (self *CPanelT) AsWindow() (ret *CWindowT) {
 	return ret
 }
 
-///
+// /
 // Set this Panel&#39;s Layout to FillLayout and return the FillLayout object.
-///
+// /
 func (self *CPanelT) SetToFillLayout() (ret *CFillLayoutT) {
 
 	cRet := C.cefingo_panel_set_to_fill_layout((*C.cef_panel_t)(self.pc_panel))
@@ -18028,9 +18044,9 @@ func (self *CPanelT) SetToFillLayout() (ret *CFillLayoutT) {
 	return ret
 }
 
-///
+// /
 // Set this Panel&#39;s Layout to BoxLayout and return the BoxLayout object.
-///
+// /
 func (self *CPanelT) SetToBoxLayout(
 	settings *CBoxLayoutSettingsT,
 ) (ret *CBoxLayoutT) {
@@ -18041,9 +18057,9 @@ func (self *CPanelT) SetToBoxLayout(
 	return ret
 }
 
-///
+// /
 // Get the Layout.
-///
+// /
 func (self *CPanelT) GetLayout() (ret *CLayoutT) {
 
 	cRet := C.cefingo_panel_get_layout((*C.cef_panel_t)(self.pc_panel))
@@ -18052,19 +18068,19 @@ func (self *CPanelT) GetLayout() (ret *CLayoutT) {
 	return ret
 }
 
-///
+// /
 // Lay out the child Views (set their bounds based on sizing heuristics
 // specific to the current Layout).
-///
+// /
 func (self *CPanelT) Layout() {
 
 	C.cefingo_panel_layout((*C.cef_panel_t)(self.pc_panel))
 
 }
 
-///
+// /
 // Add a child View.
-///
+// /
 func (self *CPanelT) AddChildView(
 	view *CViewT,
 ) {
@@ -18078,10 +18094,10 @@ func (self *CPanelT) AddChildView(
 
 }
 
-///
+// /
 // Add a child View at the specified |index|. If |index| matches the result of
 // GetChildCount() then the View will be added at the end.
-///
+// /
 func (self *CPanelT) AddChildViewAt(
 	view *CViewT,
 	index int,
@@ -18096,10 +18112,10 @@ func (self *CPanelT) AddChildViewAt(
 
 }
 
-///
+// /
 // Move the child View to the specified |index|. A negative value for |index|
 // will move the View to the end.
-///
+// /
 func (self *CPanelT) ReorderChildView(
 	view *CViewT,
 	index int,
@@ -18114,9 +18130,9 @@ func (self *CPanelT) ReorderChildView(
 
 }
 
-///
+// /
 // Remove a child View. The View can then be added to another Panel.
-///
+// /
 func (self *CPanelT) RemoveChildView(
 	view *CViewT,
 ) {
@@ -18130,19 +18146,19 @@ func (self *CPanelT) RemoveChildView(
 
 }
 
-///
+// /
 // Remove all child Views. The removed Views will be deleted if the client
 // holds no references to them.
-///
+// /
 func (self *CPanelT) RemoveAllChildViews() {
 
 	C.cefingo_panel_remove_all_child_views((*C.cef_panel_t)(self.pc_panel))
 
 }
 
-///
+// /
 // Returns the number of child Views.
-///
+// /
 func (self *CPanelT) GetChildViewCount() (ret int64) {
 
 	cRet := C.cefingo_panel_get_child_view_count((*C.cef_panel_t)(self.pc_panel))
@@ -18151,9 +18167,9 @@ func (self *CPanelT) GetChildViewCount() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns the child View at the specified |index|.
-///
+// /
 func (self *CPanelT) GetChildViewAt(
 	index int,
 ) (ret *CViewT) {
@@ -18164,9 +18180,9 @@ func (self *CPanelT) GetChildViewAt(
 	return ret
 }
 
-///
+// /
 // Create a new Panel.
-///
+// /
 func PanelCreate(
 	delegate *CPanelDelegateT,
 ) (ret *CPanelT) {
@@ -18515,9 +18531,9 @@ func (print_dialog_callback *CPrintDialogCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Continue printing with the specified |settings|.
-///
+// /
 func (self *CPrintDialogCallbackT) Cont(
 	settings *CPrintSettingsT,
 ) {
@@ -18531,9 +18547,9 @@ func (self *CPrintDialogCallbackT) Cont(
 
 }
 
-///
+// /
 // Cancel the printing.
-///
+// /
 func (self *CPrintDialogCallbackT) Cancel() {
 
 	C.cefingo_print_dialog_callback_cancel((*C.cef_print_dialog_callback_t)(self.pc_print_dialog_callback))
@@ -18618,9 +18634,9 @@ func (print_job_callback *CPrintJobCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Indicate completion of the print job.
-///
+// /
 func (self *CPrintJobCallbackT) Cont() {
 
 	C.cefingo_print_job_callback_cont((*C.cef_print_job_callback_t)(self.pc_print_job_callback))
@@ -18707,12 +18723,12 @@ func (print_handler *CPrintHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called when printing has started for the specified |browser|. This function
 // will be called before the other OnPrint*() functions and irrespective of
 // how printing was initiated (e.g. cef_browser_host_t::print(), JavaScript
 // window.print() or PDF extension print button).
-///
+// /
 type OnPrintStartHandler interface {
 	OnPrintStart(
 		self *CPrintHandlerT,
@@ -18720,11 +18736,11 @@ type OnPrintStartHandler interface {
 	)
 }
 
-///
+// /
 // Synchronize |settings| with client state. If |get_defaults| is true (1)
 // then populate |settings| with the default print settings. Do not keep a
 // reference to |settings| outside of this callback.
-///
+// /
 type OnPrintSettingsHandler interface {
 	OnPrintSettings(
 		self *CPrintHandlerT,
@@ -18734,11 +18750,11 @@ type OnPrintSettingsHandler interface {
 	)
 }
 
-///
+// /
 // Show the print dialog. Execute |callback| once the dialog is dismissed.
 // Return true (1) if the dialog will be displayed or false (0) to cancel the
 // printing immediately.
-///
+// /
 type OnPrintDialogHandler interface {
 	OnPrintDialog(
 		self *CPrintHandlerT,
@@ -18748,11 +18764,11 @@ type OnPrintDialogHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Send the print job to the printer. Execute |callback| once the job is
 // completed. Return true (1) if the job will proceed or false (0) to cancel
 // the job immediately.
-///
+// /
 type OnPrintJobHandler interface {
 	OnPrintJob(
 		self *CPrintHandlerT,
@@ -18763,9 +18779,9 @@ type OnPrintJobHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Reset client state related to printing.
-///
+// /
 type OnPrintResetHandler interface {
 	OnPrintReset(
 		self *CPrintHandlerT,
@@ -18773,10 +18789,10 @@ type OnPrintResetHandler interface {
 	)
 }
 
-///
+// /
 // Return the PDF paper size in device units. Used in combination with
 // cef_browser_host_t::print_to_pdf().
-///
+// /
 type GetPdfPaperSizeHandler interface {
 	GetPdfPaperSize(
 		self *CPrintHandlerT,
@@ -18989,10 +19005,10 @@ func (print_settings *CPrintSettingsT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid. Do not call any other functions
 // if this function returns false (0).
-///
+// /
 func (self *CPrintSettingsT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_print_settings_is_valid((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19001,10 +19017,10 @@ func (self *CPrintSettingsT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the values of this object are read-only. Some APIs may
 // expose read-only objects.
-///
+// /
 func (self *CPrintSettingsT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_print_settings_is_read_only((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19013,9 +19029,9 @@ func (self *CPrintSettingsT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set the page orientation.
-///
+// /
 func (self *CPrintSettingsT) SetOrientation(
 	landscape int,
 ) {
@@ -19024,9 +19040,9 @@ func (self *CPrintSettingsT) SetOrientation(
 
 }
 
-///
+// /
 // Returns true (1) if the orientation is landscape.
-///
+// /
 func (self *CPrintSettingsT) IsLandscape() (ret bool) {
 
 	cRet := C.cefingo_print_settings_is_landscape((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19035,11 +19051,11 @@ func (self *CPrintSettingsT) IsLandscape() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set the printer printable area in device units. Some platforms already
 // provide flipped area. Set |landscape_needs_flip| to false (0) on those
 // platforms to avoid double flipping.
-///
+// /
 func (self *CPrintSettingsT) SetPrinterPrintableArea(
 	physical_size_device_units *CSizeT,
 	printable_area_device_units *CRectT,
@@ -19050,9 +19066,9 @@ func (self *CPrintSettingsT) SetPrinterPrintableArea(
 
 }
 
-///
+// /
 // Set the device name.
-///
+// /
 func (self *CPrintSettingsT) SetDeviceName(
 	name string,
 ) {
@@ -19062,9 +19078,9 @@ func (self *CPrintSettingsT) SetDeviceName(
 
 }
 
-///
+// /
 // Get the device name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CPrintSettingsT) GetDeviceName() (ret string) {
 
@@ -19078,9 +19094,9 @@ func (self *CPrintSettingsT) GetDeviceName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the DPI (dots per inch).
-///
+// /
 func (self *CPrintSettingsT) SetDpi(
 	dpi int,
 ) {
@@ -19089,9 +19105,9 @@ func (self *CPrintSettingsT) SetDpi(
 
 }
 
-///
+// /
 // Get the DPI (dots per inch).
-///
+// /
 func (self *CPrintSettingsT) GetDpi() (ret bool) {
 
 	cRet := C.cefingo_print_settings_get_dpi((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19100,9 +19116,9 @@ func (self *CPrintSettingsT) GetDpi() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set the page ranges.
-///
+// /
 func (self *CPrintSettingsT) SetPageRanges(
 	rangesCount int64,
 	ranges *CRangeT,
@@ -19112,9 +19128,9 @@ func (self *CPrintSettingsT) SetPageRanges(
 
 }
 
-///
+// /
 // Returns the number of page ranges that currently exist.
-///
+// /
 func (self *CPrintSettingsT) GetPageRangesCount() (ret int64) {
 
 	cRet := C.cefingo_print_settings_get_page_ranges_count((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19123,9 +19139,9 @@ func (self *CPrintSettingsT) GetPageRangesCount() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Set whether only the selection will be printed.
-///
+// /
 func (self *CPrintSettingsT) SetSelectionOnly(
 	selection_only int,
 ) {
@@ -19134,9 +19150,9 @@ func (self *CPrintSettingsT) SetSelectionOnly(
 
 }
 
-///
+// /
 // Returns true (1) if only the selection will be printed.
-///
+// /
 func (self *CPrintSettingsT) IsSelectionOnly() (ret bool) {
 
 	cRet := C.cefingo_print_settings_is_selection_only((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19145,9 +19161,9 @@ func (self *CPrintSettingsT) IsSelectionOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set whether pages will be collated.
-///
+// /
 func (self *CPrintSettingsT) SetCollate(
 	collate int,
 ) {
@@ -19156,9 +19172,9 @@ func (self *CPrintSettingsT) SetCollate(
 
 }
 
-///
+// /
 // Returns true (1) if pages will be collated.
-///
+// /
 func (self *CPrintSettingsT) WillCollate() (ret bool) {
 
 	cRet := C.cefingo_print_settings_will_collate((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19167,9 +19183,9 @@ func (self *CPrintSettingsT) WillCollate() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set the color model.
-///
+// /
 func (self *CPrintSettingsT) SetColorModel(
 	model CColorModelT,
 ) {
@@ -19178,9 +19194,9 @@ func (self *CPrintSettingsT) SetColorModel(
 
 }
 
-///
+// /
 // Get the color model.
-///
+// /
 func (self *CPrintSettingsT) GetColorModel() (ret CColorModelT) {
 
 	cRet := C.cefingo_print_settings_get_color_model((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19189,9 +19205,9 @@ func (self *CPrintSettingsT) GetColorModel() (ret CColorModelT) {
 	return ret
 }
 
-///
+// /
 // Set the number of copies.
-///
+// /
 func (self *CPrintSettingsT) SetCopies(
 	copies int,
 ) {
@@ -19200,9 +19216,9 @@ func (self *CPrintSettingsT) SetCopies(
 
 }
 
-///
+// /
 // Get the number of copies.
-///
+// /
 func (self *CPrintSettingsT) GetCopies() (ret bool) {
 
 	cRet := C.cefingo_print_settings_get_copies((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19211,9 +19227,9 @@ func (self *CPrintSettingsT) GetCopies() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set the duplex mode.
-///
+// /
 func (self *CPrintSettingsT) SetDuplexMode(
 	mode CDuplexModeT,
 ) {
@@ -19222,9 +19238,9 @@ func (self *CPrintSettingsT) SetDuplexMode(
 
 }
 
-///
+// /
 // Get the duplex mode.
-///
+// /
 func (self *CPrintSettingsT) GetDuplexMode() (ret CDuplexModeT) {
 
 	cRet := C.cefingo_print_settings_get_duplex_mode((*C.cef_print_settings_t)(self.pc_print_settings))
@@ -19233,9 +19249,9 @@ func (self *CPrintSettingsT) GetDuplexMode() (ret CDuplexModeT) {
 	return ret
 }
 
-///
+// /
 // Create a new cef_print_settings_t object.
-///
+// /
 func PrintSettingsCreate() (ret *CPrintSettingsT) {
 
 	cRet := C.cef_print_settings_create()
@@ -19324,10 +19340,10 @@ func (process_message *CProcessMessageT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid. Do not call any other functions
 // if this function returns false (0).
-///
+// /
 func (self *CProcessMessageT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_process_message_is_valid((*C.cef_process_message_t)(self.pc_process_message))
@@ -19336,10 +19352,10 @@ func (self *CProcessMessageT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the values of this object are read-only. Some APIs may
 // expose read-only objects.
-///
+// /
 func (self *CProcessMessageT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_process_message_is_read_only((*C.cef_process_message_t)(self.pc_process_message))
@@ -19348,9 +19364,9 @@ func (self *CProcessMessageT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns a writable copy of this object.
-///
+// /
 func (self *CProcessMessageT) Copy() (ret *CProcessMessageT) {
 
 	cRet := C.cefingo_process_message_copy((*C.cef_process_message_t)(self.pc_process_message))
@@ -19359,9 +19375,9 @@ func (self *CProcessMessageT) Copy() (ret *CProcessMessageT) {
 	return ret
 }
 
-///
+// /
 // Returns the message name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CProcessMessageT) GetName() (ret string) {
 
@@ -19375,9 +19391,9 @@ func (self *CProcessMessageT) GetName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the list of arguments.
-///
+// /
 func (self *CProcessMessageT) GetArgumentList() (ret *CListValueT) {
 
 	cRet := C.cefingo_process_message_get_argument_list((*C.cef_process_message_t)(self.pc_process_message))
@@ -19386,9 +19402,9 @@ func (self *CProcessMessageT) GetArgumentList() (ret *CListValueT) {
 	return ret
 }
 
-///
+// /
 // Create a new cef_process_message_t object with the specified name.
-///
+// /
 func ProcessMessageCreate(
 	name string,
 ) (ret *CProcessMessageT) {
@@ -19480,7 +19496,7 @@ func (registration *CRegistrationT) Unref() (ret bool) {
 	return ret
 }
 
-// cef_render_handler_capi.h, include/capi/cef_render_handler_capi.h:234:3,
+// cef_render_handler_capi.h, include/capi/cef_render_handler_capi.h:236:3,
 
 ///
 // Implement this structure to handle events when window rendering is disabled.
@@ -19561,21 +19577,21 @@ func (render_handler *CRenderHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Return the handler for accessibility notifications. If no handler is
 // provided the default implementation will be used.
-///
+// /
 type GetAccessibilityHandlerHandler interface {
 	GetAccessibilityHandler(
 		self *CRenderHandlerT,
 	) (ret *CAccessibilityHandlerT)
 }
 
-///
-// Called to retrieve the root window rectangle in screen coordinates. Return
-// true (1) if the rectangle was provided. If this function returns false (0)
-// the rectangle from GetViewRect will be used.
-///
+// /
+// Called to retrieve the root window rectangle in screen DIP coordinates.
+// Return true (1) if the rectangle was provided. If this function returns
+// false (0) the rectangle from GetViewRect will be used.
+// /
 type GetRootScreenRectHandler interface {
 	GetRootScreenRect(
 		self *CRenderHandlerT,
@@ -19583,10 +19599,10 @@ type GetRootScreenRectHandler interface {
 	) (ret bool, rect CRectT)
 }
 
-///
-// Called to retrieve the view rectangle which is relative to screen
-// coordinates. This function must always provide a non-NULL rectangle.
-///
+// /
+// Called to retrieve the view rectangle in screen DIP coordinates. This
+// function must always provide a non-NULL rectangle.
+// /
 type GetViewRectHandler interface {
 	GetViewRect(
 		self *CRenderHandlerT,
@@ -19594,10 +19610,12 @@ type GetViewRectHandler interface {
 	) (rect CRectT)
 }
 
-///
-// Called to retrieve the translation from view coordinates to actual screen
-// coordinates. Return true (1) if the screen coordinates were provided.
-///
+// /
+// Called to retrieve the translation from view DIP coordinates to screen
+// coordinates. Windows/Linux should provide screen device (pixel) coordinates
+// and MacOS should provide screen DIP coordinates. Return true (1) if the
+// requested coordinates were provided.
+// /
 type GetScreenPointHandler interface {
 	GetScreenPoint(
 		self *CRenderHandlerT,
@@ -19607,7 +19625,7 @@ type GetScreenPointHandler interface {
 	) (ret bool, screenX int, screenY int)
 }
 
-///
+// /
 // Called to allow the client to fill in the CefScreenInfo object with
 // appropriate values. Return true (1) if the |screen_info| structure has been
 // modified.
@@ -19615,7 +19633,7 @@ type GetScreenPointHandler interface {
 // If the screen info rectangle is left NULL the rectangle from GetViewRect
 // will be used. If the rectangle is still NULL or invalid popups may not be
 // drawn correctly.
-///
+// /
 type GetScreenInfoHandler interface {
 	GetScreenInfo(
 		self *CRenderHandlerT,
@@ -19624,10 +19642,10 @@ type GetScreenInfoHandler interface {
 	) (ret bool, screen_infoOut CScreenInfoT)
 }
 
-///
+// /
 // Called when the browser wants to show or hide the popup widget. The popup
 // should be shown if |show| is true (1) and hidden if |show| is false (0).
-///
+// /
 type OnPopupShowHandler interface {
 	OnPopupShow(
 		self *CRenderHandlerT,
@@ -19636,10 +19654,10 @@ type OnPopupShowHandler interface {
 	)
 }
 
-///
+// /
 // Called when the browser wants to move or resize the popup widget. |rect|
 // contains the new location and size in view coordinates.
-///
+// /
 type OnPopupSizeHandler interface {
 	OnPopupSize(
 		self *CRenderHandlerT,
@@ -19648,7 +19666,7 @@ type OnPopupSizeHandler interface {
 	)
 }
 
-///
+// /
 // Called when an element should be painted. Pixel values passed to this
 // function are scaled relative to view coordinates based on the value of
 // CefScreenInfo.device_scale_factor returned from GetScreenInfo. |type|
@@ -19658,7 +19676,7 @@ type OnPopupSizeHandler interface {
 // be |width|*|height|*4 bytes in size and represents a BGRA image with an
 // upper-left origin. This function is only called when
 // cef_window_tInfo::shared_texture_enabled is set to false (0).
-///
+// /
 type OnPaintHandler interface {
 	OnPaint(
 		self *CRenderHandlerT,
@@ -19671,7 +19689,7 @@ type OnPaintHandler interface {
 	)
 }
 
-///
+// /
 // Called when an element has been rendered to the shared texture handle.
 // |type| indicates whether the element is the view or the popup widget.
 // |dirtyRects| contains the set of rectangles in pixel coordinates that need
@@ -19679,7 +19697,7 @@ type OnPaintHandler interface {
 // can be accessed via ID3D11Device using the OpenSharedResource function.
 // This function is only called when cef_window_tInfo::shared_texture_enabled
 // is set to true (1), and is currently only supported on Windows.
-///
+// /
 type OnAcceleratedPaintHandler interface {
 	OnAcceleratedPaint(
 		self *CRenderHandlerT,
@@ -19691,7 +19709,7 @@ type OnAcceleratedPaintHandler interface {
 	)
 }
 
-///
+// /
 // Called when the user starts dragging content in the web view. Contextual
 // information about the dragged content is supplied by |drag_data|. (|x|,
 // |y|) is the drag start location in screen coordinates. OS APIs that run a
@@ -19704,7 +19722,7 @@ type OnAcceleratedPaintHandler interface {
 // cef_browser_host_t::DragSourceEndedAt and DragSourceSystemDragEnded either
 // synchronously or asynchronously to inform the web view that the drag
 // operation has ended.
-///
+// /
 type StartDraggingHandler interface {
 	StartDragging(
 		self *CRenderHandlerT,
@@ -19716,11 +19734,11 @@ type StartDraggingHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called when the web view wants to update the mouse cursor during a drag &amp;
 // drop operation. |operation| describes the allowed operation (none, move,
 // copy, link).
-///
+// /
 type UpdateDragCursorHandler interface {
 	UpdateDragCursor(
 		self *CRenderHandlerT,
@@ -19729,9 +19747,9 @@ type UpdateDragCursorHandler interface {
 	)
 }
 
-///
+// /
 // Called when the scroll offset has changed.
-///
+// /
 type OnScrollOffsetChangedHandler interface {
 	OnScrollOffsetChanged(
 		self *CRenderHandlerT,
@@ -19741,11 +19759,11 @@ type OnScrollOffsetChangedHandler interface {
 	)
 }
 
-///
+// /
 // Called when the IME composition range has changed. |selected_range| is the
 // range of characters that have been selected. |character_bounds| is the
 // bounds of each character in view coordinates.
-///
+// /
 type OnImeCompositionRangeChangedHandler interface {
 	OnImeCompositionRangeChanged(
 		self *CRenderHandlerT,
@@ -19756,11 +19774,11 @@ type OnImeCompositionRangeChangedHandler interface {
 	)
 }
 
-///
+// /
 // Called when text selection has changed for the specified |browser|.
 // |selected_text| is the currently selected text and |selected_range| is the
 // character range.
-///
+// /
 type OnTextSelectionChangedHandler interface {
 	OnTextSelectionChanged(
 		self *CRenderHandlerT,
@@ -19770,12 +19788,12 @@ type OnTextSelectionChangedHandler interface {
 	)
 }
 
-///
+// /
 // Called when an on-screen keyboard should be shown or hidden for the
 // specified |browser|. |input_mode| specifies what kind of keyboard should be
 // opened. If |input_mode| is CEF_TEXT_INPUT_MODE_NONE, any existing keyboard
 // for this browser should be hidden.
-///
+// /
 type OnVirtualKeyboardRequestedHandler interface {
 	OnVirtualKeyboardRequested(
 		self *CRenderHandlerT,
@@ -20080,16 +20098,16 @@ func (render_process_handler *CRenderProcessHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called after WebKit has been initialized.
-///
+// /
 type OnWebKitInitializedHandler interface {
 	OnWebKitInitialized(
 		self *CRenderProcessHandlerT,
 	)
 }
 
-///
+// /
 // Called after a browser has been created. When browsing cross-origin a new
 // browser will be created before the old browser with the same identifier is
 // destroyed. |extra_info| is an optional read-only value originating from
@@ -20097,7 +20115,7 @@ type OnWebKitInitializedHandler interface {
 // cef_browser_host_t::cef_browser_host_create_browser_sync(),
 // cef_life_span_handler_t::on_before_popup() or
 // cef_browser_view_t::cef_browser_view_create().
-///
+// /
 type CRenderProcessHandlerTOnBrowserCreatedHandler interface {
 	OnBrowserCreated(
 		self *CRenderProcessHandlerT,
@@ -20106,9 +20124,9 @@ type CRenderProcessHandlerTOnBrowserCreatedHandler interface {
 	)
 }
 
-///
+// /
 // Called before a browser is destroyed.
-///
+// /
 type CRenderProcessHandlerTOnBrowserDestroyedHandler interface {
 	OnBrowserDestroyed(
 		self *CRenderProcessHandlerT,
@@ -20116,23 +20134,23 @@ type CRenderProcessHandlerTOnBrowserDestroyedHandler interface {
 	)
 }
 
-///
+// /
 // Return the handler for browser load status events.
-///
+// /
 type CRenderProcessHandlerTGetLoadHandlerHandler interface {
 	GetLoadHandler(
 		self *CRenderProcessHandlerT,
 	) (ret *CLoadHandlerT)
 }
 
-///
+// /
 // Called immediately after the V8 context for a frame has been created. To
 // retrieve the JavaScript &#39;window&#39; object use the
 // cef_v8context_t::get_global() function. V8 handles can only be accessed
 // from the thread on which they are created. A task runner for posting tasks
 // on the associated thread can be retrieved via the
 // cef_v8context_t::get_task_runner() function.
-///
+// /
 type OnContextCreatedHandler interface {
 	OnContextCreated(
 		self *CRenderProcessHandlerT,
@@ -20142,10 +20160,10 @@ type OnContextCreatedHandler interface {
 	)
 }
 
-///
+// /
 // Called immediately before the V8 context for a frame is released. No
 // references to the context should be kept after this function is called.
-///
+// /
 type OnContextReleasedHandler interface {
 	OnContextReleased(
 		self *CRenderProcessHandlerT,
@@ -20155,11 +20173,11 @@ type OnContextReleasedHandler interface {
 	)
 }
 
-///
+// /
 // Called for global uncaught exceptions in a frame. Execution of this
 // callback is disabled by default. To enable set
 // CefSettings.uncaught_exception_stack_size &gt; 0.
-///
+// /
 type OnUncaughtExceptionHandler interface {
 	OnUncaughtException(
 		self *CRenderProcessHandlerT,
@@ -20171,14 +20189,14 @@ type OnUncaughtExceptionHandler interface {
 	)
 }
 
-///
+// /
 // Called when a new node in the the browser gets focus. The |node| value may
 // be NULL if no specific node has gained focus. The node object passed to
 // this function represents a snapshot of the DOM at the time this function is
 // executed. DOM objects are only valid for the scope of this function. Do not
 // keep references to or attempt to access any DOM objects outside the scope
 // of this function.
-///
+// /
 type OnFocusedNodeChangedHandler interface {
 	OnFocusedNodeChanged(
 		self *CRenderProcessHandlerT,
@@ -20188,11 +20206,11 @@ type OnFocusedNodeChangedHandler interface {
 	)
 }
 
-///
+// /
 // Called when a new message is received from a different process. Return true
 // (1) if the message was handled or false (0) otherwise. It is safe to keep a
 // reference to |message| outside of this callback.
-///
+// /
 type CRenderProcessHandlerTOnProcessMessageReceivedHandler interface {
 	OnProcessMessageReceived(
 		self *CRenderProcessHandlerT,
@@ -20438,9 +20456,9 @@ func (request *CRequestT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is read-only.
-///
+// /
 func (self *CRequestT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_request_is_read_only((*C.cef_request_t)(self.pc_request))
@@ -20449,9 +20467,9 @@ func (self *CRequestT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Get the fully qualified URL.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetUrl() (ret string) {
 
@@ -20465,9 +20483,9 @@ func (self *CRequestT) GetUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the fully qualified URL.
-///
+// /
 func (self *CRequestT) SetUrl(
 	url string,
 ) {
@@ -20477,10 +20495,10 @@ func (self *CRequestT) SetUrl(
 
 }
 
-///
+// /
 // Get the request function type. The value will default to POST if post data
 // is provided and GET otherwise.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetMethod() (ret string) {
 
@@ -20494,9 +20512,9 @@ func (self *CRequestT) GetMethod() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the request function type.
-///
+// /
 func (self *CRequestT) SetMethod(
 	method string,
 ) {
@@ -20506,11 +20524,11 @@ func (self *CRequestT) SetMethod(
 
 }
 
-///
+// /
 // Set the referrer URL and policy. If non-NULL the referrer URL must be fully
 // qualified with an HTTP or HTTPS scheme component. Any username, password or
 // ref component will be removed.
-///
+// /
 func (self *CRequestT) SetReferrer(
 	referrer_url string,
 	policy CReferrerPolicyT,
@@ -20521,9 +20539,9 @@ func (self *CRequestT) SetReferrer(
 
 }
 
-///
+// /
 // Get the referrer URL.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetReferrerUrl() (ret string) {
 
@@ -20537,9 +20555,9 @@ func (self *CRequestT) GetReferrerUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Get the referrer policy.
-///
+// /
 func (self *CRequestT) GetReferrerPolicy() (ret CReferrerPolicyT) {
 
 	cRet := C.cefingo_request_get_referrer_policy((*C.cef_request_t)(self.pc_request))
@@ -20548,9 +20566,9 @@ func (self *CRequestT) GetReferrerPolicy() (ret CReferrerPolicyT) {
 	return ret
 }
 
-///
+// /
 // Get the post data.
-///
+// /
 func (self *CRequestT) GetPostData() (ret *CPostDataT) {
 
 	cRet := C.cefingo_request_get_post_data((*C.cef_request_t)(self.pc_request))
@@ -20559,9 +20577,9 @@ func (self *CRequestT) GetPostData() (ret *CPostDataT) {
 	return ret
 }
 
-///
+// /
 // Set the post data.
-///
+// /
 func (self *CRequestT) SetPostData(
 	postData *CPostDataT,
 ) {
@@ -20575,9 +20593,9 @@ func (self *CRequestT) SetPostData(
 
 }
 
-///
+// /
 // Get the header values. Will not include the Referer value if any.
-///
+// /
 func (self *CRequestT) GetHeaderMap(
 	headerMap CStringMultimapT,
 ) {
@@ -20586,10 +20604,10 @@ func (self *CRequestT) GetHeaderMap(
 
 }
 
-///
+// /
 // Set the header values. If a Referer value exists in the header map it will
 // be removed and ignored.
-///
+// /
 func (self *CRequestT) SetHeaderMap(
 	headerMap CStringMultimapT,
 ) {
@@ -20598,11 +20616,11 @@ func (self *CRequestT) SetHeaderMap(
 
 }
 
-///
+// /
 // Returns the first header value for |name| or an NULL string if not found.
 // Will not return the Referer value if any. Use GetHeaderMap instead if
 // |name| might have multiple values.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetHeaderByName(
 	name string,
@@ -20619,12 +20637,12 @@ func (self *CRequestT) GetHeaderByName(
 	return ret
 }
 
-///
+// /
 // Set the header |name| to |value|. If |overwrite| is true (1) any existing
 // values will be replaced with the new value. If |overwrite| is false (0) any
 // existing values will not be overwritten. The Referer value cannot be set
 // using this function.
-///
+// /
 func (self *CRequestT) SetHeaderByName(
 	name string,
 	value string,
@@ -20637,9 +20655,9 @@ func (self *CRequestT) SetHeaderByName(
 
 }
 
-///
+// /
 // Set all values at one time.
-///
+// /
 func (self *CRequestT) Set(
 	url string,
 	method string,
@@ -20658,10 +20676,10 @@ func (self *CRequestT) Set(
 
 }
 
-///
+// /
 // Get the flags used in combination with cef_urlrequest_t. See
 // cef_urlrequest_flags_t for supported values.
-///
+// /
 func (self *CRequestT) GetFlags() (ret bool) {
 
 	cRet := C.cefingo_request_get_flags((*C.cef_request_t)(self.pc_request))
@@ -20670,10 +20688,10 @@ func (self *CRequestT) GetFlags() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set the flags used in combination with cef_urlrequest_t.  See
 // cef_urlrequest_flags_t for supported values.
-///
+// /
 func (self *CRequestT) SetFlags(
 	flags int,
 ) {
@@ -20682,10 +20700,10 @@ func (self *CRequestT) SetFlags(
 
 }
 
-///
+// /
 // Get the URL to the first party for cookies used in combination with
 // cef_urlrequest_t.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetFirstPartyForCookies() (ret string) {
 
@@ -20699,10 +20717,10 @@ func (self *CRequestT) GetFirstPartyForCookies() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the URL to the first party for cookies used in combination with
 // cef_urlrequest_t.
-///
+// /
 func (self *CRequestT) SetFirstPartyForCookies(
 	url string,
 ) {
@@ -20712,10 +20730,10 @@ func (self *CRequestT) SetFirstPartyForCookies(
 
 }
 
-///
+// /
 // Get the resource type for this request. Only available in the browser
 // process.
-///
+// /
 func (self *CRequestT) GetResourceType() (ret CResourceTypeT) {
 
 	cRet := C.cefingo_request_get_resource_type((*C.cef_request_t)(self.pc_request))
@@ -20724,11 +20742,11 @@ func (self *CRequestT) GetResourceType() (ret CResourceTypeT) {
 	return ret
 }
 
-///
+// /
 // Get the transition type for this request. Only available in the browser
 // process and only applies to requests that represent a main frame or sub-
 // frame navigation.
-///
+// /
 func (self *CRequestT) GetTransitionType() (ret CTransitionTypeT) {
 
 	cRet := C.cefingo_request_get_transition_type((*C.cef_request_t)(self.pc_request))
@@ -20737,11 +20755,11 @@ func (self *CRequestT) GetTransitionType() (ret CTransitionTypeT) {
 	return ret
 }
 
-///
+// /
 // Returns the globally unique identifier for this request or 0 if not
 // specified. Can be used by cef_resource_request_handler_t implementations in
 // the browser process to track a single request across multiple callbacks.
-///
+// /
 func (self *CRequestT) GetIdentifier() (ret uint64) {
 
 	cRet := C.cefingo_request_get_identifier((*C.cef_request_t)(self.pc_request))
@@ -20750,9 +20768,9 @@ func (self *CRequestT) GetIdentifier() (ret uint64) {
 	return ret
 }
 
-///
+// /
 // Create a new cef_request_t object.
-///
+// /
 func RequestCreate() (ret *CRequestT) {
 
 	cRet := C.cef_request_create()
@@ -20840,9 +20858,9 @@ func (post_data *CPostDataT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is read-only.
-///
+// /
 func (self *CPostDataT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_post_data_is_read_only((*C.cef_post_data_t)(self.pc_post_data))
@@ -20851,12 +20869,12 @@ func (self *CPostDataT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the underlying POST data includes elements that are not
 // represented by this cef_post_data_t object (for example, multi-part file
 // upload data). Modifying cef_post_data_t objects with excluded elements may
 // result in the request failing.
-///
+// /
 func (self *CPostDataT) HasExcludedElements() (ret bool) {
 
 	cRet := C.cefingo_post_data_has_excluded_elements((*C.cef_post_data_t)(self.pc_post_data))
@@ -20865,9 +20883,9 @@ func (self *CPostDataT) HasExcludedElements() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the number of existing post data elements.
-///
+// /
 func (self *CPostDataT) GetElementCount() (ret int64) {
 
 	cRet := C.cefingo_post_data_get_element_count((*C.cef_post_data_t)(self.pc_post_data))
@@ -20876,9 +20894,9 @@ func (self *CPostDataT) GetElementCount() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Retrieve the post data elements.
-///
+// /
 func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
 	_elementsCount := C.size_t(self.GetElementCount()) // =SizeFunc cef_post_data_t::get_elements:elements
 	if _elementsCount == 0 {
@@ -20898,10 +20916,10 @@ func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
 	return elements
 }
 
-///
+// /
 // Remove the specified post data element.  Returns true (1) if the removal
 // succeeds.
-///
+// /
 func (self *CPostDataT) RemoveElement(
 	element *CPostDataElementT,
 ) (ret bool) {
@@ -20917,9 +20935,9 @@ func (self *CPostDataT) RemoveElement(
 	return ret
 }
 
-///
+// /
 // Add the specified post data element.  Returns true (1) if the add succeeds.
-///
+// /
 func (self *CPostDataT) AddElement(
 	element *CPostDataElementT,
 ) (ret bool) {
@@ -20935,18 +20953,18 @@ func (self *CPostDataT) AddElement(
 	return ret
 }
 
-///
+// /
 // Remove all existing post data elements.
-///
+// /
 func (self *CPostDataT) RemoveElements() {
 
 	C.cefingo_post_data_remove_elements((*C.cef_post_data_t)(self.pc_post_data))
 
 }
 
-///
+// /
 // Create a new cef_post_data_t object.
-///
+// /
 func PostDataCreate() (ret *CPostDataT) {
 
 	cRet := C.cef_post_data_create()
@@ -21034,9 +21052,9 @@ func (post_data_element *CPostDataElementT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is read-only.
-///
+// /
 func (self *CPostDataElementT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_post_data_element_is_read_only((*C.cef_post_data_element_t)(self.pc_post_data_element))
@@ -21045,18 +21063,18 @@ func (self *CPostDataElementT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Remove all contents from the post data element.
-///
+// /
 func (self *CPostDataElementT) SetToEmpty() {
 
 	C.cefingo_post_data_element_set_to_empty((*C.cef_post_data_element_t)(self.pc_post_data_element))
 
 }
 
-///
+// /
 // The post data element will represent a file.
-///
+// /
 func (self *CPostDataElementT) SetToFile(
 	fileName string,
 ) {
@@ -21066,10 +21084,10 @@ func (self *CPostDataElementT) SetToFile(
 
 }
 
-///
+// /
 // The post data element will represent bytes.  The bytes passed in will be
 // copied.
-///
+// /
 func (self *CPostDataElementT) SetToBytes(
 	bytes []byte,
 ) {
@@ -21081,9 +21099,9 @@ func (self *CPostDataElementT) SetToBytes(
 
 }
 
-///
+// /
 // Return the type of this post data element.
-///
+// /
 func (self *CPostDataElementT) GetType() (ret CPostdataelementTypeT) {
 
 	cRet := C.cefingo_post_data_element_get_type((*C.cef_post_data_element_t)(self.pc_post_data_element))
@@ -21092,9 +21110,9 @@ func (self *CPostDataElementT) GetType() (ret CPostdataelementTypeT) {
 	return ret
 }
 
-///
+// /
 // Return the file name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CPostDataElementT) GetFile() (ret string) {
 
@@ -21108,9 +21126,9 @@ func (self *CPostDataElementT) GetFile() (ret string) {
 	return ret
 }
 
-///
+// /
 // Return the number of bytes.
-///
+// /
 func (self *CPostDataElementT) GetBytesCount() (ret int64) {
 
 	cRet := C.cefingo_post_data_element_get_bytes_count((*C.cef_post_data_element_t)(self.pc_post_data_element))
@@ -21119,10 +21137,10 @@ func (self *CPostDataElementT) GetBytesCount() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Read up to |size| bytes into |bytes| and return the number of bytes
 // actually read.
-///
+// /
 func (self *CPostDataElementT) GetBytes(
 	size int64,
 	bytes unsafe.Pointer,
@@ -21134,9 +21152,9 @@ func (self *CPostDataElementT) GetBytes(
 	return ret
 }
 
-///
+// /
 // Create a new cef_post_data_element_t object.
-///
+// /
 func PostDataElementCreate() (ret *CPostDataElementT) {
 
 	cRet := C.cef_post_data_element_create()
@@ -21225,11 +21243,11 @@ func (resolve_callback *CResolveCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called on the UI thread after the ResolveHost request has completed.
 // |result| will be the result code. |resolved_ips| will be the list of
 // resolved IP addresses or NULL if the resolution failed.
-///
+// /
 func (self *CResolveCallbackT) OnResolveCompleted(
 	result CErrorcodeT,
 	resolved_ips CStringListT,
@@ -21330,10 +21348,10 @@ func (request_context *CRequestContextT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is pointing to the same context as |that|
 // object.
-///
+// /
 func (self *CRequestContextT) IsSame(
 	other *CRequestContextT,
 ) (ret bool) {
@@ -21349,10 +21367,10 @@ func (self *CRequestContextT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is sharing the same storage as |that|
 // object.
-///
+// /
 func (self *CRequestContextT) IsSharingWith(
 	other *CRequestContextT,
 ) (ret bool) {
@@ -21368,11 +21386,11 @@ func (self *CRequestContextT) IsSharingWith(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is the global context. The global context
 // is used by default when creating a browser or URL request with a NULL
 // context argument.
-///
+// /
 func (self *CRequestContextT) IsGlobal() (ret bool) {
 
 	cRet := C.cefingo_request_context_is_global((*C.cef_request_context_t)(self.pc_request_context))
@@ -21381,9 +21399,9 @@ func (self *CRequestContextT) IsGlobal() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the handler for this context if any.
-///
+// /
 func (self *CRequestContextT) GetHandler() (ret *CRequestContextHandlerT) {
 
 	cRet := C.cefingo_request_context_get_handler((*C.cef_request_context_t)(self.pc_request_context))
@@ -21392,10 +21410,10 @@ func (self *CRequestContextT) GetHandler() (ret *CRequestContextHandlerT) {
 	return ret
 }
 
-///
+// /
 // Returns the cache path for this object. If NULL an &quot;incognito mode&quot; in-
 // memory cache is being used.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestContextT) GetCachePath() (ret string) {
 
@@ -21409,11 +21427,11 @@ func (self *CRequestContextT) GetCachePath() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the cookie manager for this object. If |callback| is non-NULL it
 // will be executed asnychronously on the UI thread after the manager&#39;s
 // storage has been initialized.
-///
+// /
 func (self *CRequestContextT) GetCookieManager(
 	callback *CCompletionCallbackT,
 ) (ret *CCookieManagerT) {
@@ -21429,7 +21447,7 @@ func (self *CRequestContextT) GetCookieManager(
 	return ret
 }
 
-///
+// /
 // Register a scheme handler factory for the specified |scheme_name| and
 // optional |domain_name|. An NULL |domain_name| value for a standard scheme
 // will cause the factory to match all domain names. The |domain_name| value
@@ -21441,7 +21459,7 @@ func (self *CRequestContextT) GetCookieManager(
 // change or remove the factory that matches the specified |scheme_name| and
 // optional |domain_name|. Returns false (0) if an error occurs. This function
 // may be called on any thread in the browser process.
-///
+// /
 func (self *CRequestContextT) RegisterSchemeHandlerFactory(
 	scheme_name string,
 	domain_name string,
@@ -21461,10 +21479,10 @@ func (self *CRequestContextT) RegisterSchemeHandlerFactory(
 	return ret
 }
 
-///
+// /
 // Clear all registered scheme handler factories. Returns false (0) on error.
 // This function may be called on any thread in the browser process.
-///
+// /
 func (self *CRequestContextT) ClearSchemeHandlerFactories() (ret bool) {
 
 	cRet := C.cefingo_request_context_clear_scheme_handler_factories((*C.cef_request_context_t)(self.pc_request_context))
@@ -21473,10 +21491,10 @@ func (self *CRequestContextT) ClearSchemeHandlerFactories() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if a preference with the specified |name| exists. This
 // function must be called on the browser process UI thread.
-///
+// /
 func (self *CRequestContextT) HasPreference(
 	name string,
 ) (ret bool) {
@@ -21488,13 +21506,13 @@ func (self *CRequestContextT) HasPreference(
 	return ret
 }
 
-///
+// /
 // Returns the value for the preference with the specified |name|. Returns
 // NULL if the preference does not exist. The returned object contains a copy
 // of the underlying preference value and modifications to the returned object
 // will not modify the underlying preference value. This function must be
 // called on the browser process UI thread.
-///
+// /
 func (self *CRequestContextT) GetPreference(
 	name string,
 ) (ret *CValueT) {
@@ -21506,14 +21524,14 @@ func (self *CRequestContextT) GetPreference(
 	return ret
 }
 
-///
+// /
 // Returns all preferences as a dictionary. If |include_defaults| is true (1)
 // then preferences currently at their default value will be included. The
 // returned object contains a copy of the underlying preference values and
 // modifications to the returned object will not modify the underlying
 // preference values. This function must be called on the browser process UI
 // thread.
-///
+// /
 func (self *CRequestContextT) GetAllPreferences(
 	include_defaults int,
 ) (ret *CDictionaryValueT) {
@@ -21524,12 +21542,12 @@ func (self *CRequestContextT) GetAllPreferences(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the preference with the specified |name| can be
 // modified using SetPreference. As one example preferences set via the
 // command-line usually cannot be modified. This function must be called on
 // the browser process UI thread.
-///
+// /
 func (self *CRequestContextT) CanSetPreference(
 	name string,
 ) (ret bool) {
@@ -21541,13 +21559,13 @@ func (self *CRequestContextT) CanSetPreference(
 	return ret
 }
 
-///
+// /
 // Set the |value| associated with preference |name|. Returns true (1) if the
 // value is set successfully and false (0) otherwise. If |value| is NULL the
 // preference will be restored to its default value. If setting the preference
 // fails then |error| will be populated with a detailed description of the
 // problem. This function must be called on the browser process UI thread.
-///
+// /
 func (self *CRequestContextT) SetPreference(
 	name string,
 	value *CValueT,
@@ -21568,14 +21586,14 @@ func (self *CRequestContextT) SetPreference(
 	return ret, error
 }
 
-///
+// /
 // Clears all certificate exceptions that were added as part of handling
 // cef_request_handler_t::on_certificate_error(). If you call this it is
 // recommended that you also call close_all_connections() or you risk not
 // being prompted again for server certificates if you reconnect quickly. If
 // |callback| is non-NULL it will be executed on the UI thread after
 // completion.
-///
+// /
 func (self *CRequestContextT) ClearCertificateExceptions(
 	callback *CCompletionCallbackT,
 ) {
@@ -21589,11 +21607,11 @@ func (self *CRequestContextT) ClearCertificateExceptions(
 
 }
 
-///
+// /
 // Clears all HTTP authentication credentials that were added as part of
 // handling GetAuthCredentials. If |callback| is non-NULL it will be executed
 // on the UI thread after completion.
-///
+// /
 func (self *CRequestContextT) ClearHttpAuthCredentials(
 	callback *CCompletionCallbackT,
 ) {
@@ -21607,12 +21625,12 @@ func (self *CRequestContextT) ClearHttpAuthCredentials(
 
 }
 
-///
+// /
 // Clears all active and idle connections that Chromium currently has. This is
 // only recommended if you have released all other CEF objects but don&#39;t yet
 // want to call cef_shutdown(). If |callback| is non-NULL it will be executed
 // on the UI thread after completion.
-///
+// /
 func (self *CRequestContextT) CloseAllConnections(
 	callback *CCompletionCallbackT,
 ) {
@@ -21626,10 +21644,10 @@ func (self *CRequestContextT) CloseAllConnections(
 
 }
 
-///
+// /
 // Attempts to resolve |origin| to a list of associated IP addresses.
 // |callback| will be executed on the UI thread after completion.
-///
+// /
 func (self *CRequestContextT) ResolveHost(
 	origin string,
 	callback *CResolveCallbackT,
@@ -21645,7 +21663,7 @@ func (self *CRequestContextT) ResolveHost(
 
 }
 
-///
+// /
 // Load an extension.
 //
 // If extension resources will be read from disk using the default load
@@ -21682,17 +21700,17 @@ func (self *CRequestContextT) ResolveHost(
 // the form &quot;chrome-extension://&lt;extension_id&gt;/&lt;path&gt;&quot;.
 //
 // Browsers that host extensions differ from normal browsers as follows:
-//  - Can access chrome.* JavaScript APIs if allowed by the manifest. Visit
-//    chrome://extensions-support for the list of extension APIs currently
-//    supported by CEF.
-//  - Main frame navigation to non-extension content is blocked.
-//  - Pinch-zooming is disabled.
-//  - CefBrowserHost::GetExtension returns the hosted extension.
-//  - CefBrowserHost::IsBackgroundHost returns true for background hosts.
+//   - Can access chrome.* JavaScript APIs if allowed by the manifest. Visit
+//     chrome://extensions-support for the list of extension APIs currently
+//     supported by CEF.
+//   - Main frame navigation to non-extension content is blocked.
+//   - Pinch-zooming is disabled.
+//   - CefBrowserHost::GetExtension returns the hosted extension.
+//   - CefBrowserHost::IsBackgroundHost returns true for background hosts.
 //
 // See https://developer.chrome.com/extensions for extension implementation
 // and usage documentation.
-///
+// /
 func (self *CRequestContextT) LoadExtension(
 	root_directory string,
 	manifest *CDictionaryValueT,
@@ -21714,12 +21732,12 @@ func (self *CRequestContextT) LoadExtension(
 
 }
 
-///
+// /
 // Returns true (1) if this context was used to load the extension identified
 // by |extension_id|. Other contexts sharing the same storage will also have
 // access to the extension (see HasExtension). This function must be called on
 // the browser process UI thread.
-///
+// /
 func (self *CRequestContextT) DidLoadExtension(
 	extension_id string,
 ) (ret bool) {
@@ -21731,12 +21749,12 @@ func (self *CRequestContextT) DidLoadExtension(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this context has access to the extension identified by
 // |extension_id|. This may not be the context that was used to load the
 // extension (see DidLoadExtension). This function must be called on the
 // browser process UI thread.
-///
+// /
 func (self *CRequestContextT) HasExtension(
 	extension_id string,
 ) (ret bool) {
@@ -21748,12 +21766,12 @@ func (self *CRequestContextT) HasExtension(
 	return ret
 }
 
-///
+// /
 // Retrieve the list of all extensions that this context has access to (see
 // HasExtension). |extension_ids| will be populated with the list of extension
 // ID values. Returns true (1) on success. This function must be called on the
 // browser process UI thread.
-///
+// /
 func (self *CRequestContextT) GetExtensions(
 	extension_ids CStringListT,
 ) (ret bool) {
@@ -21764,11 +21782,11 @@ func (self *CRequestContextT) GetExtensions(
 	return ret
 }
 
-///
+// /
 // Returns the extension matching |extension_id| or NULL if no matching
 // extension is accessible in this context (see HasExtension). This function
 // must be called on the browser process UI thread.
-///
+// /
 func (self *CRequestContextT) GetExtension(
 	extension_id string,
 ) (ret *CExtensionT) {
@@ -21780,11 +21798,11 @@ func (self *CRequestContextT) GetExtension(
 	return ret
 }
 
-///
+// /
 // Returns the MediaRouter object associated with this context.  If |callback|
 // is non-NULL it will be executed asnychronously on the UI thread after the
 // manager&#39;s context has been initialized.
-///
+// /
 func (self *CRequestContextT) GetMediaRouter(
 	callback *CCompletionCallbackT,
 ) (ret *CMediaRouterT) {
@@ -21800,9 +21818,9 @@ func (self *CRequestContextT) GetMediaRouter(
 	return ret
 }
 
-///
+// /
 // Returns the global context object.
-///
+// /
 func RequestContextGetGlobalContext() (ret *CRequestContextT) {
 
 	cRet := C.cef_request_context_get_global_context()
@@ -21811,10 +21829,10 @@ func RequestContextGetGlobalContext() (ret *CRequestContextT) {
 	return ret
 }
 
-///
+// /
 // Creates a new context object with the specified |settings| and optional
 // |handler|.
-///
+// /
 func RequestContextCreateContext(
 	settings *CRequestContextSettingsT,
 	handler *CRequestContextHandlerT,
@@ -21831,10 +21849,10 @@ func RequestContextCreateContext(
 	return ret
 }
 
-///
+// /
 // Creates a new context object that shares storage with |other| and uses an
 // optional |handler|.
-///
+// /
 func CreateContextShared(
 	other *CRequestContextT,
 	handler *CRequestContextHandlerT,
@@ -21938,10 +21956,10 @@ func (request_context_handler *CRequestContextHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called on the browser process UI thread immediately after the request
 // context has been initialized.
-///
+// /
 type OnRequestContextInitializedHandler interface {
 	OnRequestContextInitialized(
 		self *CRequestContextHandlerT,
@@ -21949,7 +21967,7 @@ type OnRequestContextInitializedHandler interface {
 	)
 }
 
-///
+// /
 // Called on the browser process IO thread before a resource request is
 // initiated. The |browser| and |frame| values represent the source of the
 // request, and may be NULL for requests originating from service workers or
@@ -21966,7 +21984,7 @@ type OnRequestContextInitializedHandler interface {
 // the client associated with |browser| returns a non-NULL value from
 // cef_request_handler_t::GetResourceRequestHandler for the same request
 // (identified by cef_request_t::GetIdentifier).
-///
+// /
 type CRequestContextHandlerTGetResourceRequestHandlerHandler interface {
 	GetResourceRequestHandler(
 		self *CRequestContextHandlerT,
@@ -22143,10 +22161,10 @@ func (select_client_certificate_callback *CSelectClientCertificateCallbackT) Unr
 	return ret
 }
 
-///
+// /
 // Chooses the specified certificate for client certificate authentication.
 // NULL value means that no client certificate should be used.
-///
+// /
 func (self *CSelectClientCertificateCallbackT) Select(
 	cert *CX509certificateT,
 ) {
@@ -22239,7 +22257,7 @@ func (request_handler *CRequestHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called on the UI thread before browser navigation. Return true (1) to
 // cancel the navigation or false (0) to allow the navigation to proceed. The
 // |request| object cannot be modified in this callback.
@@ -22250,7 +22268,7 @@ func (request_handler *CRequestHandlerT) Unref() (ret bool) {
 // ERR_ABORTED. The |user_gesture| value will be true (1) if the browser
 // navigated via explicit user gesture (e.g. clicking a link) or false (0) if
 // it navigated automatically (e.g. via the DomContentLoaded event).
-///
+// /
 type OnBeforeBrowseHandler interface {
 	OnBeforeBrowse(
 		self *CRequestHandlerT,
@@ -22262,7 +22280,7 @@ type OnBeforeBrowseHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on the UI thread before OnBeforeBrowse in certain limited cases
 // where navigating a new or different browser might be desirable. This
 // includes user-initiated navigation that might open in a special way (e.g.
@@ -22277,7 +22295,7 @@ type OnBeforeBrowseHandler interface {
 // it navigated automatically (e.g. via the DomContentLoaded event). Return
 // true (1) to cancel the navigation or false (0) to allow the navigation to
 // proceed in the source browser&#39;s top-level frame.
-///
+// /
 type OnOpenUrlfromTabHandler interface {
 	OnOpenUrlfromTab(
 		self *CRequestHandlerT,
@@ -22289,7 +22307,7 @@ type OnOpenUrlfromTabHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on the browser process IO thread before a resource request is
 // initiated. The |browser| and |frame| values represent the source of the
 // request. |request| represents the request contents and cannot be modified
@@ -22304,7 +22322,7 @@ type OnOpenUrlfromTabHandler interface {
 // cef_resource_request_handler_t object. If this callback returns NULL the
 // same function will be called on the associated
 // cef_request_context_handler_t, if any.
-///
+// /
 type CRequestHandlerTGetResourceRequestHandlerHandler interface {
 	GetResourceRequestHandler(
 		self *CRequestHandlerT,
@@ -22317,7 +22335,7 @@ type CRequestHandlerTGetResourceRequestHandlerHandler interface {
 	) (ret *CResourceRequestHandlerT, disable_default_handling bool)
 }
 
-///
+// /
 // Called on the IO thread when the browser needs credentials from the user.
 // |origin_url| is the origin making this authentication request. |isProxy|
 // indicates whether the host is a proxy server. |host| contains the hostname
@@ -22328,7 +22346,7 @@ type CRequestHandlerTGetResourceRequestHandlerHandler interface {
 // cef_auth_callback_t::cont() either in this function or at a later time when
 // the authentication information is available. Return false (0) to cancel the
 // request immediately.
-///
+// /
 type CRequestHandlerTGetAuthCredentialsHandler interface {
 	GetAuthCredentials(
 		self *CRequestHandlerT,
@@ -22343,7 +22361,7 @@ type CRequestHandlerTGetAuthCredentialsHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on the IO thread when JavaScript requests a specific storage quota
 // size via the webkitStorageInfo.requestQuota function. |origin_url| is the
 // origin of the page making the request. |new_size| is the requested quota
@@ -22351,7 +22369,7 @@ type CRequestHandlerTGetAuthCredentialsHandler interface {
 // cef_callback_t functions either in this function or at a later time to
 // grant or deny the request. Return false (0) to cancel the request
 // immediately.
-///
+// /
 type OnQuotaRequestHandler interface {
 	OnQuotaRequest(
 		self *CRequestHandlerT,
@@ -22362,14 +22380,14 @@ type OnQuotaRequestHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on the UI thread to handle requests for URLs with an invalid SSL
 // certificate. Return true (1) and call cef_callback_t functions either in
 // this function or at a later time to continue or cancel the request. Return
 // false (0) to cancel the request immediately. If
 // CefSettings.ignore_certificate_errors is set all invalid certificates will
 // be accepted without calling this function.
-///
+// /
 type OnCertificateErrorHandler interface {
 	OnCertificateError(
 		self *CRequestHandlerT,
@@ -22381,7 +22399,7 @@ type OnCertificateErrorHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on the UI thread when a client certificate is being requested for
 // authentication. Return false (0) to use the default behavior and
 // automatically select the first certificate available. Return true (1) and
@@ -22393,7 +22411,7 @@ type OnCertificateErrorHandler interface {
 // is the list of certificates to choose from; this list has already been
 // pruned by Chromium so that it only contains certificates from issuers that
 // the server trusts.
-///
+// /
 type OnSelectClientCertificateHandler interface {
 	OnSelectClientCertificate(
 		self *CRequestHandlerT,
@@ -22406,11 +22424,11 @@ type OnSelectClientCertificateHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on the browser process UI thread when the render view associated
 // with |browser| is ready to receive/handle IPC messages in the render
 // process.
-///
+// /
 type OnRenderViewReadyHandler interface {
 	OnRenderViewReady(
 		self *CRequestHandlerT,
@@ -22418,10 +22436,10 @@ type OnRenderViewReadyHandler interface {
 	)
 }
 
-///
+// /
 // Called on the browser process UI thread when the render process terminates
 // unexpectedly. |status| indicates how the process terminated.
-///
+// /
 type OnRenderProcessTerminatedHandler interface {
 	OnRenderProcessTerminated(
 		self *CRequestHandlerT,
@@ -22430,10 +22448,10 @@ type OnRenderProcessTerminatedHandler interface {
 	)
 }
 
-///
+// /
 // Called on the browser process UI thread when the window.document object of
 // the main frame has been created.
-///
+// /
 type OnDocumentAvailableInMainFrameHandler interface {
 	OnDocumentAvailableInMainFrame(
 		self *CRequestHandlerT,
@@ -22687,12 +22705,12 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called to retrieve a localized translation for the specified |string_id|.
 // To provide the translation set |string| to the translation string and
 // return true (1). To use the default translation return false (0). Include
 // cef_pack_strings.h for a listing of valid string ID values.
-///
+// /
 type GetLocalizedStringHandler interface {
 	GetLocalizedString(
 		self *CResourceBundleHandlerT,
@@ -22700,14 +22718,14 @@ type GetLocalizedStringHandler interface {
 	) (ret bool, cstring string)
 }
 
-///
+// /
 // Called to retrieve data for the specified scale independent |resource_id|.
 // To provide the resource data set |data| and |data_size| to the data pointer
 // and size respectively and return true (1). To use the default resource data
 // return false (0). The resource data will not be copied and must remain
 // resident in memory. Include cef_pack_resources.h for a listing of valid
 // resource ID values.
-///
+// /
 type GetDataResourceHandler interface {
 	GetDataResource(
 		self *CResourceBundleHandlerT,
@@ -22715,14 +22733,14 @@ type GetDataResourceHandler interface {
 	) (ret bool, data []byte)
 }
 
-///
+// /
 // Called to retrieve data for the specified |resource_id| nearest the scale
 // factor |scale_factor|. To provide the resource data set |data| and
 // |data_size| to the data pointer and size respectively and return true (1).
 // To use the default resource data return false (0). The resource data will
 // not be copied and must remain resident in memory. Include
 // cef_pack_resources.h for a listing of valid resource ID values.
-///
+// /
 type GetDataResourceForScaleHandler interface {
 	GetDataResourceForScale(
 		self *CResourceBundleHandlerT,
@@ -22905,12 +22923,12 @@ func (resource_skip_callback *CResourceSkipCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Callback for asynchronous continuation of skip(). If |bytes_skipped| &gt; 0
 // then either skip() will be called again until the requested number of bytes
 // have been skipped or the request will proceed. If |bytes_skipped| &lt;= 0 the
 // request will fail with ERR_REQUEST_RANGE_NOT_SATISFIABLE.
-///
+// /
 func (self *CResourceSkipCallbackT) Cont(
 	bytes_skipped int64,
 ) {
@@ -22997,13 +23015,13 @@ func (resource_read_callback *CResourceReadCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Callback for asynchronous continuation of read(). If |bytes_read| == 0 the
 // response will be considered complete. If |bytes_read| &gt; 0 then read() will
 // be called again until the request is complete (based on either the result
 // or the expected content length). If |bytes_read| &lt; 0 then the request will
 // fail and the |bytes_read| value will be treated as the error code.
-///
+// /
 func (self *CResourceReadCallbackT) Cont(
 	bytes_read int,
 ) {
@@ -23091,7 +23109,7 @@ func (resource_handler *CResourceHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Open the response stream. To handle the request immediately set
 // |handle_request| to true (1) and return true (1). To decide at a later time
 // set |handle_request| to false (0), return true (1), and execute |callback|
@@ -23100,7 +23118,7 @@ func (resource_handler *CResourceHandlerT) Unref() (ret bool) {
 // called in sequence but not from a dedicated thread. For backwards
 // compatibility set |handle_request| to false (0) and return false (0) and
 // the ProcessRequest function will be called.
-///
+// /
 type OpenHandler interface {
 	Open(
 		self *CResourceHandlerT,
@@ -23109,7 +23127,7 @@ type OpenHandler interface {
 	) (ret bool, handle_request bool)
 }
 
-///
+// /
 // Begin processing the request. To handle the request return true (1) and
 // call cef_callback_t::cont() once the response header information is
 // available (cef_callback_t::cont() can also be called from inside this
@@ -23117,7 +23135,7 @@ type OpenHandler interface {
 // request return false (0).
 //
 // WARNING: This function is deprecated. Use Open instead.
-///
+// /
 type ProcessRequestHandler interface {
 	ProcessRequest(
 		self *CResourceHandlerT,
@@ -23126,7 +23144,7 @@ type ProcessRequestHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Retrieve response header information. If the response length is not known
 // set |response_length| to -1 and read_response() will be called until it
 // returns false (0). If the response length is known set |response_length| to
@@ -23140,7 +23158,7 @@ type ProcessRequestHandler interface {
 // set a relative or fully qualified URL as the Location header value. If an
 // error occured while setting up the request you can call set_error() on
 // |response| to indicate the error condition.
-///
+// /
 type GetResponseHeadersHandler interface {
 	GetResponseHeaders(
 		self *CResourceHandlerT,
@@ -23148,7 +23166,7 @@ type GetResponseHeadersHandler interface {
 	) (response_length int64, redirectUrl string)
 }
 
-///
+// /
 // Skip response data when requested by a Range header. Skip over and discard
 // |bytes_to_skip| bytes of response data. If data is available immediately
 // set |bytes_skipped| to the number of bytes skipped and return true (1). To
@@ -23156,7 +23174,7 @@ type GetResponseHeadersHandler interface {
 // execute |callback| when the data is available. To indicate failure set
 // |bytes_skipped| to &lt; 0 (e.g. -2 for ERR_FAILED) and return false (0). This
 // function will be called in sequence but not from a dedicated thread.
-///
+// /
 type SkipHandler interface {
 	Skip(
 		self *CResourceHandlerT,
@@ -23165,7 +23183,7 @@ type SkipHandler interface {
 	) (ret bool, bytes_skipped int64)
 }
 
-///
+// /
 // Read response data. If data is available immediately copy up to
 // |bytes_to_read| bytes into |data_out|, set |bytes_read| to the number of
 // bytes copied, and return true (1). To read the data at a later time keep a
@@ -23177,7 +23195,7 @@ type SkipHandler interface {
 // in sequence but not from a dedicated thread. For backwards compatibility
 // set |bytes_read| to -1 and return false (0) and the ReadResponse function
 // will be called.
-///
+// /
 type CResourceHandlerTReadHandler interface {
 	Read(
 		self *CResourceHandlerT,
@@ -23186,9 +23204,9 @@ type CResourceHandlerTReadHandler interface {
 	) (ret bool, bytes_read int)
 }
 
-///
+// /
 // Request processing has been canceled.
-///
+// /
 type CancelHandler interface {
 	Cancel(
 		self *CResourceHandlerT,
@@ -23401,14 +23419,14 @@ func (resource_request_handler *CResourceRequestHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called on the IO thread before a resource request is loaded. The |browser|
 // and |frame| values represent the source of the request, and may be NULL for
 // requests originating from service workers or cef_urlrequest_t. To
 // optionally filter cookies for the request return a
 // cef_cookie_access_filter_t object. The |request| object cannot not be
 // modified in this callback.
-///
+// /
 type GetCookieAccessFilterHandler interface {
 	GetCookieAccessFilter(
 		self *CResourceRequestHandlerT,
@@ -23418,7 +23436,7 @@ type GetCookieAccessFilterHandler interface {
 	) (ret *CCookieAccessFilterT)
 }
 
-///
+// /
 // Called on the IO thread before a resource request is loaded. The |browser|
 // and |frame| values represent the source of the request, and may be NULL for
 // requests originating from service workers or cef_urlrequest_t. To redirect
@@ -23428,7 +23446,7 @@ type GetCookieAccessFilterHandler interface {
 // cef_callback_t functions at a later time to continue or cancel the request
 // asynchronously. Return RV_CANCEL to cancel the request immediately.
 //
-///
+// /
 type OnBeforeResourceLoadHandler interface {
 	OnBeforeResourceLoad(
 		self *CResourceRequestHandlerT,
@@ -23439,14 +23457,14 @@ type OnBeforeResourceLoadHandler interface {
 	) (ret CReturnValueT)
 }
 
-///
+// /
 // Called on the IO thread before a resource is loaded. The |browser| and
 // |frame| values represent the source of the request, and may be NULL for
 // requests originating from service workers or cef_urlrequest_t. To allow the
 // resource to load using the default network loader return NULL. To specify a
 // handler for the resource return a cef_resource_handler_t object. The
 // |request| object cannot not be modified in this callback.
-///
+// /
 type GetResourceHandlerHandler interface {
 	GetResourceHandler(
 		self *CResourceRequestHandlerT,
@@ -23456,7 +23474,7 @@ type GetResourceHandlerHandler interface {
 	) (ret *CResourceHandlerT)
 }
 
-///
+// /
 // Called on the IO thread when a resource load is redirected. The |browser|
 // and |frame| values represent the source of the request, and may be NULL for
 // requests originating from service workers or cef_urlrequest_t. The
@@ -23465,7 +23483,7 @@ type GetResourceHandlerHandler interface {
 // resulted in the redirect. The |new_url| parameter will contain the new URL
 // and can be changed if desired. The |request| and |response| objects cannot
 // be modified in this callback.
-///
+// /
 type OnResourceRedirectHandler interface {
 	OnResourceRedirect(
 		self *CResourceRequestHandlerT,
@@ -23476,7 +23494,7 @@ type OnResourceRedirectHandler interface {
 	) (new_url string)
 }
 
-///
+// /
 // Called on the IO thread when a resource response is received. The |browser|
 // and |frame| values represent the source of the request, and may be NULL for
 // requests originating from service workers or cef_urlrequest_t. To allow the
@@ -23488,7 +23506,7 @@ type OnResourceRedirectHandler interface {
 //
 // WARNING: Redirecting using this function is deprecated. Use
 // OnBeforeResourceLoad or GetResourceHandler to perform redirects.
-///
+// /
 type OnResourceResponseHandler interface {
 	OnResourceResponse(
 		self *CResourceRequestHandlerT,
@@ -23499,13 +23517,13 @@ type OnResourceResponseHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on the IO thread to optionally filter resource response content. The
 // |browser| and |frame| values represent the source of the request, and may
 // be NULL for requests originating from service workers or cef_urlrequest_t.
 // |request| and |response| represent the request and response respectively
 // and cannot be modified in this callback.
-///
+// /
 type GetResourceResponseFilterHandler interface {
 	GetResourceResponseFilter(
 		self *CResourceRequestHandlerT,
@@ -23516,7 +23534,7 @@ type GetResourceResponseFilterHandler interface {
 	) (ret *CResponseFilterT)
 }
 
-///
+// /
 // Called on the IO thread when a resource load has completed. The |browser|
 // and |frame| values represent the source of the request, and may be NULL for
 // requests originating from service workers or cef_urlrequest_t. |request|
@@ -23531,7 +23549,7 @@ type GetResourceResponseFilterHandler interface {
 // this situation, and care should be taken not to call |browser| or |frame|
 // functions that modify state (like LoadURL, SendProcessMessage, etc.) if the
 // frame is invalid.
-///
+// /
 type OnResourceLoadCompleteHandler interface {
 	OnResourceLoadComplete(
 		self *CResourceRequestHandlerT,
@@ -23544,7 +23562,7 @@ type OnResourceLoadCompleteHandler interface {
 	)
 }
 
-///
+// /
 // Called on the IO thread to handle requests for URLs with an unknown
 // protocol component. The |browser| and |frame| values represent the source
 // of the request, and may be NULL for requests originating from service
@@ -23553,7 +23571,7 @@ type OnResourceLoadCompleteHandler interface {
 // registered OS protocol handler, if any. SECURITY WARNING: YOU SHOULD USE
 // THIS METHOD TO ENFORCE RESTRICTIONS BASED ON SCHEME, HOST OR OTHER URL
 // ANALYSIS BEFORE ALLOWING OS EXECUTION.
-///
+// /
 type OnProtocolExecutionHandler interface {
 	OnProtocolExecution(
 		self *CResourceRequestHandlerT,
@@ -23787,13 +23805,13 @@ func (cookie_access_filter *CCookieAccessFilterT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called on the IO thread before a resource request is sent. The |browser|
 // and |frame| values represent the source of the request, and may be NULL for
 // requests originating from service workers or cef_urlrequest_t. |request|
 // cannot be modified in this callback. Return true (1) if the specified
 // cookie can be sent with the request or false (0) otherwise.
-///
+// /
 type CanSendCookieHandler interface {
 	CanSendCookie(
 		self *CCookieAccessFilterT,
@@ -23804,14 +23822,14 @@ type CanSendCookieHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called on the IO thread after a resource response is received. The
 // |browser| and |frame| values represent the source of the request, and may
 // be NULL for requests originating from service workers or cef_urlrequest_t.
 // |request| cannot be modified in this callback. Return true (1) if the
 // specified cookie returned with the response can be saved or false (0)
 // otherwise.
-///
+// /
 type CanSaveCookieHandler interface {
 	CanSaveCookie(
 		self *CCookieAccessFilterT,
@@ -23988,9 +24006,9 @@ func (response *CResponseT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is read-only.
-///
+// /
 func (self *CResponseT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_response_is_read_only((*C.cef_response_t)(self.pc_response))
@@ -23999,9 +24017,9 @@ func (self *CResponseT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Get the response error code. Returns ERR_NONE if there was no error.
-///
+// /
 func (self *CResponseT) GetError() (ret CErrorcodeT) {
 
 	cRet := C.cefingo_response_get_error((*C.cef_response_t)(self.pc_response))
@@ -24010,10 +24028,10 @@ func (self *CResponseT) GetError() (ret CErrorcodeT) {
 	return ret
 }
 
-///
+// /
 // Set the response error code. This can be used by custom scheme handlers to
 // return errors during initial request processing.
-///
+// /
 func (self *CResponseT) SetError(
 	error CErrorcodeT,
 ) {
@@ -24022,9 +24040,9 @@ func (self *CResponseT) SetError(
 
 }
 
-///
+// /
 // Get the response status code.
-///
+// /
 func (self *CResponseT) GetStatus() (ret bool) {
 
 	cRet := C.cefingo_response_get_status((*C.cef_response_t)(self.pc_response))
@@ -24033,9 +24051,9 @@ func (self *CResponseT) GetStatus() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set the response status code.
-///
+// /
 func (self *CResponseT) SetStatus(
 	status int,
 ) {
@@ -24044,9 +24062,9 @@ func (self *CResponseT) SetStatus(
 
 }
 
-///
+// /
 // Get the response status text.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetStatusText() (ret string) {
 
@@ -24060,9 +24078,9 @@ func (self *CResponseT) GetStatusText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the response status text.
-///
+// /
 func (self *CResponseT) SetStatusText(
 	statusText string,
 ) {
@@ -24072,9 +24090,9 @@ func (self *CResponseT) SetStatusText(
 
 }
 
-///
+// /
 // Get the response mime type.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetMimeType() (ret string) {
 
@@ -24088,9 +24106,9 @@ func (self *CResponseT) GetMimeType() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the response mime type.
-///
+// /
 func (self *CResponseT) SetMimeType(
 	mimeType string,
 ) {
@@ -24100,9 +24118,9 @@ func (self *CResponseT) SetMimeType(
 
 }
 
-///
+// /
 // Get the response charset.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetCharset() (ret string) {
 
@@ -24116,9 +24134,9 @@ func (self *CResponseT) GetCharset() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the response charset.
-///
+// /
 func (self *CResponseT) SetCharset(
 	charset string,
 ) {
@@ -24128,9 +24146,9 @@ func (self *CResponseT) SetCharset(
 
 }
 
-///
+// /
 // Get the value for the specified response header field.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetHeaderByName(
 	name string,
@@ -24147,11 +24165,11 @@ func (self *CResponseT) GetHeaderByName(
 	return ret
 }
 
-///
+// /
 // Set the header |name| to |value|. If |overwrite| is true (1) any existing
 // values will be replaced with the new value. If |overwrite| is false (0) any
 // existing values will not be overwritten.
-///
+// /
 func (self *CResponseT) SetHeaderByName(
 	name string,
 	value string,
@@ -24164,9 +24182,9 @@ func (self *CResponseT) SetHeaderByName(
 
 }
 
-///
+// /
 // Get all response header fields.
-///
+// /
 func (self *CResponseT) GetHeaderMap(
 	headerMap CStringMultimapT,
 ) {
@@ -24175,9 +24193,9 @@ func (self *CResponseT) GetHeaderMap(
 
 }
 
-///
+// /
 // Set all response header fields.
-///
+// /
 func (self *CResponseT) SetHeaderMap(
 	headerMap CStringMultimapT,
 ) {
@@ -24186,9 +24204,9 @@ func (self *CResponseT) SetHeaderMap(
 
 }
 
-///
+// /
 // Get the resolved URL after redirects or changed as a result of HSTS.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetUrl() (ret string) {
 
@@ -24202,9 +24220,9 @@ func (self *CResponseT) GetUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the resolved URL after redirects or changed as a result of HSTS.
-///
+// /
 func (self *CResponseT) SetUrl(
 	url string,
 ) {
@@ -24214,9 +24232,9 @@ func (self *CResponseT) SetUrl(
 
 }
 
-///
+// /
 // Create a new cef_response_t object.
-///
+// /
 func ResponseCreate() (ret *CResponseT) {
 
 	cRet := C.cef_response_create()
@@ -24306,28 +24324,28 @@ func (response_filter *CResponseFilterT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Initialize the response filter. Will only be called a single time. The
 // filter will not be installed if this function returns false (0).
-///
+// /
 type InitFilterHandler interface {
 	InitFilter(
 		self *CResponseFilterT,
 	) (ret bool)
 }
 
-///
+// /
 // Called to filter a chunk of data. Expected usage is as follows:
 //
-//  A. Read input data from |data_in| and set |data_in_read| to the number of
-//     bytes that were read up to a maximum of |data_in_size|. |data_in| will
-//     be NULL if |data_in_size| is zero.
-//  B. Write filtered output data to |data_out| and set |data_out_written| to
-//     the number of bytes that were written up to a maximum of
-//     |data_out_size|. If no output data was written then all data must be
-//     read from |data_in| (user must set |data_in_read| = |data_in_size|).
-//  C. Return RESPONSE_FILTER_DONE if all output data was written or
-//     RESPONSE_FILTER_NEED_MORE_DATA if output data is still pending.
+//	A. Read input data from |data_in| and set |data_in_read| to the number of
+//	   bytes that were read up to a maximum of |data_in_size|. |data_in| will
+//	   be NULL if |data_in_size| is zero.
+//	B. Write filtered output data to |data_out| and set |data_out_written| to
+//	   the number of bytes that were written up to a maximum of
+//	   |data_out_size|. If no output data was written then all data must be
+//	   read from |data_in| (user must set |data_in_read| = |data_in_size|).
+//	C. Return RESPONSE_FILTER_DONE if all output data was written or
+//	   RESPONSE_FILTER_NEED_MORE_DATA if output data is still pending.
 //
 // This function will be called repeatedly until the input buffer has been
 // fully read (user sets |data_in_read| = |data_in_size|) and there is no more
@@ -24340,13 +24358,13 @@ type InitFilterHandler interface {
 // Calls to this function will stop when one of the following conditions is
 // met:
 //
-//  A. There is no more input data to filter (the resource response is
-//     complete) and the user sets |data_out_written| = 0 or returns
-//     RESPONSE_FILTER_DONE to indicate that all data has been written, or;
-//  B. The user returns RESPONSE_FILTER_ERROR to indicate an error.
+//	A. There is no more input data to filter (the resource response is
+//	   complete) and the user sets |data_out_written| = 0 or returns
+//	   RESPONSE_FILTER_DONE to indicate that all data has been written, or;
+//	B. The user returns RESPONSE_FILTER_ERROR to indicate an error.
 //
 // Do not keep a reference to the buffers passed to this function.
-///
+// /
 type FilterHandler interface {
 	Filter(
 		self *CResponseFilterT,
@@ -24478,7 +24496,7 @@ func newCSchemeRegistrarT(p *C.cef_scheme_registrar_t) *CSchemeRegistrarT {
 	return go_scheme_registrar
 }
 
-///
+// /
 // Register a custom scheme. This function should not be called for the built-
 // in HTTP, HTTPS, FILE, FTP, ABOUT and DATA schemes.
 //
@@ -24487,7 +24505,7 @@ func newCSchemeRegistrarT(p *C.cef_scheme_registrar_t) *CSchemeRegistrarT {
 // This function may be called on any thread. It should only be called once
 // per unique |scheme_name| value. If |scheme_name| is already registered or
 // if an error occurs this function will return false (0).
-///
+// /
 func (self *CSchemeRegistrarT) AddCustomScheme(
 	scheme_name string,
 	options int,
@@ -24580,14 +24598,14 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Return a new resource handler instance to handle the request or an NULL
 // reference to allow default handling of the request. |browser| and |frame|
 // will be the browser window and frame respectively that originated the
 // request or NULL if the request did not originate from a browser window (for
 // example, if the request came from cef_urlrequest_t). The |request| object
 // passed to this function cannot be modified.
-///
+// /
 type CreateHandler interface {
 	Create(
 		self *CSchemeHandlerFactoryT,
@@ -24672,7 +24690,7 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Handler() interface{} {
 	return scheme_handler_factory_handlers.handler[cp]
 }
 
-///
+// /
 // Register a scheme handler factory with the global request context. An NULL
 // |domain_name| value for a standard scheme will cause the factory to match all
 // domain names. The |domain_name| value will be ignored for non-standard
@@ -24686,7 +24704,7 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Handler() interface{} {
 // browser process. Using this function is equivalent to calling cef_request_con
 // text_t::cef_request_context_get_global_context()->register_scheme_handler_fac
 // tory().
-///
+// /
 func RegisterSchemeHandlerFactory(
 	scheme_name string,
 	domain_name string,
@@ -24706,13 +24724,13 @@ func RegisterSchemeHandlerFactory(
 	return ret
 }
 
-///
+// /
 // Clear all scheme handler factories registered with the global request
 // context. Returns false (0) on error. This function may be called on any
 // thread in the browser process. Using this function is equivalent to calling c
 // ef_request_context_t::cef_request_context_get_global_context()->clear_scheme_
 // handler_factories().
-///
+// /
 func ClearSchemeHandlerFactories() (ret bool) {
 
 	cRet := C.cef_clear_scheme_handler_factories()
@@ -24810,10 +24828,10 @@ func (scroll_view *CScrollViewT) ToCViewT() *CViewT {
 	return newCViewT(p, byApp)
 }
 
-///
+// /
 // Set the content View. The content View must have a specified size (e.g. via
 // cef_view_t::SetBounds or cef_view_delegate_t::GetPreferredSize).
-///
+// /
 func (self *CScrollViewT) SetContentView(
 	view *CViewT,
 ) {
@@ -24827,9 +24845,9 @@ func (self *CScrollViewT) SetContentView(
 
 }
 
-///
+// /
 // Returns the content View.
-///
+// /
 func (self *CScrollViewT) GetContentView() (ret *CViewT) {
 
 	cRet := C.cefingo_scroll_view_get_content_view((*C.cef_scroll_view_t)(self.pc_scroll_view))
@@ -24838,9 +24856,9 @@ func (self *CScrollViewT) GetContentView() (ret *CViewT) {
 	return ret
 }
 
-///
+// /
 // Returns the visible region of the content View.
-///
+// /
 func (self *CScrollViewT) GetVisibleContentRect() (ret CRectT) {
 
 	cRet := C.cefingo_scroll_view_get_visible_content_rect((*C.cef_scroll_view_t)(self.pc_scroll_view))
@@ -24849,9 +24867,9 @@ func (self *CScrollViewT) GetVisibleContentRect() (ret CRectT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the horizontal scrollbar is currently showing.
-///
+// /
 func (self *CScrollViewT) HasHorizontalScrollbar() (ret bool) {
 
 	cRet := C.cefingo_scroll_view_has_horizontal_scrollbar((*C.cef_scroll_view_t)(self.pc_scroll_view))
@@ -24860,9 +24878,9 @@ func (self *CScrollViewT) HasHorizontalScrollbar() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the height of the horizontal scrollbar.
-///
+// /
 func (self *CScrollViewT) GetHorizontalScrollbarHeight() (ret bool) {
 
 	cRet := C.cefingo_scroll_view_get_horizontal_scrollbar_height((*C.cef_scroll_view_t)(self.pc_scroll_view))
@@ -24871,9 +24889,9 @@ func (self *CScrollViewT) GetHorizontalScrollbarHeight() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the vertical scrollbar is currently showing.
-///
+// /
 func (self *CScrollViewT) HasVerticalScrollbar() (ret bool) {
 
 	cRet := C.cefingo_scroll_view_has_vertical_scrollbar((*C.cef_scroll_view_t)(self.pc_scroll_view))
@@ -24882,9 +24900,9 @@ func (self *CScrollViewT) HasVerticalScrollbar() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the width of the vertical scrollbar.
-///
+// /
 func (self *CScrollViewT) GetVerticalScrollbarWidth() (ret bool) {
 
 	cRet := C.cefingo_scroll_view_get_vertical_scrollbar_width((*C.cef_scroll_view_t)(self.pc_scroll_view))
@@ -24893,9 +24911,9 @@ func (self *CScrollViewT) GetVerticalScrollbarWidth() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Create a new ScrollView.
-///
+// /
 func ScrollViewCreate(
 	delegate *CViewDelegateT,
 ) (ret *CScrollViewT) {
@@ -24991,10 +25009,10 @@ func (sslinfo *CSslinfoT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns a bitmask containing any and all problems verifying the server
 // certificate.
-///
+// /
 func (self *CSslinfoT) GetCertStatus() (ret CCertStatusT) {
 
 	cRet := C.cefingo_sslinfo_get_cert_status((*C.cef_sslinfo_t)(self.pc_sslinfo))
@@ -25003,9 +25021,9 @@ func (self *CSslinfoT) GetCertStatus() (ret CCertStatusT) {
 	return ret
 }
 
-///
+// /
 // Returns the X.509 certificate.
-///
+// /
 func (self *CSslinfoT) GetX509certificate() (ret *CX509certificateT) {
 
 	cRet := C.cefingo_sslinfo_get_x509certificate((*C.cef_sslinfo_t)(self.pc_sslinfo))
@@ -25014,9 +25032,9 @@ func (self *CSslinfoT) GetX509certificate() (ret *CX509certificateT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the certificate status represents an error.
-///
+// /
 func IsCertStatusError(
 	status CCertStatusT,
 ) (ret bool) {
@@ -25107,9 +25125,9 @@ func (sslstatus *CSslstatusT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the status is related to a secure SSL/TLS connection.
-///
+// /
 func (self *CSslstatusT) IsSecureConnection() (ret bool) {
 
 	cRet := C.cefingo_sslstatus_is_secure_connection((*C.cef_sslstatus_t)(self.pc_sslstatus))
@@ -25118,10 +25136,10 @@ func (self *CSslstatusT) IsSecureConnection() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns a bitmask containing any and all problems verifying the server
 // certificate.
-///
+// /
 func (self *CSslstatusT) GetCertStatus() (ret CCertStatusT) {
 
 	cRet := C.cefingo_sslstatus_get_cert_status((*C.cef_sslstatus_t)(self.pc_sslstatus))
@@ -25130,9 +25148,9 @@ func (self *CSslstatusT) GetCertStatus() (ret CCertStatusT) {
 	return ret
 }
 
-///
+// /
 // Returns the SSL version used for the SSL connection.
-///
+// /
 func (self *CSslstatusT) GetSslversion() (ret CSslVersionT) {
 
 	cRet := C.cefingo_sslstatus_get_sslversion((*C.cef_sslstatus_t)(self.pc_sslstatus))
@@ -25141,9 +25159,9 @@ func (self *CSslstatusT) GetSslversion() (ret CSslVersionT) {
 	return ret
 }
 
-///
+// /
 // Returns a bitmask containing the page security content status.
-///
+// /
 func (self *CSslstatusT) GetContentStatus() (ret CSslContentStatusT) {
 
 	cRet := C.cefingo_sslstatus_get_content_status((*C.cef_sslstatus_t)(self.pc_sslstatus))
@@ -25152,9 +25170,9 @@ func (self *CSslstatusT) GetContentStatus() (ret CSslContentStatusT) {
 	return ret
 }
 
-///
+// /
 // Returns the X.509 certificate.
-///
+// /
 func (self *CSslstatusT) GetX509certificate() (ret *CX509certificateT) {
 
 	cRet := C.cefingo_sslstatus_get_x509certificate((*C.cef_sslstatus_t)(self.pc_sslstatus))
@@ -25244,9 +25262,9 @@ func (read_handler *CReadHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Read raw binary data.
-///
+// /
 type CReadHandlerTReadHandler interface {
 	Read(
 		self *CReadHandlerT,
@@ -25256,10 +25274,10 @@ type CReadHandlerTReadHandler interface {
 	) (ret int64)
 }
 
-///
+// /
 // Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
 // SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
-///
+// /
 type CReadHandlerTSeekHandler interface {
 	Seek(
 		self *CReadHandlerT,
@@ -25268,29 +25286,29 @@ type CReadHandlerTSeekHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Return the current offset position.
-///
+// /
 type CReadHandlerTTellHandler interface {
 	Tell(
 		self *CReadHandlerT,
 	) (ret int64)
 }
 
-///
+// /
 // Return non-zero if at end of file.
-///
+// /
 type EofHandler interface {
 	Eof(
 		self *CReadHandlerT,
 	) (ret bool)
 }
 
-///
+// /
 // Return true (1) if this handler performs work like accessing the file
 // system which may block. Used as a hint for determining the thread to access
 // the handler from.
-///
+// /
 type CReadHandlerTMayBlockHandler interface {
 	MayBlock(
 		self *CReadHandlerT,
@@ -25490,9 +25508,9 @@ func (stream_reader *CStreamReaderT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Read raw binary data.
-///
+// /
 func (self *CStreamReaderT) Read(
 	ptr unsafe.Pointer,
 	size int64,
@@ -25505,10 +25523,10 @@ func (self *CStreamReaderT) Read(
 	return ret
 }
 
-///
+// /
 // Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
 // SEEK_END or SEEK_SET. Returns zero on success and non-zero on failure.
-///
+// /
 func (self *CStreamReaderT) Seek(
 	offset int64,
 	whence int,
@@ -25520,9 +25538,9 @@ func (self *CStreamReaderT) Seek(
 	return ret
 }
 
-///
+// /
 // Return the current offset position.
-///
+// /
 func (self *CStreamReaderT) Tell() (ret int64) {
 
 	cRet := C.cefingo_stream_reader_tell((*C.cef_stream_reader_t)(self.pc_stream_reader))
@@ -25531,9 +25549,9 @@ func (self *CStreamReaderT) Tell() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Return non-zero if at end of file.
-///
+// /
 func (self *CStreamReaderT) Eof() (ret bool) {
 
 	cRet := C.cefingo_stream_reader_eof((*C.cef_stream_reader_t)(self.pc_stream_reader))
@@ -25542,11 +25560,11 @@ func (self *CStreamReaderT) Eof() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this reader performs work like accessing the file
 // system which may block. Used as a hint for determining the thread to access
 // the reader from.
-///
+// /
 func (self *CStreamReaderT) MayBlock() (ret bool) {
 
 	cRet := C.cefingo_stream_reader_may_block((*C.cef_stream_reader_t)(self.pc_stream_reader))
@@ -25555,9 +25573,9 @@ func (self *CStreamReaderT) MayBlock() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Create a new cef_stream_reader_t object from a file.
-///
+// /
 func StreamReaderCreateForFile(
 	fileName string,
 ) (ret *CStreamReaderT) {
@@ -25569,9 +25587,9 @@ func StreamReaderCreateForFile(
 	return ret
 }
 
-///
+// /
 // Create a new cef_stream_reader_t object from data.
-///
+// /
 func StreamReaderCreateForData(
 	data []byte,
 ) (ret *CStreamReaderT) {
@@ -25585,9 +25603,9 @@ func StreamReaderCreateForData(
 	return ret
 }
 
-///
+// /
 // Create a new cef_stream_reader_t object from a custom handler.
-///
+// /
 func StreamReaderCreateForHandler(
 	handler *CReadHandlerT,
 ) (ret *CStreamReaderT) {
@@ -25682,9 +25700,9 @@ func (write_handler *CWriteHandlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Write raw binary data.
-///
+// /
 type WriteHandler interface {
 	Write(
 		self *CWriteHandlerT,
@@ -25694,10 +25712,10 @@ type WriteHandler interface {
 	) (ret int64)
 }
 
-///
+// /
 // Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
 // SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
-///
+// /
 type CWriteHandlerTSeekHandler interface {
 	Seek(
 		self *CWriteHandlerT,
@@ -25706,29 +25724,29 @@ type CWriteHandlerTSeekHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Return the current offset position.
-///
+// /
 type CWriteHandlerTTellHandler interface {
 	Tell(
 		self *CWriteHandlerT,
 	) (ret int64)
 }
 
-///
+// /
 // Flush the stream.
-///
+// /
 type FlushHandler interface {
 	Flush(
 		self *CWriteHandlerT,
 	) (ret bool)
 }
 
-///
+// /
 // Return true (1) if this handler performs work like accessing the file
 // system which may block. Used as a hint for determining the thread to access
 // the handler from.
-///
+// /
 type CWriteHandlerTMayBlockHandler interface {
 	MayBlock(
 		self *CWriteHandlerT,
@@ -25928,9 +25946,9 @@ func (stream_writer *CStreamWriterT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Write raw binary data.
-///
+// /
 func (self *CStreamWriterT) Write(
 	ptr unsafe.Pointer,
 	size int64,
@@ -25943,10 +25961,10 @@ func (self *CStreamWriterT) Write(
 	return ret
 }
 
-///
+// /
 // Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
 // SEEK_END or SEEK_SET. Returns zero on success and non-zero on failure.
-///
+// /
 func (self *CStreamWriterT) Seek(
 	offset int64,
 	whence int,
@@ -25958,9 +25976,9 @@ func (self *CStreamWriterT) Seek(
 	return ret
 }
 
-///
+// /
 // Return the current offset position.
-///
+// /
 func (self *CStreamWriterT) Tell() (ret int64) {
 
 	cRet := C.cefingo_stream_writer_tell((*C.cef_stream_writer_t)(self.pc_stream_writer))
@@ -25969,9 +25987,9 @@ func (self *CStreamWriterT) Tell() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Flush the stream.
-///
+// /
 func (self *CStreamWriterT) Flush() (ret bool) {
 
 	cRet := C.cefingo_stream_writer_flush((*C.cef_stream_writer_t)(self.pc_stream_writer))
@@ -25980,11 +25998,11 @@ func (self *CStreamWriterT) Flush() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this writer performs work like accessing the file
 // system which may block. Used as a hint for determining the thread to access
 // the writer from.
-///
+// /
 func (self *CStreamWriterT) MayBlock() (ret bool) {
 
 	cRet := C.cefingo_stream_writer_may_block((*C.cef_stream_writer_t)(self.pc_stream_writer))
@@ -25993,9 +26011,9 @@ func (self *CStreamWriterT) MayBlock() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Create a new cef_stream_writer_t object for a file.
-///
+// /
 func StreamWriterCreateForFile(
 	fileName string,
 ) (ret *CStreamWriterT) {
@@ -26007,9 +26025,9 @@ func StreamWriterCreateForFile(
 	return ret
 }
 
-///
+// /
 // Create a new cef_stream_writer_t object for a custom handler.
-///
+// /
 func StreamWriterCreateForHandler(
 	handler *CWriteHandlerT,
 ) (ret *CStreamWriterT) {
@@ -26105,9 +26123,9 @@ func (string_visitor *CStringVisitorT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be executed.
-///
+// /
 type CStringVisitorTVisitHandler interface {
 	Visit(
 		self *CStringVisitorT,
@@ -26274,9 +26292,9 @@ func (task *CTaskT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Method that will be executed on the target thread.
-///
+// /
 type CTaskTExecuteHandler interface {
 	Execute(
 		self *CTaskT,
@@ -26441,10 +26459,10 @@ func (task_runner *CTaskRunnerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is pointing to the same task runner as
 // |that| object.
-///
+// /
 func (self *CTaskRunnerT) IsSame(
 	that *CTaskRunnerT,
 ) (ret bool) {
@@ -26460,9 +26478,9 @@ func (self *CTaskRunnerT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this task runner belongs to the current thread.
-///
+// /
 func (self *CTaskRunnerT) BelongsToCurrentThread() (ret bool) {
 
 	cRet := C.cefingo_task_runner_belongs_to_current_thread((*C.cef_task_runner_t)(self.pc_task_runner))
@@ -26471,9 +26489,9 @@ func (self *CTaskRunnerT) BelongsToCurrentThread() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this task runner is for the specified CEF thread.
-///
+// /
 func (self *CTaskRunnerT) BelongsToThread(
 	threadId CThreadIdT,
 ) (ret bool) {
@@ -26484,10 +26502,10 @@ func (self *CTaskRunnerT) BelongsToThread(
 	return ret
 }
 
-///
+// /
 // Post a task for execution on the thread associated with this task runner.
 // Execution will occur asynchronously.
-///
+// /
 func (self *CTaskRunnerT) PostTask(
 	task *CTaskT,
 ) (ret bool) {
@@ -26503,12 +26521,12 @@ func (self *CTaskRunnerT) PostTask(
 	return ret
 }
 
-///
+// /
 // Post a task for delayed execution on the thread associated with this task
 // runner. Execution will occur asynchronously. Delayed tasks are not
 // supported on V8 WebWorker threads and will be executed without the
 // specified delay.
-///
+// /
 func (self *CTaskRunnerT) PostDelayedTask(
 	task *CTaskT,
 	delay_ms int64,
@@ -26525,11 +26543,11 @@ func (self *CTaskRunnerT) PostDelayedTask(
 	return ret
 }
 
-///
+// /
 // Returns the task runner for the current thread. Only CEF threads will have
 // task runners. An NULL reference will be returned if this function is called
 // on an invalid thread.
-///
+// /
 func TaskRunnerGetForCurrentThread() (ret *CTaskRunnerT) {
 
 	cRet := C.cef_task_runner_get_for_current_thread()
@@ -26538,9 +26556,9 @@ func TaskRunnerGetForCurrentThread() (ret *CTaskRunnerT) {
 	return ret
 }
 
-///
+// /
 // Returns the task runner for the specified CEF thread.
-///
+// /
 func TaskRunnerGetForThread(
 	threadId CThreadIdT,
 ) (ret *CTaskRunnerT) {
@@ -26551,10 +26569,10 @@ func TaskRunnerGetForThread(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if called on the specified thread. Equivalent to using
 // cef_task_runner_t::GetForThread(threadId)->belongs_to_current_thread().
-///
+// /
 func CurrentlyOn(
 	threadId CThreadIdT,
 ) (ret bool) {
@@ -26565,10 +26583,10 @@ func CurrentlyOn(
 	return ret
 }
 
-///
+// /
 // Post a task for execution on the specified thread. Equivalent to using
 // cef_task_runner_t::GetForThread(threadId)->PostTask(task).
-///
+// /
 func PostTask(
 	threadId CThreadIdT,
 	task *CTaskT,
@@ -26585,11 +26603,11 @@ func PostTask(
 	return ret
 }
 
-///
+// /
 // Post a task for delayed execution on the specified thread. Equivalent to
 // using cef_task_runner_t::GetForThread(threadId)->PostDelayedTask(task,
 // delay_ms).
-///
+// /
 func PostDelayedTask(
 	threadId CThreadIdT,
 	task *CTaskT,
@@ -26696,9 +26714,9 @@ func (textfield *CTextfieldT) ToCViewT() *CViewT {
 	return newCViewT(p, byApp)
 }
 
-///
+// /
 // Sets whether the text will be displayed as asterisks.
-///
+// /
 func (self *CTextfieldT) SetPasswordInput(
 	password_input int,
 ) {
@@ -26707,9 +26725,9 @@ func (self *CTextfieldT) SetPasswordInput(
 
 }
 
-///
+// /
 // Returns true (1) if the text will be displayed as asterisks.
-///
+// /
 func (self *CTextfieldT) IsPasswordInput() (ret bool) {
 
 	cRet := C.cefingo_textfield_is_password_input((*C.cef_textfield_t)(self.pc_textfield))
@@ -26718,9 +26736,9 @@ func (self *CTextfieldT) IsPasswordInput() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Sets whether the text will read-only.
-///
+// /
 func (self *CTextfieldT) SetReadOnly(
 	read_only int,
 ) {
@@ -26729,9 +26747,9 @@ func (self *CTextfieldT) SetReadOnly(
 
 }
 
-///
+// /
 // Returns true (1) if the text is read-only.
-///
+// /
 func (self *CTextfieldT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_textfield_is_read_only((*C.cef_textfield_t)(self.pc_textfield))
@@ -26740,9 +26758,9 @@ func (self *CTextfieldT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the currently displayed text.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetText() (ret string) {
 
@@ -26756,10 +26774,10 @@ func (self *CTextfieldT) GetText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Sets the contents to |text|. The cursor will be moved to end of the text if
 // the current position is outside of the text range.
-///
+// /
 func (self *CTextfieldT) SetText(
 	text string,
 ) {
@@ -26769,9 +26787,9 @@ func (self *CTextfieldT) SetText(
 
 }
 
-///
+// /
 // Appends |text| to the previously-existing text.
-///
+// /
 func (self *CTextfieldT) AppendText(
 	text string,
 ) {
@@ -26781,9 +26799,9 @@ func (self *CTextfieldT) AppendText(
 
 }
 
-///
+// /
 // Inserts |text| at the current cursor position replacing any selected text.
-///
+// /
 func (self *CTextfieldT) InsertOrReplaceText(
 	text string,
 ) {
@@ -26793,9 +26811,9 @@ func (self *CTextfieldT) InsertOrReplaceText(
 
 }
 
-///
+// /
 // Returns true (1) if there is any selected text.
-///
+// /
 func (self *CTextfieldT) HasSelection() (ret bool) {
 
 	cRet := C.cefingo_textfield_has_selection((*C.cef_textfield_t)(self.pc_textfield))
@@ -26804,9 +26822,9 @@ func (self *CTextfieldT) HasSelection() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the currently selected text.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetSelectedText() (ret string) {
 
@@ -26820,11 +26838,11 @@ func (self *CTextfieldT) GetSelectedText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Selects all text. If |reversed| is true (1) the range will end at the
 // logical beginning of the text; this generally shows the leading portion of
 // text that overflows its display area.
-///
+// /
 func (self *CTextfieldT) SelectAll(
 	reversed int,
 ) {
@@ -26833,18 +26851,18 @@ func (self *CTextfieldT) SelectAll(
 
 }
 
-///
+// /
 // Clears the text selection and sets the caret to the end.
-///
+// /
 func (self *CTextfieldT) ClearSelection() {
 
 	C.cefingo_textfield_clear_selection((*C.cef_textfield_t)(self.pc_textfield))
 
 }
 
-///
+// /
 // Returns the selected logical text range.
-///
+// /
 func (self *CTextfieldT) GetSelectedRange() (ret CRangeT) {
 
 	cRet := C.cefingo_textfield_get_selected_range((*C.cef_textfield_t)(self.pc_textfield))
@@ -26853,9 +26871,9 @@ func (self *CTextfieldT) GetSelectedRange() (ret CRangeT) {
 	return ret
 }
 
-///
+// /
 // Selects the specified logical text range.
-///
+// /
 func (self *CTextfieldT) SelectRange(
 	crange *CRangeT,
 ) {
@@ -26864,9 +26882,9 @@ func (self *CTextfieldT) SelectRange(
 
 }
 
-///
+// /
 // Returns the current cursor position.
-///
+// /
 func (self *CTextfieldT) GetCursorPosition() (ret int64) {
 
 	cRet := C.cefingo_textfield_get_cursor_position((*C.cef_textfield_t)(self.pc_textfield))
@@ -26875,9 +26893,9 @@ func (self *CTextfieldT) GetCursorPosition() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Sets the text color.
-///
+// /
 func (self *CTextfieldT) SetTextColor(
 	color CColorT,
 ) {
@@ -26886,9 +26904,9 @@ func (self *CTextfieldT) SetTextColor(
 
 }
 
-///
+// /
 // Returns the text color.
-///
+// /
 func (self *CTextfieldT) GetTextColor() (ret CColorT) {
 
 	cRet := C.cefingo_textfield_get_text_color((*C.cef_textfield_t)(self.pc_textfield))
@@ -26897,9 +26915,9 @@ func (self *CTextfieldT) GetTextColor() (ret CColorT) {
 	return ret
 }
 
-///
+// /
 // Sets the selection text color.
-///
+// /
 func (self *CTextfieldT) SetSelectionTextColor(
 	color CColorT,
 ) {
@@ -26908,9 +26926,9 @@ func (self *CTextfieldT) SetSelectionTextColor(
 
 }
 
-///
+// /
 // Returns the selection text color.
-///
+// /
 func (self *CTextfieldT) GetSelectionTextColor() (ret CColorT) {
 
 	cRet := C.cefingo_textfield_get_selection_text_color((*C.cef_textfield_t)(self.pc_textfield))
@@ -26919,9 +26937,9 @@ func (self *CTextfieldT) GetSelectionTextColor() (ret CColorT) {
 	return ret
 }
 
-///
+// /
 // Sets the selection background color.
-///
+// /
 func (self *CTextfieldT) SetSelectionBackgroundColor(
 	color CColorT,
 ) {
@@ -26930,9 +26948,9 @@ func (self *CTextfieldT) SetSelectionBackgroundColor(
 
 }
 
-///
+// /
 // Returns the selection background color.
-///
+// /
 func (self *CTextfieldT) GetSelectionBackgroundColor() (ret CColorT) {
 
 	cRet := C.cefingo_textfield_get_selection_background_color((*C.cef_textfield_t)(self.pc_textfield))
@@ -26941,16 +26959,18 @@ func (self *CTextfieldT) GetSelectionBackgroundColor() (ret CColorT) {
 	return ret
 }
 
-///
+// /
 // Sets the font list. The format is &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;,
 // where: - FONT_FAMILY_LIST is a comma-separated list of font family names, -
 // STYLES is an optional space-separated list of style names (case-sensitive
-//   &quot;Bold&quot; and &quot;Italic&quot; are supported), and
+//
+//	&quot;Bold&quot; and &quot;Italic&quot; are supported), and
+//
 // - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
 //
 // Here are examples of valid font description strings: - &quot;Arial, Helvetica,
 // Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
-///
+// /
 func (self *CTextfieldT) SetFontList(
 	font_list string,
 ) {
@@ -26960,11 +26980,11 @@ func (self *CTextfieldT) SetFontList(
 
 }
 
-///
+// /
 // Applies |color| to the specified |range| without changing the default
 // color. If |range| is NULL the color will be set on the complete text
 // contents.
-///
+// /
 func (self *CTextfieldT) ApplyTextColor(
 	color CColorT,
 	crange *CRangeT,
@@ -26974,12 +26994,12 @@ func (self *CTextfieldT) ApplyTextColor(
 
 }
 
-///
+// /
 // Applies |style| to the specified |range| without changing the default
 // style. If |add| is true (1) the style will be added, otherwise the style
 // will be removed. If |range| is NULL the style will be set on the complete
 // text contents.
-///
+// /
 func (self *CTextfieldT) ApplyTextStyle(
 	style CTextStyleT,
 	add int,
@@ -26990,10 +27010,10 @@ func (self *CTextfieldT) ApplyTextStyle(
 
 }
 
-///
+// /
 // Returns true (1) if the action associated with the specified command id is
 // enabled. See additional comments on execute_command().
-///
+// /
 func (self *CTextfieldT) IsCommandEnabled(
 	command_id CTextFieldCommandsT,
 ) (ret bool) {
@@ -27004,9 +27024,9 @@ func (self *CTextfieldT) IsCommandEnabled(
 	return ret
 }
 
-///
+// /
 // Performs the action associated with the specified command id.
-///
+// /
 func (self *CTextfieldT) ExecuteCommand(
 	command_id CTextFieldCommandsT,
 ) {
@@ -27015,19 +27035,19 @@ func (self *CTextfieldT) ExecuteCommand(
 
 }
 
-///
+// /
 // Clears Edit history.
-///
+// /
 func (self *CTextfieldT) ClearEditHistory() {
 
 	C.cefingo_textfield_clear_edit_history((*C.cef_textfield_t)(self.pc_textfield))
 
 }
 
-///
+// /
 // Sets the placeholder text that will be displayed when the Textfield is
 // NULL.
-///
+// /
 func (self *CTextfieldT) SetPlaceholderText(
 	text string,
 ) {
@@ -27037,10 +27057,10 @@ func (self *CTextfieldT) SetPlaceholderText(
 
 }
 
-///
+// /
 // Returns the placeholder text that will be displayed when the Textfield is
 // NULL.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetPlaceholderText() (ret string) {
 
@@ -27054,9 +27074,9 @@ func (self *CTextfieldT) GetPlaceholderText() (ret string) {
 	return ret
 }
 
-///
+// /
 // Sets the placeholder text color.
-///
+// /
 func (self *CTextfieldT) SetPlaceholderTextColor(
 	color CColorT,
 ) {
@@ -27065,9 +27085,9 @@ func (self *CTextfieldT) SetPlaceholderTextColor(
 
 }
 
-///
+// /
 // Set the accessible name that will be exposed to assistive technology (AT).
-///
+// /
 func (self *CTextfieldT) SetAccessibleName(
 	name string,
 ) {
@@ -27077,9 +27097,9 @@ func (self *CTextfieldT) SetAccessibleName(
 
 }
 
-///
+// /
 // Create a new Textfield.
-///
+// /
 func TextfieldCreate(
 	delegate *CTextfieldDelegateT,
 ) (ret *CTextfieldT) {
@@ -27184,11 +27204,11 @@ func (textfield_delegate *CTextfieldDelegateT) ToCViewDelegateT() *CViewDelegate
 	return newCViewDelegateT(p, byApp)
 }
 
-///
+// /
 // Called when |textfield| recieves a keyboard event. |event| contains
 // information about the keyboard event. Return true (1) if the keyboard event
 // was handled or false (0) otherwise for default handling.
-///
+// /
 type CTextfieldDelegateTOnKeyEventHandler interface {
 	OnKeyEvent(
 		self *CTextfieldDelegateT,
@@ -27197,9 +27217,9 @@ type CTextfieldDelegateTOnKeyEventHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called after performing a user action that may change |textfield|.
-///
+// /
 type OnAfterUserActionHandler interface {
 	OnAfterUserAction(
 		self *CTextfieldDelegateT,
@@ -27473,11 +27493,11 @@ func (end_tracing_callback *CEndTracingCallbackT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Called after all processes have sent their trace data. |tracing_file| is
 // the path at which tracing data was written. The client is responsible for
 // deleting |tracing_file|.
-///
+// /
 type OnEndTracingCompleteHandler interface {
 	OnEndTracingComplete(
 		self *CEndTracingCallbackT,
@@ -27559,7 +27579,7 @@ func (end_tracing_callback *CEndTracingCallbackT) Handler() interface{} {
 	return end_tracing_callback_handlers.handler[cp]
 }
 
-///
+// /
 // Start tracing events on all processes. Tracing is initialized asynchronously
 // and |callback| will be executed on the UI thread after initialization is
 // complete.
@@ -27575,7 +27595,7 @@ func (end_tracing_callback *CEndTracingCallbackT) Handler() interface{} {
 // "-excluded_category1,-excluded_category2"
 //
 // This function must be called on the browser process UI thread.
-///
+// /
 func BeginTracing(
 	categories string,
 	callback *CCompletionCallbackT,
@@ -27593,7 +27613,7 @@ func BeginTracing(
 	return ret
 }
 
-///
+// /
 // Stop tracing events on all processes.
 //
 // This function will fail and return false (0) if a previous call to
@@ -27605,7 +27625,7 @@ func BeginTracing(
 // used. If |callback| is NULL no trace data will be written.
 //
 // This function must be called on the browser process UI thread.
-///
+// /
 func EndTracing(
 	tracing_file string,
 	callback *CEndTracingCallbackT,
@@ -27623,11 +27643,11 @@ func EndTracing(
 	return ret
 }
 
-///
+// /
 // Returns the current system trace time or, if none is defined, the current
 // high-res time. Can be used by clients to synchronize with the time
 // information in trace events.
-///
+// /
 func NowFromSystemTraceTime() (ret int64) {
 
 	cRet := C.cef_now_from_system_trace_time()
@@ -27720,10 +27740,10 @@ func (urlrequest *CUrlrequestT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the request object used to create this URL request. The returned
 // object is read-only and should not be modified.
-///
+// /
 func (self *CUrlrequestT) GetRequest() (ret *CRequestT) {
 
 	cRet := C.cefingo_urlrequest_get_request((*C.cef_urlrequest_t)(self.pc_urlrequest))
@@ -27732,9 +27752,9 @@ func (self *CUrlrequestT) GetRequest() (ret *CRequestT) {
 	return ret
 }
 
-///
+// /
 // Returns the client.
-///
+// /
 func (self *CUrlrequestT) GetClient() (ret *CUrlrequestClientT) {
 
 	cRet := C.cefingo_urlrequest_get_client((*C.cef_urlrequest_t)(self.pc_urlrequest))
@@ -27743,9 +27763,9 @@ func (self *CUrlrequestT) GetClient() (ret *CUrlrequestClientT) {
 	return ret
 }
 
-///
+// /
 // Returns the request status.
-///
+// /
 func (self *CUrlrequestT) GetRequestStatus() (ret CUrlrequestStatusT) {
 
 	cRet := C.cefingo_urlrequest_get_request_status((*C.cef_urlrequest_t)(self.pc_urlrequest))
@@ -27754,10 +27774,10 @@ func (self *CUrlrequestT) GetRequestStatus() (ret CUrlrequestStatusT) {
 	return ret
 }
 
-///
+// /
 // Returns the request error if status is UR_CANCELED or UR_FAILED, or 0
 // otherwise.
-///
+// /
 func (self *CUrlrequestT) GetRequestError() (ret CErrorcodeT) {
 
 	cRet := C.cefingo_urlrequest_get_request_error((*C.cef_urlrequest_t)(self.pc_urlrequest))
@@ -27766,11 +27786,11 @@ func (self *CUrlrequestT) GetRequestError() (ret CErrorcodeT) {
 	return ret
 }
 
-///
+// /
 // Returns the response, or NULL if no response information is available.
 // Response information will only be available after the upload has completed.
 // The returned object is read-only and should not be modified.
-///
+// /
 func (self *CUrlrequestT) GetResponse() (ret *CResponseT) {
 
 	cRet := C.cefingo_urlrequest_get_response((*C.cef_urlrequest_t)(self.pc_urlrequest))
@@ -27779,10 +27799,10 @@ func (self *CUrlrequestT) GetResponse() (ret *CResponseT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the response body was served from the cache. This
 // includes responses for which revalidation was required.
-///
+// /
 func (self *CUrlrequestT) ResponseWasCached() (ret bool) {
 
 	cRet := C.cefingo_urlrequest_response_was_cached((*C.cef_urlrequest_t)(self.pc_urlrequest))
@@ -27791,16 +27811,16 @@ func (self *CUrlrequestT) ResponseWasCached() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Cancel the request.
-///
+// /
 func (self *CUrlrequestT) Cancel() {
 
 	C.cefingo_urlrequest_cancel((*C.cef_urlrequest_t)(self.pc_urlrequest))
 
 }
 
-///
+// /
 // Create a new URL request that is not associated with a specific browser or
 // frame. Use cef_frame_t::CreateURLRequest instead if you want the request to
 // have this association, in which case it may be handled differently (see
@@ -27813,7 +27833,7 @@ func (self *CUrlrequestT) Cancel() {
 //   - If |request_context| is empty the global request context will be used.
 //
 // The |request| object will be marked as read-only after calling this function.
-///
+// /
 func UrlrequestCreate(
 	request *CRequestT,
 	client *CUrlrequestClientT,
@@ -27921,11 +27941,11 @@ func (urlrequest_client *CUrlrequestClientT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Notifies the client that the request has completed. Use the
 // cef_urlrequest_t::GetRequestStatus function to determine if the request was
 // successful or not.
-///
+// /
 type OnRequestCompleteHandler interface {
 	OnRequestComplete(
 		self *CUrlrequestClientT,
@@ -27933,12 +27953,12 @@ type OnRequestCompleteHandler interface {
 	)
 }
 
-///
+// /
 // Notifies the client of upload progress. |current| denotes the number of
 // bytes sent so far and |total| is the total size of uploading data (or -1 if
 // chunked upload is enabled). This function will only be called if the
 // UR_FLAG_REPORT_UPLOAD_PROGRESS flag is set on the request.
-///
+// /
 type OnUploadProgressHandler interface {
 	OnUploadProgress(
 		self *CUrlrequestClientT,
@@ -27948,11 +27968,11 @@ type OnUploadProgressHandler interface {
 	)
 }
 
-///
+// /
 // Notifies the client of download progress. |current| denotes the number of
 // bytes received up to the call and |total| is the expected total size of the
 // response (or -1 if not determined).
-///
+// /
 type OnDownloadProgressHandler interface {
 	OnDownloadProgress(
 		self *CUrlrequestClientT,
@@ -27962,11 +27982,11 @@ type OnDownloadProgressHandler interface {
 	)
 }
 
-///
+// /
 // Called when some part of the response is read. |data| contains the current
 // bytes received since the last call. This function will not be called if the
 // UR_FLAG_NO_DOWNLOAD_DATA flag is set on the request.
-///
+// /
 type OnDownloadDataHandler interface {
 	OnDownloadData(
 		self *CUrlrequestClientT,
@@ -27975,7 +27995,7 @@ type OnDownloadDataHandler interface {
 	)
 }
 
-///
+// /
 // Called on the IO thread when the browser needs credentials from the user.
 // |isProxy| indicates whether the host is a proxy server. |host| contains the
 // hostname and |port| contains the port number. Return true (1) to continue
@@ -27985,7 +28005,7 @@ type OnDownloadDataHandler interface {
 // cef_request_handler_t associated with that browser, if any. Otherwise,
 // returning false (0) will cancel the request immediately. This function will
 // only be called for requests initiated from the browser process.
-///
+// /
 type CUrlrequestClientTGetAuthCredentialsHandler interface {
 	GetAuthCredentials(
 		self *CUrlrequestClientT,
@@ -28196,11 +28216,11 @@ func (v8context *CV8contextT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the task runner associated with this context. V8 handles can only
 // be accessed from the thread on which they are created. This function can be
 // called on any render process thread.
-///
+// /
 func (self *CV8contextT) GetTaskRunner() (ret *CTaskRunnerT) {
 
 	cRet := C.cefingo_v8context_get_task_runner((*C.cef_v8context_t)(self.pc_v8context))
@@ -28209,11 +28229,11 @@ func (self *CV8contextT) GetTaskRunner() (ret *CTaskRunnerT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the underlying handle is valid and it can be accessed
 // on the current thread. Do not call any other functions if this function
 // returns false (0).
-///
+// /
 func (self *CV8contextT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_v8context_is_valid((*C.cef_v8context_t)(self.pc_v8context))
@@ -28222,10 +28242,10 @@ func (self *CV8contextT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the browser for this context. This function will return an NULL
 // reference for WebWorker contexts.
-///
+// /
 func (self *CV8contextT) GetBrowser() (ret *CBrowserT) {
 
 	cRet := C.cefingo_v8context_get_browser((*C.cef_v8context_t)(self.pc_v8context))
@@ -28234,10 +28254,10 @@ func (self *CV8contextT) GetBrowser() (ret *CBrowserT) {
 	return ret
 }
 
-///
+// /
 // Returns the frame for this context. This function will return an NULL
 // reference for WebWorker contexts.
-///
+// /
 func (self *CV8contextT) GetFrame() (ret *CFrameT) {
 
 	cRet := C.cefingo_v8context_get_frame((*C.cef_v8context_t)(self.pc_v8context))
@@ -28246,10 +28266,10 @@ func (self *CV8contextT) GetFrame() (ret *CFrameT) {
 	return ret
 }
 
-///
+// /
 // Returns the global object for this context. The context must be entered
 // before calling this function.
-///
+// /
 func (self *CV8contextT) GetGlobal() (ret *CV8valueT) {
 
 	cRet := C.cefingo_v8context_get_global((*C.cef_v8context_t)(self.pc_v8context))
@@ -28258,13 +28278,13 @@ func (self *CV8contextT) GetGlobal() (ret *CV8valueT) {
 	return ret
 }
 
-///
+// /
 // Enter this context. A context must be explicitly entered before creating a
 // V8 Object, Array, Function or Date asynchronously. exit() must be called
 // the same number of times as enter() before releasing this context. V8
 // objects belong to the context in which they are created. Returns true (1)
 // if the scope was entered successfully.
-///
+// /
 func (self *CV8contextT) Enter() (ret bool) {
 
 	cRet := C.cefingo_v8context_enter((*C.cef_v8context_t)(self.pc_v8context))
@@ -28273,10 +28293,10 @@ func (self *CV8contextT) Enter() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Exit this context. Call this function only after calling enter(). Returns
 // true (1) if the scope was exited successfully.
-///
+// /
 func (self *CV8contextT) Exit() (ret bool) {
 
 	cRet := C.cefingo_v8context_exit((*C.cef_v8context_t)(self.pc_v8context))
@@ -28285,10 +28305,10 @@ func (self *CV8contextT) Exit() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is pointing to the same handle as |that|
 // object.
-///
+// /
 func (self *CV8contextT) IsSame(
 	that *CV8contextT,
 ) (ret bool) {
@@ -28304,14 +28324,14 @@ func (self *CV8contextT) IsSame(
 	return ret
 }
 
-///
+// /
 // Execute a string of JavaScript code in this V8 context. The |script_url|
 // parameter is the URL where the script in question can be found, if any. The
 // |start_line| parameter is the base line number to use for error reporting.
 // On success |retval| will be set to the return value, if any, and the
 // function will return true (1). On failure |exception| will be set to the
 // exception, if any, and the function will return false (0).
-///
+// /
 func (self *CV8contextT) Eval(
 	code string,
 	script_url string,
@@ -28331,9 +28351,9 @@ func (self *CV8contextT) Eval(
 	return ret, retval, exception
 }
 
-///
+// /
 // Returns the current (top) context object in the V8 context stack.
-///
+// /
 func V8contextGetCurrentContext() (ret *CV8contextT) {
 
 	cRet := C.cef_v8context_get_current_context()
@@ -28342,9 +28362,9 @@ func V8contextGetCurrentContext() (ret *CV8contextT) {
 	return ret
 }
 
-///
+// /
 // Returns the entered (bottom) context object in the V8 context stack.
-///
+// /
 func V8contextGetEnteredContext() (ret *CV8contextT) {
 
 	cRet := C.cef_v8context_get_entered_context()
@@ -28353,9 +28373,9 @@ func V8contextGetEnteredContext() (ret *CV8contextT) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if V8 is currently inside a context.
-///
+// /
 func V8contextInContext() (ret bool) {
 
 	cRet := C.cef_v8context_in_context()
@@ -28444,13 +28464,13 @@ func (v8handler *CV8handlerT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Handle execution of the function identified by |name|. |object| is the
 // receiver (&#39;this&#39; object) of the function. |arguments| is the list of
 // arguments passed to the function. If execution succeeds set |retval| to the
 // function return value. If execution fails set |exception| to the exception
 // that will be thrown. Return true (1) if execution was handled.
-///
+// /
 type CV8handlerTExecuteHandler interface {
 	Execute(
 		self *CV8handlerT,
@@ -28615,13 +28635,13 @@ func (v8accessor *CV8accessorT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Handle retrieval the accessor value identified by |name|. |object| is the
 // receiver (&#39;this&#39; object) of the accessor. If retrieval succeeds set
 // |retval| to the return value. If retrieval fails set |exception| to the
 // exception that will be thrown. Return true (1) if accessor retrieval was
 // handled.
-///
+// /
 type GetHandler interface {
 	Get(
 		self *CV8accessorT,
@@ -28630,13 +28650,13 @@ type GetHandler interface {
 	) (ret bool, retval *CV8valueT, exception string)
 }
 
-///
+// /
 // Handle assignment of the accessor value identified by |name|. |object| is
 // the receiver (&#39;this&#39; object) of the accessor. |value| is the new value
 // being assigned to the accessor. If assignment fails set |exception| to the
 // exception that will be thrown. Return true (1) if accessor assignment was
 // handled.
-///
+// /
 type SetHandler interface {
 	Set(
 		self *CV8accessorT,
@@ -28813,7 +28833,7 @@ func (v8interceptor *CV8interceptorT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Handle retrieval of the interceptor value identified by |name|. |object| is
 // the receiver (&#39;this&#39; object) of the interceptor. If retrieval succeeds, set
 // |retval| to the return value. If the requested value does not exist, don&#39;t
@@ -28821,7 +28841,7 @@ func (v8interceptor *CV8interceptorT) Unref() (ret bool) {
 // the exception that will be thrown. If the property has an associated
 // accessor, it will be called only if you don&#39;t set |retval|. Return true (1)
 // if interceptor retrieval was handled, false (0) otherwise.
-///
+// /
 func (self *CV8interceptorT) GetByname(
 	name string,
 	object *CV8valueT,
@@ -28844,14 +28864,14 @@ func (self *CV8interceptorT) GetByname(
 	return ret, retval, exception
 }
 
-///
+// /
 // Handle retrieval of the interceptor value identified by |index|. |object|
 // is the receiver (&#39;this&#39; object) of the interceptor. If retrieval succeeds,
 // set |retval| to the return value. If the requested value does not exist,
 // don&#39;t set either |retval| or |exception|. If retrieval fails, set
 // |exception| to the exception that will be thrown. Return true (1) if
 // interceptor retrieval was handled, false (0) otherwise.
-///
+// /
 func (self *CV8interceptorT) GetByindex(
 	index int,
 	object *CV8valueT,
@@ -28873,14 +28893,14 @@ func (self *CV8interceptorT) GetByindex(
 	return ret, retval, exception
 }
 
-///
+// /
 // Handle assignment of the interceptor value identified by |name|. |object|
 // is the receiver (&#39;this&#39; object) of the interceptor. |value| is the new
 // value being assigned to the interceptor. If assignment fails, set
 // |exception| to the exception that will be thrown. This setter will always
 // be called, even when the property has an associated accessor. Return true
 // (1) if interceptor assignment was handled, false (0) otherwise.
-///
+// /
 func (self *CV8interceptorT) SetByname(
 	name string,
 	object *CV8valueT,
@@ -28907,13 +28927,13 @@ func (self *CV8interceptorT) SetByname(
 	return ret, exception
 }
 
-///
+// /
 // Handle assignment of the interceptor value identified by |index|. |object|
 // is the receiver (&#39;this&#39; object) of the interceptor. |value| is the new
 // value being assigned to the interceptor. If assignment fails, set
 // |exception| to the exception that will be thrown. Return true (1) if
 // interceptor assignment was handled, false (0) otherwise.
-///
+// /
 func (self *CV8interceptorT) SetByindex(
 	index int,
 	object *CV8valueT,
@@ -29018,9 +29038,9 @@ func (v8exception *CV8exceptionT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the exception message.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetMessage() (ret string) {
 
@@ -29034,9 +29054,9 @@ func (self *CV8exceptionT) GetMessage() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the line of source code that the exception occurred within.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetSourceLine() (ret string) {
 
@@ -29050,10 +29070,10 @@ func (self *CV8exceptionT) GetSourceLine() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the resource name for the script from where the function causing
 // the error originates.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetScriptResourceName() (ret string) {
 
@@ -29067,10 +29087,10 @@ func (self *CV8exceptionT) GetScriptResourceName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the 1-based number of the line where the error occurred or 0 if the
 // line number is unknown.
-///
+// /
 func (self *CV8exceptionT) GetLineNumber() (ret bool) {
 
 	cRet := C.cefingo_v8exception_get_line_number((*C.cef_v8exception_t)(self.pc_v8exception))
@@ -29079,10 +29099,10 @@ func (self *CV8exceptionT) GetLineNumber() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the index within the script of the first character where the error
 // occurred.
-///
+// /
 func (self *CV8exceptionT) GetStartPosition() (ret bool) {
 
 	cRet := C.cefingo_v8exception_get_start_position((*C.cef_v8exception_t)(self.pc_v8exception))
@@ -29091,10 +29111,10 @@ func (self *CV8exceptionT) GetStartPosition() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the index within the script of the last character where the error
 // occurred.
-///
+// /
 func (self *CV8exceptionT) GetEndPosition() (ret bool) {
 
 	cRet := C.cefingo_v8exception_get_end_position((*C.cef_v8exception_t)(self.pc_v8exception))
@@ -29103,10 +29123,10 @@ func (self *CV8exceptionT) GetEndPosition() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the index within the line of the first character where the error
 // occurred.
-///
+// /
 func (self *CV8exceptionT) GetStartColumn() (ret bool) {
 
 	cRet := C.cefingo_v8exception_get_start_column((*C.cef_v8exception_t)(self.pc_v8exception))
@@ -29115,10 +29135,10 @@ func (self *CV8exceptionT) GetStartColumn() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the index within the line of the last character where the error
 // occurred.
-///
+// /
 func (self *CV8exceptionT) GetEndColumn() (ret bool) {
 
 	cRet := C.cefingo_v8exception_get_end_column((*C.cef_v8exception_t)(self.pc_v8exception))
@@ -29205,11 +29225,11 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Unref() (
 	return ret
 }
 
-///
+// /
 // Called to release |buffer| when the ArrayBuffer JS object is garbage
 // collected. |buffer| is the value that was passed to CreateArrayBuffer along
 // with this object.
-///
+// /
 type ReleaseBufferHandler interface {
 	ReleaseBuffer(
 		self *CV8arrayBufferReleaseCallbackT,
@@ -29373,11 +29393,11 @@ func (v8value *CV8valueT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the underlying handle is valid and it can be accessed
 // on the current thread. Do not call any other functions if this function
 // returns false (0).
-///
+// /
 func (self *CV8valueT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_valid((*C.cef_v8value_t)(self.pc_v8value))
@@ -29386,9 +29406,9 @@ func (self *CV8valueT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is undefined.
-///
+// /
 func (self *CV8valueT) IsUndefined() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_undefined((*C.cef_v8value_t)(self.pc_v8value))
@@ -29397,9 +29417,9 @@ func (self *CV8valueT) IsUndefined() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is null.
-///
+// /
 func (self *CV8valueT) IsNull() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_null((*C.cef_v8value_t)(self.pc_v8value))
@@ -29408,9 +29428,9 @@ func (self *CV8valueT) IsNull() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is bool.
-///
+// /
 func (self *CV8valueT) IsBool() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_bool((*C.cef_v8value_t)(self.pc_v8value))
@@ -29419,9 +29439,9 @@ func (self *CV8valueT) IsBool() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is int.
-///
+// /
 func (self *CV8valueT) IsInt() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_int((*C.cef_v8value_t)(self.pc_v8value))
@@ -29430,9 +29450,9 @@ func (self *CV8valueT) IsInt() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is unsigned int.
-///
+// /
 func (self *CV8valueT) IsUint() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_uint((*C.cef_v8value_t)(self.pc_v8value))
@@ -29441,9 +29461,9 @@ func (self *CV8valueT) IsUint() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is double.
-///
+// /
 func (self *CV8valueT) IsDouble() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_double((*C.cef_v8value_t)(self.pc_v8value))
@@ -29452,9 +29472,9 @@ func (self *CV8valueT) IsDouble() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is Date.
-///
+// /
 func (self *CV8valueT) IsDate() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_date((*C.cef_v8value_t)(self.pc_v8value))
@@ -29463,9 +29483,9 @@ func (self *CV8valueT) IsDate() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is string.
-///
+// /
 func (self *CV8valueT) IsString() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_string((*C.cef_v8value_t)(self.pc_v8value))
@@ -29474,9 +29494,9 @@ func (self *CV8valueT) IsString() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is object.
-///
+// /
 func (self *CV8valueT) IsObject() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_object((*C.cef_v8value_t)(self.pc_v8value))
@@ -29485,9 +29505,9 @@ func (self *CV8valueT) IsObject() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is array.
-///
+// /
 func (self *CV8valueT) IsArray() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_array((*C.cef_v8value_t)(self.pc_v8value))
@@ -29496,9 +29516,9 @@ func (self *CV8valueT) IsArray() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is an ArrayBuffer.
-///
+// /
 func (self *CV8valueT) IsArrayBuffer() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_array_buffer((*C.cef_v8value_t)(self.pc_v8value))
@@ -29507,9 +29527,9 @@ func (self *CV8valueT) IsArrayBuffer() (ret bool) {
 	return ret
 }
 
-///
+// /
 // True if the value type is function.
-///
+// /
 func (self *CV8valueT) IsFunction() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_function((*C.cef_v8value_t)(self.pc_v8value))
@@ -29518,10 +29538,10 @@ func (self *CV8valueT) IsFunction() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is pointing to the same handle as |that|
 // object.
-///
+// /
 func (self *CV8valueT) IsSame(
 	that *CV8valueT,
 ) (ret bool) {
@@ -29537,9 +29557,9 @@ func (self *CV8valueT) IsSame(
 	return ret
 }
 
-///
+// /
 // Return a bool value.
-///
+// /
 func (self *CV8valueT) GetBoolValue() (ret bool) {
 
 	cRet := C.cefingo_v8value_get_bool_value((*C.cef_v8value_t)(self.pc_v8value))
@@ -29548,9 +29568,9 @@ func (self *CV8valueT) GetBoolValue() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Return an int value.
-///
+// /
 func (self *CV8valueT) GetIntValue() (ret int32) {
 
 	cRet := C.cefingo_v8value_get_int_value((*C.cef_v8value_t)(self.pc_v8value))
@@ -29559,9 +29579,9 @@ func (self *CV8valueT) GetIntValue() (ret int32) {
 	return ret
 }
 
-///
+// /
 // Return an unsigned int value.
-///
+// /
 func (self *CV8valueT) GetUintValue() (ret uint32) {
 
 	cRet := C.cefingo_v8value_get_uint_value((*C.cef_v8value_t)(self.pc_v8value))
@@ -29570,9 +29590,9 @@ func (self *CV8valueT) GetUintValue() (ret uint32) {
 	return ret
 }
 
-///
+// /
 // Return a double value.
-///
+// /
 func (self *CV8valueT) GetDoubleValue() (ret float64) {
 
 	cRet := C.cefingo_v8value_get_double_value((*C.cef_v8value_t)(self.pc_v8value))
@@ -29581,9 +29601,9 @@ func (self *CV8valueT) GetDoubleValue() (ret float64) {
 	return ret
 }
 
-///
+// /
 // Return a Date value.
-///
+// /
 func (self *CV8valueT) GetDateValue() (ret CTimeT) {
 
 	cRet := C.cefingo_v8value_get_date_value((*C.cef_v8value_t)(self.pc_v8value))
@@ -29592,9 +29612,9 @@ func (self *CV8valueT) GetDateValue() (ret CTimeT) {
 	return ret
 }
 
-///
+// /
 // Return a string value.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8valueT) GetStringValue() (ret string) {
 
@@ -29608,9 +29628,9 @@ func (self *CV8valueT) GetStringValue() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this is a user created object.
-///
+// /
 func (self *CV8valueT) IsUserCreated() (ret bool) {
 
 	cRet := C.cefingo_v8value_is_user_created((*C.cef_v8value_t)(self.pc_v8value))
@@ -29619,10 +29639,10 @@ func (self *CV8valueT) IsUserCreated() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the last function call resulted in an exception. This
 // attribute exists only in the scope of the current CEF value object.
-///
+// /
 func (self *CV8valueT) HasException() (ret bool) {
 
 	cRet := C.cefingo_v8value_has_exception((*C.cef_v8value_t)(self.pc_v8value))
@@ -29631,10 +29651,10 @@ func (self *CV8valueT) HasException() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the exception resulting from the last function call. This attribute
 // exists only in the scope of the current CEF value object.
-///
+// /
 func (self *CV8valueT) GetException() (ret *CV8exceptionT) {
 
 	cRet := C.cefingo_v8value_get_exception((*C.cef_v8value_t)(self.pc_v8value))
@@ -29643,9 +29663,9 @@ func (self *CV8valueT) GetException() (ret *CV8exceptionT) {
 	return ret
 }
 
-///
+// /
 // Clears the last exception and returns true (1) on success.
-///
+// /
 func (self *CV8valueT) ClearException() (ret bool) {
 
 	cRet := C.cefingo_v8value_clear_exception((*C.cef_v8value_t)(self.pc_v8value))
@@ -29654,10 +29674,10 @@ func (self *CV8valueT) ClearException() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object will re-throw future exceptions. This
 // attribute exists only in the scope of the current CEF value object.
-///
+// /
 func (self *CV8valueT) WillRethrowExceptions() (ret bool) {
 
 	cRet := C.cefingo_v8value_will_rethrow_exceptions((*C.cef_v8value_t)(self.pc_v8value))
@@ -29666,13 +29686,13 @@ func (self *CV8valueT) WillRethrowExceptions() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set whether this object will re-throw future exceptions. By default
 // exceptions are not re-thrown. If a exception is re-thrown the current
 // context should not be accessed again until after the exception has been
 // caught and not re-thrown. Returns true (1) on success. This attribute
 // exists only in the scope of the current CEF value object.
-///
+// /
 func (self *CV8valueT) SetRethrowExceptions(
 	rethrow int,
 ) (ret bool) {
@@ -29683,9 +29703,9 @@ func (self *CV8valueT) SetRethrowExceptions(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the object has a value with the specified identifier.
-///
+// /
 func (self *CV8valueT) HasValueBykey(
 	key string,
 ) (ret bool) {
@@ -29697,9 +29717,9 @@ func (self *CV8valueT) HasValueBykey(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the object has a value with the specified identifier.
-///
+// /
 func (self *CV8valueT) HasValueByindex(
 	index int,
 ) (ret bool) {
@@ -29710,12 +29730,12 @@ func (self *CV8valueT) HasValueByindex(
 	return ret
 }
 
-///
+// /
 // Deletes the value with the specified identifier and returns true (1) on
 // success. Returns false (0) if this function is called incorrectly or an
 // exception is thrown. For read-only and don&#39;t-delete values this function
 // will return true (1) even though deletion failed.
-///
+// /
 func (self *CV8valueT) DeleteValueBykey(
 	key string,
 ) (ret bool) {
@@ -29727,12 +29747,12 @@ func (self *CV8valueT) DeleteValueBykey(
 	return ret
 }
 
-///
+// /
 // Deletes the value with the specified identifier and returns true (1) on
 // success. Returns false (0) if this function is called incorrectly, deletion
 // fails or an exception is thrown. For read-only and don&#39;t-delete values this
 // function will return true (1) even though deletion failed.
-///
+// /
 func (self *CV8valueT) DeleteValueByindex(
 	index int,
 ) (ret bool) {
@@ -29743,10 +29763,10 @@ func (self *CV8valueT) DeleteValueByindex(
 	return ret
 }
 
-///
+// /
 // Returns the value with the specified identifier on success. Returns NULL if
 // this function is called incorrectly or an exception is thrown.
-///
+// /
 func (self *CV8valueT) GetValueBykey(
 	key string,
 ) (ret *CV8valueT) {
@@ -29758,10 +29778,10 @@ func (self *CV8valueT) GetValueBykey(
 	return ret
 }
 
-///
+// /
 // Returns the value with the specified identifier on success. Returns NULL if
 // this function is called incorrectly or an exception is thrown.
-///
+// /
 func (self *CV8valueT) GetValueByindex(
 	index int,
 ) (ret *CV8valueT) {
@@ -29772,12 +29792,12 @@ func (self *CV8valueT) GetValueByindex(
 	return ret
 }
 
-///
+// /
 // Associates a value with the specified identifier and returns true (1) on
 // success. Returns false (0) if this function is called incorrectly or an
 // exception is thrown. For read-only values this function will return true
 // (1) even though assignment failed.
-///
+// /
 func (self *CV8valueT) SetValueBykey(
 	key string,
 	value *CV8valueT,
@@ -29796,12 +29816,12 @@ func (self *CV8valueT) SetValueBykey(
 	return ret
 }
 
-///
+// /
 // Associates a value with the specified identifier and returns true (1) on
 // success. Returns false (0) if this function is called incorrectly or an
 // exception is thrown. For read-only values this function will return true
 // (1) even though assignment failed.
-///
+// /
 func (self *CV8valueT) SetValueByindex(
 	index int,
 	value *CV8valueT,
@@ -29818,13 +29838,13 @@ func (self *CV8valueT) SetValueByindex(
 	return ret
 }
 
-///
+// /
 // Registers an identifier and returns true (1) on success. Access to the
 // identifier will be forwarded to the cef_v8accessor_t instance passed to
 // cef_v8value_t::cef_v8value_create_object(). Returns false (0) if this
 // function is called incorrectly or an exception is thrown. For read-only
 // values this function will return true (1) even though assignment failed.
-///
+// /
 func (self *CV8valueT) SetValueByaccessor(
 	key string,
 	settings CV8AccesscontrolT,
@@ -29838,10 +29858,10 @@ func (self *CV8valueT) SetValueByaccessor(
 	return ret
 }
 
-///
+// /
 // Read the keys for the object&#39;s values into the specified vector. Integer-
 // based keys will also be returned as strings.
-///
+// /
 func (self *CV8valueT) GetKeys(
 	keys CStringListT,
 ) (ret bool) {
@@ -29852,10 +29872,10 @@ func (self *CV8valueT) GetKeys(
 	return ret
 }
 
-///
+// /
 // Returns the amount of externally allocated memory registered for the
 // object.
-///
+// /
 func (self *CV8valueT) GetExternallyAllocatedMemory() (ret bool) {
 
 	cRet := C.cefingo_v8value_get_externally_allocated_memory((*C.cef_v8value_t)(self.pc_v8value))
@@ -29864,7 +29884,7 @@ func (self *CV8valueT) GetExternallyAllocatedMemory() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Adjusts the amount of registered external memory for the object. Used to
 // give V8 an indication of the amount of externally allocated memory that is
 // kept alive by JavaScript objects. V8 uses this information to decide when
@@ -29874,7 +29894,7 @@ func (self *CV8valueT) GetExternallyAllocatedMemory() (ret bool) {
 // |change_in_bytes| specifies the number of bytes to adjust by. This function
 // returns the number of bytes associated with the object after the
 // adjustment. This function can only be called on user created objects.
-///
+// /
 func (self *CV8valueT) AdjustExternallyAllocatedMemory(
 	change_in_bytes int,
 ) (ret bool) {
@@ -29885,9 +29905,9 @@ func (self *CV8valueT) AdjustExternallyAllocatedMemory(
 	return ret
 }
 
-///
+// /
 // Returns the number of elements in the array.
-///
+// /
 func (self *CV8valueT) GetArrayLength() (ret bool) {
 
 	cRet := C.cefingo_v8value_get_array_length((*C.cef_v8value_t)(self.pc_v8value))
@@ -29896,10 +29916,10 @@ func (self *CV8valueT) GetArrayLength() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the ReleaseCallback object associated with the ArrayBuffer or NULL
 // if the ArrayBuffer was not created with CreateArrayBuffer.
-///
+// /
 func (self *CV8valueT) GetArrayBufferReleaseCallback() (ret *CV8arrayBufferReleaseCallbackT) {
 
 	cRet := C.cefingo_v8value_get_array_buffer_release_callback((*C.cef_v8value_t)(self.pc_v8value))
@@ -29908,13 +29928,13 @@ func (self *CV8valueT) GetArrayBufferReleaseCallback() (ret *CV8arrayBufferRelea
 	return ret
 }
 
-///
+// /
 // Prevent the ArrayBuffer from using it&#39;s memory block by setting the length
 // to zero. This operation cannot be undone. If the ArrayBuffer was created
 // with CreateArrayBuffer then
 // cef_v8array_buffer_release_callback_t::ReleaseBuffer will be called to
 // release the underlying buffer.
-///
+// /
 func (self *CV8valueT) NeuterArrayBuffer() (ret bool) {
 
 	cRet := C.cefingo_v8value_neuter_array_buffer((*C.cef_v8value_t)(self.pc_v8value))
@@ -29923,9 +29943,9 @@ func (self *CV8valueT) NeuterArrayBuffer() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the function name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8valueT) GetFunctionName() (ret string) {
 
@@ -29939,9 +29959,9 @@ func (self *CV8valueT) GetFunctionName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the function handler or NULL if not a CEF-created function.
-///
+// /
 func (self *CV8valueT) GetFunctionHandler() (ret *CV8handlerT) {
 
 	cRet := C.cefingo_v8value_get_function_handler((*C.cef_v8value_t)(self.pc_v8value))
@@ -29950,7 +29970,7 @@ func (self *CV8valueT) GetFunctionHandler() (ret *CV8handlerT) {
 	return ret
 }
 
-///
+// /
 // Execute the function using the current V8 context. This function should
 // only be called from within the scope of a cef_v8handler_t or
 // cef_v8accessor_t callback, or in combination with calling enter() and
@@ -29960,7 +29980,7 @@ func (self *CV8valueT) GetFunctionHandler() (ret *CV8handlerT) {
 // be passed to the function. Returns the function return value on success.
 // Returns NULL if this function is called incorrectly or an exception is
 // thrown.
-///
+// /
 func (self *CV8valueT) ExecuteFunction(
 	object *CV8valueT,
 	arguments []*CV8valueT,
@@ -29987,14 +30007,14 @@ func (self *CV8valueT) ExecuteFunction(
 	return ret
 }
 
-///
+// /
 // Execute the function using the specified V8 context. |object| is the
 // receiver (&#39;this&#39; object) of the function. If |object| is NULL the specified
 // context&#39;s global object will be used. |arguments| is the list of arguments
 // that will be passed to the function. Returns the function return value on
 // success. Returns NULL if this function is called incorrectly or an
 // exception is thrown.
-///
+// /
 func (self *CV8valueT) ExecuteFunctionWithContext(
 	context *CV8contextT,
 	object *CV8valueT,
@@ -30027,9 +30047,9 @@ func (self *CV8valueT) ExecuteFunctionWithContext(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type undefined.
-///
+// /
 func V8valueCreateUndefined() (ret *CV8valueT) {
 
 	cRet := C.cef_v8value_create_undefined()
@@ -30038,9 +30058,9 @@ func V8valueCreateUndefined() (ret *CV8valueT) {
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type null.
-///
+// /
 func V8valueCreateNull() (ret *CV8valueT) {
 
 	cRet := C.cef_v8value_create_null()
@@ -30049,9 +30069,9 @@ func V8valueCreateNull() (ret *CV8valueT) {
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type bool.
-///
+// /
 func V8valueCreateBool(
 	value int,
 ) (ret *CV8valueT) {
@@ -30062,9 +30082,9 @@ func V8valueCreateBool(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type int.
-///
+// /
 func V8valueCreateInt(
 	value int32,
 ) (ret *CV8valueT) {
@@ -30075,9 +30095,9 @@ func V8valueCreateInt(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type unsigned int.
-///
+// /
 func V8valueCreateUint(
 	value uint32,
 ) (ret *CV8valueT) {
@@ -30088,9 +30108,9 @@ func V8valueCreateUint(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type double.
-///
+// /
 func V8valueCreateDouble(
 	value float64,
 ) (ret *CV8valueT) {
@@ -30101,12 +30121,12 @@ func V8valueCreateDouble(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type Date. This function should only be
 // called from within the scope of a cef_render_process_handler_t,
 // cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
 // enter() and exit() on a stored cef_v8context_t reference.
-///
+// /
 func V8valueCreateDate(
 	date *CTimeT,
 ) (ret *CV8valueT) {
@@ -30117,9 +30137,9 @@ func V8valueCreateDate(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type string.
-///
+// /
 func V8valueCreateString(
 	value string,
 ) (ret *CV8valueT) {
@@ -30131,13 +30151,13 @@ func V8valueCreateString(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type object with optional accessor
 // and/or interceptor. This function should only be called from within the scope
 // of a cef_render_process_handler_t, cef_v8handler_t or cef_v8accessor_t
 // callback, or in combination with calling enter() and exit() on a stored
 // cef_v8context_t reference.
-///
+// /
 func V8valueCreateObject(
 	accessor *CV8accessorT,
 	interceptor *CV8interceptorT,
@@ -30159,14 +30179,14 @@ func V8valueCreateObject(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type array with the specified |length|.
 // If |length| is negative the returned array will have length 0. This function
 // should only be called from within the scope of a
 // cef_render_process_handler_t, cef_v8handler_t or cef_v8accessor_t callback,
 // or in combination with calling enter() and exit() on a stored cef_v8context_t
 // reference.
-///
+// /
 func V8valueCreateArray(
 	length int,
 ) (ret *CV8valueT) {
@@ -30177,7 +30197,7 @@ func V8valueCreateArray(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type ArrayBuffer which wraps the
 // provided |buffer| of size |length| bytes. The ArrayBuffer is externalized,
 // meaning that it does not own |buffer|. The caller is responsible for freeing
@@ -30186,7 +30206,7 @@ func V8valueCreateArray(
 // cef_render_process_handler_t, cef_v8handler_t or cef_v8accessor_t callback,
 // or in combination with calling enter() and exit() on a stored cef_v8context_t
 // reference.
-///
+// /
 func V8valueCreateArrayBuffer(
 	buffer unsafe.Pointer,
 	length int64,
@@ -30204,12 +30224,12 @@ func V8valueCreateArrayBuffer(
 	return ret
 }
 
-///
+// /
 // Create a new cef_v8value_t object of type function. This function should only
 // be called from within the scope of a cef_render_process_handler_t,
 // cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
 // enter() and exit() on a stored cef_v8context_t reference.
-///
+// /
 func V8valueCreateFunction(
 	name string,
 	handler *CV8handlerT,
@@ -30309,11 +30329,11 @@ func (v8stack_trace *CV8stackTraceT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the underlying handle is valid and it can be accessed
 // on the current thread. Do not call any other functions if this function
 // returns false (0).
-///
+// /
 func (self *CV8stackTraceT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_v8stack_trace_is_valid((*C.cef_v8stack_trace_t)(self.pc_v8stack_trace))
@@ -30322,9 +30342,9 @@ func (self *CV8stackTraceT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the number of stack frames.
-///
+// /
 func (self *CV8stackTraceT) GetFrameCount() (ret bool) {
 
 	cRet := C.cefingo_v8stack_trace_get_frame_count((*C.cef_v8stack_trace_t)(self.pc_v8stack_trace))
@@ -30333,9 +30353,9 @@ func (self *CV8stackTraceT) GetFrameCount() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the stack frame at the specified 0-based index.
-///
+// /
 func (self *CV8stackTraceT) GetFrame(
 	index int,
 ) (ret *CV8stackFrameT) {
@@ -30346,10 +30366,10 @@ func (self *CV8stackTraceT) GetFrame(
 	return ret
 }
 
-///
+// /
 // Returns the stack trace for the currently active context. |frame_limit| is
 // the maximum number of frames that will be captured.
-///
+// /
 func V8stackTraceGetCurrent(
 	frame_limit int,
 ) (ret *CV8stackTraceT) {
@@ -30442,11 +30462,11 @@ func (v8stack_frame *CV8stackFrameT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the underlying handle is valid and it can be accessed
 // on the current thread. Do not call any other functions if this function
 // returns false (0).
-///
+// /
 func (self *CV8stackFrameT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_v8stack_frame_is_valid((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
@@ -30455,9 +30475,9 @@ func (self *CV8stackFrameT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the name of the resource script that contains the function.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetScriptName() (ret string) {
 
@@ -30471,11 +30491,11 @@ func (self *CV8stackFrameT) GetScriptName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the name of the resource script that contains the function or the
 // sourceURL value if the script name is undefined and its source ends with a
 // &quot;//@ sourceURL=...&quot; string.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetScriptNameOrSourceUrl() (ret string) {
 
@@ -30489,9 +30509,9 @@ func (self *CV8stackFrameT) GetScriptNameOrSourceUrl() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the name of the function.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetFunctionName() (ret string) {
 
@@ -30505,9 +30525,9 @@ func (self *CV8stackFrameT) GetFunctionName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the 1-based line number for the function call or 0 if unknown.
-///
+// /
 func (self *CV8stackFrameT) GetLineNumber() (ret bool) {
 
 	cRet := C.cefingo_v8stack_frame_get_line_number((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
@@ -30516,10 +30536,10 @@ func (self *CV8stackFrameT) GetLineNumber() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the 1-based column offset on the line for the function call or 0 if
 // unknown.
-///
+// /
 func (self *CV8stackFrameT) GetColumn() (ret bool) {
 
 	cRet := C.cefingo_v8stack_frame_get_column((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
@@ -30528,9 +30548,9 @@ func (self *CV8stackFrameT) GetColumn() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the function was compiled using eval().
-///
+// /
 func (self *CV8stackFrameT) IsEval() (ret bool) {
 
 	cRet := C.cefingo_v8stack_frame_is_eval((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
@@ -30539,9 +30559,9 @@ func (self *CV8stackFrameT) IsEval() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the function was called as a constructor via &quot;new&quot;.
-///
+// /
 func (self *CV8stackFrameT) IsConstructor() (ret bool) {
 
 	cRet := C.cefingo_v8stack_frame_is_constructor((*C.cef_v8stack_frame_t)(self.pc_v8stack_frame))
@@ -30550,7 +30570,7 @@ func (self *CV8stackFrameT) IsConstructor() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Register a new V8 extension with the specified JavaScript extension code and
 // handler. Functions implemented by the handler are prototyped using the
 // keyword 'native'. The calling of a native function is restricted to the scope
@@ -30558,54 +30578,58 @@ func (self *CV8stackFrameT) IsConstructor() (ret bool) {
 // only be called on the render process main thread.
 //
 // Example JavaScript extension code: <pre>
-//   // create the 'example' global object if it doesn't already exist.
-//   if (!example)
-//     example = {};
-//   // create the 'example.test' global object if it doesn't already exist.
-//   if (!example.test)
-//     example.test = {};
-//   (function() {
-//     // Define the function 'example.test.myfunction'.
-//     example.test.myfunction = function() {
-//       // Call CefV8Handler::Execute() with the function name 'MyFunction'
-//       // and no arguments.
-//       native function MyFunction();
-//       return MyFunction();
-//     };
-//     // Define the getter function for parameter 'example.test.myparam'.
-//     example.test.__defineGetter__('myparam', function() {
-//       // Call CefV8Handler::Execute() with the function name 'GetMyParam'
-//       // and no arguments.
-//       native function GetMyParam();
-//       return GetMyParam();
-//     });
-//     // Define the setter function for parameter 'example.test.myparam'.
-//     example.test.__defineSetter__('myparam', function(b) {
-//       // Call CefV8Handler::Execute() with the function name 'SetMyParam'
-//       // and a single argument.
-//       native function SetMyParam();
-//       if(b) SetMyParam(b);
-//     });
 //
-//     // Extension definitions can also contain normal JavaScript variables
-//     // and functions.
-//     var myint = 0;
-//     example.test.increment = function() {
-//       myint += 1;
-//       return myint;
-//     };
-//   })();
+//	// create the 'example' global object if it doesn't already exist.
+//	if (!example)
+//	  example = {};
+//	// create the 'example.test' global object if it doesn't already exist.
+//	if (!example.test)
+//	  example.test = {};
+//	(function() {
+//	  // Define the function 'example.test.myfunction'.
+//	  example.test.myfunction = function() {
+//	    // Call CefV8Handler::Execute() with the function name 'MyFunction'
+//	    // and no arguments.
+//	    native function MyFunction();
+//	    return MyFunction();
+//	  };
+//	  // Define the getter function for parameter 'example.test.myparam'.
+//	  example.test.__defineGetter__('myparam', function() {
+//	    // Call CefV8Handler::Execute() with the function name 'GetMyParam'
+//	    // and no arguments.
+//	    native function GetMyParam();
+//	    return GetMyParam();
+//	  });
+//	  // Define the setter function for parameter 'example.test.myparam'.
+//	  example.test.__defineSetter__('myparam', function(b) {
+//	    // Call CefV8Handler::Execute() with the function name 'SetMyParam'
+//	    // and a single argument.
+//	    native function SetMyParam();
+//	    if(b) SetMyParam(b);
+//	  });
+//
+//	  // Extension definitions can also contain normal JavaScript variables
+//	  // and functions.
+//	  var myint = 0;
+//	  example.test.increment = function() {
+//	    myint += 1;
+//	    return myint;
+//	  };
+//	})();
+//
 // </pre> Example usage in the page: <pre>
-//   // Call the function.
-//   example.test.myfunction();
-//   // Set the parameter.
-//   example.test.myparam = value;
-//   // Get the parameter.
-//   value = example.test.myparam;
-//   // Call another function.
-//   example.test.increment();
+//
+//	// Call the function.
+//	example.test.myfunction();
+//	// Set the parameter.
+//	example.test.myparam = value;
+//	// Get the parameter.
+//	value = example.test.myparam;
+//	// Call another function.
+//	example.test.increment();
+//
 // </pre>
-///
+// /
 func RegisterExtension(
 	extension_name string,
 	javascript_code string,
@@ -30707,14 +30731,14 @@ func (value *CValueT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the underlying data is valid. This will always be true
 // (1) for simple types. For complex types (binary, dictionary and list) the
 // underlying data may become invalid if owned by another object (e.g. list or
 // dictionary) and that other object is then modified or destroyed. This value
 // object can be re-used by calling Set*() even if the underlying data is
 // invalid.
-///
+// /
 func (self *CValueT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_value_is_valid((*C.cef_value_t)(self.pc_value))
@@ -30723,9 +30747,9 @@ func (self *CValueT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the underlying data is owned by another object.
-///
+// /
 func (self *CValueT) IsOwned() (ret bool) {
 
 	cRet := C.cefingo_value_is_owned((*C.cef_value_t)(self.pc_value))
@@ -30734,10 +30758,10 @@ func (self *CValueT) IsOwned() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the underlying data is read-only. Some APIs may expose
 // read-only objects.
-///
+// /
 func (self *CValueT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_value_is_read_only((*C.cef_value_t)(self.pc_value))
@@ -30746,11 +30770,11 @@ func (self *CValueT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object and |that| object have the same underlying
 // data. If true (1) modifications to this object will also affect |that|
 // object and vice-versa.
-///
+// /
 func (self *CValueT) IsSame(
 	that *CValueT,
 ) (ret bool) {
@@ -30766,10 +30790,10 @@ func (self *CValueT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object and |that| object have an equivalent
 // underlying value but are not necessarily the same object.
-///
+// /
 func (self *CValueT) IsEqual(
 	that *CValueT,
 ) (ret bool) {
@@ -30785,9 +30809,9 @@ func (self *CValueT) IsEqual(
 	return ret
 }
 
-///
+// /
 // Returns a copy of this object. The underlying data will also be copied.
-///
+// /
 func (self *CValueT) Copy() (ret *CValueT) {
 
 	cRet := C.cefingo_value_copy((*C.cef_value_t)(self.pc_value))
@@ -30796,9 +30820,9 @@ func (self *CValueT) Copy() (ret *CValueT) {
 	return ret
 }
 
-///
+// /
 // Returns the underlying value type.
-///
+// /
 func (self *CValueT) GetType() (ret CValueTypeT) {
 
 	cRet := C.cefingo_value_get_type((*C.cef_value_t)(self.pc_value))
@@ -30807,9 +30831,9 @@ func (self *CValueT) GetType() (ret CValueTypeT) {
 	return ret
 }
 
-///
+// /
 // Returns the underlying value as type bool.
-///
+// /
 func (self *CValueT) GetBool() (ret bool) {
 
 	cRet := C.cefingo_value_get_bool((*C.cef_value_t)(self.pc_value))
@@ -30818,9 +30842,9 @@ func (self *CValueT) GetBool() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the underlying value as type int.
-///
+// /
 func (self *CValueT) GetInt() (ret bool) {
 
 	cRet := C.cefingo_value_get_int((*C.cef_value_t)(self.pc_value))
@@ -30829,9 +30853,9 @@ func (self *CValueT) GetInt() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the underlying value as type double.
-///
+// /
 func (self *CValueT) GetDouble() (ret float64) {
 
 	cRet := C.cefingo_value_get_double((*C.cef_value_t)(self.pc_value))
@@ -30840,9 +30864,9 @@ func (self *CValueT) GetDouble() (ret float64) {
 	return ret
 }
 
-///
+// /
 // Returns the underlying value as type string.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CValueT) GetString() (ret string) {
 
@@ -30856,14 +30880,14 @@ func (self *CValueT) GetString() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the underlying value as type binary. The returned reference may
 // become invalid if the value is owned by another object or if ownership is
 // transferred to another object in the future. To maintain a reference to the
 // value after assigning ownership to a dictionary or list pass this object to
 // the set_value() function instead of passing the returned reference to
 // set_binary().
-///
+// /
 func (self *CValueT) GetBinary() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_value_get_binary((*C.cef_value_t)(self.pc_value))
@@ -30872,14 +30896,14 @@ func (self *CValueT) GetBinary() (ret *CBinaryValueT) {
 	return ret
 }
 
-///
+// /
 // Returns the underlying value as type dictionary. The returned reference may
 // become invalid if the value is owned by another object or if ownership is
 // transferred to another object in the future. To maintain a reference to the
 // value after assigning ownership to a dictionary or list pass this object to
 // the set_value() function instead of passing the returned reference to
 // set_dictionary().
-///
+// /
 func (self *CValueT) GetDictionary() (ret *CDictionaryValueT) {
 
 	cRet := C.cefingo_value_get_dictionary((*C.cef_value_t)(self.pc_value))
@@ -30888,14 +30912,14 @@ func (self *CValueT) GetDictionary() (ret *CDictionaryValueT) {
 	return ret
 }
 
-///
+// /
 // Returns the underlying value as type list. The returned reference may
 // become invalid if the value is owned by another object or if ownership is
 // transferred to another object in the future. To maintain a reference to the
 // value after assigning ownership to a dictionary or list pass this object to
 // the set_value() function instead of passing the returned reference to
 // set_list().
-///
+// /
 func (self *CValueT) GetList() (ret *CListValueT) {
 
 	cRet := C.cefingo_value_get_list((*C.cef_value_t)(self.pc_value))
@@ -30904,10 +30928,10 @@ func (self *CValueT) GetList() (ret *CListValueT) {
 	return ret
 }
 
-///
+// /
 // Sets the underlying value as type null. Returns true (1) if the value was
 // set successfully.
-///
+// /
 func (self *CValueT) SetNull() (ret bool) {
 
 	cRet := C.cefingo_value_set_null((*C.cef_value_t)(self.pc_value))
@@ -30916,10 +30940,10 @@ func (self *CValueT) SetNull() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Sets the underlying value as type bool. Returns true (1) if the value was
 // set successfully.
-///
+// /
 func (self *CValueT) SetBool(
 	value bool,
 ) (ret bool) {
@@ -30934,10 +30958,10 @@ func (self *CValueT) SetBool(
 	return ret
 }
 
-///
+// /
 // Sets the underlying value as type int. Returns true (1) if the value was
 // set successfully.
-///
+// /
 func (self *CValueT) SetInt(
 	value int,
 ) (ret bool) {
@@ -30948,10 +30972,10 @@ func (self *CValueT) SetInt(
 	return ret
 }
 
-///
+// /
 // Sets the underlying value as type double. Returns true (1) if the value was
 // set successfully.
-///
+// /
 func (self *CValueT) SetDouble(
 	value float64,
 ) (ret bool) {
@@ -30962,10 +30986,10 @@ func (self *CValueT) SetDouble(
 	return ret
 }
 
-///
+// /
 // Sets the underlying value as type string. Returns true (1) if the value was
 // set successfully.
-///
+// /
 func (self *CValueT) SetString(
 	value string,
 ) (ret bool) {
@@ -30977,11 +31001,11 @@ func (self *CValueT) SetString(
 	return ret
 }
 
-///
+// /
 // Sets the underlying value as type binary. Returns true (1) if the value was
 // set successfully. This object keeps a reference to |value| and ownership of
 // the underlying data remains unchanged.
-///
+// /
 func (self *CValueT) SetBinary(
 	value *CBinaryValueT,
 ) (ret bool) {
@@ -30997,11 +31021,11 @@ func (self *CValueT) SetBinary(
 	return ret
 }
 
-///
+// /
 // Sets the underlying value as type dict. Returns true (1) if the value was
 // set successfully. This object keeps a reference to |value| and ownership of
 // the underlying data remains unchanged.
-///
+// /
 func (self *CValueT) SetDictionary(
 	value *CDictionaryValueT,
 ) (ret bool) {
@@ -31017,11 +31041,11 @@ func (self *CValueT) SetDictionary(
 	return ret
 }
 
-///
+// /
 // Sets the underlying value as type list. Returns true (1) if the value was
 // set successfully. This object keeps a reference to |value| and ownership of
 // the underlying data remains unchanged.
-///
+// /
 func (self *CValueT) SetList(
 	value *CListValueT,
 ) (ret bool) {
@@ -31037,9 +31061,9 @@ func (self *CValueT) SetList(
 	return ret
 }
 
-///
+// /
 // Creates a new object.
-///
+// /
 func ValueCreate() (ret *CValueT) {
 
 	cRet := C.cef_value_create()
@@ -31126,12 +31150,12 @@ func (binary_value *CBinaryValueT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid. This object may become invalid if
 // the underlying data is owned by another object (e.g. list or dictionary)
 // and that other object is then modified or destroyed. Do not call any other
 // functions if this function returns false (0).
-///
+// /
 func (self *CBinaryValueT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_binary_value_is_valid((*C.cef_binary_value_t)(self.pc_binary_value))
@@ -31140,9 +31164,9 @@ func (self *CBinaryValueT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is currently owned by another object.
-///
+// /
 func (self *CBinaryValueT) IsOwned() (ret bool) {
 
 	cRet := C.cefingo_binary_value_is_owned((*C.cef_binary_value_t)(self.pc_binary_value))
@@ -31151,10 +31175,10 @@ func (self *CBinaryValueT) IsOwned() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object and |that| object have the same underlying
 // data.
-///
+// /
 func (self *CBinaryValueT) IsSame(
 	that *CBinaryValueT,
 ) (ret bool) {
@@ -31170,10 +31194,10 @@ func (self *CBinaryValueT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object and |that| object have an equivalent
 // underlying value but are not necessarily the same object.
-///
+// /
 func (self *CBinaryValueT) IsEqual(
 	that *CBinaryValueT,
 ) (ret bool) {
@@ -31189,9 +31213,9 @@ func (self *CBinaryValueT) IsEqual(
 	return ret
 }
 
-///
+// /
 // Returns a copy of this object. The data in this object will also be copied.
-///
+// /
 func (self *CBinaryValueT) Copy() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_binary_value_copy((*C.cef_binary_value_t)(self.pc_binary_value))
@@ -31200,9 +31224,9 @@ func (self *CBinaryValueT) Copy() (ret *CBinaryValueT) {
 	return ret
 }
 
-///
+// /
 // Returns the data size.
-///
+// /
 func (self *CBinaryValueT) GetSize() (ret int64) {
 
 	cRet := C.cefingo_binary_value_get_size((*C.cef_binary_value_t)(self.pc_binary_value))
@@ -31211,10 +31235,10 @@ func (self *CBinaryValueT) GetSize() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Read up to |buffer_size| number of bytes into |buffer|. Reading begins at
 // the specified byte |data_offset|. Returns the number of bytes read.
-///
+// /
 func (self *CBinaryValueT) GetData(
 	buffer unsafe.Pointer,
 	buffer_size int64,
@@ -31227,10 +31251,10 @@ func (self *CBinaryValueT) GetData(
 	return ret
 }
 
-///
+// /
 // Creates a new object that is not owned by any other object. The specified
 // |data| will be copied.
-///
+// /
 func BinaryValueCreate(
 	data []byte,
 ) (ret *CBinaryValueT) {
@@ -31323,12 +31347,12 @@ func (dictionary_value *CDictionaryValueT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid. This object may become invalid if
 // the underlying data is owned by another object (e.g. list or dictionary)
 // and that other object is then modified or destroyed. Do not call any other
 // functions if this function returns false (0).
-///
+// /
 func (self *CDictionaryValueT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_dictionary_value_is_valid((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
@@ -31337,9 +31361,9 @@ func (self *CDictionaryValueT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is currently owned by another object.
-///
+// /
 func (self *CDictionaryValueT) IsOwned() (ret bool) {
 
 	cRet := C.cefingo_dictionary_value_is_owned((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
@@ -31348,10 +31372,10 @@ func (self *CDictionaryValueT) IsOwned() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the values of this object are read-only. Some APIs may
 // expose read-only objects.
-///
+// /
 func (self *CDictionaryValueT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_dictionary_value_is_read_only((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
@@ -31360,11 +31384,11 @@ func (self *CDictionaryValueT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object and |that| object have the same underlying
 // data. If true (1) modifications to this object will also affect |that|
 // object and vice-versa.
-///
+// /
 func (self *CDictionaryValueT) IsSame(
 	that *CDictionaryValueT,
 ) (ret bool) {
@@ -31380,10 +31404,10 @@ func (self *CDictionaryValueT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object and |that| object have an equivalent
 // underlying value but are not necessarily the same object.
-///
+// /
 func (self *CDictionaryValueT) IsEqual(
 	that *CDictionaryValueT,
 ) (ret bool) {
@@ -31399,10 +31423,10 @@ func (self *CDictionaryValueT) IsEqual(
 	return ret
 }
 
-///
+// /
 // Returns a writable copy of this object. If |exclude_NULL_children| is true
 // (1) any NULL dictionaries or lists will be excluded from the copy.
-///
+// /
 func (self *CDictionaryValueT) Copy(
 	exclude_empty_children int,
 ) (ret *CDictionaryValueT) {
@@ -31413,9 +31437,9 @@ func (self *CDictionaryValueT) Copy(
 	return ret
 }
 
-///
+// /
 // Returns the number of values.
-///
+// /
 func (self *CDictionaryValueT) GetSize() (ret int64) {
 
 	cRet := C.cefingo_dictionary_value_get_size((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
@@ -31424,9 +31448,9 @@ func (self *CDictionaryValueT) GetSize() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Removes all values. Returns true (1) on success.
-///
+// /
 func (self *CDictionaryValueT) Clear() (ret bool) {
 
 	cRet := C.cefingo_dictionary_value_clear((*C.cef_dictionary_value_t)(self.pc_dictionary_value))
@@ -31435,9 +31459,9 @@ func (self *CDictionaryValueT) Clear() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the current dictionary has a value for the given key.
-///
+// /
 func (self *CDictionaryValueT) HasKey(
 	key string,
 ) (ret bool) {
@@ -31449,9 +31473,9 @@ func (self *CDictionaryValueT) HasKey(
 	return ret
 }
 
-///
+// /
 // Reads all keys for this dictionary into the specified vector.
-///
+// /
 func (self *CDictionaryValueT) GetKeys(
 	keys CStringListT,
 ) (ret bool) {
@@ -31462,10 +31486,10 @@ func (self *CDictionaryValueT) GetKeys(
 	return ret
 }
 
-///
+// /
 // Removes the value at the specified key. Returns true (1) is the value was
 // removed successfully.
-///
+// /
 func (self *CDictionaryValueT) Remove(
 	key string,
 ) (ret bool) {
@@ -31477,9 +31501,9 @@ func (self *CDictionaryValueT) Remove(
 	return ret
 }
 
-///
+// /
 // Returns the value type for the specified key.
-///
+// /
 func (self *CDictionaryValueT) GetType(
 	key string,
 ) (ret CValueTypeT) {
@@ -31491,13 +31515,13 @@ func (self *CDictionaryValueT) GetType(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified key. For simple types the returned value
 // will copy existing data and modifications to the value will not modify this
 // object. For complex types (binary, dictionary and list) the returned value
 // will reference existing data and modifications to the value will modify
 // this object.
-///
+// /
 func (self *CDictionaryValueT) GetValue(
 	key string,
 ) (ret *CValueT) {
@@ -31509,9 +31533,9 @@ func (self *CDictionaryValueT) GetValue(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified key as type bool.
-///
+// /
 func (self *CDictionaryValueT) GetBool(
 	key string,
 ) (ret bool) {
@@ -31523,9 +31547,9 @@ func (self *CDictionaryValueT) GetBool(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified key as type int.
-///
+// /
 func (self *CDictionaryValueT) GetInt(
 	key string,
 ) (ret bool) {
@@ -31537,9 +31561,9 @@ func (self *CDictionaryValueT) GetInt(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified key as type double.
-///
+// /
 func (self *CDictionaryValueT) GetDouble(
 	key string,
 ) (ret float64) {
@@ -31551,9 +31575,9 @@ func (self *CDictionaryValueT) GetDouble(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified key as type string.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDictionaryValueT) GetString(
 	key string,
@@ -31570,10 +31594,10 @@ func (self *CDictionaryValueT) GetString(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified key as type binary. The returned value
 // will reference existing data.
-///
+// /
 func (self *CDictionaryValueT) GetBinary(
 	key string,
 ) (ret *CBinaryValueT) {
@@ -31585,11 +31609,11 @@ func (self *CDictionaryValueT) GetBinary(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified key as type dictionary. The returned
 // value will reference existing data and modifications to the value will
 // modify this object.
-///
+// /
 func (self *CDictionaryValueT) GetDictionary(
 	key string,
 ) (ret *CDictionaryValueT) {
@@ -31601,11 +31625,11 @@ func (self *CDictionaryValueT) GetDictionary(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified key as type list. The returned value
 // will reference existing data and modifications to the value will modify
 // this object.
-///
+// /
 func (self *CDictionaryValueT) GetList(
 	key string,
 ) (ret *CListValueT) {
@@ -31617,14 +31641,14 @@ func (self *CDictionaryValueT) GetList(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key. Returns true (1) if the value was set
 // successfully. If |value| represents simple data then the underlying data
 // will be copied and modifications to |value| will not modify this object. If
 // |value| represents complex data (binary, dictionary or list) then the
 // underlying data will be referenced and modifications to |value| will modify
 // this object.
-///
+// /
 func (self *CDictionaryValueT) SetValue(
 	key string,
 	value *CValueT,
@@ -31642,10 +31666,10 @@ func (self *CDictionaryValueT) SetValue(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key as type null. Returns true (1) if the
 // value was set successfully.
-///
+// /
 func (self *CDictionaryValueT) SetNull(
 	key string,
 ) (ret bool) {
@@ -31657,10 +31681,10 @@ func (self *CDictionaryValueT) SetNull(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key as type bool. Returns true (1) if the
 // value was set successfully.
-///
+// /
 func (self *CDictionaryValueT) SetBool(
 	key string,
 	value bool,
@@ -31677,10 +31701,10 @@ func (self *CDictionaryValueT) SetBool(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key as type int. Returns true (1) if the
 // value was set successfully.
-///
+// /
 func (self *CDictionaryValueT) SetInt(
 	key string,
 	value int,
@@ -31693,10 +31717,10 @@ func (self *CDictionaryValueT) SetInt(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key as type double. Returns true (1) if the
 // value was set successfully.
-///
+// /
 func (self *CDictionaryValueT) SetDouble(
 	key string,
 	value float64,
@@ -31709,10 +31733,10 @@ func (self *CDictionaryValueT) SetDouble(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key as type string. Returns true (1) if the
 // value was set successfully.
-///
+// /
 func (self *CDictionaryValueT) SetString(
 	key string,
 	value string,
@@ -31726,13 +31750,13 @@ func (self *CDictionaryValueT) SetString(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key as type binary. Returns true (1) if the
 // value was set successfully. If |value| is currently owned by another object
 // then the value will be copied and the |value| reference will not change.
 // Otherwise, ownership will be transferred to this object and the |value|
 // reference will be invalidated.
-///
+// /
 func (self *CDictionaryValueT) SetBinary(
 	key string,
 	value *CBinaryValueT,
@@ -31750,13 +31774,13 @@ func (self *CDictionaryValueT) SetBinary(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key as type dict. Returns true (1) if the
 // value was set successfully. If |value| is currently owned by another object
 // then the value will be copied and the |value| reference will not change.
 // Otherwise, ownership will be transferred to this object and the |value|
 // reference will be invalidated.
-///
+// /
 func (self *CDictionaryValueT) SetDictionary(
 	key string,
 	value *CDictionaryValueT,
@@ -31774,13 +31798,13 @@ func (self *CDictionaryValueT) SetDictionary(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified key as type list. Returns true (1) if the
 // value was set successfully. If |value| is currently owned by another object
 // then the value will be copied and the |value| reference will not change.
 // Otherwise, ownership will be transferred to this object and the |value|
 // reference will be invalidated.
-///
+// /
 func (self *CDictionaryValueT) SetList(
 	key string,
 	value *CListValueT,
@@ -31798,9 +31822,9 @@ func (self *CDictionaryValueT) SetList(
 	return ret
 }
 
-///
+// /
 // Creates a new object that is not owned by any other object.
-///
+// /
 func DictionaryValueCreate() (ret *CDictionaryValueT) {
 
 	cRet := C.cef_dictionary_value_create()
@@ -31887,12 +31911,12 @@ func (list_value *CListValueT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is valid. This object may become invalid if
 // the underlying data is owned by another object (e.g. list or dictionary)
 // and that other object is then modified or destroyed. Do not call any other
 // functions if this function returns false (0).
-///
+// /
 func (self *CListValueT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_list_value_is_valid((*C.cef_list_value_t)(self.pc_list_value))
@@ -31901,9 +31925,9 @@ func (self *CListValueT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object is currently owned by another object.
-///
+// /
 func (self *CListValueT) IsOwned() (ret bool) {
 
 	cRet := C.cefingo_list_value_is_owned((*C.cef_list_value_t)(self.pc_list_value))
@@ -31912,10 +31936,10 @@ func (self *CListValueT) IsOwned() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the values of this object are read-only. Some APIs may
 // expose read-only objects.
-///
+// /
 func (self *CListValueT) IsReadOnly() (ret bool) {
 
 	cRet := C.cefingo_list_value_is_read_only((*C.cef_list_value_t)(self.pc_list_value))
@@ -31924,11 +31948,11 @@ func (self *CListValueT) IsReadOnly() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object and |that| object have the same underlying
 // data. If true (1) modifications to this object will also affect |that|
 // object and vice-versa.
-///
+// /
 func (self *CListValueT) IsSame(
 	that *CListValueT,
 ) (ret bool) {
@@ -31944,10 +31968,10 @@ func (self *CListValueT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this object and |that| object have an equivalent
 // underlying value but are not necessarily the same object.
-///
+// /
 func (self *CListValueT) IsEqual(
 	that *CListValueT,
 ) (ret bool) {
@@ -31963,9 +31987,9 @@ func (self *CListValueT) IsEqual(
 	return ret
 }
 
-///
+// /
 // Returns a writable copy of this object.
-///
+// /
 func (self *CListValueT) Copy() (ret *CListValueT) {
 
 	cRet := C.cefingo_list_value_copy((*C.cef_list_value_t)(self.pc_list_value))
@@ -31974,10 +31998,10 @@ func (self *CListValueT) Copy() (ret *CListValueT) {
 	return ret
 }
 
-///
+// /
 // Sets the number of values. If the number of values is expanded all new
 // value slots will default to type null. Returns true (1) on success.
-///
+// /
 func (self *CListValueT) SetSize(
 	size int64,
 ) (ret bool) {
@@ -31988,9 +32012,9 @@ func (self *CListValueT) SetSize(
 	return ret
 }
 
-///
+// /
 // Returns the number of values.
-///
+// /
 func (self *CListValueT) GetSize() (ret int64) {
 
 	cRet := C.cefingo_list_value_get_size((*C.cef_list_value_t)(self.pc_list_value))
@@ -31999,9 +32023,9 @@ func (self *CListValueT) GetSize() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Removes all values. Returns true (1) on success.
-///
+// /
 func (self *CListValueT) Clear() (ret bool) {
 
 	cRet := C.cefingo_list_value_clear((*C.cef_list_value_t)(self.pc_list_value))
@@ -32010,9 +32034,9 @@ func (self *CListValueT) Clear() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Removes the value at the specified index.
-///
+// /
 func (self *CListValueT) Remove(
 	index int64,
 ) (ret bool) {
@@ -32023,9 +32047,9 @@ func (self *CListValueT) Remove(
 	return ret
 }
 
-///
+// /
 // Returns the value type at the specified index.
-///
+// /
 func (self *CListValueT) GetType(
 	index int64,
 ) (ret CValueTypeT) {
@@ -32036,13 +32060,13 @@ func (self *CListValueT) GetType(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified index. For simple types the returned
 // value will copy existing data and modifications to the value will not
 // modify this object. For complex types (binary, dictionary and list) the
 // returned value will reference existing data and modifications to the value
 // will modify this object.
-///
+// /
 func (self *CListValueT) GetValue(
 	index int64,
 ) (ret *CValueT) {
@@ -32053,9 +32077,9 @@ func (self *CListValueT) GetValue(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified index as type bool.
-///
+// /
 func (self *CListValueT) GetBool(
 	index int64,
 ) (ret bool) {
@@ -32066,9 +32090,9 @@ func (self *CListValueT) GetBool(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified index as type int.
-///
+// /
 func (self *CListValueT) GetInt(
 	index int64,
 ) (ret int) {
@@ -32079,9 +32103,9 @@ func (self *CListValueT) GetInt(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified index as type double.
-///
+// /
 func (self *CListValueT) GetDouble(
 	index int64,
 ) (ret float64) {
@@ -32092,9 +32116,9 @@ func (self *CListValueT) GetDouble(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified index as type string.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CListValueT) GetString(
 	index int64,
@@ -32110,10 +32134,10 @@ func (self *CListValueT) GetString(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified index as type binary. The returned value
 // will reference existing data.
-///
+// /
 func (self *CListValueT) GetBinary(
 	index int64,
 ) (ret *CBinaryValueT) {
@@ -32124,11 +32148,11 @@ func (self *CListValueT) GetBinary(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified index as type dictionary. The returned
 // value will reference existing data and modifications to the value will
 // modify this object.
-///
+// /
 func (self *CListValueT) GetDictionary(
 	index int64,
 ) (ret *CDictionaryValueT) {
@@ -32139,11 +32163,11 @@ func (self *CListValueT) GetDictionary(
 	return ret
 }
 
-///
+// /
 // Returns the value at the specified index as type list. The returned value
 // will reference existing data and modifications to the value will modify
 // this object.
-///
+// /
 func (self *CListValueT) GetList(
 	index int64,
 ) (ret *CListValueT) {
@@ -32154,14 +32178,14 @@ func (self *CListValueT) GetList(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index. Returns true (1) if the value was
 // set successfully. If |value| represents simple data then the underlying
 // data will be copied and modifications to |value| will not modify this
 // object. If |value| represents complex data (binary, dictionary or list)
 // then the underlying data will be referenced and modifications to |value|
 // will modify this object.
-///
+// /
 func (self *CListValueT) SetValue(
 	index int64,
 	value *CValueT,
@@ -32178,10 +32202,10 @@ func (self *CListValueT) SetValue(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index as type null. Returns true (1) if the
 // value was set successfully.
-///
+// /
 func (self *CListValueT) SetNull(
 	index int64,
 ) (ret bool) {
@@ -32192,10 +32216,10 @@ func (self *CListValueT) SetNull(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index as type bool. Returns true (1) if the
 // value was set successfully.
-///
+// /
 func (self *CListValueT) SetBool(
 	index int64,
 	value bool,
@@ -32211,10 +32235,10 @@ func (self *CListValueT) SetBool(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index as type int. Returns true (1) if the
 // value was set successfully.
-///
+// /
 func (self *CListValueT) SetInt(
 	index int64,
 	value int,
@@ -32226,10 +32250,10 @@ func (self *CListValueT) SetInt(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index as type double. Returns true (1) if
 // the value was set successfully.
-///
+// /
 func (self *CListValueT) SetDouble(
 	index int64,
 	value float64,
@@ -32241,10 +32265,10 @@ func (self *CListValueT) SetDouble(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index as type string. Returns true (1) if
 // the value was set successfully.
-///
+// /
 func (self *CListValueT) SetString(
 	index int64,
 	value string,
@@ -32257,13 +32281,13 @@ func (self *CListValueT) SetString(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index as type binary. Returns true (1) if
 // the value was set successfully. If |value| is currently owned by another
 // object then the value will be copied and the |value| reference will not
 // change. Otherwise, ownership will be transferred to this object and the
 // |value| reference will be invalidated.
-///
+// /
 func (self *CListValueT) SetBinary(
 	index int64,
 	value *CBinaryValueT,
@@ -32280,13 +32304,13 @@ func (self *CListValueT) SetBinary(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index as type dict. Returns true (1) if the
 // value was set successfully. If |value| is currently owned by another object
 // then the value will be copied and the |value| reference will not change.
 // Otherwise, ownership will be transferred to this object and the |value|
 // reference will be invalidated.
-///
+// /
 func (self *CListValueT) SetDictionary(
 	index int64,
 	value *CDictionaryValueT,
@@ -32303,13 +32327,13 @@ func (self *CListValueT) SetDictionary(
 	return ret
 }
 
-///
+// /
 // Sets the value at the specified index as type list. Returns true (1) if the
 // value was set successfully. If |value| is currently owned by another object
 // then the value will be copied and the |value| reference will not change.
 // Otherwise, ownership will be transferred to this object and the |value|
 // reference will be invalidated.
-///
+// /
 func (self *CListValueT) SetList(
 	index int64,
 	value *CListValueT,
@@ -32326,9 +32350,9 @@ func (self *CListValueT) SetList(
 	return ret
 }
 
-///
+// /
 // Creates a new object that is not owned by any other object.
-///
+// /
 func ListValueCreate() (ret *CListValueT) {
 
 	cRet := C.cef_list_value_create()
@@ -32420,9 +32444,9 @@ func (view *CViewT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns this View as a BrowserView or NULL if this is not a BrowserView.
-///
+// /
 func (self *CViewT) AsBrowserView() (ret *CBrowserViewT) {
 
 	cRet := C.cefingo_view_as_browser_view((*C.cef_view_t)(self.pc_view))
@@ -32431,9 +32455,9 @@ func (self *CViewT) AsBrowserView() (ret *CBrowserViewT) {
 	return ret
 }
 
-///
+// /
 // Returns this View as a Button or NULL if this is not a Button.
-///
+// /
 func (self *CViewT) AsButton() (ret *CButtonT) {
 
 	cRet := C.cefingo_view_as_button((*C.cef_view_t)(self.pc_view))
@@ -32442,9 +32466,9 @@ func (self *CViewT) AsButton() (ret *CButtonT) {
 	return ret
 }
 
-///
+// /
 // Returns this View as a Panel or NULL if this is not a Panel.
-///
+// /
 func (self *CViewT) AsPanel() (ret *CPanelT) {
 
 	cRet := C.cefingo_view_as_panel((*C.cef_view_t)(self.pc_view))
@@ -32453,9 +32477,9 @@ func (self *CViewT) AsPanel() (ret *CPanelT) {
 	return ret
 }
 
-///
+// /
 // Returns this View as a ScrollView or NULL if this is not a ScrollView.
-///
+// /
 func (self *CViewT) AsScrollView() (ret *CScrollViewT) {
 
 	cRet := C.cefingo_view_as_scroll_view((*C.cef_view_t)(self.pc_view))
@@ -32464,9 +32488,9 @@ func (self *CViewT) AsScrollView() (ret *CScrollViewT) {
 	return ret
 }
 
-///
+// /
 // Returns this View as a Textfield or NULL if this is not a Textfield.
-///
+// /
 func (self *CViewT) AsTextfield() (ret *CTextfieldT) {
 
 	cRet := C.cefingo_view_as_textfield((*C.cef_view_t)(self.pc_view))
@@ -32475,10 +32499,10 @@ func (self *CViewT) AsTextfield() (ret *CTextfieldT) {
 	return ret
 }
 
-///
+// /
 // Returns the type of this View as a string. Used primarily for testing
 // purposes.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CViewT) GetTypeString() (ret string) {
 
@@ -32492,12 +32516,12 @@ func (self *CViewT) GetTypeString() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns a string representation of this View which includes the type and
 // various type-specific identifying attributes. If |include_children| is true
 // (1) any child Views will also be included. Used primarily for testing
 // purposes.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CViewT) ToString(
 	include_children int,
@@ -32513,9 +32537,9 @@ func (self *CViewT) ToString(
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this View is valid.
-///
+// /
 func (self *CViewT) IsValid() (ret bool) {
 
 	cRet := C.cefingo_view_is_valid((*C.cef_view_t)(self.pc_view))
@@ -32524,10 +32548,10 @@ func (self *CViewT) IsValid() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this View is currently attached to another View. A View
 // can only be attached to one View at a time.
-///
+// /
 func (self *CViewT) IsAttached() (ret bool) {
 
 	cRet := C.cefingo_view_is_attached((*C.cef_view_t)(self.pc_view))
@@ -32536,9 +32560,9 @@ func (self *CViewT) IsAttached() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if this View is the same as |that| View.
-///
+// /
 func (self *CViewT) IsSame(
 	that *CViewT,
 ) (ret bool) {
@@ -32554,9 +32578,9 @@ func (self *CViewT) IsSame(
 	return ret
 }
 
-///
+// /
 // Returns the delegate associated with this View, if any.
-///
+// /
 func (self *CViewT) GetDelegate() (ret *CViewDelegateT) {
 
 	cRet := C.cefingo_view_get_delegate((*C.cef_view_t)(self.pc_view))
@@ -32565,9 +32589,9 @@ func (self *CViewT) GetDelegate() (ret *CViewDelegateT) {
 	return ret
 }
 
-///
+// /
 // Returns the top-level Window hosting this View, if any.
-///
+// /
 func (self *CViewT) GetWindow() (ret *CWindowT) {
 
 	cRet := C.cefingo_view_get_window((*C.cef_view_t)(self.pc_view))
@@ -32576,9 +32600,9 @@ func (self *CViewT) GetWindow() (ret *CWindowT) {
 	return ret
 }
 
-///
+// /
 // Returns the ID for this View.
-///
+// /
 func (self *CViewT) GetId() (ret bool) {
 
 	cRet := C.cefingo_view_get_id((*C.cef_view_t)(self.pc_view))
@@ -32587,10 +32611,10 @@ func (self *CViewT) GetId() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Sets the ID for this View. ID should be unique within the subtree that you
 // intend to search for it. 0 is the default ID for views.
-///
+// /
 func (self *CViewT) SetId(
 	id int,
 ) {
@@ -32599,9 +32623,9 @@ func (self *CViewT) SetId(
 
 }
 
-///
+// /
 // Returns the group id of this View, or -1 if not set.
-///
+// /
 func (self *CViewT) GetGroupId() (ret bool) {
 
 	cRet := C.cefingo_view_get_group_id((*C.cef_view_t)(self.pc_view))
@@ -32610,11 +32634,11 @@ func (self *CViewT) GetGroupId() (ret bool) {
 	return ret
 }
 
-///
+// /
 // A group id is used to tag Views which are part of the same logical group.
 // Focus can be moved between views with the same group using the arrow keys.
 // The group id is immutable once it&#39;s set.
-///
+// /
 func (self *CViewT) SetGroupId(
 	group_id int,
 ) {
@@ -32623,9 +32647,9 @@ func (self *CViewT) SetGroupId(
 
 }
 
-///
+// /
 // Returns the View that contains this View, if any.
-///
+// /
 func (self *CViewT) GetParentView() (ret *CViewT) {
 
 	cRet := C.cefingo_view_get_parent_view((*C.cef_view_t)(self.pc_view))
@@ -32634,11 +32658,11 @@ func (self *CViewT) GetParentView() (ret *CViewT) {
 	return ret
 }
 
-///
+// /
 // Recursively descends the view tree starting at this View, and returns the
 // first child that it encounters with the given ID. Returns NULL if no
 // matching child view is found.
-///
+// /
 func (self *CViewT) GetViewForId(
 	id int,
 ) (ret *CViewT) {
@@ -32649,10 +32673,10 @@ func (self *CViewT) GetViewForId(
 	return ret
 }
 
-///
+// /
 // Sets the bounds (size and position) of this View. |bounds| is in parent
 // coordinates, or DIP screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) SetBounds(
 	bounds *CRectT,
 ) {
@@ -32661,10 +32685,10 @@ func (self *CViewT) SetBounds(
 
 }
 
-///
+// /
 // Returns the bounds (size and position) of this View in parent coordinates,
 // or DIP screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) GetBounds() (ret CRectT) {
 
 	cRet := C.cefingo_view_get_bounds((*C.cef_view_t)(self.pc_view))
@@ -32673,10 +32697,10 @@ func (self *CViewT) GetBounds() (ret CRectT) {
 	return ret
 }
 
-///
+// /
 // Returns the bounds (size and position) of this View in DIP screen
 // coordinates.
-///
+// /
 func (self *CViewT) GetBoundsInScreen() (ret CRectT) {
 
 	cRet := C.cefingo_view_get_bounds_in_screen((*C.cef_view_t)(self.pc_view))
@@ -32685,10 +32709,10 @@ func (self *CViewT) GetBoundsInScreen() (ret CRectT) {
 	return ret
 }
 
-///
+// /
 // Sets the size of this View without changing the position. |size| in parent
 // coordinates, or DIP screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) SetSize(
 	size *CSizeT,
 ) {
@@ -32697,10 +32721,10 @@ func (self *CViewT) SetSize(
 
 }
 
-///
+// /
 // Returns the size of this View in parent coordinates, or DIP screen
 // coordinates if there is no parent.
-///
+// /
 func (self *CViewT) GetSize() (ret CSizeT) {
 
 	cRet := C.cefingo_view_get_size((*C.cef_view_t)(self.pc_view))
@@ -32709,10 +32733,10 @@ func (self *CViewT) GetSize() (ret CSizeT) {
 	return ret
 }
 
-///
+// /
 // Sets the position of this View without changing the size. |position| is in
 // parent coordinates, or DIP screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) SetPosition(
 	position *CPointT,
 ) {
@@ -32721,10 +32745,10 @@ func (self *CViewT) SetPosition(
 
 }
 
-///
+// /
 // Returns the position of this View. Position is in parent coordinates, or
 // DIP screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) GetPosition() (ret CPointT) {
 
 	cRet := C.cefingo_view_get_position((*C.cef_view_t)(self.pc_view))
@@ -32733,10 +32757,10 @@ func (self *CViewT) GetPosition() (ret CPointT) {
 	return ret
 }
 
-///
+// /
 // Sets the insets for this View. |insets| is in parent coordinates, or DIP
 // screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) SetInsets(
 	insets *CInsetsT,
 ) {
@@ -32745,10 +32769,10 @@ func (self *CViewT) SetInsets(
 
 }
 
-///
+// /
 // Returns the insets for this View in parent coordinates, or DIP screen
 // coordinates if there is no parent.
-///
+// /
 func (self *CViewT) GetInsets() (ret CInsetsT) {
 
 	cRet := C.cefingo_view_get_insets((*C.cef_view_t)(self.pc_view))
@@ -32757,11 +32781,11 @@ func (self *CViewT) GetInsets() (ret CInsetsT) {
 	return ret
 }
 
-///
+// /
 // Returns the size this View would like to be if enough space is available.
 // Size is in parent coordinates, or DIP screen coordinates if there is no
 // parent.
-///
+// /
 func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 
 	cRet := C.cefingo_view_get_preferred_size((*C.cef_view_t)(self.pc_view))
@@ -32770,20 +32794,20 @@ func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 	return ret
 }
 
-///
+// /
 // Size this View to its preferred size. Size is in parent coordinates, or DIP
 // screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) SizeToPreferredSize() {
 
 	C.cefingo_view_size_to_preferred_size((*C.cef_view_t)(self.pc_view))
 
 }
 
-///
+// /
 // Returns the minimum size for this View. Size is in parent coordinates, or
 // DIP screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 
 	cRet := C.cefingo_view_get_minimum_size((*C.cef_view_t)(self.pc_view))
@@ -32792,10 +32816,10 @@ func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 	return ret
 }
 
-///
+// /
 // Returns the maximum size for this View. Size is in parent coordinates, or
 // DIP screen coordinates if there is no parent.
-///
+// /
 func (self *CViewT) GetMaximumSize() (ret CSizeT) {
 
 	cRet := C.cefingo_view_get_maximum_size((*C.cef_view_t)(self.pc_view))
@@ -32804,9 +32828,9 @@ func (self *CViewT) GetMaximumSize() (ret CSizeT) {
 	return ret
 }
 
-///
+// /
 // Returns the height necessary to display this View with the provided width.
-///
+// /
 func (self *CViewT) GetHeightForWidth(
 	width int,
 ) (ret bool) {
@@ -32817,18 +32841,18 @@ func (self *CViewT) GetHeightForWidth(
 	return ret
 }
 
-///
+// /
 // Indicate that this View and all parent Views require a re-layout. This
 // ensures the next call to layout() will propagate to this View even if the
 // bounds of parent Views do not change.
-///
+// /
 func (self *CViewT) InvalidateLayout() {
 
 	C.cefingo_view_invalidate_layout((*C.cef_view_t)(self.pc_view))
 
 }
 
-///
+// /
 // Sets whether this View is visible. Windows are hidden by default and other
 // views are visible by default. This View and any parent views must be set as
 // visible for this View to be drawn in a Window. If this View is set as
@@ -32836,7 +32860,7 @@ func (self *CViewT) InvalidateLayout() {
 // views currently have focus, then focus will also be cleared. Painting is
 // scheduled as needed. If this View is a Window then calling this function is
 // equivalent to calling the Window show() and hide() functions.
-///
+// /
 func (self *CViewT) SetVisible(
 	visible int,
 ) {
@@ -32845,14 +32869,14 @@ func (self *CViewT) SetVisible(
 
 }
 
-///
+// /
 // Returns whether this View is visible. A view may be visible but still not
 // drawn in a Window if any parent views are hidden. If this View is a Window
 // then a return value of true (1) indicates that this Window is currently
 // visible to the user on-screen. If this View is not a Window then call
 // is_drawn() to determine whether this View and all parent views are visible
 // and will be drawn.
-///
+// /
 func (self *CViewT) IsVisible() (ret bool) {
 
 	cRet := C.cefingo_view_is_visible((*C.cef_view_t)(self.pc_view))
@@ -32861,13 +32885,13 @@ func (self *CViewT) IsVisible() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns whether this View is visible and drawn in a Window. A view is drawn
 // if it and all parent views are visible. If this View is a Window then
 // calling this function is equivalent to calling is_visible(). Otherwise, to
 // determine if the containing Window is visible to the user on-screen call
 // is_visible() on the Window.
-///
+// /
 func (self *CViewT) IsDrawn() (ret bool) {
 
 	cRet := C.cefingo_view_is_drawn((*C.cef_view_t)(self.pc_view))
@@ -32876,11 +32900,11 @@ func (self *CViewT) IsDrawn() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set whether this View is enabled. A disabled View does not receive keyboard
 // or mouse inputs. If |enabled| differs from the current value the View will
 // be repainted. Also, clears focus if the focused View is disabled.
-///
+// /
 func (self *CViewT) SetEnabled(
 	enabled int,
 ) {
@@ -32889,9 +32913,9 @@ func (self *CViewT) SetEnabled(
 
 }
 
-///
+// /
 // Returns whether this View is enabled.
-///
+// /
 func (self *CViewT) IsEnabled() (ret bool) {
 
 	cRet := C.cefingo_view_is_enabled((*C.cef_view_t)(self.pc_view))
@@ -32900,11 +32924,11 @@ func (self *CViewT) IsEnabled() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Sets whether this View is capable of taking focus. It will clear focus if
 // the focused View is set to be non-focusable. This is false (0) by default
 // so that a View used as a container does not get the focus.
-///
+// /
 func (self *CViewT) SetFocusable(
 	focusable bool,
 ) {
@@ -32917,9 +32941,9 @@ func (self *CViewT) SetFocusable(
 
 }
 
-///
+// /
 // Returns true (1) if this View is focusable, enabled and drawn.
-///
+// /
 func (self *CViewT) IsFocusable() (ret bool) {
 
 	cRet := C.cefingo_view_is_focusable((*C.cef_view_t)(self.pc_view))
@@ -32928,10 +32952,10 @@ func (self *CViewT) IsFocusable() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Return whether this View is focusable when the user requires full keyboard
 // access, even though it may not be normally focusable.
-///
+// /
 func (self *CViewT) IsAccessibilityFocusable() (ret bool) {
 
 	cRet := C.cefingo_view_is_accessibility_focusable((*C.cef_view_t)(self.pc_view))
@@ -32940,19 +32964,19 @@ func (self *CViewT) IsAccessibilityFocusable() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Request keyboard focus. If this View is focusable it will become the
 // focused View.
-///
+// /
 func (self *CViewT) RequestFocus() {
 
 	C.cefingo_view_request_focus((*C.cef_view_t)(self.pc_view))
 
 }
 
-///
+// /
 // Sets the background color for this View.
-///
+// /
 func (self *CViewT) SetBackgroundColor(
 	color CColorT,
 ) {
@@ -32961,9 +32985,9 @@ func (self *CViewT) SetBackgroundColor(
 
 }
 
-///
+// /
 // Returns the background color for this View.
-///
+// /
 func (self *CViewT) GetBackgroundColor() (ret CColorT) {
 
 	cRet := C.cefingo_view_get_background_color((*C.cef_view_t)(self.pc_view))
@@ -32972,13 +32996,13 @@ func (self *CViewT) GetBackgroundColor() (ret CColorT) {
 	return ret
 }
 
-///
+// /
 // Convert |point| from this View&#39;s coordinate system to DIP screen
 // coordinates. This View must belong to a Window when calling this function.
 // Returns true (1) if the conversion is successful or false (0) otherwise.
 // Use cef_display_t::convert_point_to_pixels() after calling this function if
 // further conversion to display-specific pixel coordinates is desired.
-///
+// /
 func (self *CViewT) ConvertPointToScreen(
 	point *CPointT,
 ) (ret bool) {
@@ -32989,13 +33013,13 @@ func (self *CViewT) ConvertPointToScreen(
 	return ret
 }
 
-///
+// /
 // Convert |point| to this View&#39;s coordinate system from DIP screen
 // coordinates. This View must belong to a Window when calling this function.
 // Returns true (1) if the conversion is successful or false (0) otherwise.
 // Use cef_display_t::convert_point_from_pixels() before calling this function
 // if conversion from display-specific pixel coordinates is necessary.
-///
+// /
 func (self *CViewT) ConvertPointFromScreen(
 	point *CPointT,
 ) (ret bool) {
@@ -33006,11 +33030,11 @@ func (self *CViewT) ConvertPointFromScreen(
 	return ret
 }
 
-///
+// /
 // Convert |point| from this View&#39;s coordinate system to that of the Window.
 // This View must belong to a Window when calling this function. Returns true
 // (1) if the conversion is successful or false (0) otherwise.
-///
+// /
 func (self *CViewT) ConvertPointToWindow(
 	point *CPointT,
 ) (ret bool) {
@@ -33021,11 +33045,11 @@ func (self *CViewT) ConvertPointToWindow(
 	return ret
 }
 
-///
+// /
 // Convert |point| to this View&#39;s coordinate system from that of the Window.
 // This View must belong to a Window when calling this function. Returns true
 // (1) if the conversion is successful or false (0) otherwise.
-///
+// /
 func (self *CViewT) ConvertPointFromWindow(
 	point *CPointT,
 ) (ret bool) {
@@ -33036,12 +33060,12 @@ func (self *CViewT) ConvertPointFromWindow(
 	return ret
 }
 
-///
+// /
 // Convert |point| from this View&#39;s coordinate system to that of |view|.
 // |view| needs to be in the same Window but not necessarily the same view
 // hierarchy. Returns true (1) if the conversion is successful or false (0)
 // otherwise.
-///
+// /
 func (self *CViewT) ConvertPointToView(
 	view *CViewT,
 	point *CPointT,
@@ -33058,11 +33082,11 @@ func (self *CViewT) ConvertPointToView(
 	return ret
 }
 
-///
+// /
 // Convert |point| to this View&#39;s coordinate system from that |view|. |view|
 // needs to be in the same Window but not necessarily the same view hierarchy.
 // Returns true (1) if the conversion is successful or false (0) otherwise.
-///
+// /
 func (self *CViewT) ConvertPointFromView(
 	view *CViewT,
 	point *CPointT,
@@ -33161,10 +33185,10 @@ func (view_delegate *CViewDelegateT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Return the preferred size for |view|. The Layout will use this information
 // to determine the display size.
-///
+// /
 type GetPreferredSizeHandler interface {
 	GetPreferredSize(
 		self *CViewDelegateT,
@@ -33172,9 +33196,9 @@ type GetPreferredSizeHandler interface {
 	) (ret CSizeT)
 }
 
-///
+// /
 // Return the minimum size for |view|.
-///
+// /
 type GetMinimumSizeHandler interface {
 	GetMinimumSize(
 		self *CViewDelegateT,
@@ -33182,9 +33206,9 @@ type GetMinimumSizeHandler interface {
 	) (ret CSizeT)
 }
 
-///
+// /
 // Return the maximum size for |view|.
-///
+// /
 type GetMaximumSizeHandler interface {
 	GetMaximumSize(
 		self *CViewDelegateT,
@@ -33192,12 +33216,12 @@ type GetMaximumSizeHandler interface {
 	) (ret CSizeT)
 }
 
-///
+// /
 // Return the height necessary to display |view| with the provided |width|. If
 // not specified the result of get_preferred_size().height will be used by
 // default. Override if |view|&#39;s preferred height depends upon the width (for
 // example, with Labels).
-///
+// /
 type GetHeightForWidthHandler interface {
 	GetHeightForWidth(
 		self *CViewDelegateT,
@@ -33206,13 +33230,13 @@ type GetHeightForWidthHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called when the parent of |view| has changed. If |view| is being added to
 // |parent| then |added| will be true (1). If |view| is being removed from
 // |parent| then |added| will be false (0). If |view| is being reparented the
 // remove notification will be sent before the add notification. Do not modify
 // the view hierarchy in this callback.
-///
+// /
 type OnParentViewChangedHandler interface {
 	OnParentViewChanged(
 		self *CViewDelegateT,
@@ -33222,14 +33246,14 @@ type OnParentViewChangedHandler interface {
 	)
 }
 
-///
+// /
 // Called when a child of |view| has changed. If |child| is being added to
 // |view| then |added| will be true (1). If |child| is being removed from
 // |view| then |added| will be false (0). If |child| is being reparented the
 // remove notification will be sent to the old parent before the add
 // notification is sent to the new parent. Do not modify the view hierarchy in
 // this callback.
-///
+// /
 type OnChildViewChangedHandler interface {
 	OnChildViewChanged(
 		self *CViewDelegateT,
@@ -33239,9 +33263,9 @@ type OnChildViewChangedHandler interface {
 	)
 }
 
-///
+// /
 // Called when |view| is added or removed from the cef_window_t.
-///
+// /
 type OnWindowChangedHandler interface {
 	OnWindowChanged(
 		self *CViewDelegateT,
@@ -33250,9 +33274,9 @@ type OnWindowChangedHandler interface {
 	)
 }
 
-///
+// /
 // Called when the layout of |view| has changed.
-///
+// /
 type OnLayoutChangedHandler interface {
 	OnLayoutChanged(
 		self *CViewDelegateT,
@@ -33261,9 +33285,9 @@ type OnLayoutChangedHandler interface {
 	)
 }
 
-///
+// /
 // Called when |view| gains focus.
-///
+// /
 type OnFocusHandler interface {
 	OnFocus(
 		self *CViewDelegateT,
@@ -33271,9 +33295,9 @@ type OnFocusHandler interface {
 	)
 }
 
-///
+// /
 // Called when |view| loses focus.
-///
+// /
 type OnBlurHandler interface {
 	OnBlur(
 		self *CViewDelegateT,
@@ -33536,27 +33560,27 @@ func (window *CWindowT) ToCPanelT() *CPanelT {
 	return newCPanelT(p, byApp)
 }
 
-///
+// /
 // Show the Window.
-///
+// /
 func (self *CWindowT) Show() {
 
 	C.cefingo_window_show((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Hide the Window.
-///
+// /
 func (self *CWindowT) Hide() {
 
 	C.cefingo_window_hide((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Sizes the Window to |size| and centers it in the current display.
-///
+// /
 func (self *CWindowT) CenterWindow(
 	size *CSizeT,
 ) {
@@ -33565,18 +33589,18 @@ func (self *CWindowT) CenterWindow(
 
 }
 
-///
+// /
 // Close the Window.
-///
+// /
 func (self *CWindowT) Close() {
 
 	C.cefingo_window_close((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Returns true (1) if the Window has been closed.
-///
+// /
 func (self *CWindowT) IsClosed() (ret bool) {
 
 	cRet := C.cefingo_window_is_closed((*C.cef_window_t)(self.pc_window))
@@ -33585,28 +33609,28 @@ func (self *CWindowT) IsClosed() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Activate the Window, assuming it already exists and is visible.
-///
+// /
 func (self *CWindowT) Activate() {
 
 	C.cefingo_window_activate((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Deactivate the Window, making the next Window in the Z order the active
 // Window.
-///
+// /
 func (self *CWindowT) Deactivate() {
 
 	C.cefingo_window_deactivate((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Returns whether the Window is the currently active Window.
-///
+// /
 func (self *CWindowT) IsActive() (ret bool) {
 
 	cRet := C.cefingo_window_is_active((*C.cef_window_t)(self.pc_window))
@@ -33615,18 +33639,18 @@ func (self *CWindowT) IsActive() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Bring this Window to the top of other Windows in the Windowing system.
-///
+// /
 func (self *CWindowT) BringToTop() {
 
 	C.cefingo_window_bring_to_top((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Set the Window to be on top of other Windows in the Windowing system.
-///
+// /
 func (self *CWindowT) SetAlwaysOnTop(
 	on_top int,
 ) {
@@ -33635,10 +33659,10 @@ func (self *CWindowT) SetAlwaysOnTop(
 
 }
 
-///
+// /
 // Returns whether the Window has been set to be on top of other Windows in
 // the Windowing system.
-///
+// /
 func (self *CWindowT) IsAlwaysOnTop() (ret bool) {
 
 	cRet := C.cefingo_window_is_always_on_top((*C.cef_window_t)(self.pc_window))
@@ -33647,36 +33671,36 @@ func (self *CWindowT) IsAlwaysOnTop() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Maximize the Window.
-///
+// /
 func (self *CWindowT) Maximize() {
 
 	C.cefingo_window_maximize((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Minimize the Window.
-///
+// /
 func (self *CWindowT) Minimize() {
 
 	C.cefingo_window_minimize((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Restore the Window.
-///
+// /
 func (self *CWindowT) Restore() {
 
 	C.cefingo_window_restore((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Set fullscreen Window state.
-///
+// /
 func (self *CWindowT) SetFullscreen(
 	fullscreen int,
 ) {
@@ -33685,9 +33709,9 @@ func (self *CWindowT) SetFullscreen(
 
 }
 
-///
+// /
 // Returns true (1) if the Window is maximized.
-///
+// /
 func (self *CWindowT) IsMaximized() (ret bool) {
 
 	cRet := C.cefingo_window_is_maximized((*C.cef_window_t)(self.pc_window))
@@ -33696,9 +33720,9 @@ func (self *CWindowT) IsMaximized() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the Window is minimized.
-///
+// /
 func (self *CWindowT) IsMinimized() (ret bool) {
 
 	cRet := C.cefingo_window_is_minimized((*C.cef_window_t)(self.pc_window))
@@ -33707,9 +33731,9 @@ func (self *CWindowT) IsMinimized() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns true (1) if the Window is fullscreen.
-///
+// /
 func (self *CWindowT) IsFullscreen() (ret bool) {
 
 	cRet := C.cefingo_window_is_fullscreen((*C.cef_window_t)(self.pc_window))
@@ -33718,9 +33742,9 @@ func (self *CWindowT) IsFullscreen() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Set the Window title.
-///
+// /
 func (self *CWindowT) SetTitle(
 	title string,
 ) {
@@ -33730,9 +33754,9 @@ func (self *CWindowT) SetTitle(
 
 }
 
-///
+// /
 // Get the Window title.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CWindowT) GetTitle() (ret string) {
 
@@ -33746,10 +33770,10 @@ func (self *CWindowT) GetTitle() (ret string) {
 	return ret
 }
 
-///
+// /
 // Set the Window icon. This should be a 16x16 icon suitable for use in the
 // Windows&#39;s title bar.
-///
+// /
 func (self *CWindowT) SetWindowIcon(
 	image *CImageT,
 ) {
@@ -33763,9 +33787,9 @@ func (self *CWindowT) SetWindowIcon(
 
 }
 
-///
+// /
 // Get the Window icon.
-///
+// /
 func (self *CWindowT) GetWindowIcon() (ret *CImageT) {
 
 	cRet := C.cefingo_window_get_window_icon((*C.cef_window_t)(self.pc_window))
@@ -33774,12 +33798,12 @@ func (self *CWindowT) GetWindowIcon() (ret *CImageT) {
 	return ret
 }
 
-///
+// /
 // Set the Window App icon. This should be a larger icon for use in the host
 // environment app switching UI. On Windows, this is the ICON_BIG used in Alt-
 // Tab list and Windows taskbar. The Window icon will be used by default if no
 // Window App icon is specified.
-///
+// /
 func (self *CWindowT) SetWindowAppIcon(
 	image *CImageT,
 ) {
@@ -33793,9 +33817,9 @@ func (self *CWindowT) SetWindowAppIcon(
 
 }
 
-///
+// /
 // Get the Window App icon.
-///
+// /
 func (self *CWindowT) GetWindowAppIcon() (ret *CImageT) {
 
 	cRet := C.cefingo_window_get_window_app_icon((*C.cef_window_t)(self.pc_window))
@@ -33804,35 +33828,35 @@ func (self *CWindowT) GetWindowAppIcon() (ret *CImageT) {
 	return ret
 }
 
-///
+// /
 // Add a View that will be overlayed on the Window contents with absolute
 // positioning and high z-order. Positioning is controlled by |docking_mode|
 // as described below. The returned cef_overlay_controller_t object is used to
 // control the overlay. Overlays are hidden by default.
 //
 // With CEF_DOCKING_MODE_CUSTOM:
-//   1. The overlay is initially hidden, sized to |view|&#39;s preferred size, and
-//      positioned in the top-left corner.
-//   2. Optionally change the overlay position and/or size by calling
-//      CefOverlayController methods.
-//   3. Call CefOverlayController::SetVisible(true) to show the overlay.
-//   4. The overlay will be automatically re-sized if |view|&#39;s layout changes.
-//      Optionally change the overlay position and/or size when
-//      OnLayoutChanged is called on the Window&#39;s delegate to indicate a
-//      change in Window bounds.
+//  1. The overlay is initially hidden, sized to |view|&#39;s preferred size, and
+//     positioned in the top-left corner.
+//  2. Optionally change the overlay position and/or size by calling
+//     CefOverlayController methods.
+//  3. Call CefOverlayController::SetVisible(true) to show the overlay.
+//  4. The overlay will be automatically re-sized if |view|&#39;s layout changes.
+//     Optionally change the overlay position and/or size when
+//     OnLayoutChanged is called on the Window&#39;s delegate to indicate a
+//     change in Window bounds.
 //
 // With other docking modes:
-//   1. The overlay is initially hidden, sized to |view|&#39;s preferred size, and
-//      positioned based on |docking_mode|.
-//   2. Call CefOverlayController::SetVisible(true) to show the overlay.
-//   3. The overlay will be automatically re-sized if |view|&#39;s layout changes
-//      and re-positioned as appropriate when the Window resizes.
+//  1. The overlay is initially hidden, sized to |view|&#39;s preferred size, and
+//     positioned based on |docking_mode|.
+//  2. Call CefOverlayController::SetVisible(true) to show the overlay.
+//  3. The overlay will be automatically re-sized if |view|&#39;s layout changes
+//     and re-positioned as appropriate when the Window resizes.
 //
 // Overlays created by this function will receive a higher z-order then any
 // child Views added previously. It is therefore recommended to call this
 // function last after all other child Views have been added so that the
 // overlay displays as the top-most child of the Window.
-///
+// /
 func (self *CWindowT) AddOverlayView(
 	view *CViewT,
 	docking_mode CDockingModeT,
@@ -33849,11 +33873,11 @@ func (self *CWindowT) AddOverlayView(
 	return ret
 }
 
-///
+// /
 // Show a menu with contents |menu_model|. |screen_point| specifies the menu
 // position in screen coordinates. |anchor_position| specifies how the menu
 // will be anchored relative to |screen_point|.
-///
+// /
 func (self *CWindowT) ShowMenu(
 	menu_model *CMenuModelT,
 	screen_point *CPointT,
@@ -33869,19 +33893,19 @@ func (self *CWindowT) ShowMenu(
 
 }
 
-///
+// /
 // Cancel the menu that is currently showing, if any.
-///
+// /
 func (self *CWindowT) CancelMenu() {
 
 	C.cefingo_window_cancel_menu((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Returns the Display that most closely intersects the bounds of this Window.
 // May return NULL if this Window is not currently displayed.
-///
+// /
 func (self *CWindowT) GetDisplay() (ret *CDisplayT) {
 
 	cRet := C.cefingo_window_get_display((*C.cef_window_t)(self.pc_window))
@@ -33890,10 +33914,10 @@ func (self *CWindowT) GetDisplay() (ret *CDisplayT) {
 	return ret
 }
 
-///
+// /
 // Returns the bounds (size and position) of this Window&#39;s client area.
 // Position is in screen coordinates.
-///
+// /
 func (self *CWindowT) GetClientAreaBoundsInScreen() (ret CRectT) {
 
 	cRet := C.cefingo_window_get_client_area_bounds_in_screen((*C.cef_window_t)(self.pc_window))
@@ -33902,12 +33926,12 @@ func (self *CWindowT) GetClientAreaBoundsInScreen() (ret CRectT) {
 	return ret
 }
 
-///
+// /
 // Set the regions where mouse events will be intercepted by this Window to
 // support drag operations. Call this function with an NULL vector to clear
 // the draggable regions. The draggable region bounds should be in window
 // coordinates.
-///
+// /
 func (self *CWindowT) SetDraggableRegions(
 	regionsCount int64,
 	regions *CDraggableRegionT,
@@ -33917,9 +33941,9 @@ func (self *CWindowT) SetDraggableRegions(
 
 }
 
-///
+// /
 // Retrieve the platform window handle for this Window.
-///
+// /
 func (self *CWindowT) GetWindowHandle() (ret CWindowHandleT) {
 
 	cRet := C.cefingo_window_get_window_handle((*C.cef_window_t)(self.pc_window))
@@ -33928,13 +33952,13 @@ func (self *CWindowT) GetWindowHandle() (ret CWindowHandleT) {
 	return ret
 }
 
-///
+// /
 // Simulate a key press. |key_code| is the VKEY_* value from Chromium&#39;s
 // ui/events/keycodes/keyboard_codes.h header (VK_* values on Windows).
 // |event_flags| is some combination of EVENTFLAG_SHIFT_DOWN,
 // EVENTFLAG_CONTROL_DOWN and/or EVENTFLAG_ALT_DOWN. This function is exposed
 // primarily for testing purposes.
-///
+// /
 func (self *CWindowT) SendKeyPress(
 	key_code int,
 	event_flags uint32,
@@ -33944,11 +33968,11 @@ func (self *CWindowT) SendKeyPress(
 
 }
 
-///
+// /
 // Simulate a mouse move. The mouse cursor will be moved to the specified
 // (screen_x, screen_y) position. This function is exposed primarily for
 // testing purposes.
-///
+// /
 func (self *CWindowT) SendMouseMove(
 	screen_x int,
 	screen_y int,
@@ -33958,7 +33982,7 @@ func (self *CWindowT) SendMouseMove(
 
 }
 
-///
+// /
 // Simulate mouse down and/or mouse up events. |button| is the mouse button
 // type. If |mouse_down| is true (1) a mouse down event will be sent. If
 // |mouse_up| is true (1) a mouse up event will be sent. If both are true (1)
@@ -33966,7 +33990,7 @@ func (self *CWindowT) SendMouseMove(
 // clicking the mouse button). The events will be sent using the current
 // cursor position so make sure to call send_mouse_move() first to position
 // the mouse. This function is exposed primarily for testing purposes.
-///
+// /
 func (self *CWindowT) SendMouseEvents(
 	button CMouseButtonTypeT,
 	mouse_down int,
@@ -33977,12 +34001,12 @@ func (self *CWindowT) SendMouseEvents(
 
 }
 
-///
+// /
 // Set the keyboard accelerator for the specified |command_id|. |key_code| can
 // be any virtual key or character value. cef_window_delegate_t::OnAccelerator
 // will be called if the keyboard combination is triggered while this window
 // has focus.
-///
+// /
 func (self *CWindowT) SetAccelerator(
 	command_id int,
 	key_code int,
@@ -33995,9 +34019,9 @@ func (self *CWindowT) SetAccelerator(
 
 }
 
-///
+// /
 // Remove the keyboard accelerator for the specified |command_id|.
-///
+// /
 func (self *CWindowT) RemoveAccelerator(
 	command_id int,
 ) {
@@ -34006,18 +34030,18 @@ func (self *CWindowT) RemoveAccelerator(
 
 }
 
-///
+// /
 // Remove all keyboard accelerators.
-///
+// /
 func (self *CWindowT) RemoveAllAccelerators() {
 
 	C.cefingo_window_remove_all_accelerators((*C.cef_window_t)(self.pc_window))
 
 }
 
-///
+// /
 // Create a new Window.
-///
+// /
 func WindowCreateTopLevel(
 	delegate *CWindowDelegateT,
 ) (ret *CWindowT) {
@@ -34033,7 +34057,7 @@ func WindowCreateTopLevel(
 	return ret
 }
 
-// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:159:3,
+// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:167:3,
 
 ///
 // Implement this structure to handle window events. The functions of this
@@ -34122,9 +34146,9 @@ func (window_delegate *CWindowDelegateT) ToCPanelDelegateT() *CPanelDelegateT {
 	return newCPanelDelegateT(p, byApp)
 }
 
-///
+// /
 // Called when |window| is created.
-///
+// /
 type OnWindowCreatedHandler interface {
 	OnWindowCreated(
 		self *CWindowDelegateT,
@@ -34132,11 +34156,11 @@ type OnWindowCreatedHandler interface {
 	)
 }
 
-///
+// /
 // Called when |window| is destroyed. Release all references to |window| and
 // do not attempt to execute any functions on |window| after this callback
 // returns.
-///
+// /
 type OnWindowDestroyedHandler interface {
 	OnWindowDestroyed(
 		self *CWindowDelegateT,
@@ -34144,14 +34168,25 @@ type OnWindowDestroyedHandler interface {
 	)
 }
 
-///
+// /
+// Called when |window| is activated or deactivated.
+// /
+type OnWindowActivationChangedHandler interface {
+	OnWindowActivationChanged(
+		self *CWindowDelegateT,
+		window *CWindowT,
+		active int,
+	)
+}
+
+// /
 // Return the parent for |window| or NULL if the |window| does not have a
 // parent. Windows with parents will not get a taskbar button. Set |is_menu|
 // to true (1) if |window| will be displayed as a menu, in which case it will
 // not be clipped to the parent window bounds. Set |can_activate_menu| to
 // false (0) if |is_menu| is true (1) and |window| should not be activated
 // (given keyboard focus) when displayed.
-///
+// /
 type GetParentWindowHandler interface {
 	GetParentWindow(
 		self *CWindowDelegateT,
@@ -34159,14 +34194,14 @@ type GetParentWindowHandler interface {
 	) (ret *CWindowT, is_menu bool, can_activate_menu bool)
 }
 
-///
+// /
 // Return the initial bounds for |window| in density independent pixel (DIP)
 // coordinates. If this function returns an NULL CefRect then
 // get_preferred_size() will be called to retrieve the size, and the window
 // will be placed on the screen with origin (0,0). This function can be used
 // in combination with cef_view_t::get_bounds_in_screen() to restore the
 // previous window bounds.
-///
+// /
 type GetInitialBoundsHandler interface {
 	GetInitialBounds(
 		self *CWindowDelegateT,
@@ -34174,9 +34209,9 @@ type GetInitialBoundsHandler interface {
 	) (ret CRectT)
 }
 
-///
+// /
 // Return the initial show state for |window|.
-///
+// /
 type GetInitialShowStateHandler interface {
 	GetInitialShowState(
 		self *CWindowDelegateT,
@@ -34184,11 +34219,11 @@ type GetInitialShowStateHandler interface {
 	) (ret CShowStateT)
 }
 
-///
+// /
 // Return true (1) if |window| should be created without a frame or title bar.
 // The window will be resizable if can_resize() returns true (1). Use
 // cef_window_t::set_draggable_regions() to specify draggable regions.
-///
+// /
 type IsFramelessHandler interface {
 	IsFrameless(
 		self *CWindowDelegateT,
@@ -34196,9 +34231,9 @@ type IsFramelessHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Return true (1) if |window| can be resized.
-///
+// /
 type CanResizeHandler interface {
 	CanResize(
 		self *CWindowDelegateT,
@@ -34206,9 +34241,9 @@ type CanResizeHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Return true (1) if |window| can be maximized.
-///
+// /
 type CanMaximizeHandler interface {
 	CanMaximize(
 		self *CWindowDelegateT,
@@ -34216,9 +34251,9 @@ type CanMaximizeHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Return true (1) if |window| can be minimized.
-///
+// /
 type CanMinimizeHandler interface {
 	CanMinimize(
 		self *CWindowDelegateT,
@@ -34226,10 +34261,10 @@ type CanMinimizeHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Return true (1) if |window| can be closed. This will be called for user-
 // initiated window close actions and when cef_window_t::close() is called.
-///
+// /
 type CanCloseHandler interface {
 	CanClose(
 		self *CWindowDelegateT,
@@ -34237,11 +34272,11 @@ type CanCloseHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called when a keyboard accelerator registered with
 // cef_window_t::SetAccelerator is triggered. Return true (1) if the
 // accelerator was handled or false (0) otherwise.
-///
+// /
 type OnAcceleratorHandler interface {
 	OnAccelerator(
 		self *CWindowDelegateT,
@@ -34250,11 +34285,11 @@ type OnAcceleratorHandler interface {
 	) (ret bool)
 }
 
-///
+// /
 // Called after all other controls in the window have had a chance to handle
 // the event. |event| contains information about the keyboard event. Return
 // true (1) if the keyboard event was handled or false (0) otherwise.
-///
+// /
 type CWindowDelegateTOnKeyEventHandler interface {
 	OnKeyEvent(
 		self *CWindowDelegateT,
@@ -34264,33 +34299,35 @@ type CWindowDelegateTOnKeyEventHandler interface {
 }
 
 var window_delegate_handlers = struct {
-	handler                        map[*cCWindowDelegateT]interface{}
-	on_window_created_handler      map[*cCWindowDelegateT]OnWindowCreatedHandler
-	on_window_destroyed_handler    map[*cCWindowDelegateT]OnWindowDestroyedHandler
-	get_parent_window_handler      map[*cCWindowDelegateT]GetParentWindowHandler
-	get_initial_bounds_handler     map[*cCWindowDelegateT]GetInitialBoundsHandler
-	get_initial_show_state_handler map[*cCWindowDelegateT]GetInitialShowStateHandler
-	is_frameless_handler           map[*cCWindowDelegateT]IsFramelessHandler
-	can_resize_handler             map[*cCWindowDelegateT]CanResizeHandler
-	can_maximize_handler           map[*cCWindowDelegateT]CanMaximizeHandler
-	can_minimize_handler           map[*cCWindowDelegateT]CanMinimizeHandler
-	can_close_handler              map[*cCWindowDelegateT]CanCloseHandler
-	on_accelerator_handler         map[*cCWindowDelegateT]OnAcceleratorHandler
-	on_key_event_handler           map[*cCWindowDelegateT]CWindowDelegateTOnKeyEventHandler
-	get_preferred_size_handler     map[*cCWindowDelegateT]GetPreferredSizeHandler
-	get_minimum_size_handler       map[*cCWindowDelegateT]GetMinimumSizeHandler
-	get_maximum_size_handler       map[*cCWindowDelegateT]GetMaximumSizeHandler
-	get_height_for_width_handler   map[*cCWindowDelegateT]GetHeightForWidthHandler
-	on_parent_view_changed_handler map[*cCWindowDelegateT]OnParentViewChangedHandler
-	on_child_view_changed_handler  map[*cCWindowDelegateT]OnChildViewChangedHandler
-	on_window_changed_handler      map[*cCWindowDelegateT]OnWindowChangedHandler
-	on_layout_changed_handler      map[*cCWindowDelegateT]OnLayoutChangedHandler
-	on_focus_handler               map[*cCWindowDelegateT]OnFocusHandler
-	on_blur_handler                map[*cCWindowDelegateT]OnBlurHandler
+	handler                              map[*cCWindowDelegateT]interface{}
+	on_window_created_handler            map[*cCWindowDelegateT]OnWindowCreatedHandler
+	on_window_destroyed_handler          map[*cCWindowDelegateT]OnWindowDestroyedHandler
+	on_window_activation_changed_handler map[*cCWindowDelegateT]OnWindowActivationChangedHandler
+	get_parent_window_handler            map[*cCWindowDelegateT]GetParentWindowHandler
+	get_initial_bounds_handler           map[*cCWindowDelegateT]GetInitialBoundsHandler
+	get_initial_show_state_handler       map[*cCWindowDelegateT]GetInitialShowStateHandler
+	is_frameless_handler                 map[*cCWindowDelegateT]IsFramelessHandler
+	can_resize_handler                   map[*cCWindowDelegateT]CanResizeHandler
+	can_maximize_handler                 map[*cCWindowDelegateT]CanMaximizeHandler
+	can_minimize_handler                 map[*cCWindowDelegateT]CanMinimizeHandler
+	can_close_handler                    map[*cCWindowDelegateT]CanCloseHandler
+	on_accelerator_handler               map[*cCWindowDelegateT]OnAcceleratorHandler
+	on_key_event_handler                 map[*cCWindowDelegateT]CWindowDelegateTOnKeyEventHandler
+	get_preferred_size_handler           map[*cCWindowDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler             map[*cCWindowDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler             map[*cCWindowDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler         map[*cCWindowDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler       map[*cCWindowDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler        map[*cCWindowDelegateT]OnChildViewChangedHandler
+	on_window_changed_handler            map[*cCWindowDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler            map[*cCWindowDelegateT]OnLayoutChangedHandler
+	on_focus_handler                     map[*cCWindowDelegateT]OnFocusHandler
+	on_blur_handler                      map[*cCWindowDelegateT]OnBlurHandler
 }{
 	map[*cCWindowDelegateT]interface{}{},
 	map[*cCWindowDelegateT]OnWindowCreatedHandler{},
 	map[*cCWindowDelegateT]OnWindowDestroyedHandler{},
+	map[*cCWindowDelegateT]OnWindowActivationChangedHandler{},
 	map[*cCWindowDelegateT]GetParentWindowHandler{},
 	map[*cCWindowDelegateT]GetInitialBoundsHandler{},
 	map[*cCWindowDelegateT]GetInitialShowStateHandler{},
@@ -34355,6 +34392,13 @@ func (window_delegate *CWindowDelegateT) bind(a interface{}) *CWindowDelegateT {
 		noBind = false
 	} else {
 		delete(window_delegate_handlers.on_window_destroyed_handler, cp)
+	}
+
+	if h, ok := a.(OnWindowActivationChangedHandler); ok {
+		window_delegate_handlers.on_window_activation_changed_handler[cp] = h
+		noBind = false
+	} else {
+		delete(window_delegate_handlers.on_window_activation_changed_handler, cp)
 	}
 
 	if h, ok := a.(GetParentWindowHandler); ok {
@@ -34512,6 +34556,7 @@ func unbindAllCWindowDelegateT(cp *cCWindowDelegateT) {
 
 	delete(window_delegate_handlers.on_window_created_handler, cp)
 	delete(window_delegate_handlers.on_window_destroyed_handler, cp)
+	delete(window_delegate_handlers.on_window_activation_changed_handler, cp)
 	delete(window_delegate_handlers.get_parent_window_handler, cp)
 	delete(window_delegate_handlers.get_initial_bounds_handler, cp)
 	delete(window_delegate_handlers.get_initial_show_state_handler, cp)
@@ -34627,11 +34672,11 @@ func (x509cert_principal *CX509certPrincipalT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns a name that can be used to represent the issuer. It tries in this
 // order: Common Name (CN), Organization Name (O) and Organizational Unit Name
 // (OU) and returns the first non-NULL one found.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetDisplayName() (ret string) {
 
@@ -34645,9 +34690,9 @@ func (self *CX509certPrincipalT) GetDisplayName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the common name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetCommonName() (ret string) {
 
@@ -34661,9 +34706,9 @@ func (self *CX509certPrincipalT) GetCommonName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the locality name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetLocalityName() (ret string) {
 
@@ -34677,9 +34722,9 @@ func (self *CX509certPrincipalT) GetLocalityName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the state or province name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetStateOrProvinceName() (ret string) {
 
@@ -34693,9 +34738,9 @@ func (self *CX509certPrincipalT) GetStateOrProvinceName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Returns the country name.
-///
+// /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetCountryName() (ret string) {
 
@@ -34709,9 +34754,9 @@ func (self *CX509certPrincipalT) GetCountryName() (ret string) {
 	return ret
 }
 
-///
+// /
 // Retrieve the list of street addresses.
-///
+// /
 func (self *CX509certPrincipalT) GetStreetAddresses(
 	addresses CStringListT,
 ) {
@@ -34720,9 +34765,9 @@ func (self *CX509certPrincipalT) GetStreetAddresses(
 
 }
 
-///
+// /
 // Retrieve the list of organization names.
-///
+// /
 func (self *CX509certPrincipalT) GetOrganizationNames(
 	names CStringListT,
 ) {
@@ -34731,9 +34776,9 @@ func (self *CX509certPrincipalT) GetOrganizationNames(
 
 }
 
-///
+// /
 // Retrieve the list of organization unit names.
-///
+// /
 func (self *CX509certPrincipalT) GetOrganizationUnitNames(
 	names CStringListT,
 ) {
@@ -34742,9 +34787,9 @@ func (self *CX509certPrincipalT) GetOrganizationUnitNames(
 
 }
 
-///
+// /
 // Retrieve the list of domain components.
-///
+// /
 func (self *CX509certPrincipalT) GetDomainComponents(
 	components CStringListT,
 ) {
@@ -34831,11 +34876,11 @@ func (x509certificate *CX509certificateT) Unref() (ret bool) {
 	return ret
 }
 
-///
+// /
 // Returns the subject of the X.509 certificate. For HTTPS server certificates
 // this represents the web server.  The common name of the subject should
 // match the host name of the web server.
-///
+// /
 func (self *CX509certificateT) GetSubject() (ret *CX509certPrincipalT) {
 
 	cRet := C.cefingo_x509certificate_get_subject((*C.cef_x509certificate_t)(self.pc_x509certificate))
@@ -34844,9 +34889,9 @@ func (self *CX509certificateT) GetSubject() (ret *CX509certPrincipalT) {
 	return ret
 }
 
-///
+// /
 // Returns the issuer of the X.509 certificate.
-///
+// /
 func (self *CX509certificateT) GetIssuer() (ret *CX509certPrincipalT) {
 
 	cRet := C.cefingo_x509certificate_get_issuer((*C.cef_x509certificate_t)(self.pc_x509certificate))
@@ -34855,10 +34900,10 @@ func (self *CX509certificateT) GetIssuer() (ret *CX509certPrincipalT) {
 	return ret
 }
 
-///
+// /
 // Returns the DER encoded serial number for the X.509 certificate. The value
 // possibly includes a leading 00 byte.
-///
+// /
 func (self *CX509certificateT) GetSerialNumber() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_x509certificate_get_serial_number((*C.cef_x509certificate_t)(self.pc_x509certificate))
@@ -34867,10 +34912,10 @@ func (self *CX509certificateT) GetSerialNumber() (ret *CBinaryValueT) {
 	return ret
 }
 
-///
+// /
 // Returns the date before which the X.509 certificate is invalid.
 // CefTime.GetTimeT() will return 0 if no date was specified.
-///
+// /
 func (self *CX509certificateT) GetValidStart() (ret CTimeT) {
 
 	cRet := C.cefingo_x509certificate_get_valid_start((*C.cef_x509certificate_t)(self.pc_x509certificate))
@@ -34879,10 +34924,10 @@ func (self *CX509certificateT) GetValidStart() (ret CTimeT) {
 	return ret
 }
 
-///
+// /
 // Returns the date after which the X.509 certificate is invalid.
 // CefTime.GetTimeT() will return 0 if no date was specified.
-///
+// /
 func (self *CX509certificateT) GetValidExpiry() (ret CTimeT) {
 
 	cRet := C.cefingo_x509certificate_get_valid_expiry((*C.cef_x509certificate_t)(self.pc_x509certificate))
@@ -34891,9 +34936,9 @@ func (self *CX509certificateT) GetValidExpiry() (ret CTimeT) {
 	return ret
 }
 
-///
+// /
 // Returns the DER encoded data for the X.509 certificate.
-///
+// /
 func (self *CX509certificateT) GetDerencoded() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_x509certificate_get_derencoded((*C.cef_x509certificate_t)(self.pc_x509certificate))
@@ -34902,9 +34947,9 @@ func (self *CX509certificateT) GetDerencoded() (ret *CBinaryValueT) {
 	return ret
 }
 
-///
+// /
 // Returns the PEM encoded data for the X.509 certificate.
-///
+// /
 func (self *CX509certificateT) GetPemencoded() (ret *CBinaryValueT) {
 
 	cRet := C.cefingo_x509certificate_get_pemencoded((*C.cef_x509certificate_t)(self.pc_x509certificate))
@@ -34913,10 +34958,10 @@ func (self *CX509certificateT) GetPemencoded() (ret *CBinaryValueT) {
 	return ret
 }
 
-///
+// /
 // Returns the number of certificates in the issuer chain. If 0, the
 // certificate is self-signed.
-///
+// /
 func (self *CX509certificateT) GetIssuerChainSize() (ret int64) {
 
 	cRet := C.cefingo_x509certificate_get_issuer_chain_size((*C.cef_x509certificate_t)(self.pc_x509certificate))
@@ -34925,11 +34970,11 @@ func (self *CX509certificateT) GetIssuerChainSize() (ret int64) {
 	return ret
 }
 
-///
+// /
 // Returns the DER encoded data for the certificate issuer chain. If we failed
 // to encode a certificate in the chain it is still present in the array but
 // is an NULL string.
-///
+// /
 func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValueT) {
 	_chainCount := C.size_t(self.GetIssuerChainSize()) // =SizeFunc cef_x509certificate_t::get_derencoded_issuer_chain:chain
 	if _chainCount == 0 {
@@ -34949,11 +34994,11 @@ func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValue
 	return chain
 }
 
-///
+// /
 // Returns the PEM encoded data for the certificate issuer chain. If we failed
 // to encode a certificate in the chain it is still present in the array but
 // is an NULL string.
-///
+// /
 func (self *CX509certificateT) GetPemencodedIssuerChain() (chain []*CBinaryValueT) {
 	_chainCount := C.size_t(self.GetIssuerChainSize()) // =SizeFunc cef_x509certificate_t::get_pemencoded_issuer_chain:chain
 	if _chainCount == 0 {

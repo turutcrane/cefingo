@@ -15,14 +15,14 @@ var cefingoIfaceAccess sync.Mutex
 
 // cef_string_list.h, include/internal/cef_string_list.h:44:15,
 
-///
+// /
 // CEF string maps are a set of key/value string pairs.
-///
+// /
 type CStringListT C.cef_string_list_t
 
-///
+// /
 // Allocate a new string map.
-///
+// /
 func StringListAlloc() (ret CStringListT) {
 
 	cRet := C.cef_string_list_alloc()
@@ -31,9 +31,9 @@ func StringListAlloc() (ret CStringListT) {
 	return ret
 }
 
-///
+// /
 // Return the number of elements in the string list.
-///
+// /
 func StringListSize(
 	list CStringListT,
 ) (ret int64) {
@@ -44,10 +44,10 @@ func StringListSize(
 	return ret
 }
 
-///
+// /
 // Retrieve the value at the specified zero-based string list index. Returns
 // true (1) if the value was successfully retrieved.
-///
+// /
 func StringListValue(
 	list CStringListT,
 	index int64,
@@ -62,9 +62,9 @@ func StringListValue(
 	return ret, value
 }
 
-///
+// /
 // Append a new value at the end of the string list.
-///
+// /
 func StringListAppend(
 	list CStringListT,
 	value string,
@@ -75,9 +75,9 @@ func StringListAppend(
 
 }
 
-///
+// /
 // Clear the string list.
-///
+// /
 func StringListClear(
 	list CStringListT,
 ) {
@@ -86,9 +86,9 @@ func StringListClear(
 
 }
 
-///
+// /
 // Free the string list.
-///
+// /
 func StringListFree(
 	list CStringListT,
 ) {
@@ -97,9 +97,9 @@ func StringListFree(
 
 }
 
-///
+// /
 // Creates a copy of an existing string list.
-///
+// /
 func StringListCopy(
 	list CStringListT,
 ) (ret CStringListT) {
@@ -112,14 +112,14 @@ func StringListCopy(
 
 // cef_string_map.h, include/internal/cef_string_map.h:44:15,
 
-///
+// /
 // CEF string maps are a set of key/value string pairs.
-///
+// /
 type CStringMapT C.cef_string_map_t
 
-///
+// /
 // Allocate a new string map.
-///
+// /
 func StringMapAlloc() (ret CStringMapT) {
 
 	cRet := C.cef_string_map_alloc()
@@ -128,9 +128,9 @@ func StringMapAlloc() (ret CStringMapT) {
 	return ret
 }
 
-///
+// /
 // Return the number of elements in the string map.
-///
+// /
 func StringMapSize(
 	cmap CStringMapT,
 ) (ret int64) {
@@ -141,9 +141,9 @@ func StringMapSize(
 	return ret
 }
 
-///
+// /
 // Return the value assigned to the specified key.
-///
+// /
 func StringMapFind(
 	cmap CStringMapT,
 	key string,
@@ -159,9 +159,9 @@ func StringMapFind(
 	return ret, value
 }
 
-///
+// /
 // Return the key at the specified zero-based string map index.
-///
+// /
 func StringMapKey(
 	cmap CStringMapT,
 	index int64,
@@ -176,9 +176,9 @@ func StringMapKey(
 	return ret, key
 }
 
-///
+// /
 // Return the value at the specified zero-based string map index.
-///
+// /
 func StringMapValue(
 	cmap CStringMapT,
 	index int64,
@@ -193,9 +193,9 @@ func StringMapValue(
 	return ret, value
 }
 
-///
+// /
 // Append a new key/value pair at the end of the string map.
-///
+// /
 func StringMapAppend(
 	cmap CStringMapT,
 	key string,
@@ -210,9 +210,9 @@ func StringMapAppend(
 	return ret
 }
 
-///
+// /
 // Clear the string map.
-///
+// /
 func StringMapClear(
 	cmap CStringMapT,
 ) {
@@ -221,9 +221,9 @@ func StringMapClear(
 
 }
 
-///
+// /
 // Free the string map.
-///
+// /
 func StringMapFree(
 	cmap CStringMapT,
 ) {
@@ -234,15 +234,15 @@ func StringMapFree(
 
 // cef_string_multimap.h, include/internal/cef_string_multimap.h:45:15,
 
-///
+// /
 // CEF string multimaps are a set of key/value string pairs.
 // More than one value can be assigned to a single key.
-///
+// /
 type CStringMultimapT C.cef_string_multimap_t
 
-///
+// /
 // Allocate a new string multimap.
-///
+// /
 func StringMultimapAlloc() (ret CStringMultimapT) {
 
 	cRet := C.cef_string_multimap_alloc()
@@ -251,9 +251,9 @@ func StringMultimapAlloc() (ret CStringMultimapT) {
 	return ret
 }
 
-///
+// /
 // Return the number of elements in the string multimap.
-///
+// /
 func StringMultimapSize(
 	cmap CStringMultimapT,
 ) (ret int64) {
@@ -264,9 +264,9 @@ func StringMultimapSize(
 	return ret
 }
 
-///
+// /
 // Return the number of values with the specified key.
-///
+// /
 func StringMultimapFindCount(
 	cmap CStringMultimapT,
 	key string,
@@ -279,9 +279,9 @@ func StringMultimapFindCount(
 	return ret
 }
 
-///
+// /
 // Return the value_index-th value with the specified key.
-///
+// /
 func StringMultimapEnumerate(
 	cmap CStringMultimapT,
 	key string,
@@ -298,9 +298,9 @@ func StringMultimapEnumerate(
 	return ret, value
 }
 
-///
+// /
 // Return the key at the specified zero-based string multimap index.
-///
+// /
 func StringMultimapKey(
 	cmap CStringMultimapT,
 	index int64,
@@ -315,9 +315,9 @@ func StringMultimapKey(
 	return ret, key
 }
 
-///
+// /
 // Return the value at the specified zero-based string multimap index.
-///
+// /
 func StringMultimapValue(
 	cmap CStringMultimapT,
 	index int64,
@@ -332,9 +332,9 @@ func StringMultimapValue(
 	return ret, value
 }
 
-///
+// /
 // Append a new key/value pair at the end of the string multimap.
-///
+// /
 func StringMultimapAppend(
 	cmap CStringMultimapT,
 	key string,
@@ -349,9 +349,9 @@ func StringMultimapAppend(
 	return ret
 }
 
-///
+// /
 // Clear the string multimap.
-///
+// /
 func StringMultimapClear(
 	cmap CStringMultimapT,
 ) {
@@ -360,9 +360,9 @@ func StringMultimapClear(
 
 }
 
-///
+// /
 // Free the string multimap.
-///
+// /
 func StringMultimapFree(
 	cmap CStringMultimapT,
 ) {
@@ -373,15 +373,15 @@ func StringMultimapFree(
 
 // cef_time.h, include/internal/cef_time.h:55:3,
 
-///
+// /
 // Time information. Values should always be in UTC.
-///
+// /
 type CTimeT C.cef_time_t
 
-///
+// /
 // Converts cef_time_t to/from time_t. Returns true (1) on success and false (0)
 // on failure.
-///
+// /
 func TimeToTimet(
 	cef_time *CTimeT,
 ) (ret bool, ctime time.Time) {
@@ -406,12 +406,12 @@ func TimeFromTimet(
 	return ret
 }
 
-///
+// /
 // Converts cef_time_t to/from a double which is the number of seconds since
 // epoch (Jan 1, 1970). Webkit uses this format to represent time. A value of 0
 // means "not initialized". Returns true (1) on success and false (0) on
 // failure.
-///
+// /
 func TimeToDoublet(
 	cef_time *CTimeT,
 	ctime *float64,
@@ -433,9 +433,8 @@ func TimeFromDoublet(
 	return ret
 }
 
-///
+// /
 // Retrieve the current system time.
-//
 func TimeNow(
 	cef_time *CTimeT,
 ) (ret bool) {
@@ -446,9 +445,8 @@ func TimeNow(
 	return ret
 }
 
-///
+// /
 // Retrieve the delta in milliseconds between two time values.
-//
 func TimeDelta(
 	cef_time1 *CTimeT,
 	cef_time2 *CTimeT,
@@ -467,9 +465,9 @@ func TimeDelta(
 // in a known order. Equivalent to the SkColor type.
 type CColorT C.cef_color_t
 
-///
+// /
 // Log severity levels.
-///
+// /
 type CLogSeverityT C.cef_log_severity_t
 
 const (
@@ -516,9 +514,9 @@ const (
 	LogseverityDisable CLogSeverityT = C.LOGSEVERITY_DISABLE
 )
 
-///
+// /
 // Represents the state of a setting.
-///
+// /
 type CStateT C.cef_state_t
 
 const (
@@ -539,11 +537,11 @@ const (
 	StateDisabled CStateT = C.STATE_DISABLED
 )
 
-///
+// /
 // Initialization settings. Specify NULL or 0 to get the recommended default
 // values. Many of these and other settings can also configured using command-
 // line switches.
-///
+// /
 type CSettingsT C.cef_settings_t
 
 func NewCSettingsT() *CSettingsT {
@@ -816,10 +814,10 @@ func (st *CSettingsT) SetCookieableSchemesExcludeDefaults(v int) {
 	st.cookieable_schemes_exclude_defaults = (C.int)(v)
 }
 
-///
+// /
 // Request context initialization settings. Specify NULL or 0 to get the
 // recommended default values.
-///
+// /
 type CRequestContextSettingsT C.cef_request_context_settings_t
 
 func NewCRequestContextSettingsT() *CRequestContextSettingsT {
@@ -884,12 +882,12 @@ func (st *CRequestContextSettingsT) SetCookieableSchemesExcludeDefaults(v int) {
 	st.cookieable_schemes_exclude_defaults = (C.int)(v)
 }
 
-///
+// /
 // Browser initialization settings. Specify NULL or 0 to get the recommended
 // default values. The consequences of using custom values may not be well
 // tested. Many of these and other settings can also configured using command-
 // line switches.
-///
+// /
 type CBrowserSettingsT C.cef_browser_settings_t
 
 func NewCBrowserSettingsT() *CBrowserSettingsT {
@@ -1114,9 +1112,9 @@ func (st *CBrowserSettingsT) SetChromeStatusBubble(v CStateT) {
 	st.chrome_status_bubble = (C.cef_state_t)(v)
 }
 
-///
+// /
 // Return value types.
-///
+// /
 type CReturnValueT C.cef_return_value_t
 
 const (
@@ -1137,9 +1135,9 @@ const (
 	RvContinueAsync CReturnValueT = C.RV_CONTINUE_ASYNC
 )
 
-///
+// /
 // URL component parts.
-///
+// /
 type CUrlpartsT C.cef_urlparts_t
 
 func NewCUrlpartsT() *CUrlpartsT {
@@ -1227,9 +1225,9 @@ func (st *CUrlpartsT) SetFragment(v string) {
 	set_cef_string(&st.fragment, v)
 }
 
-///
+// /
 // Cookie priority values.
-///
+// /
 type CCookiePriorityT C.cef_cookie_priority_t
 
 const (
@@ -1238,9 +1236,9 @@ const (
 	CefCookiePriorityHigh   CCookiePriorityT = C.CEF_COOKIE_PRIORITY_HIGH
 )
 
-///
+// /
 // Cookie same site values.
-///
+// /
 type CCookieSameSiteT C.cef_cookie_same_site_t
 
 const (
@@ -1250,9 +1248,9 @@ const (
 	CefCookieSameSiteStrictMode    CCookieSameSiteT = C.CEF_COOKIE_SAME_SITE_STRICT_MODE
 )
 
-///
+// /
 // Cookie information.
-///
+// /
 type CCookieT C.cef_cookie_t
 
 func NewCCookieT() *CCookieT {
@@ -1356,9 +1354,9 @@ func (st *CCookieT) SetPriority(v CCookiePriorityT) {
 	st.priority = (C.cef_cookie_priority_t)(v)
 }
 
-///
+// /
 // Process termination status values.
-///
+// /
 type CTerminationStatusT C.cef_termination_status_t
 
 const (
@@ -1384,9 +1382,9 @@ const (
 	TsProcessOom CTerminationStatusT = C.TS_PROCESS_OOM
 )
 
-///
+// /
 // Path key values.
-///
+// /
 type CPathKeyT C.cef_path_key_t
 
 const (
@@ -1441,9 +1439,9 @@ const (
 	PkDirResources CPathKeyT = C.PK_DIR_RESOURCES
 )
 
-///
+// /
 // Storage types.
-///
+// /
 type CStorageTypeT C.cef_storage_type_t
 
 const (
@@ -1451,9 +1449,9 @@ const (
 	StSessionstorage CStorageTypeT = C.ST_SESSIONSTORAGE
 )
 
-///
+// /
 // Supported error code values.
-///
+// /
 type CErrorcodeT C.cef_errorcode_t
 
 const (
@@ -1810,80 +1808,125 @@ const (
 	ErrQuicCertRootNotKnown          CErrorcodeT = C.ERR_QUIC_CERT_ROOT_NOT_KNOWN
 	ErrQuicGoawayRequestCanBeRetried CErrorcodeT = C.ERR_QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED
 	ErrTooManyAcceptChRestarts       CErrorcodeT = C.ERR_TOO_MANY_ACCEPT_CH_RESTARTS
-	ErrCacheMiss                     CErrorcodeT = C.ERR_CACHE_MISS
-	ErrCacheReadFailure              CErrorcodeT = C.ERR_CACHE_READ_FAILURE
-	ErrCacheWriteFailure             CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
-	ErrCacheOperationNotSupported    CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
-	ErrCacheOpenFailure              CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
+	ErrInconsistentIpAddressSpace    CErrorcodeT = C.ERR_INCONSISTENT_IP_ADDRESS_SPACE
 
 	///
-	// Segmentation fault.
+	// Non-zero exit status.
 	///
-	ErrCacheCreateFailure       CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
+	ErrCacheMiss                  CErrorcodeT = C.ERR_CACHE_MISS
+	ErrCacheReadFailure           CErrorcodeT = C.ERR_CACHE_READ_FAILURE
+	ErrCacheWriteFailure          CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
+	ErrCacheOperationNotSupported CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
+	ErrCacheOpenFailure           CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
+
+	///
+	// Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
+	///
+	ErrCacheCreateFailure CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
+
+	///
+	// Path key values.
+	///
 	ErrCacheRace                CErrorcodeT = C.ERR_CACHE_RACE
 	ErrCacheChecksumReadFailure CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
 	ErrCacheChecksumMismatch    CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
 
 	///
-	// Directory containing PK_FILE_EXE.
+	// Directory containing PK_FILE_MODULE.
 	///
 	ErrCacheLockTimeout          CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
 	ErrCacheAuthFailureAfterRead CErrorcodeT = C.ERR_CACHE_AUTH_FAILURE_AFTER_READ
 	ErrCacheEntryNotSuitable     CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
 	ErrCacheDoomFailure          CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
+	ErrCacheOpenOrCreateFailure  CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
+	ErrInsecureResponse          CErrorcodeT = C.ERR_INSECURE_RESPONSE
 
 	///
-	// Path and filename of the current executable.
+	// "Local Settings\Application Data" directory under the user profile
+	// directory on Windows.
 	///
-	ErrCacheOpenOrCreateFailure                        CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
-	ErrInsecureResponse                                CErrorcodeT = C.ERR_INSECURE_RESPONSE
-	ErrNoPrivateKeyForCert                             CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
-	ErrAddUserCertFailed                               CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
+	ErrNoPrivateKeyForCert CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
+	ErrAddUserCertFailed   CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
+
+	///
+	// "Application Data" directory under the user profile directory on Windows
+	// and "~/Library/Application Support" directory on MacOS.
+	///
 	ErrInvalidSignedExchange                           CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
 	ErrInvalidWebBundle                                CErrorcodeT = C.ERR_INVALID_WEB_BUNDLE
 	ErrTrustTokenOperationFailed                       CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
 	ErrTrustTokenOperationSuccessWithoutSendingRequest CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_SUCCESS_WITHOUT_SENDING_REQUEST
-	ErrFtpFailed                                       CErrorcodeT = C.ERR_FTP_FAILED
 
 	///
 	// Supported error code values.
 	///
-	ErrFtpServiceUnavailable                     CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
-	ErrFtpTransferAborted                        CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
-	ErrFtpFileBusy                               CErrorcodeT = C.ERR_FTP_FILE_BUSY
-	ErrFtpSyntaxError                            CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
-	ErrFtpCommandNotSupported                    CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
-	ErrFtpBadCommandSequence                     CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
-	ErrPkcs12ImportBadPassword                   CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
-	ErrPkcs12ImportFailed                        CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
-	ErrImportCaCertNotCa                         CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
-	ErrImportCertAlreadyExists                   CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
-	ErrImportCaCertFailed                        CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
-	ErrImportServerCertFailed                    CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
-	ErrPkcs12ImportInvalidMac                    CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
-	ErrPkcs12ImportInvalidFile                   CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
-	ErrPkcs12ImportUnsupported                   CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
-	ErrKeyGenerationFailed                       CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
-	ErrPrivateKeyExportFailed                    CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
-	ErrSelfSignedCertGenerationFailed            CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
-	ErrCertDatabaseChanged                       CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
-	ErrDnsMalformedResponse                      CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
-	ErrDnsServerRequiresTcp                      CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
-	ErrDnsServerFailed                           CErrorcodeT = C.ERR_DNS_SERVER_FAILED
-	ErrDnsTimedOut                               CErrorcodeT = C.ERR_DNS_TIMED_OUT
-	ErrDnsCacheMiss                              CErrorcodeT = C.ERR_DNS_CACHE_MISS
+	ErrFtpFailed              CErrorcodeT = C.ERR_FTP_FAILED
+	ErrFtpServiceUnavailable  CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
+	ErrFtpTransferAborted     CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
+	ErrFtpFileBusy            CErrorcodeT = C.ERR_FTP_FILE_BUSY
+	ErrFtpSyntaxError         CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
+	ErrFtpCommandNotSupported CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
+
+	// 1 << 9 was used for CERT_STATUS_NOT_IN_DNS
+	ErrFtpBadCommandSequence CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
+
+	// 1 << 12 was used for CERT_STATUS_WEAK_DH_KEY
+	ErrPkcs12ImportBadPassword CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
+	ErrPkcs12ImportFailed      CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
+	ErrImportCaCertNotCa       CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
+	ErrImportCertAlreadyExists CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
+	ErrImportCaCertFailed      CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
+
+	///
+	// The manner in which a link click should be opened. These constants match
+	// their equivalents in Chromium's window_open_disposition.h and should not be
+	// renumbered.
+	///
+	ErrImportServerCertFailed CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
+	ErrPkcs12ImportInvalidMac CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
+
+	///
+	// Current tab. This is the default in most cases.
+	///
+	ErrPkcs12ImportInvalidFile        CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
+	ErrPkcs12ImportUnsupported        CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
+	ErrKeyGenerationFailed            CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
+	ErrPrivateKeyExportFailed         CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
+	ErrSelfSignedCertGenerationFailed CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
+	ErrCertDatabaseChanged            CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
+	ErrDnsMalformedResponse           CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
+	ErrDnsServerRequiresTcp           CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
+	ErrDnsServerFailed                CErrorcodeT = C.ERR_DNS_SERVER_FAILED
+	ErrDnsTimedOut                    CErrorcodeT = C.ERR_DNS_TIMED_OUT
+	ErrDnsCacheMiss                   CErrorcodeT = C.ERR_DNS_CACHE_MISS
+
+	///
+	// Activates an existing tab containing the url, rather than navigating.
+	// This is similar to SINGLETON_TAB, but searches across all windows from
+	// the current profile and anonymity (instead of just the current one);
+	// closes the current tab on switching if the current tab was the NTP with
+	// no session history; and behaves like CURRENT_TAB instead of
+	// NEW_FOREGROUND_TAB when no existing tab is found.
+	///
 	ErrDnsSearchEmpty                            CErrorcodeT = C.ERR_DNS_SEARCH_EMPTY
 	ErrDnsSortError                              CErrorcodeT = C.ERR_DNS_SORT_ERROR
 	ErrDnsSecureResolverHostnameResolutionFailed CErrorcodeT = C.ERR_DNS_SECURE_RESOLVER_HOSTNAME_RESOLUTION_FAILED
-	ErrDnsNameHttpsOnly                          CErrorcodeT = C.ERR_DNS_NAME_HTTPS_ONLY
-	ErrDnsRequestCancelled                       CErrorcodeT = C.ERR_DNS_REQUEST_CANCELLED
+
+	///
+	// "Verb" of a drag-and-drop operation as negotiated between the source and
+	// destination. These constants match their equivalents in WebCore's
+	// DragActions.h and should not be renumbered.
+	///
+	ErrDnsNameHttpsOnly          CErrorcodeT = C.ERR_DNS_NAME_HTTPS_ONLY
+	ErrDnsRequestCancelled       CErrorcodeT = C.ERR_DNS_REQUEST_CANCELLED
+	ErrDnsNoMachingSupportedAlpn CErrorcodeT = C.ERR_DNS_NO_MACHING_SUPPORTED_ALPN
 )
 
-///
+// /
 // Supported certificate status code values. See net\cert\cert_status_flags.h
 // for more information. CERT_STATUS_NONE is new in CEF because we use an
 // enum while cert_status_flags.h uses a typedef and static const variables.
-///
+// /
 type CCertStatusT C.cef_cert_status_t
 
 const (
@@ -1917,11 +1960,11 @@ const (
 	CertStatusCtComplianceFailed   CCertStatusT = C.CERT_STATUS_CT_COMPLIANCE_FAILED
 )
 
-///
+// /
 // The manner in which a link click should be opened. These constants match
 // their equivalents in Chromium's window_open_disposition.h and should not be
 // renumbered.
-///
+// /
 type CWindowOpenDispositionT C.cef_window_open_disposition_t
 
 const (
@@ -1988,11 +2031,11 @@ const (
 	WodNewPictureInPicture CWindowOpenDispositionT = C.WOD_NEW_PICTURE_IN_PICTURE
 )
 
-///
+// /
 // "Verb" of a drag-and-drop operation as negotiated between the source and
 // destination. These constants match their equivalents in WebCore's
 // DragActions.h and should not be renumbered.
-///
+// /
 type CDragOperationsMaskT C.cef_drag_operations_mask_t
 
 const (
@@ -2006,11 +2049,11 @@ const (
 	DragOperationEvery   CDragOperationsMaskT = C.DRAG_OPERATION_EVERY
 )
 
-///
+// /
 // Input mode of a virtual keyboard. These constants match their equivalents
 // in Chromium's text_input_mode.h and should not be renumbered.
 // See https://html.spec.whatwg.org/#input-modalities:-the-inputmode-attribute
-///
+// /
 type CTextInputModeT C.cef_text_input_mode_t
 
 const (
@@ -2026,9 +2069,9 @@ const (
 	CefTextInputModeMax     CTextInputModeT = C.CEF_TEXT_INPUT_MODE_MAX
 )
 
-///
+// /
 // V8 access control values.
-///
+// /
 type CV8AccesscontrolT C.cef_v8_accesscontrol_t
 
 const (
@@ -2038,9 +2081,9 @@ const (
 	V8AccessControlProhibitsOverwriting CV8AccesscontrolT = C.V8_ACCESS_CONTROL_PROHIBITS_OVERWRITING
 )
 
-///
+// /
 // V8 property attribute values.
-///
+// /
 type CV8PropertyattributeT C.cef_v8_propertyattribute_t
 
 const (
@@ -2052,9 +2095,9 @@ const (
 	V8PropertyAttributeDontdelete CV8PropertyattributeT = C.V8_PROPERTY_ATTRIBUTE_DONTDELETE
 )
 
-///
+// /
 // Post data elements may represent either bytes or files.
-///
+// /
 type CPostdataelementTypeT C.cef_postdataelement_type_t
 
 const (
@@ -2063,10 +2106,10 @@ const (
 	PdeTypeFile  CPostdataelementTypeT = C.PDE_TYPE_FILE
 )
 
-///
+// /
 // Resource type for a request. These constants match their equivalents in
 // Chromium's ResourceType and should not be renumbered.
-///
+// /
 type CResourceTypeT C.cef_resource_type_t
 
 const (
@@ -2173,10 +2216,10 @@ const (
 	RtNavigationPreloadSubFrame CResourceTypeT = C.RT_NAVIGATION_PRELOAD_SUB_FRAME
 )
 
-///
+// /
 // Transition type for a request. Made up of one source value and 0 or more
 // qualifiers.
-///
+// /
 type CTransitionTypeT C.cef_transition_type_t
 
 const (
@@ -2334,9 +2377,9 @@ const (
 	TtQualifierMask CTransitionTypeT = C.TT_QUALIFIER_MASK
 )
 
-///
+// /
 // Flags used to customize the behavior of CefURLRequest.
-///
+// /
 type CUrlrequestFlagsT C.cef_urlrequest_flags_t
 
 const (
@@ -2401,9 +2444,9 @@ const (
 	UrFlagStopOnRedirect CUrlrequestFlagsT = C.UR_FLAG_STOP_ON_REDIRECT
 )
 
-///
+// /
 // Flags that represent CefURLRequest status.
-///
+// /
 type CUrlrequestStatusT C.cef_urlrequest_status_t
 
 const (
@@ -2436,7 +2479,7 @@ const (
 )
 
 // Structure representing a draggable region.
-///
+// /
 type CDraggableRegionT C.cef_draggable_region_t
 
 func NewCDraggableRegionT() *CDraggableRegionT {
@@ -2464,9 +2507,9 @@ func (st *CDraggableRegionT) SetDraggable(v bool) {
 	}
 }
 
-///
+// /
 // Existing process IDs.
-///
+// /
 type CProcessIdT C.cef_process_id_t
 
 const (
@@ -2482,9 +2525,9 @@ const (
 	PidRenderer CProcessIdT = C.PID_RENDERER
 )
 
-///
+// /
 // Existing thread IDs.
-///
+// /
 type CThreadIdT C.cef_thread_id_t
 
 const (
@@ -2552,9 +2595,9 @@ const (
 	TidRenderer CThreadIdT = C.TID_RENDERER
 )
 
-///
+// /
 // Thread priority values listed in increasing order of importance.
-///
+// /
 type CThreadPriorityT C.cef_thread_priority_t
 
 const (
@@ -2580,10 +2623,10 @@ const (
 	TpRealtimeAudio CThreadPriorityT = C.TP_REALTIME_AUDIO
 )
 
-///
+// /
 // Message loop types. Indicates the set of asynchronous events that a message
 // loop can process.
-///
+// /
 type CMessageLoopTypeT C.cef_message_loop_type_t
 
 const (
@@ -2604,10 +2647,10 @@ const (
 	MlTypeIo CMessageLoopTypeT = C.ML_TYPE_IO
 )
 
-///
+// /
 // Windows COM initialization mode. Specifies how COM will be initialized for a
 // new thread.
-///
+// /
 type CComInitModeT C.cef_com_init_mode_t
 
 const (
@@ -2628,9 +2671,9 @@ const (
 	ComInitModeMta CComInitModeT = C.COM_INIT_MODE_MTA
 )
 
-///
+// /
 // Supported value types.
-///
+// /
 type CValueTypeT C.cef_value_type_t
 
 const (
@@ -2645,9 +2688,9 @@ const (
 	VtypeList       CValueTypeT = C.VTYPE_LIST
 )
 
-///
+// /
 // Supported JavaScript dialog types.
-///
+// /
 type CJsdialogTypeT C.cef_jsdialog_type_t
 
 const (
@@ -2656,11 +2699,11 @@ const (
 	JsdialogtypePrompt  CJsdialogTypeT = C.JSDIALOGTYPE_PROMPT
 )
 
-///
+// /
 // Screen information used when window rendering is disabled. This structure is
 // passed as a parameter to CefRenderHandler::GetScreenInfo and should be filled
 // in by the client.
-///
+// /
 type CScreenInfoT C.cef_screen_info_t
 
 func NewCScreenInfoT() *CScreenInfoT {
@@ -2716,10 +2759,10 @@ func (st *CScreenInfoT) SetAvailableRect(v CRectT) {
 	st.available_rect = (C.cef_rect_t)(v)
 }
 
-///
+// /
 // Supported menu IDs. Non-English translations can be provided for the
 // IDS_MENU_* strings in CefResourceBundleHandler::GetLocalizedString().
-///
+// /
 type CMenuIdT C.cef_menu_id_t
 
 const (
@@ -2766,9 +2809,9 @@ const (
 	MenuIdUserLast  CMenuIdT = C.MENU_ID_USER_LAST
 )
 
-///
+// /
 // Mouse button types.
-///
+// /
 type CMouseButtonTypeT C.cef_mouse_button_type_t
 
 const (
@@ -2777,9 +2820,9 @@ const (
 	MbtRight  CMouseButtonTypeT = C.MBT_RIGHT
 )
 
-///
+// /
 // Structure representing mouse event information.
-///
+// /
 type CMouseEventT C.cef_mouse_event_t
 
 func NewCMouseEventT() *CMouseEventT {
@@ -2811,9 +2854,9 @@ func (st *CMouseEventT) SetModifiers(v uint32) {
 	st.modifiers = (C.uint32)(v)
 }
 
-///
+// /
 // Touch points states types.
-///
+// /
 type CTouchEventTypeT C.cef_touch_event_type_t
 
 const (
@@ -2823,9 +2866,9 @@ const (
 	CefTetCancelled CTouchEventTypeT = C.CEF_TET_CANCELLED
 )
 
-///
+// /
 // The device type that caused the event.
-///
+// /
 type CPointerTypeT C.cef_pointer_type_t
 
 const (
@@ -2836,9 +2879,9 @@ const (
 	CefPointerTypeUnknown CPointerTypeT = C.CEF_POINTER_TYPE_UNKNOWN
 )
 
-///
+// /
 // Structure representing touch event information.
-///
+// /
 type CTouchEventT C.cef_touch_event_t
 
 func NewCTouchEventT() *CTouchEventT {
@@ -2926,9 +2969,9 @@ func (st *CTouchEventT) SetPointerType(v CPointerTypeT) {
 	st.pointer_type = (C.cef_pointer_type_t)(v)
 }
 
-///
+// /
 // Paint element types.
-///
+// /
 type CPaintElementTypeT C.cef_paint_element_type_t
 
 const (
@@ -2936,9 +2979,9 @@ const (
 	PetPopup CPaintElementTypeT = C.PET_POPUP
 )
 
-///
+// /
 // Supported event bit flags.
-///
+// /
 type CEventFlagsT C.cef_event_flags_t
 
 const (
@@ -2961,9 +3004,9 @@ const (
 	EventflagIsRepeat    CEventFlagsT = C.EVENTFLAG_IS_REPEAT
 )
 
-///
+// /
 // Supported menu item types.
-///
+// /
 type CMenuItemTypeT C.cef_menu_item_type_t
 
 const (
@@ -2975,9 +3018,9 @@ const (
 	MenuitemtypeSubmenu   CMenuItemTypeT = C.MENUITEMTYPE_SUBMENU
 )
 
-///
+// /
 // Supported context menu type flags.
-///
+// /
 type CContextMenuTypeFlagsT C.cef_context_menu_type_flags_t
 
 const (
@@ -3018,10 +3061,10 @@ const (
 	CmTypeflagEditable CContextMenuTypeFlagsT = C.CM_TYPEFLAG_EDITABLE
 )
 
-///
+// /
 // Supported context menu media types. These constants match their equivalents
 // in Chromium's ContextMenuDataMediaType and should not be renumbered.
-///
+// /
 type CContextMenuMediaTypeT C.cef_context_menu_media_type_t
 
 const (
@@ -3062,11 +3105,11 @@ const (
 	CmMediatypePlugin CContextMenuMediaTypeT = C.CM_MEDIATYPE_PLUGIN
 )
 
-///
+// /
 // Supported context menu media state bit flags. These constants match their
 // equivalents in Chromium's ContextMenuData::MediaFlags and should not be
 // renumbered.
-///
+// /
 type CContextMenuMediaStateFlagsT C.cef_context_menu_media_state_flags_t
 
 const (
@@ -3086,11 +3129,11 @@ const (
 	CmMediaflagCanLoop             CContextMenuMediaStateFlagsT = C.CM_MEDIAFLAG_CAN_LOOP
 )
 
-///
+// /
 // Supported context menu edit state bit flags. These constants match their
 // equivalents in Chromium's ContextMenuDataEditFlags and should not be
 // renumbered.
-///
+// /
 type CContextMenuEditStateFlagsT C.cef_context_menu_edit_state_flags_t
 
 const (
@@ -3106,9 +3149,9 @@ const (
 	CmEditflagCanEditRichly CContextMenuEditStateFlagsT = C.CM_EDITFLAG_CAN_EDIT_RICHLY
 )
 
-///
+// /
 // Key event types.
-///
+// /
 type CKeyEventTypeT C.cef_key_event_type_t
 
 const (
@@ -3138,9 +3181,9 @@ const (
 	KeyeventChar CKeyEventTypeT = C.KEYEVENT_CHAR
 )
 
-///
+// /
 // Structure representing keyboard event information.
-///
+// /
 type CKeyEventT C.cef_key_event_t
 
 func NewCKeyEventT() *CKeyEventT {
@@ -3212,9 +3255,9 @@ func (st *CKeyEventT) SetFocusOnEditableField(v int) {
 	st.focus_on_editable_field = (C.int)(v)
 }
 
-///
+// /
 // Focus sources.
-///
+// /
 type CFocusSourceT C.cef_focus_source_t
 
 const (
@@ -3230,9 +3273,9 @@ const (
 	FocusSourceSystem CFocusSourceT = C.FOCUS_SOURCE_SYSTEM
 )
 
-///
+// /
 // Navigation types.
-///
+// /
 type CNavigationTypeT C.cef_navigation_type_t
 
 const (
@@ -3244,12 +3287,12 @@ const (
 	NavigationOther           CNavigationTypeT = C.NAVIGATION_OTHER
 )
 
-///
+// /
 // Supported XML encoding types. The parser supports ASCII, ISO-8859-1, and
 // UTF16 (LE and BE) by default. All other types must be translated to UTF8
 // before being passed to the parser. If a BOM is detected and the correct
 // decoder is available then that decoder will be used automatically.
-///
+// /
 type CXmlEncodingTypeT C.cef_xml_encoding_type_t
 
 const (
@@ -3260,9 +3303,9 @@ const (
 	XmlEncodingAscii   CXmlEncodingTypeT = C.XML_ENCODING_ASCII
 )
 
-///
+// /
 // XML node types.
-///
+// /
 type CXmlNodeTypeT C.cef_xml_node_type_t
 
 const (
@@ -3279,9 +3322,9 @@ const (
 	XmlNodeComment               CXmlNodeTypeT = C.XML_NODE_COMMENT
 )
 
-///
+// /
 // Popup window features.
-///
+// /
 type CPopupFeaturesT C.cef_popup_features_t
 
 func NewCPopupFeaturesT() *CPopupFeaturesT {
@@ -3401,9 +3444,9 @@ func (st *CPopupFeaturesT) SetScrollbarsVisible(v int) {
 	st.scrollbarsVisible = (C.int)(v)
 }
 
-///
+// /
 // DOM document types.
-///
+// /
 type CDomDocumentTypeT C.cef_dom_document_type_t
 
 const (
@@ -3413,9 +3456,9 @@ const (
 	DomDocumentTypePlugin  CDomDocumentTypeT = C.DOM_DOCUMENT_TYPE_PLUGIN
 )
 
-///
+// /
 // DOM event category flags.
-///
+// /
 type CDomEventCategoryT C.cef_dom_event_category_t
 
 const (
@@ -3438,9 +3481,9 @@ const (
 	DomEventCategoryXmlhttprequestProgress CDomEventCategoryT = C.DOM_EVENT_CATEGORY_XMLHTTPREQUEST_PROGRESS
 )
 
-///
+// /
 // DOM event processing phases.
-///
+// /
 type CDomEventPhaseT C.cef_dom_event_phase_t
 
 const (
@@ -3450,9 +3493,9 @@ const (
 	DomEventPhaseBubbling  CDomEventPhaseT = C.DOM_EVENT_PHASE_BUBBLING
 )
 
-///
+// /
 // DOM node types.
-///
+// /
 type CDomNodeTypeT C.cef_dom_node_type_t
 
 const (
@@ -3468,9 +3511,9 @@ const (
 	DomNodeTypeDocumentFragment       CDomNodeTypeT = C.DOM_NODE_TYPE_DOCUMENT_FRAGMENT
 )
 
-///
+// /
 // Supported file dialog modes.
-///
+// /
 type CFileDialogModeT C.cef_file_dialog_mode_t
 
 const (
@@ -3495,27 +3538,11 @@ const (
 	// already exists.
 	///
 	FileDialogSave CFileDialogModeT = C.FILE_DIALOG_SAVE
-
-	///
-	// General mask defining the bits used for the type values.
-	///
-	FileDialogTypeMask CFileDialogModeT = C.FILE_DIALOG_TYPE_MASK
-
-	///
-	// Prompt to overwrite if the user selects an existing file with the Save
-	// dialog.
-	///
-	FileDialogOverwritepromptFlag CFileDialogModeT = C.FILE_DIALOG_OVERWRITEPROMPT_FLAG
-
-	///
-	// Do not display read-only files.
-	///
-	FileDialogHidereadonlyFlag CFileDialogModeT = C.FILE_DIALOG_HIDEREADONLY_FLAG
 )
 
-///
+// /
 // Print job color mode values.
-///
+// /
 type CColorModelT C.cef_color_model_t
 
 const (
@@ -3542,9 +3569,9 @@ const (
 	ColorModelProcesscolormodelRgb       CColorModelT = C.COLOR_MODEL_PROCESSCOLORMODEL_RGB
 )
 
-///
+// /
 // Print job duplex mode values.
-///
+// /
 type CDuplexModeT C.cef_duplex_mode_t
 
 const (
@@ -3554,9 +3581,9 @@ const (
 	DuplexModeShortEdge CDuplexModeT = C.DUPLEX_MODE_SHORT_EDGE
 )
 
-///
+// /
 // Cursor type values.
-///
+// /
 type CCursorTypeT C.cef_cursor_type_t
 
 const (
@@ -3612,11 +3639,11 @@ const (
 	CtDndLink                  CCursorTypeT = C.CT_DND_LINK
 )
 
-///
+// /
 // Structure representing cursor information. |buffer| will be
 // |size.width|*|size.height|*4 bytes in size and represents a BGRA image with
 // an upper-left origin.
-///
+// /
 type CCursorInfoT C.cef_cursor_info_t
 
 func NewCCursorInfoT() *CCursorInfoT {
@@ -3656,9 +3683,9 @@ func (st *CCursorInfoT) SetSize(v CSizeT) {
 	st.size = (C.cef_size_t)(v)
 }
 
-///
+// /
 // URI unescape rules passed to CefURIDecode().
-///
+// /
 type CUriUnescapeRuleT C.cef_uri_unescape_rule_t
 
 const (
@@ -3710,9 +3737,9 @@ const (
 	UuReplacePlusWithSpace CUriUnescapeRuleT = C.UU_REPLACE_PLUS_WITH_SPACE
 )
 
-///
+// /
 // Options that can be passed to CefParseJSON.
-///
+// /
 type CJsonParserOptionsT C.cef_json_parser_options_t
 
 const (
@@ -3729,9 +3756,9 @@ const (
 	JsonParserAllowTrailingCommas CJsonParserOptionsT = C.JSON_PARSER_ALLOW_TRAILING_COMMAS
 )
 
-///
+// /
 // Options that can be passed to CefWriteJSON.
-///
+// /
 type CJsonWriterOptionsT C.cef_json_writer_options_t
 
 const (
@@ -3764,9 +3791,9 @@ const (
 	JsonWriterPrettyPrint CJsonWriterOptionsT = C.JSON_WRITER_PRETTY_PRINT
 )
 
-///
+// /
 // Margin type for PDF printing.
-///
+// /
 type CPdfPrintMarginTypeT C.cef_pdf_print_margin_type_t
 
 const (
@@ -3792,9 +3819,9 @@ const (
 	PdfPrintMarginCustom CPdfPrintMarginTypeT = C.PDF_PRINT_MARGIN_CUSTOM
 )
 
-///
+// /
 // Structure representing PDF print settings.
-///
+// /
 type CPdfPrintSettingsT C.cef_pdf_print_settings_t
 
 func NewCPdfPrintSettingsT() *CPdfPrintSettingsT {
@@ -3930,11 +3957,11 @@ func (st *CPdfPrintSettingsT) SetBackgroundsEnabled(v bool) {
 	}
 }
 
-///
+// /
 // Supported UI scale factors for the platform. SCALE_FACTOR_NONE is used for
 // density independent resources such as string, html/js files or an image that
 // can be used for any scale factors (such as wallpapers).
-///
+// /
 type CScaleFactorT C.cef_scale_factor_t
 
 const (
@@ -3950,12 +3977,12 @@ const (
 	ScaleFactor300p CScaleFactorT = C.SCALE_FACTOR_300P
 )
 
-///
+// /
 // Policy for how the Referrer HTTP header value will be sent during navigation.
 // If the `--no-referrers` command-line flag is specified then the policy value
 // will be ignored and the Referrer value will never be sent.
 // Must be kept synchronized with net::URLRequest::ReferrerPolicy from Chromium.
-///
+// /
 type CReferrerPolicyT C.cef_referrer_policy_t
 
 const (
@@ -4013,9 +4040,9 @@ const (
 	ReferrerPolicyLastValue CReferrerPolicyT = C.REFERRER_POLICY_LAST_VALUE
 )
 
-///
+// /
 // Return values for CefResponseFilter::Filter().
-///
+// /
 type CResponseFilterStatusT C.cef_response_filter_status_t
 
 const (
@@ -4038,9 +4065,9 @@ const (
 	ResponseFilterError CResponseFilterStatusT = C.RESPONSE_FILTER_ERROR
 )
 
-///
+// /
 // Describes how to interpret the components of a pixel.
-///
+// /
 type CColorTypeT C.cef_color_type_t
 
 const (
@@ -4056,9 +4083,9 @@ const (
 	CefColorTypeBgra8888 CColorTypeT = C.CEF_COLOR_TYPE_BGRA_8888
 )
 
-///
+// /
 // Describes how to interpret the alpha component of a pixel.
-///
+// /
 type CAlphaTypeT C.cef_alpha_type_t
 
 const (
@@ -4079,9 +4106,9 @@ const (
 	CefAlphaTypePostmultiplied CAlphaTypeT = C.CEF_ALPHA_TYPE_POSTMULTIPLIED
 )
 
-///
+// /
 // Text style types. Should be kepy in sync with gfx::TextStyle.
-///
+// /
 type CTextStyleT C.cef_text_style_t
 
 const (
@@ -4092,10 +4119,10 @@ const (
 	CefTextStyleUnderline      CTextStyleT = C.CEF_TEXT_STYLE_UNDERLINE
 )
 
-///
+// /
 // Specifies where along the main axis the CefBoxLayout child views should be
 // laid out.
-///
+// /
 type CMainAxisAlignmentT C.cef_main_axis_alignment_t
 
 const (
@@ -4116,10 +4143,10 @@ const (
 	CefMainAxisAlignmentEnd CMainAxisAlignmentT = C.CEF_MAIN_AXIS_ALIGNMENT_END
 )
 
-///
+// /
 // Specifies where along the cross axis the CefBoxLayout child views should be
 // laid out.
-///
+// /
 type CCrossAxisAlignmentT C.cef_cross_axis_alignment_t
 
 const (
@@ -4145,9 +4172,9 @@ const (
 	CefCrossAxisAlignmentEnd CCrossAxisAlignmentT = C.CEF_CROSS_AXIS_ALIGNMENT_END
 )
 
-///
+// /
 // Settings used when initializing a CefBoxLayout.
-///
+// /
 type CBoxLayoutSettingsT C.cef_box_layout_settings_t
 
 func NewCBoxLayoutSettingsT() *CBoxLayoutSettingsT {
@@ -4231,9 +4258,9 @@ func (st *CBoxLayoutSettingsT) SetDefaultFlex(v int) {
 	st.default_flex = (C.int)(v)
 }
 
-///
+// /
 // Specifies the button display state.
-///
+// /
 type CButtonStateT C.cef_button_state_t
 
 const (
@@ -4243,9 +4270,9 @@ const (
 	CefButtonStateDisabled CButtonStateT = C.CEF_BUTTON_STATE_DISABLED
 )
 
-///
+// /
 // Specifies the horizontal text alignment mode.
-///
+// /
 type CHorizontalAlignmentT C.cef_horizontal_alignment_t
 
 const (
@@ -4266,10 +4293,10 @@ const (
 	CefHorizontalAlignmentRight CHorizontalAlignmentT = C.CEF_HORIZONTAL_ALIGNMENT_RIGHT
 )
 
-///
+// /
 // Specifies how a menu will be anchored for non-RTL languages. The opposite
 // position will be used for RTL languages.
-///
+// /
 type CMenuAnchorPositionT C.cef_menu_anchor_position_t
 
 const (
@@ -4278,9 +4305,9 @@ const (
 	CefMenuAnchorBottomcenter CMenuAnchorPositionT = C.CEF_MENU_ANCHOR_BOTTOMCENTER
 )
 
-///
+// /
 // Supported color types for menu items.
-///
+// /
 type CMenuColorTypeT C.cef_menu_color_type_t
 
 const (
@@ -4318,10 +4345,8 @@ const (
 	SslContentRanInsecureContent       CSslContentStatusT = C.SSL_CONTENT_RAN_INSECURE_CONTENT
 )
 
-//
 // Configuration options for registering a custom scheme.
 // These values are used when calling AddCustomScheme.
-//
 type CSchemeOptionsT C.cef_scheme_options_t
 
 const (
@@ -4404,9 +4429,9 @@ const (
 	CefSchemeOptionFetchEnabled CSchemeOptionsT = C.CEF_SCHEME_OPTION_FETCH_ENABLED
 )
 
-///
+// /
 // Structure representing a range.
-///
+// /
 type CRangeT C.cef_range_t
 
 func NewCRangeT() *CRangeT {
@@ -4430,9 +4455,9 @@ func (st *CRangeT) SetTo(v int) {
 	st.to = (C.int)(v)
 }
 
-///
+// /
 // Composition underline style.
-///
+// /
 type CCompositionUnderlineStyleT C.cef_composition_underline_style_t
 
 const (
@@ -4442,11 +4467,11 @@ const (
 	CefCusNone  CCompositionUnderlineStyleT = C.CEF_CUS_NONE
 )
 
-///
+// /
 // Structure representing IME composition underline information. This is a thin
 // wrapper around Blink's WebCompositionUnderline class and should be kept in
 // sync with that.
-///
+// /
 type CCompositionUnderlineT C.cef_composition_underline_t
 
 func NewCCompositionUnderlineT() *CCompositionUnderlineT {
@@ -4498,11 +4523,11 @@ func (st *CCompositionUnderlineT) SetStyle(v CCompositionUnderlineStyleT) {
 	st.style = (C.cef_composition_underline_style_t)(v)
 }
 
-///
+// /
 // Enumerates the various representations of the ordering of audio channels.
 // Must be kept synchronized with media::ChannelLayout from Chromium.
 // See media\base\channel_layout.h
-///
+// /
 type CChannelLayoutT C.cef_channel_layout_t
 
 const (
@@ -4607,13 +4632,19 @@ const (
 	// pass-through mode).
 	CefChannelLayoutBitstream CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_BITSTREAM
 
+	// Front L, Front R, Front C, LFE, Side L, Side R,
+	// Front Height L, Front Height R, Rear Height L, Rear Height R
+	// Will be represented as six channels (5.1) due to eight channel limit
+	// kMaxConcurrentChannels
+	CefChannelLayout514Downmix CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_5_1_4_DOWNMIX
+
 	// Max value, must always equal the largest entry ever logged.
 	CefChannelLayoutMax CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_MAX
 )
 
-///
+// /
 // Structure representing the audio parameters for setting up the audio handler.
-///
+// /
 type CAudioParametersT C.cef_audio_parameters_t
 
 func NewCAudioParametersT() *CAudioParametersT {
@@ -4645,10 +4676,10 @@ func (st *CAudioParametersT) SetFramesPerBuffer(v int) {
 	st.frames_per_buffer = (C.int)(v)
 }
 
-///
+// /
 // Result codes for CefMediaRouter::CreateRoute. Should be kept in sync with
 // Chromium's media_router::RouteRequestResult::ResultCode type.
-///
+// /
 type CMediaRouteCreateResultT C.cef_media_route_create_result_t
 
 const (
@@ -4665,9 +4696,9 @@ const (
 	CefMrcrTotalCount             CMediaRouteCreateResultT = C.CEF_MRCR_TOTAL_COUNT
 )
 
-///
+// /
 // Connection state for a MediaRoute object.
-///
+// /
 type CMediaRouteConnectionStateT C.cef_media_route_connection_state_t
 
 const (
@@ -4678,10 +4709,10 @@ const (
 	CefMrcsTerminated CMediaRouteConnectionStateT = C.CEF_MRCS_TERMINATED
 )
 
-///
+// /
 // Icon types for a MediaSink object. Should be kept in sync with Chromium's
 // media_router::SinkIconType type.
-///
+// /
 type CMediaSinkIconTypeT C.cef_media_sink_icon_type_t
 
 const (
@@ -4696,9 +4727,9 @@ const (
 	CefMsitTotalCount     CMediaSinkIconTypeT = C.CEF_MSIT_TOTAL_COUNT
 )
 
-///
+// /
 // Device information for a MediaSink object.
-///
+// /
 type CMediaSinkDeviceInfoT C.cef_media_sink_device_info_t
 
 func NewCMediaSinkDeviceInfoT() *CMediaSinkDeviceInfoT {
@@ -4730,9 +4761,9 @@ func (st *CMediaSinkDeviceInfoT) SetModelName(v string) {
 	set_cef_string(&st.model_name, v)
 }
 
-///
+// /
 // Represents commands available to TextField.
-///
+// /
 type CTextFieldCommandsT C.cef_text_field_commands_t
 
 const (
@@ -4744,9 +4775,9 @@ const (
 	CefTfcSelectAll CTextFieldCommandsT = C.CEF_TFC_SELECT_ALL
 )
 
-///
+// /
 // Supported Chrome toolbar types.
-///
+// /
 type CChromeToolbarTypeT C.cef_chrome_toolbar_type_t
 
 const (
@@ -4755,9 +4786,9 @@ const (
 	CefCttLocation CChromeToolbarTypeT = C.CEF_CTT_LOCATION
 )
 
-///
+// /
 // Docking modes supported by CefWindow::AddOverlay.
-///
+// /
 type CDockingModeT C.cef_docking_mode_t
 
 const (
@@ -4768,9 +4799,9 @@ const (
 	CefDockingModeCustom      CDockingModeT = C.CEF_DOCKING_MODE_CUSTOM
 )
 
-///
+// /
 // Show states supported by CefWindowDelegate::GetInitialShowState.
-///
+// /
 type CShowStateT C.cef_show_state_t
 
 const (
@@ -4782,9 +4813,9 @@ const (
 
 // cef_types_geometry.h, include/internal/cef_types_geometry.h:44:3,
 
-///
+// /
 // Structure representing a point.
-///
+// /
 type CPointT C.cef_point_t
 
 func NewCPointT() *CPointT {
@@ -4808,9 +4839,9 @@ func (st *CPointT) SetY(v int) {
 	st.y = (C.int)(v)
 }
 
-///
+// /
 // Structure representing a rectangle.
-///
+// /
 type CRectT C.cef_rect_t
 
 func NewCRectT() *CRectT {
@@ -4850,9 +4881,9 @@ func (st *CRectT) SetHeight(v int) {
 	st.height = (C.int)(v)
 }
 
-///
+// /
 // Structure representing a size.
-///
+// /
 type CSizeT C.cef_size_t
 
 func NewCSizeT() *CSizeT {
@@ -4876,9 +4907,9 @@ func (st *CSizeT) SetHeight(v int) {
 	st.height = (C.int)(v)
 }
 
-///
+// /
 // Structure representing insets.
-///
+// /
 type CInsetsT C.cef_insets_t
 
 func NewCInsetsT() *CInsetsT {

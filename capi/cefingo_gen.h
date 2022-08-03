@@ -185,7 +185,6 @@ extern void cefingo_browser_host_run_file_dialog(
 	const cef_string_t* title,
 	const cef_string_t* default_file_path,
 	cef_string_list_t accept_filters,
-	int selected_accept_filter,
 	struct _cef_run_file_dialog_callback_t* callback
 );
 
@@ -741,7 +740,6 @@ extern cef_dev_tools_message_observer_t *cefingo_construct_dev_tools_message_obs
 
 extern void cefingo_file_dialog_callback_cont(
 	struct _cef_file_dialog_callback_t* self,
-	int selected_accept_filter,
 	cef_string_list_t file_paths
 );
 
