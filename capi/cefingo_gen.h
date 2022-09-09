@@ -304,12 +304,12 @@ extern void cefingo_browser_host_send_external_begin_frame(
 
 extern void cefingo_browser_host_send_key_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_key_event_t* event
+	const cef_key_event_t* event
 );
 
 extern void cefingo_browser_host_send_mouse_click_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	cef_mouse_button_type_t type,
 	int mouseUp,
 	int clickCount
@@ -317,20 +317,20 @@ extern void cefingo_browser_host_send_mouse_click_event(
 
 extern void cefingo_browser_host_send_mouse_move_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	int mouseLeave
 );
 
 extern void cefingo_browser_host_send_mouse_wheel_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	int deltaX,
 	int deltaY
 );
 
 extern void cefingo_browser_host_send_touch_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_touch_event_t* event
+	const cef_touch_event_t* event
 );
 
 extern void cefingo_browser_host_send_capture_lost_event(
@@ -378,13 +378,13 @@ extern void cefingo_browser_host_ime_cancel_composition(
 extern void cefingo_browser_host_drag_target_drag_enter(
 	struct _cef_browser_host_t* self,
 	struct _cef_drag_data_t* drag_data,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	cef_drag_operations_mask_t allowed_ops
 );
 
 extern void cefingo_browser_host_drag_target_drag_over(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	cef_drag_operations_mask_t allowed_ops
 );
 
@@ -394,7 +394,7 @@ extern void cefingo_browser_host_drag_target_drag_leave(
 
 extern void cefingo_browser_host_drag_target_drop(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event
+	const cef_mouse_event_t* event
 );
 
 extern void cefingo_browser_host_drag_source_ended_at(
@@ -609,6 +609,16 @@ extern void cefingo_run_context_menu_callback_cont(
 
 extern void cefingo_run_context_menu_callback_cancel(
 	struct _cef_run_context_menu_callback_t* self
+);
+
+extern void cefingo_run_quick_menu_callback_cont(
+	struct _cef_run_quick_menu_callback_t* self,
+	int command_id,
+	cef_event_flags_t event_flags
+);
+
+extern void cefingo_run_quick_menu_callback_cancel(
+	struct _cef_run_quick_menu_callback_t* self
 );
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_context_menu_handler_t, cefingo_context_menu_handler_wrapper_t);
@@ -1008,11 +1018,11 @@ extern int64 cefingo_download_item_get_received_bytes(
 	struct _cef_download_item_t* self
 );
 
-extern cef_time_t cefingo_download_item_get_start_time(
+extern cef_basetime_t cefingo_download_item_get_start_time(
 	struct _cef_download_item_t* self
 );
 
-extern cef_time_t cefingo_download_item_get_end_time(
+extern cef_basetime_t cefingo_download_item_get_end_time(
 	struct _cef_download_item_t* self
 );
 
@@ -1650,7 +1660,7 @@ extern int cefingo_menu_model_clear(
 	struct _cef_menu_model_t* self
 );
 
-extern int cefingo_menu_model_get_count(
+extern size_t cefingo_menu_model_get_count(
 	struct _cef_menu_model_t* self
 );
 
@@ -1685,26 +1695,26 @@ extern struct _cef_menu_model_t* cefingo_menu_model_add_sub_menu(
 
 extern int cefingo_menu_model_insert_separator_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_insert_item_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id,
 	const cef_string_t* label
 );
 
 extern int cefingo_menu_model_insert_check_item_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id,
 	const cef_string_t* label
 );
 
 extern int cefingo_menu_model_insert_radio_item_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id,
 	const cef_string_t* label,
 	int group_id
@@ -1712,7 +1722,7 @@ extern int cefingo_menu_model_insert_radio_item_at(
 
 extern struct _cef_menu_model_t* cefingo_menu_model_insert_sub_menu_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id,
 	const cef_string_t* label
 );
@@ -1724,7 +1734,7 @@ extern int cefingo_menu_model_remove(
 
 extern int cefingo_menu_model_remove_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_get_index_of(
@@ -1734,12 +1744,12 @@ extern int cefingo_menu_model_get_index_of(
 
 extern int cefingo_menu_model_get_command_id_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_set_command_id_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id
 );
 
@@ -1750,7 +1760,7 @@ extern cef_string_userfree_t cefingo_menu_model_get_label(
 
 extern cef_string_userfree_t cefingo_menu_model_get_label_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_set_label(
@@ -1761,7 +1771,7 @@ extern int cefingo_menu_model_set_label(
 
 extern int cefingo_menu_model_set_label_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	const cef_string_t* label
 );
 
@@ -1772,7 +1782,7 @@ extern cef_menu_item_type_t cefingo_menu_model_get_type(
 
 extern cef_menu_item_type_t cefingo_menu_model_get_type_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_get_group_id(
@@ -1782,7 +1792,7 @@ extern int cefingo_menu_model_get_group_id(
 
 extern int cefingo_menu_model_get_group_id_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_set_group_id(
@@ -1793,7 +1803,7 @@ extern int cefingo_menu_model_set_group_id(
 
 extern int cefingo_menu_model_set_group_id_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int group_id
 );
 
@@ -1804,7 +1814,7 @@ extern struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu(
 
 extern struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_is_visible(
@@ -1814,7 +1824,7 @@ extern int cefingo_menu_model_is_visible(
 
 extern int cefingo_menu_model_is_visible_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_set_visible(
@@ -1825,7 +1835,7 @@ extern int cefingo_menu_model_set_visible(
 
 extern int cefingo_menu_model_set_visible_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int visible
 );
 
@@ -1836,7 +1846,7 @@ extern int cefingo_menu_model_is_enabled(
 
 extern int cefingo_menu_model_is_enabled_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_set_enabled(
@@ -1847,7 +1857,7 @@ extern int cefingo_menu_model_set_enabled(
 
 extern int cefingo_menu_model_set_enabled_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int enabled
 );
 
@@ -1858,7 +1868,7 @@ extern int cefingo_menu_model_is_checked(
 
 extern int cefingo_menu_model_is_checked_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_set_checked(
@@ -1869,7 +1879,7 @@ extern int cefingo_menu_model_set_checked(
 
 extern int cefingo_menu_model_set_checked_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int checked
 );
 
@@ -1880,7 +1890,7 @@ extern int cefingo_menu_model_has_accelerator(
 
 extern int cefingo_menu_model_has_accelerator_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_set_accelerator(
@@ -1894,7 +1904,7 @@ extern int cefingo_menu_model_set_accelerator(
 
 extern int cefingo_menu_model_set_accelerator_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int key_code,
 	int shift_pressed,
 	int ctrl_pressed,
@@ -1908,7 +1918,7 @@ extern int cefingo_menu_model_remove_accelerator(
 
 extern int cefingo_menu_model_remove_accelerator_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 );
 
 extern int cefingo_menu_model_get_accelerator(
@@ -1922,7 +1932,7 @@ extern int cefingo_menu_model_get_accelerator(
 
 extern int cefingo_menu_model_get_accelerator_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int* key_code,
 	int* shift_pressed,
 	int* ctrl_pressed,
@@ -2000,7 +2010,7 @@ extern int cefingo_navigation_entry_has_post_data(
 	struct _cef_navigation_entry_t* self
 );
 
-extern cef_time_t cefingo_navigation_entry_get_completion_time(
+extern cef_basetime_t cefingo_navigation_entry_get_completion_time(
 	struct _cef_navigation_entry_t* self
 );
 
@@ -2104,7 +2114,7 @@ extern struct _cef_fill_layout_t* cefingo_panel_set_to_fill_layout(
 
 extern struct _cef_box_layout_t* cefingo_panel_set_to_box_layout(
 	struct _cef_panel_t* self,
-	const struct _cef_box_layout_settings_t* settings
+	const cef_box_layout_settings_t* settings
 );
 
 extern struct _cef_layout_t* cefingo_panel_get_layout(
@@ -2152,6 +2162,45 @@ extern struct _cef_view_t* cefingo_panel_get_child_view_at(
 
 CEFINGO_REF_COUNTER_WRAPPER(cef_panel_delegate_t, cefingo_panel_delegate_wrapper_t);
 extern cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wrapper_t* panel_delegate);
+
+extern void cefingo_media_access_callback_cont(
+	struct _cef_media_access_callback_t* self,
+	uint32 allowed_permissions
+);
+
+extern void cefingo_media_access_callback_cancel(
+	struct _cef_media_access_callback_t* self
+);
+
+extern void cefingo_permission_prompt_callback_cont(
+	struct _cef_permission_prompt_callback_t* self,
+	cef_permission_request_result_t result
+);
+
+extern int cefingo_permission_handler_on_request_media_access_permission(
+	struct _cef_permission_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	const cef_string_t* requesting_origin,
+	uint32 requested_permissions,
+	struct _cef_media_access_callback_t* callback
+);
+
+extern int cefingo_permission_handler_on_show_permission_prompt(
+	struct _cef_permission_handler_t* self,
+	struct _cef_browser_t* browser,
+	uint64 prompt_id,
+	const cef_string_t* requesting_origin,
+	uint32 requested_permissions,
+	struct _cef_permission_prompt_callback_t* callback
+);
+
+extern void cefingo_permission_handler_on_dismiss_permission_prompt(
+	struct _cef_permission_handler_t* self,
+	struct _cef_browser_t* browser,
+	uint64 prompt_id,
+	cef_permission_request_result_t result
+);
 
 extern void cefingo_print_dialog_callback_cont(
 	struct _cef_print_dialog_callback_t* self,
@@ -2283,6 +2332,10 @@ extern cef_string_userfree_t cefingo_process_message_get_name(
 );
 
 extern struct _cef_list_value_t* cefingo_process_message_get_argument_list(
+	struct _cef_process_message_t* self
+);
+
+extern struct _cef_shared_memory_region_t* cefingo_process_message_get_shared_memory_region(
 	struct _cef_process_message_t* self
 );
 
@@ -2742,6 +2795,18 @@ extern int cefingo_scroll_view_has_vertical_scrollbar(
 
 extern int cefingo_scroll_view_get_vertical_scrollbar_width(
 	struct _cef_scroll_view_t* self
+);
+
+extern int cefingo_shared_memory_region_is_valid(
+	struct _cef_shared_memory_region_t* self
+);
+
+extern size_t cefingo_shared_memory_region_size(
+	struct _cef_shared_memory_region_t* self
+);
+
+extern const void* cefingo_shared_memory_region_memory(
+	struct _cef_shared_memory_region_t* self
 );
 
 extern cef_cert_status_t cefingo_sslinfo_get_cert_status(
@@ -3229,7 +3294,7 @@ extern double cefingo_v8value_get_double_value(
 	struct _cef_v8value_t* self
 );
 
-extern cef_time_t cefingo_v8value_get_date_value(
+extern cef_basetime_t cefingo_v8value_get_date_value(
 	struct _cef_v8value_t* self
 );
 
@@ -4280,11 +4345,11 @@ extern struct _cef_binary_value_t* cefingo_x509certificate_get_serial_number(
 	struct _cef_x509certificate_t* self
 );
 
-extern cef_time_t cefingo_x509certificate_get_valid_start(
+extern cef_basetime_t cefingo_x509certificate_get_valid_start(
 	struct _cef_x509certificate_t* self
 );
 
-extern cef_time_t cefingo_x509certificate_get_valid_expiry(
+extern cef_basetime_t cefingo_x509certificate_get_valid_expiry(
 	struct _cef_x509certificate_t* self
 );
 

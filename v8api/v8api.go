@@ -422,7 +422,7 @@ func (v Value) GetStringValue() string {
 	return v.v8v.GetStringValue()
 }
 
-func (v Value) GetDateValue() capi.CTimeT {
+func (v Value) GetDateValue() capi.CBasetimeT {
 	return v.v8v.GetDateValue()
 }
 

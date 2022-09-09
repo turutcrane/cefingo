@@ -11,8 +11,8 @@ import (
 import "C"
 
 // /
-// Called after renderer process sends accessibility tree changes to the
-// browser process.
+// / Called after renderer process sends accessibility tree changes to the
+// / browser process.
 // /
 //
 //export cefingo_accessibility_handler_on_accessibility_tree_change
@@ -44,8 +44,8 @@ func cefingo_accessibility_handler_on_accessibility_tree_change(
 }
 
 // /
-// Called after renderer process sends accessibility location changes to the
-// browser process.
+// / Called after renderer process sends accessibility location changes to the
+// / browser process.
 // /
 //
 //export cefingo_accessibility_handler_on_accessibility_location_change
@@ -77,15 +77,16 @@ func cefingo_accessibility_handler_on_accessibility_location_change(
 }
 
 // /
-// Provides an opportunity to view and/or modify command-line arguments before
-// processing by CEF and Chromium. The |process_type| value will be NULL for
-// the browser process. Do not keep a reference to the cef_command_line_t
-// object passed to this function. The CefSettings.command_line_args_disabled
-// value can be used to start with an NULL command-line object. Any values
-// specified in CefSettings that equate to command-line arguments will be set
-// before this function is called. Be cautious when using this function to
-// modify command-line arguments for non-browser processes as this may result
-// in undefined behavior including crashes.
+// / Provides an opportunity to view and/or modify command-line arguments
+// / before processing by CEF and Chromium. The |process_type| value will be
+// / NULL for the browser process. Do not keep a reference to the
+// / cef_command_line_t object passed to this function. The
+// / cef_settings_t.command_line_args_disabled value can be used to start with
+// / an NULL command-line object. Any values specified in CefSettings that
+// / equate to command-line arguments will be set before this function is
+// / called. Be cautious when using this function to modify command-line
+// / arguments for non-browser processes as this may result in undefined
+// / behavior including crashes.
 // /
 //
 //export cefingo_app_on_before_command_line_processing
@@ -120,10 +121,10 @@ func cefingo_app_on_before_command_line_processing(
 }
 
 // /
-// Provides an opportunity to register custom schemes. Do not keep a reference
-// to the |registrar| object. This function is called on the main thread for
-// each process and the registered schemes should be the same across all
-// processes.
+// / Provides an opportunity to register custom schemes. Do not keep a
+// / reference to the |registrar| object. This function is called on the main
+// / thread for each process and the registered schemes should be the same
+// / across all processes.
 // /
 //
 //export cefingo_app_on_register_custom_schemes
@@ -154,10 +155,11 @@ func cefingo_app_on_register_custom_schemes(
 }
 
 // /
-// Return the handler for resource bundle events. If
-// CefSettings.pack_loading_disabled is true (1) a handler must be returned.
-// If no handler is returned resources will be loaded from pack files. This
-// function is called by the browser and render processes on multiple threads.
+// / Return the handler for resource bundle events. If
+// / cef_settings_t.pack_loading_disabled is true (1) a handler must be
+// / returned. If no handler is returned resources will be loaded from pack
+// / files. This function is called by the browser and render processes on
+// / multiple threads.
 // /
 //
 //export cefingo_app_get_resource_bundle_handler
@@ -192,8 +194,8 @@ func cefingo_app_get_resource_bundle_handler(
 }
 
 // /
-// Return the handler for functionality specific to the browser process. This
-// function is called on multiple threads in the browser process.
+// / Return the handler for functionality specific to the browser process. This
+// / function is called on multiple threads in the browser process.
 // /
 //
 //export cefingo_app_get_browser_process_handler
@@ -228,8 +230,8 @@ func cefingo_app_get_browser_process_handler(
 }
 
 // /
-// Return the handler for functionality specific to the render process. This
-// function is called on the render process main thread.
+// / Return the handler for functionality specific to the render process. This
+// / function is called on the render process main thread.
 // /
 //
 //export cefingo_app_get_render_process_handler
@@ -264,10 +266,10 @@ func cefingo_app_get_render_process_handler(
 }
 
 // /
-// Called on the UI thread to allow configuration of audio stream parameters.
-// Return true (1) to proceed with audio stream capture, or false (0) to
-// cancel it. All members of |params| can optionally be configured here, but
-// they are also pre-filled with some sensible defaults.
+// / Called on the UI thread to allow configuration of audio stream parameters.
+// / Return true (1) to proceed with audio stream capture, or false (0) to
+// / cancel it. All members of |params| can optionally be configured here, but
+// / they are also pre-filled with some sensible defaults.
 // /
 //
 //export cefingo_audio_handler_get_audio_parameters
@@ -306,11 +308,11 @@ func cefingo_audio_handler_get_audio_parameters(
 }
 
 // /
-// Called on a browser audio capture thread when the browser starts streaming
-// audio. OnAudioStreamStopped will always be called after
-// OnAudioStreamStarted; both functions may be called multiple times for the
-// same browser. |params| contains the audio parameters like sample rate and
-// channel layout. |channels| is the number of channels.
+// / Called on a browser audio capture thread when the browser starts streaming
+// / audio. OnAudioStreamStopped will always be called after
+// / OnAudioStreamStarted; both functions may be called multiple times for the
+// / same browser. |params| contains the audio parameters like sample rate and
+// / channel layout. |channels| is the number of channels.
 // /
 //
 //export cefingo_audio_handler_on_audio_stream_started
@@ -348,9 +350,9 @@ func cefingo_audio_handler_on_audio_stream_started(
 }
 
 // /
-// Called on the UI thread when the stream has stopped. OnAudioSteamStopped
-// will always be called after OnAudioStreamStarted; both functions may be
-// called multiple times for the same stream.
+// / Called on the UI thread when the stream has stopped. OnAudioSteamStopped
+// / will always be called after OnAudioStreamStarted; both functions may be
+// / called multiple times for the same stream.
 // /
 //
 //export cefingo_audio_handler_on_audio_stream_stopped
@@ -382,10 +384,10 @@ func cefingo_audio_handler_on_audio_stream_stopped(
 }
 
 // /
-// Called on the UI or audio stream thread when an error occurred. During the
-// stream creation phase this callback will be called on the UI thread while
-// in the capturing phase it will be called on the audio stream thread. The
-// stream will be stopped immediately.
+// / Called on the UI or audio stream thread when an error occurred. During the
+// / stream creation phase this callback will be called on the UI thread while
+// / in the capturing phase it will be called on the audio stream thread. The
+// / stream will be stopped immediately.
 // /
 //
 //export cefingo_audio_handler_on_audio_stream_error
@@ -420,9 +422,9 @@ func cefingo_audio_handler_on_audio_stream_error(
 }
 
 // /
-// Called asynchronously after the file dialog is dismissed. |file_paths| will
-// be a single value or a list of values depending on the dialog mode. If the
-// selection was cancelled |file_paths| will be NULL.
+// / Called asynchronously after the file dialog is dismissed. |file_paths|
+// / will be a single value or a list of values depending on the dialog mode.
+// / If the selection was cancelled |file_paths| will be NULL.
 // /
 //
 //export cefingo_run_file_dialog_callback_on_file_dialog_dismissed
@@ -453,11 +455,11 @@ func cefingo_run_file_dialog_callback_on_file_dialog_dismissed(
 }
 
 // /
-// Method that will be executed. Do not keep a reference to |entry| outside of
-// this callback. Return true (1) to continue visiting entries or false (0) to
-// stop. |current| is true (1) if this entry is the currently loaded
-// navigation entry. |index| is the 0-based index of this entry and |total| is
-// the total number of entries.
+// / Method that will be executed. Do not keep a reference to |entry| outside
+// / of this callback. Return true (1) to continue visiting entries or false
+// / (0) to stop. |current| is true (1) if this entry is the currently loaded
+// / navigation entry. |index| is the 0-based index of this entry and |total|
+// / is the total number of entries.
 // /
 //
 //export cefingo_navigation_entry_visitor_visit
@@ -502,9 +504,9 @@ func cefingo_navigation_entry_visitor_visit(
 }
 
 // /
-// Method that will be executed when the PDF printing has completed. |path| is
-// the output path. |ok| will be true (1) if the printing completed
-// successfully or false (0) otherwise.
+// / Method that will be executed when the PDF printing has completed. |path|
+// / is the output path. |ok| will be true (1) if the printing completed
+// / successfully or false (0) otherwise.
 // /
 //
 //export cefingo_pdf_print_callback_on_pdf_print_finished
@@ -538,8 +540,8 @@ func cefingo_pdf_print_callback_on_pdf_print_finished(
 }
 
 // /
-// Called on the browser process UI thread immediately after the CEF context
-// has been initialized.
+// / Called on the browser process UI thread immediately after the CEF context
+// / has been initialized.
 // /
 //
 //export cefingo_browser_process_handler_on_context_initialized
@@ -567,11 +569,11 @@ func cefingo_browser_process_handler_on_context_initialized(
 }
 
 // /
-// Called before a child process is launched. Will be called on the browser
-// process UI thread when launching a render process and on the browser
-// process IO thread when launching a GPU process. Provides an opportunity to
-// modify the child process command line. Do not keep a reference to
-// |command_line| outside of this function.
+// / Called before a child process is launched. Will be called on the browser
+// / process UI thread when launching a render process and on the browser
+// / process IO thread when launching a GPU process. Provides an opportunity to
+// / modify the child process command line. Do not keep a reference to
+// / |command_line| outside of this function.
 // /
 //
 //export cefingo_browser_process_handler_on_before_child_process_launch
@@ -603,17 +605,17 @@ func cefingo_browser_process_handler_on_before_child_process_launch(
 }
 
 // /
-// Called from any thread when work has been scheduled for the browser process
-// main (UI) thread. This callback is used in combination with CefSettings.
-// external_message_pump and cef_do_message_loop_work() in cases where the CEF
-// message loop must be integrated into an existing application message loop
-// (see additional comments and warnings on CefDoMessageLoopWork). This
-// callback should schedule a cef_do_message_loop_work() call to happen on the
-// main (UI) thread. |delay_ms| is the requested delay in milliseconds. If
-// |delay_ms| is &lt;= 0 then the call should happen reasonably soon. If
-// |delay_ms| is &gt; 0 then the call should be scheduled to happen after the
-// specified delay and any currently pending scheduled call should be
-// cancelled.
+// / Called from any thread when work has been scheduled for the browser
+// / process main (UI) thread. This callback is used in combination with
+// / cef_settings_t.external_message_pump and cef_do_message_loop_work() in
+// / cases where the CEF message loop must be integrated into an existing
+// / application message loop (see additional comments and warnings on
+// / CefDoMessageLoopWork). This callback should schedule a
+// / cef_do_message_loop_work() call to happen on the main (UI) thread.
+// / |delay_ms| is the requested delay in milliseconds. If |delay_ms| is &lt;= 0
+// / then the call should happen reasonably soon. If |delay_ms| is &gt; 0 then the
+// / call should be scheduled to happen after the specified delay and any
+// / currently pending scheduled call should be cancelled.
 // /
 //
 //export cefingo_browser_process_handler_on_schedule_message_pump_work
@@ -644,11 +646,11 @@ func cefingo_browser_process_handler_on_schedule_message_pump_work(
 }
 
 // /
-// Return the default client for use with a newly created browser window. If
-// null is returned the browser will be unmanaged (no callbacks will be
-// executed for that browser) and application shutdown will be blocked until
-// the browser window is closed manually. This function is currently only used
-// with the chrome runtime.
+// / Return the default client for use with a newly created browser window. If
+// / null is returned the browser will be unmanaged (no callbacks will be
+// / executed for that browser) and application shutdown will be blocked until
+// / the browser window is closed manually. This function is currently only
+// / used with the chrome runtime.
 // /
 //
 //export cefingo_browser_process_handler_get_default_client
@@ -683,10 +685,10 @@ func cefingo_browser_process_handler_get_default_client(
 }
 
 // /
-// Called when |browser| associated with |browser_view| is created. This
-// function will be called after cef_life_span_handler_t::on_after_created()
-// is called for |browser| and before on_popup_browser_view_created() is
-// called for |browser|&#39;s parent delegate if |browser| is a popup.
+// / Called when |browser| associated with |browser_view| is created. This
+// / function will be called after cef_life_span_handler_t::on_after_created()
+// / is called for |browser| and before on_popup_browser_view_created() is
+// / called for |browser|&#39;s parent delegate if |browser| is a popup.
 // /
 //
 //export cefingo_browser_view_delegate_on_browser_created
@@ -722,10 +724,10 @@ func cefingo_browser_view_delegate_on_browser_created(
 }
 
 // /
-// Called when |browser| associated with |browser_view| is destroyed. Release
-// all references to |browser| and do not attempt to execute any functions on
-// |browser| after this callback returns. This function will be called before
-// cef_life_span_handler_t::on_before_close() is called for |browser|.
+// / Called when |browser| associated with |browser_view| is destroyed. Release
+// / all references to |browser| and do not attempt to execute any functions on
+// / |browser| after this callback returns. This function will be called before
+// / cef_life_span_handler_t::on_before_close() is called for |browser|.
 // /
 //
 //export cefingo_browser_view_delegate_on_browser_destroyed
@@ -761,11 +763,11 @@ func cefingo_browser_view_delegate_on_browser_destroyed(
 }
 
 // /
-// Called before a new popup BrowserView is created. The popup originated from
-// |browser_view|. |settings| and |client| are the values returned from
-// cef_life_span_handler_t::on_before_popup(). |is_devtools| will be true (1)
-// if the popup will be a DevTools browser. Return the delegate that will be
-// used for the new popup BrowserView.
+// / Called before a new popup BrowserView is created. The popup originated
+// / from |browser_view|. |settings| and |client| are the values returned from
+// / cef_life_span_handler_t::on_before_popup(). |is_devtools| will be true (1)
+// / if the popup will be a DevTools browser. Return the delegate that will be
+// / used for the new popup BrowserView.
 // /
 //
 //export cefingo_browser_view_delegate_get_delegate_for_popup_browser_view
@@ -814,13 +816,13 @@ func cefingo_browser_view_delegate_get_delegate_for_popup_browser_view(
 }
 
 // /
-// Called after |popup_browser_view| is created. This function will be called
-// after cef_life_span_handler_t::on_after_created() and on_browser_created()
-// are called for the new popup browser. The popup originated from
-// |browser_view|. |is_devtools| will be true (1) if the popup is a DevTools
-// browser. Optionally add |popup_browser_view| to the views hierarchy
-// yourself and return true (1). Otherwise return false (0) and a default
-// cef_window_t will be created for the popup.
+// / Called after |popup_browser_view| is created. This function will be called
+// / after cef_life_span_handler_t::on_after_created() and on_browser_created()
+// / are called for the new popup browser. The popup originated from
+// / |browser_view|. |is_devtools| will be true (1) if the popup is a DevTools
+// / browser. Optionally add |popup_browser_view| to the views hierarchy
+// / yourself and return true (1). Otherwise return false (0) and a default
+// / cef_window_t will be created for the popup.
 // /
 //
 //export cefingo_browser_view_delegate_on_popup_browser_view_created
@@ -863,9 +865,9 @@ func cefingo_browser_view_delegate_on_popup_browser_view_created(
 }
 
 // /
-// Returns the Chrome toolbar type that will be available via
-// cef_browser_view_t::get_chrome_toolbar(). See that function for related
-// documentation.
+// / Returns the Chrome toolbar type that will be available via
+// / cef_browser_view_t::get_chrome_toolbar(). See that function for related
+// / documentation.
 // /
 //
 //export cefingo_browser_view_delegate_get_chrome_toolbar_type
@@ -1208,7 +1210,7 @@ func cefingo_browser_view_delegate_on_blur(
 }
 
 // /
-// Called when |button| is pressed.
+// / Called when |button| is pressed.
 // /
 //
 //export cefingo_button_delegate_on_button_pressed
@@ -1240,7 +1242,7 @@ func cefingo_button_delegate_on_button_pressed(
 }
 
 // /
-// Called when the state of |button| changes.
+// / Called when the state of |button| changes.
 // /
 //
 //export cefingo_button_delegate_on_button_state_changed
@@ -1585,7 +1587,7 @@ func cefingo_button_delegate_on_blur(
 }
 
 // /
-// Return the handler for audio rendering events.
+// / Return the handler for audio rendering events.
 // /
 //
 //export cefingo_client_get_audio_handler
@@ -1620,8 +1622,8 @@ func cefingo_client_get_audio_handler(
 }
 
 // /
-// Return the handler for commands. If no handler is provided the default
-// implementation will be used.
+// / Return the handler for commands. If no handler is provided the default
+// / implementation will be used.
 // /
 //
 //export cefingo_client_get_command_handler
@@ -1656,8 +1658,8 @@ func cefingo_client_get_command_handler(
 }
 
 // /
-// Return the handler for context menus. If no handler is provided the default
-// implementation will be used.
+// / Return the handler for context menus. If no handler is provided the
+// / default implementation will be used.
 // /
 //
 //export cefingo_client_get_context_menu_handler
@@ -1692,8 +1694,8 @@ func cefingo_client_get_context_menu_handler(
 }
 
 // /
-// Return the handler for dialogs. If no handler is provided the default
-// implementation will be used.
+// / Return the handler for dialogs. If no handler is provided the default
+// / implementation will be used.
 // /
 //
 //export cefingo_client_get_dialog_handler
@@ -1728,7 +1730,7 @@ func cefingo_client_get_dialog_handler(
 }
 
 // /
-// Return the handler for browser display state events.
+// / Return the handler for browser display state events.
 // /
 //
 //export cefingo_client_get_display_handler
@@ -1763,8 +1765,8 @@ func cefingo_client_get_display_handler(
 }
 
 // /
-// Return the handler for download events. If no handler is returned downloads
-// will not be allowed.
+// / Return the handler for download events. If no handler is returned
+// / downloads will not be allowed.
 // /
 //
 //export cefingo_client_get_download_handler
@@ -1799,7 +1801,7 @@ func cefingo_client_get_download_handler(
 }
 
 // /
-// Return the handler for drag events.
+// / Return the handler for drag events.
 // /
 //
 //export cefingo_client_get_drag_handler
@@ -1834,7 +1836,7 @@ func cefingo_client_get_drag_handler(
 }
 
 // /
-// Return the handler for find result events.
+// / Return the handler for find result events.
 // /
 //
 //export cefingo_client_get_find_handler
@@ -1869,7 +1871,7 @@ func cefingo_client_get_find_handler(
 }
 
 // /
-// Return the handler for focus events.
+// / Return the handler for focus events.
 // /
 //
 //export cefingo_client_get_focus_handler
@@ -1904,9 +1906,9 @@ func cefingo_client_get_focus_handler(
 }
 
 // /
-// Return the handler for events related to cef_frame_t lifespan. This
-// function will be called once during cef_browser_t creation and the result
-// will be cached for performance reasons.
+// / Return the handler for events related to cef_frame_t lifespan. This
+// / function will be called once during cef_browser_t creation and the result
+// / will be cached for performance reasons.
 // /
 //
 //export cefingo_client_get_frame_handler
@@ -1941,8 +1943,43 @@ func cefingo_client_get_frame_handler(
 }
 
 // /
-// Return the handler for JavaScript dialogs. If no handler is provided the
-// default implementation will be used.
+// / Return the handler for permission requests.
+// /
+//
+//export cefingo_client_get_permission_handler
+func cefingo_client_get_permission_handler(
+	self *C.cef_client_t,
+) (cRet *C.cef_permission_handler_t) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T119.25:")
+	cefingoIfaceAccess.Lock()
+	f := client_handlers.get_permission_handler_handler[(*cCClientT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		// !p.IsOutParam
+		goTmpself := newCClientT(self, byApi)
+
+		goRet := f.GetPermissionHandler(goTmpself)
+
+		if goRet != nil {
+			if goRet.beUnrefed != byCef {
+				BaseAddRef(goRet.pc_permission_handler) // return GoObj
+			}
+			cRet = (*C.cef_permission_handler_t)(goRet.pc_permission_handler)
+		}
+	} else {
+		Logf("T119.26: get_permission_handler: Noo!")
+	}
+
+	return cRet
+}
+
+// /
+// / Return the handler for JavaScript dialogs. If no handler is provided the
+// / default implementation will be used.
 // /
 //
 //export cefingo_client_get_jsdialog_handler
@@ -1952,7 +1989,7 @@ func cefingo_client_get_jsdialog_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T119.25:")
+	Tracef(unsafe.Pointer(self), "T119.27:")
 	cefingoIfaceAccess.Lock()
 	f := client_handlers.get_jsdialog_handler_handler[(*cCClientT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -1970,14 +2007,14 @@ func cefingo_client_get_jsdialog_handler(
 			cRet = (*C.cef_jsdialog_handler_t)(goRet.pc_jsdialog_handler)
 		}
 	} else {
-		Logf("T119.26: get_jsdialog_handler: Noo!")
+		Logf("T119.28: get_jsdialog_handler: Noo!")
 	}
 
 	return cRet
 }
 
 // /
-// Return the handler for keyboard events.
+// / Return the handler for keyboard events.
 // /
 //
 //export cefingo_client_get_keyboard_handler
@@ -1987,7 +2024,7 @@ func cefingo_client_get_keyboard_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T119.27:")
+	Tracef(unsafe.Pointer(self), "T119.29:")
 	cefingoIfaceAccess.Lock()
 	f := client_handlers.get_keyboard_handler_handler[(*cCClientT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -2005,14 +2042,14 @@ func cefingo_client_get_keyboard_handler(
 			cRet = (*C.cef_keyboard_handler_t)(goRet.pc_keyboard_handler)
 		}
 	} else {
-		Logf("T119.28: get_keyboard_handler: Noo!")
+		Logf("T119.30: get_keyboard_handler: Noo!")
 	}
 
 	return cRet
 }
 
 // /
-// Return the handler for browser life span events.
+// / Return the handler for browser life span events.
 // /
 //
 //export cefingo_client_get_life_span_handler
@@ -2022,7 +2059,7 @@ func cefingo_client_get_life_span_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T119.29:")
+	Tracef(unsafe.Pointer(self), "T119.31:")
 	cefingoIfaceAccess.Lock()
 	f := client_handlers.get_life_span_handler_handler[(*cCClientT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -2040,14 +2077,14 @@ func cefingo_client_get_life_span_handler(
 			cRet = (*C.cef_life_span_handler_t)(goRet.pc_life_span_handler)
 		}
 	} else {
-		Logf("T119.30: get_life_span_handler: Noo!")
+		Logf("T119.32: get_life_span_handler: Noo!")
 	}
 
 	return cRet
 }
 
 // /
-// Return the handler for browser load status events.
+// / Return the handler for browser load status events.
 // /
 //
 //export cefingo_client_get_load_handler
@@ -2057,7 +2094,7 @@ func cefingo_client_get_load_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T119.31:")
+	Tracef(unsafe.Pointer(self), "T119.33:")
 	cefingoIfaceAccess.Lock()
 	f := client_handlers.get_load_handler_handler[(*cCClientT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -2075,15 +2112,15 @@ func cefingo_client_get_load_handler(
 			cRet = (*C.cef_load_handler_t)(goRet.pc_load_handler)
 		}
 	} else {
-		Logf("T119.32: get_load_handler: Noo!")
+		Logf("T119.34: get_load_handler: Noo!")
 	}
 
 	return cRet
 }
 
 // /
-// Return the handler for printing on Linux. If a print handler is not
-// provided then printing will not be supported on the Linux platform.
+// / Return the handler for printing on Linux. If a print handler is not
+// / provided then printing will not be supported on the Linux platform.
 // /
 //
 //export cefingo_client_get_print_handler
@@ -2093,7 +2130,7 @@ func cefingo_client_get_print_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T119.33:")
+	Tracef(unsafe.Pointer(self), "T119.35:")
 	cefingoIfaceAccess.Lock()
 	f := client_handlers.get_print_handler_handler[(*cCClientT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -2111,14 +2148,14 @@ func cefingo_client_get_print_handler(
 			cRet = (*C.cef_print_handler_t)(goRet.pc_print_handler)
 		}
 	} else {
-		Logf("T119.34: get_print_handler: Noo!")
+		Logf("T119.36: get_print_handler: Noo!")
 	}
 
 	return cRet
 }
 
 // /
-// Return the handler for off-screen rendering events.
+// / Return the handler for off-screen rendering events.
 // /
 //
 //export cefingo_client_get_render_handler
@@ -2128,7 +2165,7 @@ func cefingo_client_get_render_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T119.35:")
+	Tracef(unsafe.Pointer(self), "T119.37:")
 	cefingoIfaceAccess.Lock()
 	f := client_handlers.get_render_handler_handler[(*cCClientT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -2146,14 +2183,14 @@ func cefingo_client_get_render_handler(
 			cRet = (*C.cef_render_handler_t)(goRet.pc_render_handler)
 		}
 	} else {
-		Logf("T119.36: get_render_handler: Noo!")
+		Logf("T119.38: get_render_handler: Noo!")
 	}
 
 	return cRet
 }
 
 // /
-// Return the handler for browser request events.
+// / Return the handler for browser request events.
 // /
 //
 //export cefingo_client_get_request_handler
@@ -2163,7 +2200,7 @@ func cefingo_client_get_request_handler(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T119.37:")
+	Tracef(unsafe.Pointer(self), "T119.39:")
 	cefingoIfaceAccess.Lock()
 	f := client_handlers.get_request_handler_handler[(*cCClientT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -2181,16 +2218,16 @@ func cefingo_client_get_request_handler(
 			cRet = (*C.cef_request_handler_t)(goRet.pc_request_handler)
 		}
 	} else {
-		Logf("T119.38: get_request_handler: Noo!")
+		Logf("T119.40: get_request_handler: Noo!")
 	}
 
 	return cRet
 }
 
 // /
-// Called when a new message is received from a different process. Return true
-// (1) if the message was handled or false (0) otherwise.  It is safe to keep
-// a reference to |message| outside of this callback.
+// / Called when a new message is received from a different process. Return
+// / true (1) if the message was handled or false (0) otherwise.  It is safe to
+// / keep a reference to |message| outside of this callback.
 // /
 //
 //export cefingo_client_on_process_message_received
@@ -2204,7 +2241,7 @@ func cefingo_client_on_process_message_received(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T119.39:")
+	Tracef(unsafe.Pointer(self), "T119.41:")
 	cefingoIfaceAccess.Lock()
 	f := client_handlers.on_process_message_received_handler[(*cCClientT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -2227,7 +2264,7 @@ func cefingo_client_on_process_message_received(
 			cRet = 1
 		}
 	} else {
-		Logf("T119.40: on_process_message_received: Noo!")
+		Logf("T119.42: on_process_message_received: Noo!")
 	}
 	BaseRelease((*cCBrowserT)(browser))        // byApi
 	BaseRelease((*cCFrameT)(frame))            // byApi
@@ -2237,11 +2274,11 @@ func cefingo_client_on_process_message_received(
 }
 
 // /
-// Called before a context menu is displayed. |params| provides information
-// about the context menu state. |model| initially contains the default
-// context menu. The |model| can be cleared to show no context menu or
-// modified to show a custom menu. Do not keep references to |params| or
-// |model| outside of this callback.
+// / Called before a context menu is displayed. |params| provides information
+// / about the context menu state. |model| initially contains the default
+// / context menu. The |model| can be cleared to show no context menu or
+// / modified to show a custom menu. Do not keep references to |params| or
+// / |model| outside of this callback.
 // /
 //
 //export cefingo_context_menu_handler_on_before_context_menu
@@ -2285,12 +2322,12 @@ func cefingo_context_menu_handler_on_before_context_menu(
 }
 
 // /
-// Called to allow custom display of the context menu. |params| provides
-// information about the context menu state. |model| contains the context menu
-// model resulting from OnBeforeContextMenu. For custom display return true
-// (1) and execute |callback| either synchronously or asynchronously with the
-// selected command ID. For default display return false (0). Do not keep
-// references to |params| or |model| outside of this callback.
+// / Called to allow custom display of the context menu. |params| provides
+// / information about the context menu state. |model| contains the context
+// / menu model resulting from OnBeforeContextMenu. For custom display return
+// / true (1) and execute |callback| either synchronously or asynchronously
+// / with the selected command ID. For default display return false (0). Do not
+// / keep references to |params| or |model| outside of this callback.
 // /
 //
 //export cefingo_context_menu_handler_run_context_menu
@@ -2342,13 +2379,13 @@ func cefingo_context_menu_handler_run_context_menu(
 }
 
 // /
-// Called to execute a command selected from the context menu. Return true (1)
-// if the command was handled or false (0) for the default implementation. See
-// cef_menu_id_t for the command ids that have default implementations. All
-// user-defined command ids should be between MENU_ID_USER_FIRST and
-// MENU_ID_USER_LAST. |params| will have the same values as what was passed to
-// on_before_context_menu(). Do not keep a reference to |params| outside of
-// this callback.
+// / Called to execute a command selected from the context menu. Return true
+// / (1) if the command was handled or false (0) for the default
+// / implementation. See cef_menu_id_t for the command ids that have default
+// / implementations. All user-defined command ids should be between
+// / MENU_ID_USER_FIRST and MENU_ID_USER_LAST. |params| will have the same
+// / values as what was passed to on_before_context_menu(). Do not keep a
+// / reference to |params| outside of this callback.
 // /
 //
 //export cefingo_context_menu_handler_on_context_menu_command
@@ -2398,8 +2435,8 @@ func cefingo_context_menu_handler_on_context_menu_command(
 }
 
 // /
-// Called when the context menu is dismissed irregardless of whether the menu
-// was NULL or a command was selected.
+// / Called when the context menu is dismissed irregardless of whether the menu
+// / was canceled or a command was selected.
 // /
 //
 //export cefingo_context_menu_handler_on_context_menu_dismissed
@@ -2435,11 +2472,156 @@ func cefingo_context_menu_handler_on_context_menu_dismissed(
 }
 
 // /
-// Method that will be called once for each cookie. |count| is the 0-based
-// index for the current cookie. |total| is the total number of cookies. Set
-// |deleteCookie| to true (1) to delete the cookie currently being visited.
-// Return false (0) to stop visiting cookies. This function may never be
-// called if no cookies are found.
+// / Called to allow custom display of the quick menu for a windowless browser.
+// / |location| is the top left corner of the selected region. |size| is the
+// / size of the selected region. |edit_state_flags| is a combination of flags
+// / that represent the state of the quick menu. Return true (1) if the menu
+// / will be handled and execute |callback| either synchronously or
+// / asynchronously with the selected command ID. Return false (0) to cancel
+// / the menu.
+// /
+//
+//export cefingo_context_menu_handler_run_quick_menu
+func cefingo_context_menu_handler_run_quick_menu(
+	self *C.cef_context_menu_handler_t,
+	browser *C.cef_browser_t,
+	frame *C.cef_frame_t,
+	location *C.cef_point_t,
+	size *C.cef_size_t,
+	edit_state_flags C.cef_quick_menu_edit_state_flags_t,
+	callback *C.cef_run_quick_menu_callback_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T122.13:")
+	cefingoIfaceAccess.Lock()
+	f := context_menu_handler_handlers.run_quick_menu_handler[(*cCContextMenuHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		// !p.IsOutParam
+		goTmpself := newCContextMenuHandlerT(self, byApi)
+		// !p.IsOutParam
+		goTmpbrowser := newCBrowserT(browser, byApi)
+		// !p.IsOutParam
+		goTmpframe := newCFrameT(frame, byApi)
+		// !p.IsOutParam
+		goTmplocation := (*CPointT)(location)
+		// !p.IsOutParam
+		goTmpsize := (*CSizeT)(size)
+		// !p.IsOutParam
+		goTmpedit_state_flags := CQuickMenuEditStateFlagsT(edit_state_flags)
+		// !p.IsOutParam
+		goTmpcallback := newCRunQuickMenuCallbackT(callback, byApi)
+
+		goRet := f.RunQuickMenu(goTmpself, goTmpbrowser, goTmpframe, goTmplocation, goTmpsize, goTmpedit_state_flags, goTmpcallback)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T122.14: run_quick_menu: Noo!")
+	}
+	BaseRelease((*cCBrowserT)(browser))               // byApi
+	BaseRelease((*cCFrameT)(frame))                   // byApi
+	BaseRelease((*cCRunQuickMenuCallbackT)(callback)) // byApi
+
+	return cRet
+}
+
+// /
+// / Called to execute a command selected from the quick menu for a windowless
+// / browser. Return true (1) if the command was handled or false (0) for the
+// / default implementation. See cef_menu_id_t for command IDs that have
+// / default implementations.
+// /
+//
+//export cefingo_context_menu_handler_on_quick_menu_command
+func cefingo_context_menu_handler_on_quick_menu_command(
+	self *C.cef_context_menu_handler_t,
+	browser *C.cef_browser_t,
+	frame *C.cef_frame_t,
+	command_id C.int,
+	event_flags C.cef_event_flags_t,
+) (cRet C.int) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T122.15:")
+	cefingoIfaceAccess.Lock()
+	f := context_menu_handler_handlers.on_quick_menu_command_handler[(*cCContextMenuHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		// !p.IsOutParam
+		goTmpself := newCContextMenuHandlerT(self, byApi)
+		// !p.IsOutParam
+		goTmpbrowser := newCBrowserT(browser, byApi)
+		// !p.IsOutParam
+		goTmpframe := newCFrameT(frame, byApi)
+		// !p.IsOutParam
+		goTmpcommand_id := (int)(command_id)
+		// !p.IsOutParam
+		goTmpevent_flags := CEventFlagsT(event_flags)
+
+		goRet := f.OnQuickMenuCommand(goTmpself, goTmpbrowser, goTmpframe, goTmpcommand_id, goTmpevent_flags)
+
+		if goRet {
+			cRet = 1
+		}
+	} else {
+		Logf("T122.16: on_quick_menu_command: Noo!")
+	}
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+
+	return cRet
+}
+
+// /
+// / Called when the quick menu for a windowless browser is dismissed
+// / irregardless of whether the menu was canceled or a command was selected.
+// /
+//
+//export cefingo_context_menu_handler_on_quick_menu_dismissed
+func cefingo_context_menu_handler_on_quick_menu_dismissed(
+	self *C.cef_context_menu_handler_t,
+	browser *C.cef_browser_t,
+	frame *C.cef_frame_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T122.17:")
+	cefingoIfaceAccess.Lock()
+	f := context_menu_handler_handlers.on_quick_menu_dismissed_handler[(*cCContextMenuHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		// !p.IsOutParam
+		goTmpself := newCContextMenuHandlerT(self, byApi)
+		// !p.IsOutParam
+		goTmpbrowser := newCBrowserT(browser, byApi)
+		// !p.IsOutParam
+		goTmpframe := newCFrameT(frame, byApi)
+
+		f.OnQuickMenuDismissed(goTmpself, goTmpbrowser, goTmpframe)
+
+	} else {
+		Logf("T122.18: on_quick_menu_dismissed: Noo!")
+	}
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+	BaseRelease((*cCFrameT)(frame))     // byApi
+
+}
+
+// /
+// / Method that will be called once for each cookie. |count| is the 0-based
+// / index for the current cookie. |total| is the total number of cookies. Set
+// / |deleteCookie| to true (1) to delete the cookie currently being visited.
+// / Return false (0) to stop visiting cookies. This function may never be
+// / called if no cookies are found.
 // /
 //
 //export cefingo_cookie_visitor_visit
@@ -2482,8 +2664,8 @@ func cefingo_cookie_visitor_visit(
 }
 
 // /
-// Method that will be called upon completion. |success| will be true (1) if
-// the cookie was set successfully.
+// / Method that will be called upon completion. |success| will be true (1) if
+// / the cookie was set successfully.
 // /
 //
 //export cefingo_set_cookie_callback_on_complete
@@ -2514,8 +2696,8 @@ func cefingo_set_cookie_callback_on_complete(
 }
 
 // /
-// Method that will be called upon completion. |num_deleted| will be the
-// number of cookies that were deleted.
+// / Method that will be called upon completion. |num_deleted| will be the
+// / number of cookies that were deleted.
 // /
 //
 //export cefingo_delete_cookies_callback_on_complete
@@ -2546,25 +2728,26 @@ func cefingo_delete_cookies_callback_on_complete(
 }
 
 // /
-// Method that will be called on receipt of a DevTools protocol message.
-// |browser| is the originating browser instance. |message| is a UTF8-encoded
-// JSON dictionary representing either a function result or an event.
-// |message| is only valid for the scope of this callback and should be copied
-// if necessary. Return true (1) if the message was handled or false (0) if
-// the message should be further processed and passed to the
-// OnDevToolsMethodResult or OnDevToolsEvent functions as appropriate.
-//
-// Method result dictionaries include an &quot;id&quot; (int) value that identifies the
-// orginating function call sent from cef_browser_host_t::SendDevToolsMessage,
-// and optionally either a &quot;result&quot; (dictionary) or &quot;error&quot; (dictionary)
-// value. The &quot;error&quot; dictionary will contain &quot;code&quot; (int) and &quot;message&quot;
-// (string) values. Event dictionaries include a &quot;function&quot; (string) value and
-// optionally a &quot;params&quot; (dictionary) value. See the DevTools protocol
-// documentation at https://chromedevtools.github.io/devtools-protocol/ for
-// details of supported function calls and the expected &quot;result&quot; or &quot;params&quot;
-// dictionary contents. JSON dictionaries can be parsed using the CefParseJSON
-// function if desired, however be aware of performance considerations when
-// parsing large messages (some of which may exceed 1MB in size).
+// / Method that will be called on receipt of a DevTools protocol message.
+// / |browser| is the originating browser instance. |message| is a UTF8-encoded
+// / JSON dictionary representing either a function result or an event.
+// / |message| is only valid for the scope of this callback and should be
+// / copied if necessary. Return true (1) if the message was handled or false
+// / (0) if the message should be further processed and passed to the
+// / OnDevToolsMethodResult or OnDevToolsEvent functions as appropriate.
+// /
+// / Method result dictionaries include an &quot;id&quot; (int) value that identifies the
+// / orginating function call sent from
+// / cef_browser_host_t::SendDevToolsMessage, and optionally either a &quot;result&quot;
+// / (dictionary) or &quot;error&quot; (dictionary) value. The &quot;error&quot; dictionary will
+// / contain &quot;code&quot; (int) and &quot;message&quot; (string) values. Event dictionaries
+// / include a &quot;function&quot; (string) value and optionally a &quot;params&quot; (dictionary)
+// / value. See the DevTools protocol documentation at
+// / https://chromedevtools.github.io/devtools-protocol/ for details of
+// / supported function calls and the expected &quot;result&quot; or &quot;params&quot; dictionary
+// / contents. JSON dictionaries can be parsed using the CefParseJSON function
+// / if desired, however be aware of performance considerations when parsing
+// / large messages (some of which may exceed 1MB in size).
 // /
 //
 //export cefingo_dev_tools_message_observer_on_dev_tools_message
@@ -2604,16 +2787,16 @@ func cefingo_dev_tools_message_observer_on_dev_tools_message(
 }
 
 // /
-// Method that will be called after attempted execution of a DevTools protocol
-// function. |browser| is the originating browser instance. |message_id| is
-// the &quot;id&quot; value that identifies the originating function call message. If
-// the function succeeded |success| will be true (1) and |result| will be the
-// UTF8-encoded JSON &quot;result&quot; dictionary value (which may be NULL). If the
-// function failed |success| will be false (0) and |result| will be the
-// UTF8-encoded JSON &quot;error&quot; dictionary value. |result| is only valid for the
-// scope of this callback and should be copied if necessary. See the
-// OnDevToolsMessage documentation for additional details on |result|
-// contents.
+// / Method that will be called after attempted execution of a DevTools
+// / protocol function. |browser| is the originating browser instance.
+// / |message_id| is the &quot;id&quot; value that identifies the originating function
+// / call message. If the function succeeded |success| will be true (1) and
+// / |result| will be the UTF8-encoded JSON &quot;result&quot; dictionary value (which
+// / may be NULL). If the function failed |success| will be false (0) and
+// / |result| will be the UTF8-encoded JSON &quot;error&quot; dictionary value. |result|
+// / is only valid for the scope of this callback and should be copied if
+// / necessary. See the OnDevToolsMessage documentation for additional details
+// / on |result| contents.
 // /
 //
 //export cefingo_dev_tools_message_observer_on_dev_tools_method_result
@@ -2655,12 +2838,12 @@ func cefingo_dev_tools_message_observer_on_dev_tools_method_result(
 }
 
 // /
-// Method that will be called on receipt of a DevTools protocol event.
-// |browser| is the originating browser instance. |function| is the &quot;function&quot;
-// value. |params| is the UTF8-encoded JSON &quot;params&quot; dictionary value (which
-// may be NULL). |params| is only valid for the scope of this callback and
-// should be copied if necessary. See the OnDevToolsMessage documentation for
-// additional details on |params| contents.
+// / Method that will be called on receipt of a DevTools protocol event.
+// / |browser| is the originating browser instance. |function| is the
+// / &quot;function&quot; value. |params| is the UTF8-encoded JSON &quot;params&quot; dictionary
+// / value (which may be NULL). |params| is only valid for the scope of this
+// / callback and should be copied if necessary. See the OnDevToolsMessage
+// / documentation for additional details on |params| contents.
 // /
 //
 //export cefingo_dev_tools_message_observer_on_dev_tools_event
@@ -2699,9 +2882,9 @@ func cefingo_dev_tools_message_observer_on_dev_tools_event(
 }
 
 // /
-// Method that will be called when the DevTools agent has attached. |browser|
-// is the originating browser instance. This will generally occur in response
-// to the first message sent while the agent is detached.
+// / Method that will be called when the DevTools agent has attached. |browser|
+// / is the originating browser instance. This will generally occur in response
+// / to the first message sent while the agent is detached.
 // /
 //
 //export cefingo_dev_tools_message_observer_on_dev_tools_agent_attached
@@ -2733,10 +2916,10 @@ func cefingo_dev_tools_message_observer_on_dev_tools_agent_attached(
 }
 
 // /
-// Method that will be called when the DevTools agent has detached. |browser|
-// is the originating browser instance. Any function results that were pending
-// before the agent became detached will not be delivered, and any active
-// event subscriptions will be canceled.
+// / Method that will be called when the DevTools agent has detached. |browser|
+// / is the originating browser instance. Any function results that were
+// / pending before the agent became detached will not be delivered, and any
+// / active event subscriptions will be canceled.
 // /
 //
 //export cefingo_dev_tools_message_observer_on_dev_tools_agent_detached
@@ -2768,18 +2951,18 @@ func cefingo_dev_tools_message_observer_on_dev_tools_agent_detached(
 }
 
 // /
-// Called to run a file chooser dialog. |mode| represents the type of dialog
-// to display. |title| to the title to be used for the dialog and may be NULL
-// to show the default title (&quot;Open&quot; or &quot;Save&quot; depending on the mode).
-// |default_file_path| is the path with optional directory and/or file name
-// component that should be initially selected in the dialog. |accept_filters|
-// are used to restrict the selectable file types and may any combination of
-// (a) valid lower-cased MIME types (e.g. &quot;text/*&quot; or &quot;image/*&quot;), (b)
-// individual file extensions (e.g. &quot;.txt&quot; or &quot;.png&quot;), or (c) combined
-// description and file extension delimited using &quot;|&quot; and &quot;;&quot; (e.g. &quot;Image
-// Types|.png;.gif;.jpg&quot;). To display a custom dialog return true (1) and
-// execute |callback| either inline or at a later time. To display the default
-// dialog return false (0).
+// / Called to run a file chooser dialog. |mode| represents the type of dialog
+// / to display. |title| to the title to be used for the dialog and may be NULL
+// / to show the default title (&quot;Open&quot; or &quot;Save&quot; depending on the mode).
+// / |default_file_path| is the path with optional directory and/or file name
+// / component that should be initially selected in the dialog.
+// / |accept_filters| are used to restrict the selectable file types and may
+// / any combination of (a) valid lower-cased MIME types (e.g. &quot;text/*&quot; or
+// / &quot;image/*&quot;), (b) individual file extensions (e.g. &quot;.txt&quot; or &quot;.png&quot;), or (c)
+// / combined description and file extension delimited using &quot;|&quot; and &quot;;&quot; (e.g.
+// / &quot;Image Types|.png;.gif;.jpg&quot;). To display a custom dialog return true (1)
+// / and execute |callback| either inline or at a later time. To display the
+// / default dialog return false (0).
 // /
 //
 //export cefingo_dialog_handler_on_file_dialog
@@ -2831,7 +3014,7 @@ func cefingo_dialog_handler_on_file_dialog(
 }
 
 // /
-// Called when a frame&#39;s address has changed.
+// / Called when a frame&#39;s address has changed.
 // /
 //
 //export cefingo_display_handler_on_address_change
@@ -2870,7 +3053,7 @@ func cefingo_display_handler_on_address_change(
 }
 
 // /
-// Called when the page title changes.
+// / Called when the page title changes.
 // /
 //
 //export cefingo_display_handler_on_title_change
@@ -2905,7 +3088,7 @@ func cefingo_display_handler_on_title_change(
 }
 
 // /
-// Called when the page icon changes.
+// / Called when the page icon changes.
 // /
 //
 //export cefingo_display_handler_on_favicon_urlchange
@@ -2940,11 +3123,11 @@ func cefingo_display_handler_on_favicon_urlchange(
 }
 
 // /
-// Called when web content in the page has toggled fullscreen mode. If
-// |fullscreen| is true (1) the content will automatically be sized to fill
-// the browser content area. If |fullscreen| is false (0) the content will
-// automatically return to its original size and position. The client is
-// responsible for resizing the browser if desired.
+// / Called when web content in the page has toggled fullscreen mode. If
+// / |fullscreen| is true (1) the content will automatically be sized to fill
+// / the browser content area. If |fullscreen| is false (0) the content will
+// / automatically return to its original size and position. The client is
+// / responsible for resizing the browser if desired.
 // /
 //
 //export cefingo_display_handler_on_fullscreen_mode_change
@@ -2979,12 +3162,12 @@ func cefingo_display_handler_on_fullscreen_mode_change(
 }
 
 // /
-// Called when the browser is about to display a tooltip. |text| contains the
-// text that will be displayed in the tooltip. To handle the display of the
-// tooltip yourself return true (1). Otherwise, you can optionally modify
-// |text| and then return false (0) to allow the browser to display the
-// tooltip. When window rendering is disabled the application is responsible
-// for drawing tooltips and the return value is ignored.
+// / Called when the browser is about to display a tooltip. |text| contains the
+// / text that will be displayed in the tooltip. To handle the display of the
+// / tooltip yourself return true (1). Otherwise, you can optionally modify
+// / |text| and then return false (0) to allow the browser to display the
+// / tooltip. When window rendering is disabled the application is responsible
+// / for drawing tooltips and the return value is ignored.
 // /
 //
 //export cefingo_display_handler_on_tooltip
@@ -3024,8 +3207,8 @@ func cefingo_display_handler_on_tooltip(
 }
 
 // /
-// Called when the browser receives a status message. |value| contains the
-// text that will be displayed in the status message.
+// / Called when the browser receives a status message. |value| contains the
+// / text that will be displayed in the status message.
 // /
 //
 //export cefingo_display_handler_on_status_message
@@ -3060,8 +3243,8 @@ func cefingo_display_handler_on_status_message(
 }
 
 // /
-// Called to display a console message. Return true (1) to stop the message
-// from being output to the console.
+// / Called to display a console message. Return true (1) to stop the message
+// / from being output to the console.
 // /
 //
 //export cefingo_display_handler_on_console_message
@@ -3109,10 +3292,10 @@ func cefingo_display_handler_on_console_message(
 }
 
 // /
-// Called when auto-resize is enabled via
-// cef_browser_host_t::SetAutoResizeEnabled and the contents have auto-
-// resized. |new_size| will be the desired size in view coordinates. Return
-// true (1) if the resize was handled or false (0) for default handling.
+// / Called when auto-resize is enabled via
+// / cef_browser_host_t::SetAutoResizeEnabled and the contents have auto-
+// / resized. |new_size| will be the desired size in view coordinates. Return
+// / true (1) if the resize was handled or false (0) for default handling.
 // /
 //
 //export cefingo_display_handler_on_auto_resize
@@ -3151,8 +3334,8 @@ func cefingo_display_handler_on_auto_resize(
 }
 
 // /
-// Called when the overall page loading progress has changed. |progress|
-// ranges from 0.0 to 1.0.
+// / Called when the overall page loading progress has changed. |progress|
+// / ranges from 0.0 to 1.0.
 // /
 //
 //export cefingo_display_handler_on_loading_progress_change
@@ -3187,10 +3370,10 @@ func cefingo_display_handler_on_loading_progress_change(
 }
 
 // /
-// Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
-// |custom_cursor_info| will be populated with the custom cursor information.
-// Return true (1) if the cursor change was handled or false (0) for default
-// handling.
+// / Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
+// / |custom_cursor_info| will be populated with the custom cursor information.
+// / Return true (1) if the cursor change was handled or false (0) for default
+// / handling.
 // /
 //
 //export cefingo_display_handler_on_cursor_change
@@ -3235,11 +3418,50 @@ func cefingo_display_handler_on_cursor_change(
 }
 
 // /
-// Method executed for visiting the DOM. The document object passed to this
-// function represents a snapshot of the DOM at the time this function is
-// executed. DOM objects are only valid for the scope of this function. Do not
-// keep references to or attempt to access any DOM objects outside the scope
-// of this function.
+// / Called when the browser&#39;s access to an audio and/or video source has
+// / changed.
+// /
+//
+//export cefingo_display_handler_on_media_access_change
+func cefingo_display_handler_on_media_access_change(
+	self *C.cef_display_handler_t,
+	browser *C.cef_browser_t,
+	has_video_access C.int,
+	has_audio_access C.int,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T132.25:")
+	cefingoIfaceAccess.Lock()
+	f := display_handler_handlers.on_media_access_change_handler[(*cCDisplayHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		// !p.IsOutParam
+		goTmpself := newCDisplayHandlerT(self, byApi)
+		// !p.IsOutParam
+		goTmpbrowser := newCBrowserT(browser, byApi)
+		// !p.IsOutParam
+		goTmphas_video_access := (int)(has_video_access)
+		// !p.IsOutParam
+		goTmphas_audio_access := (int)(has_audio_access)
+
+		f.OnMediaAccessChange(goTmpself, goTmpbrowser, goTmphas_video_access, goTmphas_audio_access)
+
+	} else {
+		Logf("T132.26: on_media_access_change: Noo!")
+	}
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+
+}
+
+// /
+// / Method executed for visiting the DOM. The document object passed to this
+// / function represents a snapshot of the DOM at the time this function is
+// / executed. DOM objects are only valid for the scope of this function. Do
+// / not keep references to or attempt to access any DOM objects outside the
+// / scope of this function.
 // /
 //
 //export cefingo_domvisitor_visit
@@ -3271,11 +3493,11 @@ func cefingo_domvisitor_visit(
 }
 
 // /
-// Called before a download begins in response to a user-initiated action
-// (e.g. alt + link click or link click that returns a `Content-Disposition:
-// attachment` response from the server). |url| is the target download URL and
-// |request_function| is the target function (GET, POST, etc). Return true (1)
-// to proceed with the download or false (0) to cancel the download.
+// / Called before a download begins in response to a user-initiated action
+// / (e.g. alt + link click or link click that returns a `Content-Disposition:
+// / attachment` response from the server). |url| is the target download URL
+// / and |request_function| is the target function (GET, POST, etc). Return
+// / true (1) to proceed with the download or false (0) to cancel the download.
 // /
 //
 //export cefingo_download_handler_can_download
@@ -3317,11 +3539,11 @@ func cefingo_download_handler_can_download(
 }
 
 // /
-// Called before a download begins. |suggested_name| is the suggested name for
-// the download file. By default the download will be canceled. Execute
-// |callback| either asynchronously or in this function to continue the
-// download if desired. Do not keep a reference to |download_item| outside of
-// this function.
+// / Called before a download begins. |suggested_name| is the suggested name
+// / for the download file. By default the download will be canceled. Execute
+// / |callback| either asynchronously or in this function to continue the
+// / download if desired. Do not keep a reference to |download_item| outside of
+// / this function.
 // /
 //
 //export cefingo_download_handler_on_before_download
@@ -3364,11 +3586,11 @@ func cefingo_download_handler_on_before_download(
 }
 
 // /
-// Called when a download&#39;s status or progress information has been updated.
-// This may be called multiple times before and after on_before_download().
-// Execute |callback| either asynchronously or in this function to cancel the
-// download if desired. Do not keep a reference to |download_item| outside of
-// this function.
+// / Called when a download&#39;s status or progress information has been updated.
+// / This may be called multiple times before and after on_before_download().
+// / Execute |callback| either asynchronously or in this function to cancel the
+// / download if desired. Do not keep a reference to |download_item| outside of
+// / this function.
 // /
 //
 //export cefingo_download_handler_on_download_updated
@@ -3408,10 +3630,10 @@ func cefingo_download_handler_on_download_updated(
 }
 
 // /
-// Called when an external drag event enters the browser window. |dragData|
-// contains the drag event data and |mask| represents the type of drag
-// operation. Return false (0) for default drag handling behavior or true (1)
-// to cancel the drag event.
+// / Called when an external drag event enters the browser window. |dragData|
+// / contains the drag event data and |mask| represents the type of drag
+// / operation. Return false (0) for default drag handling behavior or true (1)
+// / to cancel the drag event.
 // /
 //
 //export cefingo_drag_handler_on_drag_enter
@@ -3454,11 +3676,11 @@ func cefingo_drag_handler_on_drag_enter(
 }
 
 // /
-// Called whenever draggable regions for the browser window change. These can
-// be specified using the &#39;-webkit-app-region: drag/no-drag&#39; CSS-property. If
-// draggable regions are never defined in a document this function will also
-// never be called. If the last draggable region is removed from a document
-// this function will be called with an NULL vector.
+// / Called whenever draggable regions for the browser window change. These can
+// / be specified using the &#39;-webkit-app-region: drag/no-drag&#39; CSS-property. If
+// / draggable regions are never defined in a document this function will also
+// / never be called. If the last draggable region is removed from a document
+// / this function will be called with an NULL vector.
 // /
 //
 //export cefingo_drag_handler_on_draggable_regions_changed
@@ -3500,8 +3722,8 @@ func cefingo_drag_handler_on_draggable_regions_changed(
 }
 
 // /
-// Called if the cef_request_context_t::LoadExtension request fails. |result|
-// will be the error code.
+// / Called if the cef_request_context_t::LoadExtension request fails. |result|
+// / will be the error code.
 // /
 //
 //export cefingo_extension_handler_on_extension_load_failed
@@ -3532,8 +3754,8 @@ func cefingo_extension_handler_on_extension_load_failed(
 }
 
 // /
-// Called if the cef_request_context_t::LoadExtension request succeeds.
-// |extension| is the loaded extension.
+// / Called if the cef_request_context_t::LoadExtension request succeeds.
+// / |extension| is the loaded extension.
 // /
 //
 //export cefingo_extension_handler_on_extension_loaded
@@ -3565,7 +3787,7 @@ func cefingo_extension_handler_on_extension_loaded(
 }
 
 // /
-// Called after the cef_extension_t::Unload request has completed.
+// / Called after the cef_extension_t::Unload request has completed.
 // /
 //
 //export cefingo_extension_handler_on_extension_unloaded
@@ -3597,19 +3819,19 @@ func cefingo_extension_handler_on_extension_unloaded(
 }
 
 // /
-// Called when an extension needs a browser to host a background script
-// specified via the &quot;background&quot; manifest key. The browser will have no
-// visible window and cannot be displayed. |extension| is the extension that
-// is loading the background script. |url| is an internally generated
-// reference to an HTML page that will be used to load the background script
-// via a &lt;script&gt; src attribute. To allow creation of the browser optionally
-// modify |client| and |settings| and return false (0). To cancel creation of
-// the browser (and consequently cancel load of the background script) return
-// true (1). Successful creation will be indicated by a call to
-// cef_life_span_handler_t::OnAfterCreated, and
-// cef_browser_host_t::IsBackgroundHost will return true (1) for the resulting
-// browser. See https://developer.chrome.com/extensions/event_pages for more
-// information about extension background script usage.
+// / Called when an extension needs a browser to host a background script
+// / specified via the &quot;background&quot; manifest key. The browser will have no
+// / visible window and cannot be displayed. |extension| is the extension that
+// / is loading the background script. |url| is an internally generated
+// / reference to an HTML page that will be used to load the background script
+// / via a &quot;&lt;script&gt;&quot; src attribute. To allow creation of the browser
+// / optionally modify |client| and |settings| and return false (0). To cancel
+// / creation of the browser (and consequently cancel load of the background
+// / script) return true (1). Successful creation will be indicated by a call
+// / to cef_life_span_handler_t::OnAfterCreated, and
+// / cef_browser_host_t::IsBackgroundHost will return true (1) for the
+// / resulting browser. See https://developer.chrome.com/extensions/event_pages
+// / for more information about extension background script usage.
 // /
 //
 //export cefingo_extension_handler_on_before_background_browser
@@ -3663,19 +3885,19 @@ func cefingo_extension_handler_on_before_background_browser(
 }
 
 // /
-// Called when an extension API (e.g. chrome.tabs.create) requests creation of
-// a new browser. |extension| and |browser| are the source of the API call.
-// |active_browser| may optionally be specified via the windowId property or
-// returned via the get_active_browser() callback and provides the default
-// |client| and |settings| values for the new browser. |index| is the position
-// value optionally specified via the index property. |url| is the URL that
-// will be loaded in the browser. |active| is true (1) if the new browser
-// should be active when opened.  To allow creation of the browser optionally
-// modify |windowInfo|, |client| and |settings| and return false (0). To
-// cancel creation of the browser return true (1). Successful creation will be
-// indicated by a call to cef_life_span_handler_t::OnAfterCreated. Any
-// modifications to |windowInfo| will be ignored if |active_browser| is
-// wrapped in a cef_browser_view_t.
+// / Called when an extension API (e.g. chrome.tabs.create) requests creation
+// / of a new browser. |extension| and |browser| are the source of the API
+// / call. |active_browser| may optionally be specified via the windowId
+// / property or returned via the get_active_browser() callback and provides
+// / the default |client| and |settings| values for the new browser. |index| is
+// / the position value optionally specified via the index property. |url| is
+// / the URL that will be loaded in the browser. |active| is true (1) if the
+// / new browser should be active when opened.  To allow creation of the
+// / browser optionally modify |windowInfo|, |client| and |settings| and return
+// / false (0). To cancel creation of the browser return true (1). Successful
+// / creation will be indicated by a call to
+// / cef_life_span_handler_t::OnAfterCreated. Any modifications to |windowInfo|
+// / will be ignored if |active_browser| is wrapped in a cef_browser_view_t.
 // /
 //
 //export cefingo_extension_handler_on_before_browser
@@ -3747,13 +3969,13 @@ func cefingo_extension_handler_on_before_browser(
 }
 
 // /
-// Called when no tabId is specified to an extension API call that accepts a
-// tabId parameter (e.g. chrome.tabs.*). |extension| and |browser| are the
-// source of the API call. Return the browser that will be acted on by the API
-// call or return NULL to act on |browser|. The returned browser must share
-// the same cef_request_context_t as |browser|. Incognito browsers should not
-// be considered unless the source extension has incognito access enabled, in
-// which case |include_incognito| will be true (1).
+// / Called when no tabId is specified to an extension API call that accepts a
+// / tabId parameter (e.g. chrome.tabs.*). |extension| and |browser| are the
+// / source of the API call. Return the browser that will be acted on by the
+// / API call or return NULL to act on |browser|. The returned browser must
+// / share the same cef_request_context_t as |browser|. Incognito browsers
+// / should not be considered unless the source extension has incognito access
+// / enabled, in which case |include_incognito| will be true (1).
 // /
 //
 //export cefingo_extension_handler_get_active_browser
@@ -3799,12 +4021,12 @@ func cefingo_extension_handler_get_active_browser(
 }
 
 // /
-// Called when the tabId associated with |target_browser| is specified to an
-// extension API call that accepts a tabId parameter (e.g. chrome.tabs.*).
-// |extension| and |browser| are the source of the API call. Return true (1)
-// to allow access of false (0) to deny access. Access to incognito browsers
-// should not be allowed unless the source extension has incognito access
-// enabled, in which case |include_incognito| will be true (1).
+// / Called when the tabId associated with |target_browser| is specified to an
+// / extension API call that accepts a tabId parameter (e.g. chrome.tabs.*).
+// / |extension| and |browser| are the source of the API call. Return true (1)
+// / to allow access of false (0) to deny access. Access to incognito browsers
+// / should not be allowed unless the source extension has incognito access
+// / enabled, in which case |include_incognito| will be true (1).
 // /
 //
 //export cefingo_extension_handler_can_access_browser
@@ -3851,14 +4073,15 @@ func cefingo_extension_handler_can_access_browser(
 }
 
 // /
-// Called to retrieve an extension resource that would normally be loaded from
-// disk (e.g. if a file parameter is specified to chrome.tabs.executeScript).
-// |extension| and |browser| are the source of the resource request. |file| is
-// the requested relative file path. To handle the resource request return
-// true (1) and execute |callback| either synchronously or asynchronously. For
-// the default behavior which reads the resource from the extension directory
-// on disk return false (0). Localization substitutions will not be applied to
-// resources handled via this function.
+// / Called to retrieve an extension resource that would normally be loaded
+// / from disk (e.g. if a file parameter is specified to
+// / chrome.tabs.executeScript). |extension| and |browser| are the source of
+// / the resource request. |file| is the requested relative file path. To
+// / handle the resource request return true (1) and execute |callback| either
+// / synchronously or asynchronously. For the default behavior which reads the
+// / resource from the extension directory on disk return false (0).
+// / Localization substitutions will not be applied to resources handled via
+// / this function.
 // /
 //
 //export cefingo_extension_handler_get_extension_resource
@@ -3905,13 +4128,13 @@ func cefingo_extension_handler_get_extension_resource(
 }
 
 // /
-// Called to report find results returned by cef_browser_host_t::find().
-// |identifer| is a unique incremental identifier for the currently active
-// search, |count| is the number of matches currently identified,
-// |selectionRect| is the location of where the match was found (in window
-// coordinates), |activeMatchOrdinal| is the current position in the search
-// results, and |finalUpdate| is true (1) if this is the last find
-// notification.
+// / Called to report find results returned by cef_browser_host_t::find().
+// / |identifer| is a unique incremental identifier for the currently active
+// / search, |count| is the number of matches currently identified,
+// / |selectionRect| is the location of where the match was found (in window
+// / coordinates), |activeMatchOrdinal| is the current position in the search
+// / results, and |finalUpdate| is true (1) if this is the last find
+// / notification.
 // /
 //
 //export cefingo_find_handler_on_find_result
@@ -3958,10 +4181,11 @@ func cefingo_find_handler_on_find_result(
 }
 
 // /
-// Called when the browser component is about to loose focus. For instance, if
-// focus was on the last HTML element and the user pressed the TAB key. |next|
-// will be true (1) if the browser is giving focus to the next component and
-// false (0) if the browser is giving focus to the previous component.
+// / Called when the browser component is about to loose focus. For instance,
+// / if focus was on the last HTML element and the user pressed the TAB key.
+// / |next| will be true (1) if the browser is giving focus to the next
+// / component and false (0) if the browser is giving focus to the previous
+// / component.
 // /
 //
 //export cefingo_focus_handler_on_take_focus
@@ -3996,9 +4220,9 @@ func cefingo_focus_handler_on_take_focus(
 }
 
 // /
-// Called when the browser component is requesting focus. |source| indicates
-// where the focus request is originating from. Return false (0) to allow the
-// focus to be set or true (1) to cancel setting the focus.
+// / Called when the browser component is requesting focus. |source| indicates
+// / where the focus request is originating from. Return false (0) to allow the
+// / focus to be set or true (1) to cancel setting the focus.
 // /
 //
 //export cefingo_focus_handler_on_set_focus
@@ -4037,7 +4261,7 @@ func cefingo_focus_handler_on_set_focus(
 }
 
 // /
-// Called when the browser component has received focus.
+// / Called when the browser component has received focus.
 // /
 //
 //export cefingo_focus_handler_on_got_focus
@@ -4069,21 +4293,21 @@ func cefingo_focus_handler_on_got_focus(
 }
 
 // /
-// Called to run a JavaScript dialog. If |origin_url| is non-NULL it can be
-// passed to the CefFormatUrlForSecurityDisplay function to retrieve a secure
-// and user-friendly display string. The |default_prompt_text| value will be
-// specified for prompt dialogs only. Set |suppress_message| to true (1) and
-// return false (0) to suppress the message (suppressing messages is
-// preferable to immediately executing the callback as this is used to detect
-// presumably malicious behavior like spamming alert messages in
-// onbeforeunload). Set |suppress_message| to false (0) and return false (0)
-// to use the default implementation (the default implementation will show one
-// modal dialog at a time and suppress any additional dialog requests until
-// the displayed dialog is dismissed). Return true (1) if the application will
-// use a custom dialog or if the callback has been executed immediately.
-// Custom dialogs may be either modal or modeless. If a custom dialog is used
-// the application must execute |callback| once the custom dialog is
-// dismissed.
+// / Called to run a JavaScript dialog. If |origin_url| is non-NULL it can be
+// / passed to the CefFormatUrlForSecurityDisplay function to retrieve a secure
+// / and user-friendly display string. The |default_prompt_text| value will be
+// / specified for prompt dialogs only. Set |suppress_message| to true (1) and
+// / return false (0) to suppress the message (suppressing messages is
+// / preferable to immediately executing the callback as this is used to detect
+// / presumably malicious behavior like spamming alert messages in
+// / onbeforeunload). Set |suppress_message| to false (0) and return false (0)
+// / to use the default implementation (the default implementation will show
+// / one modal dialog at a time and suppress any additional dialog requests
+// / until the displayed dialog is dismissed). Return true (1) if the
+// / application will use a custom dialog or if the callback has been executed
+// / immediately. Custom dialogs may be either modal or modeless. If a custom
+// / dialog is used the application must execute |callback| once the custom
+// / dialog is dismissed.
 // /
 //
 //export cefingo_jsdialog_handler_on_jsdialog
@@ -4137,12 +4361,12 @@ func cefingo_jsdialog_handler_on_jsdialog(
 }
 
 // /
-// Called to run a dialog asking the user if they want to leave a page. Return
-// false (0) to use the default dialog implementation. Return true (1) if the
-// application will use a custom dialog or if the callback has been executed
-// immediately. Custom dialogs may be either modal or modeless. If a custom
-// dialog is used the application must execute |callback| once the custom
-// dialog is dismissed.
+// / Called to run a dialog asking the user if they want to leave a page.
+// / Return false (0) to use the default dialog implementation. Return true (1)
+// / if the application will use a custom dialog or if the callback has been
+// / executed immediately. Custom dialogs may be either modal or modeless. If a
+// / custom dialog is used the application must execute |callback| once the
+// / custom dialog is dismissed.
 // /
 //
 //export cefingo_jsdialog_handler_on_before_unload_dialog
@@ -4188,9 +4412,9 @@ func cefingo_jsdialog_handler_on_before_unload_dialog(
 }
 
 // /
-// Called to cancel any pending dialogs and reset any saved dialog state. Will
-// be called due to events like page navigation irregardless of whether any
-// dialogs are currently pending.
+// / Called to cancel any pending dialogs and reset any saved dialog state.
+// / Will be called due to events like page navigation irregardless of whether
+// / any dialogs are currently pending.
 // /
 //
 //export cefingo_jsdialog_handler_on_reset_dialog_state
@@ -4222,7 +4446,7 @@ func cefingo_jsdialog_handler_on_reset_dialog_state(
 }
 
 // /
-// Called when the default implementation dialog is closed.
+// / Called when the dialog is closed.
 // /
 //
 //export cefingo_jsdialog_handler_on_dialog_closed
@@ -4254,11 +4478,12 @@ func cefingo_jsdialog_handler_on_dialog_closed(
 }
 
 // /
-// Called before a keyboard event is sent to the renderer. |event| contains
-// information about the keyboard event. |os_event| is the operating system
-// event message, if any. Return true (1) if the event was handled or false
-// (0) otherwise. If the event will be handled in on_key_event() as a keyboard
-// shortcut set |is_keyboard_shortcut| to true (1) and return false (0).
+// / Called before a keyboard event is sent to the renderer. |event| contains
+// / information about the keyboard event. |os_event| is the operating system
+// / event message, if any. Return true (1) if the event was handled or false
+// / (0) otherwise. If the event will be handled in on_key_event() as a
+// / keyboard shortcut set |is_keyboard_shortcut| to true (1) and return false
+// / (0).
 // /
 //
 //export cefingo_keyboard_handler_on_pre_key_event
@@ -4302,10 +4527,10 @@ func cefingo_keyboard_handler_on_pre_key_event(
 }
 
 // /
-// Called after the renderer and JavaScript in the page has had a chance to
-// handle the event. |event| contains information about the keyboard event.
-// |os_event| is the operating system event message, if any. Return true (1)
-// if the keyboard event was handled or false (0) otherwise.
+// / Called after the renderer and JavaScript in the page has had a chance to
+// / handle the event. |event| contains information about the keyboard event.
+// / |os_event| is the operating system event message, if any. Return true (1)
+// / if the keyboard event was handled or false (0) otherwise.
 // /
 //
 //export cefingo_keyboard_handler_on_key_event
@@ -4347,29 +4572,29 @@ func cefingo_keyboard_handler_on_key_event(
 }
 
 // /
-// Called on the UI thread before a new popup browser is created. The
-// |browser| and |frame| values represent the source of the popup request. The
-// |target_url| and |target_frame_name| values indicate where the popup
-// browser should navigate and may be NULL if not specified with the request.
-// The |target_disposition| value indicates where the user intended to open
-// the popup (e.g. current tab, new tab, etc). The |user_gesture| value will
-// be true (1) if the popup was opened via explicit user gesture (e.g.
-// clicking a link) or false (0) if the popup opened automatically (e.g. via
-// the DomContentLoaded event). The |popupFeatures| structure contains
-// additional information about the requested popup window. To allow creation
-// of the popup browser optionally modify |windowInfo|, |client|, |settings|
-// and |no_javascript_access| and return false (0). To cancel creation of the
-// popup browser return true (1). The |client| and |settings| values will
-// default to the source browser&#39;s values. If the |no_javascript_access| value
-// is set to false (0) the new browser will not be scriptable and may not be
-// hosted in the same renderer process as the source browser. Any
-// modifications to |windowInfo| will be ignored if the parent browser is
-// wrapped in a cef_browser_view_t. Popup browser creation will be canceled if
-// the parent browser is destroyed before the popup browser creation completes
-// (indicated by a call to OnAfterCreated for the popup browser). The
-// |extra_info| parameter provides an opportunity to specify extra information
-// specific to the created popup browser that will be passed to
-// cef_render_process_handler_t::on_browser_created() in the render process.
+// / Called on the UI thread before a new popup browser is created. The
+// / |browser| and |frame| values represent the source of the popup request.
+// / The |target_url| and |target_frame_name| values indicate where the popup
+// / browser should navigate and may be NULL if not specified with the request.
+// / The |target_disposition| value indicates where the user intended to open
+// / the popup (e.g. current tab, new tab, etc). The |user_gesture| value will
+// / be true (1) if the popup was opened via explicit user gesture (e.g.
+// / clicking a link) or false (0) if the popup opened automatically (e.g. via
+// / the DomContentLoaded event). The |popupFeatures| structure contains
+// / additional information about the requested popup window. To allow creation
+// / of the popup browser optionally modify |windowInfo|, |client|, |settings|
+// / and |no_javascript_access| and return false (0). To cancel creation of the
+// / popup browser return true (1). The |client| and |settings| values will
+// / default to the source browser&#39;s values. If the |no_javascript_access|
+// / value is set to false (0) the new browser will not be scriptable and may
+// / not be hosted in the same renderer process as the source browser. Any
+// / modifications to |windowInfo| will be ignored if the parent browser is
+// / wrapped in a cef_browser_view_t. Popup browser creation will be canceled
+// / if the parent browser is destroyed before the popup browser creation
+// / completes (indicated by a call to OnAfterCreated for the popup browser).
+// / The |extra_info| parameter provides an opportunity to specify extra
+// / information specific to the created popup browser that will be passed to
+// / cef_render_process_handler_t::on_browser_created() in the render process.
 // /
 //
 //export cefingo_life_span_handler_on_before_popup
@@ -4457,10 +4682,10 @@ func cefingo_life_span_handler_on_before_popup(
 }
 
 // /
-// Called after a new browser is created. It is now safe to begin performing
-// actions with |browser|. cef_frame_handler_t callbacks related to initial
-// main frame creation will arrive before this callback. See
-// cef_frame_handler_t documentation for additional usage information.
+// / Called after a new browser is created. It is now safe to begin performing
+// / actions with |browser|. cef_frame_handler_t callbacks related to initial
+// / main frame creation will arrive before this callback. See
+// / cef_frame_handler_t documentation for additional usage information.
 // /
 //
 //export cefingo_life_span_handler_on_after_created
@@ -4492,108 +4717,94 @@ func cefingo_life_span_handler_on_after_created(
 }
 
 // /
-// Called when a browser has recieved a request to close. This may result
-// directly from a call to cef_browser_host_t::*close_browser() or indirectly
-// if the browser is parented to a top-level window created by CEF and the
-// user attempts to close that window (by clicking the &#39;X&#39;, for example). The
-// do_close() function will be called after the JavaScript &#39;onunload&#39; event
-// has been fired.
-//
-// An application should handle top-level owner window close notifications by
-// calling cef_browser_host_t::try_close_browser() or
-// cef_browser_host_t::CloseBrowser(false (0)) instead of allowing the window
-// to close immediately (see the examples below). This gives CEF an
-// opportunity to process the &#39;onbeforeunload&#39; event and optionally cancel the
-// close before do_close() is called.
-//
-// When windowed rendering is enabled CEF will internally create a window or
-// view to host the browser. In that case returning false (0) from do_close()
-// will send the standard close notification to the browser&#39;s top-level owner
-// window (e.g. WM_CLOSE on Windows, performClose: on OS X, &quot;delete_event&quot; on
-// Linux or cef_window_delegate_t::can_close() callback from Views). If the
-// browser&#39;s host window/view has already been destroyed (via view hierarchy
-// tear-down, for example) then do_close() will not be called for that browser
-// since is no longer possible to cancel the close.
-//
-// When windowed rendering is disabled returning false (0) from do_close()
-// will cause the browser object to be destroyed immediately.
-//
-// If the browser&#39;s top-level owner window requires a non-standard close
-// notification then send that notification from do_close() and return true
-// (1).
-//
-// The cef_life_span_handler_t::on_before_close() function will be called
-// after do_close() (if do_close() is called) and immediately before the
-// browser object is destroyed. The application should only exit after
-// on_before_close() has been called for all existing browsers.
-//
-// The below examples describe what should happen during window close when the
-// browser is parented to an application-provided top-level window.
-//
-// Example 1: Using cef_browser_host_t::try_close_browser(). This is
-// recommended for clients using standard close handling and windows created
-// on the browser process UI thread. 1.  User clicks the window close button
-// which sends a close notification to
-//
-//	the application&#39;s top-level window.
-//  2. Application&#39;s top-level window receives the close notification and
-//     calls TryCloseBrowser() (which internally calls CloseBrowser(false)).
-//     TryCloseBrowser() returns false so the client cancels the window close.
-//  3. JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
-//     confirmation dialog (which can be overridden via
-//     CefJSDialogHandler::OnBeforeUnloadDialog()).
-//  4. User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes. 6.
-//
-// CEF sends a close notification to the application&#39;s top-level window
-//
-//	(because DoClose() returned false by default).
-//  7. Application&#39;s top-level window receives the close notification and
-//     calls TryCloseBrowser(). TryCloseBrowser() returns true so the client
-//     allows the window close.
-//  8. Application&#39;s top-level window is destroyed. 9.  Application&#39;s
-//
-// on_before_close() handler is called and the browser object
-//
-//	is destroyed.
-//
-// 10. Application exits by calling cef_quit_message_loop() if no other
-// browsers
-//
-//	exist.
-//
-// Example 2: Using cef_browser_host_t::CloseBrowser(false (0)) and
-// implementing the do_close() callback. This is recommended for clients using
-// non-standard close handling or windows that were not created on the browser
-// process UI thread. 1.  User clicks the window close button which sends a
-// close notification to
-//
-//	the application&#39;s top-level window.
-//  2. Application&#39;s top-level window receives the close notification and:
-//     A. Calls CefBrowserHost::CloseBrowser(false).
-//     B. Cancels the window close.
-//  3. JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
-//     confirmation dialog (which can be overridden via
-//     CefJSDialogHandler::OnBeforeUnloadDialog()).
-//  4. User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes. 6.
-//
-// Application&#39;s do_close() handler is called. Application will:
-//
-//	A. Set a flag to indicate that the next close attempt will be allowed.
-//	B. Return false.
-//  7. CEF sends an close notification to the application&#39;s top-level window.
-//  8. Application&#39;s top-level window receives the close notification and
-//     allows the window to close based on the flag from #6B.
-//  9. Application&#39;s top-level window is destroyed. 10. Application&#39;s
-//
-// on_before_close() handler is called and the browser object
-//
-//	is destroyed.
-//
-// 11. Application exits by calling cef_quit_message_loop() if no other
-// browsers
-//
-//	exist.
-//
+// / Called when a browser has recieved a request to close. This may result
+// / directly from a call to cef_browser_host_t::*close_browser() or indirectly
+// / if the browser is parented to a top-level window created by CEF and the
+// / user attempts to close that window (by clicking the &#39;X&#39;, for example). The
+// / do_close() function will be called after the JavaScript &#39;onunload&#39; event
+// / has been fired.
+// /
+// / An application should handle top-level owner window close notifications by
+// / calling cef_browser_host_t::try_close_browser() or
+// / cef_browser_host_t::CloseBrowser(false (0)) instead of allowing the window
+// / to close immediately (see the examples below). This gives CEF an
+// / opportunity to process the &#39;onbeforeunload&#39; event and optionally cancel
+// / the close before do_close() is called.
+// /
+// / When windowed rendering is enabled CEF will internally create a window or
+// / view to host the browser. In that case returning false (0) from do_close()
+// / will send the standard close notification to the browser&#39;s top-level owner
+// / window (e.g. WM_CLOSE on Windows, performClose: on OS X, &quot;delete_event&quot; on
+// / Linux or cef_window_delegate_t::can_close() callback from Views). If the
+// / browser&#39;s host window/view has already been destroyed (via view hierarchy
+// / tear-down, for example) then do_close() will not be called for that
+// / browser since is no longer possible to cancel the close.
+// /
+// / When windowed rendering is disabled returning false (0) from do_close()
+// / will cause the browser object to be destroyed immediately.
+// /
+// / If the browser&#39;s top-level owner window requires a non-standard close
+// / notification then send that notification from do_close() and return true
+// / (1).
+// /
+// / The cef_life_span_handler_t::on_before_close() function will be called
+// / after do_close() (if do_close() is called) and immediately before the
+// / browser object is destroyed. The application should only exit after
+// / on_before_close() has been called for all existing browsers.
+// /
+// / The below examples describe what should happen during window close when
+// / the browser is parented to an application-provided top-level window.
+// /
+// / Example 1: Using cef_browser_host_t::try_close_browser(). This is
+// / recommended for clients using standard close handling and windows created
+// / on the browser process UI thread. 1.  User clicks the window close button
+// / which sends a close notification
+// /     to the application&#39;s top-level window.
+// / 2.  Application&#39;s top-level window receives the close notification and
+// /     calls TryCloseBrowser() (which internally calls CloseBrowser(false)).
+// /     TryCloseBrowser() returns false so the client cancels the window
+// /     close.
+// / 3.  JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
+// /     confirmation dialog (which can be overridden via
+// /     CefJSDialogHandler::OnBeforeUnloadDialog()).
+// / 4.  User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes.
+// / 6.  CEF sends a close notification to the application&#39;s top-level window
+// /     (because DoClose() returned false by default).
+// / 7.  Application&#39;s top-level window receives the close notification and
+// /     calls TryCloseBrowser(). TryCloseBrowser() returns true so the client
+// /     allows the window close.
+// / 8.  Application&#39;s top-level window is destroyed. 9.  Application&#39;s
+// / on_before_close() handler is called and the browser object
+// /     is destroyed.
+// / 10. Application exits by calling cef_quit_message_loop() if no other
+// / browsers
+// /     exist.
+// /
+// / Example 2: Using cef_browser_host_t::CloseBrowser(false (0)) and
+// / implementing the do_close() callback. This is recommended for clients
+// / using non-standard close handling or windows that were not created on the
+// / browser process UI thread. 1.  User clicks the window close button which
+// / sends a close notification
+// /     to the application&#39;s top-level window.
+// / 2.  Application&#39;s top-level window receives the close notification and:
+// /     A. Calls CefBrowserHost::CloseBrowser(false).
+// /     B. Cancels the window close.
+// / 3.  JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
+// /     confirmation dialog (which can be overridden via
+// /     CefJSDialogHandler::OnBeforeUnloadDialog()).
+// / 4.  User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes.
+// / 6.  Application&#39;s do_close() handler is called. Application will:
+// /     A. Set a flag to indicate that the next close attempt will be allowed.
+// /     B. Return false.
+// / 7.  CEF sends an close notification to the application&#39;s top-level window.
+// / 8.  Application&#39;s top-level window receives the close notification and
+// /     allows the window to close based on the flag from #6B.
+// / 9.  Application&#39;s top-level window is destroyed. 10. Application&#39;s
+// / on_before_close() handler is called and the browser object
+// /     is destroyed.
+// / 11. Application exits by calling cef_quit_message_loop() if no other
+// / browsers
+// /     exist.
 // /
 //
 //export cefingo_life_span_handler_do_close
@@ -4629,16 +4840,16 @@ func cefingo_life_span_handler_do_close(
 }
 
 // /
-// Called just before a browser is destroyed. Release all references to the
-// browser object and do not attempt to execute any functions on the browser
-// object (other than IsValid, GetIdentifier or IsSame) after this callback
-// returns. cef_frame_handler_t callbacks related to final main frame
-// destruction will arrive after this callback and cef_browser_t::IsValid will
-// return false (0) at that time. Any in-progress network requests associated
-// with |browser| will be aborted when the browser is destroyed, and
-// cef_resource_request_handler_t callbacks related to those requests may
-// still arrive on the IO thread after this callback. See cef_frame_handler_t
-// and do_close() documentation for additional usage information.
+// / Called just before a browser is destroyed. Release all references to the
+// / browser object and do not attempt to execute any functions on the browser
+// / object (other than IsValid, GetIdentifier or IsSame) after this callback
+// / returns. cef_frame_handler_t callbacks related to final main frame
+// / destruction will arrive after this callback and cef_browser_t::IsValid
+// / will return false (0) at that time. Any in-progress network requests
+// / associated with |browser| will be aborted when the browser is destroyed,
+// / and cef_resource_request_handler_t callbacks related to those requests may
+// / still arrive on the IO thread after this callback. See cef_frame_handler_t
+// / and do_close() documentation for additional usage information.
 // /
 //
 //export cefingo_life_span_handler_on_before_close
@@ -4670,11 +4881,11 @@ func cefingo_life_span_handler_on_before_close(
 }
 
 // /
-// Called when the loading state has changed. This callback will be executed
-// twice -- once when loading is initiated either programmatically or by user
-// action, and once when loading is terminated due to completion, cancellation
-// of failure. It will be called before any calls to OnLoadStart and after all
-// calls to OnLoadError and/or OnLoadEnd.
+// / Called when the loading state has changed. This callback will be executed
+// / twice -- once when loading is initiated either programmatically or by user
+// / action, and once when loading is terminated due to completion,
+// / cancellation of failure. It will be called before any calls to OnLoadStart
+// / and after all calls to OnLoadError and/or OnLoadEnd.
 // /
 //
 //export cefingo_load_handler_on_loading_state_change
@@ -4715,16 +4926,16 @@ func cefingo_load_handler_on_loading_state_change(
 }
 
 // /
-// Called after a navigation has been committed and before the browser begins
-// loading contents in the frame. The |frame| value will never be NULL -- call
-// the is_main() function to check if this frame is the main frame.
-// |transition_type| provides information about the source of the navigation
-// and an accurate value is only available in the browser process. Multiple
-// frames may be loading at the same time. Sub-frames may start or continue
-// loading after the main frame load has ended. This function will not be
-// called for same page navigations (fragments, history state, etc.) or for
-// navigations that fail or are canceled before commit. For notification of
-// overall browser load status use OnLoadingStateChange instead.
+// / Called after a navigation has been committed and before the browser begins
+// / loading contents in the frame. The |frame| value will never be NULL --
+// / call the is_main() function to check if this frame is the main frame.
+// / |transition_type| provides information about the source of the navigation
+// / and an accurate value is only available in the browser process. Multiple
+// / frames may be loading at the same time. Sub-frames may start or continue
+// / loading after the main frame load has ended. This function will not be
+// / called for same page navigations (fragments, history state, etc.) or for
+// / navigations that fail or are canceled before commit. For notification of
+// / overall browser load status use OnLoadingStateChange instead.
 // /
 //
 //export cefingo_load_handler_on_load_start
@@ -4763,14 +4974,14 @@ func cefingo_load_handler_on_load_start(
 }
 
 // /
-// Called when the browser is done loading a frame. The |frame| value will
-// never be NULL -- call the is_main() function to check if this frame is the
-// main frame. Multiple frames may be loading at the same time. Sub-frames may
-// start or continue loading after the main frame load has ended. This
-// function will not be called for same page navigations (fragments, history
-// state, etc.) or for navigations that fail or are canceled before commit.
-// For notification of overall browser load status use OnLoadingStateChange
-// instead.
+// / Called when the browser is done loading a frame. The |frame| value will
+// / never be NULL -- call the is_main() function to check if this frame is the
+// / main frame. Multiple frames may be loading at the same time. Sub-frames
+// / may start or continue loading after the main frame load has ended. This
+// / function will not be called for same page navigations (fragments, history
+// / state, etc.) or for navigations that fail or are canceled before commit.
+// / For notification of overall browser load status use OnLoadingStateChange
+// / instead.
 // /
 //
 //export cefingo_load_handler_on_load_end
@@ -4809,11 +5020,11 @@ func cefingo_load_handler_on_load_end(
 }
 
 // /
-// Called when a navigation fails or is canceled. This function may be called
-// by itself if before commit or in combination with OnLoadStart/OnLoadEnd if
-// after commit. |errorCode| is the error code number, |errorText| is the
-// error text and |failedUrl| is the URL that failed to load. See
-// net\base\net_error_list.h for complete descriptions of the error codes.
+// / Called when a navigation fails or is canceled. This function may be called
+// / by itself if before commit or in combination with OnLoadStart/OnLoadEnd if
+// / after commit. |errorCode| is the error code number, |errorText| is the
+// / error text and |failedUrl| is the URL that failed to load. See
+// / net\base\net_error_list.h for complete descriptions of the error codes.
 // /
 //
 //export cefingo_load_handler_on_load_error
@@ -4858,8 +5069,8 @@ func cefingo_load_handler_on_load_error(
 }
 
 // /
-// The list of available media sinks has changed or
-// cef_media_router_t::NotifyCurrentSinks was called.
+// / The list of available media sinks has changed or
+// / cef_media_router_t::NotifyCurrentSinks was called.
 // /
 //
 //export cefingo_media_observer_on_sinks
@@ -4897,8 +5108,8 @@ func cefingo_media_observer_on_sinks(
 }
 
 // /
-// The list of available media routes has changed or
-// cef_media_router_t::NotifyCurrentRoutes was called.
+// / The list of available media routes has changed or
+// / cef_media_router_t::NotifyCurrentRoutes was called.
 // /
 //
 //export cefingo_media_observer_on_routes
@@ -4936,7 +5147,7 @@ func cefingo_media_observer_on_routes(
 }
 
 // /
-// The connection state of |route| has changed.
+// / The connection state of |route| has changed.
 // /
 //
 //export cefingo_media_observer_on_route_state_changed
@@ -4971,8 +5182,8 @@ func cefingo_media_observer_on_route_state_changed(
 }
 
 // /
-// A message was recieved over |route|. |message| is only valid for the scope
-// of this callback and should be copied if necessary.
+// / A message was recieved over |route|. |message| is only valid for the scope
+// / of this callback and should be copied if necessary.
 // /
 //
 //export cefingo_media_observer_on_route_message_received
@@ -5008,10 +5219,10 @@ func cefingo_media_observer_on_route_message_received(
 }
 
 // /
-// Called when |button| is pressed. Call cef_menu_button_t::show_menu() to
-// show a popup menu at |screen_point|. When showing a custom popup such as a
-// window keep a reference to |button_pressed_lock| until the popup is hidden
-// to maintain the pressed button state.
+// / Called when |button| is pressed. Call cef_menu_button_t::show_menu() to
+// / show a popup menu at |screen_point|. When showing a custom popup such as a
+// / window keep a reference to |button_pressed_lock| until the popup is hidden
+// / to maintain the pressed button state.
 // /
 //
 //export cefingo_menu_button_delegate_on_menu_button_pressed
@@ -5050,7 +5261,7 @@ func cefingo_menu_button_delegate_on_menu_button_pressed(
 }
 
 // /
-// Called when |button| is pressed.
+// / Called when |button| is pressed.
 // /
 //
 //export cefingo_menu_button_delegate_on_button_pressed
@@ -5082,7 +5293,7 @@ func cefingo_menu_button_delegate_on_button_pressed(
 }
 
 // /
-// Called when the state of |button| changes.
+// / Called when the state of |button| changes.
 // /
 //
 //export cefingo_menu_button_delegate_on_button_state_changed
@@ -5427,8 +5638,8 @@ func cefingo_menu_button_delegate_on_blur(
 }
 
 // /
-// Perform the action associated with the specified |command_id| and optional
-// |event_flags|.
+// / Perform the action associated with the specified |command_id| and optional
+// / |event_flags|.
 // /
 //
 //export cefingo_menu_model_delegate_execute_command
@@ -5466,8 +5677,8 @@ func cefingo_menu_model_delegate_execute_command(
 }
 
 // /
-// Called when the user moves the mouse outside the menu and over the owning
-// window.
+// / Called when the user moves the mouse outside the menu and over the owning
+// / window.
 // /
 //
 //export cefingo_menu_model_delegate_mouse_outside_menu
@@ -5502,8 +5713,8 @@ func cefingo_menu_model_delegate_mouse_outside_menu(
 }
 
 // /
-// Called on unhandled open submenu keyboard commands. |is_rtl| will be true
-// (1) if the menu is displaying a right-to-left language.
+// / Called on unhandled open submenu keyboard commands. |is_rtl| will be true
+// / (1) if the menu is displaying a right-to-left language.
 // /
 //
 //export cefingo_menu_model_delegate_unhandled_open_submenu
@@ -5538,8 +5749,8 @@ func cefingo_menu_model_delegate_unhandled_open_submenu(
 }
 
 // /
-// Called on unhandled close submenu keyboard commands. |is_rtl| will be true
-// (1) if the menu is displaying a right-to-left language.
+// / Called on unhandled close submenu keyboard commands. |is_rtl| will be true
+// / (1) if the menu is displaying a right-to-left language.
 // /
 //
 //export cefingo_menu_model_delegate_unhandled_close_submenu
@@ -5574,7 +5785,7 @@ func cefingo_menu_model_delegate_unhandled_close_submenu(
 }
 
 // /
-// The menu is about to show.
+// / The menu is about to show.
 // /
 //
 //export cefingo_menu_model_delegate_menu_will_show
@@ -5606,7 +5817,7 @@ func cefingo_menu_model_delegate_menu_will_show(
 }
 
 // /
-// The menu has closed.
+// / The menu has closed.
 // /
 //
 //export cefingo_menu_model_delegate_menu_closed
@@ -5638,8 +5849,8 @@ func cefingo_menu_model_delegate_menu_closed(
 }
 
 // /
-// Optionally modify a menu item label. Return true (1) if |label| was
-// modified.
+// / Optionally modify a menu item label. Return true (1) if |label| was
+// / modified.
 // /
 //
 //export cefingo_menu_model_delegate_format_label
@@ -5992,10 +6203,11 @@ func cefingo_panel_delegate_on_blur(
 }
 
 // /
-// Called when printing has started for the specified |browser|. This function
-// will be called before the other OnPrint*() functions and irrespective of
-// how printing was initiated (e.g. cef_browser_host_t::print(), JavaScript
-// window.print() or PDF extension print button).
+// / Called when printing has started for the specified |browser|. This
+// / function will be called before the other OnPrint*() functions and
+// / irrespective of how printing was initiated (e.g.
+// / cef_browser_host_t::print(), JavaScript window.print() or PDF extension
+// / print button).
 // /
 //
 //export cefingo_print_handler_on_print_start
@@ -6027,9 +6239,9 @@ func cefingo_print_handler_on_print_start(
 }
 
 // /
-// Synchronize |settings| with client state. If |get_defaults| is true (1)
-// then populate |settings| with the default print settings. Do not keep a
-// reference to |settings| outside of this callback.
+// / Synchronize |settings| with client state. If |get_defaults| is true (1)
+// / then populate |settings| with the default print settings. Do not keep a
+// / reference to |settings| outside of this callback.
 // /
 //
 //export cefingo_print_handler_on_print_settings
@@ -6068,9 +6280,9 @@ func cefingo_print_handler_on_print_settings(
 }
 
 // /
-// Show the print dialog. Execute |callback| once the dialog is dismissed.
-// Return true (1) if the dialog will be displayed or false (0) to cancel the
-// printing immediately.
+// / Show the print dialog. Execute |callback| once the dialog is dismissed.
+// / Return true (1) if the dialog will be displayed or false (0) to cancel the
+// / printing immediately.
 // /
 //
 //export cefingo_print_handler_on_print_dialog
@@ -6113,9 +6325,9 @@ func cefingo_print_handler_on_print_dialog(
 }
 
 // /
-// Send the print job to the printer. Execute |callback| once the job is
-// completed. Return true (1) if the job will proceed or false (0) to cancel
-// the job immediately.
+// / Send the print job to the printer. Execute |callback| once the job is
+// / completed. Return true (1) if the job will proceed or false (0) to cancel
+// / the job immediately.
 // /
 //
 //export cefingo_print_handler_on_print_job
@@ -6161,7 +6373,7 @@ func cefingo_print_handler_on_print_job(
 }
 
 // /
-// Reset client state related to printing.
+// / Reset client state related to printing.
 // /
 //
 //export cefingo_print_handler_on_print_reset
@@ -6193,8 +6405,8 @@ func cefingo_print_handler_on_print_reset(
 }
 
 // /
-// Return the PDF paper size in device units. Used in combination with
-// cef_browser_host_t::print_to_pdf().
+// / Return the PDF paper size in device units. Used in combination with
+// / cef_browser_host_t::print_to_pdf().
 // /
 //
 //export cefingo_print_handler_get_pdf_paper_size
@@ -6231,8 +6443,8 @@ func cefingo_print_handler_get_pdf_paper_size(
 }
 
 // /
-// Return the handler for accessibility notifications. If no handler is
-// provided the default implementation will be used.
+// / Return the handler for accessibility notifications. If no handler is
+// / provided the default implementation will be used.
 // /
 //
 //export cefingo_render_handler_get_accessibility_handler
@@ -6267,9 +6479,9 @@ func cefingo_render_handler_get_accessibility_handler(
 }
 
 // /
-// Called to retrieve the root window rectangle in screen DIP coordinates.
-// Return true (1) if the rectangle was provided. If this function returns
-// false (0) the rectangle from GetViewRect will be used.
+// / Called to retrieve the root window rectangle in screen DIP coordinates.
+// / Return true (1) if the rectangle was provided. If this function returns
+// / false (0) the rectangle from GetViewRect will be used.
 // /
 //
 //export cefingo_render_handler_get_root_screen_rect
@@ -6307,8 +6519,8 @@ func cefingo_render_handler_get_root_screen_rect(
 }
 
 // /
-// Called to retrieve the view rectangle in screen DIP coordinates. This
-// function must always provide a non-NULL rectangle.
+// / Called to retrieve the view rectangle in screen DIP coordinates. This
+// / function must always provide a non-NULL rectangle.
 // /
 //
 //export cefingo_render_handler_get_view_rect
@@ -6342,10 +6554,10 @@ func cefingo_render_handler_get_view_rect(
 }
 
 // /
-// Called to retrieve the translation from view DIP coordinates to screen
-// coordinates. Windows/Linux should provide screen device (pixel) coordinates
-// and MacOS should provide screen DIP coordinates. Return true (1) if the
-// requested coordinates were provided.
+// / Called to retrieve the translation from view DIP coordinates to screen
+// / coordinates. Windows/Linux should provide screen device (pixel)
+// / coordinates and MacOS should provide screen DIP coordinates. Return true
+// / (1) if the requested coordinates were provided.
 // /
 //
 //export cefingo_render_handler_get_screen_point
@@ -6391,13 +6603,13 @@ func cefingo_render_handler_get_screen_point(
 }
 
 // /
-// Called to allow the client to fill in the CefScreenInfo object with
-// appropriate values. Return true (1) if the |screen_info| structure has been
-// modified.
-//
-// If the screen info rectangle is left NULL the rectangle from GetViewRect
-// will be used. If the rectangle is still NULL or invalid popups may not be
-// drawn correctly.
+// / Called to allow the client to fill in the CefScreenInfo object with
+// / appropriate values. Return true (1) if the |screen_info| structure has
+// / been modified.
+// /
+// / If the screen info rectangle is left NULL the rectangle from GetViewRect
+// / will be used. If the rectangle is still NULL or invalid popups may not be
+// / drawn correctly.
 // /
 //
 //export cefingo_render_handler_get_screen_info
@@ -6437,8 +6649,8 @@ func cefingo_render_handler_get_screen_info(
 }
 
 // /
-// Called when the browser wants to show or hide the popup widget. The popup
-// should be shown if |show| is true (1) and hidden if |show| is false (0).
+// / Called when the browser wants to show or hide the popup widget. The popup
+// / should be shown if |show| is true (1) and hidden if |show| is false (0).
 // /
 //
 //export cefingo_render_handler_on_popup_show
@@ -6473,8 +6685,8 @@ func cefingo_render_handler_on_popup_show(
 }
 
 // /
-// Called when the browser wants to move or resize the popup widget. |rect|
-// contains the new location and size in view coordinates.
+// / Called when the browser wants to move or resize the popup widget. |rect|
+// / contains the new location and size in view coordinates.
 // /
 //
 //export cefingo_render_handler_on_popup_size
@@ -6509,15 +6721,15 @@ func cefingo_render_handler_on_popup_size(
 }
 
 // /
-// Called when an element should be painted. Pixel values passed to this
-// function are scaled relative to view coordinates based on the value of
-// CefScreenInfo.device_scale_factor returned from GetScreenInfo. |type|
-// indicates whether the element is the view or the popup widget. |buffer|
-// contains the pixel data for the whole image. |dirtyRects| contains the set
-// of rectangles in pixel coordinates that need to be repainted. |buffer| will
-// be |width|*|height|*4 bytes in size and represents a BGRA image with an
-// upper-left origin. This function is only called when
-// cef_window_tInfo::shared_texture_enabled is set to false (0).
+// / Called when an element should be painted. Pixel values passed to this
+// / function are scaled relative to view coordinates based on the value of
+// / CefScreenInfo.device_scale_factor returned from GetScreenInfo. |type|
+// / indicates whether the element is the view or the popup widget. |buffer|
+// / contains the pixel data for the whole image. |dirtyRects| contains the set
+// / of rectangles in pixel coordinates that need to be repainted. |buffer|
+// / will be |width|*|height|*4 bytes in size and represents a BGRA image with
+// / an upper-left origin. This function is only called when
+// / cef_window_tInfo::shared_texture_enabled is set to false (0).
 // /
 //
 //export cefingo_render_handler_on_paint
@@ -6571,13 +6783,13 @@ func cefingo_render_handler_on_paint(
 }
 
 // /
-// Called when an element has been rendered to the shared texture handle.
-// |type| indicates whether the element is the view or the popup widget.
-// |dirtyRects| contains the set of rectangles in pixel coordinates that need
-// to be repainted. |shared_handle| is the handle for a D3D11 Texture2D that
-// can be accessed via ID3D11Device using the OpenSharedResource function.
-// This function is only called when cef_window_tInfo::shared_texture_enabled
-// is set to true (1), and is currently only supported on Windows.
+// / Called when an element has been rendered to the shared texture handle.
+// / |type| indicates whether the element is the view or the popup widget.
+// / |dirtyRects| contains the set of rectangles in pixel coordinates that need
+// / to be repainted. |shared_handle| is the handle for a D3D11 Texture2D that
+// / can be accessed via ID3D11Device using the OpenSharedResource function.
+// / This function is only called when cef_window_tInfo::shared_texture_enabled
+// / is set to true (1), and is currently only supported on Windows.
 // /
 //
 //export cefingo_render_handler_on_accelerated_paint
@@ -6621,18 +6833,93 @@ func cefingo_render_handler_on_accelerated_paint(
 }
 
 // /
-// Called when the user starts dragging content in the web view. Contextual
-// information about the dragged content is supplied by |drag_data|. (|x|,
-// |y|) is the drag start location in screen coordinates. OS APIs that run a
-// system message loop may be used within the StartDragging call.
+// / Called to retrieve the size of the touch handle for the specified
+// / |orientation|.
+// /
 //
-// Return false (0) to abort the drag operation. Don&#39;t call any of
-// cef_browser_host_t::DragSource*Ended* functions after returning false (0).
+//export cefingo_render_handler_get_touch_handle_size
+func cefingo_render_handler_get_touch_handle_size(
+	self *C.cef_render_handler_t,
+	browser *C.cef_browser_t,
+	orientation C.cef_horizontal_alignment_t,
+	size *C.cef_size_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T177.23:")
+	cefingoIfaceAccess.Lock()
+	f := render_handler_handlers.get_touch_handle_size_handler[(*cCRenderHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		// !p.IsOutParam
+		goTmpself := newCRenderHandlerT(self, byApi)
+		// !p.IsOutParam
+		goTmpbrowser := newCBrowserT(browser, byApi)
+		// !p.IsOutParam
+		goTmporientation := CHorizontalAlignmentT(orientation)
+		// !p.IsOutParam
+		goTmpsize := (*CSizeT)(size)
+
+		f.GetTouchHandleSize(goTmpself, goTmpbrowser, goTmporientation, goTmpsize)
+
+	} else {
+		Logf("T177.24: get_touch_handle_size: Noo!")
+	}
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+
+}
+
+// /
+// / Called when touch handle state is updated. The client is responsible for
+// / rendering the touch handles.
+// /
 //
-// Return true (1) to handle the drag operation. Call
-// cef_browser_host_t::DragSourceEndedAt and DragSourceSystemDragEnded either
-// synchronously or asynchronously to inform the web view that the drag
-// operation has ended.
+//export cefingo_render_handler_on_touch_handle_state_changed
+func cefingo_render_handler_on_touch_handle_state_changed(
+	self *C.cef_render_handler_t,
+	browser *C.cef_browser_t,
+	state *C.cef_touch_handle_state_t,
+) {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	Tracef(unsafe.Pointer(self), "T177.25:")
+	cefingoIfaceAccess.Lock()
+	f := render_handler_handlers.on_touch_handle_state_changed_handler[(*cCRenderHandlerT)(self)]
+	cefingoIfaceAccess.Unlock()
+
+	if f != nil {
+		// !p.IsOutParam
+		goTmpself := newCRenderHandlerT(self, byApi)
+		// !p.IsOutParam
+		goTmpbrowser := newCBrowserT(browser, byApi)
+		// !p.IsOutParam
+		goTmpstate := (*CTouchHandleStateT)(state)
+
+		f.OnTouchHandleStateChanged(goTmpself, goTmpbrowser, goTmpstate)
+
+	} else {
+		Logf("T177.26: on_touch_handle_state_changed: Noo!")
+	}
+	BaseRelease((*cCBrowserT)(browser)) // byApi
+
+}
+
+// /
+// / Called when the user starts dragging content in the web view. Contextual
+// / information about the dragged content is supplied by |drag_data|. (|x|,
+// / |y|) is the drag start location in screen coordinates. OS APIs that run a
+// / system message loop may be used within the StartDragging call.
+// /
+// / Return false (0) to abort the drag operation. Don&#39;t call any of
+// / cef_browser_host_t::DragSource*Ended* functions after returning false (0).
+// /
+// / Return true (1) to handle the drag operation. Call
+// / cef_browser_host_t::DragSourceEndedAt and DragSourceSystemDragEnded either
+// / synchronously or asynchronously to inform the web view that the drag
+// / operation has ended.
 // /
 //
 //export cefingo_render_handler_start_dragging
@@ -6647,7 +6934,7 @@ func cefingo_render_handler_start_dragging(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.23:")
+	Tracef(unsafe.Pointer(self), "T177.27:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.start_dragging_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -6672,7 +6959,7 @@ func cefingo_render_handler_start_dragging(
 			cRet = 1
 		}
 	} else {
-		Logf("T177.24: start_dragging: Noo!")
+		Logf("T177.28: start_dragging: Noo!")
 	}
 	BaseRelease((*cCBrowserT)(browser))    // byApi
 	BaseRelease((*cCDragDataT)(drag_data)) // byApi
@@ -6681,9 +6968,9 @@ func cefingo_render_handler_start_dragging(
 }
 
 // /
-// Called when the web view wants to update the mouse cursor during a drag &amp;
-// drop operation. |operation| describes the allowed operation (none, move,
-// copy, link).
+// / Called when the web view wants to update the mouse cursor during a drag &amp;
+// / drop operation. |operation| describes the allowed operation (none, move,
+// / copy, link).
 // /
 //
 //export cefingo_render_handler_update_drag_cursor
@@ -6695,7 +6982,7 @@ func cefingo_render_handler_update_drag_cursor(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.25:")
+	Tracef(unsafe.Pointer(self), "T177.29:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.update_drag_cursor_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -6711,14 +6998,14 @@ func cefingo_render_handler_update_drag_cursor(
 		f.UpdateDragCursor(goTmpself, goTmpbrowser, goTmpoperation)
 
 	} else {
-		Logf("T177.26: update_drag_cursor: Noo!")
+		Logf("T177.30: update_drag_cursor: Noo!")
 	}
 	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
 // /
-// Called when the scroll offset has changed.
+// / Called when the scroll offset has changed.
 // /
 //
 //export cefingo_render_handler_on_scroll_offset_changed
@@ -6731,7 +7018,7 @@ func cefingo_render_handler_on_scroll_offset_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.27:")
+	Tracef(unsafe.Pointer(self), "T177.31:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_scroll_offset_changed_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -6749,16 +7036,16 @@ func cefingo_render_handler_on_scroll_offset_changed(
 		f.OnScrollOffsetChanged(goTmpself, goTmpbrowser, goTmpx, goTmpy)
 
 	} else {
-		Logf("T177.28: on_scroll_offset_changed: Noo!")
+		Logf("T177.32: on_scroll_offset_changed: Noo!")
 	}
 	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
 // /
-// Called when the IME composition range has changed. |selected_range| is the
-// range of characters that have been selected. |character_bounds| is the
-// bounds of each character in view coordinates.
+// / Called when the IME composition range has changed. |selected_range| is the
+// / range of characters that have been selected. |character_bounds| is the
+// / bounds of each character in view coordinates.
 // /
 //
 //export cefingo_render_handler_on_ime_composition_range_changed
@@ -6772,7 +7059,7 @@ func cefingo_render_handler_on_ime_composition_range_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.29:")
+	Tracef(unsafe.Pointer(self), "T177.33:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_ime_composition_range_changed_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -6792,16 +7079,16 @@ func cefingo_render_handler_on_ime_composition_range_changed(
 		f.OnImeCompositionRangeChanged(goTmpself, goTmpbrowser, goTmpselected_range, goTmpcharacter_boundsCount, goTmpcharacter_bounds)
 
 	} else {
-		Logf("T177.30: on_ime_composition_range_changed: Noo!")
+		Logf("T177.34: on_ime_composition_range_changed: Noo!")
 	}
 	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
 // /
-// Called when text selection has changed for the specified |browser|.
-// |selected_text| is the currently selected text and |selected_range| is the
-// character range.
+// / Called when text selection has changed for the specified |browser|.
+// / |selected_text| is the currently selected text and |selected_range| is the
+// / character range.
 // /
 //
 //export cefingo_render_handler_on_text_selection_changed
@@ -6814,7 +7101,7 @@ func cefingo_render_handler_on_text_selection_changed(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.31:")
+	Tracef(unsafe.Pointer(self), "T177.35:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_text_selection_changed_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -6832,17 +7119,17 @@ func cefingo_render_handler_on_text_selection_changed(
 		f.OnTextSelectionChanged(goTmpself, goTmpbrowser, goTmpselected_text, goTmpselected_range)
 
 	} else {
-		Logf("T177.32: on_text_selection_changed: Noo!")
+		Logf("T177.36: on_text_selection_changed: Noo!")
 	}
 	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
 // /
-// Called when an on-screen keyboard should be shown or hidden for the
-// specified |browser|. |input_mode| specifies what kind of keyboard should be
-// opened. If |input_mode| is CEF_TEXT_INPUT_MODE_NONE, any existing keyboard
-// for this browser should be hidden.
+// / Called when an on-screen keyboard should be shown or hidden for the
+// / specified |browser|. |input_mode| specifies what kind of keyboard should
+// / be opened. If |input_mode| is CEF_TEXT_INPUT_MODE_NONE, any existing
+// / keyboard for this browser should be hidden.
 // /
 //
 //export cefingo_render_handler_on_virtual_keyboard_requested
@@ -6854,7 +7141,7 @@ func cefingo_render_handler_on_virtual_keyboard_requested(
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	Tracef(unsafe.Pointer(self), "T177.33:")
+	Tracef(unsafe.Pointer(self), "T177.37:")
 	cefingoIfaceAccess.Lock()
 	f := render_handler_handlers.on_virtual_keyboard_requested_handler[(*cCRenderHandlerT)(self)]
 	cefingoIfaceAccess.Unlock()
@@ -6870,14 +7157,14 @@ func cefingo_render_handler_on_virtual_keyboard_requested(
 		f.OnVirtualKeyboardRequested(goTmpself, goTmpbrowser, goTmpinput_mode)
 
 	} else {
-		Logf("T177.34: on_virtual_keyboard_requested: Noo!")
+		Logf("T177.38: on_virtual_keyboard_requested: Noo!")
 	}
 	BaseRelease((*cCBrowserT)(browser)) // byApi
 
 }
 
 // /
-// Called after WebKit has been initialized.
+// / Called after WebKit has been initialized.
 // /
 //
 //export cefingo_render_process_handler_on_web_kit_initialized
@@ -6905,13 +7192,13 @@ func cefingo_render_process_handler_on_web_kit_initialized(
 }
 
 // /
-// Called after a browser has been created. When browsing cross-origin a new
-// browser will be created before the old browser with the same identifier is
-// destroyed. |extra_info| is an optional read-only value originating from
-// cef_browser_host_t::cef_browser_host_create_browser(),
-// cef_browser_host_t::cef_browser_host_create_browser_sync(),
-// cef_life_span_handler_t::on_before_popup() or
-// cef_browser_view_t::cef_browser_view_create().
+// / Called after a browser has been created. When browsing cross-origin a new
+// / browser will be created before the old browser with the same identifier is
+// / destroyed. |extra_info| is an optional read-only value originating from
+// / cef_browser_host_t::cef_browser_host_create_browser(),
+// / cef_browser_host_t::cef_browser_host_create_browser_sync(),
+// / cef_life_span_handler_t::on_before_popup() or
+// / cef_browser_view_t::cef_browser_view_create().
 // /
 //
 //export cefingo_render_process_handler_on_browser_created
@@ -6947,7 +7234,7 @@ func cefingo_render_process_handler_on_browser_created(
 }
 
 // /
-// Called before a browser is destroyed.
+// / Called before a browser is destroyed.
 // /
 //
 //export cefingo_render_process_handler_on_browser_destroyed
@@ -6979,7 +7266,7 @@ func cefingo_render_process_handler_on_browser_destroyed(
 }
 
 // /
-// Return the handler for browser load status events.
+// / Return the handler for browser load status events.
 // /
 //
 //export cefingo_render_process_handler_get_load_handler
@@ -7014,12 +7301,12 @@ func cefingo_render_process_handler_get_load_handler(
 }
 
 // /
-// Called immediately after the V8 context for a frame has been created. To
-// retrieve the JavaScript &#39;window&#39; object use the
-// cef_v8context_t::get_global() function. V8 handles can only be accessed
-// from the thread on which they are created. A task runner for posting tasks
-// on the associated thread can be retrieved via the
-// cef_v8context_t::get_task_runner() function.
+// / Called immediately after the V8 context for a frame has been created. To
+// / retrieve the JavaScript &#39;window&#39; object use the
+// / cef_v8context_t::get_global() function. V8 handles can only be accessed
+// / from the thread on which they are created. A task runner for posting tasks
+// / on the associated thread can be retrieved via the
+// / cef_v8context_t::get_task_runner() function.
 // /
 //
 //export cefingo_render_process_handler_on_context_created
@@ -7059,8 +7346,8 @@ func cefingo_render_process_handler_on_context_created(
 }
 
 // /
-// Called immediately before the V8 context for a frame is released. No
-// references to the context should be kept after this function is called.
+// / Called immediately before the V8 context for a frame is released. No
+// / references to the context should be kept after this function is called.
 // /
 //
 //export cefingo_render_process_handler_on_context_released
@@ -7100,9 +7387,9 @@ func cefingo_render_process_handler_on_context_released(
 }
 
 // /
-// Called for global uncaught exceptions in a frame. Execution of this
-// callback is disabled by default. To enable set
-// CefSettings.uncaught_exception_stack_size &gt; 0.
+// / Called for global uncaught exceptions in a frame. Execution of this
+// / callback is disabled by default. To enable set
+// / cef_settings_t.uncaught_exception_stack_size &gt; 0.
 // /
 //
 //export cefingo_render_process_handler_on_uncaught_exception
@@ -7150,12 +7437,12 @@ func cefingo_render_process_handler_on_uncaught_exception(
 }
 
 // /
-// Called when a new node in the the browser gets focus. The |node| value may
-// be NULL if no specific node has gained focus. The node object passed to
-// this function represents a snapshot of the DOM at the time this function is
-// executed. DOM objects are only valid for the scope of this function. Do not
-// keep references to or attempt to access any DOM objects outside the scope
-// of this function.
+// / Called when a new node in the the browser gets focus. The |node| value may
+// / be NULL if no specific node has gained focus. The node object passed to
+// / this function represents a snapshot of the DOM at the time this function
+// / is executed. DOM objects are only valid for the scope of this function. Do
+// / not keep references to or attempt to access any DOM objects outside the
+// / scope of this function.
 // /
 //
 //export cefingo_render_process_handler_on_focused_node_changed
@@ -7195,9 +7482,9 @@ func cefingo_render_process_handler_on_focused_node_changed(
 }
 
 // /
-// Called when a new message is received from a different process. Return true
-// (1) if the message was handled or false (0) otherwise. It is safe to keep a
-// reference to |message| outside of this callback.
+// / Called when a new message is received from a different process. Return
+// / true (1) if the message was handled or false (0) otherwise. It is safe to
+// / keep a reference to |message| outside of this callback.
 // /
 //
 //export cefingo_render_process_handler_on_process_message_received
@@ -7244,8 +7531,8 @@ func cefingo_render_process_handler_on_process_message_received(
 }
 
 // /
-// Called on the browser process UI thread immediately after the request
-// context has been initialized.
+// / Called on the browser process UI thread immediately after the request
+// / context has been initialized.
 // /
 //
 //export cefingo_request_context_handler_on_request_context_initialized
@@ -7277,22 +7564,23 @@ func cefingo_request_context_handler_on_request_context_initialized(
 }
 
 // /
-// Called on the browser process IO thread before a resource request is
-// initiated. The |browser| and |frame| values represent the source of the
-// request, and may be NULL for requests originating from service workers or
-// cef_urlrequest_t. |request| represents the request contents and cannot be
-// modified in this callback. |is_navigation| will be true (1) if the resource
-// request is a navigation. |is_download| will be true (1) if the resource
-// request is a download. |request_initiator| is the origin (scheme + domain)
-// of the page that initiated the request. Set |disable_default_handling| to
-// true (1) to disable default handling of the request, in which case it will
-// need to be handled via cef_resource_request_handler_t::GetResourceHandler
-// or it will be canceled. To allow the resource load to proceed with default
-// handling return NULL. To specify a handler for the resource return a
-// cef_resource_request_handler_t object. This function will not be called if
-// the client associated with |browser| returns a non-NULL value from
-// cef_request_handler_t::GetResourceRequestHandler for the same request
-// (identified by cef_request_t::GetIdentifier).
+// / Called on the browser process IO thread before a resource request is
+// / initiated. The |browser| and |frame| values represent the source of the
+// / request, and may be NULL for requests originating from service workers or
+// / cef_urlrequest_t. |request| represents the request contents and cannot be
+// / modified in this callback. |is_navigation| will be true (1) if the
+// / resource request is a navigation. |is_download| will be true (1) if the
+// / resource request is a download. |request_initiator| is the origin (scheme
+// / + domain) of the page that initiated the request. Set
+// / |disable_default_handling| to true (1) to disable default handling of the
+// / request, in which case it will need to be handled via
+// / cef_resource_request_handler_t::GetResourceHandler or it will be canceled.
+// / To allow the resource load to proceed with default handling return NULL.
+// / To specify a handler for the resource return a
+// / cef_resource_request_handler_t object. This function will not be called if
+// / the client associated with |browser| returns a non-NULL value from
+// / cef_request_handler_t::GetResourceRequestHandler for the same request
+// / (identified by cef_request_t::GetIdentifier).
 // /
 //
 //export cefingo_request_context_handler_get_resource_request_handler
@@ -7353,16 +7641,17 @@ func cefingo_request_context_handler_get_resource_request_handler(
 }
 
 // /
-// Called on the UI thread before browser navigation. Return true (1) to
-// cancel the navigation or false (0) to allow the navigation to proceed. The
-// |request| object cannot be modified in this callback.
-// cef_load_handler_t::OnLoadingStateChange will be called twice in all cases.
-// If the navigation is allowed cef_load_handler_t::OnLoadStart and
-// cef_load_handler_t::OnLoadEnd will be called. If the navigation is canceled
-// cef_load_handler_t::OnLoadError will be called with an |errorCode| value of
-// ERR_ABORTED. The |user_gesture| value will be true (1) if the browser
-// navigated via explicit user gesture (e.g. clicking a link) or false (0) if
-// it navigated automatically (e.g. via the DomContentLoaded event).
+// / Called on the UI thread before browser navigation. Return true (1) to
+// / cancel the navigation or false (0) to allow the navigation to proceed. The
+// / |request| object cannot be modified in this callback.
+// / cef_load_handler_t::OnLoadingStateChange will be called twice in all
+// / cases. If the navigation is allowed cef_load_handler_t::OnLoadStart and
+// / cef_load_handler_t::OnLoadEnd will be called. If the navigation is
+// / canceled cef_load_handler_t::OnLoadError will be called with an
+// / |errorCode| value of ERR_ABORTED. The |user_gesture| value will be true
+// / (1) if the browser navigated via explicit user gesture (e.g. clicking a
+// / link) or false (0) if it navigated automatically (e.g. via the
+// / DomContentLoaded event).
 // /
 //
 //export cefingo_request_handler_on_before_browse
@@ -7412,20 +7701,20 @@ func cefingo_request_handler_on_before_browse(
 }
 
 // /
-// Called on the UI thread before OnBeforeBrowse in certain limited cases
-// where navigating a new or different browser might be desirable. This
-// includes user-initiated navigation that might open in a special way (e.g.
-// links clicked via middle-click or ctrl + left-click) and certain types of
-// cross-origin navigation initiated from the renderer process (e.g.
-// navigating the top-level frame to/from a file URL). The |browser| and
-// |frame| values represent the source of the navigation. The
-// |target_disposition| value indicates where the user intended to navigate
-// the browser based on standard Chromium behaviors (e.g. current tab, new
-// tab, etc). The |user_gesture| value will be true (1) if the browser
-// navigated via explicit user gesture (e.g. clicking a link) or false (0) if
-// it navigated automatically (e.g. via the DomContentLoaded event). Return
-// true (1) to cancel the navigation or false (0) to allow the navigation to
-// proceed in the source browser&#39;s top-level frame.
+// / Called on the UI thread before OnBeforeBrowse in certain limited cases
+// / where navigating a new or different browser might be desirable. This
+// / includes user-initiated navigation that might open in a special way (e.g.
+// / links clicked via middle-click or ctrl + left-click) and certain types of
+// / cross-origin navigation initiated from the renderer process (e.g.
+// / navigating the top-level frame to/from a file URL). The |browser| and
+// / |frame| values represent the source of the navigation. The
+// / |target_disposition| value indicates where the user intended to navigate
+// / the browser based on standard Chromium behaviors (e.g. current tab, new
+// / tab, etc). The |user_gesture| value will be true (1) if the browser
+// / navigated via explicit user gesture (e.g. clicking a link) or false (0) if
+// / it navigated automatically (e.g. via the DomContentLoaded event). Return
+// / true (1) to cancel the navigation or false (0) to allow the navigation to
+// / proceed in the source browser&#39;s top-level frame.
 // /
 //
 //export cefingo_request_handler_on_open_urlfrom_tab
@@ -7474,20 +7763,20 @@ func cefingo_request_handler_on_open_urlfrom_tab(
 }
 
 // /
-// Called on the browser process IO thread before a resource request is
-// initiated. The |browser| and |frame| values represent the source of the
-// request. |request| represents the request contents and cannot be modified
-// in this callback. |is_navigation| will be true (1) if the resource request
-// is a navigation. |is_download| will be true (1) if the resource request is
-// a download. |request_initiator| is the origin (scheme + domain) of the page
-// that initiated the request. Set |disable_default_handling| to true (1) to
-// disable default handling of the request, in which case it will need to be
-// handled via cef_resource_request_handler_t::GetResourceHandler or it will
-// be canceled. To allow the resource load to proceed with default handling
-// return NULL. To specify a handler for the resource return a
-// cef_resource_request_handler_t object. If this callback returns NULL the
-// same function will be called on the associated
-// cef_request_context_handler_t, if any.
+// / Called on the browser process IO thread before a resource request is
+// / initiated. The |browser| and |frame| values represent the source of the
+// / request. |request| represents the request contents and cannot be modified
+// / in this callback. |is_navigation| will be true (1) if the resource request
+// / is a navigation. |is_download| will be true (1) if the resource request is
+// / a download. |request_initiator| is the origin (scheme + domain) of the
+// / page that initiated the request. Set |disable_default_handling| to true
+// / (1) to disable default handling of the request, in which case it will need
+// / to be handled via cef_resource_request_handler_t::GetResourceHandler or it
+// / will be canceled. To allow the resource load to proceed with default
+// / handling return NULL. To specify a handler for the resource return a
+// / cef_resource_request_handler_t object. If this callback returns NULL the
+// / same function will be called on the associated
+// / cef_request_context_handler_t, if any.
 // /
 //
 //export cefingo_request_handler_get_resource_request_handler
@@ -7548,16 +7837,16 @@ func cefingo_request_handler_get_resource_request_handler(
 }
 
 // /
-// Called on the IO thread when the browser needs credentials from the user.
-// |origin_url| is the origin making this authentication request. |isProxy|
-// indicates whether the host is a proxy server. |host| contains the hostname
-// and |port| contains the port number. |realm| is the realm of the challenge
-// and may be NULL. |scheme| is the authentication scheme used, such as
-// &quot;basic&quot; or &quot;digest&quot;, and will be NULL if the source of the request is an
-// FTP server. Return true (1) to continue the request and call
-// cef_auth_callback_t::cont() either in this function or at a later time when
-// the authentication information is available. Return false (0) to cancel the
-// request immediately.
+// / Called on the IO thread when the browser needs credentials from the user.
+// / |origin_url| is the origin making this authentication request. |isProxy|
+// / indicates whether the host is a proxy server. |host| contains the hostname
+// / and |port| contains the port number. |realm| is the realm of the challenge
+// / and may be NULL. |scheme| is the authentication scheme used, such as
+// / &quot;basic&quot; or &quot;digest&quot;, and will be NULL if the source of the request is an
+// / FTP server. Return true (1) to continue the request and call
+// / cef_auth_callback_t::cont() either in this function or at a later time
+// / when the authentication information is available. Return false (0) to
+// / cancel the request immediately.
 // /
 //
 //export cefingo_request_handler_get_auth_credentials
@@ -7615,13 +7904,13 @@ func cefingo_request_handler_get_auth_credentials(
 }
 
 // /
-// Called on the IO thread when JavaScript requests a specific storage quota
-// size via the webkitStorageInfo.requestQuota function. |origin_url| is the
-// origin of the page making the request. |new_size| is the requested quota
-// size in bytes. Return true (1) to continue the request and call
-// cef_callback_t functions either in this function or at a later time to
-// grant or deny the request. Return false (0) to cancel the request
-// immediately.
+// / Called on the IO thread when JavaScript requests a specific storage quota
+// / size via the webkitStorageInfo.requestQuota function. |origin_url| is the
+// / origin of the page making the request. |new_size| is the requested quota
+// / size in bytes. Return true (1) to continue the request and call
+// / cef_callback_t functions either in this function or at a later time to
+// / grant or deny the request. Return false (0) to cancel the request
+// / immediately.
 // /
 //
 //export cefingo_request_handler_on_quota_request
@@ -7667,12 +7956,12 @@ func cefingo_request_handler_on_quota_request(
 }
 
 // /
-// Called on the UI thread to handle requests for URLs with an invalid SSL
-// certificate. Return true (1) and call cef_callback_t functions either in
-// this function or at a later time to continue or cancel the request. Return
-// false (0) to cancel the request immediately. If
-// CefSettings.ignore_certificate_errors is set all invalid certificates will
-// be accepted without calling this function.
+// / Called on the UI thread to handle requests for URLs with an invalid SSL
+// / certificate. Return true (1) and call cef_callback_t functions either in
+// / this function or at a later time to continue or cancel the request. Return
+// / false (0) to cancel the request immediately. If
+// / cef_settings_t.ignore_certificate_errors is set all invalid certificates
+// / will be accepted without calling this function.
 // /
 //
 //export cefingo_request_handler_on_certificate_error
@@ -7722,17 +8011,17 @@ func cefingo_request_handler_on_certificate_error(
 }
 
 // /
-// Called on the UI thread when a client certificate is being requested for
-// authentication. Return false (0) to use the default behavior and
-// automatically select the first certificate available. Return true (1) and
-// call cef_select_client_certificate_callback_t::Select either in this
-// function or at a later time to select a certificate. Do not call Select or
-// call it with NULL to continue without using any certificate. |isProxy|
-// indicates whether the host is an HTTPS proxy or the origin server. |host|
-// and |port| contains the hostname and port of the SSL server. |certificates|
-// is the list of certificates to choose from; this list has already been
-// pruned by Chromium so that it only contains certificates from issuers that
-// the server trusts.
+// / Called on the UI thread when a client certificate is being requested for
+// / authentication. Return false (0) to use the default behavior and
+// / automatically select the first certificate available. Return true (1) and
+// / call cef_select_client_certificate_callback_t::Select either in this
+// / function or at a later time to select a certificate. Do not call Select or
+// / call it with NULL to continue without using any certificate. |isProxy|
+// / indicates whether the host is an HTTPS proxy or the origin server. |host|
+// / and |port| contains the hostname and port of the SSL server.
+// / |certificates| is the list of certificates to choose from; this list has
+// / already been pruned by Chromium so that it only contains certificates from
+// / issuers that the server trusts.
 // /
 //
 //export cefingo_request_handler_on_select_client_certificate
@@ -7791,9 +8080,9 @@ func cefingo_request_handler_on_select_client_certificate(
 }
 
 // /
-// Called on the browser process UI thread when the render view associated
-// with |browser| is ready to receive/handle IPC messages in the render
-// process.
+// / Called on the browser process UI thread when the render view associated
+// / with |browser| is ready to receive/handle IPC messages in the render
+// / process.
 // /
 //
 //export cefingo_request_handler_on_render_view_ready
@@ -7825,8 +8114,8 @@ func cefingo_request_handler_on_render_view_ready(
 }
 
 // /
-// Called on the browser process UI thread when the render process terminates
-// unexpectedly. |status| indicates how the process terminated.
+// / Called on the browser process UI thread when the render process terminates
+// / unexpectedly. |status| indicates how the process terminated.
 // /
 //
 //export cefingo_request_handler_on_render_process_terminated
@@ -7861,8 +8150,8 @@ func cefingo_request_handler_on_render_process_terminated(
 }
 
 // /
-// Called on the browser process UI thread when the window.document object of
-// the main frame has been created.
+// / Called on the browser process UI thread when the window.document object of
+// / the main frame has been created.
 // /
 //
 //export cefingo_request_handler_on_document_available_in_main_frame
@@ -7894,10 +8183,10 @@ func cefingo_request_handler_on_document_available_in_main_frame(
 }
 
 // /
-// Called to retrieve a localized translation for the specified |string_id|.
-// To provide the translation set |string| to the translation string and
-// return true (1). To use the default translation return false (0). Include
-// cef_pack_strings.h for a listing of valid string ID values.
+// / Called to retrieve a localized translation for the specified |string_id|.
+// / To provide the translation set |string| to the translation string and
+// / return true (1). To use the default translation return false (0). Include
+// / cef_pack_strings.h for a listing of valid string ID values.
 // /
 //
 //export cefingo_resource_bundle_handler_get_localized_string
@@ -7934,12 +8223,12 @@ func cefingo_resource_bundle_handler_get_localized_string(
 }
 
 // /
-// Called to retrieve data for the specified scale independent |resource_id|.
-// To provide the resource data set |data| and |data_size| to the data pointer
-// and size respectively and return true (1). To use the default resource data
-// return false (0). The resource data will not be copied and must remain
-// resident in memory. Include cef_pack_resources.h for a listing of valid
-// resource ID values.
+// / Called to retrieve data for the specified scale independent |resource_id|.
+// / To provide the resource data set |data| and |data_size| to the data
+// / pointer and size respectively and return true (1). To use the default
+// / resource data return false (0). The resource data will not be copied and
+// / must remain resident in memory. Include cef_pack_resources.h for a listing
+// / of valid resource ID values.
 // /
 //
 //export cefingo_resource_bundle_handler_get_data_resource
@@ -7980,12 +8269,12 @@ func cefingo_resource_bundle_handler_get_data_resource(
 }
 
 // /
-// Called to retrieve data for the specified |resource_id| nearest the scale
-// factor |scale_factor|. To provide the resource data set |data| and
-// |data_size| to the data pointer and size respectively and return true (1).
-// To use the default resource data return false (0). The resource data will
-// not be copied and must remain resident in memory. Include
-// cef_pack_resources.h for a listing of valid resource ID values.
+// / Called to retrieve data for the specified |resource_id| nearest the scale
+// / factor |scale_factor|. To provide the resource data set |data| and
+// / |data_size| to the data pointer and size respectively and return true (1).
+// / To use the default resource data return false (0). The resource data will
+// / not be copied and must remain resident in memory. Include
+// / cef_pack_resources.h for a listing of valid resource ID values.
 // /
 //
 //export cefingo_resource_bundle_handler_get_data_resource_for_scale
@@ -8029,14 +8318,14 @@ func cefingo_resource_bundle_handler_get_data_resource_for_scale(
 }
 
 // /
-// Open the response stream. To handle the request immediately set
-// |handle_request| to true (1) and return true (1). To decide at a later time
-// set |handle_request| to false (0), return true (1), and execute |callback|
-// to continue or cancel the request. To cancel the request immediately set
-// |handle_request| to true (1) and return false (0). This function will be
-// called in sequence but not from a dedicated thread. For backwards
-// compatibility set |handle_request| to false (0) and return false (0) and
-// the ProcessRequest function will be called.
+// / Open the response stream. To handle the request immediately set
+// / |handle_request| to true (1) and return true (1). To decide at a later
+// / time set |handle_request| to false (0), return true (1), and execute
+// / |callback| to continue or cancel the request. To cancel the request
+// / immediately set |handle_request| to true (1) and return false (0). This
+// / function will be called in sequence but not from a dedicated thread. For
+// / backwards compatibility set |handle_request| to false (0) and return false
+// / (0) and the ProcessRequest function will be called.
 // /
 //
 //export cefingo_resource_handler_open
@@ -8081,13 +8370,13 @@ func cefingo_resource_handler_open(
 }
 
 // /
-// Begin processing the request. To handle the request return true (1) and
-// call cef_callback_t::cont() once the response header information is
-// available (cef_callback_t::cont() can also be called from inside this
-// function if header information is available immediately). To cancel the
-// request return false (0).
-//
-// WARNING: This function is deprecated. Use Open instead.
+// / Begin processing the request. To handle the request return true (1) and
+// / call cef_callback_t::cont() once the response header information is
+// / available (cef_callback_t::cont() can also be called from inside this
+// / function if header information is available immediately). To cancel the
+// / request return false (0).
+// /
+// / WARNING: This function is deprecated. Use Open instead.
 // /
 //
 //export cefingo_resource_handler_process_request
@@ -8127,19 +8416,19 @@ func cefingo_resource_handler_process_request(
 }
 
 // /
-// Retrieve response header information. If the response length is not known
-// set |response_length| to -1 and read_response() will be called until it
-// returns false (0). If the response length is known set |response_length| to
-// a positive value and read_response() will be called until it returns false
-// (0) or the specified number of bytes have been read. Use the |response|
-// object to set the mime type, http status code and other optional header
-// values. To redirect the request to a new URL set |redirectUrl| to the new
-// URL. |redirectUrl| can be either a relative or fully qualified URL. It is
-// also possible to set |response| to a redirect http status code and pass the
-// new URL via a Location header. Likewise with |redirectUrl| it is valid to
-// set a relative or fully qualified URL as the Location header value. If an
-// error occured while setting up the request you can call set_error() on
-// |response| to indicate the error condition.
+// / Retrieve response header information. If the response length is not known
+// / set |response_length| to -1 and read_response() will be called until it
+// / returns false (0). If the response length is known set |response_length|
+// / to a positive value and read_response() will be called until it returns
+// / false (0) or the specified number of bytes have been read. Use the
+// / |response| object to set the mime type, http status code and other
+// / optional header values. To redirect the request to a new URL set
+// / |redirectUrl| to the new URL. |redirectUrl| can be either a relative or
+// / fully qualified URL. It is also possible to set |response| to a redirect
+// / http status code and pass the new URL via a Location header. Likewise with
+// / |redirectUrl| it is valid to set a relative or fully qualified URL as the
+// / Location header value. If an error occured while setting up the request
+// / you can call set_error() on |response| to indicate the error condition.
 // /
 //
 //export cefingo_resource_handler_get_response_headers
@@ -8175,13 +8464,13 @@ func cefingo_resource_handler_get_response_headers(
 }
 
 // /
-// Skip response data when requested by a Range header. Skip over and discard
-// |bytes_to_skip| bytes of response data. If data is available immediately
-// set |bytes_skipped| to the number of bytes skipped and return true (1). To
-// read the data at a later time set |bytes_skipped| to 0, return true (1) and
-// execute |callback| when the data is available. To indicate failure set
-// |bytes_skipped| to &lt; 0 (e.g. -2 for ERR_FAILED) and return false (0). This
-// function will be called in sequence but not from a dedicated thread.
+// / Skip response data when requested by a Range header. Skip over and discard
+// / |bytes_to_skip| bytes of response data. If data is available immediately
+// / set |bytes_skipped| to the number of bytes skipped and return true (1). To
+// / read the data at a later time set |bytes_skipped| to 0, return true (1)
+// / and execute |callback| when the data is available. To indicate failure set
+// / |bytes_skipped| to &lt; 0 (e.g. -2 for ERR_FAILED) and return false (0). This
+// / function will be called in sequence but not from a dedicated thread.
 // /
 //
 //export cefingo_resource_handler_skip
@@ -8222,17 +8511,17 @@ func cefingo_resource_handler_skip(
 }
 
 // /
-// Read response data. If data is available immediately copy up to
-// |bytes_to_read| bytes into |data_out|, set |bytes_read| to the number of
-// bytes copied, and return true (1). To read the data at a later time keep a
-// pointer to |data_out|, set |bytes_read| to 0, return true (1) and execute
-// |callback| when the data is available (|data_out| will remain valid until
-// the callback is executed). To indicate response completion set |bytes_read|
-// to 0 and return false (0). To indicate failure set |bytes_read| to &lt; 0
-// (e.g. -2 for ERR_FAILED) and return false (0). This function will be called
-// in sequence but not from a dedicated thread. For backwards compatibility
-// set |bytes_read| to -1 and return false (0) and the ReadResponse function
-// will be called.
+// / Read response data. If data is available immediately copy up to
+// / |bytes_to_read| bytes into |data_out|, set |bytes_read| to the number of
+// / bytes copied, and return true (1). To read the data at a later time keep a
+// / pointer to |data_out|, set |bytes_read| to 0, return true (1) and execute
+// / |callback| when the data is available (|data_out| will remain valid until
+// / the callback is executed). To indicate response completion set
+// / |bytes_read| to 0 and return false (0). To indicate failure set
+// / |bytes_read| to &lt; 0 (e.g. -2 for ERR_FAILED) and return false (0). This
+// / function will be called in sequence but not from a dedicated thread. For
+// / backwards compatibility set |bytes_read| to -1 and return false (0) and
+// / the ReadResponse function will be called.
 // /
 //
 //export cefingo_resource_handler_read
@@ -8274,7 +8563,7 @@ func cefingo_resource_handler_read(
 }
 
 // /
-// Request processing has been canceled.
+// / Request processing has been canceled.
 // /
 //
 //export cefingo_resource_handler_cancel
@@ -8302,12 +8591,12 @@ func cefingo_resource_handler_cancel(
 }
 
 // /
-// Called on the IO thread before a resource request is loaded. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. To
-// optionally filter cookies for the request return a
-// cef_cookie_access_filter_t object. The |request| object cannot not be
-// modified in this callback.
+// / Called on the IO thread before a resource request is loaded. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t. To
+// / optionally filter cookies for the request return a
+// / cef_cookie_access_filter_t object. The |request| object cannot not be
+// / modified in this callback.
 // /
 //
 //export cefingo_resource_request_handler_get_cookie_access_filter
@@ -8354,15 +8643,15 @@ func cefingo_resource_request_handler_get_cookie_access_filter(
 }
 
 // /
-// Called on the IO thread before a resource request is loaded. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. To redirect
-// or change the resource load optionally modify |request|. Modification of
-// the request URL will be treated as a redirect. Return RV_CONTINUE to
-// continue the request immediately. Return RV_CONTINUE_ASYNC and call
-// cef_callback_t functions at a later time to continue or cancel the request
-// asynchronously. Return RV_CANCEL to cancel the request immediately.
-//
+// / Called on the IO thread before a resource request is loaded. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t. To
+// / redirect or change the resource load optionally modify |request|.
+// / Modification of the request URL will be treated as a redirect. Return
+// / RV_CONTINUE to continue the request immediately. Return RV_CONTINUE_ASYNC
+// / and call cef_callback_t functions at a later time to continue or cancel
+// / the request asynchronously. Return RV_CANCEL to cancel the request
+// / immediately.
 // /
 //
 //export cefingo_resource_request_handler_on_before_resource_load
@@ -8408,12 +8697,12 @@ func cefingo_resource_request_handler_on_before_resource_load(
 }
 
 // /
-// Called on the IO thread before a resource is loaded. The |browser| and
-// |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. To allow the
-// resource to load using the default network loader return NULL. To specify a
-// handler for the resource return a cef_resource_handler_t object. The
-// |request| object cannot not be modified in this callback.
+// / Called on the IO thread before a resource is loaded. The |browser| and
+// / |frame| values represent the source of the request, and may be NULL for
+// / requests originating from service workers or cef_urlrequest_t. To allow
+// / the resource to load using the default network loader return NULL. To
+// / specify a handler for the resource return a cef_resource_handler_t object.
+// / The |request| object cannot not be modified in this callback.
 // /
 //
 //export cefingo_resource_request_handler_get_resource_handler
@@ -8460,14 +8749,14 @@ func cefingo_resource_request_handler_get_resource_handler(
 }
 
 // /
-// Called on the IO thread when a resource load is redirected. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. The
-// |request| parameter will contain the old URL and other request-related
-// information. The |response| parameter will contain the response that
-// resulted in the redirect. The |new_url| parameter will contain the new URL
-// and can be changed if desired. The |request| and |response| objects cannot
-// be modified in this callback.
+// / Called on the IO thread when a resource load is redirected. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t. The
+// / |request| parameter will contain the old URL and other request-related
+// / information. The |response| parameter will contain the response that
+// / resulted in the redirect. The |new_url| parameter will contain the new URL
+// / and can be changed if desired. The |request| and |response| objects cannot
+// / be modified in this callback.
 // /
 //
 //export cefingo_resource_request_handler_on_resource_redirect
@@ -8513,17 +8802,18 @@ func cefingo_resource_request_handler_on_resource_redirect(
 }
 
 // /
-// Called on the IO thread when a resource response is received. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. To allow the
-// resource load to proceed without modification return false (0). To redirect
-// or retry the resource load optionally modify |request| and return true (1).
-// Modification of the request URL will be treated as a redirect. Requests
-// handled using the default network loader cannot be redirected in this
-// callback. The |response| object cannot be modified in this callback.
-//
-// WARNING: Redirecting using this function is deprecated. Use
-// OnBeforeResourceLoad or GetResourceHandler to perform redirects.
+// / Called on the IO thread when a resource response is received. The
+// / |browser| and |frame| values represent the source of the request, and may
+// / be NULL for requests originating from service workers or cef_urlrequest_t.
+// / To allow the resource load to proceed without modification return false
+// / (0). To redirect or retry the resource load optionally modify |request|
+// / and return true (1). Modification of the request URL will be treated as a
+// / redirect. Requests handled using the default network loader cannot be
+// / redirected in this callback. The |response| object cannot be modified in
+// / this callback.
+// /
+// / WARNING: Redirecting using this function is deprecated. Use
+// / OnBeforeResourceLoad or GetResourceHandler to perform redirects.
 // /
 //
 //export cefingo_resource_request_handler_on_resource_response
@@ -8571,11 +8861,11 @@ func cefingo_resource_request_handler_on_resource_response(
 }
 
 // /
-// Called on the IO thread to optionally filter resource response content. The
-// |browser| and |frame| values represent the source of the request, and may
-// be NULL for requests originating from service workers or cef_urlrequest_t.
-// |request| and |response| represent the request and response respectively
-// and cannot be modified in this callback.
+// / Called on the IO thread to optionally filter resource response content.
+// / The |browser| and |frame| values represent the source of the request, and
+// / may be NULL for requests originating from service workers or
+// / cef_urlrequest_t. |request| and |response| represent the request and
+// / response respectively and cannot be modified in this callback.
 // /
 //
 //export cefingo_resource_request_handler_get_resource_response_filter
@@ -8626,20 +8916,20 @@ func cefingo_resource_request_handler_get_resource_response_filter(
 }
 
 // /
-// Called on the IO thread when a resource load has completed. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. |request|
-// and |response| represent the request and response respectively and cannot
-// be modified in this callback. |status| indicates the load completion
-// status. |received_content_length| is the number of response bytes actually
-// read. This function will be called for all requests, including requests
-// that are aborted due to CEF shutdown or destruction of the associated
-// browser. In cases where the associated browser is destroyed this callback
-// may arrive after the cef_life_span_handler_t::OnBeforeClose callback for
-// that browser. The cef_frame_t::IsValid function can be used to test for
-// this situation, and care should be taken not to call |browser| or |frame|
-// functions that modify state (like LoadURL, SendProcessMessage, etc.) if the
-// frame is invalid.
+// / Called on the IO thread when a resource load has completed. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t.
+// / |request| and |response| represent the request and response respectively
+// / and cannot be modified in this callback. |status| indicates the load
+// / completion status. |received_content_length| is the number of response
+// / bytes actually read. This function will be called for all requests,
+// / including requests that are aborted due to CEF shutdown or destruction of
+// / the associated browser. In cases where the associated browser is destroyed
+// / this callback may arrive after the cef_life_span_handler_t::OnBeforeClose
+// / callback for that browser. The cef_frame_t::IsValid function can be used
+// / to test for this situation, and care should be taken not to call |browser|
+// / or |frame| functions that modify state (like LoadURL, SendProcessMessage,
+// / etc.) if the frame is invalid.
 // /
 //
 //export cefingo_resource_request_handler_on_resource_load_complete
@@ -8689,14 +8979,14 @@ func cefingo_resource_request_handler_on_resource_load_complete(
 }
 
 // /
-// Called on the IO thread to handle requests for URLs with an unknown
-// protocol component. The |browser| and |frame| values represent the source
-// of the request, and may be NULL for requests originating from service
-// workers or cef_urlrequest_t. |request| cannot be modified in this callback.
-// Set |allow_os_execution| to true (1) to attempt execution via the
-// registered OS protocol handler, if any. SECURITY WARNING: YOU SHOULD USE
-// THIS METHOD TO ENFORCE RESTRICTIONS BASED ON SCHEME, HOST OR OTHER URL
-// ANALYSIS BEFORE ALLOWING OS EXECUTION.
+// / Called on the IO thread to handle requests for URLs with an unknown
+// / protocol component. The |browser| and |frame| values represent the source
+// / of the request, and may be NULL for requests originating from service
+// / workers or cef_urlrequest_t. |request| cannot be modified in this
+// / callback. Set |allow_os_execution| to true (1) to attempt execution via
+// / the registered OS protocol handler, if any. SECURITY WARNING: YOU SHOULD
+// / USE THIS METHOD TO ENFORCE RESTRICTIONS BASED ON SCHEME, HOST OR OTHER URL
+// / ANALYSIS BEFORE ALLOWING OS EXECUTION.
 // /
 //
 //export cefingo_resource_request_handler_on_protocol_execution
@@ -8738,11 +9028,11 @@ func cefingo_resource_request_handler_on_protocol_execution(
 }
 
 // /
-// Called on the IO thread before a resource request is sent. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. |request|
-// cannot be modified in this callback. Return true (1) if the specified
-// cookie can be sent with the request or false (0) otherwise.
+// / Called on the IO thread before a resource request is sent. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t.
+// / |request| cannot be modified in this callback. Return true (1) if the
+// / specified cookie can be sent with the request or false (0) otherwise.
 // /
 //
 //export cefingo_cookie_access_filter_can_send_cookie
@@ -8789,12 +9079,12 @@ func cefingo_cookie_access_filter_can_send_cookie(
 }
 
 // /
-// Called on the IO thread after a resource response is received. The
-// |browser| and |frame| values represent the source of the request, and may
-// be NULL for requests originating from service workers or cef_urlrequest_t.
-// |request| cannot be modified in this callback. Return true (1) if the
-// specified cookie returned with the response can be saved or false (0)
-// otherwise.
+// / Called on the IO thread after a resource response is received. The
+// / |browser| and |frame| values represent the source of the request, and may
+// / be NULL for requests originating from service workers or cef_urlrequest_t.
+// / |request| cannot be modified in this callback. Return true (1) if the
+// / specified cookie returned with the response can be saved or false (0)
+// / otherwise.
 // /
 //
 //export cefingo_cookie_access_filter_can_save_cookie
@@ -8845,8 +9135,8 @@ func cefingo_cookie_access_filter_can_save_cookie(
 }
 
 // /
-// Initialize the response filter. Will only be called a single time. The
-// filter will not be installed if this function returns false (0).
+// / Initialize the response filter. Will only be called a single time. The
+// / filter will not be installed if this function returns false (0).
 // /
 //
 //export cefingo_response_filter_init_filter
@@ -8878,35 +9168,35 @@ func cefingo_response_filter_init_filter(
 }
 
 // /
-// Called to filter a chunk of data. Expected usage is as follows:
-//
-//	A. Read input data from |data_in| and set |data_in_read| to the number of
-//	   bytes that were read up to a maximum of |data_in_size|. |data_in| will
-//	   be NULL if |data_in_size| is zero.
-//	B. Write filtered output data to |data_out| and set |data_out_written| to
-//	   the number of bytes that were written up to a maximum of
-//	   |data_out_size|. If no output data was written then all data must be
-//	   read from |data_in| (user must set |data_in_read| = |data_in_size|).
-//	C. Return RESPONSE_FILTER_DONE if all output data was written or
-//	   RESPONSE_FILTER_NEED_MORE_DATA if output data is still pending.
-//
-// This function will be called repeatedly until the input buffer has been
-// fully read (user sets |data_in_read| = |data_in_size|) and there is no more
-// input data to filter (the resource response is complete). This function may
-// then be called an additional time with an NULL input buffer if the user
-// filled the output buffer (set |data_out_written| = |data_out_size|) and
-// returned RESPONSE_FILTER_NEED_MORE_DATA to indicate that output data is
-// still pending.
-//
-// Calls to this function will stop when one of the following conditions is
-// met:
-//
-//	A. There is no more input data to filter (the resource response is
-//	   complete) and the user sets |data_out_written| = 0 or returns
-//	   RESPONSE_FILTER_DONE to indicate that all data has been written, or;
-//	B. The user returns RESPONSE_FILTER_ERROR to indicate an error.
-//
-// Do not keep a reference to the buffers passed to this function.
+// / Called to filter a chunk of data. Expected usage is as follows:
+// /
+// /  1. Read input data from |data_in| and set |data_in_read| to the number of
+// /     bytes that were read up to a maximum of |data_in_size|. |data_in| will
+// /     be NULL if |data_in_size| is zero.
+// /  2. Write filtered output data to |data_out| and set |data_out_written| to
+// /     the number of bytes that were written up to a maximum of
+// /     |data_out_size|. If no output data was written then all data must be
+// /     read from |data_in| (user must set |data_in_read| = |data_in_size|).
+// /  3. Return RESPONSE_FILTER_DONE if all output data was written or
+// /     RESPONSE_FILTER_NEED_MORE_DATA if output data is still pending.
+// /
+// / This function will be called repeatedly until the input buffer has been
+// / fully read (user sets |data_in_read| = |data_in_size|) and there is no
+// / more input data to filter (the resource response is complete). This
+// / function may then be called an additional time with an NULL input buffer
+// / if the user filled the output buffer (set |data_out_written| =
+// / |data_out_size|) and returned RESPONSE_FILTER_NEED_MORE_DATA to indicate
+// / that output data is still pending.
+// /
+// / Calls to this function will stop when one of the following conditions is
+// / met:
+// /
+// /  1. There is no more input data to filter (the resource response is
+// /     complete) and the user sets |data_out_written| = 0 or returns
+// /     RESPONSE_FILTER_DONE to indicate that all data has been written, or;
+// /  2. The user returns RESPONSE_FILTER_ERROR to indicate an error.
+// /
+// / Do not keep a reference to the buffers passed to this function.
 // /
 //
 //export cefingo_response_filter_filter
@@ -8948,12 +9238,12 @@ func cefingo_response_filter_filter(
 }
 
 // /
-// Return a new resource handler instance to handle the request or an NULL
-// reference to allow default handling of the request. |browser| and |frame|
-// will be the browser window and frame respectively that originated the
-// request or NULL if the request did not originate from a browser window (for
-// example, if the request came from cef_urlrequest_t). The |request| object
-// passed to this function cannot be modified.
+// / Return a new resource handler instance to handle the request or an NULL
+// / reference to allow default handling of the request. |browser| and |frame|
+// / will be the browser window and frame respectively that originated the
+// / request or NULL if the request did not originate from a browser window
+// / (for example, if the request came from cef_urlrequest_t). The |request|
+// / object passed to this function cannot be modified.
 // /
 //
 //export cefingo_scheme_handler_factory_create
@@ -9003,7 +9293,7 @@ func cefingo_scheme_handler_factory_create(
 }
 
 // /
-// Read raw binary data.
+// / Read raw binary data.
 // /
 //
 //export cefingo_read_handler_read
@@ -9042,8 +9332,9 @@ func cefingo_read_handler_read(
 }
 
 // /
-// Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
-// SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
+// / Seek to the specified offset position. |whence| may be any one of
+// / SEEK_CUR, SEEK_END or SEEK_SET. Return zero on success and non-zero on
+// / failure.
 // /
 //
 //export cefingo_read_handler_seek
@@ -9081,7 +9372,7 @@ func cefingo_read_handler_seek(
 }
 
 // /
-// Return the current offset position.
+// / Return the current offset position.
 // /
 //
 //export cefingo_read_handler_tell
@@ -9111,7 +9402,7 @@ func cefingo_read_handler_tell(
 }
 
 // /
-// Return non-zero if at end of file.
+// / Return non-zero if at end of file.
 // /
 //
 //export cefingo_read_handler_eof
@@ -9143,9 +9434,9 @@ func cefingo_read_handler_eof(
 }
 
 // /
-// Return true (1) if this handler performs work like accessing the file
-// system which may block. Used as a hint for determining the thread to access
-// the handler from.
+// / Return true (1) if this handler performs work like accessing the file
+// / system which may block. Used as a hint for determining the thread to
+// / access the handler from.
 // /
 //
 //export cefingo_read_handler_may_block
@@ -9177,7 +9468,7 @@ func cefingo_read_handler_may_block(
 }
 
 // /
-// Write raw binary data.
+// / Write raw binary data.
 // /
 //
 //export cefingo_write_handler_write
@@ -9216,8 +9507,9 @@ func cefingo_write_handler_write(
 }
 
 // /
-// Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
-// SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
+// / Seek to the specified offset position. |whence| may be any one of
+// / SEEK_CUR, SEEK_END or SEEK_SET. Return zero on success and non-zero on
+// / failure.
 // /
 //
 //export cefingo_write_handler_seek
@@ -9255,7 +9547,7 @@ func cefingo_write_handler_seek(
 }
 
 // /
-// Return the current offset position.
+// / Return the current offset position.
 // /
 //
 //export cefingo_write_handler_tell
@@ -9285,7 +9577,7 @@ func cefingo_write_handler_tell(
 }
 
 // /
-// Flush the stream.
+// / Flush the stream.
 // /
 //
 //export cefingo_write_handler_flush
@@ -9317,9 +9609,9 @@ func cefingo_write_handler_flush(
 }
 
 // /
-// Return true (1) if this handler performs work like accessing the file
-// system which may block. Used as a hint for determining the thread to access
-// the handler from.
+// / Return true (1) if this handler performs work like accessing the file
+// / system which may block. Used as a hint for determining the thread to
+// / access the handler from.
 // /
 //
 //export cefingo_write_handler_may_block
@@ -9351,7 +9643,7 @@ func cefingo_write_handler_may_block(
 }
 
 // /
-// Method that will be executed.
+// / Method that will be executed.
 // /
 //
 //export cefingo_string_visitor_visit
@@ -9382,7 +9674,7 @@ func cefingo_string_visitor_visit(
 }
 
 // /
-// Method that will be executed on the target thread.
+// / Method that will be executed on the target thread.
 // /
 //
 //export cefingo_task_execute
@@ -9410,9 +9702,9 @@ func cefingo_task_execute(
 }
 
 // /
-// Called when |textfield| recieves a keyboard event. |event| contains
-// information about the keyboard event. Return true (1) if the keyboard event
-// was handled or false (0) otherwise for default handling.
+// / Called when |textfield| recieves a keyboard event. |event| contains
+// / information about the keyboard event. Return true (1) if the keyboard
+// / event was handled or false (0) otherwise for default handling.
 // /
 //
 //export cefingo_textfield_delegate_on_key_event
@@ -9451,7 +9743,7 @@ func cefingo_textfield_delegate_on_key_event(
 }
 
 // /
-// Called after performing a user action that may change |textfield|.
+// / Called after performing a user action that may change |textfield|.
 // /
 //
 //export cefingo_textfield_delegate_on_after_user_action
@@ -9796,9 +10088,9 @@ func cefingo_textfield_delegate_on_blur(
 }
 
 // /
-// Called after all processes have sent their trace data. |tracing_file| is
-// the path at which tracing data was written. The client is responsible for
-// deleting |tracing_file|.
+// / Called after all processes have sent their trace data. |tracing_file| is
+// / the path at which tracing data was written. The client is responsible for
+// / deleting |tracing_file|.
 // /
 //
 //export cefingo_end_tracing_callback_on_end_tracing_complete
@@ -9829,9 +10121,9 @@ func cefingo_end_tracing_callback_on_end_tracing_complete(
 }
 
 // /
-// Notifies the client that the request has completed. Use the
-// cef_urlrequest_t::GetRequestStatus function to determine if the request was
-// successful or not.
+// / Notifies the client that the request has completed. Use the
+// / cef_urlrequest_t::GetRequestStatus function to determine if the request
+// / was successful or not.
 // /
 //
 //export cefingo_urlrequest_client_on_request_complete
@@ -9863,10 +10155,10 @@ func cefingo_urlrequest_client_on_request_complete(
 }
 
 // /
-// Notifies the client of upload progress. |current| denotes the number of
-// bytes sent so far and |total| is the total size of uploading data (or -1 if
-// chunked upload is enabled). This function will only be called if the
-// UR_FLAG_REPORT_UPLOAD_PROGRESS flag is set on the request.
+// / Notifies the client of upload progress. |current| denotes the number of
+// / bytes sent so far and |total| is the total size of uploading data (or -1
+// / if chunked upload is enabled). This function will only be called if the
+// / UR_FLAG_REPORT_UPLOAD_PROGRESS flag is set on the request.
 // /
 //
 //export cefingo_urlrequest_client_on_upload_progress
@@ -9904,9 +10196,9 @@ func cefingo_urlrequest_client_on_upload_progress(
 }
 
 // /
-// Notifies the client of download progress. |current| denotes the number of
-// bytes received up to the call and |total| is the expected total size of the
-// response (or -1 if not determined).
+// / Notifies the client of download progress. |current| denotes the number of
+// / bytes received up to the call and |total| is the expected total size of
+// / the response (or -1 if not determined).
 // /
 //
 //export cefingo_urlrequest_client_on_download_progress
@@ -9944,9 +10236,9 @@ func cefingo_urlrequest_client_on_download_progress(
 }
 
 // /
-// Called when some part of the response is read. |data| contains the current
-// bytes received since the last call. This function will not be called if the
-// UR_FLAG_NO_DOWNLOAD_DATA flag is set on the request.
+// / Called when some part of the response is read. |data| contains the current
+// / bytes received since the last call. This function will not be called if
+// / the UR_FLAG_NO_DOWNLOAD_DATA flag is set on the request.
 // /
 //
 //export cefingo_urlrequest_client_on_download_data
@@ -9982,15 +10274,16 @@ func cefingo_urlrequest_client_on_download_data(
 }
 
 // /
-// Called on the IO thread when the browser needs credentials from the user.
-// |isProxy| indicates whether the host is a proxy server. |host| contains the
-// hostname and |port| contains the port number. Return true (1) to continue
-// the request and call cef_auth_callback_t::cont() when the authentication
-// information is available. If the request has an associated browser/frame
-// then returning false (0) will result in a call to GetAuthCredentials on the
-// cef_request_handler_t associated with that browser, if any. Otherwise,
-// returning false (0) will cancel the request immediately. This function will
-// only be called for requests initiated from the browser process.
+// / Called on the IO thread when the browser needs credentials from the user.
+// / |isProxy| indicates whether the host is a proxy server. |host| contains
+// / the hostname and |port| contains the port number. Return true (1) to
+// / continue the request and call cef_auth_callback_t::cont() when the
+// / authentication information is available. If the request has an associated
+// / browser/frame then returning false (0) will result in a call to
+// / GetAuthCredentials on the cef_request_handler_t associated with that
+// / browser, if any. Otherwise, returning false (0) will cancel the request
+// / immediately. This function will only be called for requests initiated from
+// / the browser process.
 // /
 //
 //export cefingo_urlrequest_client_get_auth_credentials
@@ -10041,11 +10334,11 @@ func cefingo_urlrequest_client_get_auth_credentials(
 }
 
 // /
-// Handle execution of the function identified by |name|. |object| is the
-// receiver (&#39;this&#39; object) of the function. |arguments| is the list of
-// arguments passed to the function. If execution succeeds set |retval| to the
-// function return value. If execution fails set |exception| to the exception
-// that will be thrown. Return true (1) if execution was handled.
+// / Handle execution of the function identified by |name|. |object| is the
+// / receiver (&#39;this&#39; object) of the function. |arguments| is the list of
+// / arguments passed to the function. If execution succeeds set |retval| to
+// / the function return value. If execution fails set |exception| to the
+// / exception that will be thrown. Return true (1) if execution was handled.
 // /
 //
 //export cefingo_v8handler_execute
@@ -10103,11 +10396,11 @@ func cefingo_v8handler_execute(
 }
 
 // /
-// Handle retrieval the accessor value identified by |name|. |object| is the
-// receiver (&#39;this&#39; object) of the accessor. If retrieval succeeds set
-// |retval| to the return value. If retrieval fails set |exception| to the
-// exception that will be thrown. Return true (1) if accessor retrieval was
-// handled.
+// / Handle retrieval the accessor value identified by |name|. |object| is the
+// / receiver (&#39;this&#39; object) of the accessor. If retrieval succeeds set
+// / |retval| to the return value. If retrieval fails set |exception| to the
+// / exception that will be thrown. Return true (1) if accessor retrieval was
+// / handled.
 // /
 //
 //export cefingo_v8accessor_get
@@ -10155,11 +10448,11 @@ func cefingo_v8accessor_get(
 }
 
 // /
-// Handle assignment of the accessor value identified by |name|. |object| is
-// the receiver (&#39;this&#39; object) of the accessor. |value| is the new value
-// being assigned to the accessor. If assignment fails set |exception| to the
-// exception that will be thrown. Return true (1) if accessor assignment was
-// handled.
+// / Handle assignment of the accessor value identified by |name|. |object| is
+// / the receiver (&#39;this&#39; object) of the accessor. |value| is the new value
+// / being assigned to the accessor. If assignment fails set |exception| to the
+// / exception that will be thrown. Return true (1) if accessor assignment was
+// / handled.
 // /
 //
 //export cefingo_v8accessor_set
@@ -10204,9 +10497,9 @@ func cefingo_v8accessor_set(
 }
 
 // /
-// Called to release |buffer| when the ArrayBuffer JS object is garbage
-// collected. |buffer| is the value that was passed to CreateArrayBuffer along
-// with this object.
+// / Called to release |buffer| when the ArrayBuffer JS object is garbage
+// / collected. |buffer| is the value that was passed to CreateArrayBuffer
+// / along with this object.
 // /
 //
 //export cefingo_v8array_buffer_release_callback_release_buffer
@@ -10237,8 +10530,8 @@ func cefingo_v8array_buffer_release_callback_release_buffer(
 }
 
 // /
-// Return the preferred size for |view|. The Layout will use this information
-// to determine the display size.
+// / Return the preferred size for |view|. The Layout will use this information
+// / to determine the display size.
 // /
 //
 //export cefingo_view_delegate_get_preferred_size
@@ -10272,7 +10565,7 @@ func cefingo_view_delegate_get_preferred_size(
 }
 
 // /
-// Return the minimum size for |view|.
+// / Return the minimum size for |view|.
 // /
 //
 //export cefingo_view_delegate_get_minimum_size
@@ -10306,7 +10599,7 @@ func cefingo_view_delegate_get_minimum_size(
 }
 
 // /
-// Return the maximum size for |view|.
+// / Return the maximum size for |view|.
 // /
 //
 //export cefingo_view_delegate_get_maximum_size
@@ -10340,10 +10633,10 @@ func cefingo_view_delegate_get_maximum_size(
 }
 
 // /
-// Return the height necessary to display |view| with the provided |width|. If
-// not specified the result of get_preferred_size().height will be used by
-// default. Override if |view|&#39;s preferred height depends upon the width (for
-// example, with Labels).
+// / Return the height necessary to display |view| with the provided |width|.
+// / If not specified the result of get_preferred_size().height will be used by
+// / default. Override if |view|&#39;s preferred height depends upon the width (for
+// / example, with Labels).
 // /
 //
 //export cefingo_view_delegate_get_height_for_width
@@ -10382,11 +10675,11 @@ func cefingo_view_delegate_get_height_for_width(
 }
 
 // /
-// Called when the parent of |view| has changed. If |view| is being added to
-// |parent| then |added| will be true (1). If |view| is being removed from
-// |parent| then |added| will be false (0). If |view| is being reparented the
-// remove notification will be sent before the add notification. Do not modify
-// the view hierarchy in this callback.
+// / Called when the parent of |view| has changed. If |view| is being added to
+// / |parent| then |added| will be true (1). If |view| is being removed from
+// / |parent| then |added| will be false (0). If |view| is being reparented the
+// / remove notification will be sent before the add notification. Do not
+// / modify the view hierarchy in this callback.
 // /
 //
 //export cefingo_view_delegate_on_parent_view_changed
@@ -10425,12 +10718,12 @@ func cefingo_view_delegate_on_parent_view_changed(
 }
 
 // /
-// Called when a child of |view| has changed. If |child| is being added to
-// |view| then |added| will be true (1). If |child| is being removed from
-// |view| then |added| will be false (0). If |child| is being reparented the
-// remove notification will be sent to the old parent before the add
-// notification is sent to the new parent. Do not modify the view hierarchy in
-// this callback.
+// / Called when a child of |view| has changed. If |child| is being added to
+// / |view| then |added| will be true (1). If |child| is being removed from
+// / |view| then |added| will be false (0). If |child| is being reparented the
+// / remove notification will be sent to the old parent before the add
+// / notification is sent to the new parent. Do not modify the view hierarchy
+// / in this callback.
 // /
 //
 //export cefingo_view_delegate_on_child_view_changed
@@ -10469,7 +10762,7 @@ func cefingo_view_delegate_on_child_view_changed(
 }
 
 // /
-// Called when |view| is added or removed from the cef_window_t.
+// / Called when |view| is added or removed from the cef_window_t.
 // /
 //
 //export cefingo_view_delegate_on_window_changed
@@ -10504,7 +10797,7 @@ func cefingo_view_delegate_on_window_changed(
 }
 
 // /
-// Called when the layout of |view| has changed.
+// / Called when the layout of |view| has changed.
 // /
 //
 //export cefingo_view_delegate_on_layout_changed
@@ -10539,7 +10832,7 @@ func cefingo_view_delegate_on_layout_changed(
 }
 
 // /
-// Called when |view| gains focus.
+// / Called when |view| gains focus.
 // /
 //
 //export cefingo_view_delegate_on_focus
@@ -10571,7 +10864,7 @@ func cefingo_view_delegate_on_focus(
 }
 
 // /
-// Called when |view| loses focus.
+// / Called when |view| loses focus.
 // /
 //
 //export cefingo_view_delegate_on_blur
@@ -10603,7 +10896,7 @@ func cefingo_view_delegate_on_blur(
 }
 
 // /
-// Called when |window| is created.
+// / Called when |window| is created.
 // /
 //
 //export cefingo_window_delegate_on_window_created
@@ -10635,9 +10928,9 @@ func cefingo_window_delegate_on_window_created(
 }
 
 // /
-// Called when |window| is destroyed. Release all references to |window| and
-// do not attempt to execute any functions on |window| after this callback
-// returns.
+// / Called when |window| is destroyed. Release all references to |window| and
+// / do not attempt to execute any functions on |window| after this callback
+// / returns.
 // /
 //
 //export cefingo_window_delegate_on_window_destroyed
@@ -10669,7 +10962,7 @@ func cefingo_window_delegate_on_window_destroyed(
 }
 
 // /
-// Called when |window| is activated or deactivated.
+// / Called when |window| is activated or deactivated.
 // /
 //
 //export cefingo_window_delegate_on_window_activation_changed
@@ -10704,12 +10997,12 @@ func cefingo_window_delegate_on_window_activation_changed(
 }
 
 // /
-// Return the parent for |window| or NULL if the |window| does not have a
-// parent. Windows with parents will not get a taskbar button. Set |is_menu|
-// to true (1) if |window| will be displayed as a menu, in which case it will
-// not be clipped to the parent window bounds. Set |can_activate_menu| to
-// false (0) if |is_menu| is true (1) and |window| should not be activated
-// (given keyboard focus) when displayed.
+// / Return the parent for |window| or NULL if the |window| does not have a
+// / parent. Windows with parents will not get a taskbar button. Set |is_menu|
+// / to true (1) if |window| will be displayed as a menu, in which case it will
+// / not be clipped to the parent window bounds. Set |can_activate_menu| to
+// / false (0) if |is_menu| is true (1) and |window| should not be activated
+// / (given keyboard focus) when displayed.
 // /
 //
 //export cefingo_window_delegate_get_parent_window
@@ -10758,12 +11051,12 @@ func cefingo_window_delegate_get_parent_window(
 }
 
 // /
-// Return the initial bounds for |window| in density independent pixel (DIP)
-// coordinates. If this function returns an NULL CefRect then
-// get_preferred_size() will be called to retrieve the size, and the window
-// will be placed on the screen with origin (0,0). This function can be used
-// in combination with cef_view_t::get_bounds_in_screen() to restore the
-// previous window bounds.
+// / Return the initial bounds for |window| in density independent pixel (DIP)
+// / coordinates. If this function returns an NULL CefRect then
+// / get_preferred_size() will be called to retrieve the size, and the window
+// / will be placed on the screen with origin (0,0). This function can be used
+// / in combination with cef_view_t::get_bounds_in_screen() to restore the
+// / previous window bounds.
 // /
 //
 //export cefingo_window_delegate_get_initial_bounds
@@ -10797,7 +11090,7 @@ func cefingo_window_delegate_get_initial_bounds(
 }
 
 // /
-// Return the initial show state for |window|.
+// / Return the initial show state for |window|.
 // /
 //
 //export cefingo_window_delegate_get_initial_show_state
@@ -10831,9 +11124,9 @@ func cefingo_window_delegate_get_initial_show_state(
 }
 
 // /
-// Return true (1) if |window| should be created without a frame or title bar.
-// The window will be resizable if can_resize() returns true (1). Use
-// cef_window_t::set_draggable_regions() to specify draggable regions.
+// / Return true (1) if |window| should be created without a frame or title
+// / bar. The window will be resizable if can_resize() returns true (1). Use
+// / cef_window_t::set_draggable_regions() to specify draggable regions.
 // /
 //
 //export cefingo_window_delegate_is_frameless
@@ -10869,7 +11162,7 @@ func cefingo_window_delegate_is_frameless(
 }
 
 // /
-// Return true (1) if |window| can be resized.
+// / Return true (1) if |window| can be resized.
 // /
 //
 //export cefingo_window_delegate_can_resize
@@ -10905,7 +11198,7 @@ func cefingo_window_delegate_can_resize(
 }
 
 // /
-// Return true (1) if |window| can be maximized.
+// / Return true (1) if |window| can be maximized.
 // /
 //
 //export cefingo_window_delegate_can_maximize
@@ -10941,7 +11234,7 @@ func cefingo_window_delegate_can_maximize(
 }
 
 // /
-// Return true (1) if |window| can be minimized.
+// / Return true (1) if |window| can be minimized.
 // /
 //
 //export cefingo_window_delegate_can_minimize
@@ -10977,8 +11270,8 @@ func cefingo_window_delegate_can_minimize(
 }
 
 // /
-// Return true (1) if |window| can be closed. This will be called for user-
-// initiated window close actions and when cef_window_t::close() is called.
+// / Return true (1) if |window| can be closed. This will be called for user-
+// / initiated window close actions and when cef_window_t::close() is called.
 // /
 //
 //export cefingo_window_delegate_can_close
@@ -11014,9 +11307,9 @@ func cefingo_window_delegate_can_close(
 }
 
 // /
-// Called when a keyboard accelerator registered with
-// cef_window_t::SetAccelerator is triggered. Return true (1) if the
-// accelerator was handled or false (0) otherwise.
+// / Called when a keyboard accelerator registered with
+// / cef_window_t::SetAccelerator is triggered. Return true (1) if the
+// / accelerator was handled or false (0) otherwise.
 // /
 //
 //export cefingo_window_delegate_on_accelerator
@@ -11055,9 +11348,9 @@ func cefingo_window_delegate_on_accelerator(
 }
 
 // /
-// Called after all other controls in the window have had a chance to handle
-// the event. |event| contains information about the keyboard event. Return
-// true (1) if the keyboard event was handled or false (0) otherwise.
+// / Called after all other controls in the window have had a chance to handle
+// / the event. |event| contains information about the keyboard event. Return
+// / true (1) if the keyboard event was handled or false (0) otherwise.
 // /
 //
 //export cefingo_window_delegate_on_key_event
@@ -11096,8 +11389,8 @@ func cefingo_window_delegate_on_key_event(
 }
 
 // /
-// Return the preferred size for |view|. The Layout will use this information
-// to determine the display size.
+// / Return the preferred size for |view|. The Layout will use this information
+// / to determine the display size.
 // /
 //
 //export cefingo_window_delegate_get_preferred_size
@@ -11131,7 +11424,7 @@ func cefingo_window_delegate_get_preferred_size(
 }
 
 // /
-// Return the minimum size for |view|.
+// / Return the minimum size for |view|.
 // /
 //
 //export cefingo_window_delegate_get_minimum_size
@@ -11165,7 +11458,7 @@ func cefingo_window_delegate_get_minimum_size(
 }
 
 // /
-// Return the maximum size for |view|.
+// / Return the maximum size for |view|.
 // /
 //
 //export cefingo_window_delegate_get_maximum_size
@@ -11199,10 +11492,10 @@ func cefingo_window_delegate_get_maximum_size(
 }
 
 // /
-// Return the height necessary to display |view| with the provided |width|. If
-// not specified the result of get_preferred_size().height will be used by
-// default. Override if |view|&#39;s preferred height depends upon the width (for
-// example, with Labels).
+// / Return the height necessary to display |view| with the provided |width|.
+// / If not specified the result of get_preferred_size().height will be used by
+// / default. Override if |view|&#39;s preferred height depends upon the width (for
+// / example, with Labels).
 // /
 //
 //export cefingo_window_delegate_get_height_for_width
@@ -11241,11 +11534,11 @@ func cefingo_window_delegate_get_height_for_width(
 }
 
 // /
-// Called when the parent of |view| has changed. If |view| is being added to
-// |parent| then |added| will be true (1). If |view| is being removed from
-// |parent| then |added| will be false (0). If |view| is being reparented the
-// remove notification will be sent before the add notification. Do not modify
-// the view hierarchy in this callback.
+// / Called when the parent of |view| has changed. If |view| is being added to
+// / |parent| then |added| will be true (1). If |view| is being removed from
+// / |parent| then |added| will be false (0). If |view| is being reparented the
+// / remove notification will be sent before the add notification. Do not
+// / modify the view hierarchy in this callback.
 // /
 //
 //export cefingo_window_delegate_on_parent_view_changed
@@ -11284,12 +11577,12 @@ func cefingo_window_delegate_on_parent_view_changed(
 }
 
 // /
-// Called when a child of |view| has changed. If |child| is being added to
-// |view| then |added| will be true (1). If |child| is being removed from
-// |view| then |added| will be false (0). If |child| is being reparented the
-// remove notification will be sent to the old parent before the add
-// notification is sent to the new parent. Do not modify the view hierarchy in
-// this callback.
+// / Called when a child of |view| has changed. If |child| is being added to
+// / |view| then |added| will be true (1). If |child| is being removed from
+// / |view| then |added| will be false (0). If |child| is being reparented the
+// / remove notification will be sent to the old parent before the add
+// / notification is sent to the new parent. Do not modify the view hierarchy
+// / in this callback.
 // /
 //
 //export cefingo_window_delegate_on_child_view_changed
@@ -11328,7 +11621,7 @@ func cefingo_window_delegate_on_child_view_changed(
 }
 
 // /
-// Called when |view| is added or removed from the cef_window_t.
+// / Called when |view| is added or removed from the cef_window_t.
 // /
 //
 //export cefingo_window_delegate_on_window_changed
@@ -11363,7 +11656,7 @@ func cefingo_window_delegate_on_window_changed(
 }
 
 // /
-// Called when the layout of |view| has changed.
+// / Called when the layout of |view| has changed.
 // /
 //
 //export cefingo_window_delegate_on_layout_changed
@@ -11398,7 +11691,7 @@ func cefingo_window_delegate_on_layout_changed(
 }
 
 // /
-// Called when |view| gains focus.
+// / Called when |view| gains focus.
 // /
 //
 //export cefingo_window_delegate_on_focus
@@ -11430,7 +11723,7 @@ func cefingo_window_delegate_on_focus(
 }
 
 // /
-// Called when |view| loses focus.
+// / Called when |view| loses focus.
 // /
 //
 //export cefingo_window_delegate_on_blur

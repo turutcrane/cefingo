@@ -13,9 +13,9 @@ import "C"
 // cef_accessibility_handler_capi.h, include/capi/cef_accessibility_handler_capi.h:75:3,
 
 ///
-// Implement this structure to receive accessibility notification when
-// accessibility events have been registered. The functions of this structure
-// will be called on the UI thread.
+/// Implement this structure to receive accessibility notification when
+/// accessibility events have been registered. The functions of this structure
+/// will be called on the UI thread.
 ///
 
 type cCAccessibilityHandlerT C.cef_accessibility_handler_t
@@ -93,8 +93,8 @@ func (accessibility_handler *CAccessibilityHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called after renderer process sends accessibility tree changes to the
-// browser process.
+// / Called after renderer process sends accessibility tree changes to the
+// / browser process.
 // /
 type OnAccessibilityTreeChangeHandler interface {
 	OnAccessibilityTreeChange(
@@ -104,8 +104,8 @@ type OnAccessibilityTreeChangeHandler interface {
 }
 
 // /
-// Called after renderer process sends accessibility location changes to the
-// browser process.
+// / Called after renderer process sends accessibility location changes to the
+// / browser process.
 // /
 type OnAccessibilityLocationChangeHandler interface {
 	OnAccessibilityLocationChange(
@@ -198,11 +198,11 @@ func (accessibility_handler *CAccessibilityHandlerT) Handler() interface{} {
 	return accessibility_handler_handlers.handler[cp]
 }
 
-// cef_app_capi.h, include/capi/cef_app_capi.h:114:3,
+// cef_app_capi.h, include/capi/cef_app_capi.h:116:3,
 
 ///
-// Implement this structure to provide handler implementations. Methods will be
-// called by the process and/or thread indicated.
+/// Implement this structure to provide handler implementations. Methods will be
+/// called by the process and/or thread indicated.
 ///
 
 type cCAppT C.cef_app_t
@@ -280,15 +280,16 @@ func (app *CAppT) Unref() (ret bool) {
 }
 
 // /
-// Provides an opportunity to view and/or modify command-line arguments before
-// processing by CEF and Chromium. The |process_type| value will be NULL for
-// the browser process. Do not keep a reference to the cef_command_line_t
-// object passed to this function. The CefSettings.command_line_args_disabled
-// value can be used to start with an NULL command-line object. Any values
-// specified in CefSettings that equate to command-line arguments will be set
-// before this function is called. Be cautious when using this function to
-// modify command-line arguments for non-browser processes as this may result
-// in undefined behavior including crashes.
+// / Provides an opportunity to view and/or modify command-line arguments
+// / before processing by CEF and Chromium. The |process_type| value will be
+// / NULL for the browser process. Do not keep a reference to the
+// / cef_command_line_t object passed to this function. The
+// / cef_settings_t.command_line_args_disabled value can be used to start with
+// / an NULL command-line object. Any values specified in CefSettings that
+// / equate to command-line arguments will be set before this function is
+// / called. Be cautious when using this function to modify command-line
+// / arguments for non-browser processes as this may result in undefined
+// / behavior including crashes.
 // /
 type OnBeforeCommandLineProcessingHandler interface {
 	OnBeforeCommandLineProcessing(
@@ -299,10 +300,10 @@ type OnBeforeCommandLineProcessingHandler interface {
 }
 
 // /
-// Provides an opportunity to register custom schemes. Do not keep a reference
-// to the |registrar| object. This function is called on the main thread for
-// each process and the registered schemes should be the same across all
-// processes.
+// / Provides an opportunity to register custom schemes. Do not keep a
+// / reference to the |registrar| object. This function is called on the main
+// / thread for each process and the registered schemes should be the same
+// / across all processes.
 // /
 type OnRegisterCustomSchemesHandler interface {
 	OnRegisterCustomSchemes(
@@ -312,10 +313,11 @@ type OnRegisterCustomSchemesHandler interface {
 }
 
 // /
-// Return the handler for resource bundle events. If
-// CefSettings.pack_loading_disabled is true (1) a handler must be returned.
-// If no handler is returned resources will be loaded from pack files. This
-// function is called by the browser and render processes on multiple threads.
+// / Return the handler for resource bundle events. If
+// / cef_settings_t.pack_loading_disabled is true (1) a handler must be
+// / returned. If no handler is returned resources will be loaded from pack
+// / files. This function is called by the browser and render processes on
+// / multiple threads.
 // /
 type GetResourceBundleHandlerHandler interface {
 	GetResourceBundleHandler(
@@ -324,8 +326,8 @@ type GetResourceBundleHandlerHandler interface {
 }
 
 // /
-// Return the handler for functionality specific to the browser process. This
-// function is called on multiple threads in the browser process.
+// / Return the handler for functionality specific to the browser process. This
+// / function is called on multiple threads in the browser process.
 // /
 type GetBrowserProcessHandlerHandler interface {
 	GetBrowserProcessHandler(
@@ -334,8 +336,8 @@ type GetBrowserProcessHandlerHandler interface {
 }
 
 // /
-// Return the handler for functionality specific to the render process. This
-// function is called on the render process main thread.
+// / Return the handler for functionality specific to the render process. This
+// / function is called on the render process main thread.
 // /
 type GetRenderProcessHandlerHandler interface {
 	GetRenderProcessHandler(
@@ -458,16 +460,16 @@ func (app *CAppT) Handler() interface{} {
 }
 
 // /
-// This function should be called from the application entry point function to
-// execute a secondary process. It can be used to run secondary processes from
-// the browser client executable (default behavior) or from a separate
-// executable specified by the CefSettings.browser_subprocess_path value. If
-// called for the browser process (identified by no "type" command-line value)
-// it will return immediately with a value of -1. If called for a recognized
-// secondary process it will block until the process should exit and then return
-// the process exit code. The |application| parameter may be NULL. The
-// |windows_sandbox_info| parameter is only used on Windows and may be NULL (see
-// cef_sandbox_win.h for details).
+// / This function should be called from the application entry point function to
+// / execute a secondary process. It can be used to run secondary processes from
+// / the browser client executable (default behavior) or from a separate
+// / executable specified by the cef_settings_t.browser_subprocess_path value. If
+// / called for the browser process (identified by no "type" command-line value)
+// / it will return immediately with a value of -1. If called for a recognized
+// / secondary process it will block until the process should exit and then
+// / return the process exit code. The |application| parameter may be NULL. The
+// / |windows_sandbox_info| parameter is only used on Windows and may be NULL
+// / (see cef_sandbox_win.h for details).
 // /
 func ExecuteProcess(
 	args *CMainArgsT,
@@ -487,11 +489,11 @@ func ExecuteProcess(
 }
 
 // /
-// This function should be called on the main application thread to initialize
-// the CEF browser process. The |application| parameter may be NULL. A return
-// value of true (1) indicates that it succeeded and false (0) indicates that it
-// failed. The |windows_sandbox_info| parameter is only used on Windows and may
-// be NULL (see cef_sandbox_win.h for details).
+// / This function should be called on the main application thread to initialize
+// / the CEF browser process. The |application| parameter may be NULL. A return
+// / value of true (1) indicates that it succeeded and false (0) indicates that
+// / it failed. The |windows_sandbox_info| parameter is only used on Windows and
+// / may be NULL (see cef_sandbox_win.h for details).
 // /
 func Initialize(
 	args *CMainArgsT,
@@ -512,8 +514,8 @@ func Initialize(
 }
 
 // /
-// This function should be called on the main application thread to shut down
-// the CEF browser process before the application exits.
+// / This function should be called on the main application thread to shut down
+// / the CEF browser process before the application exits.
 // /
 func Shutdown() {
 
@@ -522,19 +524,19 @@ func Shutdown() {
 }
 
 // /
-// Perform a single iteration of CEF message loop processing. This function is
-// provided for cases where the CEF message loop must be integrated into an
-// existing application message loop. Use of this function is not recommended
-// for most users; use either the cef_run_message_loop() function or
-// CefSettings.multi_threaded_message_loop if possible. When using this function
-// care must be taken to balance performance against excessive CPU usage. It is
-// recommended to enable the CefSettings.external_message_pump option when using
-// this function so that
-// cef_browser_process_handler_t::on_schedule_message_pump_work() callbacks can
-// facilitate the scheduling process. This function should only be called on the
-// main application thread and only if cef_initialize() is called with a
-// CefSettings.multi_threaded_message_loop value of false (0). This function
-// will not block.
+// / Perform a single iteration of CEF message loop processing. This function is
+// / provided for cases where the CEF message loop must be integrated into an
+// / existing application message loop. Use of this function is not recommended
+// / for most users; use either the cef_run_message_loop() function or
+// / cef_settings_t.multi_threaded_message_loop if possible. When using this
+// / function care must be taken to balance performance against excessive CPU
+// / usage. It is recommended to enable the cef_settings_t.external_message_pump
+// / option when using this function so that
+// / cef_browser_process_handler_t::on_schedule_message_pump_work() callbacks can
+// / facilitate the scheduling process. This function should only be called on
+// / the main application thread and only if cef_initialize() is called with a
+// / cef_settings_t.multi_threaded_message_loop value of false (0). This function
+// / will not block.
 // /
 func DoMessageLoopWork() {
 
@@ -543,12 +545,12 @@ func DoMessageLoopWork() {
 }
 
 // /
-// Run the CEF message loop. Use this function instead of an application-
-// provided message loop to get the best balance between performance and CPU
-// usage. This function should only be called on the main application thread and
-// only if cef_initialize() is called with a
-// CefSettings.multi_threaded_message_loop value of false (0). This function
-// will block until a quit message is received by the system.
+// / Run the CEF message loop. Use this function instead of an application-
+// / provided message loop to get the best balance between performance and CPU
+// / usage. This function should only be called on the main application thread
+// / and only if cef_initialize() is called with a
+// / cef_settings_t.multi_threaded_message_loop value of false (0). This function
+// / will block until a quit message is received by the system.
 // /
 func RunMessageLoop() {
 
@@ -557,9 +559,9 @@ func RunMessageLoop() {
 }
 
 // /
-// Quit the CEF message loop that was started by calling cef_run_message_loop().
-// This function should only be called on the main application thread and only
-// if cef_run_message_loop() was used.
+// / Quit the CEF message loop that was started by calling
+// / cef_run_message_loop(). This function should only be called on the main
+// / application thread and only if cef_run_message_loop() was used.
 // /
 func QuitMessageLoop() {
 
@@ -568,8 +570,8 @@ func QuitMessageLoop() {
 }
 
 // /
-// Set to true (1) before calling Windows APIs like TrackPopupMenu that enter a
-// modal message loop. Set to false (0) after exiting the modal message loop.
+// / Set to true (1) before calling Windows APIs like TrackPopupMenu that enter a
+// / modal message loop. Set to false (0) after exiting the modal message loop.
 // /
 func SetOsmodalLoop(
 	osModalLoop bool,
@@ -584,9 +586,9 @@ func SetOsmodalLoop(
 }
 
 // /
-// Call during process startup to enable High-DPI support on Windows 7 or newer.
-// Older versions of Windows should be left DPI-unaware because they do not
-// support DirectWrite and GDI fonts are kerned very badly.
+// / Call during process startup to enable High-DPI support on Windows 7 or
+// / newer. Older versions of Windows should be left DPI-unaware because they do
+// / not support DirectWrite and GDI fonts are kerned very badly.
 // /
 func EnableHighdpiSupport() {
 
@@ -597,7 +599,7 @@ func EnableHighdpiSupport() {
 // cef_audio_handler_capi.h, include/capi/cef_audio_handler_capi.h:115:3,
 
 ///
-// Implement this structure to handle audio events.
+/// Implement this structure to handle audio events.
 ///
 
 type cCAudioHandlerT C.cef_audio_handler_t
@@ -675,10 +677,10 @@ func (audio_handler *CAudioHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called on the UI thread to allow configuration of audio stream parameters.
-// Return true (1) to proceed with audio stream capture, or false (0) to
-// cancel it. All members of |params| can optionally be configured here, but
-// they are also pre-filled with some sensible defaults.
+// / Called on the UI thread to allow configuration of audio stream parameters.
+// / Return true (1) to proceed with audio stream capture, or false (0) to
+// / cancel it. All members of |params| can optionally be configured here, but
+// / they are also pre-filled with some sensible defaults.
 // /
 type GetAudioParametersHandler interface {
 	GetAudioParameters(
@@ -689,11 +691,11 @@ type GetAudioParametersHandler interface {
 }
 
 // /
-// Called on a browser audio capture thread when the browser starts streaming
-// audio. OnAudioStreamStopped will always be called after
-// OnAudioStreamStarted; both functions may be called multiple times for the
-// same browser. |params| contains the audio parameters like sample rate and
-// channel layout. |channels| is the number of channels.
+// / Called on a browser audio capture thread when the browser starts streaming
+// / audio. OnAudioStreamStopped will always be called after
+// / OnAudioStreamStarted; both functions may be called multiple times for the
+// / same browser. |params| contains the audio parameters like sample rate and
+// / channel layout. |channels| is the number of channels.
 // /
 type OnAudioStreamStartedHandler interface {
 	OnAudioStreamStarted(
@@ -705,9 +707,9 @@ type OnAudioStreamStartedHandler interface {
 }
 
 // /
-// Called on the UI thread when the stream has stopped. OnAudioSteamStopped
-// will always be called after OnAudioStreamStarted; both functions may be
-// called multiple times for the same stream.
+// / Called on the UI thread when the stream has stopped. OnAudioSteamStopped
+// / will always be called after OnAudioStreamStarted; both functions may be
+// / called multiple times for the same stream.
 // /
 type OnAudioStreamStoppedHandler interface {
 	OnAudioStreamStopped(
@@ -717,10 +719,10 @@ type OnAudioStreamStoppedHandler interface {
 }
 
 // /
-// Called on the UI or audio stream thread when an error occurred. During the
-// stream creation phase this callback will be called on the UI thread while
-// in the capturing phase it will be called on the audio stream thread. The
-// stream will be stopped immediately.
+// / Called on the UI or audio stream thread when an error occurred. During the
+// / stream creation phase this callback will be called on the UI thread while
+// / in the capturing phase it will be called on the audio stream thread. The
+// / stream will be stopped immediately.
 // /
 type OnAudioStreamErrorHandler interface {
 	OnAudioStreamError(
@@ -837,8 +839,8 @@ func (audio_handler *CAudioHandlerT) Handler() interface{} {
 // cef_auth_callback_capi.h, include/capi/cef_auth_callback_capi.h:70:3,
 
 ///
-// Callback structure used for asynchronous continuation of authentication
-// requests.
+/// Callback structure used for asynchronous continuation of authentication
+/// requests.
 ///
 
 type cCAuthCallbackT C.cef_auth_callback_t
@@ -916,7 +918,7 @@ func (auth_callback *CAuthCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Continue the authentication request.
+// / Continue the authentication request.
 // /
 func (self *CAuthCallbackT) Cont(
 	username string,
@@ -930,7 +932,7 @@ func (self *CAuthCallbackT) Cont(
 }
 
 // /
-// Cancel the authentication request.
+// / Cancel the authentication request.
 // /
 func (self *CAuthCallbackT) Cancel() {
 
@@ -941,12 +943,12 @@ func (self *CAuthCallbackT) Cancel() {
 // cef_box_layout_capi.h, include/capi/views/cef_box_layout_capi.h:82:3,
 
 ///
-// A Layout manager that arranges child views vertically or horizontally in a
-// side-by-side fashion with spacing around and between the child views. The
-// child views are always sized according to their preferred size. If the host's
-// bounds provide insufficient space, child views will be clamped. Excess space
-// will not be distributed. Methods must be called on the browser process UI
-// thread unless otherwise indicated.
+/// A Layout manager that arranges child views vertically or horizontally in a
+/// side-by-side fashion with spacing around and between the child views. The
+/// child views are always sized according to their preferred size. If the
+/// host's bounds provide insufficient space, child views will be clamped.
+/// Excess space will not be distributed. Methods must be called on the browser
+/// process UI thread unless otherwise indicated.
 ///
 
 type cCBoxLayoutT C.cef_box_layout_t
@@ -1031,11 +1033,11 @@ func (box_layout *CBoxLayoutT) ToCLayoutT() *CLayoutT {
 }
 
 // /
-// Set the flex weight for the given |view|. Using the preferred size as the
-// basis, free space along the main axis is distributed to views in the ratio
-// of their flex weights. Similarly, if the views will overflow the parent,
-// space is subtracted in these ratios. A flex of 0 means this view is not
-// resized. Flex values must not be negative.
+// / Set the flex weight for the given |view|. Using the preferred size as the
+// / basis, free space along the main axis is distributed to views in the ratio
+// / of their flex weights. Similarly, if the views will overflow the parent,
+// / space is subtracted in these ratios. A flex of 0 means this view is not
+// / resized. Flex values must not be negative.
 // /
 func (self *CBoxLayoutT) SetFlexForView(
 	view *CViewT,
@@ -1052,8 +1054,8 @@ func (self *CBoxLayoutT) SetFlexForView(
 }
 
 // /
-// Clears the flex for the given |view|, causing it to use the default flex
-// specified via cef_box_layout_tSettings.default_flex.
+// / Clears the flex for the given |view|, causing it to use the default flex
+// / specified via cef_box_layout_tSettings.default_flex.
 // /
 func (self *CBoxLayoutT) ClearFlexForView(
 	view *CViewT,
@@ -1071,10 +1073,10 @@ func (self *CBoxLayoutT) ClearFlexForView(
 // cef_browser_capi.h, include/capi/cef_browser_capi.h:195:3,
 
 ///
-// Structure used to represent a browser. When used in the browser process the
-// functions of this structure may be called on any thread unless otherwise
-// indicated in the comments. When used in the render process the functions of
-// this structure may only be called on the main thread.
+/// Structure used to represent a browser. When used in the browser process the
+/// functions of this structure may be called on any thread unless otherwise
+/// indicated in the comments. When used in the render process the functions of
+/// this structure may only be called on the main thread.
 ///
 
 type cCBrowserT C.cef_browser_t
@@ -1152,8 +1154,8 @@ func (browser *CBrowserT) Unref() (ret bool) {
 }
 
 // /
-// True if this object is currently valid. This will return false (0) after
-// cef_life_span_handler_t::OnBeforeClose is called.
+// / True if this object is currently valid. This will return false (0) after
+// / cef_life_span_handler_t::OnBeforeClose is called.
 // /
 func (self *CBrowserT) IsValid() (ret bool) {
 
@@ -1164,8 +1166,8 @@ func (self *CBrowserT) IsValid() (ret bool) {
 }
 
 // /
-// Returns the browser host object. This function can only be called in the
-// browser process.
+// / Returns the browser host object. This function can only be called in the
+// / browser process.
 // /
 func (self *CBrowserT) GetHost() (ret *CBrowserHostT) {
 
@@ -1176,7 +1178,7 @@ func (self *CBrowserT) GetHost() (ret *CBrowserHostT) {
 }
 
 // /
-// Returns true (1) if the browser can navigate backwards.
+// / Returns true (1) if the browser can navigate backwards.
 // /
 func (self *CBrowserT) CanGoBack() (ret bool) {
 
@@ -1187,7 +1189,7 @@ func (self *CBrowserT) CanGoBack() (ret bool) {
 }
 
 // /
-// Navigate backwards.
+// / Navigate backwards.
 // /
 func (self *CBrowserT) GoBack() {
 
@@ -1196,7 +1198,7 @@ func (self *CBrowserT) GoBack() {
 }
 
 // /
-// Returns true (1) if the browser can navigate forwards.
+// / Returns true (1) if the browser can navigate forwards.
 // /
 func (self *CBrowserT) CanGoForward() (ret bool) {
 
@@ -1207,7 +1209,7 @@ func (self *CBrowserT) CanGoForward() (ret bool) {
 }
 
 // /
-// Navigate forwards.
+// / Navigate forwards.
 // /
 func (self *CBrowserT) GoForward() {
 
@@ -1216,7 +1218,7 @@ func (self *CBrowserT) GoForward() {
 }
 
 // /
-// Returns true (1) if the browser is currently loading.
+// / Returns true (1) if the browser is currently loading.
 // /
 func (self *CBrowserT) IsLoading() (ret bool) {
 
@@ -1227,7 +1229,7 @@ func (self *CBrowserT) IsLoading() (ret bool) {
 }
 
 // /
-// Reload the current page.
+// / Reload the current page.
 // /
 func (self *CBrowserT) Reload() {
 
@@ -1236,7 +1238,7 @@ func (self *CBrowserT) Reload() {
 }
 
 // /
-// Reload the current page ignoring any cached data.
+// / Reload the current page ignoring any cached data.
 // /
 func (self *CBrowserT) ReloadIgnoreCache() {
 
@@ -1245,7 +1247,7 @@ func (self *CBrowserT) ReloadIgnoreCache() {
 }
 
 // /
-// Stop loading the page.
+// / Stop loading the page.
 // /
 func (self *CBrowserT) StopLoad() {
 
@@ -1254,8 +1256,8 @@ func (self *CBrowserT) StopLoad() {
 }
 
 // /
-// Returns the globally unique identifier for this browser. This value is also
-// used as the tabId for extension APIs.
+// / Returns the globally unique identifier for this browser. This value is
+// / also used as the tabId for extension APIs.
 // /
 func (self *CBrowserT) GetIdentifier() (ret int) {
 
@@ -1266,8 +1268,8 @@ func (self *CBrowserT) GetIdentifier() (ret int) {
 }
 
 // /
-// Returns true (1) if this object is pointing to the same handle as |that|
-// object.
+// / Returns true (1) if this object is pointing to the same handle as |that|
+// / object.
 // /
 func (self *CBrowserT) IsSame(
 	that *CBrowserT,
@@ -1285,7 +1287,7 @@ func (self *CBrowserT) IsSame(
 }
 
 // /
-// Returns true (1) if the browser is a popup.
+// / Returns true (1) if the browser is a popup.
 // /
 func (self *CBrowserT) IsPopup() (ret bool) {
 
@@ -1296,7 +1298,7 @@ func (self *CBrowserT) IsPopup() (ret bool) {
 }
 
 // /
-// Returns true (1) if a document has been loaded in the browser.
+// / Returns true (1) if a document has been loaded in the browser.
 // /
 func (self *CBrowserT) HasDocument() (ret bool) {
 
@@ -1307,13 +1309,13 @@ func (self *CBrowserT) HasDocument() (ret bool) {
 }
 
 // /
-// Returns the main (top-level) frame for the browser. In the browser process
-// this will return a valid object until after
-// cef_life_span_handler_t::OnBeforeClose is called. In the renderer process
-// this will return NULL if the main frame is hosted in a different renderer
-// process (e.g. for cross-origin sub-frames). The main frame object will
-// change during cross-origin navigation or re-navigation after renderer
-// process termination (due to crashes, etc).
+// / Returns the main (top-level) frame for the browser. In the browser process
+// / this will return a valid object until after
+// / cef_life_span_handler_t::OnBeforeClose is called. In the renderer process
+// / this will return NULL if the main frame is hosted in a different renderer
+// / process (e.g. for cross-origin sub-frames). The main frame object will
+// / change during cross-origin navigation or re-navigation after renderer
+// / process termination (due to crashes, etc).
 // /
 func (self *CBrowserT) GetMainFrame() (ret *CFrameT) {
 
@@ -1324,7 +1326,7 @@ func (self *CBrowserT) GetMainFrame() (ret *CFrameT) {
 }
 
 // /
-// Returns the focused frame for the browser.
+// / Returns the focused frame for the browser.
 // /
 func (self *CBrowserT) GetFocusedFrame() (ret *CFrameT) {
 
@@ -1335,7 +1337,7 @@ func (self *CBrowserT) GetFocusedFrame() (ret *CFrameT) {
 }
 
 // /
-// Returns the frame with the specified identifier, or NULL if not found.
+// / Returns the frame with the specified identifier, or NULL if not found.
 // /
 func (self *CBrowserT) GetFrameByident(
 	identifier int64,
@@ -1348,7 +1350,7 @@ func (self *CBrowserT) GetFrameByident(
 }
 
 // /
-// Returns the frame with the specified name, or NULL if not found.
+// / Returns the frame with the specified name, or NULL if not found.
 // /
 func (self *CBrowserT) GetFrame(
 	name string,
@@ -1362,7 +1364,7 @@ func (self *CBrowserT) GetFrame(
 }
 
 // /
-// Returns the number of frames that currently exist.
+// / Returns the number of frames that currently exist.
 // /
 func (self *CBrowserT) GetFrameCount() (ret int64) {
 
@@ -1373,7 +1375,7 @@ func (self *CBrowserT) GetFrameCount() (ret int64) {
 }
 
 // /
-// Returns the names of all existing frames.
+// / Returns the names of all existing frames.
 // /
 func (self *CBrowserT) GetFrameNames(
 	names CStringListT,
@@ -1384,8 +1386,8 @@ func (self *CBrowserT) GetFrameNames(
 }
 
 ///
-// Callback structure for cef_browser_host_t::RunFileDialog. The functions of
-// this structure will be called on the browser process UI thread.
+/// Callback structure for cef_browser_host_t::RunFileDialog. The functions of
+/// this structure will be called on the browser process UI thread.
 ///
 
 type cCRunFileDialogCallbackT C.cef_run_file_dialog_callback_t
@@ -1463,9 +1465,9 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Called asynchronously after the file dialog is dismissed. |file_paths| will
-// be a single value or a list of values depending on the dialog mode. If the
-// selection was cancelled |file_paths| will be NULL.
+// / Called asynchronously after the file dialog is dismissed. |file_paths|
+// / will be a single value or a list of values depending on the dialog mode.
+// / If the selection was cancelled |file_paths| will be NULL.
 // /
 type OnFileDialogDismissedHandler interface {
 	OnFileDialogDismissed(
@@ -1549,8 +1551,8 @@ func (run_file_dialog_callback *CRunFileDialogCallbackT) Handler() interface{} {
 }
 
 ///
-// Callback structure for cef_browser_host_t::GetNavigationEntries. The
-// functions of this structure will be called on the browser process UI thread.
+/// Callback structure for cef_browser_host_t::GetNavigationEntries. The
+/// functions of this structure will be called on the browser process UI thread.
 ///
 
 type cCNavigationEntryVisitorT C.cef_navigation_entry_visitor_t
@@ -1628,11 +1630,11 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be executed. Do not keep a reference to |entry| outside of
-// this callback. Return true (1) to continue visiting entries or false (0) to
-// stop. |current| is true (1) if this entry is the currently loaded
-// navigation entry. |index| is the 0-based index of this entry and |total| is
-// the total number of entries.
+// / Method that will be executed. Do not keep a reference to |entry| outside
+// / of this callback. Return true (1) to continue visiting entries or false
+// / (0) to stop. |current| is true (1) if this entry is the currently loaded
+// / navigation entry. |index| is the 0-based index of this entry and |total|
+// / is the total number of entries.
 // /
 type CNavigationEntryVisitorTVisitHandler interface {
 	Visit(
@@ -1719,8 +1721,8 @@ func (navigation_entry_visitor *CNavigationEntryVisitorT) Handler() interface{} 
 }
 
 ///
-// Callback structure for cef_browser_host_t::PrintToPDF. The functions of this
-// structure will be called on the browser process UI thread.
+/// Callback structure for cef_browser_host_t::PrintToPDF. The functions of this
+/// structure will be called on the browser process UI thread.
 ///
 
 type cCPdfPrintCallbackT C.cef_pdf_print_callback_t
@@ -1798,9 +1800,9 @@ func (pdf_print_callback *CPdfPrintCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be executed when the PDF printing has completed. |path| is
-// the output path. |ok| will be true (1) if the printing completed
-// successfully or false (0) otherwise.
+// / Method that will be executed when the PDF printing has completed. |path|
+// / is the output path. |ok| will be true (1) if the printing completed
+// / successfully or false (0) otherwise.
 // /
 type OnPdfPrintFinishedHandler interface {
 	OnPdfPrintFinished(
@@ -1885,8 +1887,8 @@ func (pdf_print_callback *CPdfPrintCallbackT) Handler() interface{} {
 }
 
 ///
-// Callback structure for cef_browser_host_t::DownloadImage. The functions of
-// this structure will be called on the browser process UI thread.
+/// Callback structure for cef_browser_host_t::DownloadImage. The functions of
+/// this structure will be called on the browser process UI thread.
 ///
 
 type cCDownloadImageCallbackT C.cef_download_image_callback_t
@@ -1964,10 +1966,10 @@ func (download_image_callback *CDownloadImageCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be executed when the image download has completed.
-// |image_url| is the URL that was downloaded and |http_status_code| is the
-// resulting HTTP status code. |image| is the resulting image, possibly at
-// multiple scale factors, or NULL if the download failed.
+// / Method that will be executed when the image download has completed.
+// / |image_url| is the URL that was downloaded and |http_status_code| is the
+// / resulting HTTP status code. |image| is the resulting image, possibly at
+// / multiple scale factors, or NULL if the download failed.
 // /
 func (self *CDownloadImageCallbackT) OnDownloadImageFinished(
 	image_url string,
@@ -1986,10 +1988,10 @@ func (self *CDownloadImageCallbackT) OnDownloadImageFinished(
 }
 
 ///
-// Structure used to represent the browser process aspects of a browser. The
-// functions of this structure can only be called in the browser process. They
-// may be called on any thread in that process unless otherwise indicated in the
-// comments.
+/// Structure used to represent the browser process aspects of a browser. The
+/// functions of this structure can only be called in the browser process. They
+/// may be called on any thread in that process unless otherwise indicated in
+/// the comments.
 ///
 
 type cCBrowserHostT C.cef_browser_host_t
@@ -2067,7 +2069,7 @@ func (browser_host *CBrowserHostT) Unref() (ret bool) {
 }
 
 // /
-// Returns the hosted browser object.
+// / Returns the hosted browser object.
 // /
 func (self *CBrowserHostT) GetBrowser() (ret *CBrowserT) {
 
@@ -2078,14 +2080,14 @@ func (self *CBrowserHostT) GetBrowser() (ret *CBrowserT) {
 }
 
 // /
-// Request that the browser close. The JavaScript &#39;onbeforeunload&#39; event will
-// be fired. If |force_close| is false (0) the event handler, if any, will be
-// allowed to prompt the user and the user can optionally cancel the close. If
-// |force_close| is true (1) the prompt will not be displayed and the close
-// will proceed. Results in a call to cef_life_span_handler_t::do_close() if
-// the event handler allows the close or if |force_close| is true (1). See
-// cef_life_span_handler_t::do_close() documentation for additional usage
-// information.
+// / Request that the browser close. The JavaScript &#39;onbeforeunload&#39; event will
+// / be fired. If |force_close| is false (0) the event handler, if any, will be
+// / allowed to prompt the user and the user can optionally cancel the close.
+// / If |force_close| is true (1) the prompt will not be displayed and the
+// / close will proceed. Results in a call to
+// / cef_life_span_handler_t::do_close() if the event handler allows the close
+// / or if |force_close| is true (1). See cef_life_span_handler_t::do_close()
+// / documentation for additional usage information.
 // /
 func (self *CBrowserHostT) CloseBrowser(
 	force_close bool,
@@ -2100,13 +2102,13 @@ func (self *CBrowserHostT) CloseBrowser(
 }
 
 // /
-// Helper for closing a browser. Call this function from the top-level window
-// close handler (if any). Internally this calls CloseBrowser(false (0)) if
-// the close has not yet been initiated. This function returns false (0) while
-// the close is pending and true (1) after the close has completed. See
-// close_browser() and cef_life_span_handler_t::do_close() documentation for
-// additional usage information. This function must be called on the browser
-// process UI thread.
+// / Helper for closing a browser. Call this function from the top-level window
+// / close handler (if any). Internally this calls CloseBrowser(false (0)) if
+// / the close has not yet been initiated. This function returns false (0)
+// / while the close is pending and true (1) after the close has completed. See
+// / close_browser() and cef_life_span_handler_t::do_close() documentation for
+// / additional usage information. This function must be called on the browser
+// / process UI thread.
 // /
 func (self *CBrowserHostT) TryCloseBrowser() (ret bool) {
 
@@ -2117,7 +2119,7 @@ func (self *CBrowserHostT) TryCloseBrowser() (ret bool) {
 }
 
 // /
-// Set whether the browser is focused.
+// / Set whether the browser is focused.
 // /
 func (self *CBrowserHostT) SetFocus(
 	focus bool,
@@ -2132,10 +2134,10 @@ func (self *CBrowserHostT) SetFocus(
 }
 
 // /
-// Retrieve the window handle (if any) for this browser. If this browser is
-// wrapped in a cef_browser_view_t this function should be called on the
-// browser process UI thread and it will return the handle for the top-level
-// native window.
+// / Retrieve the window handle (if any) for this browser. If this browser is
+// / wrapped in a cef_browser_view_t this function should be called on the
+// / browser process UI thread and it will return the handle for the top-level
+// / native window.
 // /
 func (self *CBrowserHostT) GetWindowHandle() (ret CWindowHandleT) {
 
@@ -2146,10 +2148,10 @@ func (self *CBrowserHostT) GetWindowHandle() (ret CWindowHandleT) {
 }
 
 // /
-// Retrieve the window handle (if any) of the browser that opened this
-// browser. Will return NULL for non-popup browsers or if this browser is
-// wrapped in a cef_browser_view_t. This function can be used in combination
-// with custom handling of modal windows.
+// / Retrieve the window handle (if any) of the browser that opened this
+// / browser. Will return NULL for non-popup browsers or if this browser is
+// / wrapped in a cef_browser_view_t. This function can be used in combination
+// / with custom handling of modal windows.
 // /
 func (self *CBrowserHostT) GetOpenerWindowHandle() (ret CWindowHandleT) {
 
@@ -2160,7 +2162,7 @@ func (self *CBrowserHostT) GetOpenerWindowHandle() (ret CWindowHandleT) {
 }
 
 // /
-// Returns true (1) if this browser is wrapped in a cef_browser_view_t.
+// / Returns true (1) if this browser is wrapped in a cef_browser_view_t.
 // /
 func (self *CBrowserHostT) HasView() (ret bool) {
 
@@ -2171,7 +2173,7 @@ func (self *CBrowserHostT) HasView() (ret bool) {
 }
 
 // /
-// Returns the client for this browser.
+// / Returns the client for this browser.
 // /
 func (self *CBrowserHostT) GetClient() (ret *CClientT) {
 
@@ -2182,7 +2184,7 @@ func (self *CBrowserHostT) GetClient() (ret *CClientT) {
 }
 
 // /
-// Returns the request context for this browser.
+// / Returns the request context for this browser.
 // /
 func (self *CBrowserHostT) GetRequestContext() (ret *CRequestContextT) {
 
@@ -2193,8 +2195,8 @@ func (self *CBrowserHostT) GetRequestContext() (ret *CRequestContextT) {
 }
 
 // /
-// Get the current zoom level. The default zoom level is 0.0. This function
-// can only be called on the UI thread.
+// / Get the current zoom level. The default zoom level is 0.0. This function
+// / can only be called on the UI thread.
 // /
 func (self *CBrowserHostT) GetZoomLevel() (ret float64) {
 
@@ -2205,9 +2207,10 @@ func (self *CBrowserHostT) GetZoomLevel() (ret float64) {
 }
 
 // /
-// Change the zoom level to the specified value. Specify 0.0 to reset the zoom
-// level. If called on the UI thread the change will be applied immediately.
-// Otherwise, the change will be applied asynchronously on the UI thread.
+// / Change the zoom level to the specified value. Specify 0.0 to reset the
+// / zoom level. If called on the UI thread the change will be applied
+// / immediately. Otherwise, the change will be applied asynchronously on the
+// / UI thread.
 // /
 func (self *CBrowserHostT) SetZoomLevel(
 	zoomLevel float64,
@@ -2218,19 +2221,19 @@ func (self *CBrowserHostT) SetZoomLevel(
 }
 
 // /
-// Call to run a file chooser dialog. Only a single file chooser dialog may be
-// pending at any given time. |mode| represents the type of dialog to display.
-// |title| to the title to be used for the dialog and may be NULL to show the
-// default title (&quot;Open&quot; or &quot;Save&quot; depending on the mode). |default_file_path|
-// is the path with optional directory and/or file name component that will be
-// initially selected in the dialog. |accept_filters| are used to restrict the
-// selectable file types and may any combination of (a) valid lower-cased MIME
-// types (e.g. &quot;text/*&quot; or &quot;image/*&quot;), (b) individual file extensions (e.g.
-// &quot;.txt&quot; or &quot;.png&quot;), or (c) combined description and file extension delimited
-// using &quot;|&quot; and &quot;;&quot; (e.g. &quot;Image Types|.png;.gif;.jpg&quot;). |callback| will be
-// executed after the dialog is dismissed or immediately if another dialog is
-// already pending. The dialog will be initiated asynchronously on the UI
-// thread.
+// / Call to run a file chooser dialog. Only a single file chooser dialog may
+// / be pending at any given time. |mode| represents the type of dialog to
+// / display. |title| to the title to be used for the dialog and may be NULL to
+// / show the default title (&quot;Open&quot; or &quot;Save&quot; depending on the mode).
+// / |default_file_path| is the path with optional directory and/or file name
+// / component that will be initially selected in the dialog. |accept_filters|
+// / are used to restrict the selectable file types and may any combination of
+// / (a) valid lower-cased MIME types (e.g. &quot;text/*&quot; or &quot;image/*&quot;), (b)
+// / individual file extensions (e.g. &quot;.txt&quot; or &quot;.png&quot;), or (c) combined
+// / description and file extension delimited using &quot;|&quot; and &quot;;&quot; (e.g. &quot;Image
+// / Types|.png;.gif;.jpg&quot;). |callback| will be executed after the dialog is
+// / dismissed or immediately if another dialog is already pending. The dialog
+// / will be initiated asynchronously on the UI thread.
 // /
 func (self *CBrowserHostT) RunFileDialog(
 	mode CFileDialogModeT,
@@ -2252,7 +2255,7 @@ func (self *CBrowserHostT) RunFileDialog(
 }
 
 // /
-// Download the file at |url| using cef_download_handler_t.
+// / Download the file at |url| using cef_download_handler_t.
 // /
 func (self *CBrowserHostT) StartDownload(
 	url string,
@@ -2264,16 +2267,16 @@ func (self *CBrowserHostT) StartDownload(
 }
 
 // /
-// Download |image_url| and execute |callback| on completion with the images
-// received from the renderer. If |is_favicon| is true (1) then cookies are
-// not sent and not accepted during download. Images with density independent
-// pixel (DIP) sizes larger than |max_image_size| are filtered out from the
-// image results. Versions of the image at different scale factors may be
-// downloaded up to the maximum scale factor supported by the system. If there
-// are no image results &lt;= |max_image_size| then the smallest image is resized
-// to |max_image_size| and is the only result. A |max_image_size| of 0 means
-// unlimited. If |bypass_cache| is true (1) then |image_url| is requested from
-// the server even if it is present in the browser cache.
+// / Download |image_url| and execute |callback| on completion with the images
+// / received from the renderer. If |is_favicon| is true (1) then cookies are
+// / not sent and not accepted during download. Images with density independent
+// / pixel (DIP) sizes larger than |max_image_size| are filtered out from the
+// / image results. Versions of the image at different scale factors may be
+// / downloaded up to the maximum scale factor supported by the system. If
+// / there are no image results &lt;= |max_image_size| then the smallest image is
+// / resized to |max_image_size| and is the only result. A |max_image_size| of
+// / 0 means unlimited. If |bypass_cache| is true (1) then |image_url| is
+// / requested from the server even if it is present in the browser cache.
 // /
 func (self *CBrowserHostT) DownloadImage(
 	image_url string,
@@ -2302,7 +2305,7 @@ func (self *CBrowserHostT) DownloadImage(
 }
 
 // /
-// Print the current browser contents.
+// / Print the current browser contents.
 // /
 func (self *CBrowserHostT) Print() {
 
@@ -2311,10 +2314,10 @@ func (self *CBrowserHostT) Print() {
 }
 
 // /
-// Print the current browser contents to the PDF file specified by |path| and
-// execute |callback| on completion. The caller is responsible for deleting
-// |path| when done. For PDF printing to work on Linux you must implement the
-// cef_print_handler_t::GetPdfPaperSize function.
+// / Print the current browser contents to the PDF file specified by |path| and
+// / execute |callback| on completion. The caller is responsible for deleting
+// / |path| when done. For PDF printing to work on Linux you must implement the
+// / cef_print_handler_t::GetPdfPaperSize function.
 // /
 func (self *CBrowserHostT) PrintToPdf(
 	path string,
@@ -2333,13 +2336,13 @@ func (self *CBrowserHostT) PrintToPdf(
 }
 
 // /
-// Search for |searchText|. |forward| indicates whether to search forward or
-// backward within the page. |matchCase| indicates whether the search should
-// be case-sensitive. |findNext| indicates whether this is the first request
-// or a follow-up. The search will be restarted if |searchText| or |matchCase|
-// change. The search will be stopped if |searchText| is NULL. The
-// cef_find_handler_t instance, if any, returned via
-// cef_client_t::GetFindHandler will be called to report find results.
+// / Search for |searchText|. |forward| indicates whether to search forward or
+// / backward within the page. |matchCase| indicates whether the search should
+// / be case-sensitive. |findNext| indicates whether this is the first request
+// / or a follow-up. The search will be restarted if |searchText| or
+// / |matchCase| change. The search will be stopped if |searchText| is NULL.
+// / The cef_find_handler_t instance, if any, returned via
+// / cef_client_t::GetFindHandler will be called to report find results.
 // /
 func (self *CBrowserHostT) Find(
 	searchText string,
@@ -2366,7 +2369,7 @@ func (self *CBrowserHostT) Find(
 }
 
 // /
-// Cancel all searches that are currently going on.
+// / Cancel all searches that are currently going on.
 // /
 func (self *CBrowserHostT) StopFinding(
 	clearSelection bool,
@@ -2381,13 +2384,13 @@ func (self *CBrowserHostT) StopFinding(
 }
 
 // /
-// Open developer tools (DevTools) in its own browser. The DevTools browser
-// will remain associated with this browser. If the DevTools browser is
-// already open then it will be focused, in which case the |windowInfo|,
-// |client| and |settings| parameters will be ignored. If |inspect_element_at|
-// is non-NULL then the element at the specified (x,y) location will be
-// inspected. The |windowInfo| parameter will be ignored if this browser is
-// wrapped in a cef_browser_view_t.
+// / Open developer tools (DevTools) in its own browser. The DevTools browser
+// / will remain associated with this browser. If the DevTools browser is
+// / already open then it will be focused, in which case the |windowInfo|,
+// / |client| and |settings| parameters will be ignored. If
+// / |inspect_element_at| is non-NULL then the element at the specified (x,y)
+// / location will be inspected. The |windowInfo| parameter will be ignored if
+// / this browser is wrapped in a cef_browser_view_t.
 // /
 func (self *CBrowserHostT) ShowDevTools(
 	windowInfo *CWindowInfoT,
@@ -2406,7 +2409,7 @@ func (self *CBrowserHostT) ShowDevTools(
 }
 
 // /
-// Explicitly close the associated DevTools browser, if any.
+// / Explicitly close the associated DevTools browser, if any.
 // /
 func (self *CBrowserHostT) CloseDevTools() {
 
@@ -2415,8 +2418,8 @@ func (self *CBrowserHostT) CloseDevTools() {
 }
 
 // /
-// Returns true (1) if this browser currently has an associated DevTools
-// browser. Must be called on the browser process UI thread.
+// / Returns true (1) if this browser currently has an associated DevTools
+// / browser. Must be called on the browser process UI thread.
 // /
 func (self *CBrowserHostT) HasDevTools() (ret bool) {
 
@@ -2427,37 +2430,37 @@ func (self *CBrowserHostT) HasDevTools() (ret bool) {
 }
 
 // /
-// Send a function call message over the DevTools protocol. |message| must be
-// a UTF8-encoded JSON dictionary that contains &quot;id&quot; (int), &quot;function&quot;
-// (string) and &quot;params&quot; (dictionary, optional) values. See the DevTools
-// protocol documentation at https://chromedevtools.github.io/devtools-
-// protocol/ for details of supported functions and the expected &quot;params&quot;
-// dictionary contents. |message| will be copied if necessary. This function
-// will return true (1) if called on the UI thread and the message was
-// successfully submitted for validation, otherwise false (0). Validation will
-// be applied asynchronously and any messages that fail due to formatting
-// errors or missing parameters may be discarded without notification. Prefer
-// ExecuteDevToolsMethod if a more structured approach to message formatting
-// is desired.
-//
-// Every valid function call will result in an asynchronous function result or
-// error message that references the sent message &quot;id&quot;. Event messages are
-// received while notifications are enabled (for example, between function
-// calls for &quot;Page.enable&quot; and &quot;Page.disable&quot;). All received messages will be
-// delivered to the observer(s) registered with AddDevToolsMessageObserver.
-// See cef_dev_tools_message_observer_t::OnDevToolsMessage documentation for
-// details of received message contents.
-//
-// Usage of the SendDevToolsMessage, ExecuteDevToolsMethod and
-// AddDevToolsMessageObserver functions does not require an active DevTools
-// front-end or remote-debugging session. Other active DevTools sessions will
-// continue to function independently. However, any modification of global
-// browser state by one session may not be reflected in the UI of other
-// sessions.
-//
-// Communication with the DevTools front-end (when displayed) can be logged
-// for development purposes by passing the `--devtools-protocol-log-
-// file=&lt;path&gt;` command-line flag.
+// / Send a function call message over the DevTools protocol. |message| must be
+// / a UTF8-encoded JSON dictionary that contains &quot;id&quot; (int), &quot;function&quot;
+// / (string) and &quot;params&quot; (dictionary, optional) values. See the DevTools
+// / protocol documentation at https://chromedevtools.github.io/devtools-
+// / protocol/ for details of supported functions and the expected &quot;params&quot;
+// / dictionary contents. |message| will be copied if necessary. This function
+// / will return true (1) if called on the UI thread and the message was
+// / successfully submitted for validation, otherwise false (0). Validation
+// / will be applied asynchronously and any messages that fail due to
+// / formatting errors or missing parameters may be discarded without
+// / notification. Prefer ExecuteDevToolsMethod if a more structured approach
+// / to message formatting is desired.
+// /
+// / Every valid function call will result in an asynchronous function result
+// / or error message that references the sent message &quot;id&quot;. Event messages are
+// / received while notifications are enabled (for example, between function
+// / calls for &quot;Page.enable&quot; and &quot;Page.disable&quot;). All received messages will be
+// / delivered to the observer(s) registered with AddDevToolsMessageObserver.
+// / See cef_dev_tools_message_observer_t::OnDevToolsMessage documentation for
+// / details of received message contents.
+// /
+// / Usage of the SendDevToolsMessage, ExecuteDevToolsMethod and
+// / AddDevToolsMessageObserver functions does not require an active DevTools
+// / front-end or remote-debugging session. Other active DevTools sessions will
+// / continue to function independently. However, any modification of global
+// / browser state by one session may not be reflected in the UI of other
+// / sessions.
+// /
+// / Communication with the DevTools front-end (when displayed) can be logged
+// / for development purposes by passing the `--devtools-protocol-log-
+// / file=&lt;path&gt;` command-line flag.
 // /
 func (self *CBrowserHostT) SendDevToolsMessage(
 	message []byte,
@@ -2473,16 +2476,17 @@ func (self *CBrowserHostT) SendDevToolsMessage(
 }
 
 // /
-// Execute a function call over the DevTools protocol. This is a more
-// structured version of SendDevToolsMessage. |message_id| is an incremental
-// number that uniquely identifies the message (pass 0 to have the next number
-// assigned automatically based on previous values). |function| is the
-// function name. |params| are the function parameters, which may be NULL. See
-// the DevTools protocol documentation (linked above) for details of supported
-// functions and the expected |params| dictionary contents. This function will
-// return the assigned message ID if called on the UI thread and the message
-// was successfully submitted for validation, otherwise 0. See the
-// SendDevToolsMessage documentation for additional usage information.
+// / Execute a function call over the DevTools protocol. This is a more
+// / structured version of SendDevToolsMessage. |message_id| is an incremental
+// / number that uniquely identifies the message (pass 0 to have the next
+// / number assigned automatically based on previous values). |function| is the
+// / function name. |params| are the function parameters, which may be NULL.
+// / See the DevTools protocol documentation (linked above) for details of
+// / supported functions and the expected |params| dictionary contents. This
+// / function will return the assigned message ID if called on the UI thread
+// / and the message was successfully submitted for validation, otherwise 0.
+// / See the SendDevToolsMessage documentation for additional usage
+// / information.
 // /
 func (self *CBrowserHostT) ExecuteDevToolsMethod(
 	message_id int,
@@ -2503,10 +2507,10 @@ func (self *CBrowserHostT) ExecuteDevToolsMethod(
 }
 
 // /
-// Add an observer for DevTools protocol messages (function results and
-// events). The observer will remain registered until the returned
-// Registration object is destroyed. See the SendDevToolsMessage documentation
-// for additional usage information.
+// / Add an observer for DevTools protocol messages (function results and
+// / events). The observer will remain registered until the returned
+// / Registration object is destroyed. See the SendDevToolsMessage
+// / documentation for additional usage information.
 // /
 func (self *CBrowserHostT) AddDevToolsMessageObserver(
 	observer *CDevToolsMessageObserverT,
@@ -2524,10 +2528,10 @@ func (self *CBrowserHostT) AddDevToolsMessageObserver(
 }
 
 // /
-// Retrieve a snapshot of current navigation entries as values sent to the
-// specified visitor. If |current_only| is true (1) only the current
-// navigation entry will be sent, otherwise all navigation entries will be
-// sent.
+// / Retrieve a snapshot of current navigation entries as values sent to the
+// / specified visitor. If |current_only| is true (1) only the current
+// / navigation entry will be sent, otherwise all navigation entries will be
+// / sent.
 // /
 func (self *CBrowserHostT) GetNavigationEntries(
 	visitor *CNavigationEntryVisitorT,
@@ -2548,8 +2552,8 @@ func (self *CBrowserHostT) GetNavigationEntries(
 }
 
 // /
-// If a misspelled word is currently selected in an editable node calling this
-// function will replace it with the specified |word|.
+// / If a misspelled word is currently selected in an editable node calling
+// / this function will replace it with the specified |word|.
 // /
 func (self *CBrowserHostT) ReplaceMisspelling(
 	word string,
@@ -2561,7 +2565,7 @@ func (self *CBrowserHostT) ReplaceMisspelling(
 }
 
 // /
-// Add the specified |word| to the spelling dictionary.
+// / Add the specified |word| to the spelling dictionary.
 // /
 func (self *CBrowserHostT) AddWordToDictionary(
 	word string,
@@ -2573,7 +2577,7 @@ func (self *CBrowserHostT) AddWordToDictionary(
 }
 
 // /
-// Returns true (1) if window rendering is disabled.
+// / Returns true (1) if window rendering is disabled.
 // /
 func (self *CBrowserHostT) IsWindowRenderingDisabled() (ret bool) {
 
@@ -2584,10 +2588,10 @@ func (self *CBrowserHostT) IsWindowRenderingDisabled() (ret bool) {
 }
 
 // /
-// Notify the browser that the widget has been resized. The browser will first
-// call cef_render_handler_t::GetViewRect to get the new size and then call
-// cef_render_handler_t::OnPaint asynchronously with the updated regions. This
-// function is only used when window rendering is disabled.
+// / Notify the browser that the widget has been resized. The browser will
+// / first call cef_render_handler_t::GetViewRect to get the new size and then
+// / call cef_render_handler_t::OnPaint asynchronously with the updated
+// / regions. This function is only used when window rendering is disabled.
 // /
 func (self *CBrowserHostT) WasResized() {
 
@@ -2596,9 +2600,9 @@ func (self *CBrowserHostT) WasResized() {
 }
 
 // /
-// Notify the browser that it has been hidden or shown. Layouting and
-// cef_render_handler_t::OnPaint notification will stop when the browser is
-// hidden. This function is only used when window rendering is disabled.
+// / Notify the browser that it has been hidden or shown. Layouting and
+// / cef_render_handler_t::OnPaint notification will stop when the browser is
+// / hidden. This function is only used when window rendering is disabled.
 // /
 func (self *CBrowserHostT) WasHidden(
 	hidden bool,
@@ -2613,12 +2617,12 @@ func (self *CBrowserHostT) WasHidden(
 }
 
 // /
-// Send a notification to the browser that the screen info has changed. The
-// browser will then call cef_render_handler_t::GetScreenInfo to update the
-// screen information with the new values. This simulates moving the webview
-// window from one display to another, or changing the properties of the
-// current display. This function is only used when window rendering is
-// disabled.
+// / Send a notification to the browser that the screen info has changed. The
+// / browser will then call cef_render_handler_t::GetScreenInfo to update the
+// / screen information with the new values. This simulates moving the webview
+// / window from one display to another, or changing the properties of the
+// / current display. This function is only used when window rendering is
+// / disabled.
 // /
 func (self *CBrowserHostT) NotifyScreenInfoChanged() {
 
@@ -2627,9 +2631,9 @@ func (self *CBrowserHostT) NotifyScreenInfoChanged() {
 }
 
 // /
-// Invalidate the view. The browser will call cef_render_handler_t::OnPaint
-// asynchronously. This function is only used when window rendering is
-// disabled.
+// / Invalidate the view. The browser will call cef_render_handler_t::OnPaint
+// / asynchronously. This function is only used when window rendering is
+// / disabled.
 // /
 func (self *CBrowserHostT) Invalidate(
 	ctype CPaintElementTypeT,
@@ -2640,8 +2644,8 @@ func (self *CBrowserHostT) Invalidate(
 }
 
 // /
-// Issue a BeginFrame request to Chromium.  Only valid when
-// cef_window_tInfo::external_begin_frame_enabled is set to true (1).
+// / Issue a BeginFrame request to Chromium.  Only valid when
+// / cef_window_tInfo::external_begin_frame_enabled is set to true (1).
 // /
 func (self *CBrowserHostT) SendExternalBeginFrame() {
 
@@ -2650,7 +2654,7 @@ func (self *CBrowserHostT) SendExternalBeginFrame() {
 }
 
 // /
-// Send a key event to the browser.
+// / Send a key event to the browser.
 // /
 func (self *CBrowserHostT) SendKeyEvent(
 	event *CKeyEventT,
@@ -2661,8 +2665,8 @@ func (self *CBrowserHostT) SendKeyEvent(
 }
 
 // /
-// Send a mouse click event to the browser. The |x| and |y| coordinates are
-// relative to the upper-left corner of the view.
+// / Send a mouse click event to the browser. The |x| and |y| coordinates are
+// / relative to the upper-left corner of the view.
 // /
 func (self *CBrowserHostT) SendMouseClickEvent(
 	event *CMouseEventT,
@@ -2680,8 +2684,8 @@ func (self *CBrowserHostT) SendMouseClickEvent(
 }
 
 // /
-// Send a mouse move event to the browser. The |x| and |y| coordinates are
-// relative to the upper-left corner of the view.
+// / Send a mouse move event to the browser. The |x| and |y| coordinates are
+// / relative to the upper-left corner of the view.
 // /
 func (self *CBrowserHostT) SendMouseMoveEvent(
 	event *CMouseEventT,
@@ -2697,11 +2701,12 @@ func (self *CBrowserHostT) SendMouseMoveEvent(
 }
 
 // /
-// Send a mouse wheel event to the browser. The |x| and |y| coordinates are
-// relative to the upper-left corner of the view. The |deltaX| and |deltaY|
-// values represent the movement delta in the X and Y directions respectively.
-// In order to scroll inside select popups with window rendering disabled
-// cef_render_handler_t::GetScreenPoint should be implemented properly.
+// / Send a mouse wheel event to the browser. The |x| and |y| coordinates are
+// / relative to the upper-left corner of the view. The |deltaX| and |deltaY|
+// / values represent the movement delta in the X and Y directions
+// / respectively. In order to scroll inside select popups with window
+// / rendering disabled cef_render_handler_t::GetScreenPoint should be
+// / implemented properly.
 // /
 func (self *CBrowserHostT) SendMouseWheelEvent(
 	event *CMouseEventT,
@@ -2714,7 +2719,7 @@ func (self *CBrowserHostT) SendMouseWheelEvent(
 }
 
 // /
-// Send a touch event to the browser for a windowless browser.
+// / Send a touch event to the browser for a windowless browser.
 // /
 func (self *CBrowserHostT) SendTouchEvent(
 	event *CTouchEventT,
@@ -2725,7 +2730,7 @@ func (self *CBrowserHostT) SendTouchEvent(
 }
 
 // /
-// Send a capture lost event to the browser.
+// / Send a capture lost event to the browser.
 // /
 func (self *CBrowserHostT) SendCaptureLostEvent() {
 
@@ -2734,8 +2739,8 @@ func (self *CBrowserHostT) SendCaptureLostEvent() {
 }
 
 // /
-// Notify the browser that the window hosting it is about to be moved or
-// resized. This function is only used on Windows and Linux.
+// / Notify the browser that the window hosting it is about to be moved or
+// / resized. This function is only used on Windows and Linux.
 // /
 func (self *CBrowserHostT) NotifyMoveOrResizeStarted() {
 
@@ -2744,11 +2749,11 @@ func (self *CBrowserHostT) NotifyMoveOrResizeStarted() {
 }
 
 // /
-// Returns the maximum rate in frames per second (fps) that
-// cef_render_handler_t:: OnPaint will be called for a windowless browser. The
-// actual fps may be lower if the browser cannot generate frames at the
-// requested rate. The minimum value is 1 and the maximum value is 60 (default
-// 30). This function can only be called on the UI thread.
+// / Returns the maximum rate in frames per second (fps) that
+// / cef_render_handler_t::OnPaint will be called for a windowless browser. The
+// / actual fps may be lower if the browser cannot generate frames at the
+// / requested rate. The minimum value is 1 and the maximum value is 60
+// / (default 30). This function can only be called on the UI thread.
 // /
 func (self *CBrowserHostT) GetWindowlessFrameRate() (ret int) {
 
@@ -2759,11 +2764,12 @@ func (self *CBrowserHostT) GetWindowlessFrameRate() (ret int) {
 }
 
 // /
-// Set the maximum rate in frames per second (fps) that cef_render_handler_t::
-// OnPaint will be called for a windowless browser. The actual fps may be
-// lower if the browser cannot generate frames at the requested rate. The
-// minimum value is 1 and the maximum value is 60 (default 30). Can also be
-// set at browser creation via cef_browser_tSettings.windowless_frame_rate.
+// / Set the maximum rate in frames per second (fps) that
+// / cef_render_handler_t:: OnPaint will be called for a windowless browser.
+// / The actual fps may be lower if the browser cannot generate frames at the
+// / requested rate. The minimum value is 1 and the maximum value is 60
+// / (default 30). Can also be set at browser creation via
+// / cef_browser_tSettings.windowless_frame_rate.
 // /
 func (self *CBrowserHostT) SetWindowlessFrameRate(
 	frame_rate int,
@@ -2774,28 +2780,29 @@ func (self *CBrowserHostT) SetWindowlessFrameRate(
 }
 
 // /
-// Begins a new composition or updates the existing composition. Blink has a
-// special node (a composition node) that allows the input function to change
-// text without affecting other DOM nodes. |text| is the optional text that
-// will be inserted into the composition node. |underlines| is an optional set
-// of ranges that will be underlined in the resulting text.
-// |replacement_range| is an optional range of the existing text that will be
-// replaced. |selection_range| is an optional range of the resulting text that
-// will be selected after insertion or replacement. The |replacement_range|
-// value is only used on OS X.
-//
-// This function may be called multiple times as the composition changes. When
-// the client is done making changes the composition should either be canceled
-// or completed. To cancel the composition call ImeCancelComposition. To
-// complete the composition call either ImeCommitText or
-// ImeFinishComposingText. Completion is usually signaled when:
-//
-//	A. The client receives a WM_IME_COMPOSITION message with a GCS_RESULTSTR
-//	   flag (on Windows), or;
-//	B. The client receives a &quot;commit&quot; signal of GtkIMContext (on Linux), or;
-//	C. insertText of NSTextInput is called (on Mac).
-//
-// This function is only used when window rendering is disabled.
+// / Begins a new composition or updates the existing composition. Blink has a
+// / special node (a composition node) that allows the input function to change
+// / text without affecting other DOM nodes. |text| is the optional text that
+// / will be inserted into the composition node. |underlines| is an optional
+// / set of ranges that will be underlined in the resulting text.
+// / |replacement_range| is an optional range of the existing text that will be
+// / replaced. |selection_range| is an optional range of the resulting text
+// / that will be selected after insertion or replacement. The
+// / |replacement_range| value is only used on OS X.
+// /
+// / This function may be called multiple times as the composition changes.
+// / When the client is done making changes the composition should either be
+// / canceled or completed. To cancel the composition call
+// / ImeCancelComposition. To complete the composition call either
+// / ImeCommitText or ImeFinishComposingText. Completion is usually signaled
+// / when:
+// /
+// / 1. The client receives a WM_IME_COMPOSITION message with a GCS_RESULTSTR
+// /    flag (on Windows), or;
+// / 2. The client receives a &quot;commit&quot; signal of GtkIMContext (on Linux), or;
+// / 3. insertText of NSTextInput is called (on Mac).
+// /
+// / This function is only used when window rendering is disabled.
 // /
 func (self *CBrowserHostT) ImeSetComposition(
 	text string,
@@ -2811,13 +2818,13 @@ func (self *CBrowserHostT) ImeSetComposition(
 }
 
 // /
-// Completes the existing composition by optionally inserting the specified
-// |text| into the composition node. |replacement_range| is an optional range
-// of the existing text that will be replaced. |relative_cursor_pos| is where
-// the cursor will be positioned relative to the current cursor position. See
-// comments on ImeSetComposition for usage. The |replacement_range| and
-// |relative_cursor_pos| values are only used on OS X. This function is only
-// used when window rendering is disabled.
+// / Completes the existing composition by optionally inserting the specified
+// / |text| into the composition node. |replacement_range| is an optional range
+// / of the existing text that will be replaced. |relative_cursor_pos| is where
+// / the cursor will be positioned relative to the current cursor position. See
+// / comments on ImeSetComposition for usage. The |replacement_range| and
+// / |relative_cursor_pos| values are only used on OS X. This function is only
+// / used when window rendering is disabled.
 // /
 func (self *CBrowserHostT) ImeCommitText(
 	text string,
@@ -2831,10 +2838,10 @@ func (self *CBrowserHostT) ImeCommitText(
 }
 
 // /
-// Completes the existing composition by applying the current composition node
-// contents. If |keep_selection| is false (0) the current selection, if any,
-// will be discarded. See comments on ImeSetComposition for usage. This
-// function is only used when window rendering is disabled.
+// / Completes the existing composition by applying the current composition
+// / node contents. If |keep_selection| is false (0) the current selection, if
+// / any, will be discarded. See comments on ImeSetComposition for usage. This
+// / function is only used when window rendering is disabled.
 // /
 func (self *CBrowserHostT) ImeFinishComposingText(
 	keep_selection bool,
@@ -2849,9 +2856,9 @@ func (self *CBrowserHostT) ImeFinishComposingText(
 }
 
 // /
-// Cancels the existing composition and discards the composition node contents
-// without applying them. See comments on ImeSetComposition for usage. This
-// function is only used when window rendering is disabled.
+// / Cancels the existing composition and discards the composition node
+// / contents without applying them. See comments on ImeSetComposition for
+// / usage. This function is only used when window rendering is disabled.
 // /
 func (self *CBrowserHostT) ImeCancelComposition() {
 
@@ -2860,13 +2867,13 @@ func (self *CBrowserHostT) ImeCancelComposition() {
 }
 
 // /
-// Call this function when the user drags the mouse into the web view (before
-// calling DragTargetDragOver/DragTargetLeave/DragTargetDrop). |drag_data|
-// should not contain file contents as this type of data is not allowed to be
-// dragged into the web view. File contents can be removed using
-// cef_drag_data_t::ResetFileContents (for example, if |drag_data| comes from
-// cef_render_handler_t::StartDragging). This function is only used when
-// window rendering is disabled.
+// / Call this function when the user drags the mouse into the web view (before
+// / calling DragTargetDragOver/DragTargetLeave/DragTargetDrop). |drag_data|
+// / should not contain file contents as this type of data is not allowed to be
+// / dragged into the web view. File contents can be removed using
+// / cef_drag_data_t::ResetFileContents (for example, if |drag_data| comes from
+// / cef_render_handler_t::StartDragging). This function is only used when
+// / window rendering is disabled.
 // /
 func (self *CBrowserHostT) DragTargetDragEnter(
 	drag_data *CDragDataT,
@@ -2884,10 +2891,10 @@ func (self *CBrowserHostT) DragTargetDragEnter(
 }
 
 // /
-// Call this function each time the mouse is moved across the web view during
-// a drag operation (after calling DragTargetDragEnter and before calling
-// DragTargetDragLeave/DragTargetDrop). This function is only used when window
-// rendering is disabled.
+// / Call this function each time the mouse is moved across the web view during
+// / a drag operation (after calling DragTargetDragEnter and before calling
+// / DragTargetDragLeave/DragTargetDrop). This function is only used when
+// / window rendering is disabled.
 // /
 func (self *CBrowserHostT) DragTargetDragOver(
 	event *CMouseEventT,
@@ -2899,9 +2906,9 @@ func (self *CBrowserHostT) DragTargetDragOver(
 }
 
 // /
-// Call this function when the user drags the mouse out of the web view (after
-// calling DragTargetDragEnter). This function is only used when window
-// rendering is disabled.
+// / Call this function when the user drags the mouse out of the web view
+// / (after calling DragTargetDragEnter). This function is only used when
+// / window rendering is disabled.
 // /
 func (self *CBrowserHostT) DragTargetDragLeave() {
 
@@ -2910,11 +2917,11 @@ func (self *CBrowserHostT) DragTargetDragLeave() {
 }
 
 // /
-// Call this function when the user completes the drag operation by dropping
-// the object onto the web view (after calling DragTargetDragEnter). The
-// object being dropped is |drag_data|, given as an argument to the previous
-// DragTargetDragEnter call. This function is only used when window rendering
-// is disabled.
+// / Call this function when the user completes the drag operation by dropping
+// / the object onto the web view (after calling DragTargetDragEnter). The
+// / object being dropped is |drag_data|, given as an argument to the previous
+// / DragTargetDragEnter call. This function is only used when window rendering
+// / is disabled.
 // /
 func (self *CBrowserHostT) DragTargetDrop(
 	event *CMouseEventT,
@@ -2925,13 +2932,13 @@ func (self *CBrowserHostT) DragTargetDrop(
 }
 
 // /
-// Call this function when the drag operation started by a
-// cef_render_handler_t::StartDragging call has ended either in a drop or by
-// being cancelled. |x| and |y| are mouse coordinates relative to the upper-
-// left corner of the view. If the web view is both the drag source and the
-// drag target then all DragTarget* functions should be called before
-// DragSource* mthods. This function is only used when window rendering is
-// disabled.
+// / Call this function when the drag operation started by a
+// / cef_render_handler_t::StartDragging call has ended either in a drop or by
+// / being cancelled. |x| and |y| are mouse coordinates relative to the upper-
+// / left corner of the view. If the web view is both the drag source and the
+// / drag target then all DragTarget* functions should be called before
+// / DragSource* mthods. This function is only used when window rendering is
+// / disabled.
 // /
 func (self *CBrowserHostT) DragSourceEndedAt(
 	x int,
@@ -2944,12 +2951,12 @@ func (self *CBrowserHostT) DragSourceEndedAt(
 }
 
 // /
-// Call this function when the drag operation started by a
-// cef_render_handler_t::StartDragging call has completed. This function may
-// be called immediately without first calling DragSourceEndedAt to cancel a
-// drag operation. If the web view is both the drag source and the drag target
-// then all DragTarget* functions should be called before DragSource* mthods.
-// This function is only used when window rendering is disabled.
+// / Call this function when the drag operation started by a
+// / cef_render_handler_t::StartDragging call has completed. This function may
+// / be called immediately without first calling DragSourceEndedAt to cancel a
+// / drag operation. If the web view is both the drag source and the drag
+// / target then all DragTarget* functions should be called before DragSource*
+// / mthods. This function is only used when window rendering is disabled.
 // /
 func (self *CBrowserHostT) DragSourceSystemDragEnded() {
 
@@ -2958,8 +2965,8 @@ func (self *CBrowserHostT) DragSourceSystemDragEnded() {
 }
 
 // /
-// Returns the current visible navigation entry for this browser. This
-// function can only be called on the UI thread.
+// / Returns the current visible navigation entry for this browser. This
+// / function can only be called on the UI thread.
 // /
 func (self *CBrowserHostT) GetVisibleNavigationEntry() (ret *CNavigationEntryT) {
 
@@ -2970,29 +2977,29 @@ func (self *CBrowserHostT) GetVisibleNavigationEntry() (ret *CNavigationEntryT) 
 }
 
 // /
-// Set accessibility state for all frames. |accessibility_state| may be
-// default, enabled or disabled. If |accessibility_state| is STATE_DEFAULT
-// then accessibility will be disabled by default and the state may be further
-// controlled with the &quot;force-renderer-accessibility&quot; and &quot;disable-renderer-
-// accessibility&quot; command-line switches. If |accessibility_state| is
-// STATE_ENABLED then accessibility will be enabled. If |accessibility_state|
-// is STATE_DISABLED then accessibility will be completely disabled.
-//
-// For windowed browsers accessibility will be enabled in Complete mode (which
-// corresponds to kAccessibilityModeComplete in Chromium). In this mode all
-// platform accessibility objects will be created and managed by Chromium&#39;s
-// internal implementation. The client needs only to detect the screen reader
-// and call this function appropriately. For example, on macOS the client can
-// handle the @&quot;AXEnhancedUserStructure&quot; accessibility attribute to detect
-// VoiceOver state changes and on Windows the client can handle WM_GETOBJECT
-// with OBJID_CLIENT to detect accessibility readers.
-//
-// For windowless browsers accessibility will be enabled in TreeOnly mode
-// (which corresponds to kAccessibilityModeWebContentsOnly in Chromium). In
-// this mode renderer accessibility is enabled, the full tree is computed, and
-// events are passed to CefAccessibiltyHandler, but platform accessibility
-// objects are not created. The client may implement platform accessibility
-// objects using CefAccessibiltyHandler callbacks if desired.
+// / Set accessibility state for all frames. |accessibility_state| may be
+// / default, enabled or disabled. If |accessibility_state| is STATE_DEFAULT
+// / then accessibility will be disabled by default and the state may be
+// / further controlled with the &quot;force-renderer-accessibility&quot; and &quot;disable-
+// / renderer-accessibility&quot; command-line switches. If |accessibility_state| is
+// / STATE_ENABLED then accessibility will be enabled. If |accessibility_state|
+// / is STATE_DISABLED then accessibility will be completely disabled.
+// /
+// / For windowed browsers accessibility will be enabled in Complete mode
+// / (which corresponds to kAccessibilityModeComplete in Chromium). In this
+// / mode all platform accessibility objects will be created and managed by
+// / Chromium&#39;s internal implementation. The client needs only to detect the
+// / screen reader and call this function appropriately. For example, on macOS
+// / the client can handle the @&quot;AXEnhancedUserStructure&quot; accessibility
+// / attribute to detect VoiceOver state changes and on Windows the client can
+// / handle WM_GETOBJECT with OBJID_CLIENT to detect accessibility readers.
+// /
+// / For windowless browsers accessibility will be enabled in TreeOnly mode
+// / (which corresponds to kAccessibilityModeWebContentsOnly in Chromium). In
+// / this mode renderer accessibility is enabled, the full tree is computed,
+// / and events are passed to CefAccessibiltyHandler, but platform
+// / accessibility objects are not created. The client may implement platform
+// / accessibility objects using CefAccessibiltyHandler callbacks if desired.
 // /
 func (self *CBrowserHostT) SetAccessibilityState(
 	accessibility_state CStateT,
@@ -3003,9 +3010,9 @@ func (self *CBrowserHostT) SetAccessibilityState(
 }
 
 // /
-// Enable notifications of auto resize via
-// cef_display_handler_t::OnAutoResize. Notifications are disabled by default.
-// |min_size| and |max_size| define the range of allowed sizes.
+// / Enable notifications of auto resize via
+// / cef_display_handler_t::OnAutoResize. Notifications are disabled by
+// / default. |min_size| and |max_size| define the range of allowed sizes.
 // /
 func (self *CBrowserHostT) SetAutoResizeEnabled(
 	enabled bool,
@@ -3022,8 +3029,8 @@ func (self *CBrowserHostT) SetAutoResizeEnabled(
 }
 
 // /
-// Returns the extension hosted in this browser or NULL if no extension is
-// hosted. See cef_request_context_t::LoadExtension for details.
+// / Returns the extension hosted in this browser or NULL if no extension is
+// / hosted. See cef_request_context_t::LoadExtension for details.
 // /
 func (self *CBrowserHostT) GetExtension() (ret *CExtensionT) {
 
@@ -3034,9 +3041,9 @@ func (self *CBrowserHostT) GetExtension() (ret *CExtensionT) {
 }
 
 // /
-// Returns true (1) if this browser is hosting an extension background script.
-// Background hosts do not have a window and are not displayable. See
-// cef_request_context_t::LoadExtension for details.
+// / Returns true (1) if this browser is hosting an extension background
+// / script. Background hosts do not have a window and are not displayable. See
+// / cef_request_context_t::LoadExtension for details.
 // /
 func (self *CBrowserHostT) IsBackgroundHost() (ret bool) {
 
@@ -3047,9 +3054,7 @@ func (self *CBrowserHostT) IsBackgroundHost() (ret bool) {
 }
 
 // /
-//
-//	Set whether the browser&#39;s audio is muted.
-//
+// / Set whether the browser&#39;s audio is muted.
 // /
 func (self *CBrowserHostT) SetAudioMuted(
 	mute bool,
@@ -3064,8 +3069,8 @@ func (self *CBrowserHostT) SetAudioMuted(
 }
 
 // /
-// Returns true (1) if the browser&#39;s audio is muted.  This function can only
-// be called on the UI thread.
+// / Returns true (1) if the browser&#39;s audio is muted.  This function can only
+// / be called on the UI thread.
 // /
 func (self *CBrowserHostT) IsAudioMuted() (ret bool) {
 
@@ -3076,14 +3081,14 @@ func (self *CBrowserHostT) IsAudioMuted() (ret bool) {
 }
 
 // /
-// Create a new browser using the window parameters specified by |windowInfo|.
-// All values will be copied internally and the actual window (if any) will be
-// created on the UI thread. If |request_context| is NULL the global request
-// context will be used. This function can be called on any browser process
-// thread and will not block. The optional |extra_info| parameter provides an
-// opportunity to specify extra information specific to the created browser that
-// will be passed to cef_render_process_handler_t::on_browser_created() in the
-// render process.
+// / Create a new browser using the window parameters specified by |windowInfo|.
+// / All values will be copied internally and the actual window (if any) will be
+// / created on the UI thread. If |request_context| is NULL the global request
+// / context will be used. This function can be called on any browser process
+// / thread and will not block. The optional |extra_info| parameter provides an
+// / opportunity to specify extra information specific to the created browser
+// / that will be passed to cef_render_process_handler_t::on_browser_created() in
+// / the render process.
 // /
 func BrowserHostCreateBrowser(
 	windowInfo *CWindowInfoT,
@@ -3117,12 +3122,12 @@ func BrowserHostCreateBrowser(
 }
 
 // /
-// Create a new browser using the window parameters specified by |windowInfo|.
-// If |request_context| is NULL the global request context will be used. This
-// function can only be called on the browser process UI thread. The optional
-// |extra_info| parameter provides an opportunity to specify extra information
-// specific to the created browser that will be passed to
-// cef_render_process_handler_t::on_browser_created() in the render process.
+// / Create a new browser using the window parameters specified by |windowInfo|.
+// / If |request_context| is NULL the global request context will be used. This
+// / function can only be called on the browser process UI thread. The optional
+// / |extra_info| parameter provides an opportunity to specify extra information
+// / specific to the created browser that will be passed to
+// / cef_render_process_handler_t::on_browser_created() in the render process.
 // /
 func BrowserHostCreateBrowserSync(
 	windowInfo *CWindowInfoT,
@@ -3158,9 +3163,9 @@ func BrowserHostCreateBrowserSync(
 // cef_browser_process_handler_capi.h, include/capi/cef_browser_process_handler_capi.h:107:3,
 
 ///
-// Structure used to implement browser process callbacks. The functions of this
-// structure will be called on the browser process main thread unless otherwise
-// indicated.
+/// Structure used to implement browser process callbacks. The functions of this
+/// structure will be called on the browser process main thread unless otherwise
+/// indicated.
 ///
 
 type cCBrowserProcessHandlerT C.cef_browser_process_handler_t
@@ -3238,8 +3243,8 @@ func (browser_process_handler *CBrowserProcessHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called on the browser process UI thread immediately after the CEF context
-// has been initialized.
+// / Called on the browser process UI thread immediately after the CEF context
+// / has been initialized.
 // /
 type OnContextInitializedHandler interface {
 	OnContextInitialized(
@@ -3248,11 +3253,11 @@ type OnContextInitializedHandler interface {
 }
 
 // /
-// Called before a child process is launched. Will be called on the browser
-// process UI thread when launching a render process and on the browser
-// process IO thread when launching a GPU process. Provides an opportunity to
-// modify the child process command line. Do not keep a reference to
-// |command_line| outside of this function.
+// / Called before a child process is launched. Will be called on the browser
+// / process UI thread when launching a render process and on the browser
+// / process IO thread when launching a GPU process. Provides an opportunity to
+// / modify the child process command line. Do not keep a reference to
+// / |command_line| outside of this function.
 // /
 type OnBeforeChildProcessLaunchHandler interface {
 	OnBeforeChildProcessLaunch(
@@ -3262,17 +3267,17 @@ type OnBeforeChildProcessLaunchHandler interface {
 }
 
 // /
-// Called from any thread when work has been scheduled for the browser process
-// main (UI) thread. This callback is used in combination with CefSettings.
-// external_message_pump and cef_do_message_loop_work() in cases where the CEF
-// message loop must be integrated into an existing application message loop
-// (see additional comments and warnings on CefDoMessageLoopWork). This
-// callback should schedule a cef_do_message_loop_work() call to happen on the
-// main (UI) thread. |delay_ms| is the requested delay in milliseconds. If
-// |delay_ms| is &lt;= 0 then the call should happen reasonably soon. If
-// |delay_ms| is &gt; 0 then the call should be scheduled to happen after the
-// specified delay and any currently pending scheduled call should be
-// cancelled.
+// / Called from any thread when work has been scheduled for the browser
+// / process main (UI) thread. This callback is used in combination with
+// / cef_settings_t.external_message_pump and cef_do_message_loop_work() in
+// / cases where the CEF message loop must be integrated into an existing
+// / application message loop (see additional comments and warnings on
+// / CefDoMessageLoopWork). This callback should schedule a
+// / cef_do_message_loop_work() call to happen on the main (UI) thread.
+// / |delay_ms| is the requested delay in milliseconds. If |delay_ms| is &lt;= 0
+// / then the call should happen reasonably soon. If |delay_ms| is &gt; 0 then the
+// / call should be scheduled to happen after the specified delay and any
+// / currently pending scheduled call should be cancelled.
 // /
 type OnScheduleMessagePumpWorkHandler interface {
 	OnScheduleMessagePumpWork(
@@ -3282,11 +3287,11 @@ type OnScheduleMessagePumpWorkHandler interface {
 }
 
 // /
-// Return the default client for use with a newly created browser window. If
-// null is returned the browser will be unmanaged (no callbacks will be
-// executed for that browser) and application shutdown will be blocked until
-// the browser window is closed manually. This function is currently only used
-// with the chrome runtime.
+// / Return the default client for use with a newly created browser window. If
+// / null is returned the browser will be unmanaged (no callbacks will be
+// / executed for that browser) and application shutdown will be blocked until
+// / the browser window is closed manually. This function is currently only
+// / used with the chrome runtime.
 // /
 type GetDefaultClientHandler interface {
 	GetDefaultClient(
@@ -3401,8 +3406,8 @@ func (browser_process_handler *CBrowserProcessHandlerT) Handler() interface{} {
 // cef_browser_view_capi.h, include/capi/views/cef_browser_view_capi.h:90:3,
 
 ///
-// A View hosting a cef_browser_t instance. Methods must be called on the
-// browser process UI thread unless otherwise indicated.
+/// A View hosting a cef_browser_t instance. Methods must be called on the
+/// browser process UI thread unless otherwise indicated.
 ///
 
 type cCBrowserViewT C.cef_browser_view_t
@@ -3487,8 +3492,8 @@ func (browser_view *CBrowserViewT) ToCViewT() *CViewT {
 }
 
 // /
-// Returns the cef_browser_t hosted by this BrowserView. Will return NULL if
-// the browser has not yet been created or has already been destroyed.
+// / Returns the cef_browser_t hosted by this BrowserView. Will return NULL if
+// / the browser has not yet been created or has already been destroyed.
 // /
 func (self *CBrowserViewT) GetBrowser() (ret *CBrowserT) {
 
@@ -3499,12 +3504,12 @@ func (self *CBrowserViewT) GetBrowser() (ret *CBrowserT) {
 }
 
 // /
-// Returns the Chrome toolbar associated with this BrowserView. Only supported
-// when using the Chrome runtime. The cef_browser_view_delegate_t::
-// get_chrome_toolbar_type() function must return a value other than
-// CEF_CTT_NONE and the toolbar will not be available until after this
-// BrowserView is added to a cef_window_t and
-// cef_view_delegate_t::on_window_changed() has been called.
+// / Returns the Chrome toolbar associated with this BrowserView. Only
+// / supported when using the Chrome runtime. The cef_browser_view_delegate_t::
+// / get_chrome_toolbar_type() function must return a value other than
+// / CEF_CTT_NONE and the toolbar will not be available until after this
+// / BrowserView is added to a cef_window_t and
+// / cef_view_delegate_t::on_window_changed() has been called.
 // /
 func (self *CBrowserViewT) GetChromeToolbar() (ret *CViewT) {
 
@@ -3515,13 +3520,13 @@ func (self *CBrowserViewT) GetChromeToolbar() (ret *CViewT) {
 }
 
 // /
-// Sets whether accelerators registered with cef_window_t::SetAccelerator are
-// triggered before or after the event is sent to the cef_browser_t. If
-// |prefer_accelerators| is true (1) then the matching accelerator will be
-// triggered immediately and the event will not be sent to the cef_browser_t.
-// If |prefer_accelerators| is false (0) then the matching accelerator will
-// only be triggered if the event is not handled by web content or by
-// cef_keyboard_handler_t. The default value is false (0).
+// / Sets whether accelerators registered with cef_window_t::SetAccelerator are
+// / triggered before or after the event is sent to the cef_browser_t. If
+// / |prefer_accelerators| is true (1) then the matching accelerator will be
+// / triggered immediately and the event will not be sent to the cef_browser_t.
+// / If |prefer_accelerators| is false (0) then the matching accelerator will
+// / only be triggered if the event is not handled by web content or by
+// / cef_keyboard_handler_t. The default value is false (0).
 // /
 func (self *CBrowserViewT) SetPreferAccelerators(
 	prefer_accelerators bool,
@@ -3536,11 +3541,11 @@ func (self *CBrowserViewT) SetPreferAccelerators(
 }
 
 // /
-// Create a new BrowserView. The underlying cef_browser_t will not be created
-// until this view is added to the views hierarchy. The optional |extra_info|
-// parameter provides an opportunity to specify extra information specific to
-// the created browser that will be passed to
-// cef_render_process_handler_t::on_browser_created() in the render process.
+// / Create a new BrowserView. The underlying cef_browser_t will not be created
+// / until this view is added to the views hierarchy. The optional |extra_info|
+// / parameter provides an opportunity to specify extra information specific to
+// / the created browser that will be passed to
+// / cef_render_process_handler_t::on_browser_created() in the render process.
 // /
 func BrowserViewCreate(
 	client *CClientT,
@@ -3579,7 +3584,7 @@ func BrowserViewCreate(
 }
 
 // /
-// Returns the BrowserView associated with |browser|.
+// / Returns the BrowserView associated with |browser|.
 // /
 func BrowserViewGetForBrowser(
 	browser *CBrowserT,
@@ -3599,9 +3604,9 @@ func BrowserViewGetForBrowser(
 // cef_browser_view_delegate_capi.h, include/capi/views/cef_browser_view_delegate_capi.h:123:3,
 
 ///
-// Implement this structure to handle BrowserView events. The functions of this
-// structure will be called on the browser process UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle BrowserView events. The functions of this
+/// structure will be called on the browser process UI thread unless otherwise
+/// indicated.
 ///
 
 type cCBrowserViewDelegateT C.cef_browser_view_delegate_t
@@ -3686,10 +3691,10 @@ func (browser_view_delegate *CBrowserViewDelegateT) ToCViewDelegateT() *CViewDel
 }
 
 // /
-// Called when |browser| associated with |browser_view| is created. This
-// function will be called after cef_life_span_handler_t::on_after_created()
-// is called for |browser| and before on_popup_browser_view_created() is
-// called for |browser|&#39;s parent delegate if |browser| is a popup.
+// / Called when |browser| associated with |browser_view| is created. This
+// / function will be called after cef_life_span_handler_t::on_after_created()
+// / is called for |browser| and before on_popup_browser_view_created() is
+// / called for |browser|&#39;s parent delegate if |browser| is a popup.
 // /
 type CBrowserViewDelegateTOnBrowserCreatedHandler interface {
 	OnBrowserCreated(
@@ -3700,10 +3705,10 @@ type CBrowserViewDelegateTOnBrowserCreatedHandler interface {
 }
 
 // /
-// Called when |browser| associated with |browser_view| is destroyed. Release
-// all references to |browser| and do not attempt to execute any functions on
-// |browser| after this callback returns. This function will be called before
-// cef_life_span_handler_t::on_before_close() is called for |browser|.
+// / Called when |browser| associated with |browser_view| is destroyed. Release
+// / all references to |browser| and do not attempt to execute any functions on
+// / |browser| after this callback returns. This function will be called before
+// / cef_life_span_handler_t::on_before_close() is called for |browser|.
 // /
 type CBrowserViewDelegateTOnBrowserDestroyedHandler interface {
 	OnBrowserDestroyed(
@@ -3714,11 +3719,11 @@ type CBrowserViewDelegateTOnBrowserDestroyedHandler interface {
 }
 
 // /
-// Called before a new popup BrowserView is created. The popup originated from
-// |browser_view|. |settings| and |client| are the values returned from
-// cef_life_span_handler_t::on_before_popup(). |is_devtools| will be true (1)
-// if the popup will be a DevTools browser. Return the delegate that will be
-// used for the new popup BrowserView.
+// / Called before a new popup BrowserView is created. The popup originated
+// / from |browser_view|. |settings| and |client| are the values returned from
+// / cef_life_span_handler_t::on_before_popup(). |is_devtools| will be true (1)
+// / if the popup will be a DevTools browser. Return the delegate that will be
+// / used for the new popup BrowserView.
 // /
 type GetDelegateForPopupBrowserViewHandler interface {
 	GetDelegateForPopupBrowserView(
@@ -3731,13 +3736,13 @@ type GetDelegateForPopupBrowserViewHandler interface {
 }
 
 // /
-// Called after |popup_browser_view| is created. This function will be called
-// after cef_life_span_handler_t::on_after_created() and on_browser_created()
-// are called for the new popup browser. The popup originated from
-// |browser_view|. |is_devtools| will be true (1) if the popup is a DevTools
-// browser. Optionally add |popup_browser_view| to the views hierarchy
-// yourself and return true (1). Otherwise return false (0) and a default
-// cef_window_t will be created for the popup.
+// / Called after |popup_browser_view| is created. This function will be called
+// / after cef_life_span_handler_t::on_after_created() and on_browser_created()
+// / are called for the new popup browser. The popup originated from
+// / |browser_view|. |is_devtools| will be true (1) if the popup is a DevTools
+// / browser. Optionally add |popup_browser_view| to the views hierarchy
+// / yourself and return true (1). Otherwise return false (0) and a default
+// / cef_window_t will be created for the popup.
 // /
 type OnPopupBrowserViewCreatedHandler interface {
 	OnPopupBrowserViewCreated(
@@ -3749,9 +3754,9 @@ type OnPopupBrowserViewCreatedHandler interface {
 }
 
 // /
-// Returns the Chrome toolbar type that will be available via
-// cef_browser_view_t::get_chrome_toolbar(). See that function for related
-// documentation.
+// / Returns the Chrome toolbar type that will be available via
+// / cef_browser_view_t::get_chrome_toolbar(). See that function for related
+// / documentation.
 // /
 type GetChromeToolbarTypeHandler interface {
 	GetChromeToolbarType(
@@ -3973,12 +3978,12 @@ func (browser_view_delegate *CBrowserViewDelegateT) Handler() interface{} {
 	return browser_view_delegate_handlers.handler[cp]
 }
 
-// cef_button_capi.h, include/capi/views/cef_button_capi.h:97:3,
+// cef_button_capi.h, include/capi/views/cef_button_capi.h:98:3,
 
 ///
-// A View representing a button. Depending on the specific type, the button
-// could be implemented by a native control or custom rendered. Methods must be
-// called on the browser process UI thread unless otherwise indicated.
+/// A View representing a button. Depending on the specific type, the button
+/// could be implemented by a native control or custom rendered. Methods must be
+/// called on the browser process UI thread unless otherwise indicated.
 ///
 
 type cCButtonT C.cef_button_t
@@ -4063,7 +4068,7 @@ func (button *CButtonT) ToCViewT() *CViewT {
 }
 
 // /
-// Returns this Button as a LabelButton or NULL if this is not a LabelButton.
+// / Returns this Button as a LabelButton or NULL if this is not a LabelButton.
 // /
 func (self *CButtonT) AsLabelButton() (ret *CLabelButtonT) {
 
@@ -4074,7 +4079,7 @@ func (self *CButtonT) AsLabelButton() (ret *CLabelButtonT) {
 }
 
 // /
-// Sets the current display state of the Button.
+// / Sets the current display state of the Button.
 // /
 func (self *CButtonT) SetState(
 	state CButtonStateT,
@@ -4085,7 +4090,7 @@ func (self *CButtonT) SetState(
 }
 
 // /
-// Returns the current display state of the Button.
+// / Returns the current display state of the Button.
 // /
 func (self *CButtonT) GetState() (ret CButtonStateT) {
 
@@ -4096,7 +4101,7 @@ func (self *CButtonT) GetState() (ret CButtonStateT) {
 }
 
 // /
-// Sets the Button will use an ink drop effect for displaying state changes.
+// / Sets the Button will use an ink drop effect for displaying state changes.
 // /
 func (self *CButtonT) SetInkDropEnabled(
 	enabled int,
@@ -4107,8 +4112,8 @@ func (self *CButtonT) SetInkDropEnabled(
 }
 
 // /
-// Sets the tooltip text that will be displayed when the user hovers the mouse
-// cursor over the Button.
+// / Sets the tooltip text that will be displayed when the user hovers the
+// / mouse cursor over the Button.
 // /
 func (self *CButtonT) SetTooltipText(
 	tooltip_text string,
@@ -4120,7 +4125,8 @@ func (self *CButtonT) SetTooltipText(
 }
 
 // /
-// Sets the accessible name that will be exposed to assistive technology (AT).
+// / Sets the accessible name that will be exposed to assistive technology
+// / (AT).
 // /
 func (self *CButtonT) SetAccessibleName(
 	name string,
@@ -4134,9 +4140,9 @@ func (self *CButtonT) SetAccessibleName(
 // cef_button_delegate_capi.h, include/capi/views/cef_button_delegate_capi.h:74:3,
 
 ///
-// Implement this structure to handle Button events. The functions of this
-// structure will be called on the browser process UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle Button events. The functions of this
+/// structure will be called on the browser process UI thread unless otherwise
+/// indicated.
 ///
 
 type cCButtonDelegateT C.cef_button_delegate_t
@@ -4221,7 +4227,7 @@ func (button_delegate *CButtonDelegateT) ToCViewDelegateT() *CViewDelegateT {
 }
 
 // /
-// Called when |button| is pressed.
+// / Called when |button| is pressed.
 // /
 type OnButtonPressedHandler interface {
 	OnButtonPressed(
@@ -4231,7 +4237,7 @@ type OnButtonPressedHandler interface {
 }
 
 // /
-// Called when the state of |button| changes.
+// / Called when the state of |button| changes.
 // /
 type OnButtonStateChangedHandler interface {
 	OnButtonStateChanged(
@@ -4427,7 +4433,7 @@ func (button_delegate *CButtonDelegateT) Handler() interface{} {
 // cef_callback_capi.h, include/capi/cef_callback_capi.h:67:3,
 
 ///
-// Generic callback structure used for asynchronous continuation.
+/// Generic callback structure used for asynchronous continuation.
 ///
 
 type cCCallbackT C.cef_callback_t
@@ -4505,7 +4511,7 @@ func (callback *CCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Continue processing.
+// / Continue processing.
 // /
 func (self *CCallbackT) Cont() {
 
@@ -4514,7 +4520,7 @@ func (self *CCallbackT) Cont() {
 }
 
 // /
-// Cancel processing.
+// / Cancel processing.
 // /
 func (self *CCallbackT) Cancel() {
 
@@ -4523,7 +4529,7 @@ func (self *CCallbackT) Cancel() {
 }
 
 ///
-// Generic callback structure used for asynchronous completion.
+/// Generic callback structure used for asynchronous completion.
 ///
 
 type cCCompletionCallbackT C.cef_completion_callback_t
@@ -4601,7 +4607,7 @@ func (completion_callback *CCompletionCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be called once the task is complete.
+// / Method that will be called once the task is complete.
 // /
 func (self *CCompletionCallbackT) OnComplete() {
 
@@ -4609,10 +4615,10 @@ func (self *CCompletionCallbackT) OnComplete() {
 
 }
 
-// cef_client_capi.h, include/capi/cef_client_capi.h:197:3,
+// cef_client_capi.h, include/capi/cef_client_capi.h:204:3,
 
 ///
-// Implement this structure to provide handler implementations.
+/// Implement this structure to provide handler implementations.
 ///
 
 type cCClientT C.cef_client_t
@@ -4690,7 +4696,7 @@ func (client *CClientT) Unref() (ret bool) {
 }
 
 // /
-// Return the handler for audio rendering events.
+// / Return the handler for audio rendering events.
 // /
 type GetAudioHandlerHandler interface {
 	GetAudioHandler(
@@ -4699,8 +4705,8 @@ type GetAudioHandlerHandler interface {
 }
 
 // /
-// Return the handler for commands. If no handler is provided the default
-// implementation will be used.
+// / Return the handler for commands. If no handler is provided the default
+// / implementation will be used.
 // /
 type GetCommandHandlerHandler interface {
 	GetCommandHandler(
@@ -4709,8 +4715,8 @@ type GetCommandHandlerHandler interface {
 }
 
 // /
-// Return the handler for context menus. If no handler is provided the default
-// implementation will be used.
+// / Return the handler for context menus. If no handler is provided the
+// / default implementation will be used.
 // /
 type GetContextMenuHandlerHandler interface {
 	GetContextMenuHandler(
@@ -4719,8 +4725,8 @@ type GetContextMenuHandlerHandler interface {
 }
 
 // /
-// Return the handler for dialogs. If no handler is provided the default
-// implementation will be used.
+// / Return the handler for dialogs. If no handler is provided the default
+// / implementation will be used.
 // /
 type GetDialogHandlerHandler interface {
 	GetDialogHandler(
@@ -4729,7 +4735,7 @@ type GetDialogHandlerHandler interface {
 }
 
 // /
-// Return the handler for browser display state events.
+// / Return the handler for browser display state events.
 // /
 type GetDisplayHandlerHandler interface {
 	GetDisplayHandler(
@@ -4738,8 +4744,8 @@ type GetDisplayHandlerHandler interface {
 }
 
 // /
-// Return the handler for download events. If no handler is returned downloads
-// will not be allowed.
+// / Return the handler for download events. If no handler is returned
+// / downloads will not be allowed.
 // /
 type GetDownloadHandlerHandler interface {
 	GetDownloadHandler(
@@ -4748,7 +4754,7 @@ type GetDownloadHandlerHandler interface {
 }
 
 // /
-// Return the handler for drag events.
+// / Return the handler for drag events.
 // /
 type GetDragHandlerHandler interface {
 	GetDragHandler(
@@ -4757,7 +4763,7 @@ type GetDragHandlerHandler interface {
 }
 
 // /
-// Return the handler for find result events.
+// / Return the handler for find result events.
 // /
 type GetFindHandlerHandler interface {
 	GetFindHandler(
@@ -4766,7 +4772,7 @@ type GetFindHandlerHandler interface {
 }
 
 // /
-// Return the handler for focus events.
+// / Return the handler for focus events.
 // /
 type GetFocusHandlerHandler interface {
 	GetFocusHandler(
@@ -4775,9 +4781,9 @@ type GetFocusHandlerHandler interface {
 }
 
 // /
-// Return the handler for events related to cef_frame_t lifespan. This
-// function will be called once during cef_browser_t creation and the result
-// will be cached for performance reasons.
+// / Return the handler for events related to cef_frame_t lifespan. This
+// / function will be called once during cef_browser_t creation and the result
+// / will be cached for performance reasons.
 // /
 type GetFrameHandlerHandler interface {
 	GetFrameHandler(
@@ -4786,8 +4792,17 @@ type GetFrameHandlerHandler interface {
 }
 
 // /
-// Return the handler for JavaScript dialogs. If no handler is provided the
-// default implementation will be used.
+// / Return the handler for permission requests.
+// /
+type GetPermissionHandlerHandler interface {
+	GetPermissionHandler(
+		self *CClientT,
+	) (ret *CPermissionHandlerT)
+}
+
+// /
+// / Return the handler for JavaScript dialogs. If no handler is provided the
+// / default implementation will be used.
 // /
 type GetJsdialogHandlerHandler interface {
 	GetJsdialogHandler(
@@ -4796,7 +4811,7 @@ type GetJsdialogHandlerHandler interface {
 }
 
 // /
-// Return the handler for keyboard events.
+// / Return the handler for keyboard events.
 // /
 type GetKeyboardHandlerHandler interface {
 	GetKeyboardHandler(
@@ -4805,7 +4820,7 @@ type GetKeyboardHandlerHandler interface {
 }
 
 // /
-// Return the handler for browser life span events.
+// / Return the handler for browser life span events.
 // /
 type GetLifeSpanHandlerHandler interface {
 	GetLifeSpanHandler(
@@ -4814,7 +4829,7 @@ type GetLifeSpanHandlerHandler interface {
 }
 
 // /
-// Return the handler for browser load status events.
+// / Return the handler for browser load status events.
 // /
 type CClientTGetLoadHandlerHandler interface {
 	GetLoadHandler(
@@ -4823,8 +4838,8 @@ type CClientTGetLoadHandlerHandler interface {
 }
 
 // /
-// Return the handler for printing on Linux. If a print handler is not
-// provided then printing will not be supported on the Linux platform.
+// / Return the handler for printing on Linux. If a print handler is not
+// / provided then printing will not be supported on the Linux platform.
 // /
 type GetPrintHandlerHandler interface {
 	GetPrintHandler(
@@ -4833,7 +4848,7 @@ type GetPrintHandlerHandler interface {
 }
 
 // /
-// Return the handler for off-screen rendering events.
+// / Return the handler for off-screen rendering events.
 // /
 type GetRenderHandlerHandler interface {
 	GetRenderHandler(
@@ -4842,7 +4857,7 @@ type GetRenderHandlerHandler interface {
 }
 
 // /
-// Return the handler for browser request events.
+// / Return the handler for browser request events.
 // /
 type GetRequestHandlerHandler interface {
 	GetRequestHandler(
@@ -4851,9 +4866,9 @@ type GetRequestHandlerHandler interface {
 }
 
 // /
-// Called when a new message is received from a different process. Return true
-// (1) if the message was handled or false (0) otherwise.  It is safe to keep
-// a reference to |message| outside of this callback.
+// / Called when a new message is received from a different process. Return
+// / true (1) if the message was handled or false (0) otherwise.  It is safe to
+// / keep a reference to |message| outside of this callback.
 // /
 type CClientTOnProcessMessageReceivedHandler interface {
 	OnProcessMessageReceived(
@@ -4877,6 +4892,7 @@ var client_handlers = struct {
 	get_find_handler_handler            map[*cCClientT]GetFindHandlerHandler
 	get_focus_handler_handler           map[*cCClientT]GetFocusHandlerHandler
 	get_frame_handler_handler           map[*cCClientT]GetFrameHandlerHandler
+	get_permission_handler_handler      map[*cCClientT]GetPermissionHandlerHandler
 	get_jsdialog_handler_handler        map[*cCClientT]GetJsdialogHandlerHandler
 	get_keyboard_handler_handler        map[*cCClientT]GetKeyboardHandlerHandler
 	get_life_span_handler_handler       map[*cCClientT]GetLifeSpanHandlerHandler
@@ -4897,6 +4913,7 @@ var client_handlers = struct {
 	map[*cCClientT]GetFindHandlerHandler{},
 	map[*cCClientT]GetFocusHandlerHandler{},
 	map[*cCClientT]GetFrameHandlerHandler{},
+	map[*cCClientT]GetPermissionHandlerHandler{},
 	map[*cCClientT]GetJsdialogHandlerHandler{},
 	map[*cCClientT]GetKeyboardHandlerHandler{},
 	map[*cCClientT]GetLifeSpanHandlerHandler{},
@@ -5007,6 +5024,13 @@ func (client *CClientT) bind(a interface{}) *CClientT {
 		delete(client_handlers.get_frame_handler_handler, cp)
 	}
 
+	if h, ok := a.(GetPermissionHandlerHandler); ok {
+		client_handlers.get_permission_handler_handler[cp] = h
+		noBind = false
+	} else {
+		delete(client_handlers.get_permission_handler_handler, cp)
+	}
+
 	if h, ok := a.(GetJsdialogHandlerHandler); ok {
 		client_handlers.get_jsdialog_handler_handler[cp] = h
 		noBind = false
@@ -5086,6 +5110,7 @@ func unbindAllCClientT(cp *cCClientT) {
 	delete(client_handlers.get_find_handler_handler, cp)
 	delete(client_handlers.get_focus_handler_handler, cp)
 	delete(client_handlers.get_frame_handler_handler, cp)
+	delete(client_handlers.get_permission_handler_handler, cp)
 	delete(client_handlers.get_jsdialog_handler_handler, cp)
 	delete(client_handlers.get_keyboard_handler_handler, cp)
 	delete(client_handlers.get_life_span_handler_handler, cp)
@@ -5112,8 +5137,8 @@ func (client *CClientT) Handler() interface{} {
 // cef_command_handler_capi.h, include/capi/cef_command_handler_capi.h:74:3,
 
 ///
-// Implement this structure to handle events related to commands. The functions
-// of this structure will be called on the UI thread.
+/// Implement this structure to handle events related to commands. The functions
+/// of this structure will be called on the UI thread.
 ///
 
 type cCCommandHandlerT C.cef_command_handler_t
@@ -5191,13 +5216,13 @@ func (command_handler *CCommandHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called to execute a Chrome command triggered via menu selection or keyboard
-// shortcut. Values for |command_id| can be found in the cef_command_ids.h
-// file. |disposition| provides information about the intended command target.
-// Return true (1) if the command was handled or false (0) for the default
-// implementation. For context menu commands this will be called after
-// cef_context_menu_handler_t::OnContextMenuCommand. Only used with the Chrome
-// runtime.
+// / Called to execute a Chrome command triggered via menu selection or
+// / keyboard shortcut. Values for |command_id| can be found in the
+// / cef_command_ids.h file. |disposition| provides information about the
+// / intended command target. Return true (1) if the command was handled or
+// / false (0) for the default implementation. For context menu commands this
+// / will be called after cef_context_menu_handler_t::OnContextMenuCommand.
+// / Only used with the Chrome runtime.
 // /
 func (self *CCommandHandlerT) OnChromeCommand(
 	browser *CBrowserT,
@@ -5219,15 +5244,15 @@ func (self *CCommandHandlerT) OnChromeCommand(
 // cef_command_line_capi.h, include/capi/cef_command_line_capi.h:198:3,
 
 ///
-// Structure used to create and/or parse command line arguments. Arguments with
-// '--', '-' and, on Windows, '/' prefixes are considered switches. Switches
-// will always precede any arguments without switch prefixes. Switches can
-// optionally have a value specified using the '=' delimiter (e.g.
-// "-switch=value"). An argument of "--" will terminate switch parsing with all
-// subsequent tokens, regardless of prefix, being interpreted as non-switch
-// arguments. Switch names should be lowercase ASCII and will be converted to
-// such if necessary. Switch values will retain the original case and UTF8
-// encoding. This structure can be used before cef_initialize() is called.
+/// Structure used to create and/or parse command line arguments. Arguments with
+/// "--", "-" and, on Windows, "/" prefixes are considered switches. Switches
+/// will always precede any arguments without switch prefixes. Switches can
+/// optionally have a value specified using the "=" delimiter (e.g.
+/// "-switch=value"). An argument of "--" will terminate switch parsing with all
+/// subsequent tokens, regardless of prefix, being interpreted as non-switch
+/// arguments. Switch names should be lowercase ASCII and will be converted to
+/// such if necessary. Switch values will retain the original case and UTF8
+/// encoding. This structure can be used before cef_initialize() is called.
 ///
 
 type cCCommandLineT C.cef_command_line_t
@@ -5305,8 +5330,8 @@ func (command_line *CCommandLineT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid. Do not call any other functions
-// if this function returns false (0).
+// / Returns true (1) if this object is valid. Do not call any other functions
+// / if this function returns false (0).
 // /
 func (self *CCommandLineT) IsValid() (ret bool) {
 
@@ -5317,8 +5342,8 @@ func (self *CCommandLineT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if the values of this object are read-only. Some APIs may
-// expose read-only objects.
+// / Returns true (1) if the values of this object are read-only. Some APIs may
+// / expose read-only objects.
 // /
 func (self *CCommandLineT) IsReadOnly() (ret bool) {
 
@@ -5329,7 +5354,7 @@ func (self *CCommandLineT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Returns a writable copy of this object.
+// / Returns a writable copy of this object.
 // /
 func (self *CCommandLineT) Copy() (ret *CCommandLineT) {
 
@@ -5340,8 +5365,8 @@ func (self *CCommandLineT) Copy() (ret *CCommandLineT) {
 }
 
 // /
-// Initialize the command line with the string returned by calling
-// GetCommandLineW(). This function is only supported on Windows.
+// / Initialize the command line with the string returned by calling
+// / GetCommandLineW(). This function is only supported on Windows.
 // /
 func (self *CCommandLineT) InitFromString(
 	command_line string,
@@ -5353,8 +5378,8 @@ func (self *CCommandLineT) InitFromString(
 }
 
 // /
-// Reset the command-line switches and arguments but leave the program
-// component unchanged.
+// / Reset the command-line switches and arguments but leave the program
+// / component unchanged.
 // /
 func (self *CCommandLineT) Reset() {
 
@@ -5363,8 +5388,8 @@ func (self *CCommandLineT) Reset() {
 }
 
 // /
-// Retrieve the original command line string as a vector of strings. The argv
-// array: { program, [(--|-|/)switch[=value]]*, [--], [argument]* }
+// / Retrieve the original command line string as a vector of strings. The argv
+// / array: `{ program, [(--|-|/)switch[=value]]*, [--], [argument]* }`
 // /
 func (self *CCommandLineT) GetArgv(
 	argv CStringListT,
@@ -5375,8 +5400,8 @@ func (self *CCommandLineT) GetArgv(
 }
 
 // /
-// Constructs and returns the represented command line string. Use this
-// function cautiously because quoting behavior is unclear.
+// / Constructs and returns the represented command line string. Use this
+// / function cautiously because quoting behavior is unclear.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CCommandLineT) GetCommandLineString() (ret string) {
@@ -5392,7 +5417,7 @@ func (self *CCommandLineT) GetCommandLineString() (ret string) {
 }
 
 // /
-// Get the program part of the command line string (the first item).
+// / Get the program part of the command line string (the first item).
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CCommandLineT) GetProgram() (ret string) {
@@ -5408,7 +5433,7 @@ func (self *CCommandLineT) GetProgram() (ret string) {
 }
 
 // /
-// Set the program part of the command line string (the first item).
+// / Set the program part of the command line string (the first item).
 // /
 func (self *CCommandLineT) SetProgram(
 	program string,
@@ -5420,7 +5445,7 @@ func (self *CCommandLineT) SetProgram(
 }
 
 // /
-// Returns true (1) if the command line has switches.
+// / Returns true (1) if the command line has switches.
 // /
 func (self *CCommandLineT) HasSwitches() (ret bool) {
 
@@ -5431,7 +5456,7 @@ func (self *CCommandLineT) HasSwitches() (ret bool) {
 }
 
 // /
-// Returns true (1) if the command line contains the given switch.
+// / Returns true (1) if the command line contains the given switch.
 // /
 func (self *CCommandLineT) HasSwitch(
 	name string,
@@ -5445,8 +5470,8 @@ func (self *CCommandLineT) HasSwitch(
 }
 
 // /
-// Returns the value associated with the given switch. If the switch has no
-// value or isn&#39;t present this function returns the NULL string.
+// / Returns the value associated with the given switch. If the switch has no
+// / value or isn&#39;t present this function returns the NULL string.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CCommandLineT) GetSwitchValue(
@@ -5465,8 +5490,8 @@ func (self *CCommandLineT) GetSwitchValue(
 }
 
 // /
-// Returns the map of switch names and values. If a switch has no value an
-// NULL string is returned.
+// / Returns the map of switch names and values. If a switch has no value an
+// / NULL string is returned.
 // /
 func (self *CCommandLineT) GetSwitches(
 	switches CStringMapT,
@@ -5477,8 +5502,8 @@ func (self *CCommandLineT) GetSwitches(
 }
 
 // /
-// Add a switch to the end of the command line. If the switch has no value
-// pass an NULL value string.
+// / Add a switch to the end of the command line. If the switch has no value
+// / pass an NULL value string.
 // /
 func (self *CCommandLineT) AppendSwitch(
 	name string,
@@ -5490,7 +5515,7 @@ func (self *CCommandLineT) AppendSwitch(
 }
 
 // /
-// Add a switch with the specified value to the end of the command line.
+// / Add a switch with the specified value to the end of the command line.
 // /
 func (self *CCommandLineT) AppendSwitchWithValue(
 	name string,
@@ -5504,7 +5529,7 @@ func (self *CCommandLineT) AppendSwitchWithValue(
 }
 
 // /
-// True if there are remaining command line arguments.
+// / True if there are remaining command line arguments.
 // /
 func (self *CCommandLineT) HasArguments() (ret bool) {
 
@@ -5515,7 +5540,7 @@ func (self *CCommandLineT) HasArguments() (ret bool) {
 }
 
 // /
-// Get the remaining command line arguments.
+// / Get the remaining command line arguments.
 // /
 func (self *CCommandLineT) GetArguments(
 	arguments CStringListT,
@@ -5526,7 +5551,7 @@ func (self *CCommandLineT) GetArguments(
 }
 
 // /
-// Add an argument to the end of the command line.
+// / Add an argument to the end of the command line.
 // /
 func (self *CCommandLineT) AppendArgument(
 	argument string,
@@ -5538,8 +5563,8 @@ func (self *CCommandLineT) AppendArgument(
 }
 
 // /
-// Insert a command before the current command. Common for debuggers, like
-// &quot;valgrind&quot; or &quot;gdb --args&quot;.
+// / Insert a command before the current command. Common for debuggers, like
+// / &quot;valgrind&quot; or &quot;gdb --args&quot;.
 // /
 func (self *CCommandLineT) PrependWrapper(
 	wrapper string,
@@ -5551,7 +5576,7 @@ func (self *CCommandLineT) PrependWrapper(
 }
 
 // /
-// Create a new cef_command_line_t instance.
+// / Create a new cef_command_line_t instance.
 // /
 func CommandLineCreate() (ret *CCommandLineT) {
 
@@ -5562,8 +5587,8 @@ func CommandLineCreate() (ret *CCommandLineT) {
 }
 
 // /
-// Returns the singleton global cef_command_line_t object. The returned object
-// will be read-only.
+// / Returns the singleton global cef_command_line_t object. The returned object
+// / will be read-only.
 // /
 func CommandLineGetGlobal() (ret *CCommandLineT) {
 
@@ -5576,7 +5601,7 @@ func CommandLineGetGlobal() (ret *CCommandLineT) {
 // cef_context_menu_handler_capi.h, include/capi/cef_context_menu_handler_capi.h:75:3,
 
 ///
-// Callback structure used for continuation of custom context menu display.
+/// Callback structure used for continuation of custom context menu display.
 ///
 
 type cCRunContextMenuCallbackT C.cef_run_context_menu_callback_t
@@ -5654,8 +5679,8 @@ func (run_context_menu_callback *CRunContextMenuCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Complete context menu display by selecting the specified |command_id| and
-// |event_flags|.
+// / Complete context menu display by selecting the specified |command_id| and
+// / |event_flags|.
 // /
 func (self *CRunContextMenuCallbackT) Cont(
 	command_id int,
@@ -5667,7 +5692,7 @@ func (self *CRunContextMenuCallbackT) Cont(
 }
 
 // /
-// Cancel context menu display.
+// / Cancel context menu display.
 // /
 func (self *CRunContextMenuCallbackT) Cancel() {
 
@@ -5676,8 +5701,108 @@ func (self *CRunContextMenuCallbackT) Cancel() {
 }
 
 ///
-// Implement this structure to handle context menu events. The functions of this
-// structure will be called on the UI thread.
+/// Callback structure used for continuation of custom quick menu display.
+///
+
+type cCRunQuickMenuCallbackT C.cef_run_quick_menu_callback_t
+
+// Go type for cef_run_quick_menu_callback_t
+type CRunQuickMenuCallbackT struct {
+	noCopy                     noCopy
+	pc_run_quick_menu_callback *cCRunQuickMenuCallbackT
+	beUnrefed                  unrefedBy
+}
+
+func (p *CRunQuickMenuCallbackT) Pass() (ret *CRunQuickMenuCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+		ret = newCRunQuickMenuCallbackT((*C.cef_run_quick_menu_callback_t)(p.pc_run_quick_menu_callback), byCef)
+	case byApi, byCef:
+		ret = p
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+
+	return ret
+}
+
+func (self *CRunQuickMenuCallbackT) NewRef() (newP *CRunQuickMenuCallbackT) {
+	if self == nil {
+		return newP
+	}
+	gop := self.pc_run_quick_menu_callback
+	BaseAddRef(gop)
+	newP = newCRunQuickMenuCallbackT((*C.cef_run_quick_menu_callback_t)(gop), byApp)
+	return newP
+}
+
+// Go type CRunQuickMenuCallbackT wraps cef type *C.cef_run_quick_menu_callback_t
+func newCRunQuickMenuCallbackT(p *C.cef_run_quick_menu_callback_t, unrefedBy unrefedBy) *CRunQuickMenuCallbackT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T394.1:")
+	pc := (*cCRunQuickMenuCallbackT)(p)
+	go_run_quick_menu_callback := &CRunQuickMenuCallbackT{noCopy{}, pc, unrefedBy}
+	// BaseAddRef(pc)
+	runtime.SetFinalizer(go_run_quick_menu_callback, func(g *CRunQuickMenuCallbackT) {
+		// same as g.Unref()
+		if g.beUnrefed == byApp && g.pc_run_quick_menu_callback != nil {
+			Tracef(unsafe.Pointer(g.pc_run_quick_menu_callback), "T394.2:")
+			BaseRelease(g.pc_run_quick_menu_callback)
+		}
+	})
+
+	return go_run_quick_menu_callback
+}
+
+// *C.cef_run_quick_menu_callback_t has refCounted interface
+func (run_quick_menu_callback *CRunQuickMenuCallbackT) HasOneRef() bool {
+	return BaseHasOneRef(run_quick_menu_callback.pc_run_quick_menu_callback)
+}
+
+func (p *cCRunQuickMenuCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (run_quick_menu_callback *CRunQuickMenuCallbackT) Unref() (ret bool) {
+	if run_quick_menu_callback == nil {
+		return
+	}
+	if run_quick_menu_callback.beUnrefed == byApp {
+		ret = BaseRelease(run_quick_menu_callback.pc_run_quick_menu_callback)
+		run_quick_menu_callback.beUnrefed = unrefed
+	}
+	run_quick_menu_callback.pc_run_quick_menu_callback = nil
+	return ret
+}
+
+// /
+// / Complete quick menu display by selecting the specified |command_id| and
+// / |event_flags|.
+// /
+func (self *CRunQuickMenuCallbackT) Cont(
+	command_id int,
+	event_flags CEventFlagsT,
+) {
+
+	C.cefingo_run_quick_menu_callback_cont((*C.cef_run_quick_menu_callback_t)(self.pc_run_quick_menu_callback), (C.int)(command_id), (C.cef_event_flags_t)(event_flags))
+
+}
+
+// /
+// / Cancel quick menu display.
+// /
+func (self *CRunQuickMenuCallbackT) Cancel() {
+
+	C.cefingo_run_quick_menu_callback_cancel((*C.cef_run_quick_menu_callback_t)(self.pc_run_quick_menu_callback))
+
+}
+
+///
+/// Implement this structure to handle context menu events. The functions of
+/// this structure will be called on the UI thread.
 ///
 
 type cCContextMenuHandlerT C.cef_context_menu_handler_t
@@ -5755,11 +5880,11 @@ func (context_menu_handler *CContextMenuHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called before a context menu is displayed. |params| provides information
-// about the context menu state. |model| initially contains the default
-// context menu. The |model| can be cleared to show no context menu or
-// modified to show a custom menu. Do not keep references to |params| or
-// |model| outside of this callback.
+// / Called before a context menu is displayed. |params| provides information
+// / about the context menu state. |model| initially contains the default
+// / context menu. The |model| can be cleared to show no context menu or
+// / modified to show a custom menu. Do not keep references to |params| or
+// / |model| outside of this callback.
 // /
 type OnBeforeContextMenuHandler interface {
 	OnBeforeContextMenu(
@@ -5772,12 +5897,12 @@ type OnBeforeContextMenuHandler interface {
 }
 
 // /
-// Called to allow custom display of the context menu. |params| provides
-// information about the context menu state. |model| contains the context menu
-// model resulting from OnBeforeContextMenu. For custom display return true
-// (1) and execute |callback| either synchronously or asynchronously with the
-// selected command ID. For default display return false (0). Do not keep
-// references to |params| or |model| outside of this callback.
+// / Called to allow custom display of the context menu. |params| provides
+// / information about the context menu state. |model| contains the context
+// / menu model resulting from OnBeforeContextMenu. For custom display return
+// / true (1) and execute |callback| either synchronously or asynchronously
+// / with the selected command ID. For default display return false (0). Do not
+// / keep references to |params| or |model| outside of this callback.
 // /
 type RunContextMenuHandler interface {
 	RunContextMenu(
@@ -5791,13 +5916,13 @@ type RunContextMenuHandler interface {
 }
 
 // /
-// Called to execute a command selected from the context menu. Return true (1)
-// if the command was handled or false (0) for the default implementation. See
-// cef_menu_id_t for the command ids that have default implementations. All
-// user-defined command ids should be between MENU_ID_USER_FIRST and
-// MENU_ID_USER_LAST. |params| will have the same values as what was passed to
-// on_before_context_menu(). Do not keep a reference to |params| outside of
-// this callback.
+// / Called to execute a command selected from the context menu. Return true
+// / (1) if the command was handled or false (0) for the default
+// / implementation. See cef_menu_id_t for the command ids that have default
+// / implementations. All user-defined command ids should be between
+// / MENU_ID_USER_FIRST and MENU_ID_USER_LAST. |params| will have the same
+// / values as what was passed to on_before_context_menu(). Do not keep a
+// / reference to |params| outside of this callback.
 // /
 type OnContextMenuCommandHandler interface {
 	OnContextMenuCommand(
@@ -5811,11 +5936,60 @@ type OnContextMenuCommandHandler interface {
 }
 
 // /
-// Called when the context menu is dismissed irregardless of whether the menu
-// was NULL or a command was selected.
+// / Called when the context menu is dismissed irregardless of whether the menu
+// / was canceled or a command was selected.
 // /
 type OnContextMenuDismissedHandler interface {
 	OnContextMenuDismissed(
+		self *CContextMenuHandlerT,
+		browser *CBrowserT,
+		frame *CFrameT,
+	)
+}
+
+// /
+// / Called to allow custom display of the quick menu for a windowless browser.
+// / |location| is the top left corner of the selected region. |size| is the
+// / size of the selected region. |edit_state_flags| is a combination of flags
+// / that represent the state of the quick menu. Return true (1) if the menu
+// / will be handled and execute |callback| either synchronously or
+// / asynchronously with the selected command ID. Return false (0) to cancel
+// / the menu.
+// /
+type RunQuickMenuHandler interface {
+	RunQuickMenu(
+		self *CContextMenuHandlerT,
+		browser *CBrowserT,
+		frame *CFrameT,
+		location *CPointT,
+		size *CSizeT,
+		edit_state_flags CQuickMenuEditStateFlagsT,
+		callback *CRunQuickMenuCallbackT,
+	) (ret bool)
+}
+
+// /
+// / Called to execute a command selected from the quick menu for a windowless
+// / browser. Return true (1) if the command was handled or false (0) for the
+// / default implementation. See cef_menu_id_t for command IDs that have
+// / default implementations.
+// /
+type OnQuickMenuCommandHandler interface {
+	OnQuickMenuCommand(
+		self *CContextMenuHandlerT,
+		browser *CBrowserT,
+		frame *CFrameT,
+		command_id int,
+		event_flags CEventFlagsT,
+	) (ret bool)
+}
+
+// /
+// / Called when the quick menu for a windowless browser is dismissed
+// / irregardless of whether the menu was canceled or a command was selected.
+// /
+type OnQuickMenuDismissedHandler interface {
+	OnQuickMenuDismissed(
 		self *CContextMenuHandlerT,
 		browser *CBrowserT,
 		frame *CFrameT,
@@ -5828,12 +6002,18 @@ var context_menu_handler_handlers = struct {
 	run_context_menu_handler          map[*cCContextMenuHandlerT]RunContextMenuHandler
 	on_context_menu_command_handler   map[*cCContextMenuHandlerT]OnContextMenuCommandHandler
 	on_context_menu_dismissed_handler map[*cCContextMenuHandlerT]OnContextMenuDismissedHandler
+	run_quick_menu_handler            map[*cCContextMenuHandlerT]RunQuickMenuHandler
+	on_quick_menu_command_handler     map[*cCContextMenuHandlerT]OnQuickMenuCommandHandler
+	on_quick_menu_dismissed_handler   map[*cCContextMenuHandlerT]OnQuickMenuDismissedHandler
 }{
 	map[*cCContextMenuHandlerT]interface{}{},
 	map[*cCContextMenuHandlerT]OnBeforeContextMenuHandler{},
 	map[*cCContextMenuHandlerT]RunContextMenuHandler{},
 	map[*cCContextMenuHandlerT]OnContextMenuCommandHandler{},
 	map[*cCContextMenuHandlerT]OnContextMenuDismissedHandler{},
+	map[*cCContextMenuHandlerT]RunQuickMenuHandler{},
+	map[*cCContextMenuHandlerT]OnQuickMenuCommandHandler{},
+	map[*cCContextMenuHandlerT]OnQuickMenuDismissedHandler{},
 }
 
 // allocCContextMenuHandlerT allocates CContextMenuHandlerT and construct it
@@ -5894,6 +6074,27 @@ func (context_menu_handler *CContextMenuHandlerT) bind(a interface{}) *CContextM
 		delete(context_menu_handler_handlers.on_context_menu_dismissed_handler, cp)
 	}
 
+	if h, ok := a.(RunQuickMenuHandler); ok {
+		context_menu_handler_handlers.run_quick_menu_handler[cp] = h
+		noBind = false
+	} else {
+		delete(context_menu_handler_handlers.run_quick_menu_handler, cp)
+	}
+
+	if h, ok := a.(OnQuickMenuCommandHandler); ok {
+		context_menu_handler_handlers.on_quick_menu_command_handler[cp] = h
+		noBind = false
+	} else {
+		delete(context_menu_handler_handlers.on_quick_menu_command_handler, cp)
+	}
+
+	if h, ok := a.(OnQuickMenuDismissedHandler); ok {
+		context_menu_handler_handlers.on_quick_menu_dismissed_handler[cp] = h
+		noBind = false
+	} else {
+		delete(context_menu_handler_handlers.on_quick_menu_dismissed_handler, cp)
+	}
+
 	if noBind {
 		Panicln("F229: *CContextMenuHandlerT No bind")
 	}
@@ -5911,6 +6112,9 @@ func unbindAllCContextMenuHandlerT(cp *cCContextMenuHandlerT) {
 	delete(context_menu_handler_handlers.run_context_menu_handler, cp)
 	delete(context_menu_handler_handlers.on_context_menu_command_handler, cp)
 	delete(context_menu_handler_handlers.on_context_menu_dismissed_handler, cp)
+	delete(context_menu_handler_handlers.run_quick_menu_handler, cp)
+	delete(context_menu_handler_handlers.on_quick_menu_command_handler, cp)
+	delete(context_menu_handler_handlers.on_quick_menu_dismissed_handler, cp)
 }
 
 func (context_menu_handler *CContextMenuHandlerT) UnbindAll() {
@@ -5927,8 +6131,8 @@ func (context_menu_handler *CContextMenuHandlerT) Handler() interface{} {
 }
 
 ///
-// Provides information about the context menu state. The ethods of this
-// structure can only be accessed on browser process the UI thread.
+/// Provides information about the context menu state. The functions of this
+/// structure can only be accessed on browser process the UI thread.
 ///
 
 type cCContextMenuParamsT C.cef_context_menu_params_t
@@ -6006,8 +6210,8 @@ func (context_menu_params *CContextMenuParamsT) Unref() (ret bool) {
 }
 
 // /
-// Returns the X coordinate of the mouse where the context menu was invoked.
-// Coords are relative to the associated RenderView&#39;s origin.
+// / Returns the X coordinate of the mouse where the context menu was invoked.
+// / Coords are relative to the associated RenderView&#39;s origin.
 // /
 func (self *CContextMenuParamsT) GetXcoord() (ret bool) {
 
@@ -6018,8 +6222,8 @@ func (self *CContextMenuParamsT) GetXcoord() (ret bool) {
 }
 
 // /
-// Returns the Y coordinate of the mouse where the context menu was invoked.
-// Coords are relative to the associated RenderView&#39;s origin.
+// / Returns the Y coordinate of the mouse where the context menu was invoked.
+// / Coords are relative to the associated RenderView&#39;s origin.
 // /
 func (self *CContextMenuParamsT) GetYcoord() (ret bool) {
 
@@ -6030,8 +6234,8 @@ func (self *CContextMenuParamsT) GetYcoord() (ret bool) {
 }
 
 // /
-// Returns flags representing the type of node that the context menu was
-// invoked on.
+// / Returns flags representing the type of node that the context menu was
+// / invoked on.
 // /
 func (self *CContextMenuParamsT) GetTypeFlags() (ret CContextMenuTypeFlagsT) {
 
@@ -6042,8 +6246,8 @@ func (self *CContextMenuParamsT) GetTypeFlags() (ret CContextMenuTypeFlagsT) {
 }
 
 // /
-// Returns the URL of the link, if any, that encloses the node that the
-// context menu was invoked on.
+// / Returns the URL of the link, if any, that encloses the node that the
+// / context menu was invoked on.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetLinkUrl() (ret string) {
@@ -6059,8 +6263,8 @@ func (self *CContextMenuParamsT) GetLinkUrl() (ret string) {
 }
 
 // /
-// Returns the link URL, if any, to be used ONLY for &quot;copy link address&quot;. We
-// don&#39;t validate this field in the frontend process.
+// / Returns the link URL, if any, to be used ONLY for &quot;copy link address&quot;. We
+// / don&#39;t validate this field in the frontend process.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetUnfilteredLinkUrl() (ret string) {
@@ -6076,8 +6280,9 @@ func (self *CContextMenuParamsT) GetUnfilteredLinkUrl() (ret string) {
 }
 
 // /
-// Returns the source URL, if any, for the element that the context menu was
-// invoked on. Example of elements with source URLs are img, audio, and video.
+// / Returns the source URL, if any, for the element that the context menu was
+// / invoked on. Example of elements with source URLs are img, audio, and
+// / video.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetSourceUrl() (ret string) {
@@ -6093,8 +6298,8 @@ func (self *CContextMenuParamsT) GetSourceUrl() (ret string) {
 }
 
 // /
-// Returns true (1) if the context menu was invoked on an image which has non-
-// NULL contents.
+// / Returns true (1) if the context menu was invoked on an image which has
+// / non-NULL contents.
 // /
 func (self *CContextMenuParamsT) HasImageContents() (ret bool) {
 
@@ -6105,8 +6310,8 @@ func (self *CContextMenuParamsT) HasImageContents() (ret bool) {
 }
 
 // /
-// Returns the title text or the alt text if the context menu was invoked on
-// an image.
+// / Returns the title text or the alt text if the context menu was invoked on
+// / an image.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetTitleText() (ret string) {
@@ -6122,7 +6327,8 @@ func (self *CContextMenuParamsT) GetTitleText() (ret string) {
 }
 
 // /
-// Returns the URL of the top level page that the context menu was invoked on.
+// / Returns the URL of the top level page that the context menu was invoked
+// / on.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetPageUrl() (ret string) {
@@ -6138,7 +6344,7 @@ func (self *CContextMenuParamsT) GetPageUrl() (ret string) {
 }
 
 // /
-// Returns the URL of the subframe that the context menu was invoked on.
+// / Returns the URL of the subframe that the context menu was invoked on.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetFrameUrl() (ret string) {
@@ -6154,8 +6360,8 @@ func (self *CContextMenuParamsT) GetFrameUrl() (ret string) {
 }
 
 // /
-// Returns the character encoding of the subframe that the context menu was
-// invoked on.
+// / Returns the character encoding of the subframe that the context menu was
+// / invoked on.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetFrameCharset() (ret string) {
@@ -6171,7 +6377,7 @@ func (self *CContextMenuParamsT) GetFrameCharset() (ret string) {
 }
 
 // /
-// Returns the type of context node that the context menu was invoked on.
+// / Returns the type of context node that the context menu was invoked on.
 // /
 func (self *CContextMenuParamsT) GetMediaType() (ret CContextMenuMediaTypeT) {
 
@@ -6182,8 +6388,8 @@ func (self *CContextMenuParamsT) GetMediaType() (ret CContextMenuMediaTypeT) {
 }
 
 // /
-// Returns flags representing the actions supported by the media element, if
-// any, that the context menu was invoked on.
+// / Returns flags representing the actions supported by the media element, if
+// / any, that the context menu was invoked on.
 // /
 func (self *CContextMenuParamsT) GetMediaStateFlags() (ret CContextMenuMediaStateFlagsT) {
 
@@ -6194,8 +6400,8 @@ func (self *CContextMenuParamsT) GetMediaStateFlags() (ret CContextMenuMediaStat
 }
 
 // /
-// Returns the text of the selection, if any, that the context menu was
-// invoked on.
+// / Returns the text of the selection, if any, that the context menu was
+// / invoked on.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetSelectionText() (ret string) {
@@ -6211,8 +6417,8 @@ func (self *CContextMenuParamsT) GetSelectionText() (ret string) {
 }
 
 // /
-// Returns the text of the misspelled word, if any, that the context menu was
-// invoked on.
+// / Returns the text of the misspelled word, if any, that the context menu was
+// / invoked on.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CContextMenuParamsT) GetMisspelledWord() (ret string) {
@@ -6228,9 +6434,9 @@ func (self *CContextMenuParamsT) GetMisspelledWord() (ret string) {
 }
 
 // /
-// Returns true (1) if suggestions exist, false (0) otherwise. Fills in
-// |suggestions| from the spell check service for the misspelled word if there
-// is one.
+// / Returns true (1) if suggestions exist, false (0) otherwise. Fills in
+// / |suggestions| from the spell check service for the misspelled word if
+// / there is one.
 // /
 func (self *CContextMenuParamsT) GetDictionarySuggestions(
 	suggestions CStringListT,
@@ -6243,7 +6449,7 @@ func (self *CContextMenuParamsT) GetDictionarySuggestions(
 }
 
 // /
-// Returns true (1) if the context menu was invoked on an editable node.
+// / Returns true (1) if the context menu was invoked on an editable node.
 // /
 func (self *CContextMenuParamsT) IsEditable() (ret bool) {
 
@@ -6254,8 +6460,8 @@ func (self *CContextMenuParamsT) IsEditable() (ret bool) {
 }
 
 // /
-// Returns true (1) if the context menu was invoked on an editable node where
-// spell-check is enabled.
+// / Returns true (1) if the context menu was invoked on an editable node where
+// / spell-check is enabled.
 // /
 func (self *CContextMenuParamsT) IsSpellCheckEnabled() (ret bool) {
 
@@ -6266,8 +6472,8 @@ func (self *CContextMenuParamsT) IsSpellCheckEnabled() (ret bool) {
 }
 
 // /
-// Returns flags representing the actions supported by the editable node, if
-// any, that the context menu was invoked on.
+// / Returns flags representing the actions supported by the editable node, if
+// / any, that the context menu was invoked on.
 // /
 func (self *CContextMenuParamsT) GetEditStateFlags() (ret CContextMenuEditStateFlagsT) {
 
@@ -6278,8 +6484,8 @@ func (self *CContextMenuParamsT) GetEditStateFlags() (ret CContextMenuEditStateF
 }
 
 // /
-// Returns true (1) if the context menu contains items specified by the
-// renderer process.
+// / Returns true (1) if the context menu contains items specified by the
+// / renderer process.
 // /
 func (self *CContextMenuParamsT) IsCustomMenu() (ret bool) {
 
@@ -6292,8 +6498,8 @@ func (self *CContextMenuParamsT) IsCustomMenu() (ret bool) {
 // cef_cookie_capi.h, include/capi/cef_cookie_capi.h:122:3,
 
 ///
-// Structure used for managing cookies. The functions of this structure may be
-// called on any thread unless otherwise indicated.
+/// Structure used for managing cookies. The functions of this structure may be
+/// called on any thread unless otherwise indicated.
 ///
 
 type cCCookieManagerT C.cef_cookie_manager_t
@@ -6371,9 +6577,9 @@ func (cookie_manager *CCookieManagerT) Unref() (ret bool) {
 }
 
 // /
-// Visit all cookies on the UI thread. The returned cookies are ordered by
-// longest path, then by earliest creation date. Returns false (0) if cookies
-// cannot be accessed.
+// / Visit all cookies on the UI thread. The returned cookies are ordered by
+// / longest path, then by earliest creation date. Returns false (0) if cookies
+// / cannot be accessed.
 // /
 func (self *CCookieManagerT) VisitAllCookies(
 	visitor *CCookieVisitorT,
@@ -6391,11 +6597,11 @@ func (self *CCookieManagerT) VisitAllCookies(
 }
 
 // /
-// Visit a subset of cookies on the UI thread. The results are filtered by the
-// given url scheme, host, domain and path. If |includeHttpOnly| is true (1)
-// HTTP-only cookies will also be included in the results. The returned
-// cookies are ordered by longest path, then by earliest creation date.
-// Returns false (0) if cookies cannot be accessed.
+// / Visit a subset of cookies on the UI thread. The results are filtered by
+// / the given url scheme, host, domain and path. If |includeHttpOnly| is true
+// / (1) HTTP-only cookies will also be included in the results. The returned
+// / cookies are ordered by longest path, then by earliest creation date.
+// / Returns false (0) if cookies cannot be accessed.
 // /
 func (self *CCookieManagerT) VisitUrlCookies(
 	url string,
@@ -6416,13 +6622,13 @@ func (self *CCookieManagerT) VisitUrlCookies(
 }
 
 // /
-// Sets a cookie given a valid URL and explicit user-provided cookie
-// attributes. This function expects each attribute to be well-formed. It will
-// check for disallowed characters (e.g. the &#39;;&#39; character is disallowed
-// within the cookie value attribute) and fail without setting the cookie if
-// such characters are found. If |callback| is non-NULL it will be executed
-// asnychronously on the UI thread after the cookie has been set. Returns
-// false (0) if an invalid URL is specified or if cookies cannot be accessed.
+// / Sets a cookie given a valid URL and explicit user-provided cookie
+// / attributes. This function expects each attribute to be well-formed. It
+// / will check for disallowed characters (e.g. the &#39;;&#39; character is disallowed
+// / within the cookie value attribute) and fail without setting the cookie if
+// / such characters are found. If |callback| is non-NULL it will be executed
+// / asnychronously on the UI thread after the cookie has been set. Returns
+// / false (0) if an invalid URL is specified or if cookies cannot be accessed.
 // /
 func (self *CCookieManagerT) SetCookie(
 	url string,
@@ -6443,15 +6649,15 @@ func (self *CCookieManagerT) SetCookie(
 }
 
 // /
-// Delete all cookies that match the specified parameters. If both |url| and
-// |cookie_name| values are specified all host and domain cookies matching
-// both will be deleted. If only |url| is specified all host cookies (but not
-// domain cookies) irrespective of path will be deleted. If |url| is NULL all
-// cookies for all hosts and domains will be deleted. If |callback| is non-
-// NULL it will be executed asnychronously on the UI thread after the cookies
-// have been deleted. Returns false (0) if a non-NULL invalid URL is specified
-// or if cookies cannot be accessed. Cookies can alternately be deleted using
-// the Visit*Cookies() functions.
+// / Delete all cookies that match the specified parameters. If both |url| and
+// / |cookie_name| values are specified all host and domain cookies matching
+// / both will be deleted. If only |url| is specified all host cookies (but not
+// / domain cookies) irrespective of path will be deleted. If |url| is NULL all
+// / cookies for all hosts and domains will be deleted. If |callback| is non-
+// / NULL it will be executed asnychronously on the UI thread after the cookies
+// / have been deleted. Returns false (0) if a non-NULL invalid URL is
+// / specified or if cookies cannot be accessed. Cookies can alternately be
+// / deleted using the Visit*Cookies() functions.
 // /
 func (self *CCookieManagerT) DeleteCookies(
 	url string,
@@ -6473,9 +6679,9 @@ func (self *CCookieManagerT) DeleteCookies(
 }
 
 // /
-// Flush the backing store (if any) to disk. If |callback| is non-NULL it will
-// be executed asnychronously on the UI thread after the flush is complete.
-// Returns false (0) if cookies cannot be accessed.
+// / Flush the backing store (if any) to disk. If |callback| is non-NULL it
+// / will be executed asnychronously on the UI thread after the flush is
+// / complete. Returns false (0) if cookies cannot be accessed.
 // /
 func (self *CCookieManagerT) FlushStore(
 	callback *CCompletionCallbackT,
@@ -6493,12 +6699,12 @@ func (self *CCookieManagerT) FlushStore(
 }
 
 // /
-// Returns the global cookie manager. By default data will be stored at
-// CefSettings.cache_path if specified or in memory otherwise. If |callback| is
-// non-NULL it will be executed asnychronously on the UI thread after the
-// manager's storage has been initialized. Using this function is equivalent to
-// calling cef_request_context_t::cef_request_context_get_global_context()->GetD
-// efaultCookieManager().
+// / Returns the global cookie manager. By default data will be stored at
+// / cef_settings_t.cache_path if specified or in memory otherwise. If |callback|
+// / is non-NULL it will be executed asnychronously on the UI thread after the
+// / manager's storage has been initialized. Using this function is equivalent to
+// / calling cef_request_context_t::cef_request_context_get_global_context()->Get
+// / DefaultCookieManager().
 // /
 func CookieManagerGetGlobalManager(
 	callback *CCompletionCallbackT,
@@ -6516,8 +6722,8 @@ func CookieManagerGetGlobalManager(
 }
 
 ///
-// Structure to implement for visiting cookie values. The functions of this
-// structure will always be called on the UI thread.
+/// Structure to implement for visiting cookie values. The functions of this
+/// structure will always be called on the UI thread.
 ///
 
 type cCCookieVisitorT C.cef_cookie_visitor_t
@@ -6595,11 +6801,11 @@ func (cookie_visitor *CCookieVisitorT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be called once for each cookie. |count| is the 0-based
-// index for the current cookie. |total| is the total number of cookies. Set
-// |deleteCookie| to true (1) to delete the cookie currently being visited.
-// Return false (0) to stop visiting cookies. This function may never be
-// called if no cookies are found.
+// / Method that will be called once for each cookie. |count| is the 0-based
+// / index for the current cookie. |total| is the total number of cookies. Set
+// / |deleteCookie| to true (1) to delete the cookie currently being visited.
+// / Return false (0) to stop visiting cookies. This function may never be
+// / called if no cookies are found.
 // /
 type CCookieVisitorTVisitHandler interface {
 	Visit(
@@ -6685,8 +6891,8 @@ func (cookie_visitor *CCookieVisitorT) Handler() interface{} {
 }
 
 ///
-// Structure to implement to be notified of asynchronous completion via
-// cef_cookie_manager_t::set_cookie().
+/// Structure to implement to be notified of asynchronous completion via
+/// cef_cookie_manager_t::set_cookie().
 ///
 
 type cCSetCookieCallbackT C.cef_set_cookie_callback_t
@@ -6764,8 +6970,8 @@ func (set_cookie_callback *CSetCookieCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be called upon completion. |success| will be true (1) if
-// the cookie was set successfully.
+// / Method that will be called upon completion. |success| will be true (1) if
+// / the cookie was set successfully.
 // /
 type CSetCookieCallbackTOnCompleteHandler interface {
 	OnComplete(
@@ -6849,8 +7055,8 @@ func (set_cookie_callback *CSetCookieCallbackT) Handler() interface{} {
 }
 
 ///
-// Structure to implement to be notified of asynchronous completion via
-// cef_cookie_manager_t::delete_cookies().
+/// Structure to implement to be notified of asynchronous completion via
+/// cef_cookie_manager_t::delete_cookies().
 ///
 
 type cCDeleteCookiesCallbackT C.cef_delete_cookies_callback_t
@@ -6928,8 +7134,8 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be called upon completion. |num_deleted| will be the
-// number of cookies that were deleted.
+// / Method that will be called upon completion. |num_deleted| will be the
+// / number of cookies that were deleted.
 // /
 type CDeleteCookiesCallbackTOnCompleteHandler interface {
 	OnComplete(
@@ -7012,98 +7218,100 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Handler() interface{} {
 	return delete_cookies_callback_handlers.handler[cp]
 }
 
-// cef_crash_util_capi.h, include/capi/cef_crash_util_capi.h:139:16,
+// cef_crash_util_capi.h, include/capi/cef_crash_util_capi.h:142:16,
 
 // /
-// Crash reporting is configured using an INI-style config file named
-// "crash_reporter.cfg". On Windows and Linux this file must be placed next to
-// the main application executable. On macOS this file must be placed in the
-// top-level app bundle Resources directory (e.g.
-// "<appname>.app/Contents/Resources"). File contents are as follows:
-//
-//	# Comments start with a hash character and must be on their own line.
-//
-//	[Config]
-//	ProductName=<Value of the "prod" crash key; defaults to "cef">
-//	ProductVersion=<Value of the "ver" crash key; defaults to the CEF version>
-//	AppName=<Windows only; App-specific folder name component for storing crash
-//	         information; default to "CEF">
-//	ExternalHandler=<Windows only; Name of the external handler exe to use
-//	                 instead of re-launching the main exe; default to empty>
-//	BrowserCrashForwardingEnabled=<macOS only; True if browser process crashes
-//	                               should be forwarded to the system crash
-//	                               reporter; default to false>
-//	ServerURL=<crash server URL; default to empty>
-//	RateLimitEnabled=<True if uploads should be rate limited; default to true>
-//	MaxUploadsPerDay=<Max uploads per 24 hours, used if rate limit is enabled;
-//	                  default to 5>
-//	MaxDatabaseSizeInMb=<Total crash report disk usage greater than this value
-//	                     will cause older reports to be deleted; default to 20>
-//	MaxDatabaseAgeInDays=<Crash reports older than this value will be deleted;
-//	                      default to 5>
-//
-//	[CrashKeys]
-//	my_key1=<small|medium|large>
-//	my_key2=<small|medium|large>
-//
-// Config section:
-//
-// If "ProductName" and/or "ProductVersion" are set then the specified values
-// will be included in the crash dump metadata. On macOS if these values are set
-// to NULL then they will be retrieved from the Info.plist file using the
-// "CFBundleName" and "CFBundleShortVersionString" keys respectively.
-//
-// If "AppName" is set on Windows then crash report information (metrics,
-// database and dumps) will be stored locally on disk under the
-// "C:\Users\[CurrentUser]\AppData\Local\[AppName]\User Data" folder. On other
-// platforms the CefSettings.user_data_path value will be used.
-//
-// If "ExternalHandler" is set on Windows then the specified exe will be
-// launched as the crashpad-handler instead of re-launching the main process
-// exe. The value can be an absolute path or a path relative to the main exe
-// directory. On Linux the CefSettings.browser_subprocess_path value will be
-// used. On macOS the existing subprocess app bundle will be used.
-//
-// If "BrowserCrashForwardingEnabled" is set to true (1) on macOS then browser
-// process crashes will be forwarded to the system crash reporter. This results
-// in the crash UI dialog being displayed to the user and crash reports being
-// logged under "~/Library/Logs/DiagnosticReports". Forwarding of crash reports
-// from non-browser processes and Debug builds is always disabled.
-//
-// If "ServerURL" is set then crashes will be uploaded as a multi-part POST
-// request to the specified URL. Otherwise, reports will only be stored locally
-// on disk.
-//
-// If "RateLimitEnabled" is set to true (1) then crash report uploads will be
-// rate limited as follows:
-//  1. If "MaxUploadsPerDay" is set to a positive value then at most the
-//     specified number of crashes will be uploaded in each 24 hour period.
-//  2. If crash upload fails due to a network or server error then an
-//     incremental backoff delay up to a maximum of 24 hours will be applied for
-//     retries.
-//  3. If a backoff delay is applied and "MaxUploadsPerDay" is > 1 then the
-//     "MaxUploadsPerDay" value will be reduced to 1 until the client is
-//     restarted. This helps to avoid an upload flood when the network or
-//     server error is resolved.
-//
-// Rate limiting is not supported on Linux.
-//
-// If "MaxDatabaseSizeInMb" is set to a positive value then crash report storage
-// on disk will be limited to that size in megabytes. For example, on Windows
-// each dump is about 600KB so a "MaxDatabaseSizeInMb" value of 20 equates to
-// about 34 crash reports stored on disk. Not supported on Linux.
-//
-// If "MaxDatabaseAgeInDays" is set to a positive value then crash reports older
-// than the specified age in days will be deleted. Not supported on Linux.
-//
-// CrashKeys section:
-//
-// A maximum of 26 crash keys of each size can be specified for use by the
-// application. Crash key values will be truncated based on the specified size
-// (small = 64 bytes, medium = 256 bytes, large = 1024 bytes). The value of
-// crash keys can be set from any thread or process using the
-// CefSetCrashKeyValue function. These key/value pairs will be sent to the crash
-// server along with the crash dump file.
+// / Crash reporting is configured using an INI-style config file named
+// / "crash_reporter.cfg". On Windows and Linux this file must be placed next to
+// / the main application executable. On macOS this file must be placed in the
+// / top-level app bundle Resources directory (e.g.
+// / "<appname>.app/Contents/Resources"). File contents are as follows:
+// /
+// / <pre>
+// /  # Comments start with a hash character and must be on their own line.
+// /
+// /  [Config]
+// /  ProductName=<Value of the "prod" crash key; defaults to "cef">
+// /  ProductVersion=<Value of the "ver" crash key; defaults to the CEF version>
+// /  AppName=<Windows only; App-specific folder name component for storing crash
+// /           information; default to "CEF">
+// /  ExternalHandler=<Windows only; Name of the external handler exe to use
+// /                   instead of re-launching the main exe; default to empty>
+// /  BrowserCrashForwardingEnabled=<macOS only; True if browser process crashes
+// /                                 should be forwarded to the system crash
+// /                                 reporter; default to false>
+// /  ServerURL=<crash server URL; default to empty>
+// /  RateLimitEnabled=<True if uploads should be rate limited; default to true>
+// /  MaxUploadsPerDay=<Max uploads per 24 hours, used if rate limit is enabled;
+// /                    default to 5>
+// /  MaxDatabaseSizeInMb=<Total crash report disk usage greater than this value
+// /                       will cause older reports to be deleted; default to 20>
+// /  MaxDatabaseAgeInDays=<Crash reports older than this value will be deleted;
+// /                        default to 5>
+// /
+// /  [CrashKeys]
+// /  my_key1=<small|medium|large>
+// /  my_key2=<small|medium|large>
+// / </pre>
+// /
+// / <b>Config section:</b>
+// /
+// / If "ProductName" and/or "ProductVersion" are set then the specified values
+// / will be included in the crash dump metadata. On macOS if these values are
+// / set to NULL then they will be retrieved from the Info.plist file using the
+// / "CFBundleName" and "CFBundleShortVersionString" keys respectively.
+// /
+// / If "AppName" is set on Windows then crash report information (metrics,
+// / database and dumps) will be stored locally on disk under the
+// / "C:\Users\[CurrentUser]\AppData\Local\[AppName]\User Data" folder. On other
+// / platforms the cef_settings_t.user_data_path value will be used.
+// /
+// / If "ExternalHandler" is set on Windows then the specified exe will be
+// / launched as the crashpad-handler instead of re-launching the main process
+// / exe. The value can be an absolute path or a path relative to the main exe
+// / directory. On Linux the cef_settings_t.browser_subprocess_path value will be
+// / used. On macOS the existing subprocess app bundle will be used.
+// /
+// / If "BrowserCrashForwardingEnabled" is set to true (1) on macOS then browser
+// / process crashes will be forwarded to the system crash reporter. This results
+// / in the crash UI dialog being displayed to the user and crash reports being
+// / logged under "~/Library/Logs/DiagnosticReports". Forwarding of crash reports
+// / from non-browser processes and Debug builds is always disabled.
+// /
+// / If "ServerURL" is set then crashes will be uploaded as a multi-part POST
+// / request to the specified URL. Otherwise, reports will only be stored locally
+// / on disk.
+// /
+// / If "RateLimitEnabled" is set to true (1) then crash report uploads will be
+// / rate limited as follows:
+// /  1. If "MaxUploadsPerDay" is set to a positive value then at most the
+// /     specified number of crashes will be uploaded in each 24 hour period.
+// /  2. If crash upload fails due to a network or server error then an
+// /     incremental backoff delay up to a maximum of 24 hours will be applied
+// /     for retries.
+// /  3. If a backoff delay is applied and "MaxUploadsPerDay" is > 1 then the
+// /     "MaxUploadsPerDay" value will be reduced to 1 until the client is
+// /     restarted. This helps to avoid an upload flood when the network or
+// /     server error is resolved.
+// / Rate limiting is not supported on Linux.
+// /
+// / If "MaxDatabaseSizeInMb" is set to a positive value then crash report
+// / storage on disk will be limited to that size in megabytes. For example, on
+// / Windows each dump is about 600KB so a "MaxDatabaseSizeInMb" value of 20
+// / equates to about 34 crash reports stored on disk. Not supported on Linux.
+// /
+// / If "MaxDatabaseAgeInDays" is set to a positive value then crash reports
+// / older than the specified age in days will be deleted. Not supported on
+// / Linux.
+// /
+// / <b>CrashKeys section:</b>
+// /
+// / A maximum of 26 crash keys of each size can be specified for use by the
+// / application. Crash key values will be truncated based on the specified size
+// / (small = 64 bytes, medium = 256 bytes, large = 1024 bytes). The value of
+// / crash keys can be set from any thread or process using the
+// / CefSetCrashKeyValue function. These key/value pairs will be sent to the
+// / crash server along with the crash dump file.
 // /
 func CrashReportingEnabled() (ret bool) {
 
@@ -7114,7 +7322,7 @@ func CrashReportingEnabled() (ret bool) {
 }
 
 // /
-// Sets or clears a specific key-value pair from the crash metadata.
+// / Sets or clears a specific key-value pair from the crash metadata.
 // /
 func SetCrashKeyValue(
 	key string,
@@ -7127,11 +7335,11 @@ func SetCrashKeyValue(
 
 }
 
-// cef_devtools_message_observer_capi.h, include/capi/cef_devtools_message_observer_capi.h:141:3,
+// cef_devtools_message_observer_capi.h, include/capi/cef_devtools_message_observer_capi.h:142:3,
 
 ///
-// Callback structure for cef_browser_host_t::AddDevToolsMessageObserver. The
-// functions of this structure will be called on the browser process UI thread.
+/// Callback structure for cef_browser_host_t::AddDevToolsMessageObserver. The
+/// functions of this structure will be called on the browser process UI thread.
 ///
 
 type cCDevToolsMessageObserverT C.cef_dev_tools_message_observer_t
@@ -7209,25 +7417,26 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Unref() (ret bool) 
 }
 
 // /
-// Method that will be called on receipt of a DevTools protocol message.
-// |browser| is the originating browser instance. |message| is a UTF8-encoded
-// JSON dictionary representing either a function result or an event.
-// |message| is only valid for the scope of this callback and should be copied
-// if necessary. Return true (1) if the message was handled or false (0) if
-// the message should be further processed and passed to the
-// OnDevToolsMethodResult or OnDevToolsEvent functions as appropriate.
-//
-// Method result dictionaries include an &quot;id&quot; (int) value that identifies the
-// orginating function call sent from cef_browser_host_t::SendDevToolsMessage,
-// and optionally either a &quot;result&quot; (dictionary) or &quot;error&quot; (dictionary)
-// value. The &quot;error&quot; dictionary will contain &quot;code&quot; (int) and &quot;message&quot;
-// (string) values. Event dictionaries include a &quot;function&quot; (string) value and
-// optionally a &quot;params&quot; (dictionary) value. See the DevTools protocol
-// documentation at https://chromedevtools.github.io/devtools-protocol/ for
-// details of supported function calls and the expected &quot;result&quot; or &quot;params&quot;
-// dictionary contents. JSON dictionaries can be parsed using the CefParseJSON
-// function if desired, however be aware of performance considerations when
-// parsing large messages (some of which may exceed 1MB in size).
+// / Method that will be called on receipt of a DevTools protocol message.
+// / |browser| is the originating browser instance. |message| is a UTF8-encoded
+// / JSON dictionary representing either a function result or an event.
+// / |message| is only valid for the scope of this callback and should be
+// / copied if necessary. Return true (1) if the message was handled or false
+// / (0) if the message should be further processed and passed to the
+// / OnDevToolsMethodResult or OnDevToolsEvent functions as appropriate.
+// /
+// / Method result dictionaries include an &quot;id&quot; (int) value that identifies the
+// / orginating function call sent from
+// / cef_browser_host_t::SendDevToolsMessage, and optionally either a &quot;result&quot;
+// / (dictionary) or &quot;error&quot; (dictionary) value. The &quot;error&quot; dictionary will
+// / contain &quot;code&quot; (int) and &quot;message&quot; (string) values. Event dictionaries
+// / include a &quot;function&quot; (string) value and optionally a &quot;params&quot; (dictionary)
+// / value. See the DevTools protocol documentation at
+// / https://chromedevtools.github.io/devtools-protocol/ for details of
+// / supported function calls and the expected &quot;result&quot; or &quot;params&quot; dictionary
+// / contents. JSON dictionaries can be parsed using the CefParseJSON function
+// / if desired, however be aware of performance considerations when parsing
+// / large messages (some of which may exceed 1MB in size).
 // /
 type OnDevToolsMessageHandler interface {
 	OnDevToolsMessage(
@@ -7238,16 +7447,16 @@ type OnDevToolsMessageHandler interface {
 }
 
 // /
-// Method that will be called after attempted execution of a DevTools protocol
-// function. |browser| is the originating browser instance. |message_id| is
-// the &quot;id&quot; value that identifies the originating function call message. If
-// the function succeeded |success| will be true (1) and |result| will be the
-// UTF8-encoded JSON &quot;result&quot; dictionary value (which may be NULL). If the
-// function failed |success| will be false (0) and |result| will be the
-// UTF8-encoded JSON &quot;error&quot; dictionary value. |result| is only valid for the
-// scope of this callback and should be copied if necessary. See the
-// OnDevToolsMessage documentation for additional details on |result|
-// contents.
+// / Method that will be called after attempted execution of a DevTools
+// / protocol function. |browser| is the originating browser instance.
+// / |message_id| is the &quot;id&quot; value that identifies the originating function
+// / call message. If the function succeeded |success| will be true (1) and
+// / |result| will be the UTF8-encoded JSON &quot;result&quot; dictionary value (which
+// / may be NULL). If the function failed |success| will be false (0) and
+// / |result| will be the UTF8-encoded JSON &quot;error&quot; dictionary value. |result|
+// / is only valid for the scope of this callback and should be copied if
+// / necessary. See the OnDevToolsMessage documentation for additional details
+// / on |result| contents.
 // /
 type OnDevToolsMethodResultHandler interface {
 	OnDevToolsMethodResult(
@@ -7260,12 +7469,12 @@ type OnDevToolsMethodResultHandler interface {
 }
 
 // /
-// Method that will be called on receipt of a DevTools protocol event.
-// |browser| is the originating browser instance. |function| is the &quot;function&quot;
-// value. |params| is the UTF8-encoded JSON &quot;params&quot; dictionary value (which
-// may be NULL). |params| is only valid for the scope of this callback and
-// should be copied if necessary. See the OnDevToolsMessage documentation for
-// additional details on |params| contents.
+// / Method that will be called on receipt of a DevTools protocol event.
+// / |browser| is the originating browser instance. |function| is the
+// / &quot;function&quot; value. |params| is the UTF8-encoded JSON &quot;params&quot; dictionary
+// / value (which may be NULL). |params| is only valid for the scope of this
+// / callback and should be copied if necessary. See the OnDevToolsMessage
+// / documentation for additional details on |params| contents.
 // /
 type OnDevToolsEventHandler interface {
 	OnDevToolsEvent(
@@ -7277,9 +7486,9 @@ type OnDevToolsEventHandler interface {
 }
 
 // /
-// Method that will be called when the DevTools agent has attached. |browser|
-// is the originating browser instance. This will generally occur in response
-// to the first message sent while the agent is detached.
+// / Method that will be called when the DevTools agent has attached. |browser|
+// / is the originating browser instance. This will generally occur in response
+// / to the first message sent while the agent is detached.
 // /
 type OnDevToolsAgentAttachedHandler interface {
 	OnDevToolsAgentAttached(
@@ -7289,10 +7498,10 @@ type OnDevToolsAgentAttachedHandler interface {
 }
 
 // /
-// Method that will be called when the DevTools agent has detached. |browser|
-// is the originating browser instance. Any function results that were pending
-// before the agent became detached will not be delivered, and any active
-// event subscriptions will be canceled.
+// / Method that will be called when the DevTools agent has detached. |browser|
+// / is the originating browser instance. Any function results that were
+// / pending before the agent became detached will not be delivered, and any
+// / active event subscriptions will be canceled.
 // /
 type OnDevToolsAgentDetachedHandler interface {
 	OnDevToolsAgentDetached(
@@ -7418,7 +7627,7 @@ func (dev_tools_message_observer *CDevToolsMessageObserverT) Handler() interface
 // cef_dialog_handler_capi.h, include/capi/cef_dialog_handler_capi.h:71:3,
 
 ///
-// Callback structure for asynchronous continuation of file dialog requests.
+/// Callback structure for asynchronous continuation of file dialog requests.
 ///
 
 type cCFileDialogCallbackT C.cef_file_dialog_callback_t
@@ -7496,9 +7705,9 @@ func (file_dialog_callback *CFileDialogCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Continue the file selection. |file_paths| should be a single value or a
-// list of values depending on the dialog mode. An NULL |file_paths| value is
-// treated the same as calling cancel().
+// / Continue the file selection. |file_paths| should be a single value or a
+// / list of values depending on the dialog mode. An NULL |file_paths| value is
+// / treated the same as calling cancel().
 // /
 func (self *CFileDialogCallbackT) Cont(
 	file_paths CStringListT,
@@ -7509,7 +7718,7 @@ func (self *CFileDialogCallbackT) Cont(
 }
 
 // /
-// Cancel the file selection.
+// / Cancel the file selection.
 // /
 func (self *CFileDialogCallbackT) Cancel() {
 
@@ -7518,8 +7727,8 @@ func (self *CFileDialogCallbackT) Cancel() {
 }
 
 ///
-// Implement this structure to handle dialog events. The functions of this
-// structure will be called on the browser process UI thread.
+/// Implement this structure to handle dialog events. The functions of this
+/// structure will be called on the browser process UI thread.
 ///
 
 type cCDialogHandlerT C.cef_dialog_handler_t
@@ -7597,18 +7806,18 @@ func (dialog_handler *CDialogHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called to run a file chooser dialog. |mode| represents the type of dialog
-// to display. |title| to the title to be used for the dialog and may be NULL
-// to show the default title (&quot;Open&quot; or &quot;Save&quot; depending on the mode).
-// |default_file_path| is the path with optional directory and/or file name
-// component that should be initially selected in the dialog. |accept_filters|
-// are used to restrict the selectable file types and may any combination of
-// (a) valid lower-cased MIME types (e.g. &quot;text/*&quot; or &quot;image/*&quot;), (b)
-// individual file extensions (e.g. &quot;.txt&quot; or &quot;.png&quot;), or (c) combined
-// description and file extension delimited using &quot;|&quot; and &quot;;&quot; (e.g. &quot;Image
-// Types|.png;.gif;.jpg&quot;). To display a custom dialog return true (1) and
-// execute |callback| either inline or at a later time. To display the default
-// dialog return false (0).
+// / Called to run a file chooser dialog. |mode| represents the type of dialog
+// / to display. |title| to the title to be used for the dialog and may be NULL
+// / to show the default title (&quot;Open&quot; or &quot;Save&quot; depending on the mode).
+// / |default_file_path| is the path with optional directory and/or file name
+// / component that should be initially selected in the dialog.
+// / |accept_filters| are used to restrict the selectable file types and may
+// / any combination of (a) valid lower-cased MIME types (e.g. &quot;text/*&quot; or
+// / &quot;image/*&quot;), (b) individual file extensions (e.g. &quot;.txt&quot; or &quot;.png&quot;), or (c)
+// / combined description and file extension delimited using &quot;|&quot; and &quot;;&quot; (e.g.
+// / &quot;Image Types|.png;.gif;.jpg&quot;). To display a custom dialog return true (1)
+// / and execute |callback| either inline or at a later time. To display the
+// / default dialog return false (0).
 // /
 type OnFileDialogHandler interface {
 	OnFileDialog(
@@ -7699,12 +7908,12 @@ func (dialog_handler *CDialogHandlerT) Handler() interface{} {
 // cef_display_capi.h, include/capi/views/cef_display_capi.h:106:3,
 
 ///
-// This structure typically, but not always, corresponds to a physical display
-// connected to the system. A fake Display may exist on a headless system, or a
-// Display may correspond to a remote, virtual display. All size and position
-// values are in density independent pixel (DIP) coordinates unless otherwise
-// indicated. Methods must be called on the browser process UI thread unless
-// otherwise indicated.
+/// This structure typically, but not always, corresponds to a physical display
+/// connected to the system. A fake Display may exist on a headless system, or a
+/// Display may correspond to a remote, virtual display. All size and position
+/// values are in density independent pixel (DIP) coordinates unless otherwise
+/// indicated. Methods must be called on the browser process UI thread unless
+/// otherwise indicated.
 ///
 
 type cCDisplayT C.cef_display_t
@@ -7782,7 +7991,7 @@ func (display *CDisplayT) Unref() (ret bool) {
 }
 
 // /
-// Returns the unique identifier for this Display.
+// / Returns the unique identifier for this Display.
 // /
 func (self *CDisplayT) GetId() (ret int64) {
 
@@ -7793,10 +8002,10 @@ func (self *CDisplayT) GetId() (ret int64) {
 }
 
 // /
-// Returns this Display&#39;s device pixel scale factor. This specifies how much
-// the UI should be scaled when the actual output has more pixels than
-// standard displays (which is around 100~120dpi). The potential return values
-// differ by platform.
+// / Returns this Display&#39;s device pixel scale factor. This specifies how much
+// / the UI should be scaled when the actual output has more pixels than
+// / standard displays (which is around 100~120dpi). The potential return
+// / values differ by platform.
 // /
 func (self *CDisplayT) GetDeviceScaleFactor() (ret float32) {
 
@@ -7807,8 +8016,8 @@ func (self *CDisplayT) GetDeviceScaleFactor() (ret float32) {
 }
 
 // /
-// Convert |point| from DIP coordinates to pixel coordinates using this
-// Display&#39;s device scale factor.
+// / Convert |point| from DIP coordinates to pixel coordinates using this
+// / Display&#39;s device scale factor.
 // /
 func (self *CDisplayT) ConvertPointToPixels(
 	point *CPointT,
@@ -7819,8 +8028,8 @@ func (self *CDisplayT) ConvertPointToPixels(
 }
 
 // /
-// Convert |point| from pixel coordinates to DIP coordinates using this
-// Display&#39;s device scale factor.
+// / Convert |point| from pixel coordinates to DIP coordinates using this
+// / Display&#39;s device scale factor.
 // /
 func (self *CDisplayT) ConvertPointFromPixels(
 	point *CPointT,
@@ -7831,8 +8040,8 @@ func (self *CDisplayT) ConvertPointFromPixels(
 }
 
 // /
-// Returns this Display&#39;s bounds in DIP screen coordinates. This is the full
-// size of the display.
+// / Returns this Display&#39;s bounds in DIP screen coordinates. This is the full
+// / size of the display.
 // /
 func (self *CDisplayT) GetBounds() (ret CRectT) {
 
@@ -7843,8 +8052,8 @@ func (self *CDisplayT) GetBounds() (ret CRectT) {
 }
 
 // /
-// Returns this Display&#39;s work area in DIP screen coordinates. This excludes
-// areas of the display that are occupied with window manager toolbars, etc.
+// / Returns this Display&#39;s work area in DIP screen coordinates. This excludes
+// / areas of the display that are occupied with window manager toolbars, etc.
 // /
 func (self *CDisplayT) GetWorkArea() (ret CRectT) {
 
@@ -7855,7 +8064,7 @@ func (self *CDisplayT) GetWorkArea() (ret CRectT) {
 }
 
 // /
-// Returns this Display&#39;s rotation in degrees.
+// / Returns this Display&#39;s rotation in degrees.
 // /
 func (self *CDisplayT) GetRotation() (ret bool) {
 
@@ -7866,7 +8075,7 @@ func (self *CDisplayT) GetRotation() (ret bool) {
 }
 
 // /
-// Returns the primary Display.
+// / Returns the primary Display.
 // /
 func DisplayGetPrimary() (ret *CDisplayT) {
 
@@ -7877,8 +8086,8 @@ func DisplayGetPrimary() (ret *CDisplayT) {
 }
 
 // /
-// Returns the Display nearest |point|. Set |input_pixel_coords| to true (1) if
-// |point| is in pixel screen coordinates instead of DIP screen coordinates.
+// / Returns the Display nearest |point|. Set |input_pixel_coords| to true (1) if
+// / |point| is in pixel screen coordinates instead of DIP screen coordinates.
 // /
 func DisplayGetNearestPoint(
 	point *CPointT,
@@ -7892,9 +8101,9 @@ func DisplayGetNearestPoint(
 }
 
 // /
-// Returns the Display that most closely intersects |bounds|.  Set
-// |input_pixel_coords| to true (1) if |bounds| is in pixel screen coordinates
-// instead of DIP screen coordinates.
+// / Returns the Display that most closely intersects |bounds|.  Set
+// / |input_pixel_coords| to true (1) if |bounds| is in pixel screen coordinates
+// / instead of DIP screen coordinates.
 // /
 func DisplayGetMatchingBounds(
 	bounds *CRectT,
@@ -7908,8 +8117,8 @@ func DisplayGetMatchingBounds(
 }
 
 // /
-// Returns the total number of Displays. Mirrored displays are excluded; this
-// function is intended to return the number of distinct, usable displays.
+// / Returns the total number of Displays. Mirrored displays are excluded; this
+// / function is intended to return the number of distinct, usable displays.
 // /
 func DisplayGetCount() (ret int64) {
 
@@ -7920,8 +8129,8 @@ func DisplayGetCount() (ret int64) {
 }
 
 // /
-// Returns all Displays. Mirrored displays are excluded; this function is
-// intended to return distinct, usable displays.
+// / Returns all Displays. Mirrored displays are excluded; this function is
+// / intended to return distinct, usable displays.
 // /
 func DisplayGetAlls() (displays []*CDisplayT) {
 	_displaysCount := C.size_t(DisplayGetCount()) // =SizeFunc ::cef_display_get_alls:displays
@@ -7942,11 +8151,11 @@ func DisplayGetAlls() (displays []*CDisplayT) {
 	return displays
 }
 
-// cef_display_handler_capi.h, include/capi/cef_display_handler_capi.h:157:3,
+// cef_display_handler_capi.h, include/capi/cef_display_handler_capi.h:167:3,
 
 ///
-// Implement this structure to handle events related to browser display state.
-// The functions of this structure will be called on the UI thread.
+/// Implement this structure to handle events related to browser display state.
+/// The functions of this structure will be called on the UI thread.
 ///
 
 type cCDisplayHandlerT C.cef_display_handler_t
@@ -8024,7 +8233,7 @@ func (display_handler *CDisplayHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called when a frame&#39;s address has changed.
+// / Called when a frame&#39;s address has changed.
 // /
 type OnAddressChangeHandler interface {
 	OnAddressChange(
@@ -8036,7 +8245,7 @@ type OnAddressChangeHandler interface {
 }
 
 // /
-// Called when the page title changes.
+// / Called when the page title changes.
 // /
 type OnTitleChangeHandler interface {
 	OnTitleChange(
@@ -8047,7 +8256,7 @@ type OnTitleChangeHandler interface {
 }
 
 // /
-// Called when the page icon changes.
+// / Called when the page icon changes.
 // /
 type OnFaviconUrlchangeHandler interface {
 	OnFaviconUrlchange(
@@ -8058,11 +8267,11 @@ type OnFaviconUrlchangeHandler interface {
 }
 
 // /
-// Called when web content in the page has toggled fullscreen mode. If
-// |fullscreen| is true (1) the content will automatically be sized to fill
-// the browser content area. If |fullscreen| is false (0) the content will
-// automatically return to its original size and position. The client is
-// responsible for resizing the browser if desired.
+// / Called when web content in the page has toggled fullscreen mode. If
+// / |fullscreen| is true (1) the content will automatically be sized to fill
+// / the browser content area. If |fullscreen| is false (0) the content will
+// / automatically return to its original size and position. The client is
+// / responsible for resizing the browser if desired.
 // /
 type OnFullscreenModeChangeHandler interface {
 	OnFullscreenModeChange(
@@ -8073,12 +8282,12 @@ type OnFullscreenModeChangeHandler interface {
 }
 
 // /
-// Called when the browser is about to display a tooltip. |text| contains the
-// text that will be displayed in the tooltip. To handle the display of the
-// tooltip yourself return true (1). Otherwise, you can optionally modify
-// |text| and then return false (0) to allow the browser to display the
-// tooltip. When window rendering is disabled the application is responsible
-// for drawing tooltips and the return value is ignored.
+// / Called when the browser is about to display a tooltip. |text| contains the
+// / text that will be displayed in the tooltip. To handle the display of the
+// / tooltip yourself return true (1). Otherwise, you can optionally modify
+// / |text| and then return false (0) to allow the browser to display the
+// / tooltip. When window rendering is disabled the application is responsible
+// / for drawing tooltips and the return value is ignored.
 // /
 type OnTooltipHandler interface {
 	OnTooltip(
@@ -8089,8 +8298,8 @@ type OnTooltipHandler interface {
 }
 
 // /
-// Called when the browser receives a status message. |value| contains the
-// text that will be displayed in the status message.
+// / Called when the browser receives a status message. |value| contains the
+// / text that will be displayed in the status message.
 // /
 type OnStatusMessageHandler interface {
 	OnStatusMessage(
@@ -8101,8 +8310,8 @@ type OnStatusMessageHandler interface {
 }
 
 // /
-// Called to display a console message. Return true (1) to stop the message
-// from being output to the console.
+// / Called to display a console message. Return true (1) to stop the message
+// / from being output to the console.
 // /
 type OnConsoleMessageHandler interface {
 	OnConsoleMessage(
@@ -8116,10 +8325,10 @@ type OnConsoleMessageHandler interface {
 }
 
 // /
-// Called when auto-resize is enabled via
-// cef_browser_host_t::SetAutoResizeEnabled and the contents have auto-
-// resized. |new_size| will be the desired size in view coordinates. Return
-// true (1) if the resize was handled or false (0) for default handling.
+// / Called when auto-resize is enabled via
+// / cef_browser_host_t::SetAutoResizeEnabled and the contents have auto-
+// / resized. |new_size| will be the desired size in view coordinates. Return
+// / true (1) if the resize was handled or false (0) for default handling.
 // /
 type OnAutoResizeHandler interface {
 	OnAutoResize(
@@ -8130,8 +8339,8 @@ type OnAutoResizeHandler interface {
 }
 
 // /
-// Called when the overall page loading progress has changed. |progress|
-// ranges from 0.0 to 1.0.
+// / Called when the overall page loading progress has changed. |progress|
+// / ranges from 0.0 to 1.0.
 // /
 type OnLoadingProgressChangeHandler interface {
 	OnLoadingProgressChange(
@@ -8142,10 +8351,10 @@ type OnLoadingProgressChangeHandler interface {
 }
 
 // /
-// Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
-// |custom_cursor_info| will be populated with the custom cursor information.
-// Return true (1) if the cursor change was handled or false (0) for default
-// handling.
+// / Called when the browser&#39;s cursor has changed. If |type| is CT_CUSTOM then
+// / |custom_cursor_info| will be populated with the custom cursor information.
+// / Return true (1) if the cursor change was handled or false (0) for default
+// / handling.
 // /
 type OnCursorChangeHandler interface {
 	OnCursorChange(
@@ -8155,6 +8364,19 @@ type OnCursorChangeHandler interface {
 		ctype CCursorTypeT,
 		custom_cursor_info *CCursorInfoT,
 	) (ret bool)
+}
+
+// /
+// / Called when the browser&#39;s access to an audio and/or video source has
+// / changed.
+// /
+type OnMediaAccessChangeHandler interface {
+	OnMediaAccessChange(
+		self *CDisplayHandlerT,
+		browser *CBrowserT,
+		has_video_access int,
+		has_audio_access int,
+	)
 }
 
 var display_handler_handlers = struct {
@@ -8169,6 +8391,7 @@ var display_handler_handlers = struct {
 	on_auto_resize_handler             map[*cCDisplayHandlerT]OnAutoResizeHandler
 	on_loading_progress_change_handler map[*cCDisplayHandlerT]OnLoadingProgressChangeHandler
 	on_cursor_change_handler           map[*cCDisplayHandlerT]OnCursorChangeHandler
+	on_media_access_change_handler     map[*cCDisplayHandlerT]OnMediaAccessChangeHandler
 }{
 	map[*cCDisplayHandlerT]interface{}{},
 	map[*cCDisplayHandlerT]OnAddressChangeHandler{},
@@ -8181,6 +8404,7 @@ var display_handler_handlers = struct {
 	map[*cCDisplayHandlerT]OnAutoResizeHandler{},
 	map[*cCDisplayHandlerT]OnLoadingProgressChangeHandler{},
 	map[*cCDisplayHandlerT]OnCursorChangeHandler{},
+	map[*cCDisplayHandlerT]OnMediaAccessChangeHandler{},
 }
 
 // allocCDisplayHandlerT allocates CDisplayHandlerT and construct it
@@ -8283,6 +8507,13 @@ func (display_handler *CDisplayHandlerT) bind(a interface{}) *CDisplayHandlerT {
 		delete(display_handler_handlers.on_cursor_change_handler, cp)
 	}
 
+	if h, ok := a.(OnMediaAccessChangeHandler); ok {
+		display_handler_handlers.on_media_access_change_handler[cp] = h
+		noBind = false
+	} else {
+		delete(display_handler_handlers.on_media_access_change_handler, cp)
+	}
+
 	if noBind {
 		Panicln("F229: *CDisplayHandlerT No bind")
 	}
@@ -8306,6 +8537,7 @@ func unbindAllCDisplayHandlerT(cp *cCDisplayHandlerT) {
 	delete(display_handler_handlers.on_auto_resize_handler, cp)
 	delete(display_handler_handlers.on_loading_progress_change_handler, cp)
 	delete(display_handler_handlers.on_cursor_change_handler, cp)
+	delete(display_handler_handlers.on_media_access_change_handler, cp)
 }
 
 func (display_handler *CDisplayHandlerT) UnbindAll() {
@@ -8324,8 +8556,8 @@ func (display_handler *CDisplayHandlerT) Handler() interface{} {
 // cef_dom_capi.h, include/capi/cef_dom_capi.h:71:3,
 
 ///
-// Structure to implement for visiting the DOM. The functions of this structure
-// will be called on the render process main thread.
+/// Structure to implement for visiting the DOM. The functions of this structure
+/// will be called on the render process main thread.
 ///
 
 type cCDomvisitorT C.cef_domvisitor_t
@@ -8403,11 +8635,11 @@ func (domvisitor *CDomvisitorT) Unref() (ret bool) {
 }
 
 // /
-// Method executed for visiting the DOM. The document object passed to this
-// function represents a snapshot of the DOM at the time this function is
-// executed. DOM objects are only valid for the scope of this function. Do not
-// keep references to or attempt to access any DOM objects outside the scope
-// of this function.
+// / Method executed for visiting the DOM. The document object passed to this
+// / function represents a snapshot of the DOM at the time this function is
+// / executed. DOM objects are only valid for the scope of this function. Do
+// / not keep references to or attempt to access any DOM objects outside the
+// / scope of this function.
 // /
 type CDomvisitorTVisitHandler interface {
 	Visit(
@@ -8491,8 +8723,8 @@ func (domvisitor *CDomvisitorT) Handler() interface{} {
 }
 
 ///
-// Structure used to represent a DOM document. The functions of this structure
-// should only be called on the render process main thread thread.
+/// Structure used to represent a DOM document. The functions of this structure
+/// should only be called on the render process main thread thread.
 ///
 
 type cCDomdocumentT C.cef_domdocument_t
@@ -8570,7 +8802,7 @@ func (domdocument *CDomdocumentT) Unref() (ret bool) {
 }
 
 // /
-// Returns the document type.
+// / Returns the document type.
 // /
 func (self *CDomdocumentT) GetType() (ret CDomDocumentTypeT) {
 
@@ -8581,7 +8813,7 @@ func (self *CDomdocumentT) GetType() (ret CDomDocumentTypeT) {
 }
 
 // /
-// Returns the root document node.
+// / Returns the root document node.
 // /
 func (self *CDomdocumentT) GetDocument() (ret *CDomnodeT) {
 
@@ -8592,7 +8824,7 @@ func (self *CDomdocumentT) GetDocument() (ret *CDomnodeT) {
 }
 
 // /
-// Returns the BODY node of an HTML document.
+// / Returns the BODY node of an HTML document.
 // /
 func (self *CDomdocumentT) GetBody() (ret *CDomnodeT) {
 
@@ -8603,7 +8835,7 @@ func (self *CDomdocumentT) GetBody() (ret *CDomnodeT) {
 }
 
 // /
-// Returns the HEAD node of an HTML document.
+// / Returns the HEAD node of an HTML document.
 // /
 func (self *CDomdocumentT) GetHead() (ret *CDomnodeT) {
 
@@ -8614,7 +8846,7 @@ func (self *CDomdocumentT) GetHead() (ret *CDomnodeT) {
 }
 
 // /
-// Returns the title of an HTML document.
+// / Returns the title of an HTML document.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetTitle() (ret string) {
@@ -8630,7 +8862,7 @@ func (self *CDomdocumentT) GetTitle() (ret string) {
 }
 
 // /
-// Returns the document element with the specified ID value.
+// / Returns the document element with the specified ID value.
 // /
 func (self *CDomdocumentT) GetElementById(
 	id string,
@@ -8644,7 +8876,7 @@ func (self *CDomdocumentT) GetElementById(
 }
 
 // /
-// Returns the node that currently has keyboard focus.
+// / Returns the node that currently has keyboard focus.
 // /
 func (self *CDomdocumentT) GetFocusedNode() (ret *CDomnodeT) {
 
@@ -8655,7 +8887,7 @@ func (self *CDomdocumentT) GetFocusedNode() (ret *CDomnodeT) {
 }
 
 // /
-// Returns true (1) if a portion of the document is selected.
+// / Returns true (1) if a portion of the document is selected.
 // /
 func (self *CDomdocumentT) HasSelection() (ret bool) {
 
@@ -8666,7 +8898,7 @@ func (self *CDomdocumentT) HasSelection() (ret bool) {
 }
 
 // /
-// Returns the selection offset within the start node.
+// / Returns the selection offset within the start node.
 // /
 func (self *CDomdocumentT) GetSelectionStartOffset() (ret bool) {
 
@@ -8677,7 +8909,7 @@ func (self *CDomdocumentT) GetSelectionStartOffset() (ret bool) {
 }
 
 // /
-// Returns the selection offset within the end node.
+// / Returns the selection offset within the end node.
 // /
 func (self *CDomdocumentT) GetSelectionEndOffset() (ret bool) {
 
@@ -8688,7 +8920,7 @@ func (self *CDomdocumentT) GetSelectionEndOffset() (ret bool) {
 }
 
 // /
-// Returns the contents of this selection as markup.
+// / Returns the contents of this selection as markup.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetSelectionAsMarkup() (ret string) {
@@ -8704,7 +8936,7 @@ func (self *CDomdocumentT) GetSelectionAsMarkup() (ret string) {
 }
 
 // /
-// Returns the contents of this selection as text.
+// / Returns the contents of this selection as text.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetSelectionAsText() (ret string) {
@@ -8720,7 +8952,7 @@ func (self *CDomdocumentT) GetSelectionAsText() (ret string) {
 }
 
 // /
-// Returns the base URL for the document.
+// / Returns the base URL for the document.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetBaseUrl() (ret string) {
@@ -8736,8 +8968,8 @@ func (self *CDomdocumentT) GetBaseUrl() (ret string) {
 }
 
 // /
-// Returns a complete URL based on the document base URL and the specified
-// partial URL.
+// / Returns a complete URL based on the document base URL and the specified
+// / partial URL.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomdocumentT) GetCompleteUrl(
@@ -8756,8 +8988,8 @@ func (self *CDomdocumentT) GetCompleteUrl(
 }
 
 ///
-// Structure used to represent a DOM node. The functions of this structure
-// should only be called on the render process main thread.
+/// Structure used to represent a DOM node. The functions of this structure
+/// should only be called on the render process main thread.
 ///
 
 type cCDomnodeT C.cef_domnode_t
@@ -8835,7 +9067,7 @@ func (domnode *CDomnodeT) Unref() (ret bool) {
 }
 
 // /
-// Returns the type for this node.
+// / Returns the type for this node.
 // /
 func (self *CDomnodeT) GetType() (ret CDomNodeTypeT) {
 
@@ -8846,7 +9078,7 @@ func (self *CDomnodeT) GetType() (ret CDomNodeTypeT) {
 }
 
 // /
-// Returns true (1) if this is a text node.
+// / Returns true (1) if this is a text node.
 // /
 func (self *CDomnodeT) IsText() (ret bool) {
 
@@ -8857,7 +9089,7 @@ func (self *CDomnodeT) IsText() (ret bool) {
 }
 
 // /
-// Returns true (1) if this is an element node.
+// / Returns true (1) if this is an element node.
 // /
 func (self *CDomnodeT) IsElement() (ret bool) {
 
@@ -8868,7 +9100,7 @@ func (self *CDomnodeT) IsElement() (ret bool) {
 }
 
 // /
-// Returns true (1) if this is an editable node.
+// / Returns true (1) if this is an editable node.
 // /
 func (self *CDomnodeT) IsEditable() (ret bool) {
 
@@ -8879,7 +9111,7 @@ func (self *CDomnodeT) IsEditable() (ret bool) {
 }
 
 // /
-// Returns true (1) if this is a form control element node.
+// / Returns true (1) if this is a form control element node.
 // /
 func (self *CDomnodeT) IsFormControlElement() (ret bool) {
 
@@ -8890,7 +9122,7 @@ func (self *CDomnodeT) IsFormControlElement() (ret bool) {
 }
 
 // /
-// Returns the type of this form control element node.
+// / Returns the type of this form control element node.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetFormControlElementType() (ret string) {
@@ -8906,8 +9138,8 @@ func (self *CDomnodeT) GetFormControlElementType() (ret string) {
 }
 
 // /
-// Returns true (1) if this object is pointing to the same handle as |that|
-// object.
+// / Returns true (1) if this object is pointing to the same handle as |that|
+// / object.
 // /
 func (self *CDomnodeT) IsSame(
 	that *CDomnodeT,
@@ -8925,7 +9157,7 @@ func (self *CDomnodeT) IsSame(
 }
 
 // /
-// Returns the name of this node.
+// / Returns the name of this node.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetName() (ret string) {
@@ -8941,7 +9173,7 @@ func (self *CDomnodeT) GetName() (ret string) {
 }
 
 // /
-// Returns the value of this node.
+// / Returns the value of this node.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetValue() (ret string) {
@@ -8957,7 +9189,7 @@ func (self *CDomnodeT) GetValue() (ret string) {
 }
 
 // /
-// Set the value of this node. Returns true (1) on success.
+// / Set the value of this node. Returns true (1) on success.
 // /
 func (self *CDomnodeT) SetValue(
 	value string,
@@ -8971,7 +9203,7 @@ func (self *CDomnodeT) SetValue(
 }
 
 // /
-// Returns the contents of this node as markup.
+// / Returns the contents of this node as markup.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetAsMarkup() (ret string) {
@@ -8987,7 +9219,7 @@ func (self *CDomnodeT) GetAsMarkup() (ret string) {
 }
 
 // /
-// Returns the document associated with this node.
+// / Returns the document associated with this node.
 // /
 func (self *CDomnodeT) GetDocument() (ret *CDomdocumentT) {
 
@@ -8998,7 +9230,7 @@ func (self *CDomnodeT) GetDocument() (ret *CDomdocumentT) {
 }
 
 // /
-// Returns the parent node.
+// / Returns the parent node.
 // /
 func (self *CDomnodeT) GetParent() (ret *CDomnodeT) {
 
@@ -9009,7 +9241,7 @@ func (self *CDomnodeT) GetParent() (ret *CDomnodeT) {
 }
 
 // /
-// Returns the previous sibling node.
+// / Returns the previous sibling node.
 // /
 func (self *CDomnodeT) GetPreviousSibling() (ret *CDomnodeT) {
 
@@ -9020,7 +9252,7 @@ func (self *CDomnodeT) GetPreviousSibling() (ret *CDomnodeT) {
 }
 
 // /
-// Returns the next sibling node.
+// / Returns the next sibling node.
 // /
 func (self *CDomnodeT) GetNextSibling() (ret *CDomnodeT) {
 
@@ -9031,7 +9263,7 @@ func (self *CDomnodeT) GetNextSibling() (ret *CDomnodeT) {
 }
 
 // /
-// Returns true (1) if this node has child nodes.
+// / Returns true (1) if this node has child nodes.
 // /
 func (self *CDomnodeT) HasChildren() (ret bool) {
 
@@ -9042,7 +9274,7 @@ func (self *CDomnodeT) HasChildren() (ret bool) {
 }
 
 // /
-// Return the first child node.
+// / Return the first child node.
 // /
 func (self *CDomnodeT) GetFirstChild() (ret *CDomnodeT) {
 
@@ -9053,7 +9285,7 @@ func (self *CDomnodeT) GetFirstChild() (ret *CDomnodeT) {
 }
 
 // /
-// Returns the last child node.
+// / Returns the last child node.
 // /
 func (self *CDomnodeT) GetLastChild() (ret *CDomnodeT) {
 
@@ -9064,7 +9296,7 @@ func (self *CDomnodeT) GetLastChild() (ret *CDomnodeT) {
 }
 
 // /
-// Returns the tag name of this element.
+// / Returns the tag name of this element.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetElementTagName() (ret string) {
@@ -9080,7 +9312,7 @@ func (self *CDomnodeT) GetElementTagName() (ret string) {
 }
 
 // /
-// Returns true (1) if this element has attributes.
+// / Returns true (1) if this element has attributes.
 // /
 func (self *CDomnodeT) HasElementAttributes() (ret bool) {
 
@@ -9091,7 +9323,7 @@ func (self *CDomnodeT) HasElementAttributes() (ret bool) {
 }
 
 // /
-// Returns true (1) if this element has an attribute named |attrName|.
+// / Returns true (1) if this element has an attribute named |attrName|.
 // /
 func (self *CDomnodeT) HasElementAttribute(
 	attrName string,
@@ -9105,7 +9337,7 @@ func (self *CDomnodeT) HasElementAttribute(
 }
 
 // /
-// Returns the element attribute named |attrName|.
+// / Returns the element attribute named |attrName|.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetElementAttribute(
@@ -9124,7 +9356,7 @@ func (self *CDomnodeT) GetElementAttribute(
 }
 
 // /
-// Returns a map of all element attributes.
+// / Returns a map of all element attributes.
 // /
 func (self *CDomnodeT) GetElementAttributes(
 	attrMap CStringMapT,
@@ -9135,8 +9367,8 @@ func (self *CDomnodeT) GetElementAttributes(
 }
 
 // /
-// Set the value for the element attribute named |attrName|. Returns true (1)
-// on success.
+// / Set the value for the element attribute named |attrName|. Returns true (1)
+// / on success.
 // /
 func (self *CDomnodeT) SetElementAttribute(
 	attrName string,
@@ -9152,7 +9384,7 @@ func (self *CDomnodeT) SetElementAttribute(
 }
 
 // /
-// Returns the inner text of the element.
+// / Returns the inner text of the element.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDomnodeT) GetElementInnerText() (ret string) {
@@ -9168,7 +9400,8 @@ func (self *CDomnodeT) GetElementInnerText() (ret string) {
 }
 
 // /
-// Returns the bounds of the element.
+// / Returns the bounds of the element in device pixels. Use
+// / &quot;window.devicePixelRatio&quot; to convert to/from CSS pixels.
 // /
 func (self *CDomnodeT) GetElementBounds() (ret CRectT) {
 
@@ -9181,7 +9414,7 @@ func (self *CDomnodeT) GetElementBounds() (ret CRectT) {
 // cef_download_handler_capi.h, include/capi/cef_download_handler_capi.h:69:3,
 
 ///
-// Callback structure used to asynchronously continue a download.
+/// Callback structure used to asynchronously continue a download.
 ///
 
 type cCBeforeDownloadCallbackT C.cef_before_download_callback_t
@@ -9259,10 +9492,10 @@ func (before_download_callback *CBeforeDownloadCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Call to continue the download. Set |download_path| to the full file path
-// for the download including the file name or leave blank to use the
-// suggested name and the default temp directory. Set |show_dialog| to true
-// (1) if you do wish to show the default &quot;Save As&quot; dialog.
+// / Call to continue the download. Set |download_path| to the full file path
+// / for the download including the file name or leave blank to use the
+// / suggested name and the default temp directory. Set |show_dialog| to true
+// / (1) if you do wish to show the default &quot;Save As&quot; dialog.
 // /
 func (self *CBeforeDownloadCallbackT) Cont(
 	download_path string,
@@ -9275,7 +9508,7 @@ func (self *CBeforeDownloadCallbackT) Cont(
 }
 
 ///
-// Callback structure used to asynchronously cancel a download.
+/// Callback structure used to asynchronously cancel a download.
 ///
 
 type cCDownloadItemCallbackT C.cef_download_item_callback_t
@@ -9353,7 +9586,7 @@ func (download_item_callback *CDownloadItemCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Call to cancel the download.
+// / Call to cancel the download.
 // /
 func (self *CDownloadItemCallbackT) Cancel() {
 
@@ -9362,7 +9595,7 @@ func (self *CDownloadItemCallbackT) Cancel() {
 }
 
 // /
-// Call to pause the download.
+// / Call to pause the download.
 // /
 func (self *CDownloadItemCallbackT) Pause() {
 
@@ -9371,7 +9604,7 @@ func (self *CDownloadItemCallbackT) Pause() {
 }
 
 // /
-// Call to resume the download.
+// / Call to resume the download.
 // /
 func (self *CDownloadItemCallbackT) Resume() {
 
@@ -9380,8 +9613,8 @@ func (self *CDownloadItemCallbackT) Resume() {
 }
 
 ///
-// Structure used to handle file downloads. The functions of this structure will
-// called on the browser process UI thread.
+/// Structure used to handle file downloads. The functions of this structure
+/// will called on the browser process UI thread.
 ///
 
 type cCDownloadHandlerT C.cef_download_handler_t
@@ -9459,11 +9692,11 @@ func (download_handler *CDownloadHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called before a download begins in response to a user-initiated action
-// (e.g. alt + link click or link click that returns a `Content-Disposition:
-// attachment` response from the server). |url| is the target download URL and
-// |request_function| is the target function (GET, POST, etc). Return true (1)
-// to proceed with the download or false (0) to cancel the download.
+// / Called before a download begins in response to a user-initiated action
+// / (e.g. alt + link click or link click that returns a `Content-Disposition:
+// / attachment` response from the server). |url| is the target download URL
+// / and |request_function| is the target function (GET, POST, etc). Return
+// / true (1) to proceed with the download or false (0) to cancel the download.
 // /
 type CanDownloadHandler interface {
 	CanDownload(
@@ -9475,11 +9708,11 @@ type CanDownloadHandler interface {
 }
 
 // /
-// Called before a download begins. |suggested_name| is the suggested name for
-// the download file. By default the download will be canceled. Execute
-// |callback| either asynchronously or in this function to continue the
-// download if desired. Do not keep a reference to |download_item| outside of
-// this function.
+// / Called before a download begins. |suggested_name| is the suggested name
+// / for the download file. By default the download will be canceled. Execute
+// / |callback| either asynchronously or in this function to continue the
+// / download if desired. Do not keep a reference to |download_item| outside of
+// / this function.
 // /
 type OnBeforeDownloadHandler interface {
 	OnBeforeDownload(
@@ -9492,11 +9725,11 @@ type OnBeforeDownloadHandler interface {
 }
 
 // /
-// Called when a download&#39;s status or progress information has been updated.
-// This may be called multiple times before and after on_before_download().
-// Execute |callback| either asynchronously or in this function to cancel the
-// download if desired. Do not keep a reference to |download_item| outside of
-// this function.
+// / Called when a download&#39;s status or progress information has been updated.
+// / This may be called multiple times before and after on_before_download().
+// / Execute |callback| either asynchronously or in this function to cancel the
+// / download if desired. Do not keep a reference to |download_item| outside of
+// / this function.
 // /
 type OnDownloadUpdatedHandler interface {
 	OnDownloadUpdated(
@@ -9601,10 +9834,10 @@ func (download_handler *CDownloadHandlerT) Handler() interface{} {
 	return download_handler_handlers.handler[cp]
 }
 
-// cef_download_item_capi.h, include/capi/cef_download_item_capi.h:156:3,
+// cef_download_item_capi.h, include/capi/cef_download_item_capi.h:157:3,
 
 ///
-// Structure used to represent a download item.
+/// Structure used to represent a download item.
 ///
 
 type cCDownloadItemT C.cef_download_item_t
@@ -9682,8 +9915,8 @@ func (download_item *CDownloadItemT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid. Do not call any other functions
-// if this function returns false (0).
+// / Returns true (1) if this object is valid. Do not call any other functions
+// / if this function returns false (0).
 // /
 func (self *CDownloadItemT) IsValid() (ret bool) {
 
@@ -9694,7 +9927,7 @@ func (self *CDownloadItemT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if the download is in progress.
+// / Returns true (1) if the download is in progress.
 // /
 func (self *CDownloadItemT) IsInProgress() (ret bool) {
 
@@ -9705,7 +9938,7 @@ func (self *CDownloadItemT) IsInProgress() (ret bool) {
 }
 
 // /
-// Returns true (1) if the download is complete.
+// / Returns true (1) if the download is complete.
 // /
 func (self *CDownloadItemT) IsComplete() (ret bool) {
 
@@ -9716,7 +9949,7 @@ func (self *CDownloadItemT) IsComplete() (ret bool) {
 }
 
 // /
-// Returns true (1) if the download has been canceled or interrupted.
+// / Returns true (1) if the download has been canceled or interrupted.
 // /
 func (self *CDownloadItemT) IsCanceled() (ret bool) {
 
@@ -9727,7 +9960,7 @@ func (self *CDownloadItemT) IsCanceled() (ret bool) {
 }
 
 // /
-// Returns a simple speed estimate in bytes/s.
+// / Returns a simple speed estimate in bytes/s.
 // /
 func (self *CDownloadItemT) GetCurrentSpeed() (ret int64) {
 
@@ -9738,8 +9971,8 @@ func (self *CDownloadItemT) GetCurrentSpeed() (ret int64) {
 }
 
 // /
-// Returns the rough percent complete or -1 if the receive total size is
-// unknown.
+// / Returns the rough percent complete or -1 if the receive total size is
+// / unknown.
 // /
 func (self *CDownloadItemT) GetPercentComplete() (ret bool) {
 
@@ -9750,7 +9983,7 @@ func (self *CDownloadItemT) GetPercentComplete() (ret bool) {
 }
 
 // /
-// Returns the total number of bytes.
+// / Returns the total number of bytes.
 // /
 func (self *CDownloadItemT) GetTotalBytes() (ret int64) {
 
@@ -9761,7 +9994,7 @@ func (self *CDownloadItemT) GetTotalBytes() (ret int64) {
 }
 
 // /
-// Returns the number of received bytes.
+// / Returns the number of received bytes.
 // /
 func (self *CDownloadItemT) GetReceivedBytes() (ret int64) {
 
@@ -9772,29 +10005,29 @@ func (self *CDownloadItemT) GetReceivedBytes() (ret int64) {
 }
 
 // /
-// Returns the time that the download started.
+// / Returns the time that the download started.
 // /
-func (self *CDownloadItemT) GetStartTime() (ret CTimeT) {
+func (self *CDownloadItemT) GetStartTime() (ret CBasetimeT) {
 
 	cRet := C.cefingo_download_item_get_start_time((*C.cef_download_item_t)(self.pc_download_item))
 
-	ret = (CTimeT)(cRet) // return GoObj
+	ret = (CBasetimeT)(cRet) // return GoObj
 	return ret
 }
 
 // /
-// Returns the time that the download ended.
+// / Returns the time that the download ended.
 // /
-func (self *CDownloadItemT) GetEndTime() (ret CTimeT) {
+func (self *CDownloadItemT) GetEndTime() (ret CBasetimeT) {
 
 	cRet := C.cefingo_download_item_get_end_time((*C.cef_download_item_t)(self.pc_download_item))
 
-	ret = (CTimeT)(cRet) // return GoObj
+	ret = (CBasetimeT)(cRet) // return GoObj
 	return ret
 }
 
 // /
-// Returns the full path to the downloaded or downloading file.
+// / Returns the full path to the downloaded or downloading file.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetFullPath() (ret string) {
@@ -9810,7 +10043,7 @@ func (self *CDownloadItemT) GetFullPath() (ret string) {
 }
 
 // /
-// Returns the unique identifier for this download.
+// / Returns the unique identifier for this download.
 // /
 func (self *CDownloadItemT) GetId() (ret uint32) {
 
@@ -9821,7 +10054,7 @@ func (self *CDownloadItemT) GetId() (ret uint32) {
 }
 
 // /
-// Returns the URL.
+// / Returns the URL.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetUrl() (ret string) {
@@ -9837,7 +10070,7 @@ func (self *CDownloadItemT) GetUrl() (ret string) {
 }
 
 // /
-// Returns the original URL before any redirections.
+// / Returns the original URL before any redirections.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetOriginalUrl() (ret string) {
@@ -9853,7 +10086,7 @@ func (self *CDownloadItemT) GetOriginalUrl() (ret string) {
 }
 
 // /
-// Returns the suggested file name.
+// / Returns the suggested file name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetSuggestedFileName() (ret string) {
@@ -9869,7 +10102,7 @@ func (self *CDownloadItemT) GetSuggestedFileName() (ret string) {
 }
 
 // /
-// Returns the content disposition.
+// / Returns the content disposition.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetContentDisposition() (ret string) {
@@ -9885,7 +10118,7 @@ func (self *CDownloadItemT) GetContentDisposition() (ret string) {
 }
 
 // /
-// Returns the mime type.
+// / Returns the mime type.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDownloadItemT) GetMimeType() (ret string) {
@@ -9903,8 +10136,8 @@ func (self *CDownloadItemT) GetMimeType() (ret string) {
 // cef_drag_data_capi.h, include/capi/cef_drag_data_capi.h:222:3,
 
 ///
-// Structure used to represent drag data. The functions of this structure may be
-// called on any thread.
+/// Structure used to represent drag data. The functions of this structure may
+/// be called on any thread.
 ///
 
 type cCDragDataT C.cef_drag_data_t
@@ -9982,7 +10215,7 @@ func (drag_data *CDragDataT) Unref() (ret bool) {
 }
 
 // /
-// Returns a copy of the current object.
+// / Returns a copy of the current object.
 // /
 func (self *CDragDataT) Clone() (ret *CDragDataT) {
 
@@ -9993,7 +10226,7 @@ func (self *CDragDataT) Clone() (ret *CDragDataT) {
 }
 
 // /
-// Returns true (1) if this object is read-only.
+// / Returns true (1) if this object is read-only.
 // /
 func (self *CDragDataT) IsReadOnly() (ret bool) {
 
@@ -10004,7 +10237,7 @@ func (self *CDragDataT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Returns true (1) if the drag data is a link.
+// / Returns true (1) if the drag data is a link.
 // /
 func (self *CDragDataT) IsLink() (ret bool) {
 
@@ -10015,7 +10248,7 @@ func (self *CDragDataT) IsLink() (ret bool) {
 }
 
 // /
-// Returns true (1) if the drag data is a text or html fragment.
+// / Returns true (1) if the drag data is a text or html fragment.
 // /
 func (self *CDragDataT) IsFragment() (ret bool) {
 
@@ -10026,7 +10259,7 @@ func (self *CDragDataT) IsFragment() (ret bool) {
 }
 
 // /
-// Returns true (1) if the drag data is a file.
+// / Returns true (1) if the drag data is a file.
 // /
 func (self *CDragDataT) IsFile() (ret bool) {
 
@@ -10037,7 +10270,7 @@ func (self *CDragDataT) IsFile() (ret bool) {
 }
 
 // /
-// Return the link URL that is being dragged.
+// / Return the link URL that is being dragged.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkUrl() (ret string) {
@@ -10053,7 +10286,7 @@ func (self *CDragDataT) GetLinkUrl() (ret string) {
 }
 
 // /
-// Return the title associated with the link being dragged.
+// / Return the title associated with the link being dragged.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkTitle() (ret string) {
@@ -10069,7 +10302,7 @@ func (self *CDragDataT) GetLinkTitle() (ret string) {
 }
 
 // /
-// Return the metadata, if any, associated with the link being dragged.
+// / Return the metadata, if any, associated with the link being dragged.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetLinkMetadata() (ret string) {
@@ -10085,7 +10318,7 @@ func (self *CDragDataT) GetLinkMetadata() (ret string) {
 }
 
 // /
-// Return the plain text fragment that is being dragged.
+// / Return the plain text fragment that is being dragged.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentText() (ret string) {
@@ -10101,7 +10334,7 @@ func (self *CDragDataT) GetFragmentText() (ret string) {
 }
 
 // /
-// Return the text/html fragment that is being dragged.
+// / Return the text/html fragment that is being dragged.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentHtml() (ret string) {
@@ -10117,8 +10350,8 @@ func (self *CDragDataT) GetFragmentHtml() (ret string) {
 }
 
 // /
-// Return the base URL that the fragment came from. This value is used for
-// resolving relative URLs and may be NULL.
+// / Return the base URL that the fragment came from. This value is used for
+// / resolving relative URLs and may be NULL.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFragmentBaseUrl() (ret string) {
@@ -10134,7 +10367,7 @@ func (self *CDragDataT) GetFragmentBaseUrl() (ret string) {
 }
 
 // /
-// Return the name of the file being dragged out of the browser window.
+// / Return the name of the file being dragged out of the browser window.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDragDataT) GetFileName() (ret string) {
@@ -10150,10 +10383,10 @@ func (self *CDragDataT) GetFileName() (ret string) {
 }
 
 // /
-// Write the contents of the file being dragged out of the web view into
-// |writer|. Returns the number of bytes sent to |writer|. If |writer| is NULL
-// this function will return the size of the file contents in bytes. Call
-// get_file_name() to get a suggested name for the file.
+// / Write the contents of the file being dragged out of the web view into
+// / |writer|. Returns the number of bytes sent to |writer|. If |writer| is
+// / NULL this function will return the size of the file contents in bytes.
+// / Call get_file_name() to get a suggested name for the file.
 // /
 func (self *CDragDataT) GetFileContents(
 	writer *CStreamWriterT,
@@ -10171,8 +10404,8 @@ func (self *CDragDataT) GetFileContents(
 }
 
 // /
-// Retrieve the list of file names that are being dragged into the browser
-// window.
+// / Retrieve the list of file names that are being dragged into the browser
+// / window.
 // /
 func (self *CDragDataT) GetFileNames(
 	names CStringListT,
@@ -10185,7 +10418,7 @@ func (self *CDragDataT) GetFileNames(
 }
 
 // /
-// Set the link URL that is being dragged.
+// / Set the link URL that is being dragged.
 // /
 func (self *CDragDataT) SetLinkUrl(
 	url string,
@@ -10197,7 +10430,7 @@ func (self *CDragDataT) SetLinkUrl(
 }
 
 // /
-// Set the title associated with the link being dragged.
+// / Set the title associated with the link being dragged.
 // /
 func (self *CDragDataT) SetLinkTitle(
 	title string,
@@ -10209,7 +10442,7 @@ func (self *CDragDataT) SetLinkTitle(
 }
 
 // /
-// Set the metadata associated with the link being dragged.
+// / Set the metadata associated with the link being dragged.
 // /
 func (self *CDragDataT) SetLinkMetadata(
 	data string,
@@ -10221,7 +10454,7 @@ func (self *CDragDataT) SetLinkMetadata(
 }
 
 // /
-// Set the plain text fragment that is being dragged.
+// / Set the plain text fragment that is being dragged.
 // /
 func (self *CDragDataT) SetFragmentText(
 	text string,
@@ -10233,7 +10466,7 @@ func (self *CDragDataT) SetFragmentText(
 }
 
 // /
-// Set the text/html fragment that is being dragged.
+// / Set the text/html fragment that is being dragged.
 // /
 func (self *CDragDataT) SetFragmentHtml(
 	html string,
@@ -10245,7 +10478,7 @@ func (self *CDragDataT) SetFragmentHtml(
 }
 
 // /
-// Set the base URL that the fragment came from.
+// / Set the base URL that the fragment came from.
 // /
 func (self *CDragDataT) SetFragmentBaseUrl(
 	base_url string,
@@ -10257,9 +10490,9 @@ func (self *CDragDataT) SetFragmentBaseUrl(
 }
 
 // /
-// Reset the file contents. You should do this before calling
-// cef_browser_host_t::DragTargetDragEnter as the web view does not allow us
-// to drag in this kind of data.
+// / Reset the file contents. You should do this before calling
+// / cef_browser_host_t::DragTargetDragEnter as the web view does not allow us
+// / to drag in this kind of data.
 // /
 func (self *CDragDataT) ResetFileContents() {
 
@@ -10268,7 +10501,7 @@ func (self *CDragDataT) ResetFileContents() {
 }
 
 // /
-// Add a file that is being dragged into the webview.
+// / Add a file that is being dragged into the webview.
 // /
 func (self *CDragDataT) AddFile(
 	path string,
@@ -10282,7 +10515,7 @@ func (self *CDragDataT) AddFile(
 }
 
 // /
-// Clear list of filenames.
+// / Clear list of filenames.
 // /
 func (self *CDragDataT) ClearFilenames() {
 
@@ -10291,8 +10524,8 @@ func (self *CDragDataT) ClearFilenames() {
 }
 
 // /
-// Get the image representation of drag data. May return NULL if no image
-// representation is available.
+// / Get the image representation of drag data. May return NULL if no image
+// / representation is available.
 // /
 func (self *CDragDataT) GetImage() (ret *CImageT) {
 
@@ -10303,7 +10536,7 @@ func (self *CDragDataT) GetImage() (ret *CImageT) {
 }
 
 // /
-// Get the image hotspot (drag start location relative to image dimensions).
+// / Get the image hotspot (drag start location relative to image dimensions).
 // /
 func (self *CDragDataT) GetImageHotspot() (ret CPointT) {
 
@@ -10314,7 +10547,7 @@ func (self *CDragDataT) GetImageHotspot() (ret CPointT) {
 }
 
 // /
-// Returns true (1) if an image representation of drag data is available.
+// / Returns true (1) if an image representation of drag data is available.
 // /
 func (self *CDragDataT) HasImage() (ret bool) {
 
@@ -10325,7 +10558,7 @@ func (self *CDragDataT) HasImage() (ret bool) {
 }
 
 // /
-// Create a new cef_drag_data_t object.
+// / Create a new cef_drag_data_t object.
 // /
 func DragDataCreate() (ret *CDragDataT) {
 
@@ -10338,8 +10571,8 @@ func DragDataCreate() (ret *CDragDataT) {
 // cef_drag_handler_capi.h, include/capi/cef_drag_handler_capi.h:86:3,
 
 ///
-// Implement this structure to handle events related to dragging. The functions
-// of this structure will be called on the UI thread.
+/// Implement this structure to handle events related to dragging. The functions
+/// of this structure will be called on the UI thread.
 ///
 
 type cCDragHandlerT C.cef_drag_handler_t
@@ -10417,10 +10650,10 @@ func (drag_handler *CDragHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called when an external drag event enters the browser window. |dragData|
-// contains the drag event data and |mask| represents the type of drag
-// operation. Return false (0) for default drag handling behavior or true (1)
-// to cancel the drag event.
+// / Called when an external drag event enters the browser window. |dragData|
+// / contains the drag event data and |mask| represents the type of drag
+// / operation. Return false (0) for default drag handling behavior or true (1)
+// / to cancel the drag event.
 // /
 type OnDragEnterHandler interface {
 	OnDragEnter(
@@ -10432,11 +10665,11 @@ type OnDragEnterHandler interface {
 }
 
 // /
-// Called whenever draggable regions for the browser window change. These can
-// be specified using the &#39;-webkit-app-region: drag/no-drag&#39; CSS-property. If
-// draggable regions are never defined in a document this function will also
-// never be called. If the last draggable region is removed from a document
-// this function will be called with an NULL vector.
+// / Called whenever draggable regions for the browser window change. These can
+// / be specified using the &#39;-webkit-app-region: drag/no-drag&#39; CSS-property. If
+// / draggable regions are never defined in a document this function will also
+// / never be called. If the last draggable region is removed from a document
+// / this function will be called with an NULL vector.
 // /
 type OnDraggableRegionsChangedHandler interface {
 	OnDraggableRegionsChanged(
@@ -10535,8 +10768,8 @@ func (drag_handler *CDragHandlerT) Handler() interface{} {
 // cef_extension_capi.h, include/capi/cef_extension_capi.h:124:3,
 
 ///
-// Object representing an extension. Methods may be called on any thread unless
-// otherwise indicated.
+/// Object representing an extension. Methods may be called on any thread unless
+/// otherwise indicated.
 ///
 
 type cCExtensionT C.cef_extension_t
@@ -10614,9 +10847,9 @@ func (extension *CExtensionT) Unref() (ret bool) {
 }
 
 // /
-// Returns the unique extension identifier. This is calculated based on the
-// extension public key, if available, or on the extension path. See
-// https://developer.chrome.com/extensions/manifest/key for details.
+// / Returns the unique extension identifier. This is calculated based on the
+// / extension public key, if available, or on the extension path. See
+// / https://developer.chrome.com/extensions/manifest/key for details.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CExtensionT) GetIdentifier() (ret string) {
@@ -10632,9 +10865,9 @@ func (self *CExtensionT) GetIdentifier() (ret string) {
 }
 
 // /
-// Returns the absolute path to the extension directory on disk. This value
-// will be prefixed with PK_DIR_RESOURCES if a relative path was passed to
-// cef_request_context_t::LoadExtension.
+// / Returns the absolute path to the extension directory on disk. This value
+// / will be prefixed with PK_DIR_RESOURCES if a relative path was passed to
+// / cef_request_context_t::LoadExtension.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CExtensionT) GetPath() (ret string) {
@@ -10650,8 +10883,8 @@ func (self *CExtensionT) GetPath() (ret string) {
 }
 
 // /
-// Returns the extension manifest contents as a cef_dictionary_value_t object.
-// See https://developer.chrome.com/extensions/manifest for details.
+// / Returns the extension manifest contents as a cef_dictionary_value_t
+// / object. See https://developer.chrome.com/extensions/manifest for details.
 // /
 func (self *CExtensionT) GetManifest() (ret *CDictionaryValueT) {
 
@@ -10662,9 +10895,9 @@ func (self *CExtensionT) GetManifest() (ret *CDictionaryValueT) {
 }
 
 // /
-// Returns true (1) if this object is the same extension as |that| object.
-// Extensions are considered the same if identifier, path and loader context
-// match.
+// / Returns true (1) if this object is the same extension as |that| object.
+// / Extensions are considered the same if identifier, path and loader context
+// / match.
 // /
 func (self *CExtensionT) IsSame(
 	that *CExtensionT,
@@ -10682,9 +10915,9 @@ func (self *CExtensionT) IsSame(
 }
 
 // /
-// Returns the handler for this extension. Will return NULL for internal
-// extensions or if no handler was passed to
-// cef_request_context_t::LoadExtension.
+// / Returns the handler for this extension. Will return NULL for internal
+// / extensions or if no handler was passed to
+// / cef_request_context_t::LoadExtension.
 // /
 func (self *CExtensionT) GetHandler() (ret *CExtensionHandlerT) {
 
@@ -10695,10 +10928,10 @@ func (self *CExtensionT) GetHandler() (ret *CExtensionHandlerT) {
 }
 
 // /
-// Returns the request context that loaded this extension. Will return NULL
-// for internal extensions or if the extension has been unloaded. See the
-// cef_request_context_t::LoadExtension documentation for more information
-// about loader contexts. Must be called on the browser process UI thread.
+// / Returns the request context that loaded this extension. Will return NULL
+// / for internal extensions or if the extension has been unloaded. See the
+// / cef_request_context_t::LoadExtension documentation for more information
+// / about loader contexts. Must be called on the browser process UI thread.
 // /
 func (self *CExtensionT) GetLoaderContext() (ret *CRequestContextT) {
 
@@ -10709,8 +10942,8 @@ func (self *CExtensionT) GetLoaderContext() (ret *CRequestContextT) {
 }
 
 // /
-// Returns true (1) if this extension is currently loaded. Must be called on
-// the browser process UI thread.
+// / Returns true (1) if this extension is currently loaded. Must be called on
+// / the browser process UI thread.
 // /
 func (self *CExtensionT) IsLoaded() (ret bool) {
 
@@ -10721,9 +10954,9 @@ func (self *CExtensionT) IsLoaded() (ret bool) {
 }
 
 // /
-// Unload this extension if it is not an internal extension and is currently
-// loaded. Will result in a call to
-// cef_extension_handler_t::OnExtensionUnloaded on success.
+// / Unload this extension if it is not an internal extension and is currently
+// / loaded. Will result in a call to
+// / cef_extension_handler_t::OnExtensionUnloaded on success.
 // /
 func (self *CExtensionT) Unload() {
 
@@ -10734,8 +10967,8 @@ func (self *CExtensionT) Unload() {
 // cef_extension_handler_capi.h, include/capi/cef_extension_handler_capi.h:75:3,
 
 ///
-// Callback structure used for asynchronous continuation of
-// cef_extension_handler_t::GetExtensionResource.
+/// Callback structure used for asynchronous continuation of
+/// cef_extension_handler_t::GetExtensionResource.
 ///
 
 type cCGetExtensionResourceCallbackT C.cef_get_extension_resource_callback_t
@@ -10813,7 +11046,7 @@ func (get_extension_resource_callback *CGetExtensionResourceCallbackT) Unref() (
 }
 
 // /
-// Continue the request. Read the resource contents from |stream|.
+// / Continue the request. Read the resource contents from |stream|.
 // /
 func (self *CGetExtensionResourceCallbackT) Cont(
 	stream *CStreamReaderT,
@@ -10829,7 +11062,7 @@ func (self *CGetExtensionResourceCallbackT) Cont(
 }
 
 // /
-// Cancel the request.
+// / Cancel the request.
 // /
 func (self *CGetExtensionResourceCallbackT) Cancel() {
 
@@ -10838,9 +11071,10 @@ func (self *CGetExtensionResourceCallbackT) Cancel() {
 }
 
 ///
-// Implement this structure to handle events related to browser extensions. The
-// functions of this structure will be called on the UI thread. See
-// cef_request_context_t::LoadExtension for information about extension loading.
+/// Implement this structure to handle events related to browser extensions. The
+/// functions of this structure will be called on the UI thread. See
+/// cef_request_context_t::LoadExtension for information about extension
+/// loading.
 ///
 
 type cCExtensionHandlerT C.cef_extension_handler_t
@@ -10918,8 +11152,8 @@ func (extension_handler *CExtensionHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called if the cef_request_context_t::LoadExtension request fails. |result|
-// will be the error code.
+// / Called if the cef_request_context_t::LoadExtension request fails. |result|
+// / will be the error code.
 // /
 type OnExtensionLoadFailedHandler interface {
 	OnExtensionLoadFailed(
@@ -10929,8 +11163,8 @@ type OnExtensionLoadFailedHandler interface {
 }
 
 // /
-// Called if the cef_request_context_t::LoadExtension request succeeds.
-// |extension| is the loaded extension.
+// / Called if the cef_request_context_t::LoadExtension request succeeds.
+// / |extension| is the loaded extension.
 // /
 type OnExtensionLoadedHandler interface {
 	OnExtensionLoaded(
@@ -10940,7 +11174,7 @@ type OnExtensionLoadedHandler interface {
 }
 
 // /
-// Called after the cef_extension_t::Unload request has completed.
+// / Called after the cef_extension_t::Unload request has completed.
 // /
 type OnExtensionUnloadedHandler interface {
 	OnExtensionUnloaded(
@@ -10950,19 +11184,19 @@ type OnExtensionUnloadedHandler interface {
 }
 
 // /
-// Called when an extension needs a browser to host a background script
-// specified via the &quot;background&quot; manifest key. The browser will have no
-// visible window and cannot be displayed. |extension| is the extension that
-// is loading the background script. |url| is an internally generated
-// reference to an HTML page that will be used to load the background script
-// via a &lt;script&gt; src attribute. To allow creation of the browser optionally
-// modify |client| and |settings| and return false (0). To cancel creation of
-// the browser (and consequently cancel load of the background script) return
-// true (1). Successful creation will be indicated by a call to
-// cef_life_span_handler_t::OnAfterCreated, and
-// cef_browser_host_t::IsBackgroundHost will return true (1) for the resulting
-// browser. See https://developer.chrome.com/extensions/event_pages for more
-// information about extension background script usage.
+// / Called when an extension needs a browser to host a background script
+// / specified via the &quot;background&quot; manifest key. The browser will have no
+// / visible window and cannot be displayed. |extension| is the extension that
+// / is loading the background script. |url| is an internally generated
+// / reference to an HTML page that will be used to load the background script
+// / via a &quot;&lt;script&gt;&quot; src attribute. To allow creation of the browser
+// / optionally modify |client| and |settings| and return false (0). To cancel
+// / creation of the browser (and consequently cancel load of the background
+// / script) return true (1). Successful creation will be indicated by a call
+// / to cef_life_span_handler_t::OnAfterCreated, and
+// / cef_browser_host_t::IsBackgroundHost will return true (1) for the
+// / resulting browser. See https://developer.chrome.com/extensions/event_pages
+// / for more information about extension background script usage.
 // /
 type OnBeforeBackgroundBrowserHandler interface {
 	OnBeforeBackgroundBrowser(
@@ -10975,19 +11209,19 @@ type OnBeforeBackgroundBrowserHandler interface {
 }
 
 // /
-// Called when an extension API (e.g. chrome.tabs.create) requests creation of
-// a new browser. |extension| and |browser| are the source of the API call.
-// |active_browser| may optionally be specified via the windowId property or
-// returned via the get_active_browser() callback and provides the default
-// |client| and |settings| values for the new browser. |index| is the position
-// value optionally specified via the index property. |url| is the URL that
-// will be loaded in the browser. |active| is true (1) if the new browser
-// should be active when opened.  To allow creation of the browser optionally
-// modify |windowInfo|, |client| and |settings| and return false (0). To
-// cancel creation of the browser return true (1). Successful creation will be
-// indicated by a call to cef_life_span_handler_t::OnAfterCreated. Any
-// modifications to |windowInfo| will be ignored if |active_browser| is
-// wrapped in a cef_browser_view_t.
+// / Called when an extension API (e.g. chrome.tabs.create) requests creation
+// / of a new browser. |extension| and |browser| are the source of the API
+// / call. |active_browser| may optionally be specified via the windowId
+// / property or returned via the get_active_browser() callback and provides
+// / the default |client| and |settings| values for the new browser. |index| is
+// / the position value optionally specified via the index property. |url| is
+// / the URL that will be loaded in the browser. |active| is true (1) if the
+// / new browser should be active when opened.  To allow creation of the
+// / browser optionally modify |windowInfo|, |client| and |settings| and return
+// / false (0). To cancel creation of the browser return true (1). Successful
+// / creation will be indicated by a call to
+// / cef_life_span_handler_t::OnAfterCreated. Any modifications to |windowInfo|
+// / will be ignored if |active_browser| is wrapped in a cef_browser_view_t.
 // /
 type OnBeforeBrowserHandler interface {
 	OnBeforeBrowser(
@@ -11005,13 +11239,13 @@ type OnBeforeBrowserHandler interface {
 }
 
 // /
-// Called when no tabId is specified to an extension API call that accepts a
-// tabId parameter (e.g. chrome.tabs.*). |extension| and |browser| are the
-// source of the API call. Return the browser that will be acted on by the API
-// call or return NULL to act on |browser|. The returned browser must share
-// the same cef_request_context_t as |browser|. Incognito browsers should not
-// be considered unless the source extension has incognito access enabled, in
-// which case |include_incognito| will be true (1).
+// / Called when no tabId is specified to an extension API call that accepts a
+// / tabId parameter (e.g. chrome.tabs.*). |extension| and |browser| are the
+// / source of the API call. Return the browser that will be acted on by the
+// / API call or return NULL to act on |browser|. The returned browser must
+// / share the same cef_request_context_t as |browser|. Incognito browsers
+// / should not be considered unless the source extension has incognito access
+// / enabled, in which case |include_incognito| will be true (1).
 // /
 type GetActiveBrowserHandler interface {
 	GetActiveBrowser(
@@ -11023,12 +11257,12 @@ type GetActiveBrowserHandler interface {
 }
 
 // /
-// Called when the tabId associated with |target_browser| is specified to an
-// extension API call that accepts a tabId parameter (e.g. chrome.tabs.*).
-// |extension| and |browser| are the source of the API call. Return true (1)
-// to allow access of false (0) to deny access. Access to incognito browsers
-// should not be allowed unless the source extension has incognito access
-// enabled, in which case |include_incognito| will be true (1).
+// / Called when the tabId associated with |target_browser| is specified to an
+// / extension API call that accepts a tabId parameter (e.g. chrome.tabs.*).
+// / |extension| and |browser| are the source of the API call. Return true (1)
+// / to allow access of false (0) to deny access. Access to incognito browsers
+// / should not be allowed unless the source extension has incognito access
+// / enabled, in which case |include_incognito| will be true (1).
 // /
 type CanAccessBrowserHandler interface {
 	CanAccessBrowser(
@@ -11041,14 +11275,15 @@ type CanAccessBrowserHandler interface {
 }
 
 // /
-// Called to retrieve an extension resource that would normally be loaded from
-// disk (e.g. if a file parameter is specified to chrome.tabs.executeScript).
-// |extension| and |browser| are the source of the resource request. |file| is
-// the requested relative file path. To handle the resource request return
-// true (1) and execute |callback| either synchronously or asynchronously. For
-// the default behavior which reads the resource from the extension directory
-// on disk return false (0). Localization substitutions will not be applied to
-// resources handled via this function.
+// / Called to retrieve an extension resource that would normally be loaded
+// / from disk (e.g. if a file parameter is specified to
+// / chrome.tabs.executeScript). |extension| and |browser| are the source of
+// / the resource request. |file| is the requested relative file path. To
+// / handle the resource request return true (1) and execute |callback| either
+// / synchronously or asynchronously. For the default behavior which reads the
+// / resource from the extension directory on disk return false (0).
+// / Localization substitutions will not be applied to resources handled via
+// / this function.
 // /
 type GetExtensionResourceHandler interface {
 	GetExtensionResource(
@@ -11207,10 +11442,10 @@ func (extension_handler *CExtensionHandlerT) Handler() interface{} {
 // cef_file_util_capi.h, include/capi/cef_file_util_capi.h:55:16,
 
 // /
-// Creates a directory and all parent directories if they don't already exist.
-// Returns true (1) on successful creation or if the directory already exists.
-// The directory is only readable by the current user. Calling this function on
-// the browser process UI or IO threads is not allowed.
+// / Creates a directory and all parent directories if they don't already exist.
+// / Returns true (1) on successful creation or if the directory already exists.
+// / The directory is only readable by the current user. Calling this function on
+// / the browser process UI or IO threads is not allowed.
 // /
 func CreateDirectory(
 	full_path string,
@@ -11224,12 +11459,12 @@ func CreateDirectory(
 }
 
 // /
-// Get the temporary directory provided by the system.
-//
-// WARNING: In general, you should use the temp directory variants below instead
-// of this function. Those variants will ensure that the proper permissions are
-// set so that other users on the system can't edit them while they're open
-// (which could lead to security issues).
+// / Get the temporary directory provided by the system.
+// /
+// / WARNING: In general, you should use the temp directory variants below
+// / instead of this function. Those variants will ensure that the proper
+// / permissions are set so that other users on the system can't edit them while
+// / they're open (which could lead to security issues).
 // /
 func GetTempDirectory(
 	temp_dir string,
@@ -11243,11 +11478,11 @@ func GetTempDirectory(
 }
 
 // /
-// Creates a new directory. On Windows if |prefix| is provided the new directory
-// name is in the format of "prefixyyyy". Returns true (1) on success and sets
-// |new_temp_path| to the full path of the directory that was created. The
-// directory is only readable by the current user. Calling this function on the
-// browser process UI or IO threads is not allowed.
+// / Creates a new directory. On Windows if |prefix| is provided the new
+// / directory name is in the format of "prefixyyyy". Returns true (1) on success
+// / and sets |new_temp_path| to the full path of the directory that was created.
+// / The directory is only readable by the current user. Calling this function on
+// / the browser process UI or IO threads is not allowed.
 // /
 func CreateNewTempDirectory(
 	prefix string,
@@ -11263,12 +11498,12 @@ func CreateNewTempDirectory(
 }
 
 // /
-// Creates a directory within another directory. Extra characters will be
-// appended to |prefix| to ensure that the new directory does not have the same
-// name as an existing directory. Returns true (1) on success and sets |new_dir|
-// to the full path of the directory that was created. The directory is only
-// readable by the current user. Calling this function on the browser process UI
-// or IO threads is not allowed.
+// / Creates a directory within another directory. Extra characters will be
+// / appended to |prefix| to ensure that the new directory does not have the same
+// / name as an existing directory. Returns true (1) on success and sets
+// / |new_dir| to the full path of the directory that was created. The directory
+// / is only readable by the current user. Calling this function on the browser
+// / process UI or IO threads is not allowed.
 // /
 func CreateTempDirectoryInDirectory(
 	base_dir string,
@@ -11286,8 +11521,8 @@ func CreateTempDirectoryInDirectory(
 }
 
 // /
-// Returns true (1) if the given path exists and is a directory. Calling this
-// function on the browser process UI or IO threads is not allowed.
+// / Returns true (1) if the given path exists and is a directory. Calling this
+// / function on the browser process UI or IO threads is not allowed.
 // /
 func DirectoryExists(
 	path string,
@@ -11301,13 +11536,13 @@ func DirectoryExists(
 }
 
 // /
-// Deletes the given path whether it's a file or a directory. If |path| is a
-// directory all contents will be deleted.  If |recursive| is true (1) any sub-
-// directories and their contents will also be deleted (equivalent to executing
-// "rm -rf", so use with caution). On POSIX environments if |path| is a symbolic
-// link then only the symlink will be deleted. Returns true (1) on successful
-// deletion or if |path| does not exist. Calling this function on the browser
-// process UI or IO threads is not allowed.
+// / Deletes the given path whether it's a file or a directory. If |path| is a
+// / directory all contents will be deleted.  If |recursive| is true (1) any sub-
+// / directories and their contents will also be deleted (equivalent to executing
+// / "rm -rf", so use with caution). On POSIX environments if |path| is a
+// / symbolic link then only the symlink will be deleted. Returns true (1) on
+// / successful deletion or if |path| does not exist. Calling this function on
+// / the browser process UI or IO threads is not allowed.
 // /
 func DeleteFile(
 	path string,
@@ -11322,10 +11557,10 @@ func DeleteFile(
 }
 
 // /
-// Writes the contents of |src_dir| into a zip archive at |dest_file|. If
-// |include_hidden_files| is true (1) files starting with "." will be included.
-// Returns true (1) on success.  Calling this function on the browser process UI
-// or IO threads is not allowed.
+// / Writes the contents of |src_dir| into a zip archive at |dest_file|. If
+// / |include_hidden_files| is true (1) files starting with "." will be included.
+// / Returns true (1) on success.  Calling this function on the browser process
+// / UI or IO threads is not allowed.
 // /
 func ZipDirectory(
 	src_dir string,
@@ -11342,12 +11577,13 @@ func ZipDirectory(
 }
 
 // /
-// Loads the existing "Certificate Revocation Lists" file that is managed by
-// Google Chrome. This file can generally be found in Chrome's User Data
-// directory (e.g. "C:\Users\[User]\AppData\Local\Google\Chrome\User Data\" on
-// Windows) and is updated periodically by Chrome's component updater service.
-// Must be called in the browser process after the context has been initialized.
-// See https://dev.chromium.org/Home/chromium-security/crlsets for background.
+// / Loads the existing "Certificate Revocation Lists" file that is managed by
+// / Google Chrome. This file can generally be found in Chrome's User Data
+// / directory (e.g. "C:\Users\[User]\AppData\Local\Google\Chrome\User Data\" on
+// / Windows) and is updated periodically by Chrome's component updater service.
+// / Must be called in the browser process after the context has been
+// / initialized. See https://dev.chromium.org/Home/chromium-security/crlsets for
+// / background.
 // /
 func LoadCrlsetsFile(
 	path string,
@@ -11361,9 +11597,9 @@ func LoadCrlsetsFile(
 // cef_fill_layout_capi.h, include/capi/views/cef_fill_layout_capi.h:59:3,
 
 ///
-// A simple Layout that causes the associated Panel's one child to be sized to
-// match the bounds of its parent. Methods must be called on the browser process
-// UI thread unless otherwise indicated.
+/// A simple Layout that causes the associated Panel's one child to be sized to
+/// match the bounds of its parent. Methods must be called on the browser
+/// process UI thread unless otherwise indicated.
 ///
 
 type cCFillLayoutT C.cef_fill_layout_t
@@ -11450,8 +11686,8 @@ func (fill_layout *CFillLayoutT) ToCLayoutT() *CLayoutT {
 // cef_find_handler_capi.h, include/capi/cef_find_handler_capi.h:76:3,
 
 ///
-// Implement this structure to handle events related to find results. The
-// functions of this structure will be called on the UI thread.
+/// Implement this structure to handle events related to find results. The
+/// functions of this structure will be called on the UI thread.
 ///
 
 type cCFindHandlerT C.cef_find_handler_t
@@ -11529,13 +11765,13 @@ func (find_handler *CFindHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called to report find results returned by cef_browser_host_t::find().
-// |identifer| is a unique incremental identifier for the currently active
-// search, |count| is the number of matches currently identified,
-// |selectionRect| is the location of where the match was found (in window
-// coordinates), |activeMatchOrdinal| is the current position in the search
-// results, and |finalUpdate| is true (1) if this is the last find
-// notification.
+// / Called to report find results returned by cef_browser_host_t::find().
+// / |identifer| is a unique incremental identifier for the currently active
+// / search, |count| is the number of matches currently identified,
+// / |selectionRect| is the location of where the match was found (in window
+// / coordinates), |activeMatchOrdinal| is the current position in the search
+// / results, and |finalUpdate| is true (1) if this is the last find
+// / notification.
 // /
 type OnFindResultHandler interface {
 	OnFindResult(
@@ -11623,11 +11859,11 @@ func (find_handler *CFindHandlerT) Handler() interface{} {
 	return find_handler_handlers.handler[cp]
 }
 
-// cef_focus_handler_capi.h, include/capi/cef_focus_handler_capi.h:86:3,
+// cef_focus_handler_capi.h, include/capi/cef_focus_handler_capi.h:87:3,
 
 ///
-// Implement this structure to handle events related to focus. The functions of
-// this structure will be called on the UI thread.
+/// Implement this structure to handle events related to focus. The functions of
+/// this structure will be called on the UI thread.
 ///
 
 type cCFocusHandlerT C.cef_focus_handler_t
@@ -11705,10 +11941,11 @@ func (focus_handler *CFocusHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called when the browser component is about to loose focus. For instance, if
-// focus was on the last HTML element and the user pressed the TAB key. |next|
-// will be true (1) if the browser is giving focus to the next component and
-// false (0) if the browser is giving focus to the previous component.
+// / Called when the browser component is about to loose focus. For instance,
+// / if focus was on the last HTML element and the user pressed the TAB key.
+// / |next| will be true (1) if the browser is giving focus to the next
+// / component and false (0) if the browser is giving focus to the previous
+// / component.
 // /
 type OnTakeFocusHandler interface {
 	OnTakeFocus(
@@ -11719,9 +11956,9 @@ type OnTakeFocusHandler interface {
 }
 
 // /
-// Called when the browser component is requesting focus. |source| indicates
-// where the focus request is originating from. Return false (0) to allow the
-// focus to be set or true (1) to cancel setting the focus.
+// / Called when the browser component is requesting focus. |source| indicates
+// / where the focus request is originating from. Return false (0) to allow the
+// / focus to be set or true (1) to cancel setting the focus.
 // /
 type OnSetFocusHandler interface {
 	OnSetFocus(
@@ -11732,7 +11969,7 @@ type OnSetFocusHandler interface {
 }
 
 // /
-// Called when the browser component has received focus.
+// / Called when the browser component has received focus.
 // /
 type OnGotFocusHandler interface {
 	OnGotFocus(
@@ -11835,13 +12072,13 @@ func (focus_handler *CFocusHandlerT) Handler() interface{} {
 	return focus_handler_handlers.handler[cp]
 }
 
-// cef_frame_capi.h, include/capi/cef_frame_capi.h:256:3,
+// cef_frame_capi.h, include/capi/cef_frame_capi.h:257:3,
 
 ///
-// Structure used to represent a frame in the browser window. When used in the
-// browser process the functions of this structure may be called on any thread
-// unless otherwise indicated in the comments. When used in the render process
-// the functions of this structure may only be called on the main thread.
+/// Structure used to represent a frame in the browser window. When used in the
+/// browser process the functions of this structure may be called on any thread
+/// unless otherwise indicated in the comments. When used in the render process
+/// the functions of this structure may only be called on the main thread.
 ///
 
 type cCFrameT C.cef_frame_t
@@ -11919,7 +12156,7 @@ func (frame *CFrameT) Unref() (ret bool) {
 }
 
 // /
-// True if this object is currently attached to a valid frame.
+// / True if this object is currently attached to a valid frame.
 // /
 func (self *CFrameT) IsValid() (ret bool) {
 
@@ -11930,7 +12167,7 @@ func (self *CFrameT) IsValid() (ret bool) {
 }
 
 // /
-// Execute undo in this frame.
+// / Execute undo in this frame.
 // /
 func (self *CFrameT) Undo() {
 
@@ -11939,7 +12176,7 @@ func (self *CFrameT) Undo() {
 }
 
 // /
-// Execute redo in this frame.
+// / Execute redo in this frame.
 // /
 func (self *CFrameT) Redo() {
 
@@ -11948,7 +12185,7 @@ func (self *CFrameT) Redo() {
 }
 
 // /
-// Execute cut in this frame.
+// / Execute cut in this frame.
 // /
 func (self *CFrameT) Cut() {
 
@@ -11957,7 +12194,7 @@ func (self *CFrameT) Cut() {
 }
 
 // /
-// Execute copy in this frame.
+// / Execute copy in this frame.
 // /
 func (self *CFrameT) Copy() {
 
@@ -11966,7 +12203,7 @@ func (self *CFrameT) Copy() {
 }
 
 // /
-// Execute paste in this frame.
+// / Execute paste in this frame.
 // /
 func (self *CFrameT) Paste() {
 
@@ -11975,7 +12212,7 @@ func (self *CFrameT) Paste() {
 }
 
 // /
-// Execute delete in this frame.
+// / Execute delete in this frame.
 // /
 func (self *CFrameT) Del() {
 
@@ -11984,7 +12221,7 @@ func (self *CFrameT) Del() {
 }
 
 // /
-// Execute select all in this frame.
+// / Execute select all in this frame.
 // /
 func (self *CFrameT) SelectAll() {
 
@@ -11993,9 +12230,9 @@ func (self *CFrameT) SelectAll() {
 }
 
 // /
-// Save this frame&#39;s HTML source to a temporary file and open it in the
-// default text viewing application. This function can only be called from the
-// browser process.
+// / Save this frame&#39;s HTML source to a temporary file and open it in the
+// / default text viewing application. This function can only be called from
+// / the browser process.
 // /
 func (self *CFrameT) ViewSource() {
 
@@ -12004,8 +12241,8 @@ func (self *CFrameT) ViewSource() {
 }
 
 // /
-// Retrieve this frame&#39;s HTML source as a string sent to the specified
-// visitor.
+// / Retrieve this frame&#39;s HTML source as a string sent to the specified
+// / visitor.
 // /
 func (self *CFrameT) GetSource(
 	visitor *CStringVisitorT,
@@ -12021,8 +12258,8 @@ func (self *CFrameT) GetSource(
 }
 
 // /
-// Retrieve this frame&#39;s display text as a string sent to the specified
-// visitor.
+// / Retrieve this frame&#39;s display text as a string sent to the specified
+// / visitor.
 // /
 func (self *CFrameT) GetText(
 	visitor *CStringVisitorT,
@@ -12038,11 +12275,11 @@ func (self *CFrameT) GetText(
 }
 
 // /
-// Load the request represented by the |request| object.
-//
-// WARNING: This function will fail with &quot;bad IPC message&quot; reason
-// INVALID_INITIATOR_ORIGIN (213) unless you first navigate to the request
-// origin using some other mechanism (LoadURL, link click, etc).
+// / Load the request represented by the |request| object.
+// /
+// / WARNING: This function will fail with &quot;bad IPC message&quot; reason
+// / INVALID_INITIATOR_ORIGIN (213) unless you first navigate to the request
+// / origin using some other mechanism (LoadURL, link click, etc).
 // /
 func (self *CFrameT) LoadRequest(
 	request *CRequestT,
@@ -12058,7 +12295,7 @@ func (self *CFrameT) LoadRequest(
 }
 
 // /
-// Load the specified |url|.
+// / Load the specified |url|.
 // /
 func (self *CFrameT) LoadUrl(
 	url string,
@@ -12070,11 +12307,11 @@ func (self *CFrameT) LoadUrl(
 }
 
 // /
-// Execute a string of JavaScript code in this frame. The |script_url|
-// parameter is the URL where the script in question can be found, if any. The
-// renderer may request this URL to show the developer the source of the
-// error.  The |start_line| parameter is the base line number to use for error
-// reporting.
+// / Execute a string of JavaScript code in this frame. The |script_url|
+// / parameter is the URL where the script in question can be found, if any.
+// / The renderer may request this URL to show the developer the source of the
+// / error.  The |start_line| parameter is the base line number to use for
+// / error reporting.
 // /
 func (self *CFrameT) ExecuteJavaScript(
 	code string,
@@ -12089,7 +12326,7 @@ func (self *CFrameT) ExecuteJavaScript(
 }
 
 // /
-// Returns true (1) if this is the main (top-level) frame.
+// / Returns true (1) if this is the main (top-level) frame.
 // /
 func (self *CFrameT) IsMain() (ret bool) {
 
@@ -12100,7 +12337,7 @@ func (self *CFrameT) IsMain() (ret bool) {
 }
 
 // /
-// Returns true (1) if this is the focused frame.
+// / Returns true (1) if this is the focused frame.
 // /
 func (self *CFrameT) IsFocused() (ret bool) {
 
@@ -12111,11 +12348,11 @@ func (self *CFrameT) IsFocused() (ret bool) {
 }
 
 // /
-// Returns the name for this frame. If the frame has an assigned name (for
-// example, set via the iframe &quot;name&quot; attribute) then that value will be
-// returned. Otherwise a unique name will be constructed based on the frame
-// parent hierarchy. The main (top-level) frame will always have an NULL name
-// value.
+// / Returns the name for this frame. If the frame has an assigned name (for
+// / example, set via the iframe &quot;name&quot; attribute) then that value will be
+// / returned. Otherwise a unique name will be constructed based on the frame
+// / parent hierarchy. The main (top-level) frame will always have an NULL name
+// / value.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CFrameT) GetName() (ret string) {
@@ -12131,8 +12368,8 @@ func (self *CFrameT) GetName() (ret string) {
 }
 
 // /
-// Returns the globally unique identifier for this frame or &lt; 0 if the
-// underlying frame does not yet exist.
+// / Returns the globally unique identifier for this frame or &lt; 0 if the
+// / underlying frame does not yet exist.
 // /
 func (self *CFrameT) GetIdentifier() (ret int64) {
 
@@ -12143,8 +12380,8 @@ func (self *CFrameT) GetIdentifier() (ret int64) {
 }
 
 // /
-// Returns the parent of this frame or NULL if this is the main (top-level)
-// frame.
+// / Returns the parent of this frame or NULL if this is the main (top-level)
+// / frame.
 // /
 func (self *CFrameT) GetParent() (ret *CFrameT) {
 
@@ -12155,7 +12392,7 @@ func (self *CFrameT) GetParent() (ret *CFrameT) {
 }
 
 // /
-// Returns the URL currently loaded in this frame.
+// / Returns the URL currently loaded in this frame.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CFrameT) GetUrl() (ret string) {
@@ -12171,7 +12408,7 @@ func (self *CFrameT) GetUrl() (ret string) {
 }
 
 // /
-// Returns the browser that this frame belongs to.
+// / Returns the browser that this frame belongs to.
 // /
 func (self *CFrameT) GetBrowser() (ret *CBrowserT) {
 
@@ -12182,8 +12419,8 @@ func (self *CFrameT) GetBrowser() (ret *CBrowserT) {
 }
 
 // /
-// Get the V8 context associated with the frame. This function can only be
-// called from the render process.
+// / Get the V8 context associated with the frame. This function can only be
+// / called from the render process.
 // /
 func (self *CFrameT) GetV8context() (ret *CV8contextT) {
 
@@ -12194,8 +12431,8 @@ func (self *CFrameT) GetV8context() (ret *CV8contextT) {
 }
 
 // /
-// Visit the DOM document. This function can only be called from the render
-// process.
+// / Visit the DOM document. This function can only be called from the render
+// / process.
 // /
 func (self *CFrameT) VisitDom(
 	visitor *CDomvisitorT,
@@ -12211,27 +12448,27 @@ func (self *CFrameT) VisitDom(
 }
 
 // /
-// Create a new URL request that will be treated as originating from this
-// frame and the associated browser. This request may be intercepted by the
-// client via cef_resource_request_handler_t or cef_scheme_handler_factory_t.
-// Use cef_urlrequest_t::Create instead if you do not want the request to have
-// this association, in which case it may be handled differently (see
-// documentation on that function). Requests may originate from both the
-// browser process and the render process.
-//
-// For requests originating from the browser process:
-//   - POST data may only contain a single element of type PDE_TYPE_FILE or
-//     PDE_TYPE_BYTES.
-//
-// For requests originating from the render process:
-//   - POST data may only contain a single element of type PDE_TYPE_BYTES.
-//   - If the response contains Content-Disposition or Mime-Type header values
-//     that would not normally be rendered then the response may receive
-//     special handling inside the browser (for example, via the file download
-//     code path instead of the URL request code path).
-//
-// The |request| object will be marked as read-only after calling this
-// function.
+// / Create a new URL request that will be treated as originating from this
+// / frame and the associated browser. This request may be intercepted by the
+// / client via cef_resource_request_handler_t or cef_scheme_handler_factory_t.
+// / Use cef_urlrequest_t::Create instead if you do not want the request to
+// / have this association, in which case it may be handled differently (see
+// / documentation on that function). Requests may originate from both the
+// / browser process and the render process.
+// /
+// / For requests originating from the browser process:
+// /   - POST data may only contain a single element of type PDE_TYPE_FILE or
+// /     PDE_TYPE_BYTES.
+// /
+// / For requests originating from the render process:
+// /   - POST data may only contain a single element of type PDE_TYPE_BYTES.
+// /   - If the response contains Content-Disposition or Mime-Type header
+// /     values that would not normally be rendered then the response may
+// /     receive special handling inside the browser (for example, via the
+// /     file download code path instead of the URL request code path).
+// /
+// / The |request| object will be marked as read-only after calling this
+// / function.
 // /
 func (self *CFrameT) CreateUrlrequest(
 	request *CRequestT,
@@ -12255,12 +12492,12 @@ func (self *CFrameT) CreateUrlrequest(
 }
 
 // /
-// Send a message to the specified |target_process|. Ownership of the message
-// contents will be transferred and the |message| reference will be
-// invalidated. Message delivery is not guaranteed in all cases (for example,
-// if the browser is closing, navigating, or if the target process crashes).
-// Send an ACK message back from the target process if confirmation is
-// required.
+// / Send a message to the specified |target_process|. Ownership of the message
+// / contents will be transferred and the |message| reference will be
+// / invalidated. Message delivery is not guaranteed in all cases (for example,
+// / if the browser is closing, navigating, or if the target process crashes).
+// / Send an ACK message back from the target process if confirmation is
+// / required.
 // /
 func (self *CFrameT) SendProcessMessage(
 	target_process CProcessIdT,
@@ -12276,88 +12513,94 @@ func (self *CFrameT) SendProcessMessage(
 
 }
 
-// cef_frame_handler_capi.h, include/capi/cef_frame_handler_capi.h:188:3,
+// cef_frame_handler_capi.h, include/capi/cef_frame_handler_capi.h:196:3,
 
 ///
-// Implement this structure to handle events related to cef_frame_t life span.
-// The order of callbacks is:
-//
-// (1) During initial cef_browser_host_t creation and navigation of the main
-// frame: - cef_frame_handler_t::OnFrameCreated => The initial main frame object
-// has been
-//   created. Any commands will be queued until the frame is attached.
-// - cef_frame_handler_t::OnMainFrameChanged => The initial main frame object
-// has
-//   been assigned to the browser.
-// - cef_life_span_handler_t::OnAfterCreated => The browser is now valid and can
-// be
-//   used.
-// - cef_frame_handler_t::OnFrameAttached => The initial main frame object is
-// now
-//   connected to its peer in the renderer process. Commands can be routed.
-//
-// (2) During further cef_browser_host_t navigation/loading of the main frame
-// and/or sub-frames: - cef_frame_handler_t::OnFrameCreated => A new main frame
-// or sub-frame object has
-//   been created. Any commands will be queued until the frame is attached.
-// - cef_frame_handler_t::OnFrameAttached => A new main frame or sub-frame
-// object is
-//   now connected to its peer in the renderer process. Commands can be routed.
-// - cef_frame_handler_t::OnFrameDetached => An existing main frame or sub-frame
-//   object has lost its connection to the renderer process. If multiple objects
-//   are detached at the same time then notifications will be sent for any
-//   sub-frame objects before the main frame object. Commands can no longer be
-//   routed and will be discarded.
-// - cef_frame_handler_t::OnMainFrameChanged => A new main frame object has been
-//   assigned to the browser. This will only occur with cross-origin navigation
-//   or re-navigation after renderer process termination (due to crashes, etc).
-//
-// (3) During final cef_browser_host_t destruction of the main frame: -
-// cef_frame_handler_t::OnFrameDetached => Any sub-frame objects have lost their
-//   connection to the renderer process. Commands can no longer be routed and
-//   will be discarded.
-// - cef_life_span_handler_t::OnBeforeClose => The browser has been destroyed. -
-// cef_frame_handler_t::OnFrameDetached => The main frame object have lost its
-//   connection to the renderer process. Notifications will be sent for any
-//   sub-frame objects before the main frame object. Commands can no longer be
-//   routed and will be discarded.
-// - cef_frame_handler_t::OnMainFrameChanged => The final main frame object has
-// been
-//   removed from the browser.
-//
-// Cross-origin navigation and/or loading receives special handling.
-//
-// When the main frame navigates to a different origin the OnMainFrameChanged
-// callback (2) will be executed with the old and new main frame objects.
-//
-// When a new sub-frame is loaded in, or an existing sub-frame is navigated to,
-// a different origin from the parent frame, a temporary sub-frame object will
-// first be created in the parent's renderer process. That temporary sub-frame
-// will then be discarded after the real cross-origin sub-frame is created in
-// the new/target renderer process. The client will receive cross-origin
-// navigation callbacks (2) for the transition from the temporary sub-frame to
-// the real sub-frame. The temporary sub-frame will not recieve or execute
-// commands during this transitional period (any sent commands will be
-// discarded).
-//
-// When a new popup browser is created in a different origin from the parent
-// browser, a temporary main frame object for the popup will first be created in
-// the parent's renderer process. That temporary main frame will then be
-// discarded after the real cross-origin main frame is created in the new/target
-// renderer process. The client will recieve creation and initial navigation
-// callbacks (1) for the temporary main frame, followed by cross-origin
-// navigation callbacks (2) for the transition from the temporary main frame to
-// the real main frame. The temporary main frame may receive and execute
-// commands during this transitional period (any sent commands may be executed,
-// but the behavior is potentially undesirable since they execute in the parent
-// browser's renderer process and not the new/target renderer process).
-//
-// Callbacks will not be executed for placeholders that may be created during
-// pre-commit navigation for sub-frames that do not yet exist in the renderer
-// process. Placeholders will have cef_frame_t::get_identifier() == -4.
-//
-// The functions of this structure will be called on the UI thread unless
-// otherwise indicated.
+/// Implement this structure to handle events related to cef_frame_t life span.
+/// The order of callbacks is:
+///
+/// (1) During initial cef_browser_host_t creation and navigation of the main
+/// frame: - cef_frame_handler_t::OnFrameCreated => The initial main frame
+/// object has been
+///   created. Any commands will be queued until the frame is attached.
+/// - cef_frame_handler_t::OnMainFrameChanged => The initial main frame object
+/// has
+///   been assigned to the browser.
+/// - cef_life_span_handler_t::OnAfterCreated => The browser is now valid and
+/// can be
+///   used.
+/// - cef_frame_handler_t::OnFrameAttached => The initial main frame object is
+/// now
+///   connected to its peer in the renderer process. Commands can be routed.
+///
+/// (2) During further cef_browser_host_t navigation/loading of the main frame
+///     and/or sub-frames:
+/// - cef_frame_handler_t::OnFrameCreated => A new main frame or sub-frame
+/// object
+///   has been created. Any commands will be queued until the frame is attached.
+/// - cef_frame_handler_t::OnFrameAttached => A new main frame or sub-frame
+/// object
+///   is now connected to its peer in the renderer process. Commands can be
+///   routed.
+/// - cef_frame_handler_t::OnFrameDetached => An existing main frame or sub-
+/// frame
+///   object has lost its connection to the renderer process. If multiple
+///   objects are detached at the same time then notifications will be sent for
+///   any sub-frame objects before the main frame object. Commands can no longer
+///   be routed and will be discarded.
+/// - cef_frame_handler_t::OnMainFrameChanged => A new main frame object has
+/// been
+///   assigned to the browser. This will only occur with cross-origin navigation
+///   or re-navigation after renderer process termination (due to crashes, etc).
+///
+/// (3) During final cef_browser_host_t destruction of the main frame: -
+/// cef_frame_handler_t::OnFrameDetached => Any sub-frame objects have lost
+/// their
+///   connection to the renderer process. Commands can no longer be routed and
+///   will be discarded.
+/// - cef_life_span_handler_t::OnBeforeClose => The browser has been destroyed.
+/// - cef_frame_handler_t::OnFrameDetached => The main frame object have lost
+/// its
+///   connection to the renderer process. Notifications will be sent for any
+///   sub-frame objects before the main frame object. Commands can no longer be
+///   routed and will be discarded.
+/// - cef_frame_handler_t::OnMainFrameChanged => The final main frame object has
+///   been removed from the browser.
+///
+/// Cross-origin navigation and/or loading receives special handling.
+///
+/// When the main frame navigates to a different origin the OnMainFrameChanged
+/// callback (2) will be executed with the old and new main frame objects.
+///
+/// When a new sub-frame is loaded in, or an existing sub-frame is navigated to,
+/// a different origin from the parent frame, a temporary sub-frame object will
+/// first be created in the parent's renderer process. That temporary sub-frame
+/// will then be discarded after the real cross-origin sub-frame is created in
+/// the new/target renderer process. The client will receive cross-origin
+/// navigation callbacks (2) for the transition from the temporary sub-frame to
+/// the real sub-frame. The temporary sub-frame will not recieve or execute
+/// commands during this transitional period (any sent commands will be
+/// discarded).
+///
+/// When a new popup browser is created in a different origin from the parent
+/// browser, a temporary main frame object for the popup will first be created
+/// in the parent's renderer process. That temporary main frame will then be
+/// discarded after the real cross-origin main frame is created in the
+/// new/target renderer process. The client will recieve creation and initial
+/// navigation callbacks (1) for the temporary main frame, followed by cross-
+/// origin navigation callbacks (2) for the transition from the temporary main
+/// frame to the real main frame. The temporary main frame may receive and
+/// execute commands during this transitional period (any sent commands may be
+/// executed, but the behavior is potentially undesirable since they execute in
+/// the parent browser's renderer process and not the new/target renderer
+/// process).
+///
+/// Callbacks will not be executed for placeholders that may be created during
+/// pre-commit navigation for sub-frames that do not yet exist in the renderer
+/// process. Placeholders will have cef_frame_t::get_identifier() == -4.
+///
+/// The functions of this structure will be called on the UI thread unless
+/// otherwise indicated.
 ///
 
 type cCFrameHandlerT C.cef_frame_handler_t
@@ -12435,10 +12678,10 @@ func (frame_handler *CFrameHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called when a new frame is created. This will be the first notification
-// that references |frame|. Any commands that require transport to the
-// associated renderer process (LoadRequest, SendProcessMessage, GetSource,
-// etc.) will be queued until OnFrameAttached is called for |frame|.
+// / Called when a new frame is created. This will be the first notification
+// / that references |frame|. Any commands that require transport to the
+// / associated renderer process (LoadRequest, SendProcessMessage, GetSource,
+// / etc.) will be queued until OnFrameAttached is called for |frame|.
 // /
 func (self *CFrameHandlerT) OnFrameCreated(
 	browser *CBrowserT,
@@ -12460,10 +12703,10 @@ func (self *CFrameHandlerT) OnFrameCreated(
 }
 
 // /
-// Called when a frame can begin routing commands to/from the associated
-// renderer process. |reattached| will be true (1) if the frame was re-
-// attached after exiting the BackForwardCache. Any commands that were queued
-// have now been dispatched.
+// / Called when a frame can begin routing commands to/from the associated
+// / renderer process. |reattached| will be true (1) if the frame was re-
+// / attached after exiting the BackForwardCache. Any commands that were queued
+// / have now been dispatched.
 // /
 func (self *CFrameHandlerT) OnFrameAttached(
 	browser *CBrowserT,
@@ -12486,11 +12729,12 @@ func (self *CFrameHandlerT) OnFrameAttached(
 }
 
 // /
-// Called when a frame loses its connection to the renderer process and will
-// be destroyed. Any pending or future commands will be discarded and
-// cef_frame_t::is_valid() will now return false (0) for |frame|. If called
-// after cef_life_span_handler_t::on_before_close() during browser destruction
-// then cef_browser_t::is_valid() will return false (0) for |browser|.
+// / Called when a frame loses its connection to the renderer process and will
+// / be destroyed. Any pending or future commands will be discarded and
+// / cef_frame_t::is_valid() will now return false (0) for |frame|. If called
+// / after cef_life_span_handler_t::on_before_close() during browser
+// / destruction then cef_browser_t::is_valid() will return false (0) for
+// / |browser|.
 // /
 func (self *CFrameHandlerT) OnFrameDetached(
 	browser *CBrowserT,
@@ -12512,18 +12756,19 @@ func (self *CFrameHandlerT) OnFrameDetached(
 }
 
 // /
-// Called when the main frame changes due to (a) initial browser creation, (b)
-// final browser destruction, (c) cross-origin navigation or (d) re-navigation
-// after renderer process termination (due to crashes, etc). |old_frame| will
-// be NULL and |new_frame| will be non-NULL when a main frame is assigned to
-// |browser| for the first time. |old_frame| will be non-NULL and |new_frame|
-// will be NULL and  when a main frame is removed from |browser| for the last
-// time. Both |old_frame| and |new_frame| will be non-NULL for cross-origin
-// navigations or re-navigation after renderer process termination. This
-// function will be called after on_frame_created() for |new_frame| and/or
-// after on_frame_detached() for |old_frame|. If called after
-// cef_life_span_handler_t::on_before_close() during browser destruction then
-// cef_browser_t::is_valid() will return false (0) for |browser|.
+// / Called when the main frame changes due to (a) initial browser creation,
+// / (b) final browser destruction, (c) cross-origin navigation or (d) re-
+// / navigation after renderer process termination (due to crashes, etc).
+// / |old_frame| will be NULL and |new_frame| will be non-NULL when a main
+// / frame is assigned to |browser| for the first time. |old_frame| will be
+// / non-NULL and |new_frame| will be NULL and  when a main frame is removed
+// / from |browser| for the last time. Both |old_frame| and |new_frame| will be
+// / non-NULL for cross-origin navigations or re-navigation after renderer
+// / process termination. This function will be called after on_frame_created()
+// / for |new_frame| and/or after on_frame_detached() for |old_frame|. If
+// / called after cef_life_span_handler_t::on_before_close() during browser
+// / destruction then cef_browser_t::is_valid() will return false (0) for
+// / |browser|.
 // /
 func (self *CFrameHandlerT) OnMainFrameChanged(
 	browser *CBrowserT,
@@ -12550,15 +12795,15 @@ func (self *CFrameHandlerT) OnMainFrameChanged(
 
 }
 
-// cef_image_capi.h, include/capi/cef_image_capi.h:193:3,
+// cef_image_capi.h, include/capi/cef_image_capi.h:194:3,
 
 ///
-// Container for a single image represented at different scale factors. All
-// image representations should be the same size in density independent pixel
-// (DIP) units. For example, if the image at scale factor 1.0 is 100x100 pixels
-// then the image at scale factor 2.0 should be 200x200 pixels -- both images
-// will display with a DIP size of 100x100 units. The functions of this
-// structure can be called on any browser process thread.
+/// Container for a single image represented at different scale factors. All
+/// image representations should be the same size in density independent pixel
+/// (DIP) units. For example, if the image at scale factor 1.0 is 100x100 pixels
+/// then the image at scale factor 2.0 should be 200x200 pixels -- both images
+/// will display with a DIP size of 100x100 units. The functions of this
+/// structure can be called on any browser process thread.
 ///
 
 type cCImageT C.cef_image_t
@@ -12636,7 +12881,7 @@ func (image *CImageT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this Image is NULL.
+// / Returns true (1) if this Image is NULL.
 // /
 func (self *CImageT) IsEmpty() (ret bool) {
 
@@ -12647,8 +12892,8 @@ func (self *CImageT) IsEmpty() (ret bool) {
 }
 
 // /
-// Returns true (1) if this Image and |that| Image share the same underlying
-// storage. Will also return true (1) if both images are NULL.
+// / Returns true (1) if this Image and |that| Image share the same underlying
+// / storage. Will also return true (1) if both images are NULL.
 // /
 func (self *CImageT) IsSame(
 	that *CImageT,
@@ -12666,11 +12911,11 @@ func (self *CImageT) IsSame(
 }
 
 // /
-// Add a bitmap image representation for |scale_factor|. Only 32-bit RGBA/BGRA
-// formats are supported. |pixel_width| and |pixel_height| are the bitmap
-// representation size in pixel coordinates. |pixel_data| is the array of
-// pixel data and should be |pixel_width| x |pixel_height| x 4 bytes in size.
-// |color_type| and |alpha_type| values specify the pixel format.
+// / Add a bitmap image representation for |scale_factor|. Only 32-bit
+// / RGBA/BGRA formats are supported. |pixel_width| and |pixel_height| are the
+// / bitmap representation size in pixel coordinates. |pixel_data| is the array
+// / of pixel data and should be |pixel_width| x |pixel_height| x 4 bytes in
+// / size. |color_type| and |alpha_type| values specify the pixel format.
 // /
 func (self *CImageT) AddBitmap(
 	scale_factor float32,
@@ -12691,9 +12936,9 @@ func (self *CImageT) AddBitmap(
 }
 
 // /
-// Add a PNG image representation for |scale_factor|. |png_data| is the image
-// data of size |png_data_size|. Any alpha transparency in the PNG data will
-// be maintained.
+// / Add a PNG image representation for |scale_factor|. |png_data| is the image
+// / data of size |png_data_size|. Any alpha transparency in the PNG data will
+// / be maintained.
 // /
 func (self *CImageT) AddPng(
 	scale_factor float32,
@@ -12710,9 +12955,9 @@ func (self *CImageT) AddPng(
 }
 
 // /
-// Create a JPEG image representation for |scale_factor|. |jpeg_data| is the
-// image data of size |jpeg_data_size|. The JPEG format does not support
-// transparency so the alpha byte will be set to 0xFF for all pixels.
+// / Create a JPEG image representation for |scale_factor|. |jpeg_data| is the
+// / image data of size |jpeg_data_size|. The JPEG format does not support
+// / transparency so the alpha byte will be set to 0xFF for all pixels.
 // /
 func (self *CImageT) AddJpeg(
 	scale_factor float32,
@@ -12729,7 +12974,7 @@ func (self *CImageT) AddJpeg(
 }
 
 // /
-// Returns the image width in density independent pixel (DIP) units.
+// / Returns the image width in density independent pixel (DIP) units.
 // /
 func (self *CImageT) GetWidth() (ret int64) {
 
@@ -12740,7 +12985,7 @@ func (self *CImageT) GetWidth() (ret int64) {
 }
 
 // /
-// Returns the image height in density independent pixel (DIP) units.
+// / Returns the image height in density independent pixel (DIP) units.
 // /
 func (self *CImageT) GetHeight() (ret int64) {
 
@@ -12751,8 +12996,8 @@ func (self *CImageT) GetHeight() (ret int64) {
 }
 
 // /
-// Returns true (1) if this image contains a representation for
-// |scale_factor|.
+// / Returns true (1) if this image contains a representation for
+// / |scale_factor|.
 // /
 func (self *CImageT) HasRepresentation(
 	scale_factor float32,
@@ -12765,7 +13010,8 @@ func (self *CImageT) HasRepresentation(
 }
 
 // /
-// Removes the representation for |scale_factor|. Returns true (1) on success.
+// / Removes the representation for |scale_factor|. Returns true (1) on
+// / success.
 // /
 func (self *CImageT) RemoveRepresentation(
 	scale_factor float32,
@@ -12778,10 +13024,10 @@ func (self *CImageT) RemoveRepresentation(
 }
 
 // /
-// Returns information for the representation that most closely matches
-// |scale_factor|. |actual_scale_factor| is the actual scale factor for the
-// representation. |pixel_width| and |pixel_height| are the representation
-// size in pixel coordinates. Returns true (1) on success.
+// / Returns information for the representation that most closely matches
+// / |scale_factor|. |actual_scale_factor| is the actual scale factor for the
+// / representation. |pixel_width| and |pixel_height| are the representation
+// / size in pixel coordinates. Returns true (1) on success.
 // /
 func (self *CImageT) GetRepresentationInfo(
 	scale_factor float32,
@@ -12801,12 +13047,12 @@ func (self *CImageT) GetRepresentationInfo(
 }
 
 // /
-// Returns the bitmap representation that most closely matches |scale_factor|.
-// Only 32-bit RGBA/BGRA formats are supported. |color_type| and |alpha_type|
-// values specify the desired output pixel format. |pixel_width| and
-// |pixel_height| are the output representation size in pixel coordinates.
-// Returns a cef_binary_value_t containing the pixel data on success or NULL
-// on failure.
+// / Returns the bitmap representation that most closely matches
+// / |scale_factor|. Only 32-bit RGBA/BGRA formats are supported. |color_type|
+// / and |alpha_type| values specify the desired output pixel format.
+// / |pixel_width| and |pixel_height| are the output representation size in
+// / pixel coordinates. Returns a cef_binary_value_t containing the pixel data
+// / on success or NULL on failure.
 // /
 func (self *CImageT) GetAsBitmap(
 	scale_factor float32,
@@ -12826,12 +13072,12 @@ func (self *CImageT) GetAsBitmap(
 }
 
 // /
-// Returns the PNG representation that most closely matches |scale_factor|. If
-// |with_transparency| is true (1) any alpha transparency in the image will be
-// represented in the resulting PNG data. |pixel_width| and |pixel_height| are
-// the output representation size in pixel coordinates. Returns a
-// cef_binary_value_t containing the PNG image data on success or NULL on
-// failure.
+// / Returns the PNG representation that most closely matches |scale_factor|.
+// / If |with_transparency| is true (1) any alpha transparency in the image
+// / will be represented in the resulting PNG data. |pixel_width| and
+// / |pixel_height| are the output representation size in pixel coordinates.
+// / Returns a cef_binary_value_t containing the PNG image data on success or
+// / NULL on failure.
 // /
 func (self *CImageT) GetAsPng(
 	scale_factor float32,
@@ -12850,13 +13096,13 @@ func (self *CImageT) GetAsPng(
 }
 
 // /
-// Returns the JPEG representation that most closely matches |scale_factor|.
-// |quality| determines the compression level with 0 == lowest and 100 ==
-// highest. The JPEG format does not support alpha transparency and the alpha
-// channel, if any, will be discarded. |pixel_width| and |pixel_height| are
-// the output representation size in pixel coordinates. Returns a
-// cef_binary_value_t containing the JPEG image data on success or NULL on
-// failure.
+// / Returns the JPEG representation that most closely matches |scale_factor|.
+// / |quality| determines the compression level with 0 == lowest and 100 ==
+// / highest. The JPEG format does not support alpha transparency and the alpha
+// / channel, if any, will be discarded. |pixel_width| and |pixel_height| are
+// / the output representation size in pixel coordinates. Returns a
+// / cef_binary_value_t containing the JPEG image data on success or NULL on
+// / failure.
 // /
 func (self *CImageT) GetAsJpeg(
 	scale_factor float32,
@@ -12875,8 +13121,8 @@ func (self *CImageT) GetAsJpeg(
 }
 
 // /
-// Create a new cef_image_t. It will initially be NULL. Use the Add*() functions
-// to add representations at different scale factors.
+// / Create a new cef_image_t. It will initially be NULL. Use the Add*()
+// / functions to add representations at different scale factors.
 // /
 func ImageCreate() (ret *CImageT) {
 
@@ -12886,11 +13132,11 @@ func ImageCreate() (ret *CImageT) {
 	return ret
 }
 
-// cef_jsdialog_handler_capi.h, include/capi/cef_jsdialog_handler_capi.h:67:3,
+// cef_jsdialog_handler_capi.h, include/capi/cef_jsdialog_handler_capi.h:68:3,
 
 ///
-// Callback structure used for asynchronous continuation of JavaScript dialog
-// requests.
+/// Callback structure used for asynchronous continuation of JavaScript dialog
+/// requests.
 ///
 
 type cCJsdialogCallbackT C.cef_jsdialog_callback_t
@@ -12968,8 +13214,9 @@ func (jsdialog_callback *CJsdialogCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Continue the JS dialog request. Set |success| to true (1) if the OK button
-// was pressed. The |user_input| value should be specified for prompt dialogs.
+// / Continue the JS dialog request. Set |success| to true (1) if the OK button
+// / was pressed. The |user_input| value should be specified for prompt
+// / dialogs.
 // /
 func (self *CJsdialogCallbackT) Cont(
 	success int,
@@ -12982,8 +13229,8 @@ func (self *CJsdialogCallbackT) Cont(
 }
 
 ///
-// Implement this structure to handle events related to JavaScript dialogs. The
-// functions of this structure will be called on the UI thread.
+/// Implement this structure to handle events related to JavaScript dialogs. The
+/// functions of this structure will be called on the UI thread.
 ///
 
 type cCJsdialogHandlerT C.cef_jsdialog_handler_t
@@ -13061,21 +13308,21 @@ func (jsdialog_handler *CJsdialogHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called to run a JavaScript dialog. If |origin_url| is non-NULL it can be
-// passed to the CefFormatUrlForSecurityDisplay function to retrieve a secure
-// and user-friendly display string. The |default_prompt_text| value will be
-// specified for prompt dialogs only. Set |suppress_message| to true (1) and
-// return false (0) to suppress the message (suppressing messages is
-// preferable to immediately executing the callback as this is used to detect
-// presumably malicious behavior like spamming alert messages in
-// onbeforeunload). Set |suppress_message| to false (0) and return false (0)
-// to use the default implementation (the default implementation will show one
-// modal dialog at a time and suppress any additional dialog requests until
-// the displayed dialog is dismissed). Return true (1) if the application will
-// use a custom dialog or if the callback has been executed immediately.
-// Custom dialogs may be either modal or modeless. If a custom dialog is used
-// the application must execute |callback| once the custom dialog is
-// dismissed.
+// / Called to run a JavaScript dialog. If |origin_url| is non-NULL it can be
+// / passed to the CefFormatUrlForSecurityDisplay function to retrieve a secure
+// / and user-friendly display string. The |default_prompt_text| value will be
+// / specified for prompt dialogs only. Set |suppress_message| to true (1) and
+// / return false (0) to suppress the message (suppressing messages is
+// / preferable to immediately executing the callback as this is used to detect
+// / presumably malicious behavior like spamming alert messages in
+// / onbeforeunload). Set |suppress_message| to false (0) and return false (0)
+// / to use the default implementation (the default implementation will show
+// / one modal dialog at a time and suppress any additional dialog requests
+// / until the displayed dialog is dismissed). Return true (1) if the
+// / application will use a custom dialog or if the callback has been executed
+// / immediately. Custom dialogs may be either modal or modeless. If a custom
+// / dialog is used the application must execute |callback| once the custom
+// / dialog is dismissed.
 // /
 type OnJsdialogHandler interface {
 	OnJsdialog(
@@ -13090,12 +13337,12 @@ type OnJsdialogHandler interface {
 }
 
 // /
-// Called to run a dialog asking the user if they want to leave a page. Return
-// false (0) to use the default dialog implementation. Return true (1) if the
-// application will use a custom dialog or if the callback has been executed
-// immediately. Custom dialogs may be either modal or modeless. If a custom
-// dialog is used the application must execute |callback| once the custom
-// dialog is dismissed.
+// / Called to run a dialog asking the user if they want to leave a page.
+// / Return false (0) to use the default dialog implementation. Return true (1)
+// / if the application will use a custom dialog or if the callback has been
+// / executed immediately. Custom dialogs may be either modal or modeless. If a
+// / custom dialog is used the application must execute |callback| once the
+// / custom dialog is dismissed.
 // /
 type OnBeforeUnloadDialogHandler interface {
 	OnBeforeUnloadDialog(
@@ -13108,9 +13355,9 @@ type OnBeforeUnloadDialogHandler interface {
 }
 
 // /
-// Called to cancel any pending dialogs and reset any saved dialog state. Will
-// be called due to events like page navigation irregardless of whether any
-// dialogs are currently pending.
+// / Called to cancel any pending dialogs and reset any saved dialog state.
+// / Will be called due to events like page navigation irregardless of whether
+// / any dialogs are currently pending.
 // /
 type OnResetDialogStateHandler interface {
 	OnResetDialogState(
@@ -13120,7 +13367,7 @@ type OnResetDialogStateHandler interface {
 }
 
 // /
-// Called when the default implementation dialog is closed.
+// / Called when the dialog is closed.
 // /
 type OnDialogClosedHandler interface {
 	OnDialogClosed(
@@ -13233,11 +13480,11 @@ func (jsdialog_handler *CJsdialogHandlerT) Handler() interface{} {
 	return jsdialog_handler_handlers.handler[cp]
 }
 
-// cef_keyboard_handler_capi.h, include/capi/cef_keyboard_handler_capi.h:83:3,
+// cef_keyboard_handler_capi.h, include/capi/cef_keyboard_handler_capi.h:84:3,
 
 ///
-// Implement this structure to handle events related to keyboard input. The
-// functions of this structure will be called on the UI thread.
+/// Implement this structure to handle events related to keyboard input. The
+/// functions of this structure will be called on the UI thread.
 ///
 
 type cCKeyboardHandlerT C.cef_keyboard_handler_t
@@ -13315,11 +13562,12 @@ func (keyboard_handler *CKeyboardHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called before a keyboard event is sent to the renderer. |event| contains
-// information about the keyboard event. |os_event| is the operating system
-// event message, if any. Return true (1) if the event was handled or false
-// (0) otherwise. If the event will be handled in on_key_event() as a keyboard
-// shortcut set |is_keyboard_shortcut| to true (1) and return false (0).
+// / Called before a keyboard event is sent to the renderer. |event| contains
+// / information about the keyboard event. |os_event| is the operating system
+// / event message, if any. Return true (1) if the event was handled or false
+// / (0) otherwise. If the event will be handled in on_key_event() as a
+// / keyboard shortcut set |is_keyboard_shortcut| to true (1) and return false
+// / (0).
 // /
 type OnPreKeyEventHandler interface {
 	OnPreKeyEvent(
@@ -13331,10 +13579,10 @@ type OnPreKeyEventHandler interface {
 }
 
 // /
-// Called after the renderer and JavaScript in the page has had a chance to
-// handle the event. |event| contains information about the keyboard event.
-// |os_event| is the operating system event message, if any. Return true (1)
-// if the keyboard event was handled or false (0) otherwise.
+// / Called after the renderer and JavaScript in the page has had a chance to
+// / handle the event. |event| contains information about the keyboard event.
+// / |os_event| is the operating system event message, if any. Return true (1)
+// / if the keyboard event was handled or false (0) otherwise.
 // /
 type CKeyboardHandlerTOnKeyEventHandler interface {
 	OnKeyEvent(
@@ -13429,11 +13677,11 @@ func (keyboard_handler *CKeyboardHandlerT) Handler() interface{} {
 	return keyboard_handler_handlers.handler[cp]
 }
 
-// cef_label_button_capi.h, include/capi/views/cef_label_button_capi.h:146:3,
+// cef_label_button_capi.h, include/capi/views/cef_label_button_capi.h:147:3,
 
 ///
-// LabelButton is a button with optional text and/or icon. Methods must be
-// called on the browser process UI thread unless otherwise indicated.
+/// LabelButton is a button with optional text and/or icon. Methods must be
+/// called on the browser process UI thread unless otherwise indicated.
 ///
 
 type cCLabelButtonT C.cef_label_button_t
@@ -13518,8 +13766,8 @@ func (label_button *CLabelButtonT) ToCButtonT() *CButtonT {
 }
 
 // /
-// Returns this LabelButton as a MenuButton or NULL if this is not a
-// MenuButton.
+// / Returns this LabelButton as a MenuButton or NULL if this is not a
+// / MenuButton.
 // /
 func (self *CLabelButtonT) AsMenuButton() (ret *CMenuButtonT) {
 
@@ -13530,8 +13778,8 @@ func (self *CLabelButtonT) AsMenuButton() (ret *CMenuButtonT) {
 }
 
 // /
-// Sets the text shown on the LabelButton. By default |text| will also be used
-// as the accessible name.
+// / Sets the text shown on the LabelButton. By default |text| will also be
+// / used as the accessible name.
 // /
 func (self *CLabelButtonT) SetText(
 	text string,
@@ -13543,7 +13791,7 @@ func (self *CLabelButtonT) SetText(
 }
 
 // /
-// Returns the text shown on the LabelButton.
+// / Returns the text shown on the LabelButton.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CLabelButtonT) GetText() (ret string) {
@@ -13559,9 +13807,9 @@ func (self *CLabelButtonT) GetText() (ret string) {
 }
 
 // /
-// Sets the image shown for |button_state|. When this Button is drawn if no
-// image exists for the current state then the image for
-// CEF_BUTTON_STATE_NORMAL, if any, will be shown.
+// / Sets the image shown for |button_state|. When this Button is drawn if no
+// / image exists for the current state then the image for
+// / CEF_BUTTON_STATE_NORMAL, if any, will be shown.
 // /
 func (self *CLabelButtonT) SetImage(
 	button_state CButtonStateT,
@@ -13578,8 +13826,8 @@ func (self *CLabelButtonT) SetImage(
 }
 
 // /
-// Returns the image shown for |button_state|. If no image exists for that
-// state then the image for CEF_BUTTON_STATE_NORMAL will be returned.
+// / Returns the image shown for |button_state|. If no image exists for that
+// / state then the image for CEF_BUTTON_STATE_NORMAL will be returned.
 // /
 func (self *CLabelButtonT) GetImage(
 	button_state CButtonStateT,
@@ -13592,7 +13840,7 @@ func (self *CLabelButtonT) GetImage(
 }
 
 // /
-// Sets the text color shown for the specified button |for_state| to |color|.
+// / Sets the text color shown for the specified button |for_state| to |color|.
 // /
 func (self *CLabelButtonT) SetTextColor(
 	for_state CButtonStateT,
@@ -13604,7 +13852,7 @@ func (self *CLabelButtonT) SetTextColor(
 }
 
 // /
-// Sets the text colors shown for the non-disabled states to |color|.
+// / Sets the text colors shown for the non-disabled states to |color|.
 // /
 func (self *CLabelButtonT) SetEnabledTextColors(
 	color CColorT,
@@ -13615,16 +13863,15 @@ func (self *CLabelButtonT) SetEnabledTextColors(
 }
 
 // /
-// Sets the font list. The format is &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;,
-// where: - FONT_FAMILY_LIST is a comma-separated list of font family names, -
-// STYLES is an optional space-separated list of style names (case-sensitive
-//
-//	&quot;Bold&quot; and &quot;Italic&quot; are supported), and
-//
-// - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
-//
-// Here are examples of valid font description strings: - &quot;Arial, Helvetica,
-// Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
+// / Sets the font list. The format is &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;,
+// / where: - FONT_FAMILY_LIST is a comma-separated list of font family names,
+// / - STYLES is an optional space-separated list of style names (case-
+// / sensitive
+// /   &quot;Bold&quot; and &quot;Italic&quot; are supported), and
+// / - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
+// /
+// / Here are examples of valid font description strings: - &quot;Arial, Helvetica,
+// / Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
 // /
 func (self *CLabelButtonT) SetFontList(
 	font_list string,
@@ -13636,8 +13883,8 @@ func (self *CLabelButtonT) SetFontList(
 }
 
 // /
-// Sets the horizontal alignment; reversed in RTL. Default is
-// CEF_HORIZONTAL_ALIGNMENT_CENTER.
+// / Sets the horizontal alignment; reversed in RTL. Default is
+// / CEF_HORIZONTAL_ALIGNMENT_CENTER.
 // /
 func (self *CLabelButtonT) SetHorizontalAlignment(
 	alignment CHorizontalAlignmentT,
@@ -13648,7 +13895,7 @@ func (self *CLabelButtonT) SetHorizontalAlignment(
 }
 
 // /
-// Reset the minimum size of this LabelButton to |size|.
+// / Reset the minimum size of this LabelButton to |size|.
 // /
 func (self *CLabelButtonT) SetMinimumSize(
 	size *CSizeT,
@@ -13659,7 +13906,7 @@ func (self *CLabelButtonT) SetMinimumSize(
 }
 
 // /
-// Reset the maximum size of this LabelButton to |size|.
+// / Reset the maximum size of this LabelButton to |size|.
 // /
 func (self *CLabelButtonT) SetMaximumSize(
 	size *CSizeT,
@@ -13670,9 +13917,9 @@ func (self *CLabelButtonT) SetMaximumSize(
 }
 
 // /
-// Create a new LabelButton. A |delegate| must be provided to handle the button
-// click. |text| will be shown on the LabelButton and used as the default
-// accessible name.
+// / Create a new LabelButton. A |delegate| must be provided to handle the button
+// / click. |text| will be shown on the LabelButton and used as the default
+// / accessible name.
 // /
 func LabelButtonCreate(
 	delegate *CButtonDelegateT,
@@ -13694,9 +13941,9 @@ func LabelButtonCreate(
 // cef_layout_capi.h, include/capi/views/cef_layout_capi.h:79:3,
 
 ///
-// A Layout handles the sizing of the children of a Panel according to
-// implementation-specific heuristics. Methods must be called on the browser
-// process UI thread unless otherwise indicated.
+/// A Layout handles the sizing of the children of a Panel according to
+/// implementation-specific heuristics. Methods must be called on the browser
+/// process UI thread unless otherwise indicated.
 ///
 
 type cCLayoutT C.cef_layout_t
@@ -13774,7 +14021,7 @@ func (layout *CLayoutT) Unref() (ret bool) {
 }
 
 // /
-// Returns this Layout as a BoxLayout or NULL if this is not a BoxLayout.
+// / Returns this Layout as a BoxLayout or NULL if this is not a BoxLayout.
 // /
 func (self *CLayoutT) AsBoxLayout() (ret *CBoxLayoutT) {
 
@@ -13785,7 +14032,7 @@ func (self *CLayoutT) AsBoxLayout() (ret *CBoxLayoutT) {
 }
 
 // /
-// Returns this Layout as a FillLayout or NULL if this is not a FillLayout.
+// / Returns this Layout as a FillLayout or NULL if this is not a FillLayout.
 // /
 func (self *CLayoutT) AsFillLayout() (ret *CFillLayoutT) {
 
@@ -13796,7 +14043,7 @@ func (self *CLayoutT) AsFillLayout() (ret *CFillLayoutT) {
 }
 
 // /
-// Returns true (1) if this Layout is valid.
+// / Returns true (1) if this Layout is valid.
 // /
 func (self *CLayoutT) IsValid() (ret bool) {
 
@@ -13806,12 +14053,12 @@ func (self *CLayoutT) IsValid() (ret bool) {
 	return ret
 }
 
-// cef_life_span_handler_capi.h, include/capi/cef_life_span_handler_capi.h:218:3,
+// cef_life_span_handler_capi.h, include/capi/cef_life_span_handler_capi.h:219:3,
 
 ///
-// Implement this structure to handle events related to browser life span. The
-// functions of this structure will be called on the UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle events related to browser life span. The
+/// functions of this structure will be called on the UI thread unless otherwise
+/// indicated.
 ///
 
 type cCLifeSpanHandlerT C.cef_life_span_handler_t
@@ -13889,29 +14136,29 @@ func (life_span_handler *CLifeSpanHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called on the UI thread before a new popup browser is created. The
-// |browser| and |frame| values represent the source of the popup request. The
-// |target_url| and |target_frame_name| values indicate where the popup
-// browser should navigate and may be NULL if not specified with the request.
-// The |target_disposition| value indicates where the user intended to open
-// the popup (e.g. current tab, new tab, etc). The |user_gesture| value will
-// be true (1) if the popup was opened via explicit user gesture (e.g.
-// clicking a link) or false (0) if the popup opened automatically (e.g. via
-// the DomContentLoaded event). The |popupFeatures| structure contains
-// additional information about the requested popup window. To allow creation
-// of the popup browser optionally modify |windowInfo|, |client|, |settings|
-// and |no_javascript_access| and return false (0). To cancel creation of the
-// popup browser return true (1). The |client| and |settings| values will
-// default to the source browser&#39;s values. If the |no_javascript_access| value
-// is set to false (0) the new browser will not be scriptable and may not be
-// hosted in the same renderer process as the source browser. Any
-// modifications to |windowInfo| will be ignored if the parent browser is
-// wrapped in a cef_browser_view_t. Popup browser creation will be canceled if
-// the parent browser is destroyed before the popup browser creation completes
-// (indicated by a call to OnAfterCreated for the popup browser). The
-// |extra_info| parameter provides an opportunity to specify extra information
-// specific to the created popup browser that will be passed to
-// cef_render_process_handler_t::on_browser_created() in the render process.
+// / Called on the UI thread before a new popup browser is created. The
+// / |browser| and |frame| values represent the source of the popup request.
+// / The |target_url| and |target_frame_name| values indicate where the popup
+// / browser should navigate and may be NULL if not specified with the request.
+// / The |target_disposition| value indicates where the user intended to open
+// / the popup (e.g. current tab, new tab, etc). The |user_gesture| value will
+// / be true (1) if the popup was opened via explicit user gesture (e.g.
+// / clicking a link) or false (0) if the popup opened automatically (e.g. via
+// / the DomContentLoaded event). The |popupFeatures| structure contains
+// / additional information about the requested popup window. To allow creation
+// / of the popup browser optionally modify |windowInfo|, |client|, |settings|
+// / and |no_javascript_access| and return false (0). To cancel creation of the
+// / popup browser return true (1). The |client| and |settings| values will
+// / default to the source browser&#39;s values. If the |no_javascript_access|
+// / value is set to false (0) the new browser will not be scriptable and may
+// / not be hosted in the same renderer process as the source browser. Any
+// / modifications to |windowInfo| will be ignored if the parent browser is
+// / wrapped in a cef_browser_view_t. Popup browser creation will be canceled
+// / if the parent browser is destroyed before the popup browser creation
+// / completes (indicated by a call to OnAfterCreated for the popup browser).
+// / The |extra_info| parameter provides an opportunity to specify extra
+// / information specific to the created popup browser that will be passed to
+// / cef_render_process_handler_t::on_browser_created() in the render process.
 // /
 type OnBeforePopupHandler interface {
 	OnBeforePopup(
@@ -13931,10 +14178,10 @@ type OnBeforePopupHandler interface {
 }
 
 // /
-// Called after a new browser is created. It is now safe to begin performing
-// actions with |browser|. cef_frame_handler_t callbacks related to initial
-// main frame creation will arrive before this callback. See
-// cef_frame_handler_t documentation for additional usage information.
+// / Called after a new browser is created. It is now safe to begin performing
+// / actions with |browser|. cef_frame_handler_t callbacks related to initial
+// / main frame creation will arrive before this callback. See
+// / cef_frame_handler_t documentation for additional usage information.
 // /
 type OnAfterCreatedHandler interface {
 	OnAfterCreated(
@@ -13944,108 +14191,94 @@ type OnAfterCreatedHandler interface {
 }
 
 // /
-// Called when a browser has recieved a request to close. This may result
-// directly from a call to cef_browser_host_t::*close_browser() or indirectly
-// if the browser is parented to a top-level window created by CEF and the
-// user attempts to close that window (by clicking the &#39;X&#39;, for example). The
-// do_close() function will be called after the JavaScript &#39;onunload&#39; event
-// has been fired.
-//
-// An application should handle top-level owner window close notifications by
-// calling cef_browser_host_t::try_close_browser() or
-// cef_browser_host_t::CloseBrowser(false (0)) instead of allowing the window
-// to close immediately (see the examples below). This gives CEF an
-// opportunity to process the &#39;onbeforeunload&#39; event and optionally cancel the
-// close before do_close() is called.
-//
-// When windowed rendering is enabled CEF will internally create a window or
-// view to host the browser. In that case returning false (0) from do_close()
-// will send the standard close notification to the browser&#39;s top-level owner
-// window (e.g. WM_CLOSE on Windows, performClose: on OS X, &quot;delete_event&quot; on
-// Linux or cef_window_delegate_t::can_close() callback from Views). If the
-// browser&#39;s host window/view has already been destroyed (via view hierarchy
-// tear-down, for example) then do_close() will not be called for that browser
-// since is no longer possible to cancel the close.
-//
-// When windowed rendering is disabled returning false (0) from do_close()
-// will cause the browser object to be destroyed immediately.
-//
-// If the browser&#39;s top-level owner window requires a non-standard close
-// notification then send that notification from do_close() and return true
-// (1).
-//
-// The cef_life_span_handler_t::on_before_close() function will be called
-// after do_close() (if do_close() is called) and immediately before the
-// browser object is destroyed. The application should only exit after
-// on_before_close() has been called for all existing browsers.
-//
-// The below examples describe what should happen during window close when the
-// browser is parented to an application-provided top-level window.
-//
-// Example 1: Using cef_browser_host_t::try_close_browser(). This is
-// recommended for clients using standard close handling and windows created
-// on the browser process UI thread. 1.  User clicks the window close button
-// which sends a close notification to
-//
-//	the application&#39;s top-level window.
-//  2. Application&#39;s top-level window receives the close notification and
-//     calls TryCloseBrowser() (which internally calls CloseBrowser(false)).
-//     TryCloseBrowser() returns false so the client cancels the window close.
-//  3. JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
-//     confirmation dialog (which can be overridden via
-//     CefJSDialogHandler::OnBeforeUnloadDialog()).
-//  4. User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes. 6.
-//
-// CEF sends a close notification to the application&#39;s top-level window
-//
-//	(because DoClose() returned false by default).
-//  7. Application&#39;s top-level window receives the close notification and
-//     calls TryCloseBrowser(). TryCloseBrowser() returns true so the client
-//     allows the window close.
-//  8. Application&#39;s top-level window is destroyed. 9.  Application&#39;s
-//
-// on_before_close() handler is called and the browser object
-//
-//	is destroyed.
-//
-// 10. Application exits by calling cef_quit_message_loop() if no other
-// browsers
-//
-//	exist.
-//
-// Example 2: Using cef_browser_host_t::CloseBrowser(false (0)) and
-// implementing the do_close() callback. This is recommended for clients using
-// non-standard close handling or windows that were not created on the browser
-// process UI thread. 1.  User clicks the window close button which sends a
-// close notification to
-//
-//	the application&#39;s top-level window.
-//  2. Application&#39;s top-level window receives the close notification and:
-//     A. Calls CefBrowserHost::CloseBrowser(false).
-//     B. Cancels the window close.
-//  3. JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
-//     confirmation dialog (which can be overridden via
-//     CefJSDialogHandler::OnBeforeUnloadDialog()).
-//  4. User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes. 6.
-//
-// Application&#39;s do_close() handler is called. Application will:
-//
-//	A. Set a flag to indicate that the next close attempt will be allowed.
-//	B. Return false.
-//  7. CEF sends an close notification to the application&#39;s top-level window.
-//  8. Application&#39;s top-level window receives the close notification and
-//     allows the window to close based on the flag from #6B.
-//  9. Application&#39;s top-level window is destroyed. 10. Application&#39;s
-//
-// on_before_close() handler is called and the browser object
-//
-//	is destroyed.
-//
-// 11. Application exits by calling cef_quit_message_loop() if no other
-// browsers
-//
-//	exist.
-//
+// / Called when a browser has recieved a request to close. This may result
+// / directly from a call to cef_browser_host_t::*close_browser() or indirectly
+// / if the browser is parented to a top-level window created by CEF and the
+// / user attempts to close that window (by clicking the &#39;X&#39;, for example). The
+// / do_close() function will be called after the JavaScript &#39;onunload&#39; event
+// / has been fired.
+// /
+// / An application should handle top-level owner window close notifications by
+// / calling cef_browser_host_t::try_close_browser() or
+// / cef_browser_host_t::CloseBrowser(false (0)) instead of allowing the window
+// / to close immediately (see the examples below). This gives CEF an
+// / opportunity to process the &#39;onbeforeunload&#39; event and optionally cancel
+// / the close before do_close() is called.
+// /
+// / When windowed rendering is enabled CEF will internally create a window or
+// / view to host the browser. In that case returning false (0) from do_close()
+// / will send the standard close notification to the browser&#39;s top-level owner
+// / window (e.g. WM_CLOSE on Windows, performClose: on OS X, &quot;delete_event&quot; on
+// / Linux or cef_window_delegate_t::can_close() callback from Views). If the
+// / browser&#39;s host window/view has already been destroyed (via view hierarchy
+// / tear-down, for example) then do_close() will not be called for that
+// / browser since is no longer possible to cancel the close.
+// /
+// / When windowed rendering is disabled returning false (0) from do_close()
+// / will cause the browser object to be destroyed immediately.
+// /
+// / If the browser&#39;s top-level owner window requires a non-standard close
+// / notification then send that notification from do_close() and return true
+// / (1).
+// /
+// / The cef_life_span_handler_t::on_before_close() function will be called
+// / after do_close() (if do_close() is called) and immediately before the
+// / browser object is destroyed. The application should only exit after
+// / on_before_close() has been called for all existing browsers.
+// /
+// / The below examples describe what should happen during window close when
+// / the browser is parented to an application-provided top-level window.
+// /
+// / Example 1: Using cef_browser_host_t::try_close_browser(). This is
+// / recommended for clients using standard close handling and windows created
+// / on the browser process UI thread. 1.  User clicks the window close button
+// / which sends a close notification
+// /     to the application&#39;s top-level window.
+// / 2.  Application&#39;s top-level window receives the close notification and
+// /     calls TryCloseBrowser() (which internally calls CloseBrowser(false)).
+// /     TryCloseBrowser() returns false so the client cancels the window
+// /     close.
+// / 3.  JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
+// /     confirmation dialog (which can be overridden via
+// /     CefJSDialogHandler::OnBeforeUnloadDialog()).
+// / 4.  User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes.
+// / 6.  CEF sends a close notification to the application&#39;s top-level window
+// /     (because DoClose() returned false by default).
+// / 7.  Application&#39;s top-level window receives the close notification and
+// /     calls TryCloseBrowser(). TryCloseBrowser() returns true so the client
+// /     allows the window close.
+// / 8.  Application&#39;s top-level window is destroyed. 9.  Application&#39;s
+// / on_before_close() handler is called and the browser object
+// /     is destroyed.
+// / 10. Application exits by calling cef_quit_message_loop() if no other
+// / browsers
+// /     exist.
+// /
+// / Example 2: Using cef_browser_host_t::CloseBrowser(false (0)) and
+// / implementing the do_close() callback. This is recommended for clients
+// / using non-standard close handling or windows that were not created on the
+// / browser process UI thread. 1.  User clicks the window close button which
+// / sends a close notification
+// /     to the application&#39;s top-level window.
+// / 2.  Application&#39;s top-level window receives the close notification and:
+// /     A. Calls CefBrowserHost::CloseBrowser(false).
+// /     B. Cancels the window close.
+// / 3.  JavaScript &#39;onbeforeunload&#39; handler executes and shows the close
+// /     confirmation dialog (which can be overridden via
+// /     CefJSDialogHandler::OnBeforeUnloadDialog()).
+// / 4.  User approves the close. 5.  JavaScript &#39;onunload&#39; handler executes.
+// / 6.  Application&#39;s do_close() handler is called. Application will:
+// /     A. Set a flag to indicate that the next close attempt will be allowed.
+// /     B. Return false.
+// / 7.  CEF sends an close notification to the application&#39;s top-level window.
+// / 8.  Application&#39;s top-level window receives the close notification and
+// /     allows the window to close based on the flag from #6B.
+// / 9.  Application&#39;s top-level window is destroyed. 10. Application&#39;s
+// / on_before_close() handler is called and the browser object
+// /     is destroyed.
+// / 11. Application exits by calling cef_quit_message_loop() if no other
+// / browsers
+// /     exist.
 // /
 type DoCloseHandler interface {
 	DoClose(
@@ -14055,16 +14288,16 @@ type DoCloseHandler interface {
 }
 
 // /
-// Called just before a browser is destroyed. Release all references to the
-// browser object and do not attempt to execute any functions on the browser
-// object (other than IsValid, GetIdentifier or IsSame) after this callback
-// returns. cef_frame_handler_t callbacks related to final main frame
-// destruction will arrive after this callback and cef_browser_t::IsValid will
-// return false (0) at that time. Any in-progress network requests associated
-// with |browser| will be aborted when the browser is destroyed, and
-// cef_resource_request_handler_t callbacks related to those requests may
-// still arrive on the IO thread after this callback. See cef_frame_handler_t
-// and do_close() documentation for additional usage information.
+// / Called just before a browser is destroyed. Release all references to the
+// / browser object and do not attempt to execute any functions on the browser
+// / object (other than IsValid, GetIdentifier or IsSame) after this callback
+// / returns. cef_frame_handler_t callbacks related to final main frame
+// / destruction will arrive after this callback and cef_browser_t::IsValid
+// / will return false (0) at that time. Any in-progress network requests
+// / associated with |browser| will be aborted when the browser is destroyed,
+// / and cef_resource_request_handler_t callbacks related to those requests may
+// / still arrive on the IO thread after this callback. See cef_frame_handler_t
+// / and do_close() documentation for additional usage information.
 // /
 type OnBeforeCloseHandler interface {
 	OnBeforeClose(
@@ -14180,9 +14413,9 @@ func (life_span_handler *CLifeSpanHandlerT) Handler() interface{} {
 // cef_load_handler_capi.h, include/capi/cef_load_handler_capi.h:120:3,
 
 ///
-// Implement this structure to handle events related to browser load status. The
-// functions of this structure will be called on the browser process UI thread
-// or render process main thread (TID_RENDERER).
+/// Implement this structure to handle events related to browser load status.
+/// The functions of this structure will be called on the browser process UI
+/// thread or render process main thread (TID_RENDERER).
 ///
 
 type cCLoadHandlerT C.cef_load_handler_t
@@ -14260,11 +14493,11 @@ func (load_handler *CLoadHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called when the loading state has changed. This callback will be executed
-// twice -- once when loading is initiated either programmatically or by user
-// action, and once when loading is terminated due to completion, cancellation
-// of failure. It will be called before any calls to OnLoadStart and after all
-// calls to OnLoadError and/or OnLoadEnd.
+// / Called when the loading state has changed. This callback will be executed
+// / twice -- once when loading is initiated either programmatically or by user
+// / action, and once when loading is terminated due to completion,
+// / cancellation of failure. It will be called before any calls to OnLoadStart
+// / and after all calls to OnLoadError and/or OnLoadEnd.
 // /
 type OnLoadingStateChangeHandler interface {
 	OnLoadingStateChange(
@@ -14277,16 +14510,16 @@ type OnLoadingStateChangeHandler interface {
 }
 
 // /
-// Called after a navigation has been committed and before the browser begins
-// loading contents in the frame. The |frame| value will never be NULL -- call
-// the is_main() function to check if this frame is the main frame.
-// |transition_type| provides information about the source of the navigation
-// and an accurate value is only available in the browser process. Multiple
-// frames may be loading at the same time. Sub-frames may start or continue
-// loading after the main frame load has ended. This function will not be
-// called for same page navigations (fragments, history state, etc.) or for
-// navigations that fail or are canceled before commit. For notification of
-// overall browser load status use OnLoadingStateChange instead.
+// / Called after a navigation has been committed and before the browser begins
+// / loading contents in the frame. The |frame| value will never be NULL --
+// / call the is_main() function to check if this frame is the main frame.
+// / |transition_type| provides information about the source of the navigation
+// / and an accurate value is only available in the browser process. Multiple
+// / frames may be loading at the same time. Sub-frames may start or continue
+// / loading after the main frame load has ended. This function will not be
+// / called for same page navigations (fragments, history state, etc.) or for
+// / navigations that fail or are canceled before commit. For notification of
+// / overall browser load status use OnLoadingStateChange instead.
 // /
 type OnLoadStartHandler interface {
 	OnLoadStart(
@@ -14298,14 +14531,14 @@ type OnLoadStartHandler interface {
 }
 
 // /
-// Called when the browser is done loading a frame. The |frame| value will
-// never be NULL -- call the is_main() function to check if this frame is the
-// main frame. Multiple frames may be loading at the same time. Sub-frames may
-// start or continue loading after the main frame load has ended. This
-// function will not be called for same page navigations (fragments, history
-// state, etc.) or for navigations that fail or are canceled before commit.
-// For notification of overall browser load status use OnLoadingStateChange
-// instead.
+// / Called when the browser is done loading a frame. The |frame| value will
+// / never be NULL -- call the is_main() function to check if this frame is the
+// / main frame. Multiple frames may be loading at the same time. Sub-frames
+// / may start or continue loading after the main frame load has ended. This
+// / function will not be called for same page navigations (fragments, history
+// / state, etc.) or for navigations that fail or are canceled before commit.
+// / For notification of overall browser load status use OnLoadingStateChange
+// / instead.
 // /
 type OnLoadEndHandler interface {
 	OnLoadEnd(
@@ -14317,11 +14550,11 @@ type OnLoadEndHandler interface {
 }
 
 // /
-// Called when a navigation fails or is canceled. This function may be called
-// by itself if before commit or in combination with OnLoadStart/OnLoadEnd if
-// after commit. |errorCode| is the error code number, |errorText| is the
-// error text and |failedUrl| is the URL that failed to load. See
-// net\base\net_error_list.h for complete descriptions of the error codes.
+// / Called when a navigation fails or is canceled. This function may be called
+// / by itself if before commit or in combination with OnLoadStart/OnLoadEnd if
+// / after commit. |errorCode| is the error code number, |errorText| is the
+// / error text and |failedUrl| is the URL that failed to load. See
+// / net\base\net_error_list.h for complete descriptions of the error codes.
 // /
 type OnLoadErrorHandler interface {
 	OnLoadError(
@@ -14441,9 +14674,9 @@ func (load_handler *CLoadHandlerT) Handler() interface{} {
 // cef_media_router_capi.h, include/capi/cef_media_router_capi.h:111:3,
 
 ///
-// Supports discovery of and communication with media devices on the local
-// network via the Cast and DIAL protocols. The functions of this structure may
-// be called on any browser process thread unless otherwise indicated.
+/// Supports discovery of and communication with media devices on the local
+/// network via the Cast and DIAL protocols. The functions of this structure may
+/// be called on any browser process thread unless otherwise indicated.
 ///
 
 type cCMediaRouterT C.cef_media_router_t
@@ -14521,8 +14754,8 @@ func (media_router *CMediaRouterT) Unref() (ret bool) {
 }
 
 // /
-// Add an observer for MediaRouter events. The observer will remain registered
-// until the returned Registration object is destroyed.
+// / Add an observer for MediaRouter events. The observer will remain
+// / registered until the returned Registration object is destroyed.
 // /
 func (self *CMediaRouterT) AddObserver(
 	observer *CMediaObserverT,
@@ -14540,9 +14773,9 @@ func (self *CMediaRouterT) AddObserver(
 }
 
 // /
-// Returns a MediaSource object for the specified media source URN. Supported
-// URN schemes include &quot;cast:&quot; and &quot;dial:&quot;, and will be already known by the
-// client application (e.g. &quot;cast:&lt;appId&gt;?clientId=&lt;clientId&gt;&quot;).
+// / Returns a MediaSource object for the specified media source URN. Supported
+// / URN schemes include &quot;cast:&quot; and &quot;dial:&quot;, and will be already known by the
+// / client application (e.g. &quot;cast:&lt;appId&gt;?clientId=&lt;clientId&gt;&quot;).
 // /
 func (self *CMediaRouterT) GetSource(
 	urn string,
@@ -14556,8 +14789,8 @@ func (self *CMediaRouterT) GetSource(
 }
 
 // /
-// Trigger an asynchronous call to cef_media_observer_t::OnSinks on all
-// registered observers.
+// / Trigger an asynchronous call to cef_media_observer_t::OnSinks on all
+// / registered observers.
 // /
 func (self *CMediaRouterT) NotifyCurrentSinks() {
 
@@ -14566,12 +14799,12 @@ func (self *CMediaRouterT) NotifyCurrentSinks() {
 }
 
 // /
-// Create a new route between |source| and |sink|. Source and sink must be
-// valid, compatible (as reported by cef_media_sink_t::IsCompatibleWith), and
-// a route between them must not already exist. |callback| will be executed on
-// success or failure. If route creation succeeds it will also trigger an
-// asynchronous call to cef_media_observer_t::OnRoutes on all registered
-// observers.
+// / Create a new route between |source| and |sink|. Source and sink must be
+// / valid, compatible (as reported by cef_media_sink_t::IsCompatibleWith), and
+// / a route between them must not already exist. |callback| will be executed
+// / on success or failure. If route creation succeeds it will also trigger an
+// / asynchronous call to cef_media_observer_t::OnRoutes on all registered
+// / observers.
 // /
 func (self *CMediaRouterT) CreateRoute(
 	source *CMediaSourceT,
@@ -14599,8 +14832,8 @@ func (self *CMediaRouterT) CreateRoute(
 }
 
 // /
-// Trigger an asynchronous call to cef_media_observer_t::OnRoutes on all
-// registered observers.
+// / Trigger an asynchronous call to cef_media_observer_t::OnRoutes on all
+// / registered observers.
 // /
 func (self *CMediaRouterT) NotifyCurrentRoutes() {
 
@@ -14609,11 +14842,11 @@ func (self *CMediaRouterT) NotifyCurrentRoutes() {
 }
 
 // /
-// Returns the MediaRouter object associated with the global request context. If
-// |callback| is non-NULL it will be executed asnychronously on the UI thread
-// after the manager's storage has been initialized. Equivalent to calling cef_r
-// equest_context_t::cef_request_context_get_global_context()->get_media_router(
-// ).
+// / Returns the MediaRouter object associated with the global request context.
+// / If |callback| is non-NULL it will be executed asnychronously on the UI
+// / thread after the manager's storage has been initialized. Equivalent to
+// / calling cef_request_context_t::cef_request_context_get_global_context()->get
+// / _media_router().
 // /
 func MediaRouterGetGlobal(
 	callback *CCompletionCallbackT,
@@ -14631,9 +14864,9 @@ func MediaRouterGetGlobal(
 }
 
 ///
-// Implemented by the client to observe MediaRouter events and registered via
-// cef_media_router_t::AddObserver. The functions of this structure will be
-// called on the browser process UI thread.
+/// Implemented by the client to observe MediaRouter events and registered via
+/// cef_media_router_t::AddObserver. The functions of this structure will be
+/// called on the browser process UI thread.
 ///
 
 type cCMediaObserverT C.cef_media_observer_t
@@ -14711,8 +14944,8 @@ func (media_observer *CMediaObserverT) Unref() (ret bool) {
 }
 
 // /
-// The list of available media sinks has changed or
-// cef_media_router_t::NotifyCurrentSinks was called.
+// / The list of available media sinks has changed or
+// / cef_media_router_t::NotifyCurrentSinks was called.
 // /
 type OnSinksHandler interface {
 	OnSinks(
@@ -14722,8 +14955,8 @@ type OnSinksHandler interface {
 }
 
 // /
-// The list of available media routes has changed or
-// cef_media_router_t::NotifyCurrentRoutes was called.
+// / The list of available media routes has changed or
+// / cef_media_router_t::NotifyCurrentRoutes was called.
 // /
 type OnRoutesHandler interface {
 	OnRoutes(
@@ -14733,7 +14966,7 @@ type OnRoutesHandler interface {
 }
 
 // /
-// The connection state of |route| has changed.
+// / The connection state of |route| has changed.
 // /
 type OnRouteStateChangedHandler interface {
 	OnRouteStateChanged(
@@ -14744,8 +14977,8 @@ type OnRouteStateChangedHandler interface {
 }
 
 // /
-// A message was recieved over |route|. |message| is only valid for the scope
-// of this callback and should be copied if necessary.
+// / A message was recieved over |route|. |message| is only valid for the scope
+// / of this callback and should be copied if necessary.
 // /
 type OnRouteMessageReceivedHandler interface {
 	OnRouteMessageReceived(
@@ -14860,11 +15093,11 @@ func (media_observer *CMediaObserverT) Handler() interface{} {
 }
 
 ///
-// Represents the route between a media source and sink. Instances of this
-// object are created via cef_media_router_t::CreateRoute and retrieved via
-// cef_media_observer_t::OnRoutes. Contains the status and metadata of a routing
-// operation. The functions of this structure may be called on any browser
-// process thread unless otherwise indicated.
+/// Represents the route between a media source and sink. Instances of this
+/// object are created via cef_media_router_t::CreateRoute and retrieved via
+/// cef_media_observer_t::OnRoutes. Contains the status and metadata of a
+/// routing operation. The functions of this structure may be called on any
+/// browser process thread unless otherwise indicated.
 ///
 
 type cCMediaRouteT C.cef_media_route_t
@@ -14942,7 +15175,7 @@ func (media_route *CMediaRouteT) Unref() (ret bool) {
 }
 
 // /
-// Returns the ID for this route.
+// / Returns the ID for this route.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaRouteT) GetId() (ret string) {
@@ -14958,7 +15191,7 @@ func (self *CMediaRouteT) GetId() (ret string) {
 }
 
 // /
-// Returns the source associated with this route.
+// / Returns the source associated with this route.
 // /
 func (self *CMediaRouteT) GetSource() (ret *CMediaSourceT) {
 
@@ -14969,7 +15202,7 @@ func (self *CMediaRouteT) GetSource() (ret *CMediaSourceT) {
 }
 
 // /
-// Returns the sink associated with this route.
+// / Returns the sink associated with this route.
 // /
 func (self *CMediaRouteT) GetSink() (ret *CMediaSinkT) {
 
@@ -14980,7 +15213,7 @@ func (self *CMediaRouteT) GetSink() (ret *CMediaSinkT) {
 }
 
 // /
-// Send a message over this route. |message| will be copied if necessary.
+// / Send a message over this route. |message| will be copied if necessary.
 // /
 func (self *CMediaRouteT) SendRouteMessage(
 	message []byte,
@@ -14994,8 +15227,8 @@ func (self *CMediaRouteT) SendRouteMessage(
 }
 
 // /
-// Terminate this route. Will result in an asynchronous call to
-// cef_media_observer_t::OnRoutes on all registered observers.
+// / Terminate this route. Will result in an asynchronous call to
+// / cef_media_observer_t::OnRoutes on all registered observers.
 // /
 func (self *CMediaRouteT) Terminate() {
 
@@ -15004,8 +15237,8 @@ func (self *CMediaRouteT) Terminate() {
 }
 
 ///
-// Callback structure for cef_media_router_t::CreateRoute. The functions of this
-// structure will be called on the browser process UI thread.
+/// Callback structure for cef_media_router_t::CreateRoute. The functions of
+/// this structure will be called on the browser process UI thread.
 ///
 
 type cCMediaRouteCreateCallbackT C.cef_media_route_create_callback_t
@@ -15083,10 +15316,10 @@ func (media_route_create_callback *CMediaRouteCreateCallbackT) Unref() (ret bool
 }
 
 // /
-// Method that will be executed when the route creation has finished. |result|
-// will be CEF_MRCR_OK if the route creation succeeded. |error| will be a
-// description of the error if the route creation failed. |route| is the
-// resulting route, or NULL if the route creation failed.
+// / Method that will be executed when the route creation has finished.
+// / |result| will be CEF_MRCR_OK if the route creation succeeded. |error| will
+// / be a description of the error if the route creation failed. |route| is the
+// / resulting route, or NULL if the route creation failed.
 // /
 func (self *CMediaRouteCreateCallbackT) OnMediaRouteCreateFinished(
 	result CMediaRouteCreateResultT,
@@ -15105,9 +15338,9 @@ func (self *CMediaRouteCreateCallbackT) OnMediaRouteCreateFinished(
 }
 
 ///
-// Represents a sink to which media can be routed. Instances of this object are
-// retrieved via cef_media_observer_t::OnSinks. The functions of this structure
-// may be called on any browser process thread unless otherwise indicated.
+/// Represents a sink to which media can be routed. Instances of this object are
+/// retrieved via cef_media_observer_t::OnSinks. The functions of this structure
+/// may be called on any browser process thread unless otherwise indicated.
 ///
 
 type cCMediaSinkT C.cef_media_sink_t
@@ -15185,7 +15418,7 @@ func (media_sink *CMediaSinkT) Unref() (ret bool) {
 }
 
 // /
-// Returns the ID for this sink.
+// / Returns the ID for this sink.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetId() (ret string) {
@@ -15201,7 +15434,7 @@ func (self *CMediaSinkT) GetId() (ret string) {
 }
 
 // /
-// Returns the name of this sink.
+// / Returns the name of this sink.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetName() (ret string) {
@@ -15217,7 +15450,7 @@ func (self *CMediaSinkT) GetName() (ret string) {
 }
 
 // /
-// Returns the description of this sink.
+// / Returns the description of this sink.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSinkT) GetDescription() (ret string) {
@@ -15233,7 +15466,7 @@ func (self *CMediaSinkT) GetDescription() (ret string) {
 }
 
 // /
-// Returns the icon type for this sink.
+// / Returns the icon type for this sink.
 // /
 func (self *CMediaSinkT) GetIconType() (ret CMediaSinkIconTypeT) {
 
@@ -15244,7 +15477,7 @@ func (self *CMediaSinkT) GetIconType() (ret CMediaSinkIconTypeT) {
 }
 
 // /
-// Asynchronously retrieves device info.
+// / Asynchronously retrieves device info.
 // /
 func (self *CMediaSinkT) GetDeviceInfo(
 	callback *CMediaSinkDeviceInfoCallbackT,
@@ -15260,7 +15493,7 @@ func (self *CMediaSinkT) GetDeviceInfo(
 }
 
 // /
-// Returns true (1) if this sink accepts content via Cast.
+// / Returns true (1) if this sink accepts content via Cast.
 // /
 func (self *CMediaSinkT) IsCastSink() (ret bool) {
 
@@ -15271,7 +15504,7 @@ func (self *CMediaSinkT) IsCastSink() (ret bool) {
 }
 
 // /
-// Returns true (1) if this sink accepts content via DIAL.
+// / Returns true (1) if this sink accepts content via DIAL.
 // /
 func (self *CMediaSinkT) IsDialSink() (ret bool) {
 
@@ -15282,7 +15515,7 @@ func (self *CMediaSinkT) IsDialSink() (ret bool) {
 }
 
 // /
-// Returns true (1) if this sink is compatible with |source|.
+// / Returns true (1) if this sink is compatible with |source|.
 // /
 func (self *CMediaSinkT) IsCompatibleWith(
 	source *CMediaSourceT,
@@ -15300,8 +15533,8 @@ func (self *CMediaSinkT) IsCompatibleWith(
 }
 
 ///
-// Callback structure for cef_media_sink_t::GetDeviceInfo. The functions of this
-// structure will be called on the browser process UI thread.
+/// Callback structure for cef_media_sink_t::GetDeviceInfo. The functions of
+/// this structure will be called on the browser process UI thread.
 ///
 
 type cCMediaSinkDeviceInfoCallbackT C.cef_media_sink_device_info_callback_t
@@ -15379,8 +15612,8 @@ func (media_sink_device_info_callback *CMediaSinkDeviceInfoCallbackT) Unref() (r
 }
 
 // /
-// Method that will be executed asyncronously once device information has been
-// retrieved.
+// / Method that will be executed asyncronously once device information has
+// / been retrieved.
 // /
 func (self *CMediaSinkDeviceInfoCallbackT) OnMediaSinkDeviceInfo(
 	device_info *CMediaSinkDeviceInfoT,
@@ -15391,10 +15624,10 @@ func (self *CMediaSinkDeviceInfoCallbackT) OnMediaSinkDeviceInfo(
 }
 
 ///
-// Represents a source from which media can be routed. Instances of this object
-// are retrieved via cef_media_router_t::GetSource. The functions of this
-// structure may be called on any browser process thread unless otherwise
-// indicated.
+/// Represents a source from which media can be routed. Instances of this object
+/// are retrieved via cef_media_router_t::GetSource. The functions of this
+/// structure may be called on any browser process thread unless otherwise
+/// indicated.
 ///
 
 type cCMediaSourceT C.cef_media_source_t
@@ -15472,7 +15705,7 @@ func (media_source *CMediaSourceT) Unref() (ret bool) {
 }
 
 // /
-// Returns the ID (media source URN or URL) for this source.
+// / Returns the ID (media source URN or URL) for this source.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMediaSourceT) GetId() (ret string) {
@@ -15488,7 +15721,7 @@ func (self *CMediaSourceT) GetId() (ret string) {
 }
 
 // /
-// Returns true (1) if this source outputs its content via Cast.
+// / Returns true (1) if this source outputs its content via Cast.
 // /
 func (self *CMediaSourceT) IsCastSource() (ret bool) {
 
@@ -15499,7 +15732,7 @@ func (self *CMediaSourceT) IsCastSource() (ret bool) {
 }
 
 // /
-// Returns true (1) if this source outputs its content via DIAL.
+// / Returns true (1) if this source outputs its content via DIAL.
 // /
 func (self *CMediaSourceT) IsDialSource() (ret bool) {
 
@@ -15509,13 +15742,14 @@ func (self *CMediaSourceT) IsDialSource() (ret bool) {
 	return ret
 }
 
-// cef_menu_button_capi.h, include/capi/views/cef_menu_button_capi.h:79:3,
+// cef_menu_button_capi.h, include/capi/views/cef_menu_button_capi.h:80:3,
 
 ///
-// MenuButton is a button with optional text, icon and/or menu marker that shows
-// a menu when clicked with the left mouse button. All size and position values
-// are in density independent pixels (DIP) unless otherwise indicated. Methods
-// must be called on the browser process UI thread unless otherwise indicated.
+/// MenuButton is a button with optional text, icon and/or menu marker that
+/// shows a menu when clicked with the left mouse button. All size and position
+/// values are in density independent pixels (DIP) unless otherwise indicated.
+/// Methods must be called on the browser process UI thread unless otherwise
+/// indicated.
 ///
 
 type cCMenuButtonT C.cef_menu_button_t
@@ -15600,10 +15834,10 @@ func (menu_button *CMenuButtonT) ToCLabelButtonT() *CLabelButtonT {
 }
 
 // /
-// Show a menu with contents |menu_model|. |screen_point| specifies the menu
-// position in screen coordinates. |anchor_position| specifies how the menu
-// will be anchored relative to |screen_point|. This function should be called
-// from cef_menu_button_delegate_t::on_menu_button_pressed().
+// / Show a menu with contents |menu_model|. |screen_point| specifies the menu
+// / position in screen coordinates. |anchor_position| specifies how the menu
+// / will be anchored relative to |screen_point|. This function should be
+// / called from cef_menu_button_delegate_t::on_menu_button_pressed().
 // /
 func (self *CMenuButtonT) ShowMenu(
 	menu_model *CMenuModelT,
@@ -15621,8 +15855,8 @@ func (self *CMenuButtonT) ShowMenu(
 }
 
 // /
-// Show the menu for this button. Results in a call to
-// cef_menu_button_delegate_t::on_menu_button_pressed().
+// / Show the menu for this button. Results in a call to
+// / cef_menu_button_delegate_t::on_menu_button_pressed().
 // /
 func (self *CMenuButtonT) TriggerMenu() {
 
@@ -15631,13 +15865,13 @@ func (self *CMenuButtonT) TriggerMenu() {
 }
 
 // /
-// Create a new MenuButton. A |delegate| must be provided to call show_menu()
-// when the button is clicked. |text| will be shown on the MenuButton and used
-// as the default accessible name. If |with_frame| is true (1) the button will
-// have a visible frame at all times, center alignment, additional padding and a
-// default minimum size of 70x33 DIP. If |with_frame| is false (0) the button
-// will only have a visible frame on hover/press, left alignment, less padding
-// and no default minimum size.
+// / Create a new MenuButton. A |delegate| must be provided to call show_menu()
+// / when the button is clicked. |text| will be shown on the MenuButton and used
+// / as the default accessible name. If |with_frame| is true (1) the button will
+// / have a visible frame at all times, center alignment, additional padding and
+// / a default minimum size of 70x33 DIP. If |with_frame| is false (0) the button
+// / will only have a visible frame on hover/press, left alignment, less padding
+// / and no default minimum size.
 // /
 func MenuButtonCreate(
 	delegate *CMenuButtonDelegateT,
@@ -15659,7 +15893,7 @@ func MenuButtonCreate(
 // cef_menu_button_delegate_capi.h, include/capi/views/cef_menu_button_delegate_capi.h:59:3,
 
 ///
-// MenuButton pressed lock is released when this object is destroyed.
+/// MenuButton pressed lock is released when this object is destroyed.
 ///
 
 type cCMenuButtonPressedLockT C.cef_menu_button_pressed_lock_t
@@ -15737,9 +15971,9 @@ func (menu_button_pressed_lock *CMenuButtonPressedLockT) Unref() (ret bool) {
 }
 
 ///
-// Implement this structure to handle MenuButton events. The functions of this
-// structure will be called on the browser process UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle MenuButton events. The functions of this
+/// structure will be called on the browser process UI thread unless otherwise
+/// indicated.
 ///
 
 type cCMenuButtonDelegateT C.cef_menu_button_delegate_t
@@ -15824,10 +16058,10 @@ func (menu_button_delegate *CMenuButtonDelegateT) ToCButtonDelegateT() *CButtonD
 }
 
 // /
-// Called when |button| is pressed. Call cef_menu_button_t::show_menu() to
-// show a popup menu at |screen_point|. When showing a custom popup such as a
-// window keep a reference to |button_pressed_lock| until the popup is hidden
-// to maintain the pressed button state.
+// / Called when |button| is pressed. Call cef_menu_button_t::show_menu() to
+// / show a popup menu at |screen_point|. When showing a custom popup such as a
+// / window keep a reference to |button_pressed_lock| until the popup is hidden
+// / to maintain the pressed button state.
 // /
 type OnMenuButtonPressedHandler interface {
 	OnMenuButtonPressed(
@@ -16032,13 +16266,13 @@ func (menu_button_delegate *CMenuButtonDelegateT) Handler() interface{} {
 	return menu_button_delegate_handlers.handler[cp]
 }
 
-// cef_menu_model_capi.h, include/capi/cef_menu_model_capi.h:499:3,
+// cef_menu_model_capi.h, include/capi/cef_menu_model_capi.h:505:3,
 
 ///
-// Supports creation and modification of menus. See cef_menu_id_t for the
-// command ids that have default implementations. All user-defined command ids
-// should be between MENU_ID_USER_FIRST and MENU_ID_USER_LAST. The functions of
-// this structure can only be accessed on the browser process the UI thread.
+/// Supports creation and modification of menus. See cef_menu_id_t for the
+/// command ids that have default implementations. All user-defined command ids
+/// should be between MENU_ID_USER_FIRST and MENU_ID_USER_LAST. The functions of
+/// this structure can only be accessed on the browser process the UI thread.
 ///
 
 type cCMenuModelT C.cef_menu_model_t
@@ -16116,7 +16350,7 @@ func (menu_model *CMenuModelT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this menu is a submenu.
+// / Returns true (1) if this menu is a submenu.
 // /
 func (self *CMenuModelT) IsSubMenu() (ret bool) {
 
@@ -16127,7 +16361,7 @@ func (self *CMenuModelT) IsSubMenu() (ret bool) {
 }
 
 // /
-// Clears the menu. Returns true (1) on success.
+// / Clears the menu. Returns true (1) on success.
 // /
 func (self *CMenuModelT) Clear() (ret bool) {
 
@@ -16138,18 +16372,18 @@ func (self *CMenuModelT) Clear() (ret bool) {
 }
 
 // /
-// Returns the number of items in this menu.
+// / Returns the number of items in this menu.
 // /
-func (self *CMenuModelT) GetCount() (ret bool) {
+func (self *CMenuModelT) GetCount() (ret int64) {
 
 	cRet := C.cefingo_menu_model_get_count((*C.cef_menu_model_t)(self.pc_menu_model))
 
-	ret = cRet == 1
+	ret = (int64)(cRet) // return GoObj
 	return ret
 }
 
 // /
-// Add a separator to the menu. Returns true (1) on success.
+// / Add a separator to the menu. Returns true (1) on success.
 // /
 func (self *CMenuModelT) AddSeparator() (ret bool) {
 
@@ -16160,7 +16394,7 @@ func (self *CMenuModelT) AddSeparator() (ret bool) {
 }
 
 // /
-// Add an item to the menu. Returns true (1) on success.
+// / Add an item to the menu. Returns true (1) on success.
 // /
 func (self *CMenuModelT) AddItem(
 	command_id int,
@@ -16175,7 +16409,7 @@ func (self *CMenuModelT) AddItem(
 }
 
 // /
-// Add a check item to the menu. Returns true (1) on success.
+// / Add a check item to the menu. Returns true (1) on success.
 // /
 func (self *CMenuModelT) AddCheckItem(
 	command_id int,
@@ -16190,8 +16424,8 @@ func (self *CMenuModelT) AddCheckItem(
 }
 
 // /
-// Add a radio item to the menu. Only a single item with the specified
-// |group_id| can be checked at a time. Returns true (1) on success.
+// / Add a radio item to the menu. Only a single item with the specified
+// / |group_id| can be checked at a time. Returns true (1) on success.
 // /
 func (self *CMenuModelT) AddRadioItem(
 	command_id int,
@@ -16207,7 +16441,7 @@ func (self *CMenuModelT) AddRadioItem(
 }
 
 // /
-// Add a sub-menu to the menu. The new sub-menu is returned.
+// / Add a sub-menu to the menu. The new sub-menu is returned.
 // /
 func (self *CMenuModelT) AddSubMenu(
 	command_id int,
@@ -16222,92 +16456,92 @@ func (self *CMenuModelT) AddSubMenu(
 }
 
 // /
-// Insert a separator in the menu at the specified |index|. Returns true (1)
-// on success.
+// / Insert a separator in the menu at the specified |index|. Returns true (1)
+// / on success.
 // /
 func (self *CMenuModelT) InsertSeparatorAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_insert_separator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_insert_separator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Insert an item in the menu at the specified |index|. Returns true (1) on
-// success.
+// / Insert an item in the menu at the specified |index|. Returns true (1) on
+// / success.
 // /
 func (self *CMenuModelT) InsertItemAt(
-	index int,
+	index int64,
 	command_id int,
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_insert_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_insert_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Insert a check item in the menu at the specified |index|. Returns true (1)
-// on success.
+// / Insert a check item in the menu at the specified |index|. Returns true (1)
+// / on success.
 // /
 func (self *CMenuModelT) InsertCheckItemAt(
-	index int,
+	index int64,
 	command_id int,
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_insert_check_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_insert_check_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Insert a radio item in the menu at the specified |index|. Only a single
-// item with the specified |group_id| can be checked at a time. Returns true
-// (1) on success.
+// / Insert a radio item in the menu at the specified |index|. Only a single
+// / item with the specified |group_id| can be checked at a time. Returns true
+// / (1) on success.
 // /
 func (self *CMenuModelT) InsertRadioItemAt(
-	index int,
+	index int64,
 	command_id int,
 	label string,
 	group_id int,
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_insert_radio_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t, (C.int)(group_id))
+	cRet := C.cefingo_menu_model_insert_radio_item_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(command_id), c_label.p_cef_string_t, (C.int)(group_id))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Insert a sub-menu in the menu at the specified |index|. The new sub-menu is
-// returned.
+// / Insert a sub-menu in the menu at the specified |index|. The new sub-menu
+// / is returned.
 // /
 func (self *CMenuModelT) InsertSubMenuAt(
-	index int,
+	index int64,
 	command_id int,
 	label string,
 ) (ret *CMenuModelT) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_insert_sub_menu_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_insert_sub_menu_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(command_id), c_label.p_cef_string_t)
 
 	ret = newCMenuModelT(cRet, byApp) // return GoObj
 	return ret
 }
 
 // /
-// Removes the item with the specified |command_id|. Returns true (1) on
-// success.
+// / Removes the item with the specified |command_id|. Returns true (1) on
+// / success.
 // /
 func (self *CMenuModelT) Remove(
 	command_id int,
@@ -16320,21 +16554,21 @@ func (self *CMenuModelT) Remove(
 }
 
 // /
-// Removes the item at the specified |index|. Returns true (1) on success.
+// / Removes the item at the specified |index|. Returns true (1) on success.
 // /
 func (self *CMenuModelT) RemoveAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_remove_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_remove_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Returns the index associated with the specified |command_id| or -1 if not
-// found due to the command id not existing in the menu.
+// / Returns the index associated with the specified |command_id| or -1 if not
+// / found due to the command id not existing in the menu.
 // /
 func (self *CMenuModelT) GetIndexOf(
 	command_id int,
@@ -16347,35 +16581,35 @@ func (self *CMenuModelT) GetIndexOf(
 }
 
 // /
-// Returns the command id at the specified |index| or -1 if not found due to
-// invalid range or the index being a separator.
+// / Returns the command id at the specified |index| or -1 if not found due to
+// / invalid range or the index being a separator.
 // /
 func (self *CMenuModelT) GetCommandIdAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_command_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_get_command_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Sets the command id at the specified |index|. Returns true (1) on success.
+// / Sets the command id at the specified |index|. Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetCommandIdAt(
-	index int,
+	index int64,
 	command_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_command_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(command_id))
+	cRet := C.cefingo_menu_model_set_command_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(command_id))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Returns the label for the specified |command_id| or NULL if not found.
+// / Returns the label for the specified |command_id| or NULL if not found.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMenuModelT) GetLabel(
@@ -16393,15 +16627,15 @@ func (self *CMenuModelT) GetLabel(
 }
 
 // /
-// Returns the label at the specified |index| or NULL if not found due to
-// invalid range or the index being a separator.
+// / Returns the label at the specified |index| or NULL if not found due to
+// / invalid range or the index being a separator.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CMenuModelT) GetLabelAt(
-	index int,
+	index int64,
 ) (ret string) {
 
-	cRet := C.cefingo_menu_model_get_label_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_get_label_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	s := string_from_cef_string(cRet)
 	if cRet != nil {
@@ -16412,7 +16646,8 @@ func (self *CMenuModelT) GetLabelAt(
 }
 
 // /
-// Sets the label for the specified |command_id|. Returns true (1) on success.
+// / Sets the label for the specified |command_id|. Returns true (1) on
+// / success.
 // /
 func (self *CMenuModelT) SetLabel(
 	command_id int,
@@ -16427,22 +16662,22 @@ func (self *CMenuModelT) SetLabel(
 }
 
 // /
-// Set the label at the specified |index|. Returns true (1) on success.
+// / Set the label at the specified |index|. Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetLabelAt(
-	index int,
+	index int64,
 	label string,
 ) (ret bool) {
 	c_label := create_cef_string(label)
 
-	cRet := C.cefingo_menu_model_set_label_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), c_label.p_cef_string_t)
+	cRet := C.cefingo_menu_model_set_label_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), c_label.p_cef_string_t)
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Returns the item type for the specified |command_id|.
+// / Returns the item type for the specified |command_id|.
 // /
 func (self *CMenuModelT) GetType(
 	command_id int,
@@ -16455,20 +16690,20 @@ func (self *CMenuModelT) GetType(
 }
 
 // /
-// Returns the item type at the specified |index|.
+// / Returns the item type at the specified |index|.
 // /
 func (self *CMenuModelT) GetTypeAt(
-	index int,
+	index int64,
 ) (ret CMenuItemTypeT) {
 
-	cRet := C.cefingo_menu_model_get_type_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_get_type_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = CMenuItemTypeT(cRet) // return GoObj
 	return ret
 }
 
 // /
-// Returns the group id for the specified |command_id| or -1 if invalid.
+// / Returns the group id for the specified |command_id| or -1 if invalid.
 // /
 func (self *CMenuModelT) GetGroupId(
 	command_id int,
@@ -16481,21 +16716,21 @@ func (self *CMenuModelT) GetGroupId(
 }
 
 // /
-// Returns the group id at the specified |index| or -1 if invalid.
+// / Returns the group id at the specified |index| or -1 if invalid.
 // /
 func (self *CMenuModelT) GetGroupIdAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_get_group_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_get_group_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Sets the group id for the specified |command_id|. Returns true (1) on
-// success.
+// / Sets the group id for the specified |command_id|. Returns true (1) on
+// / success.
 // /
 func (self *CMenuModelT) SetGroupId(
 	command_id int,
@@ -16509,21 +16744,21 @@ func (self *CMenuModelT) SetGroupId(
 }
 
 // /
-// Sets the group id at the specified |index|. Returns true (1) on success.
+// / Sets the group id at the specified |index|. Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetGroupIdAt(
-	index int,
+	index int64,
 	group_id int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_group_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(group_id))
+	cRet := C.cefingo_menu_model_set_group_id_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(group_id))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Returns the submenu for the specified |command_id| or NULL if invalid.
+// / Returns the submenu for the specified |command_id| or NULL if invalid.
 // /
 func (self *CMenuModelT) GetSubMenu(
 	command_id int,
@@ -16536,20 +16771,20 @@ func (self *CMenuModelT) GetSubMenu(
 }
 
 // /
-// Returns the submenu at the specified |index| or NULL if invalid.
+// / Returns the submenu at the specified |index| or NULL if invalid.
 // /
 func (self *CMenuModelT) GetSubMenuAt(
-	index int,
+	index int64,
 ) (ret *CMenuModelT) {
 
-	cRet := C.cefingo_menu_model_get_sub_menu_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_get_sub_menu_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = newCMenuModelT(cRet, byApp) // return GoObj
 	return ret
 }
 
 // /
-// Returns true (1) if the specified |command_id| is visible.
+// / Returns true (1) if the specified |command_id| is visible.
 // /
 func (self *CMenuModelT) IsVisible(
 	command_id int,
@@ -16562,21 +16797,21 @@ func (self *CMenuModelT) IsVisible(
 }
 
 // /
-// Returns true (1) if the specified |index| is visible.
+// / Returns true (1) if the specified |index| is visible.
 // /
 func (self *CMenuModelT) IsVisibleAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_visible_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_is_visible_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Change the visibility of the specified |command_id|. Returns true (1) on
-// success.
+// / Change the visibility of the specified |command_id|. Returns true (1) on
+// / success.
 // /
 func (self *CMenuModelT) SetVisible(
 	command_id int,
@@ -16590,22 +16825,22 @@ func (self *CMenuModelT) SetVisible(
 }
 
 // /
-// Change the visibility at the specified |index|. Returns true (1) on
-// success.
+// / Change the visibility at the specified |index|. Returns true (1) on
+// / success.
 // /
 func (self *CMenuModelT) SetVisibleAt(
-	index int,
+	index int64,
 	visible int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_visible_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(visible))
+	cRet := C.cefingo_menu_model_set_visible_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(visible))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Returns true (1) if the specified |command_id| is enabled.
+// / Returns true (1) if the specified |command_id| is enabled.
 // /
 func (self *CMenuModelT) IsEnabled(
 	command_id int,
@@ -16618,21 +16853,21 @@ func (self *CMenuModelT) IsEnabled(
 }
 
 // /
-// Returns true (1) if the specified |index| is enabled.
+// / Returns true (1) if the specified |index| is enabled.
 // /
 func (self *CMenuModelT) IsEnabledAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_enabled_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_is_enabled_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Change the enabled status of the specified |command_id|. Returns true (1)
-// on success.
+// / Change the enabled status of the specified |command_id|. Returns true (1)
+// / on success.
 // /
 func (self *CMenuModelT) SetEnabled(
 	command_id int,
@@ -16646,23 +16881,23 @@ func (self *CMenuModelT) SetEnabled(
 }
 
 // /
-// Change the enabled status at the specified |index|. Returns true (1) on
-// success.
+// / Change the enabled status at the specified |index|. Returns true (1) on
+// / success.
 // /
 func (self *CMenuModelT) SetEnabledAt(
-	index int,
+	index int64,
 	enabled int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_enabled_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(enabled))
+	cRet := C.cefingo_menu_model_set_enabled_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(enabled))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Returns true (1) if the specified |command_id| is checked. Only applies to
-// check and radio items.
+// / Returns true (1) if the specified |command_id| is checked. Only applies to
+// / check and radio items.
 // /
 func (self *CMenuModelT) IsChecked(
 	command_id int,
@@ -16675,22 +16910,22 @@ func (self *CMenuModelT) IsChecked(
 }
 
 // /
-// Returns true (1) if the specified |index| is checked. Only applies to check
-// and radio items.
+// / Returns true (1) if the specified |index| is checked. Only applies to
+// / check and radio items.
 // /
 func (self *CMenuModelT) IsCheckedAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_is_checked_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_is_checked_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Check the specified |command_id|. Only applies to check and radio items.
-// Returns true (1) on success.
+// / Check the specified |command_id|. Only applies to check and radio items.
+// / Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetChecked(
 	command_id int,
@@ -16704,23 +16939,23 @@ func (self *CMenuModelT) SetChecked(
 }
 
 // /
-// Check the specified |index|. Only applies to check and radio items. Returns
-// true (1) on success.
+// / Check the specified |index|. Only applies to check and radio items.
+// / Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetCheckedAt(
-	index int,
+	index int64,
 	checked int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_checked_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(checked))
+	cRet := C.cefingo_menu_model_set_checked_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(checked))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Returns true (1) if the specified |command_id| has a keyboard accelerator
-// assigned.
+// / Returns true (1) if the specified |command_id| has a keyboard accelerator
+// / assigned.
 // /
 func (self *CMenuModelT) HasAccelerator(
 	command_id int,
@@ -16733,22 +16968,22 @@ func (self *CMenuModelT) HasAccelerator(
 }
 
 // /
-// Returns true (1) if the specified |index| has a keyboard accelerator
-// assigned.
+// / Returns true (1) if the specified |index| has a keyboard accelerator
+// / assigned.
 // /
 func (self *CMenuModelT) HasAcceleratorAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_has_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_has_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Set the keyboard accelerator for the specified |command_id|. |key_code| can
-// be any virtual key or character value. Returns true (1) on success.
+// / Set the keyboard accelerator for the specified |command_id|. |key_code|
+// / can be any virtual key or character value. Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetAccelerator(
 	command_id int,
@@ -16765,26 +17000,26 @@ func (self *CMenuModelT) SetAccelerator(
 }
 
 // /
-// Set the keyboard accelerator at the specified |index|. |key_code| can be
-// any virtual key or character value. Returns true (1) on success.
+// / Set the keyboard accelerator at the specified |index|. |key_code| can be
+// / any virtual key or character value. Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetAcceleratorAt(
-	index int,
+	index int64,
 	key_code int,
 	shift_pressed int,
 	ctrl_pressed int,
 	alt_pressed int,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_set_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), (C.int)(key_code), (C.int)(shift_pressed), (C.int)(ctrl_pressed), (C.int)(alt_pressed))
+	cRet := C.cefingo_menu_model_set_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), (C.int)(key_code), (C.int)(shift_pressed), (C.int)(ctrl_pressed), (C.int)(alt_pressed))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Remove the keyboard accelerator for the specified |command_id|. Returns
-// true (1) on success.
+// / Remove the keyboard accelerator for the specified |command_id|. Returns
+// / true (1) on success.
 // /
 func (self *CMenuModelT) RemoveAccelerator(
 	command_id int,
@@ -16797,22 +17032,22 @@ func (self *CMenuModelT) RemoveAccelerator(
 }
 
 // /
-// Remove the keyboard accelerator at the specified |index|. Returns true (1)
-// on success.
+// / Remove the keyboard accelerator at the specified |index|. Returns true (1)
+// / on success.
 // /
 func (self *CMenuModelT) RemoveAcceleratorAt(
-	index int,
+	index int64,
 ) (ret bool) {
 
-	cRet := C.cefingo_menu_model_remove_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index))
+	cRet := C.cefingo_menu_model_remove_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index))
 
 	ret = cRet == 1
 	return ret
 }
 
 // /
-// Retrieves the keyboard accelerator for the specified |command_id|. Returns
-// true (1) on success.
+// / Retrieves the keyboard accelerator for the specified |command_id|. Returns
+// / true (1) on success.
 // /
 func (self *CMenuModelT) GetAccelerator(
 	command_id int,
@@ -16834,18 +17069,18 @@ func (self *CMenuModelT) GetAccelerator(
 }
 
 // /
-// Retrieves the keyboard accelerator for the specified |index|. Returns true
-// (1) on success.
+// / Retrieves the keyboard accelerator for the specified |index|. Returns true
+// / (1) on success.
 // /
 func (self *CMenuModelT) GetAcceleratorAt(
-	index int,
+	index int64,
 ) (ret bool, key_code int, shift_pressed int, ctrl_pressed int, alt_pressed int) {
 	var tmpkey_code C.int
 	var tmpshift_pressed C.int
 	var tmpctrl_pressed C.int
 	var tmpalt_pressed C.int
 
-	cRet := C.cefingo_menu_model_get_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(index), &tmpkey_code, &tmpshift_pressed, &tmpctrl_pressed, &tmpalt_pressed)
+	cRet := C.cefingo_menu_model_get_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), &tmpkey_code, &tmpshift_pressed, &tmpctrl_pressed, &tmpalt_pressed)
 
 	key_code = (int)(tmpkey_code)
 	shift_pressed = (int)(tmpshift_pressed)
@@ -16857,10 +17092,10 @@ func (self *CMenuModelT) GetAcceleratorAt(
 }
 
 // /
-// Set the explicit color for |command_id| and |color_type| to |color|.
-// Specify a |color| value of 0 to remove the explicit color. If no explicit
-// color or default color is set for |color_type| then the system color will
-// be used. Returns true (1) on success.
+// / Set the explicit color for |command_id| and |color_type| to |color|.
+// / Specify a |color| value of 0 to remove the explicit color. If no explicit
+// / color or default color is set for |color_type| then the system color will
+// / be used. Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetColor(
 	command_id int,
@@ -16875,11 +17110,11 @@ func (self *CMenuModelT) SetColor(
 }
 
 // /
-// Set the explicit color for |command_id| and |index| to |color|. Specify a
-// |color| value of 0 to remove the explicit color. Specify an |index| value
-// of -1 to set the default color for items that do not have an explicit color
-// set. If no explicit color or default color is set for |color_type| then the
-// system color will be used. Returns true (1) on success.
+// / Set the explicit color for |command_id| and |index| to |color|. Specify a
+// / |color| value of 0 to remove the explicit color. Specify an |index| value
+// / of -1 to set the default color for items that do not have an explicit
+// / color set. If no explicit color or default color is set for |color_type|
+// / then the system color will be used. Returns true (1) on success.
 // /
 func (self *CMenuModelT) SetColorAt(
 	index int,
@@ -16894,9 +17129,9 @@ func (self *CMenuModelT) SetColorAt(
 }
 
 // /
-// Returns in |color| the color that was explicitly set for |command_id| and
-// |color_type|. If a color was not set then 0 will be returned in |color|.
-// Returns true (1) on success.
+// / Returns in |color| the color that was explicitly set for |command_id| and
+// / |color_type|. If a color was not set then 0 will be returned in |color|.
+// / Returns true (1) on success.
 // /
 func (self *CMenuModelT) GetColor(
 	command_id int,
@@ -16911,10 +17146,10 @@ func (self *CMenuModelT) GetColor(
 }
 
 // /
-// Returns in |color| the color that was explicitly set for |command_id| and
-// |color_type|. Specify an |index| value of -1 to return the default color in
-// |color|. If a color was not set then 0 will be returned in |color|. Returns
-// true (1) on success.
+// / Returns in |color| the color that was explicitly set for |command_id| and
+// / |color_type|. Specify an |index| value of -1 to return the default color
+// / in |color|. If a color was not set then 0 will be returned in |color|.
+// / Returns true (1) on success.
 // /
 func (self *CMenuModelT) GetColorAt(
 	index int,
@@ -16929,18 +17164,16 @@ func (self *CMenuModelT) GetColorAt(
 }
 
 // /
-// Sets the font list for the specified |command_id|. If |font_list| is NULL
-// the system font will be used. Returns true (1) on success. The format is
-// &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;, where: - FONT_FAMILY_LIST is a comma-
-// separated list of font family names, - STYLES is an optional space-
-// separated list of style names (case-sensitive
-//
-//	&quot;Bold&quot; and &quot;Italic&quot; are supported), and
-//
-// - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
-//
-// Here are examples of valid font description strings: - &quot;Arial, Helvetica,
-// Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
+// / Sets the font list for the specified |command_id|. If |font_list| is NULL
+// / the system font will be used. Returns true (1) on success. The format is
+// / &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;, where: - FONT_FAMILY_LIST is a
+// / comma-separated list of font family names, - STYLES is an optional space-
+// / separated list of style names
+// /   (case-sensitive &quot;Bold&quot; and &quot;Italic&quot; are supported), and
+// / - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
+// /
+// / Here are examples of valid font description strings: - &quot;Arial, Helvetica,
+// / Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
 // /
 func (self *CMenuModelT) SetFontList(
 	command_id int,
@@ -16955,19 +17188,17 @@ func (self *CMenuModelT) SetFontList(
 }
 
 // /
-// Sets the font list for the specified |index|. Specify an |index| value of
-// -1 to set the default font. If |font_list| is NULL the system font will be
-// used. Returns true (1) on success. The format is
-// &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;, where: - FONT_FAMILY_LIST is a comma-
-// separated list of font family names, - STYLES is an optional space-
-// separated list of style names (case-sensitive
-//
-//	&quot;Bold&quot; and &quot;Italic&quot; are supported), and
-//
-// - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
-//
-// Here are examples of valid font description strings: - &quot;Arial, Helvetica,
-// Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
+// / Sets the font list for the specified |index|. Specify an |index| value of
+// / -1 to set the default font. If |font_list| is NULL the system font will be
+// / used. Returns true (1) on success. The format is
+// / &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;, where: - FONT_FAMILY_LIST is a
+// / comma-separated list of font family names, - STYLES is an optional space-
+// / separated list of style names
+// /   (case-sensitive &quot;Bold&quot; and &quot;Italic&quot; are supported), and
+// / - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
+// /
+// / Here are examples of valid font description strings: - &quot;Arial, Helvetica,
+// / Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
 // /
 func (self *CMenuModelT) SetFontListAt(
 	index int,
@@ -16982,7 +17213,7 @@ func (self *CMenuModelT) SetFontListAt(
 }
 
 // /
-// Create a new MenuModel with the specified |delegate|.
+// / Create a new MenuModel with the specified |delegate|.
 // /
 func MenuModelCreate(
 	delegate *CMenuModelDelegateT,
@@ -17002,9 +17233,9 @@ func MenuModelCreate(
 // cef_menu_model_delegate_capi.h, include/capi/cef_menu_model_delegate_capi.h:117:3,
 
 ///
-// Implement this structure to handle menu model events. The functions of this
-// structure will be called on the browser process UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle menu model events. The functions of this
+/// structure will be called on the browser process UI thread unless otherwise
+/// indicated.
 ///
 
 type cCMenuModelDelegateT C.cef_menu_model_delegate_t
@@ -17082,8 +17313,8 @@ func (menu_model_delegate *CMenuModelDelegateT) Unref() (ret bool) {
 }
 
 // /
-// Perform the action associated with the specified |command_id| and optional
-// |event_flags|.
+// / Perform the action associated with the specified |command_id| and optional
+// / |event_flags|.
 // /
 type ExecuteCommandHandler interface {
 	ExecuteCommand(
@@ -17095,8 +17326,8 @@ type ExecuteCommandHandler interface {
 }
 
 // /
-// Called when the user moves the mouse outside the menu and over the owning
-// window.
+// / Called when the user moves the mouse outside the menu and over the owning
+// / window.
 // /
 type MouseOutsideMenuHandler interface {
 	MouseOutsideMenu(
@@ -17107,8 +17338,8 @@ type MouseOutsideMenuHandler interface {
 }
 
 // /
-// Called on unhandled open submenu keyboard commands. |is_rtl| will be true
-// (1) if the menu is displaying a right-to-left language.
+// / Called on unhandled open submenu keyboard commands. |is_rtl| will be true
+// / (1) if the menu is displaying a right-to-left language.
 // /
 type UnhandledOpenSubmenuHandler interface {
 	UnhandledOpenSubmenu(
@@ -17119,8 +17350,8 @@ type UnhandledOpenSubmenuHandler interface {
 }
 
 // /
-// Called on unhandled close submenu keyboard commands. |is_rtl| will be true
-// (1) if the menu is displaying a right-to-left language.
+// / Called on unhandled close submenu keyboard commands. |is_rtl| will be true
+// / (1) if the menu is displaying a right-to-left language.
 // /
 type UnhandledCloseSubmenuHandler interface {
 	UnhandledCloseSubmenu(
@@ -17131,7 +17362,7 @@ type UnhandledCloseSubmenuHandler interface {
 }
 
 // /
-// The menu is about to show.
+// / The menu is about to show.
 // /
 type MenuWillShowHandler interface {
 	MenuWillShow(
@@ -17141,7 +17372,7 @@ type MenuWillShowHandler interface {
 }
 
 // /
-// The menu has closed.
+// / The menu has closed.
 // /
 type MenuClosedHandler interface {
 	MenuClosed(
@@ -17151,8 +17382,8 @@ type MenuClosedHandler interface {
 }
 
 // /
-// Optionally modify a menu item label. Return true (1) if |label| was
-// modified.
+// / Optionally modify a menu item label. Return true (1) if |label| was
+// / modified.
 // /
 type FormatLabelHandler interface {
 	FormatLabel(
@@ -17296,10 +17527,10 @@ func (menu_model_delegate *CMenuModelDelegateT) Handler() interface{} {
 	return menu_model_delegate_handlers.handler[cp]
 }
 
-// cef_navigation_entry_capi.h, include/capi/cef_navigation_entry_capi.h:126:3,
+// cef_navigation_entry_capi.h, include/capi/cef_navigation_entry_capi.h:127:3,
 
 ///
-// Structure used to represent an entry in navigation history.
+/// Structure used to represent an entry in navigation history.
 ///
 
 type cCNavigationEntryT C.cef_navigation_entry_t
@@ -17377,8 +17608,8 @@ func (navigation_entry *CNavigationEntryT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid. Do not call any other functions
-// if this function returns false (0).
+// / Returns true (1) if this object is valid. Do not call any other functions
+// / if this function returns false (0).
 // /
 func (self *CNavigationEntryT) IsValid() (ret bool) {
 
@@ -17389,8 +17620,8 @@ func (self *CNavigationEntryT) IsValid() (ret bool) {
 }
 
 // /
-// Returns the actual URL of the page. For some pages this may be data: URL or
-// similar. Use get_display_url() to return a display-friendly version.
+// / Returns the actual URL of the page. For some pages this may be data: URL
+// / or similar. Use get_display_url() to return a display-friendly version.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetUrl() (ret string) {
@@ -17406,7 +17637,7 @@ func (self *CNavigationEntryT) GetUrl() (ret string) {
 }
 
 // /
-// Returns a display-friendly version of the URL.
+// / Returns a display-friendly version of the URL.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetDisplayUrl() (ret string) {
@@ -17422,7 +17653,8 @@ func (self *CNavigationEntryT) GetDisplayUrl() (ret string) {
 }
 
 // /
-// Returns the original URL that was entered by the user before any redirects.
+// / Returns the original URL that was entered by the user before any
+// / redirects.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetOriginalUrl() (ret string) {
@@ -17438,7 +17670,7 @@ func (self *CNavigationEntryT) GetOriginalUrl() (ret string) {
 }
 
 // /
-// Returns the title set by the page. This value may be NULL.
+// / Returns the title set by the page. This value may be NULL.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CNavigationEntryT) GetTitle() (ret string) {
@@ -17454,8 +17686,8 @@ func (self *CNavigationEntryT) GetTitle() (ret string) {
 }
 
 // /
-// Returns the transition type which indicates what the user did to move to
-// this page from the previous page.
+// / Returns the transition type which indicates what the user did to move to
+// / this page from the previous page.
 // /
 func (self *CNavigationEntryT) GetTransitionType() (ret CTransitionTypeT) {
 
@@ -17466,7 +17698,7 @@ func (self *CNavigationEntryT) GetTransitionType() (ret CTransitionTypeT) {
 }
 
 // /
-// Returns true (1) if this navigation includes post data.
+// / Returns true (1) if this navigation includes post data.
 // /
 func (self *CNavigationEntryT) HasPostData() (ret bool) {
 
@@ -17477,22 +17709,22 @@ func (self *CNavigationEntryT) HasPostData() (ret bool) {
 }
 
 // /
-// Returns the time for the last known successful navigation completion. A
-// navigation may be completed more than once if the page is reloaded. May be
-// 0 if the navigation has not yet completed.
+// / Returns the time for the last known successful navigation completion. A
+// / navigation may be completed more than once if the page is reloaded. May be
+// / 0 if the navigation has not yet completed.
 // /
-func (self *CNavigationEntryT) GetCompletionTime() (ret CTimeT) {
+func (self *CNavigationEntryT) GetCompletionTime() (ret CBasetimeT) {
 
 	cRet := C.cefingo_navigation_entry_get_completion_time((*C.cef_navigation_entry_t)(self.pc_navigation_entry))
 
-	ret = (CTimeT)(cRet) // return GoObj
+	ret = (CBasetimeT)(cRet) // return GoObj
 	return ret
 }
 
 // /
-// Returns the HTTP status code for the last known successful navigation
-// response. May be 0 if the response has not yet been received or if the
-// navigation has not yet completed.
+// / Returns the HTTP status code for the last known successful navigation
+// / response. May be 0 if the response has not yet been received or if the
+// / navigation has not yet completed.
 // /
 func (self *CNavigationEntryT) GetHttpStatusCode() (ret bool) {
 
@@ -17503,7 +17735,7 @@ func (self *CNavigationEntryT) GetHttpStatusCode() (ret bool) {
 }
 
 // /
-// Returns the SSL information for this navigation entry.
+// / Returns the SSL information for this navigation entry.
 // /
 func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 
@@ -17513,43 +17745,44 @@ func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 	return ret
 }
 
-// cef_origin_whitelist_capi.h, include/capi/cef_origin_whitelist_capi.h:85:16,
+// cef_origin_whitelist_capi.h, include/capi/cef_origin_whitelist_capi.h:86:16,
 
 // /
-// Add an entry to the cross-origin access whitelist.
-//
-// The same-origin policy restricts how scripts hosted from different origins
-// (scheme + domain + port) can communicate. By default, scripts can only access
-// resources with the same origin. Scripts hosted on the HTTP and HTTPS schemes
-// (but no other schemes) can use the "Access-Control-Allow-Origin" header to
-// allow cross-origin requests. For example, https://source.example.com can make
-// XMLHttpRequest requests on http://target.example.com if the
-// http://target.example.com request returns an "Access-Control-Allow-Origin:
-// https://source.example.com" response header.
-//
-// Scripts in separate frames or iframes and hosted from the same protocol and
-// domain suffix can execute cross-origin JavaScript if both pages set the
-// document.domain value to the same domain suffix. For example,
-// scheme://foo.example.com and scheme://bar.example.com can communicate using
-// JavaScript if both domains set document.domain="example.com".
-//
-// This function is used to allow access to origins that would otherwise violate
-// the same-origin policy. Scripts hosted underneath the fully qualified
-// |source_origin| URL (like http://www.example.com) will be allowed access to
-// all resources hosted on the specified |target_protocol| and |target_domain|.
-// If |target_domain| is non-NULL and |allow_target_subdomains| if false (0)
-// only exact domain matches will be allowed. If |target_domain| contains a top-
-// level domain component (like "example.com") and |allow_target_subdomains| is
-// true (1) sub-domain matches will be allowed. If |target_domain| is NULL and
-// |allow_target_subdomains| if true (1) all domains and IP addresses will be
-// allowed.
-//
-// This function cannot be used to bypass the restrictions on local or display
-// isolated schemes. See the comments on CefRegisterCustomScheme for more
-// information.
-//
-// This function may be called on any thread. Returns false (0) if
-// |source_origin| is invalid or the whitelist cannot be accessed.
+// / Add an entry to the cross-origin access whitelist.
+// /
+// / The same-origin policy restricts how scripts hosted from different origins
+// / (scheme + domain + port) can communicate. By default, scripts can only
+// / access resources with the same origin. Scripts hosted on the HTTP and HTTPS
+// / schemes (but no other schemes) can use the "Access-Control-Allow-Origin"
+// / header to allow cross-origin requests. For example,
+// / https://source.example.com can make XMLHttpRequest requests on
+// / http://target.example.com if the http://target.example.com request returns
+// / an "Access-Control-Allow-Origin: https://source.example.com" response
+// / header.
+// /
+// / Scripts in separate frames or iframes and hosted from the same protocol and
+// / domain suffix can execute cross-origin JavaScript if both pages set the
+// / document.domain value to the same domain suffix. For example,
+// / scheme://foo.example.com and scheme://bar.example.com can communicate using
+// / JavaScript if both domains set document.domain="example.com".
+// /
+// / This function is used to allow access to origins that would otherwise
+// / violate the same-origin policy. Scripts hosted underneath the fully
+// / qualified |source_origin| URL (like http://www.example.com) will be allowed
+// / access to all resources hosted on the specified |target_protocol| and
+// / |target_domain|. If |target_domain| is non-NULL and
+// / |allow_target_subdomains| if false (0) only exact domain matches will be
+// / allowed. If |target_domain| contains a top- level domain component (like
+// / "example.com") and |allow_target_subdomains| is true (1) sub-domain matches
+// / will be allowed. If |target_domain| is NULL and |allow_target_subdomains| if
+// / true (1) all domains and IP addresses will be allowed.
+// /
+// / This function cannot be used to bypass the restrictions on local or display
+// / isolated schemes. See the comments on CefRegisterCustomScheme for more
+// / information.
+// /
+// / This function may be called on any thread. Returns false (0) if
+// / |source_origin| is invalid or the whitelist cannot be accessed.
 // /
 func AddCrossOriginWhitelistEntry(
 	source_origin string,
@@ -17568,8 +17801,8 @@ func AddCrossOriginWhitelistEntry(
 }
 
 // /
-// Remove an entry from the cross-origin access whitelist. Returns false (0) if
-// |source_origin| is invalid or the whitelist cannot be accessed.
+// / Remove an entry from the cross-origin access whitelist. Returns false (0) if
+// / |source_origin| is invalid or the whitelist cannot be accessed.
 // /
 func RemoveCrossOriginWhitelistEntry(
 	source_origin string,
@@ -17588,8 +17821,8 @@ func RemoveCrossOriginWhitelistEntry(
 }
 
 // /
-// Remove all entries from the cross-origin access whitelist. Returns false (0)
-// if the whitelist cannot be accessed.
+// / Remove all entries from the cross-origin access whitelist. Returns false (0)
+// / if the whitelist cannot be accessed.
 // /
 func ClearCrossOriginWhitelist() (ret bool) {
 
@@ -17599,14 +17832,14 @@ func ClearCrossOriginWhitelist() (ret bool) {
 	return ret
 }
 
-// cef_overlay_controller_capi.h, include/capi/views/cef_overlay_controller_capi.h:210:3,
+// cef_overlay_controller_capi.h, include/capi/views/cef_overlay_controller_capi.h:211:3,
 
 ///
-// Controller for an overlay that contains a contents View added via
-// cef_window_t::AddOverlayView. Methods exposed by this controller should be
-// called in preference to functions of the same name exposed by the contents
-// View unless otherwise indicated. Methods must be called on the browser
-// process UI thread unless otherwise indicated.
+/// Controller for an overlay that contains a contents View added via
+/// cef_window_t::AddOverlayView. Methods exposed by this controller should be
+/// called in preference to functions of the same name exposed by the contents
+/// View unless otherwise indicated. Methods must be called on the browser
+/// process UI thread unless otherwise indicated.
 ///
 
 type cCOverlayControllerT C.cef_overlay_controller_t
@@ -17684,7 +17917,7 @@ func (overlay_controller *COverlayControllerT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid.
+// / Returns true (1) if this object is valid.
 // /
 func (self *COverlayControllerT) IsValid() (ret bool) {
 
@@ -17695,7 +17928,7 @@ func (self *COverlayControllerT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is the same as |that| object.
+// / Returns true (1) if this object is the same as |that| object.
 // /
 func (self *COverlayControllerT) IsSame(
 	that *COverlayControllerT,
@@ -17713,7 +17946,7 @@ func (self *COverlayControllerT) IsSame(
 }
 
 // /
-// Returns the contents View for this overlay.
+// / Returns the contents View for this overlay.
 // /
 func (self *COverlayControllerT) GetContentsView() (ret *CViewT) {
 
@@ -17724,8 +17957,8 @@ func (self *COverlayControllerT) GetContentsView() (ret *CViewT) {
 }
 
 // /
-// Returns the top-level Window hosting this overlay. Use this function
-// instead of calling get_window() on the contents View.
+// / Returns the top-level Window hosting this overlay. Use this function
+// / instead of calling get_window() on the contents View.
 // /
 func (self *COverlayControllerT) GetWindow() (ret *CWindowT) {
 
@@ -17736,7 +17969,7 @@ func (self *COverlayControllerT) GetWindow() (ret *CWindowT) {
 }
 
 // /
-// Returns the docking mode for this overlay.
+// / Returns the docking mode for this overlay.
 // /
 func (self *COverlayControllerT) GetDockingMode() (ret CDockingModeT) {
 
@@ -17747,7 +17980,7 @@ func (self *COverlayControllerT) GetDockingMode() (ret CDockingModeT) {
 }
 
 // /
-// Destroy this overlay.
+// / Destroy this overlay.
 // /
 func (self *COverlayControllerT) Destroy() {
 
@@ -17756,14 +17989,14 @@ func (self *COverlayControllerT) Destroy() {
 }
 
 // /
-// Sets the bounds (size and position) of this overlay. This will set the
-// bounds of the contents View to match and trigger a re-layout if necessary.
-// |bounds| is in parent coordinates and any insets configured on this overlay
-// will be ignored. Use this function only for overlays created with a docking
-// mode value of CEF_DOCKING_MODE_CUSTOM. With other docking modes modify the
-// insets of this overlay and/or layout of the contents View and call
-// size_to_preferred_size() instead to calculate the new size and re-position
-// the overlay if necessary.
+// / Sets the bounds (size and position) of this overlay. This will set the
+// / bounds of the contents View to match and trigger a re-layout if necessary.
+// / |bounds| is in parent coordinates and any insets configured on this
+// / overlay will be ignored. Use this function only for overlays created with
+// / a docking mode value of CEF_DOCKING_MODE_CUSTOM. With other docking modes
+// / modify the insets of this overlay and/or layout of the contents View and
+// / call size_to_preferred_size() instead to calculate the new size and re-
+// / position the overlay if necessary.
 // /
 func (self *COverlayControllerT) SetBounds(
 	bounds *CRectT,
@@ -17774,8 +18007,8 @@ func (self *COverlayControllerT) SetBounds(
 }
 
 // /
-// Returns the bounds (size and position) of this overlay in parent
-// coordinates.
+// / Returns the bounds (size and position) of this overlay in parent
+// / coordinates.
 // /
 func (self *COverlayControllerT) GetBounds() (ret CRectT) {
 
@@ -17786,8 +18019,8 @@ func (self *COverlayControllerT) GetBounds() (ret CRectT) {
 }
 
 // /
-// Returns the bounds (size and position) of this overlay in DIP screen
-// coordinates.
+// / Returns the bounds (size and position) of this overlay in DIP screen
+// / coordinates.
 // /
 func (self *COverlayControllerT) GetBoundsInScreen() (ret CRectT) {
 
@@ -17798,14 +18031,14 @@ func (self *COverlayControllerT) GetBoundsInScreen() (ret CRectT) {
 }
 
 // /
-// Sets the size of this overlay without changing the position. This will set
-// the size of the contents View to match and trigger a re-layout if
-// necessary. |size| is in parent coordinates and any insets configured on
-// this overlay will be ignored. Use this function only for overlays created
-// with a docking mode value of CEF_DOCKING_MODE_CUSTOM. With other docking
-// modes modify the insets of this overlay and/or layout of the contents View
-// and call size_to_preferred_size() instead to calculate the new size and re-
-// position the overlay if necessary.
+// / Sets the size of this overlay without changing the position. This will set
+// / the size of the contents View to match and trigger a re-layout if
+// / necessary. |size| is in parent coordinates and any insets configured on
+// / this overlay will be ignored. Use this function only for overlays created
+// / with a docking mode value of CEF_DOCKING_MODE_CUSTOM. With other docking
+// / modes modify the insets of this overlay and/or layout of the contents View
+// / and call size_to_preferred_size() instead to calculate the new size and
+// / re-position the overlay if necessary.
 // /
 func (self *COverlayControllerT) SetSize(
 	size *CSizeT,
@@ -17816,7 +18049,7 @@ func (self *COverlayControllerT) SetSize(
 }
 
 // /
-// Returns the size of this overlay in parent coordinates.
+// / Returns the size of this overlay in parent coordinates.
 // /
 func (self *COverlayControllerT) GetSize() (ret CSizeT) {
 
@@ -17827,13 +18060,13 @@ func (self *COverlayControllerT) GetSize() (ret CSizeT) {
 }
 
 // /
-// Sets the position of this overlay without changing the size. |position| is
-// in parent coordinates and any insets configured on this overlay will be
-// ignored. Use this function only for overlays created with a docking mode
-// value of CEF_DOCKING_MODE_CUSTOM. With other docking modes modify the
-// insets of this overlay and/or layout of the contents View and call
-// size_to_preferred_size() instead to calculate the new size and re-position
-// the overlay if necessary.
+// / Sets the position of this overlay without changing the size. |position| is
+// / in parent coordinates and any insets configured on this overlay will be
+// / ignored. Use this function only for overlays created with a docking mode
+// / value of CEF_DOCKING_MODE_CUSTOM. With other docking modes modify the
+// / insets of this overlay and/or layout of the contents View and call
+// / size_to_preferred_size() instead to calculate the new size and re-position
+// / the overlay if necessary.
 // /
 func (self *COverlayControllerT) SetPosition(
 	position *CPointT,
@@ -17844,7 +18077,7 @@ func (self *COverlayControllerT) SetPosition(
 }
 
 // /
-// Returns the position of this overlay in parent coordinates.
+// / Returns the position of this overlay in parent coordinates.
 // /
 func (self *COverlayControllerT) GetPosition() (ret CPointT) {
 
@@ -17855,9 +18088,9 @@ func (self *COverlayControllerT) GetPosition() (ret CPointT) {
 }
 
 // /
-// Sets the insets for this overlay. |insets| is in parent coordinates. Use
-// this function only for overlays created with a docking mode value other
-// than CEF_DOCKING_MODE_CUSTOM.
+// / Sets the insets for this overlay. |insets| is in parent coordinates. Use
+// / this function only for overlays created with a docking mode value other
+// / than CEF_DOCKING_MODE_CUSTOM.
 // /
 func (self *COverlayControllerT) SetInsets(
 	insets *CInsetsT,
@@ -17868,7 +18101,7 @@ func (self *COverlayControllerT) SetInsets(
 }
 
 // /
-// Returns the insets for this overlay in parent coordinates.
+// / Returns the insets for this overlay in parent coordinates.
 // /
 func (self *COverlayControllerT) GetInsets() (ret CInsetsT) {
 
@@ -17879,11 +18112,12 @@ func (self *COverlayControllerT) GetInsets() (ret CInsetsT) {
 }
 
 // /
-// Size this overlay to its preferred size and trigger a re-layout if
-// necessary. The position of overlays created with a docking mode value of
-// CEF_DOCKING_MODE_CUSTOM will not be modified by calling this function. With
-// other docking modes this function may re-position the overlay if necessary
-// to accommodate the new size and any insets configured on the contents View.
+// / Size this overlay to its preferred size and trigger a re-layout if
+// / necessary. The position of overlays created with a docking mode value of
+// / CEF_DOCKING_MODE_CUSTOM will not be modified by calling this function.
+// / With other docking modes this function may re-position the overlay if
+// / necessary to accommodate the new size and any insets configured on the
+// / contents View.
 // /
 func (self *COverlayControllerT) SizeToPreferredSize() {
 
@@ -17892,10 +18126,10 @@ func (self *COverlayControllerT) SizeToPreferredSize() {
 }
 
 // /
-// Sets whether this overlay is visible. Overlays are hidden by default. If
-// this overlay is hidden then it and any child Views will not be drawn and,
-// if any of those Views currently have focus, then focus will also be
-// cleared. Painting is scheduled as needed.
+// / Sets whether this overlay is visible. Overlays are hidden by default. If
+// / this overlay is hidden then it and any child Views will not be drawn and,
+// / if any of those Views currently have focus, then focus will also be
+// / cleared. Painting is scheduled as needed.
 // /
 func (self *COverlayControllerT) SetVisible(
 	visible int,
@@ -17906,10 +18140,10 @@ func (self *COverlayControllerT) SetVisible(
 }
 
 // /
-// Returns whether this overlay is visible. A View may be visible but still
-// not drawn in a Window if any parent Views are hidden. Call is_drawn() to
-// determine whether this overlay and all parent Views are visible and will be
-// drawn.
+// / Returns whether this overlay is visible. A View may be visible but still
+// / not drawn in a Window if any parent Views are hidden. Call is_drawn() to
+// / determine whether this overlay and all parent Views are visible and will
+// / be drawn.
 // /
 func (self *COverlayControllerT) IsVisible() (ret bool) {
 
@@ -17920,10 +18154,10 @@ func (self *COverlayControllerT) IsVisible() (ret bool) {
 }
 
 // /
-// Returns whether this overlay is visible and drawn in a Window. A View is
-// drawn if it and all parent Views are visible. To determine if the
-// containing Window is visible to the user on-screen call is_visible() on the
-// Window.
+// / Returns whether this overlay is visible and drawn in a Window. A View is
+// / drawn if it and all parent Views are visible. To determine if the
+// / containing Window is visible to the user on-screen call is_visible() on
+// / the Window.
 // /
 func (self *COverlayControllerT) IsDrawn() (ret bool) {
 
@@ -17936,9 +18170,9 @@ func (self *COverlayControllerT) IsDrawn() (ret bool) {
 // cef_panel_capi.h, include/capi/views/cef_panel_capi.h:139:3,
 
 ///
-// A Panel is a container in the views hierarchy that can contain other Views as
-// children. Methods must be called on the browser process UI thread unless
-// otherwise indicated.
+/// A Panel is a container in the views hierarchy that can contain other Views
+/// as children. Methods must be called on the browser process UI thread unless
+/// otherwise indicated.
 ///
 
 type cCPanelT C.cef_panel_t
@@ -18023,7 +18257,7 @@ func (panel *CPanelT) ToCViewT() *CViewT {
 }
 
 // /
-// Returns this Panel as a Window or NULL if this is not a Window.
+// / Returns this Panel as a Window or NULL if this is not a Window.
 // /
 func (self *CPanelT) AsWindow() (ret *CWindowT) {
 
@@ -18034,7 +18268,7 @@ func (self *CPanelT) AsWindow() (ret *CWindowT) {
 }
 
 // /
-// Set this Panel&#39;s Layout to FillLayout and return the FillLayout object.
+// / Set this Panel&#39;s Layout to FillLayout and return the FillLayout object.
 // /
 func (self *CPanelT) SetToFillLayout() (ret *CFillLayoutT) {
 
@@ -18045,7 +18279,7 @@ func (self *CPanelT) SetToFillLayout() (ret *CFillLayoutT) {
 }
 
 // /
-// Set this Panel&#39;s Layout to BoxLayout and return the BoxLayout object.
+// / Set this Panel&#39;s Layout to BoxLayout and return the BoxLayout object.
 // /
 func (self *CPanelT) SetToBoxLayout(
 	settings *CBoxLayoutSettingsT,
@@ -18058,7 +18292,7 @@ func (self *CPanelT) SetToBoxLayout(
 }
 
 // /
-// Get the Layout.
+// / Get the Layout.
 // /
 func (self *CPanelT) GetLayout() (ret *CLayoutT) {
 
@@ -18069,8 +18303,8 @@ func (self *CPanelT) GetLayout() (ret *CLayoutT) {
 }
 
 // /
-// Lay out the child Views (set their bounds based on sizing heuristics
-// specific to the current Layout).
+// / Lay out the child Views (set their bounds based on sizing heuristics
+// / specific to the current Layout).
 // /
 func (self *CPanelT) Layout() {
 
@@ -18079,7 +18313,7 @@ func (self *CPanelT) Layout() {
 }
 
 // /
-// Add a child View.
+// / Add a child View.
 // /
 func (self *CPanelT) AddChildView(
 	view *CViewT,
@@ -18095,8 +18329,8 @@ func (self *CPanelT) AddChildView(
 }
 
 // /
-// Add a child View at the specified |index|. If |index| matches the result of
-// GetChildCount() then the View will be added at the end.
+// / Add a child View at the specified |index|. If |index| matches the result
+// / of GetChildCount() then the View will be added at the end.
 // /
 func (self *CPanelT) AddChildViewAt(
 	view *CViewT,
@@ -18113,8 +18347,8 @@ func (self *CPanelT) AddChildViewAt(
 }
 
 // /
-// Move the child View to the specified |index|. A negative value for |index|
-// will move the View to the end.
+// / Move the child View to the specified |index|. A negative value for |index|
+// / will move the View to the end.
 // /
 func (self *CPanelT) ReorderChildView(
 	view *CViewT,
@@ -18131,7 +18365,7 @@ func (self *CPanelT) ReorderChildView(
 }
 
 // /
-// Remove a child View. The View can then be added to another Panel.
+// / Remove a child View. The View can then be added to another Panel.
 // /
 func (self *CPanelT) RemoveChildView(
 	view *CViewT,
@@ -18147,8 +18381,8 @@ func (self *CPanelT) RemoveChildView(
 }
 
 // /
-// Remove all child Views. The removed Views will be deleted if the client
-// holds no references to them.
+// / Remove all child Views. The removed Views will be deleted if the client
+// / holds no references to them.
 // /
 func (self *CPanelT) RemoveAllChildViews() {
 
@@ -18157,7 +18391,7 @@ func (self *CPanelT) RemoveAllChildViews() {
 }
 
 // /
-// Returns the number of child Views.
+// / Returns the number of child Views.
 // /
 func (self *CPanelT) GetChildViewCount() (ret int64) {
 
@@ -18168,7 +18402,7 @@ func (self *CPanelT) GetChildViewCount() (ret int64) {
 }
 
 // /
-// Returns the child View at the specified |index|.
+// / Returns the child View at the specified |index|.
 // /
 func (self *CPanelT) GetChildViewAt(
 	index int,
@@ -18181,7 +18415,7 @@ func (self *CPanelT) GetChildViewAt(
 }
 
 // /
-// Create a new Panel.
+// / Create a new Panel.
 // /
 func PanelCreate(
 	delegate *CPanelDelegateT,
@@ -18201,9 +18435,9 @@ func PanelCreate(
 // cef_panel_delegate_capi.h, include/capi/views/cef_panel_delegate_capi.h:59:3,
 
 ///
-// Implement this structure to handle Panel events. The functions of this
-// structure will be called on the browser process UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle Panel events. The functions of this
+/// structure will be called on the browser process UI thread unless otherwise
+/// indicated.
 ///
 
 type cCPanelDelegateT C.cef_panel_delegate_t
@@ -18451,10 +18685,388 @@ func (panel_delegate *CPanelDelegateT) Handler() interface{} {
 	return panel_delegate_handlers.handler[cp]
 }
 
+// cef_permission_handler_capi.h, include/capi/cef_permission_handler_capi.h:75:3,
+
+///
+/// Callback structure used for asynchronous continuation of media access
+/// permission requests.
+///
+
+type cCMediaAccessCallbackT C.cef_media_access_callback_t
+
+// Go type for cef_media_access_callback_t
+type CMediaAccessCallbackT struct {
+	noCopy                   noCopy
+	pc_media_access_callback *cCMediaAccessCallbackT
+	beUnrefed                unrefedBy
+}
+
+func (p *CMediaAccessCallbackT) Pass() (ret *CMediaAccessCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+		ret = newCMediaAccessCallbackT((*C.cef_media_access_callback_t)(p.pc_media_access_callback), byCef)
+	case byApi, byCef:
+		ret = p
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+
+	return ret
+}
+
+func (self *CMediaAccessCallbackT) NewRef() (newP *CMediaAccessCallbackT) {
+	if self == nil {
+		return newP
+	}
+	gop := self.pc_media_access_callback
+	BaseAddRef(gop)
+	newP = newCMediaAccessCallbackT((*C.cef_media_access_callback_t)(gop), byApp)
+	return newP
+}
+
+// Go type CMediaAccessCallbackT wraps cef type *C.cef_media_access_callback_t
+func newCMediaAccessCallbackT(p *C.cef_media_access_callback_t, unrefedBy unrefedBy) *CMediaAccessCallbackT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T395.1:")
+	pc := (*cCMediaAccessCallbackT)(p)
+	go_media_access_callback := &CMediaAccessCallbackT{noCopy{}, pc, unrefedBy}
+	// BaseAddRef(pc)
+	runtime.SetFinalizer(go_media_access_callback, func(g *CMediaAccessCallbackT) {
+		// same as g.Unref()
+		if g.beUnrefed == byApp && g.pc_media_access_callback != nil {
+			Tracef(unsafe.Pointer(g.pc_media_access_callback), "T395.2:")
+			BaseRelease(g.pc_media_access_callback)
+		}
+	})
+
+	return go_media_access_callback
+}
+
+// *C.cef_media_access_callback_t has refCounted interface
+func (media_access_callback *CMediaAccessCallbackT) HasOneRef() bool {
+	return BaseHasOneRef(media_access_callback.pc_media_access_callback)
+}
+
+func (p *cCMediaAccessCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (media_access_callback *CMediaAccessCallbackT) Unref() (ret bool) {
+	if media_access_callback == nil {
+		return
+	}
+	if media_access_callback.beUnrefed == byApp {
+		ret = BaseRelease(media_access_callback.pc_media_access_callback)
+		media_access_callback.beUnrefed = unrefed
+	}
+	media_access_callback.pc_media_access_callback = nil
+	return ret
+}
+
+// /
+// / Call to allow or deny media access. If this callback was initiated in
+// / response to a getUserMedia (indicated by
+// / CEF_MEDIA_PERMISSION_DEVICE_AUDIO_CAPTURE and/or
+// / CEF_MEDIA_PERMISSION_DEVICE_VIDEO_CAPTURE being set) then
+// / |allowed_permissions| must match |required_permissions| passed to
+// / OnRequestMediaAccessPermission.
+// /
+func (self *CMediaAccessCallbackT) Cont(
+	allowed_permissions uint32,
+) {
+
+	C.cefingo_media_access_callback_cont((*C.cef_media_access_callback_t)(self.pc_media_access_callback), (C.uint32)(allowed_permissions))
+
+}
+
+// /
+// / Cancel the media access request.
+// /
+func (self *CMediaAccessCallbackT) Cancel() {
+
+	C.cefingo_media_access_callback_cancel((*C.cef_media_access_callback_t)(self.pc_media_access_callback))
+
+}
+
+///
+/// Callback structure used for asynchronous continuation of permission prompts.
+///
+
+type cCPermissionPromptCallbackT C.cef_permission_prompt_callback_t
+
+// Go type for cef_permission_prompt_callback_t
+type CPermissionPromptCallbackT struct {
+	noCopy                        noCopy
+	pc_permission_prompt_callback *cCPermissionPromptCallbackT
+	beUnrefed                     unrefedBy
+}
+
+func (p *CPermissionPromptCallbackT) Pass() (ret *CPermissionPromptCallbackT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+		ret = newCPermissionPromptCallbackT((*C.cef_permission_prompt_callback_t)(p.pc_permission_prompt_callback), byCef)
+	case byApi, byCef:
+		ret = p
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+
+	return ret
+}
+
+func (self *CPermissionPromptCallbackT) NewRef() (newP *CPermissionPromptCallbackT) {
+	if self == nil {
+		return newP
+	}
+	gop := self.pc_permission_prompt_callback
+	BaseAddRef(gop)
+	newP = newCPermissionPromptCallbackT((*C.cef_permission_prompt_callback_t)(gop), byApp)
+	return newP
+}
+
+// Go type CPermissionPromptCallbackT wraps cef type *C.cef_permission_prompt_callback_t
+func newCPermissionPromptCallbackT(p *C.cef_permission_prompt_callback_t, unrefedBy unrefedBy) *CPermissionPromptCallbackT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T396.1:")
+	pc := (*cCPermissionPromptCallbackT)(p)
+	go_permission_prompt_callback := &CPermissionPromptCallbackT{noCopy{}, pc, unrefedBy}
+	// BaseAddRef(pc)
+	runtime.SetFinalizer(go_permission_prompt_callback, func(g *CPermissionPromptCallbackT) {
+		// same as g.Unref()
+		if g.beUnrefed == byApp && g.pc_permission_prompt_callback != nil {
+			Tracef(unsafe.Pointer(g.pc_permission_prompt_callback), "T396.2:")
+			BaseRelease(g.pc_permission_prompt_callback)
+		}
+	})
+
+	return go_permission_prompt_callback
+}
+
+// *C.cef_permission_prompt_callback_t has refCounted interface
+func (permission_prompt_callback *CPermissionPromptCallbackT) HasOneRef() bool {
+	return BaseHasOneRef(permission_prompt_callback.pc_permission_prompt_callback)
+}
+
+func (p *cCPermissionPromptCallbackT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (permission_prompt_callback *CPermissionPromptCallbackT) Unref() (ret bool) {
+	if permission_prompt_callback == nil {
+		return
+	}
+	if permission_prompt_callback.beUnrefed == byApp {
+		ret = BaseRelease(permission_prompt_callback.pc_permission_prompt_callback)
+		permission_prompt_callback.beUnrefed = unrefed
+	}
+	permission_prompt_callback.pc_permission_prompt_callback = nil
+	return ret
+}
+
+// /
+// / Complete the permissions request with the specified |result|.
+// /
+func (self *CPermissionPromptCallbackT) Cont(
+	result CPermissionRequestResultT,
+) {
+
+	C.cefingo_permission_prompt_callback_cont((*C.cef_permission_prompt_callback_t)(self.pc_permission_prompt_callback), (C.cef_permission_request_result_t)(result))
+
+}
+
+///
+/// Implement this structure to handle events related to permission requests.
+/// The functions of this structure will be called on the browser process UI
+/// thread.
+///
+
+type cCPermissionHandlerT C.cef_permission_handler_t
+
+// Go type for cef_permission_handler_t
+type CPermissionHandlerT struct {
+	noCopy                noCopy
+	pc_permission_handler *cCPermissionHandlerT
+	beUnrefed             unrefedBy
+}
+
+func (p *CPermissionHandlerT) Pass() (ret *CPermissionHandlerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+		ret = newCPermissionHandlerT((*C.cef_permission_handler_t)(p.pc_permission_handler), byCef)
+	case byApi, byCef:
+		ret = p
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+
+	return ret
+}
+
+func (self *CPermissionHandlerT) NewRef() (newP *CPermissionHandlerT) {
+	if self == nil {
+		return newP
+	}
+	gop := self.pc_permission_handler
+	BaseAddRef(gop)
+	newP = newCPermissionHandlerT((*C.cef_permission_handler_t)(gop), byApp)
+	return newP
+}
+
+// Go type CPermissionHandlerT wraps cef type *C.cef_permission_handler_t
+func newCPermissionHandlerT(p *C.cef_permission_handler_t, unrefedBy unrefedBy) *CPermissionHandlerT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T397.1:")
+	pc := (*cCPermissionHandlerT)(p)
+	go_permission_handler := &CPermissionHandlerT{noCopy{}, pc, unrefedBy}
+	// BaseAddRef(pc)
+	runtime.SetFinalizer(go_permission_handler, func(g *CPermissionHandlerT) {
+		// same as g.Unref()
+		if g.beUnrefed == byApp && g.pc_permission_handler != nil {
+			Tracef(unsafe.Pointer(g.pc_permission_handler), "T397.2:")
+			BaseRelease(g.pc_permission_handler)
+		}
+	})
+
+	return go_permission_handler
+}
+
+// *C.cef_permission_handler_t has refCounted interface
+func (permission_handler *CPermissionHandlerT) HasOneRef() bool {
+	return BaseHasOneRef(permission_handler.pc_permission_handler)
+}
+
+func (p *cCPermissionHandlerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (permission_handler *CPermissionHandlerT) Unref() (ret bool) {
+	if permission_handler == nil {
+		return
+	}
+	if permission_handler.beUnrefed == byApp {
+		ret = BaseRelease(permission_handler.pc_permission_handler)
+		permission_handler.beUnrefed = unrefed
+	}
+	permission_handler.pc_permission_handler = nil
+	return ret
+}
+
+// /
+// / Called when a page requests permission to access media.
+// / |requesting_origin| is the URL origin requesting permission.
+// / |requested_permissions| is a combination of values from
+// / cef_media_access_permission_types_t that represent the requested
+// / permissions. Return true (1) and call cef_media_access_callback_t
+// / functions either in this function or at a later time to continue or cancel
+// / the request. Return false (0) to proceed with default handling. With the
+// / Chrome runtime, default handling will display the permission request UI.
+// / With the Alloy runtime, default handling will deny the request. This
+// / function will not be called if the &quot;--enable-media-stream&quot; command-line
+// / switch is used to grant all permissions.
+// /
+func (self *CPermissionHandlerT) OnRequestMediaAccessPermission(
+	browser *CBrowserT,
+	frame *CFrameT,
+	requesting_origin string,
+	requested_permissions uint32,
+	callback *CMediaAccessCallbackT,
+) (ret bool) {
+	var goTmpbrowser *C.cef_browser_t
+	if browser != nil {
+		BaseAddRef(browser.pc_browser)
+		goTmpbrowser = (*C.cef_browser_t)(browser.pc_browser)
+	}
+	var goTmpframe *C.cef_frame_t
+	if frame != nil {
+		BaseAddRef(frame.pc_frame)
+		goTmpframe = (*C.cef_frame_t)(frame.pc_frame)
+	}
+	c_requesting_origin := create_cef_string(requesting_origin)
+	var goTmpcallback *C.cef_media_access_callback_t
+	if callback != nil {
+		BaseAddRef(callback.pc_media_access_callback)
+		goTmpcallback = (*C.cef_media_access_callback_t)(callback.pc_media_access_callback)
+	}
+
+	cRet := C.cefingo_permission_handler_on_request_media_access_permission((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, goTmpframe, c_requesting_origin.p_cef_string_t, (C.uint32)(requested_permissions), goTmpcallback)
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Called when a page should show a permission prompt. |prompt_id| uniquely
+// / identifies the prompt. |requesting_origin| is the URL origin requesting
+// / permission. |requested_permissions| is a combination of values from
+// / cef_permission_request_types_t that represent the requested permissions.
+// / Return true (1) and call cef_permission_prompt_callback_t::Continue either
+// / in this function or at a later time to continue or cancel the request.
+// / Return false (0) to proceed with default handling. With the Chrome
+// / runtime, default handling will display the permission prompt UI. With the
+// / Alloy runtime, default handling is CEF_PERMISSION_RESULT_IGNORE.
+// /
+func (self *CPermissionHandlerT) OnShowPermissionPrompt(
+	browser *CBrowserT,
+	prompt_id uint64,
+	requesting_origin string,
+	requested_permissions uint32,
+	callback *CPermissionPromptCallbackT,
+) (ret bool) {
+	var goTmpbrowser *C.cef_browser_t
+	if browser != nil {
+		BaseAddRef(browser.pc_browser)
+		goTmpbrowser = (*C.cef_browser_t)(browser.pc_browser)
+	}
+	c_requesting_origin := create_cef_string(requesting_origin)
+	var goTmpcallback *C.cef_permission_prompt_callback_t
+	if callback != nil {
+		BaseAddRef(callback.pc_permission_prompt_callback)
+		goTmpcallback = (*C.cef_permission_prompt_callback_t)(callback.pc_permission_prompt_callback)
+	}
+
+	cRet := C.cefingo_permission_handler_on_show_permission_prompt((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, (C.uint64)(prompt_id), c_requesting_origin.p_cef_string_t, (C.uint32)(requested_permissions), goTmpcallback)
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Called when a permission prompt handled via OnShowPermissionPrompt is
+// / dismissed. |prompt_id| will match the value that was passed to
+// / OnShowPermissionPrompt. |result| will be the value passed to
+// / cef_permission_prompt_callback_t::Continue or CEF_PERMISSION_RESULT_IGNORE
+// / if the dialog was dismissed for other reasons such as navigation, browser
+// / closure, etc. This function will not be called if OnShowPermissionPrompt
+// / returned false (0) for |prompt_id|.
+// /
+func (self *CPermissionHandlerT) OnDismissPermissionPrompt(
+	browser *CBrowserT,
+	prompt_id uint64,
+	result CPermissionRequestResultT,
+) {
+	var goTmpbrowser *C.cef_browser_t
+	if browser != nil {
+		BaseAddRef(browser.pc_browser)
+		goTmpbrowser = (*C.cef_browser_t)(browser.pc_browser)
+	}
+
+	C.cefingo_permission_handler_on_dismiss_permission_prompt((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, (C.uint64)(prompt_id), (C.cef_permission_request_result_t)(result))
+
+}
+
 // cef_print_handler_capi.h, include/capi/cef_print_handler_capi.h:70:3,
 
 ///
-// Callback structure for asynchronous continuation of print dialog requests.
+/// Callback structure for asynchronous continuation of print dialog requests.
 ///
 
 type cCPrintDialogCallbackT C.cef_print_dialog_callback_t
@@ -18532,7 +19144,7 @@ func (print_dialog_callback *CPrintDialogCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Continue printing with the specified |settings|.
+// / Continue printing with the specified |settings|.
 // /
 func (self *CPrintDialogCallbackT) Cont(
 	settings *CPrintSettingsT,
@@ -18548,7 +19160,7 @@ func (self *CPrintDialogCallbackT) Cont(
 }
 
 // /
-// Cancel the printing.
+// / Cancel the printing.
 // /
 func (self *CPrintDialogCallbackT) Cancel() {
 
@@ -18557,7 +19169,7 @@ func (self *CPrintDialogCallbackT) Cancel() {
 }
 
 ///
-// Callback structure for asynchronous continuation of print job requests.
+/// Callback structure for asynchronous continuation of print job requests.
 ///
 
 type cCPrintJobCallbackT C.cef_print_job_callback_t
@@ -18635,7 +19247,7 @@ func (print_job_callback *CPrintJobCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Indicate completion of the print job.
+// / Indicate completion of the print job.
 // /
 func (self *CPrintJobCallbackT) Cont() {
 
@@ -18644,9 +19256,9 @@ func (self *CPrintJobCallbackT) Cont() {
 }
 
 ///
-// Implement this structure to handle printing on Linux. Each browser will have
-// only one print job in progress at a time. The functions of this structure
-// will be called on the browser process UI thread.
+/// Implement this structure to handle printing on Linux. Each browser will have
+/// only one print job in progress at a time. The functions of this structure
+/// will be called on the browser process UI thread.
 ///
 
 type cCPrintHandlerT C.cef_print_handler_t
@@ -18724,10 +19336,11 @@ func (print_handler *CPrintHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called when printing has started for the specified |browser|. This function
-// will be called before the other OnPrint*() functions and irrespective of
-// how printing was initiated (e.g. cef_browser_host_t::print(), JavaScript
-// window.print() or PDF extension print button).
+// / Called when printing has started for the specified |browser|. This
+// / function will be called before the other OnPrint*() functions and
+// / irrespective of how printing was initiated (e.g.
+// / cef_browser_host_t::print(), JavaScript window.print() or PDF extension
+// / print button).
 // /
 type OnPrintStartHandler interface {
 	OnPrintStart(
@@ -18737,9 +19350,9 @@ type OnPrintStartHandler interface {
 }
 
 // /
-// Synchronize |settings| with client state. If |get_defaults| is true (1)
-// then populate |settings| with the default print settings. Do not keep a
-// reference to |settings| outside of this callback.
+// / Synchronize |settings| with client state. If |get_defaults| is true (1)
+// / then populate |settings| with the default print settings. Do not keep a
+// / reference to |settings| outside of this callback.
 // /
 type OnPrintSettingsHandler interface {
 	OnPrintSettings(
@@ -18751,9 +19364,9 @@ type OnPrintSettingsHandler interface {
 }
 
 // /
-// Show the print dialog. Execute |callback| once the dialog is dismissed.
-// Return true (1) if the dialog will be displayed or false (0) to cancel the
-// printing immediately.
+// / Show the print dialog. Execute |callback| once the dialog is dismissed.
+// / Return true (1) if the dialog will be displayed or false (0) to cancel the
+// / printing immediately.
 // /
 type OnPrintDialogHandler interface {
 	OnPrintDialog(
@@ -18765,9 +19378,9 @@ type OnPrintDialogHandler interface {
 }
 
 // /
-// Send the print job to the printer. Execute |callback| once the job is
-// completed. Return true (1) if the job will proceed or false (0) to cancel
-// the job immediately.
+// / Send the print job to the printer. Execute |callback| once the job is
+// / completed. Return true (1) if the job will proceed or false (0) to cancel
+// / the job immediately.
 // /
 type OnPrintJobHandler interface {
 	OnPrintJob(
@@ -18780,7 +19393,7 @@ type OnPrintJobHandler interface {
 }
 
 // /
-// Reset client state related to printing.
+// / Reset client state related to printing.
 // /
 type OnPrintResetHandler interface {
 	OnPrintReset(
@@ -18790,8 +19403,8 @@ type OnPrintResetHandler interface {
 }
 
 // /
-// Return the PDF paper size in device units. Used in combination with
-// cef_browser_host_t::print_to_pdf().
+// / Return the PDF paper size in device units. Used in combination with
+// / cef_browser_host_t::print_to_pdf().
 // /
 type GetPdfPaperSizeHandler interface {
 	GetPdfPaperSize(
@@ -18928,7 +19541,7 @@ func (print_handler *CPrintHandlerT) Handler() interface{} {
 // cef_print_settings_capi.h, include/capi/cef_print_settings_capi.h:191:3,
 
 ///
-// Structure representing print settings.
+/// Structure representing print settings.
 ///
 
 type cCPrintSettingsT C.cef_print_settings_t
@@ -19006,8 +19619,8 @@ func (print_settings *CPrintSettingsT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid. Do not call any other functions
-// if this function returns false (0).
+// / Returns true (1) if this object is valid. Do not call any other functions
+// / if this function returns false (0).
 // /
 func (self *CPrintSettingsT) IsValid() (ret bool) {
 
@@ -19018,8 +19631,8 @@ func (self *CPrintSettingsT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if the values of this object are read-only. Some APIs may
-// expose read-only objects.
+// / Returns true (1) if the values of this object are read-only. Some APIs may
+// / expose read-only objects.
 // /
 func (self *CPrintSettingsT) IsReadOnly() (ret bool) {
 
@@ -19030,7 +19643,7 @@ func (self *CPrintSettingsT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Set the page orientation.
+// / Set the page orientation.
 // /
 func (self *CPrintSettingsT) SetOrientation(
 	landscape int,
@@ -19041,7 +19654,7 @@ func (self *CPrintSettingsT) SetOrientation(
 }
 
 // /
-// Returns true (1) if the orientation is landscape.
+// / Returns true (1) if the orientation is landscape.
 // /
 func (self *CPrintSettingsT) IsLandscape() (ret bool) {
 
@@ -19052,9 +19665,9 @@ func (self *CPrintSettingsT) IsLandscape() (ret bool) {
 }
 
 // /
-// Set the printer printable area in device units. Some platforms already
-// provide flipped area. Set |landscape_needs_flip| to false (0) on those
-// platforms to avoid double flipping.
+// / Set the printer printable area in device units. Some platforms already
+// / provide flipped area. Set |landscape_needs_flip| to false (0) on those
+// / platforms to avoid double flipping.
 // /
 func (self *CPrintSettingsT) SetPrinterPrintableArea(
 	physical_size_device_units *CSizeT,
@@ -19067,7 +19680,7 @@ func (self *CPrintSettingsT) SetPrinterPrintableArea(
 }
 
 // /
-// Set the device name.
+// / Set the device name.
 // /
 func (self *CPrintSettingsT) SetDeviceName(
 	name string,
@@ -19079,7 +19692,7 @@ func (self *CPrintSettingsT) SetDeviceName(
 }
 
 // /
-// Get the device name.
+// / Get the device name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CPrintSettingsT) GetDeviceName() (ret string) {
@@ -19095,7 +19708,7 @@ func (self *CPrintSettingsT) GetDeviceName() (ret string) {
 }
 
 // /
-// Set the DPI (dots per inch).
+// / Set the DPI (dots per inch).
 // /
 func (self *CPrintSettingsT) SetDpi(
 	dpi int,
@@ -19106,7 +19719,7 @@ func (self *CPrintSettingsT) SetDpi(
 }
 
 // /
-// Get the DPI (dots per inch).
+// / Get the DPI (dots per inch).
 // /
 func (self *CPrintSettingsT) GetDpi() (ret bool) {
 
@@ -19117,7 +19730,7 @@ func (self *CPrintSettingsT) GetDpi() (ret bool) {
 }
 
 // /
-// Set the page ranges.
+// / Set the page ranges.
 // /
 func (self *CPrintSettingsT) SetPageRanges(
 	rangesCount int64,
@@ -19129,7 +19742,7 @@ func (self *CPrintSettingsT) SetPageRanges(
 }
 
 // /
-// Returns the number of page ranges that currently exist.
+// / Returns the number of page ranges that currently exist.
 // /
 func (self *CPrintSettingsT) GetPageRangesCount() (ret int64) {
 
@@ -19140,7 +19753,7 @@ func (self *CPrintSettingsT) GetPageRangesCount() (ret int64) {
 }
 
 // /
-// Set whether only the selection will be printed.
+// / Set whether only the selection will be printed.
 // /
 func (self *CPrintSettingsT) SetSelectionOnly(
 	selection_only int,
@@ -19151,7 +19764,7 @@ func (self *CPrintSettingsT) SetSelectionOnly(
 }
 
 // /
-// Returns true (1) if only the selection will be printed.
+// / Returns true (1) if only the selection will be printed.
 // /
 func (self *CPrintSettingsT) IsSelectionOnly() (ret bool) {
 
@@ -19162,7 +19775,7 @@ func (self *CPrintSettingsT) IsSelectionOnly() (ret bool) {
 }
 
 // /
-// Set whether pages will be collated.
+// / Set whether pages will be collated.
 // /
 func (self *CPrintSettingsT) SetCollate(
 	collate int,
@@ -19173,7 +19786,7 @@ func (self *CPrintSettingsT) SetCollate(
 }
 
 // /
-// Returns true (1) if pages will be collated.
+// / Returns true (1) if pages will be collated.
 // /
 func (self *CPrintSettingsT) WillCollate() (ret bool) {
 
@@ -19184,7 +19797,7 @@ func (self *CPrintSettingsT) WillCollate() (ret bool) {
 }
 
 // /
-// Set the color model.
+// / Set the color model.
 // /
 func (self *CPrintSettingsT) SetColorModel(
 	model CColorModelT,
@@ -19195,7 +19808,7 @@ func (self *CPrintSettingsT) SetColorModel(
 }
 
 // /
-// Get the color model.
+// / Get the color model.
 // /
 func (self *CPrintSettingsT) GetColorModel() (ret CColorModelT) {
 
@@ -19206,7 +19819,7 @@ func (self *CPrintSettingsT) GetColorModel() (ret CColorModelT) {
 }
 
 // /
-// Set the number of copies.
+// / Set the number of copies.
 // /
 func (self *CPrintSettingsT) SetCopies(
 	copies int,
@@ -19217,7 +19830,7 @@ func (self *CPrintSettingsT) SetCopies(
 }
 
 // /
-// Get the number of copies.
+// / Get the number of copies.
 // /
 func (self *CPrintSettingsT) GetCopies() (ret bool) {
 
@@ -19228,7 +19841,7 @@ func (self *CPrintSettingsT) GetCopies() (ret bool) {
 }
 
 // /
-// Set the duplex mode.
+// / Set the duplex mode.
 // /
 func (self *CPrintSettingsT) SetDuplexMode(
 	mode CDuplexModeT,
@@ -19239,7 +19852,7 @@ func (self *CPrintSettingsT) SetDuplexMode(
 }
 
 // /
-// Get the duplex mode.
+// / Get the duplex mode.
 // /
 func (self *CPrintSettingsT) GetDuplexMode() (ret CDuplexModeT) {
 
@@ -19250,7 +19863,7 @@ func (self *CPrintSettingsT) GetDuplexMode() (ret CDuplexModeT) {
 }
 
 // /
-// Create a new cef_print_settings_t object.
+// / Create a new cef_print_settings_t object.
 // /
 func PrintSettingsCreate() (ret *CPrintSettingsT) {
 
@@ -19260,10 +19873,10 @@ func PrintSettingsCreate() (ret *CPrintSettingsT) {
 	return ret
 }
 
-// cef_process_message_capi.h, include/capi/cef_process_message_capi.h:89:3,
+// cef_process_message_capi.h, include/capi/cef_process_message_capi.h:99:3,
 
 ///
-// Structure representing a message. Can be used on any process and thread.
+/// Structure representing a message. Can be used on any process and thread.
 ///
 
 type cCProcessMessageT C.cef_process_message_t
@@ -19341,8 +19954,8 @@ func (process_message *CProcessMessageT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid. Do not call any other functions
-// if this function returns false (0).
+// / Returns true (1) if this object is valid. Do not call any other functions
+// / if this function returns false (0).
 // /
 func (self *CProcessMessageT) IsValid() (ret bool) {
 
@@ -19353,8 +19966,8 @@ func (self *CProcessMessageT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if the values of this object are read-only. Some APIs may
-// expose read-only objects.
+// / Returns true (1) if the values of this object are read-only. Some APIs may
+// / expose read-only objects.
 // /
 func (self *CProcessMessageT) IsReadOnly() (ret bool) {
 
@@ -19365,7 +19978,8 @@ func (self *CProcessMessageT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Returns a writable copy of this object.
+// / Returns a writable copy of this object. Returns nullptr when message
+// / contains a shared memory region.
 // /
 func (self *CProcessMessageT) Copy() (ret *CProcessMessageT) {
 
@@ -19376,7 +19990,7 @@ func (self *CProcessMessageT) Copy() (ret *CProcessMessageT) {
 }
 
 // /
-// Returns the message name.
+// / Returns the message name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CProcessMessageT) GetName() (ret string) {
@@ -19392,7 +20006,8 @@ func (self *CProcessMessageT) GetName() (ret string) {
 }
 
 // /
-// Returns the list of arguments.
+// / Returns the list of arguments. Returns nullptr when message contains a
+// / shared memory region.
 // /
 func (self *CProcessMessageT) GetArgumentList() (ret *CListValueT) {
 
@@ -19403,7 +20018,19 @@ func (self *CProcessMessageT) GetArgumentList() (ret *CListValueT) {
 }
 
 // /
-// Create a new cef_process_message_t object with the specified name.
+// / Returns the shared memory region. Returns nullptr when message contains an
+// / argument list.
+// /
+func (self *CProcessMessageT) GetSharedMemoryRegion() (ret *CSharedMemoryRegionT) {
+
+	cRet := C.cefingo_process_message_get_shared_memory_region((*C.cef_process_message_t)(self.pc_process_message))
+
+	ret = newCSharedMemoryRegionT(cRet, byApp) // return GoObj
+	return ret
+}
+
+// /
+// / Create a new cef_process_message_t object with the specified name.
 // /
 func ProcessMessageCreate(
 	name string,
@@ -19419,7 +20046,7 @@ func ProcessMessageCreate(
 // cef_registration_capi.h, include/capi/cef_registration_capi.h:57:3,
 
 ///
-// Generic callback structure used for managing the lifespan of a registration.
+/// Generic callback structure used for managing the lifespan of a registration.
 ///
 
 type cCRegistrationT C.cef_registration_t
@@ -19496,11 +20123,11 @@ func (registration *CRegistrationT) Unref() (ret bool) {
 	return ret
 }
 
-// cef_render_handler_capi.h, include/capi/cef_render_handler_capi.h:236:3,
+// cef_render_handler_capi.h, include/capi/cef_render_handler_capi.h:255:3,
 
 ///
-// Implement this structure to handle events when window rendering is disabled.
-// The functions of this structure will be called on the UI thread.
+/// Implement this structure to handle events when window rendering is disabled.
+/// The functions of this structure will be called on the UI thread.
 ///
 
 type cCRenderHandlerT C.cef_render_handler_t
@@ -19578,8 +20205,8 @@ func (render_handler *CRenderHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Return the handler for accessibility notifications. If no handler is
-// provided the default implementation will be used.
+// / Return the handler for accessibility notifications. If no handler is
+// / provided the default implementation will be used.
 // /
 type GetAccessibilityHandlerHandler interface {
 	GetAccessibilityHandler(
@@ -19588,9 +20215,9 @@ type GetAccessibilityHandlerHandler interface {
 }
 
 // /
-// Called to retrieve the root window rectangle in screen DIP coordinates.
-// Return true (1) if the rectangle was provided. If this function returns
-// false (0) the rectangle from GetViewRect will be used.
+// / Called to retrieve the root window rectangle in screen DIP coordinates.
+// / Return true (1) if the rectangle was provided. If this function returns
+// / false (0) the rectangle from GetViewRect will be used.
 // /
 type GetRootScreenRectHandler interface {
 	GetRootScreenRect(
@@ -19600,8 +20227,8 @@ type GetRootScreenRectHandler interface {
 }
 
 // /
-// Called to retrieve the view rectangle in screen DIP coordinates. This
-// function must always provide a non-NULL rectangle.
+// / Called to retrieve the view rectangle in screen DIP coordinates. This
+// / function must always provide a non-NULL rectangle.
 // /
 type GetViewRectHandler interface {
 	GetViewRect(
@@ -19611,10 +20238,10 @@ type GetViewRectHandler interface {
 }
 
 // /
-// Called to retrieve the translation from view DIP coordinates to screen
-// coordinates. Windows/Linux should provide screen device (pixel) coordinates
-// and MacOS should provide screen DIP coordinates. Return true (1) if the
-// requested coordinates were provided.
+// / Called to retrieve the translation from view DIP coordinates to screen
+// / coordinates. Windows/Linux should provide screen device (pixel)
+// / coordinates and MacOS should provide screen DIP coordinates. Return true
+// / (1) if the requested coordinates were provided.
 // /
 type GetScreenPointHandler interface {
 	GetScreenPoint(
@@ -19626,13 +20253,13 @@ type GetScreenPointHandler interface {
 }
 
 // /
-// Called to allow the client to fill in the CefScreenInfo object with
-// appropriate values. Return true (1) if the |screen_info| structure has been
-// modified.
-//
-// If the screen info rectangle is left NULL the rectangle from GetViewRect
-// will be used. If the rectangle is still NULL or invalid popups may not be
-// drawn correctly.
+// / Called to allow the client to fill in the CefScreenInfo object with
+// / appropriate values. Return true (1) if the |screen_info| structure has
+// / been modified.
+// /
+// / If the screen info rectangle is left NULL the rectangle from GetViewRect
+// / will be used. If the rectangle is still NULL or invalid popups may not be
+// / drawn correctly.
 // /
 type GetScreenInfoHandler interface {
 	GetScreenInfo(
@@ -19643,8 +20270,8 @@ type GetScreenInfoHandler interface {
 }
 
 // /
-// Called when the browser wants to show or hide the popup widget. The popup
-// should be shown if |show| is true (1) and hidden if |show| is false (0).
+// / Called when the browser wants to show or hide the popup widget. The popup
+// / should be shown if |show| is true (1) and hidden if |show| is false (0).
 // /
 type OnPopupShowHandler interface {
 	OnPopupShow(
@@ -19655,8 +20282,8 @@ type OnPopupShowHandler interface {
 }
 
 // /
-// Called when the browser wants to move or resize the popup widget. |rect|
-// contains the new location and size in view coordinates.
+// / Called when the browser wants to move or resize the popup widget. |rect|
+// / contains the new location and size in view coordinates.
 // /
 type OnPopupSizeHandler interface {
 	OnPopupSize(
@@ -19667,15 +20294,15 @@ type OnPopupSizeHandler interface {
 }
 
 // /
-// Called when an element should be painted. Pixel values passed to this
-// function are scaled relative to view coordinates based on the value of
-// CefScreenInfo.device_scale_factor returned from GetScreenInfo. |type|
-// indicates whether the element is the view or the popup widget. |buffer|
-// contains the pixel data for the whole image. |dirtyRects| contains the set
-// of rectangles in pixel coordinates that need to be repainted. |buffer| will
-// be |width|*|height|*4 bytes in size and represents a BGRA image with an
-// upper-left origin. This function is only called when
-// cef_window_tInfo::shared_texture_enabled is set to false (0).
+// / Called when an element should be painted. Pixel values passed to this
+// / function are scaled relative to view coordinates based on the value of
+// / CefScreenInfo.device_scale_factor returned from GetScreenInfo. |type|
+// / indicates whether the element is the view or the popup widget. |buffer|
+// / contains the pixel data for the whole image. |dirtyRects| contains the set
+// / of rectangles in pixel coordinates that need to be repainted. |buffer|
+// / will be |width|*|height|*4 bytes in size and represents a BGRA image with
+// / an upper-left origin. This function is only called when
+// / cef_window_tInfo::shared_texture_enabled is set to false (0).
 // /
 type OnPaintHandler interface {
 	OnPaint(
@@ -19690,13 +20317,13 @@ type OnPaintHandler interface {
 }
 
 // /
-// Called when an element has been rendered to the shared texture handle.
-// |type| indicates whether the element is the view or the popup widget.
-// |dirtyRects| contains the set of rectangles in pixel coordinates that need
-// to be repainted. |shared_handle| is the handle for a D3D11 Texture2D that
-// can be accessed via ID3D11Device using the OpenSharedResource function.
-// This function is only called when cef_window_tInfo::shared_texture_enabled
-// is set to true (1), and is currently only supported on Windows.
+// / Called when an element has been rendered to the shared texture handle.
+// / |type| indicates whether the element is the view or the popup widget.
+// / |dirtyRects| contains the set of rectangles in pixel coordinates that need
+// / to be repainted. |shared_handle| is the handle for a D3D11 Texture2D that
+// / can be accessed via ID3D11Device using the OpenSharedResource function.
+// / This function is only called when cef_window_tInfo::shared_texture_enabled
+// / is set to true (1), and is currently only supported on Windows.
 // /
 type OnAcceleratedPaintHandler interface {
 	OnAcceleratedPaint(
@@ -19710,18 +20337,43 @@ type OnAcceleratedPaintHandler interface {
 }
 
 // /
-// Called when the user starts dragging content in the web view. Contextual
-// information about the dragged content is supplied by |drag_data|. (|x|,
-// |y|) is the drag start location in screen coordinates. OS APIs that run a
-// system message loop may be used within the StartDragging call.
-//
-// Return false (0) to abort the drag operation. Don&#39;t call any of
-// cef_browser_host_t::DragSource*Ended* functions after returning false (0).
-//
-// Return true (1) to handle the drag operation. Call
-// cef_browser_host_t::DragSourceEndedAt and DragSourceSystemDragEnded either
-// synchronously or asynchronously to inform the web view that the drag
-// operation has ended.
+// / Called to retrieve the size of the touch handle for the specified
+// / |orientation|.
+// /
+type GetTouchHandleSizeHandler interface {
+	GetTouchHandleSize(
+		self *CRenderHandlerT,
+		browser *CBrowserT,
+		orientation CHorizontalAlignmentT,
+		size *CSizeT,
+	)
+}
+
+// /
+// / Called when touch handle state is updated. The client is responsible for
+// / rendering the touch handles.
+// /
+type OnTouchHandleStateChangedHandler interface {
+	OnTouchHandleStateChanged(
+		self *CRenderHandlerT,
+		browser *CBrowserT,
+		state *CTouchHandleStateT,
+	)
+}
+
+// /
+// / Called when the user starts dragging content in the web view. Contextual
+// / information about the dragged content is supplied by |drag_data|. (|x|,
+// / |y|) is the drag start location in screen coordinates. OS APIs that run a
+// / system message loop may be used within the StartDragging call.
+// /
+// / Return false (0) to abort the drag operation. Don&#39;t call any of
+// / cef_browser_host_t::DragSource*Ended* functions after returning false (0).
+// /
+// / Return true (1) to handle the drag operation. Call
+// / cef_browser_host_t::DragSourceEndedAt and DragSourceSystemDragEnded either
+// / synchronously or asynchronously to inform the web view that the drag
+// / operation has ended.
 // /
 type StartDraggingHandler interface {
 	StartDragging(
@@ -19735,9 +20387,9 @@ type StartDraggingHandler interface {
 }
 
 // /
-// Called when the web view wants to update the mouse cursor during a drag &amp;
-// drop operation. |operation| describes the allowed operation (none, move,
-// copy, link).
+// / Called when the web view wants to update the mouse cursor during a drag &amp;
+// / drop operation. |operation| describes the allowed operation (none, move,
+// / copy, link).
 // /
 type UpdateDragCursorHandler interface {
 	UpdateDragCursor(
@@ -19748,7 +20400,7 @@ type UpdateDragCursorHandler interface {
 }
 
 // /
-// Called when the scroll offset has changed.
+// / Called when the scroll offset has changed.
 // /
 type OnScrollOffsetChangedHandler interface {
 	OnScrollOffsetChanged(
@@ -19760,9 +20412,9 @@ type OnScrollOffsetChangedHandler interface {
 }
 
 // /
-// Called when the IME composition range has changed. |selected_range| is the
-// range of characters that have been selected. |character_bounds| is the
-// bounds of each character in view coordinates.
+// / Called when the IME composition range has changed. |selected_range| is the
+// / range of characters that have been selected. |character_bounds| is the
+// / bounds of each character in view coordinates.
 // /
 type OnImeCompositionRangeChangedHandler interface {
 	OnImeCompositionRangeChanged(
@@ -19775,9 +20427,9 @@ type OnImeCompositionRangeChangedHandler interface {
 }
 
 // /
-// Called when text selection has changed for the specified |browser|.
-// |selected_text| is the currently selected text and |selected_range| is the
-// character range.
+// / Called when text selection has changed for the specified |browser|.
+// / |selected_text| is the currently selected text and |selected_range| is the
+// / character range.
 // /
 type OnTextSelectionChangedHandler interface {
 	OnTextSelectionChanged(
@@ -19789,10 +20441,10 @@ type OnTextSelectionChangedHandler interface {
 }
 
 // /
-// Called when an on-screen keyboard should be shown or hidden for the
-// specified |browser|. |input_mode| specifies what kind of keyboard should be
-// opened. If |input_mode| is CEF_TEXT_INPUT_MODE_NONE, any existing keyboard
-// for this browser should be hidden.
+// / Called when an on-screen keyboard should be shown or hidden for the
+// / specified |browser|. |input_mode| specifies what kind of keyboard should
+// / be opened. If |input_mode| is CEF_TEXT_INPUT_MODE_NONE, any existing
+// / keyboard for this browser should be hidden.
 // /
 type OnVirtualKeyboardRequestedHandler interface {
 	OnVirtualKeyboardRequested(
@@ -19813,6 +20465,8 @@ var render_handler_handlers = struct {
 	on_popup_size_handler                    map[*cCRenderHandlerT]OnPopupSizeHandler
 	on_paint_handler                         map[*cCRenderHandlerT]OnPaintHandler
 	on_accelerated_paint_handler             map[*cCRenderHandlerT]OnAcceleratedPaintHandler
+	get_touch_handle_size_handler            map[*cCRenderHandlerT]GetTouchHandleSizeHandler
+	on_touch_handle_state_changed_handler    map[*cCRenderHandlerT]OnTouchHandleStateChangedHandler
 	start_dragging_handler                   map[*cCRenderHandlerT]StartDraggingHandler
 	update_drag_cursor_handler               map[*cCRenderHandlerT]UpdateDragCursorHandler
 	on_scroll_offset_changed_handler         map[*cCRenderHandlerT]OnScrollOffsetChangedHandler
@@ -19830,6 +20484,8 @@ var render_handler_handlers = struct {
 	map[*cCRenderHandlerT]OnPopupSizeHandler{},
 	map[*cCRenderHandlerT]OnPaintHandler{},
 	map[*cCRenderHandlerT]OnAcceleratedPaintHandler{},
+	map[*cCRenderHandlerT]GetTouchHandleSizeHandler{},
+	map[*cCRenderHandlerT]OnTouchHandleStateChangedHandler{},
 	map[*cCRenderHandlerT]StartDraggingHandler{},
 	map[*cCRenderHandlerT]UpdateDragCursorHandler{},
 	map[*cCRenderHandlerT]OnScrollOffsetChangedHandler{},
@@ -19931,6 +20587,20 @@ func (render_handler *CRenderHandlerT) bind(a interface{}) *CRenderHandlerT {
 		delete(render_handler_handlers.on_accelerated_paint_handler, cp)
 	}
 
+	if h, ok := a.(GetTouchHandleSizeHandler); ok {
+		render_handler_handlers.get_touch_handle_size_handler[cp] = h
+		noBind = false
+	} else {
+		delete(render_handler_handlers.get_touch_handle_size_handler, cp)
+	}
+
+	if h, ok := a.(OnTouchHandleStateChangedHandler); ok {
+		render_handler_handlers.on_touch_handle_state_changed_handler[cp] = h
+		noBind = false
+	} else {
+		delete(render_handler_handlers.on_touch_handle_state_changed_handler, cp)
+	}
+
 	if h, ok := a.(StartDraggingHandler); ok {
 		render_handler_handlers.start_dragging_handler[cp] = h
 		noBind = false
@@ -19995,6 +20665,8 @@ func unbindAllCRenderHandlerT(cp *cCRenderHandlerT) {
 	delete(render_handler_handlers.on_popup_size_handler, cp)
 	delete(render_handler_handlers.on_paint_handler, cp)
 	delete(render_handler_handlers.on_accelerated_paint_handler, cp)
+	delete(render_handler_handlers.get_touch_handle_size_handler, cp)
+	delete(render_handler_handlers.on_touch_handle_state_changed_handler, cp)
 	delete(render_handler_handlers.start_dragging_handler, cp)
 	delete(render_handler_handlers.update_drag_cursor_handler, cp)
 	delete(render_handler_handlers.on_scroll_offset_changed_handler, cp)
@@ -20019,9 +20691,9 @@ func (render_handler *CRenderHandlerT) Handler() interface{} {
 // cef_render_process_handler_capi.h, include/capi/cef_render_process_handler_capi.h:162:3,
 
 ///
-// Structure used to implement render process callbacks. The functions of this
-// structure will be called on the render process main thread (TID_RENDERER)
-// unless otherwise indicated.
+/// Structure used to implement render process callbacks. The functions of this
+/// structure will be called on the render process main thread (TID_RENDERER)
+/// unless otherwise indicated.
 ///
 
 type cCRenderProcessHandlerT C.cef_render_process_handler_t
@@ -20099,7 +20771,7 @@ func (render_process_handler *CRenderProcessHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called after WebKit has been initialized.
+// / Called after WebKit has been initialized.
 // /
 type OnWebKitInitializedHandler interface {
 	OnWebKitInitialized(
@@ -20108,13 +20780,13 @@ type OnWebKitInitializedHandler interface {
 }
 
 // /
-// Called after a browser has been created. When browsing cross-origin a new
-// browser will be created before the old browser with the same identifier is
-// destroyed. |extra_info| is an optional read-only value originating from
-// cef_browser_host_t::cef_browser_host_create_browser(),
-// cef_browser_host_t::cef_browser_host_create_browser_sync(),
-// cef_life_span_handler_t::on_before_popup() or
-// cef_browser_view_t::cef_browser_view_create().
+// / Called after a browser has been created. When browsing cross-origin a new
+// / browser will be created before the old browser with the same identifier is
+// / destroyed. |extra_info| is an optional read-only value originating from
+// / cef_browser_host_t::cef_browser_host_create_browser(),
+// / cef_browser_host_t::cef_browser_host_create_browser_sync(),
+// / cef_life_span_handler_t::on_before_popup() or
+// / cef_browser_view_t::cef_browser_view_create().
 // /
 type CRenderProcessHandlerTOnBrowserCreatedHandler interface {
 	OnBrowserCreated(
@@ -20125,7 +20797,7 @@ type CRenderProcessHandlerTOnBrowserCreatedHandler interface {
 }
 
 // /
-// Called before a browser is destroyed.
+// / Called before a browser is destroyed.
 // /
 type CRenderProcessHandlerTOnBrowserDestroyedHandler interface {
 	OnBrowserDestroyed(
@@ -20135,7 +20807,7 @@ type CRenderProcessHandlerTOnBrowserDestroyedHandler interface {
 }
 
 // /
-// Return the handler for browser load status events.
+// / Return the handler for browser load status events.
 // /
 type CRenderProcessHandlerTGetLoadHandlerHandler interface {
 	GetLoadHandler(
@@ -20144,12 +20816,12 @@ type CRenderProcessHandlerTGetLoadHandlerHandler interface {
 }
 
 // /
-// Called immediately after the V8 context for a frame has been created. To
-// retrieve the JavaScript &#39;window&#39; object use the
-// cef_v8context_t::get_global() function. V8 handles can only be accessed
-// from the thread on which they are created. A task runner for posting tasks
-// on the associated thread can be retrieved via the
-// cef_v8context_t::get_task_runner() function.
+// / Called immediately after the V8 context for a frame has been created. To
+// / retrieve the JavaScript &#39;window&#39; object use the
+// / cef_v8context_t::get_global() function. V8 handles can only be accessed
+// / from the thread on which they are created. A task runner for posting tasks
+// / on the associated thread can be retrieved via the
+// / cef_v8context_t::get_task_runner() function.
 // /
 type OnContextCreatedHandler interface {
 	OnContextCreated(
@@ -20161,8 +20833,8 @@ type OnContextCreatedHandler interface {
 }
 
 // /
-// Called immediately before the V8 context for a frame is released. No
-// references to the context should be kept after this function is called.
+// / Called immediately before the V8 context for a frame is released. No
+// / references to the context should be kept after this function is called.
 // /
 type OnContextReleasedHandler interface {
 	OnContextReleased(
@@ -20174,9 +20846,9 @@ type OnContextReleasedHandler interface {
 }
 
 // /
-// Called for global uncaught exceptions in a frame. Execution of this
-// callback is disabled by default. To enable set
-// CefSettings.uncaught_exception_stack_size &gt; 0.
+// / Called for global uncaught exceptions in a frame. Execution of this
+// / callback is disabled by default. To enable set
+// / cef_settings_t.uncaught_exception_stack_size &gt; 0.
 // /
 type OnUncaughtExceptionHandler interface {
 	OnUncaughtException(
@@ -20190,12 +20862,12 @@ type OnUncaughtExceptionHandler interface {
 }
 
 // /
-// Called when a new node in the the browser gets focus. The |node| value may
-// be NULL if no specific node has gained focus. The node object passed to
-// this function represents a snapshot of the DOM at the time this function is
-// executed. DOM objects are only valid for the scope of this function. Do not
-// keep references to or attempt to access any DOM objects outside the scope
-// of this function.
+// / Called when a new node in the the browser gets focus. The |node| value may
+// / be NULL if no specific node has gained focus. The node object passed to
+// / this function represents a snapshot of the DOM at the time this function
+// / is executed. DOM objects are only valid for the scope of this function. Do
+// / not keep references to or attempt to access any DOM objects outside the
+// / scope of this function.
 // /
 type OnFocusedNodeChangedHandler interface {
 	OnFocusedNodeChanged(
@@ -20207,9 +20879,9 @@ type OnFocusedNodeChangedHandler interface {
 }
 
 // /
-// Called when a new message is received from a different process. Return true
-// (1) if the message was handled or false (0) otherwise. It is safe to keep a
-// reference to |message| outside of this callback.
+// / Called when a new message is received from a different process. Return
+// / true (1) if the message was handled or false (0) otherwise. It is safe to
+// / keep a reference to |message| outside of this callback.
 // /
 type CRenderProcessHandlerTOnProcessMessageReceivedHandler interface {
 	OnProcessMessageReceived(
@@ -20375,11 +21047,11 @@ func (render_process_handler *CRenderProcessHandlerT) Handler() interface{} {
 	return render_process_handler_handlers.handler[cp]
 }
 
-// cef_request_capi.h, include/capi/cef_request_capi.h:217:3,
+// cef_request_capi.h, include/capi/cef_request_capi.h:218:3,
 
 ///
-// Structure used to represent a web request. The functions of this structure
-// may be called on any thread.
+/// Structure used to represent a web request. The functions of this structure
+/// may be called on any thread.
 ///
 
 type cCRequestT C.cef_request_t
@@ -20457,7 +21129,7 @@ func (request *CRequestT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is read-only.
+// / Returns true (1) if this object is read-only.
 // /
 func (self *CRequestT) IsReadOnly() (ret bool) {
 
@@ -20468,7 +21140,7 @@ func (self *CRequestT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Get the fully qualified URL.
+// / Get the fully qualified URL.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetUrl() (ret string) {
@@ -20484,7 +21156,7 @@ func (self *CRequestT) GetUrl() (ret string) {
 }
 
 // /
-// Set the fully qualified URL.
+// / Set the fully qualified URL.
 // /
 func (self *CRequestT) SetUrl(
 	url string,
@@ -20496,8 +21168,8 @@ func (self *CRequestT) SetUrl(
 }
 
 // /
-// Get the request function type. The value will default to POST if post data
-// is provided and GET otherwise.
+// / Get the request function type. The value will default to POST if post data
+// / is provided and GET otherwise.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetMethod() (ret string) {
@@ -20513,7 +21185,7 @@ func (self *CRequestT) GetMethod() (ret string) {
 }
 
 // /
-// Set the request function type.
+// / Set the request function type.
 // /
 func (self *CRequestT) SetMethod(
 	method string,
@@ -20525,9 +21197,9 @@ func (self *CRequestT) SetMethod(
 }
 
 // /
-// Set the referrer URL and policy. If non-NULL the referrer URL must be fully
-// qualified with an HTTP or HTTPS scheme component. Any username, password or
-// ref component will be removed.
+// / Set the referrer URL and policy. If non-NULL the referrer URL must be
+// / fully qualified with an HTTP or HTTPS scheme component. Any username,
+// / password or ref component will be removed.
 // /
 func (self *CRequestT) SetReferrer(
 	referrer_url string,
@@ -20540,7 +21212,7 @@ func (self *CRequestT) SetReferrer(
 }
 
 // /
-// Get the referrer URL.
+// / Get the referrer URL.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetReferrerUrl() (ret string) {
@@ -20556,7 +21228,7 @@ func (self *CRequestT) GetReferrerUrl() (ret string) {
 }
 
 // /
-// Get the referrer policy.
+// / Get the referrer policy.
 // /
 func (self *CRequestT) GetReferrerPolicy() (ret CReferrerPolicyT) {
 
@@ -20567,7 +21239,7 @@ func (self *CRequestT) GetReferrerPolicy() (ret CReferrerPolicyT) {
 }
 
 // /
-// Get the post data.
+// / Get the post data.
 // /
 func (self *CRequestT) GetPostData() (ret *CPostDataT) {
 
@@ -20578,7 +21250,7 @@ func (self *CRequestT) GetPostData() (ret *CPostDataT) {
 }
 
 // /
-// Set the post data.
+// / Set the post data.
 // /
 func (self *CRequestT) SetPostData(
 	postData *CPostDataT,
@@ -20594,7 +21266,7 @@ func (self *CRequestT) SetPostData(
 }
 
 // /
-// Get the header values. Will not include the Referer value if any.
+// / Get the header values. Will not include the Referer value if any.
 // /
 func (self *CRequestT) GetHeaderMap(
 	headerMap CStringMultimapT,
@@ -20605,8 +21277,8 @@ func (self *CRequestT) GetHeaderMap(
 }
 
 // /
-// Set the header values. If a Referer value exists in the header map it will
-// be removed and ignored.
+// / Set the header values. If a Referer value exists in the header map it will
+// / be removed and ignored.
 // /
 func (self *CRequestT) SetHeaderMap(
 	headerMap CStringMultimapT,
@@ -20617,9 +21289,9 @@ func (self *CRequestT) SetHeaderMap(
 }
 
 // /
-// Returns the first header value for |name| or an NULL string if not found.
-// Will not return the Referer value if any. Use GetHeaderMap instead if
-// |name| might have multiple values.
+// / Returns the first header value for |name| or an NULL string if not found.
+// / Will not return the Referer value if any. Use GetHeaderMap instead if
+// / |name| might have multiple values.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetHeaderByName(
@@ -20638,10 +21310,10 @@ func (self *CRequestT) GetHeaderByName(
 }
 
 // /
-// Set the header |name| to |value|. If |overwrite| is true (1) any existing
-// values will be replaced with the new value. If |overwrite| is false (0) any
-// existing values will not be overwritten. The Referer value cannot be set
-// using this function.
+// / Set the header |name| to |value|. If |overwrite| is true (1) any existing
+// / values will be replaced with the new value. If |overwrite| is false (0)
+// / any existing values will not be overwritten. The Referer value cannot be
+// / set using this function.
 // /
 func (self *CRequestT) SetHeaderByName(
 	name string,
@@ -20656,7 +21328,7 @@ func (self *CRequestT) SetHeaderByName(
 }
 
 // /
-// Set all values at one time.
+// / Set all values at one time.
 // /
 func (self *CRequestT) Set(
 	url string,
@@ -20677,8 +21349,8 @@ func (self *CRequestT) Set(
 }
 
 // /
-// Get the flags used in combination with cef_urlrequest_t. See
-// cef_urlrequest_flags_t for supported values.
+// / Get the flags used in combination with cef_urlrequest_t. See
+// / cef_urlrequest_flags_t for supported values.
 // /
 func (self *CRequestT) GetFlags() (ret bool) {
 
@@ -20689,8 +21361,8 @@ func (self *CRequestT) GetFlags() (ret bool) {
 }
 
 // /
-// Set the flags used in combination with cef_urlrequest_t.  See
-// cef_urlrequest_flags_t for supported values.
+// / Set the flags used in combination with cef_urlrequest_t.  See
+// / cef_urlrequest_flags_t for supported values.
 // /
 func (self *CRequestT) SetFlags(
 	flags int,
@@ -20701,8 +21373,8 @@ func (self *CRequestT) SetFlags(
 }
 
 // /
-// Get the URL to the first party for cookies used in combination with
-// cef_urlrequest_t.
+// / Get the URL to the first party for cookies used in combination with
+// / cef_urlrequest_t.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestT) GetFirstPartyForCookies() (ret string) {
@@ -20718,8 +21390,8 @@ func (self *CRequestT) GetFirstPartyForCookies() (ret string) {
 }
 
 // /
-// Set the URL to the first party for cookies used in combination with
-// cef_urlrequest_t.
+// / Set the URL to the first party for cookies used in combination with
+// / cef_urlrequest_t.
 // /
 func (self *CRequestT) SetFirstPartyForCookies(
 	url string,
@@ -20731,8 +21403,8 @@ func (self *CRequestT) SetFirstPartyForCookies(
 }
 
 // /
-// Get the resource type for this request. Only available in the browser
-// process.
+// / Get the resource type for this request. Only available in the browser
+// / process.
 // /
 func (self *CRequestT) GetResourceType() (ret CResourceTypeT) {
 
@@ -20743,9 +21415,9 @@ func (self *CRequestT) GetResourceType() (ret CResourceTypeT) {
 }
 
 // /
-// Get the transition type for this request. Only available in the browser
-// process and only applies to requests that represent a main frame or sub-
-// frame navigation.
+// / Get the transition type for this request. Only available in the browser
+// / process and only applies to requests that represent a main frame or sub-
+// / frame navigation.
 // /
 func (self *CRequestT) GetTransitionType() (ret CTransitionTypeT) {
 
@@ -20756,9 +21428,10 @@ func (self *CRequestT) GetTransitionType() (ret CTransitionTypeT) {
 }
 
 // /
-// Returns the globally unique identifier for this request or 0 if not
-// specified. Can be used by cef_resource_request_handler_t implementations in
-// the browser process to track a single request across multiple callbacks.
+// / Returns the globally unique identifier for this request or 0 if not
+// / specified. Can be used by cef_resource_request_handler_t implementations
+// / in the browser process to track a single request across multiple
+// / callbacks.
 // /
 func (self *CRequestT) GetIdentifier() (ret uint64) {
 
@@ -20769,7 +21442,7 @@ func (self *CRequestT) GetIdentifier() (ret uint64) {
 }
 
 // /
-// Create a new cef_request_t object.
+// / Create a new cef_request_t object.
 // /
 func RequestCreate() (ret *CRequestT) {
 
@@ -20780,8 +21453,8 @@ func RequestCreate() (ret *CRequestT) {
 }
 
 ///
-// Structure used to represent post data for a web request. The functions of
-// this structure may be called on any thread.
+/// Structure used to represent post data for a web request. The functions of
+/// this structure may be called on any thread.
 ///
 
 type cCPostDataT C.cef_post_data_t
@@ -20859,7 +21532,7 @@ func (post_data *CPostDataT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is read-only.
+// / Returns true (1) if this object is read-only.
 // /
 func (self *CPostDataT) IsReadOnly() (ret bool) {
 
@@ -20870,10 +21543,10 @@ func (self *CPostDataT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Returns true (1) if the underlying POST data includes elements that are not
-// represented by this cef_post_data_t object (for example, multi-part file
-// upload data). Modifying cef_post_data_t objects with excluded elements may
-// result in the request failing.
+// / Returns true (1) if the underlying POST data includes elements that are
+// / not represented by this cef_post_data_t object (for example, multi-part
+// / file upload data). Modifying cef_post_data_t objects with excluded
+// / elements may result in the request failing.
 // /
 func (self *CPostDataT) HasExcludedElements() (ret bool) {
 
@@ -20884,7 +21557,7 @@ func (self *CPostDataT) HasExcludedElements() (ret bool) {
 }
 
 // /
-// Returns the number of existing post data elements.
+// / Returns the number of existing post data elements.
 // /
 func (self *CPostDataT) GetElementCount() (ret int64) {
 
@@ -20895,7 +21568,7 @@ func (self *CPostDataT) GetElementCount() (ret int64) {
 }
 
 // /
-// Retrieve the post data elements.
+// / Retrieve the post data elements.
 // /
 func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
 	_elementsCount := C.size_t(self.GetElementCount()) // =SizeFunc cef_post_data_t::get_elements:elements
@@ -20917,8 +21590,8 @@ func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
 }
 
 // /
-// Remove the specified post data element.  Returns true (1) if the removal
-// succeeds.
+// / Remove the specified post data element.  Returns true (1) if the removal
+// / succeeds.
 // /
 func (self *CPostDataT) RemoveElement(
 	element *CPostDataElementT,
@@ -20936,7 +21609,8 @@ func (self *CPostDataT) RemoveElement(
 }
 
 // /
-// Add the specified post data element.  Returns true (1) if the add succeeds.
+// / Add the specified post data element.  Returns true (1) if the add
+// / succeeds.
 // /
 func (self *CPostDataT) AddElement(
 	element *CPostDataElementT,
@@ -20954,7 +21628,7 @@ func (self *CPostDataT) AddElement(
 }
 
 // /
-// Remove all existing post data elements.
+// / Remove all existing post data elements.
 // /
 func (self *CPostDataT) RemoveElements() {
 
@@ -20963,7 +21637,7 @@ func (self *CPostDataT) RemoveElements() {
 }
 
 // /
-// Create a new cef_post_data_t object.
+// / Create a new cef_post_data_t object.
 // /
 func PostDataCreate() (ret *CPostDataT) {
 
@@ -20974,8 +21648,8 @@ func PostDataCreate() (ret *CPostDataT) {
 }
 
 ///
-// Structure used to represent a single element in the request post data. The
-// functions of this structure may be called on any thread.
+/// Structure used to represent a single element in the request post data. The
+/// functions of this structure may be called on any thread.
 ///
 
 type cCPostDataElementT C.cef_post_data_element_t
@@ -21053,7 +21727,7 @@ func (post_data_element *CPostDataElementT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is read-only.
+// / Returns true (1) if this object is read-only.
 // /
 func (self *CPostDataElementT) IsReadOnly() (ret bool) {
 
@@ -21064,7 +21738,7 @@ func (self *CPostDataElementT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Remove all contents from the post data element.
+// / Remove all contents from the post data element.
 // /
 func (self *CPostDataElementT) SetToEmpty() {
 
@@ -21073,7 +21747,7 @@ func (self *CPostDataElementT) SetToEmpty() {
 }
 
 // /
-// The post data element will represent a file.
+// / The post data element will represent a file.
 // /
 func (self *CPostDataElementT) SetToFile(
 	fileName string,
@@ -21085,8 +21759,8 @@ func (self *CPostDataElementT) SetToFile(
 }
 
 // /
-// The post data element will represent bytes.  The bytes passed in will be
-// copied.
+// / The post data element will represent bytes.  The bytes passed in will be
+// / copied.
 // /
 func (self *CPostDataElementT) SetToBytes(
 	bytes []byte,
@@ -21100,7 +21774,7 @@ func (self *CPostDataElementT) SetToBytes(
 }
 
 // /
-// Return the type of this post data element.
+// / Return the type of this post data element.
 // /
 func (self *CPostDataElementT) GetType() (ret CPostdataelementTypeT) {
 
@@ -21111,7 +21785,7 @@ func (self *CPostDataElementT) GetType() (ret CPostdataelementTypeT) {
 }
 
 // /
-// Return the file name.
+// / Return the file name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CPostDataElementT) GetFile() (ret string) {
@@ -21127,7 +21801,7 @@ func (self *CPostDataElementT) GetFile() (ret string) {
 }
 
 // /
-// Return the number of bytes.
+// / Return the number of bytes.
 // /
 func (self *CPostDataElementT) GetBytesCount() (ret int64) {
 
@@ -21138,8 +21812,8 @@ func (self *CPostDataElementT) GetBytesCount() (ret int64) {
 }
 
 // /
-// Read up to |size| bytes into |bytes| and return the number of bytes
-// actually read.
+// / Read up to |size| bytes into |bytes| and return the number of bytes
+// / actually read.
 // /
 func (self *CPostDataElementT) GetBytes(
 	size int64,
@@ -21153,7 +21827,7 @@ func (self *CPostDataElementT) GetBytes(
 }
 
 // /
-// Create a new cef_post_data_element_t object.
+// / Create a new cef_post_data_element_t object.
 // /
 func PostDataElementCreate() (ret *CPostDataElementT) {
 
@@ -21166,7 +21840,7 @@ func PostDataElementCreate() (ret *CPostDataElementT) {
 // cef_request_context_capi.h, include/capi/cef_request_context_capi.h:74:3,
 
 ///
-// Callback structure for cef_request_context_t::ResolveHost.
+/// Callback structure for cef_request_context_t::ResolveHost.
 ///
 
 type cCResolveCallbackT C.cef_resolve_callback_t
@@ -21244,9 +21918,9 @@ func (resolve_callback *CResolveCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Called on the UI thread after the ResolveHost request has completed.
-// |result| will be the result code. |resolved_ips| will be the list of
-// resolved IP addresses or NULL if the resolution failed.
+// / Called on the UI thread after the ResolveHost request has completed.
+// / |result| will be the result code. |resolved_ips| will be the list of
+// / resolved IP addresses or NULL if the resolution failed.
 // /
 func (self *CResolveCallbackT) OnResolveCompleted(
 	result CErrorcodeT,
@@ -21258,20 +21932,20 @@ func (self *CResolveCallbackT) OnResolveCompleted(
 }
 
 ///
-// A request context provides request handling for a set of related browser or
-// URL request objects. A request context can be specified when creating a new
-// browser via the cef_browser_host_t static factory functions or when creating
-// a new URL request via the cef_urlrequest_t static factory functions. Browser
-// objects with different request contexts will never be hosted in the same
-// render process. Browser objects with the same request context may or may not
-// be hosted in the same render process depending on the process model. Browser
-// objects created indirectly via the JavaScript window.open function or
-// targeted links will share the same render process and the same request
-// context as the source browser. When running in single-process mode there is
-// only a single render process (the main process) and so all browsers created
-// in single-process mode will share the same request context. This will be the
-// first request context passed into a cef_browser_host_t static factory
-// function and all other request context objects will be ignored.
+/// A request context provides request handling for a set of related browser or
+/// URL request objects. A request context can be specified when creating a new
+/// browser via the cef_browser_host_t static factory functions or when creating
+/// a new URL request via the cef_urlrequest_t static factory functions. Browser
+/// objects with different request contexts will never be hosted in the same
+/// render process. Browser objects with the same request context may or may not
+/// be hosted in the same render process depending on the process model. Browser
+/// objects created indirectly via the JavaScript window.open function or
+/// targeted links will share the same render process and the same request
+/// context as the source browser. When running in single-process mode there is
+/// only a single render process (the main process) and so all browsers created
+/// in single-process mode will share the same request context. This will be the
+/// first request context passed into a cef_browser_host_t static factory
+/// function and all other request context objects will be ignored.
 ///
 
 type cCRequestContextT C.cef_request_context_t
@@ -21349,8 +22023,8 @@ func (request_context *CRequestContextT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is pointing to the same context as |that|
-// object.
+// / Returns true (1) if this object is pointing to the same context as |that|
+// / object.
 // /
 func (self *CRequestContextT) IsSame(
 	other *CRequestContextT,
@@ -21368,8 +22042,8 @@ func (self *CRequestContextT) IsSame(
 }
 
 // /
-// Returns true (1) if this object is sharing the same storage as |that|
-// object.
+// / Returns true (1) if this object is sharing the same storage as |that|
+// / object.
 // /
 func (self *CRequestContextT) IsSharingWith(
 	other *CRequestContextT,
@@ -21387,9 +22061,9 @@ func (self *CRequestContextT) IsSharingWith(
 }
 
 // /
-// Returns true (1) if this object is the global context. The global context
-// is used by default when creating a browser or URL request with a NULL
-// context argument.
+// / Returns true (1) if this object is the global context. The global context
+// / is used by default when creating a browser or URL request with a NULL
+// / context argument.
 // /
 func (self *CRequestContextT) IsGlobal() (ret bool) {
 
@@ -21400,7 +22074,7 @@ func (self *CRequestContextT) IsGlobal() (ret bool) {
 }
 
 // /
-// Returns the handler for this context if any.
+// / Returns the handler for this context if any.
 // /
 func (self *CRequestContextT) GetHandler() (ret *CRequestContextHandlerT) {
 
@@ -21411,8 +22085,8 @@ func (self *CRequestContextT) GetHandler() (ret *CRequestContextHandlerT) {
 }
 
 // /
-// Returns the cache path for this object. If NULL an &quot;incognito mode&quot; in-
-// memory cache is being used.
+// / Returns the cache path for this object. If NULL an &quot;incognito mode&quot; in-
+// / memory cache is being used.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CRequestContextT) GetCachePath() (ret string) {
@@ -21428,9 +22102,9 @@ func (self *CRequestContextT) GetCachePath() (ret string) {
 }
 
 // /
-// Returns the cookie manager for this object. If |callback| is non-NULL it
-// will be executed asnychronously on the UI thread after the manager&#39;s
-// storage has been initialized.
+// / Returns the cookie manager for this object. If |callback| is non-NULL it
+// / will be executed asnychronously on the UI thread after the manager&#39;s
+// / storage has been initialized.
 // /
 func (self *CRequestContextT) GetCookieManager(
 	callback *CCompletionCallbackT,
@@ -21448,17 +22122,17 @@ func (self *CRequestContextT) GetCookieManager(
 }
 
 // /
-// Register a scheme handler factory for the specified |scheme_name| and
-// optional |domain_name|. An NULL |domain_name| value for a standard scheme
-// will cause the factory to match all domain names. The |domain_name| value
-// will be ignored for non-standard schemes. If |scheme_name| is a built-in
-// scheme and no handler is returned by |factory| then the built-in scheme
-// handler factory will be called. If |scheme_name| is a custom scheme then
-// you must also implement the cef_app_t::on_register_custom_schemes()
-// function in all processes. This function may be called multiple times to
-// change or remove the factory that matches the specified |scheme_name| and
-// optional |domain_name|. Returns false (0) if an error occurs. This function
-// may be called on any thread in the browser process.
+// / Register a scheme handler factory for the specified |scheme_name| and
+// / optional |domain_name|. An NULL |domain_name| value for a standard scheme
+// / will cause the factory to match all domain names. The |domain_name| value
+// / will be ignored for non-standard schemes. If |scheme_name| is a built-in
+// / scheme and no handler is returned by |factory| then the built-in scheme
+// / handler factory will be called. If |scheme_name| is a custom scheme then
+// / you must also implement the cef_app_t::on_register_custom_schemes()
+// / function in all processes. This function may be called multiple times to
+// / change or remove the factory that matches the specified |scheme_name| and
+// / optional |domain_name|. Returns false (0) if an error occurs. This
+// / function may be called on any thread in the browser process.
 // /
 func (self *CRequestContextT) RegisterSchemeHandlerFactory(
 	scheme_name string,
@@ -21480,8 +22154,8 @@ func (self *CRequestContextT) RegisterSchemeHandlerFactory(
 }
 
 // /
-// Clear all registered scheme handler factories. Returns false (0) on error.
-// This function may be called on any thread in the browser process.
+// / Clear all registered scheme handler factories. Returns false (0) on error.
+// / This function may be called on any thread in the browser process.
 // /
 func (self *CRequestContextT) ClearSchemeHandlerFactories() (ret bool) {
 
@@ -21492,8 +22166,8 @@ func (self *CRequestContextT) ClearSchemeHandlerFactories() (ret bool) {
 }
 
 // /
-// Returns true (1) if a preference with the specified |name| exists. This
-// function must be called on the browser process UI thread.
+// / Returns true (1) if a preference with the specified |name| exists. This
+// / function must be called on the browser process UI thread.
 // /
 func (self *CRequestContextT) HasPreference(
 	name string,
@@ -21507,11 +22181,11 @@ func (self *CRequestContextT) HasPreference(
 }
 
 // /
-// Returns the value for the preference with the specified |name|. Returns
-// NULL if the preference does not exist. The returned object contains a copy
-// of the underlying preference value and modifications to the returned object
-// will not modify the underlying preference value. This function must be
-// called on the browser process UI thread.
+// / Returns the value for the preference with the specified |name|. Returns
+// / NULL if the preference does not exist. The returned object contains a copy
+// / of the underlying preference value and modifications to the returned
+// / object will not modify the underlying preference value. This function must
+// / be called on the browser process UI thread.
 // /
 func (self *CRequestContextT) GetPreference(
 	name string,
@@ -21525,12 +22199,12 @@ func (self *CRequestContextT) GetPreference(
 }
 
 // /
-// Returns all preferences as a dictionary. If |include_defaults| is true (1)
-// then preferences currently at their default value will be included. The
-// returned object contains a copy of the underlying preference values and
-// modifications to the returned object will not modify the underlying
-// preference values. This function must be called on the browser process UI
-// thread.
+// / Returns all preferences as a dictionary. If |include_defaults| is true (1)
+// / then preferences currently at their default value will be included. The
+// / returned object contains a copy of the underlying preference values and
+// / modifications to the returned object will not modify the underlying
+// / preference values. This function must be called on the browser process UI
+// / thread.
 // /
 func (self *CRequestContextT) GetAllPreferences(
 	include_defaults int,
@@ -21543,10 +22217,10 @@ func (self *CRequestContextT) GetAllPreferences(
 }
 
 // /
-// Returns true (1) if the preference with the specified |name| can be
-// modified using SetPreference. As one example preferences set via the
-// command-line usually cannot be modified. This function must be called on
-// the browser process UI thread.
+// / Returns true (1) if the preference with the specified |name| can be
+// / modified using SetPreference. As one example preferences set via the
+// / command-line usually cannot be modified. This function must be called on
+// / the browser process UI thread.
 // /
 func (self *CRequestContextT) CanSetPreference(
 	name string,
@@ -21560,11 +22234,12 @@ func (self *CRequestContextT) CanSetPreference(
 }
 
 // /
-// Set the |value| associated with preference |name|. Returns true (1) if the
-// value is set successfully and false (0) otherwise. If |value| is NULL the
-// preference will be restored to its default value. If setting the preference
-// fails then |error| will be populated with a detailed description of the
-// problem. This function must be called on the browser process UI thread.
+// / Set the |value| associated with preference |name|. Returns true (1) if the
+// / value is set successfully and false (0) otherwise. If |value| is NULL the
+// / preference will be restored to its default value. If setting the
+// / preference fails then |error| will be populated with a detailed
+// / description of the problem. This function must be called on the browser
+// / process UI thread.
 // /
 func (self *CRequestContextT) SetPreference(
 	name string,
@@ -21587,12 +22262,12 @@ func (self *CRequestContextT) SetPreference(
 }
 
 // /
-// Clears all certificate exceptions that were added as part of handling
-// cef_request_handler_t::on_certificate_error(). If you call this it is
-// recommended that you also call close_all_connections() or you risk not
-// being prompted again for server certificates if you reconnect quickly. If
-// |callback| is non-NULL it will be executed on the UI thread after
-// completion.
+// / Clears all certificate exceptions that were added as part of handling
+// / cef_request_handler_t::on_certificate_error(). If you call this it is
+// / recommended that you also call close_all_connections() or you risk not
+// / being prompted again for server certificates if you reconnect quickly. If
+// / |callback| is non-NULL it will be executed on the UI thread after
+// / completion.
 // /
 func (self *CRequestContextT) ClearCertificateExceptions(
 	callback *CCompletionCallbackT,
@@ -21608,9 +22283,9 @@ func (self *CRequestContextT) ClearCertificateExceptions(
 }
 
 // /
-// Clears all HTTP authentication credentials that were added as part of
-// handling GetAuthCredentials. If |callback| is non-NULL it will be executed
-// on the UI thread after completion.
+// / Clears all HTTP authentication credentials that were added as part of
+// / handling GetAuthCredentials. If |callback| is non-NULL it will be executed
+// / on the UI thread after completion.
 // /
 func (self *CRequestContextT) ClearHttpAuthCredentials(
 	callback *CCompletionCallbackT,
@@ -21626,10 +22301,10 @@ func (self *CRequestContextT) ClearHttpAuthCredentials(
 }
 
 // /
-// Clears all active and idle connections that Chromium currently has. This is
-// only recommended if you have released all other CEF objects but don&#39;t yet
-// want to call cef_shutdown(). If |callback| is non-NULL it will be executed
-// on the UI thread after completion.
+// / Clears all active and idle connections that Chromium currently has. This
+// / is only recommended if you have released all other CEF objects but don&#39;t
+// / yet want to call cef_shutdown(). If |callback| is non-NULL it will be
+// / executed on the UI thread after completion.
 // /
 func (self *CRequestContextT) CloseAllConnections(
 	callback *CCompletionCallbackT,
@@ -21645,8 +22320,8 @@ func (self *CRequestContextT) CloseAllConnections(
 }
 
 // /
-// Attempts to resolve |origin| to a list of associated IP addresses.
-// |callback| will be executed on the UI thread after completion.
+// / Attempts to resolve |origin| to a list of associated IP addresses.
+// / |callback| will be executed on the UI thread after completion.
 // /
 func (self *CRequestContextT) ResolveHost(
 	origin string,
@@ -21664,52 +22339,52 @@ func (self *CRequestContextT) ResolveHost(
 }
 
 // /
-// Load an extension.
-//
-// If extension resources will be read from disk using the default load
-// implementation then |root_directory| should be the absolute path to the
-// extension resources directory and |manifest| should be NULL. If extension
-// resources will be provided by the client (e.g. via cef_request_handler_t
-// and/or cef_extension_handler_t) then |root_directory| should be a path
-// component unique to the extension (if not absolute this will be internally
-// prefixed with the PK_DIR_RESOURCES path) and |manifest| should contain the
-// contents that would otherwise be read from the &quot;manifest.json&quot; file on
-// disk.
-//
-// The loaded extension will be accessible in all contexts sharing the same
-// storage (HasExtension returns true (1)). However, only the context on which
-// this function was called is considered the loader (DidLoadExtension returns
-// true (1)) and only the loader will receive cef_request_context_handler_t
-// callbacks for the extension.
-//
-// cef_extension_handler_t::OnExtensionLoaded will be called on load success
-// or cef_extension_handler_t::OnExtensionLoadFailed will be called on load
-// failure.
-//
-// If the extension specifies a background script via the &quot;background&quot;
-// manifest key then cef_extension_handler_t::OnBeforeBackgroundBrowser will
-// be called to create the background browser. See that function for
-// additional information about background scripts.
-//
-// For visible extension views the client application should evaluate the
-// manifest to determine the correct extension URL to load and then pass that
-// URL to the cef_browser_host_t::CreateBrowser* function after the extension
-// has loaded. For example, the client can look for the &quot;browser_action&quot;
-// manifest key as documented at
-// https://developer.chrome.com/extensions/browserAction. Extension URLs take
-// the form &quot;chrome-extension://&lt;extension_id&gt;/&lt;path&gt;&quot;.
-//
-// Browsers that host extensions differ from normal browsers as follows:
-//   - Can access chrome.* JavaScript APIs if allowed by the manifest. Visit
-//     chrome://extensions-support for the list of extension APIs currently
-//     supported by CEF.
-//   - Main frame navigation to non-extension content is blocked.
-//   - Pinch-zooming is disabled.
-//   - CefBrowserHost::GetExtension returns the hosted extension.
-//   - CefBrowserHost::IsBackgroundHost returns true for background hosts.
-//
-// See https://developer.chrome.com/extensions for extension implementation
-// and usage documentation.
+// / Load an extension.
+// /
+// / If extension resources will be read from disk using the default load
+// / implementation then |root_directory| should be the absolute path to the
+// / extension resources directory and |manifest| should be NULL. If extension
+// / resources will be provided by the client (e.g. via cef_request_handler_t
+// / and/or cef_extension_handler_t) then |root_directory| should be a path
+// / component unique to the extension (if not absolute this will be internally
+// / prefixed with the PK_DIR_RESOURCES path) and |manifest| should contain the
+// / contents that would otherwise be read from the &quot;manifest.json&quot; file on
+// / disk.
+// /
+// / The loaded extension will be accessible in all contexts sharing the same
+// / storage (HasExtension returns true (1)). However, only the context on
+// / which this function was called is considered the loader (DidLoadExtension
+// / returns true (1)) and only the loader will receive
+// / cef_request_context_handler_t callbacks for the extension.
+// /
+// / cef_extension_handler_t::OnExtensionLoaded will be called on load success
+// / or cef_extension_handler_t::OnExtensionLoadFailed will be called on load
+// / failure.
+// /
+// / If the extension specifies a background script via the &quot;background&quot;
+// / manifest key then cef_extension_handler_t::OnBeforeBackgroundBrowser will
+// / be called to create the background browser. See that function for
+// / additional information about background scripts.
+// /
+// / For visible extension views the client application should evaluate the
+// / manifest to determine the correct extension URL to load and then pass that
+// / URL to the cef_browser_host_t::CreateBrowser* function after the extension
+// / has loaded. For example, the client can look for the &quot;browser_action&quot;
+// / manifest key as documented at
+// / https://developer.chrome.com/extensions/browserAction. Extension URLs take
+// / the form &quot;chrome-extension://&lt;extension_id&gt;/&lt;path&gt;&quot;.
+// /
+// / Browsers that host extensions differ from normal browsers as follows:
+// /  - Can access chrome.* JavaScript APIs if allowed by the manifest. Visit
+// /    chrome://extensions-support for the list of extension APIs currently
+// /    supported by CEF.
+// /  - Main frame navigation to non-extension content is blocked.
+// /  - Pinch-zooming is disabled.
+// /  - CefBrowserHost::GetExtension returns the hosted extension.
+// /  - CefBrowserHost::IsBackgroundHost returns true for background hosts.
+// /
+// / See https://developer.chrome.com/extensions for extension implementation
+// / and usage documentation.
 // /
 func (self *CRequestContextT) LoadExtension(
 	root_directory string,
@@ -21733,10 +22408,10 @@ func (self *CRequestContextT) LoadExtension(
 }
 
 // /
-// Returns true (1) if this context was used to load the extension identified
-// by |extension_id|. Other contexts sharing the same storage will also have
-// access to the extension (see HasExtension). This function must be called on
-// the browser process UI thread.
+// / Returns true (1) if this context was used to load the extension identified
+// / by |extension_id|. Other contexts sharing the same storage will also have
+// / access to the extension (see HasExtension). This function must be called
+// / on the browser process UI thread.
 // /
 func (self *CRequestContextT) DidLoadExtension(
 	extension_id string,
@@ -21750,10 +22425,10 @@ func (self *CRequestContextT) DidLoadExtension(
 }
 
 // /
-// Returns true (1) if this context has access to the extension identified by
-// |extension_id|. This may not be the context that was used to load the
-// extension (see DidLoadExtension). This function must be called on the
-// browser process UI thread.
+// / Returns true (1) if this context has access to the extension identified by
+// / |extension_id|. This may not be the context that was used to load the
+// / extension (see DidLoadExtension). This function must be called on the
+// / browser process UI thread.
 // /
 func (self *CRequestContextT) HasExtension(
 	extension_id string,
@@ -21767,10 +22442,10 @@ func (self *CRequestContextT) HasExtension(
 }
 
 // /
-// Retrieve the list of all extensions that this context has access to (see
-// HasExtension). |extension_ids| will be populated with the list of extension
-// ID values. Returns true (1) on success. This function must be called on the
-// browser process UI thread.
+// / Retrieve the list of all extensions that this context has access to (see
+// / HasExtension). |extension_ids| will be populated with the list of
+// / extension ID values. Returns true (1) on success. This function must be
+// / called on the browser process UI thread.
 // /
 func (self *CRequestContextT) GetExtensions(
 	extension_ids CStringListT,
@@ -21783,9 +22458,9 @@ func (self *CRequestContextT) GetExtensions(
 }
 
 // /
-// Returns the extension matching |extension_id| or NULL if no matching
-// extension is accessible in this context (see HasExtension). This function
-// must be called on the browser process UI thread.
+// / Returns the extension matching |extension_id| or NULL if no matching
+// / extension is accessible in this context (see HasExtension). This function
+// / must be called on the browser process UI thread.
 // /
 func (self *CRequestContextT) GetExtension(
 	extension_id string,
@@ -21799,9 +22474,9 @@ func (self *CRequestContextT) GetExtension(
 }
 
 // /
-// Returns the MediaRouter object associated with this context.  If |callback|
-// is non-NULL it will be executed asnychronously on the UI thread after the
-// manager&#39;s context has been initialized.
+// / Returns the MediaRouter object associated with this context.  If
+// / |callback| is non-NULL it will be executed asnychronously on the UI thread
+// / after the manager&#39;s context has been initialized.
 // /
 func (self *CRequestContextT) GetMediaRouter(
 	callback *CCompletionCallbackT,
@@ -21819,7 +22494,7 @@ func (self *CRequestContextT) GetMediaRouter(
 }
 
 // /
-// Returns the global context object.
+// / Returns the global context object.
 // /
 func RequestContextGetGlobalContext() (ret *CRequestContextT) {
 
@@ -21830,8 +22505,8 @@ func RequestContextGetGlobalContext() (ret *CRequestContextT) {
 }
 
 // /
-// Creates a new context object with the specified |settings| and optional
-// |handler|.
+// / Creates a new context object with the specified |settings| and optional
+// / |handler|.
 // /
 func RequestContextCreateContext(
 	settings *CRequestContextSettingsT,
@@ -21850,8 +22525,8 @@ func RequestContextCreateContext(
 }
 
 // /
-// Creates a new context object that shares storage with |other| and uses an
-// optional |handler|.
+// / Creates a new context object that shares storage with |other| and uses an
+// / optional |handler|.
 // /
 func CreateContextShared(
 	other *CRequestContextT,
@@ -21874,12 +22549,12 @@ func CreateContextShared(
 	return ret
 }
 
-// cef_request_context_handler_capi.h, include/capi/cef_request_context_handler_capi.h:100:3,
+// cef_request_context_handler_capi.h, include/capi/cef_request_context_handler_capi.h:101:3,
 
 ///
-// Implement this structure to provide handler implementations. The handler
-// instance will not be released until all objects related to the context have
-// been destroyed.
+/// Implement this structure to provide handler implementations. The handler
+/// instance will not be released until all objects related to the context have
+/// been destroyed.
 ///
 
 type cCRequestContextHandlerT C.cef_request_context_handler_t
@@ -21957,8 +22632,8 @@ func (request_context_handler *CRequestContextHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called on the browser process UI thread immediately after the request
-// context has been initialized.
+// / Called on the browser process UI thread immediately after the request
+// / context has been initialized.
 // /
 type OnRequestContextInitializedHandler interface {
 	OnRequestContextInitialized(
@@ -21968,22 +22643,23 @@ type OnRequestContextInitializedHandler interface {
 }
 
 // /
-// Called on the browser process IO thread before a resource request is
-// initiated. The |browser| and |frame| values represent the source of the
-// request, and may be NULL for requests originating from service workers or
-// cef_urlrequest_t. |request| represents the request contents and cannot be
-// modified in this callback. |is_navigation| will be true (1) if the resource
-// request is a navigation. |is_download| will be true (1) if the resource
-// request is a download. |request_initiator| is the origin (scheme + domain)
-// of the page that initiated the request. Set |disable_default_handling| to
-// true (1) to disable default handling of the request, in which case it will
-// need to be handled via cef_resource_request_handler_t::GetResourceHandler
-// or it will be canceled. To allow the resource load to proceed with default
-// handling return NULL. To specify a handler for the resource return a
-// cef_resource_request_handler_t object. This function will not be called if
-// the client associated with |browser| returns a non-NULL value from
-// cef_request_handler_t::GetResourceRequestHandler for the same request
-// (identified by cef_request_t::GetIdentifier).
+// / Called on the browser process IO thread before a resource request is
+// / initiated. The |browser| and |frame| values represent the source of the
+// / request, and may be NULL for requests originating from service workers or
+// / cef_urlrequest_t. |request| represents the request contents and cannot be
+// / modified in this callback. |is_navigation| will be true (1) if the
+// / resource request is a navigation. |is_download| will be true (1) if the
+// / resource request is a download. |request_initiator| is the origin (scheme
+// / + domain) of the page that initiated the request. Set
+// / |disable_default_handling| to true (1) to disable default handling of the
+// / request, in which case it will need to be handled via
+// / cef_resource_request_handler_t::GetResourceHandler or it will be canceled.
+// / To allow the resource load to proceed with default handling return NULL.
+// / To specify a handler for the resource return a
+// / cef_resource_request_handler_t object. This function will not be called if
+// / the client associated with |browser| returns a non-NULL value from
+// / cef_request_handler_t::GetResourceRequestHandler for the same request
+// / (identified by cef_request_t::GetIdentifier).
 // /
 type CRequestContextHandlerTGetResourceRequestHandlerHandler interface {
 	GetResourceRequestHandler(
@@ -22084,7 +22760,7 @@ func (request_context_handler *CRequestContextHandlerT) Handler() interface{} {
 // cef_request_handler_capi.h, include/capi/cef_request_handler_capi.h:73:3,
 
 ///
-// Callback structure used to select a client certificate for authentication.
+/// Callback structure used to select a client certificate for authentication.
 ///
 
 type cCSelectClientCertificateCallbackT C.cef_select_client_certificate_callback_t
@@ -22162,8 +22838,8 @@ func (select_client_certificate_callback *CSelectClientCertificateCallbackT) Unr
 }
 
 // /
-// Chooses the specified certificate for client certificate authentication.
-// NULL value means that no client certificate should be used.
+// / Chooses the specified certificate for client certificate authentication.
+// / NULL value means that no client certificate should be used.
 // /
 func (self *CSelectClientCertificateCallbackT) Select(
 	cert *CX509certificateT,
@@ -22179,8 +22855,8 @@ func (self *CSelectClientCertificateCallbackT) Select(
 }
 
 ///
-// Implement this structure to handle events related to browser requests. The
-// functions of this structure will be called on the thread indicated.
+/// Implement this structure to handle events related to browser requests. The
+/// functions of this structure will be called on the thread indicated.
 ///
 
 type cCRequestHandlerT C.cef_request_handler_t
@@ -22258,16 +22934,17 @@ func (request_handler *CRequestHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called on the UI thread before browser navigation. Return true (1) to
-// cancel the navigation or false (0) to allow the navigation to proceed. The
-// |request| object cannot be modified in this callback.
-// cef_load_handler_t::OnLoadingStateChange will be called twice in all cases.
-// If the navigation is allowed cef_load_handler_t::OnLoadStart and
-// cef_load_handler_t::OnLoadEnd will be called. If the navigation is canceled
-// cef_load_handler_t::OnLoadError will be called with an |errorCode| value of
-// ERR_ABORTED. The |user_gesture| value will be true (1) if the browser
-// navigated via explicit user gesture (e.g. clicking a link) or false (0) if
-// it navigated automatically (e.g. via the DomContentLoaded event).
+// / Called on the UI thread before browser navigation. Return true (1) to
+// / cancel the navigation or false (0) to allow the navigation to proceed. The
+// / |request| object cannot be modified in this callback.
+// / cef_load_handler_t::OnLoadingStateChange will be called twice in all
+// / cases. If the navigation is allowed cef_load_handler_t::OnLoadStart and
+// / cef_load_handler_t::OnLoadEnd will be called. If the navigation is
+// / canceled cef_load_handler_t::OnLoadError will be called with an
+// / |errorCode| value of ERR_ABORTED. The |user_gesture| value will be true
+// / (1) if the browser navigated via explicit user gesture (e.g. clicking a
+// / link) or false (0) if it navigated automatically (e.g. via the
+// / DomContentLoaded event).
 // /
 type OnBeforeBrowseHandler interface {
 	OnBeforeBrowse(
@@ -22281,20 +22958,20 @@ type OnBeforeBrowseHandler interface {
 }
 
 // /
-// Called on the UI thread before OnBeforeBrowse in certain limited cases
-// where navigating a new or different browser might be desirable. This
-// includes user-initiated navigation that might open in a special way (e.g.
-// links clicked via middle-click or ctrl + left-click) and certain types of
-// cross-origin navigation initiated from the renderer process (e.g.
-// navigating the top-level frame to/from a file URL). The |browser| and
-// |frame| values represent the source of the navigation. The
-// |target_disposition| value indicates where the user intended to navigate
-// the browser based on standard Chromium behaviors (e.g. current tab, new
-// tab, etc). The |user_gesture| value will be true (1) if the browser
-// navigated via explicit user gesture (e.g. clicking a link) or false (0) if
-// it navigated automatically (e.g. via the DomContentLoaded event). Return
-// true (1) to cancel the navigation or false (0) to allow the navigation to
-// proceed in the source browser&#39;s top-level frame.
+// / Called on the UI thread before OnBeforeBrowse in certain limited cases
+// / where navigating a new or different browser might be desirable. This
+// / includes user-initiated navigation that might open in a special way (e.g.
+// / links clicked via middle-click or ctrl + left-click) and certain types of
+// / cross-origin navigation initiated from the renderer process (e.g.
+// / navigating the top-level frame to/from a file URL). The |browser| and
+// / |frame| values represent the source of the navigation. The
+// / |target_disposition| value indicates where the user intended to navigate
+// / the browser based on standard Chromium behaviors (e.g. current tab, new
+// / tab, etc). The |user_gesture| value will be true (1) if the browser
+// / navigated via explicit user gesture (e.g. clicking a link) or false (0) if
+// / it navigated automatically (e.g. via the DomContentLoaded event). Return
+// / true (1) to cancel the navigation or false (0) to allow the navigation to
+// / proceed in the source browser&#39;s top-level frame.
 // /
 type OnOpenUrlfromTabHandler interface {
 	OnOpenUrlfromTab(
@@ -22308,20 +22985,20 @@ type OnOpenUrlfromTabHandler interface {
 }
 
 // /
-// Called on the browser process IO thread before a resource request is
-// initiated. The |browser| and |frame| values represent the source of the
-// request. |request| represents the request contents and cannot be modified
-// in this callback. |is_navigation| will be true (1) if the resource request
-// is a navigation. |is_download| will be true (1) if the resource request is
-// a download. |request_initiator| is the origin (scheme + domain) of the page
-// that initiated the request. Set |disable_default_handling| to true (1) to
-// disable default handling of the request, in which case it will need to be
-// handled via cef_resource_request_handler_t::GetResourceHandler or it will
-// be canceled. To allow the resource load to proceed with default handling
-// return NULL. To specify a handler for the resource return a
-// cef_resource_request_handler_t object. If this callback returns NULL the
-// same function will be called on the associated
-// cef_request_context_handler_t, if any.
+// / Called on the browser process IO thread before a resource request is
+// / initiated. The |browser| and |frame| values represent the source of the
+// / request. |request| represents the request contents and cannot be modified
+// / in this callback. |is_navigation| will be true (1) if the resource request
+// / is a navigation. |is_download| will be true (1) if the resource request is
+// / a download. |request_initiator| is the origin (scheme + domain) of the
+// / page that initiated the request. Set |disable_default_handling| to true
+// / (1) to disable default handling of the request, in which case it will need
+// / to be handled via cef_resource_request_handler_t::GetResourceHandler or it
+// / will be canceled. To allow the resource load to proceed with default
+// / handling return NULL. To specify a handler for the resource return a
+// / cef_resource_request_handler_t object. If this callback returns NULL the
+// / same function will be called on the associated
+// / cef_request_context_handler_t, if any.
 // /
 type CRequestHandlerTGetResourceRequestHandlerHandler interface {
 	GetResourceRequestHandler(
@@ -22336,16 +23013,16 @@ type CRequestHandlerTGetResourceRequestHandlerHandler interface {
 }
 
 // /
-// Called on the IO thread when the browser needs credentials from the user.
-// |origin_url| is the origin making this authentication request. |isProxy|
-// indicates whether the host is a proxy server. |host| contains the hostname
-// and |port| contains the port number. |realm| is the realm of the challenge
-// and may be NULL. |scheme| is the authentication scheme used, such as
-// &quot;basic&quot; or &quot;digest&quot;, and will be NULL if the source of the request is an
-// FTP server. Return true (1) to continue the request and call
-// cef_auth_callback_t::cont() either in this function or at a later time when
-// the authentication information is available. Return false (0) to cancel the
-// request immediately.
+// / Called on the IO thread when the browser needs credentials from the user.
+// / |origin_url| is the origin making this authentication request. |isProxy|
+// / indicates whether the host is a proxy server. |host| contains the hostname
+// / and |port| contains the port number. |realm| is the realm of the challenge
+// / and may be NULL. |scheme| is the authentication scheme used, such as
+// / &quot;basic&quot; or &quot;digest&quot;, and will be NULL if the source of the request is an
+// / FTP server. Return true (1) to continue the request and call
+// / cef_auth_callback_t::cont() either in this function or at a later time
+// / when the authentication information is available. Return false (0) to
+// / cancel the request immediately.
 // /
 type CRequestHandlerTGetAuthCredentialsHandler interface {
 	GetAuthCredentials(
@@ -22362,13 +23039,13 @@ type CRequestHandlerTGetAuthCredentialsHandler interface {
 }
 
 // /
-// Called on the IO thread when JavaScript requests a specific storage quota
-// size via the webkitStorageInfo.requestQuota function. |origin_url| is the
-// origin of the page making the request. |new_size| is the requested quota
-// size in bytes. Return true (1) to continue the request and call
-// cef_callback_t functions either in this function or at a later time to
-// grant or deny the request. Return false (0) to cancel the request
-// immediately.
+// / Called on the IO thread when JavaScript requests a specific storage quota
+// / size via the webkitStorageInfo.requestQuota function. |origin_url| is the
+// / origin of the page making the request. |new_size| is the requested quota
+// / size in bytes. Return true (1) to continue the request and call
+// / cef_callback_t functions either in this function or at a later time to
+// / grant or deny the request. Return false (0) to cancel the request
+// / immediately.
 // /
 type OnQuotaRequestHandler interface {
 	OnQuotaRequest(
@@ -22381,12 +23058,12 @@ type OnQuotaRequestHandler interface {
 }
 
 // /
-// Called on the UI thread to handle requests for URLs with an invalid SSL
-// certificate. Return true (1) and call cef_callback_t functions either in
-// this function or at a later time to continue or cancel the request. Return
-// false (0) to cancel the request immediately. If
-// CefSettings.ignore_certificate_errors is set all invalid certificates will
-// be accepted without calling this function.
+// / Called on the UI thread to handle requests for URLs with an invalid SSL
+// / certificate. Return true (1) and call cef_callback_t functions either in
+// / this function or at a later time to continue or cancel the request. Return
+// / false (0) to cancel the request immediately. If
+// / cef_settings_t.ignore_certificate_errors is set all invalid certificates
+// / will be accepted without calling this function.
 // /
 type OnCertificateErrorHandler interface {
 	OnCertificateError(
@@ -22400,17 +23077,17 @@ type OnCertificateErrorHandler interface {
 }
 
 // /
-// Called on the UI thread when a client certificate is being requested for
-// authentication. Return false (0) to use the default behavior and
-// automatically select the first certificate available. Return true (1) and
-// call cef_select_client_certificate_callback_t::Select either in this
-// function or at a later time to select a certificate. Do not call Select or
-// call it with NULL to continue without using any certificate. |isProxy|
-// indicates whether the host is an HTTPS proxy or the origin server. |host|
-// and |port| contains the hostname and port of the SSL server. |certificates|
-// is the list of certificates to choose from; this list has already been
-// pruned by Chromium so that it only contains certificates from issuers that
-// the server trusts.
+// / Called on the UI thread when a client certificate is being requested for
+// / authentication. Return false (0) to use the default behavior and
+// / automatically select the first certificate available. Return true (1) and
+// / call cef_select_client_certificate_callback_t::Select either in this
+// / function or at a later time to select a certificate. Do not call Select or
+// / call it with NULL to continue without using any certificate. |isProxy|
+// / indicates whether the host is an HTTPS proxy or the origin server. |host|
+// / and |port| contains the hostname and port of the SSL server.
+// / |certificates| is the list of certificates to choose from; this list has
+// / already been pruned by Chromium so that it only contains certificates from
+// / issuers that the server trusts.
 // /
 type OnSelectClientCertificateHandler interface {
 	OnSelectClientCertificate(
@@ -22425,9 +23102,9 @@ type OnSelectClientCertificateHandler interface {
 }
 
 // /
-// Called on the browser process UI thread when the render view associated
-// with |browser| is ready to receive/handle IPC messages in the render
-// process.
+// / Called on the browser process UI thread when the render view associated
+// / with |browser| is ready to receive/handle IPC messages in the render
+// / process.
 // /
 type OnRenderViewReadyHandler interface {
 	OnRenderViewReady(
@@ -22437,8 +23114,8 @@ type OnRenderViewReadyHandler interface {
 }
 
 // /
-// Called on the browser process UI thread when the render process terminates
-// unexpectedly. |status| indicates how the process terminated.
+// / Called on the browser process UI thread when the render process terminates
+// / unexpectedly. |status| indicates how the process terminated.
 // /
 type OnRenderProcessTerminatedHandler interface {
 	OnRenderProcessTerminated(
@@ -22449,8 +23126,8 @@ type OnRenderProcessTerminatedHandler interface {
 }
 
 // /
-// Called on the browser process UI thread when the window.document object of
-// the main frame has been created.
+// / Called on the browser process UI thread when the window.document object of
+// / the main frame has been created.
 // /
 type OnDocumentAvailableInMainFrameHandler interface {
 	OnDocumentAvailableInMainFrame(
@@ -22626,9 +23303,9 @@ func (request_handler *CRequestHandlerT) Handler() interface{} {
 // cef_resource_bundle_handler_capi.h, include/capi/cef_resource_bundle_handler_capi.h:99:3,
 
 ///
-// Structure used to implement a custom resource bundle structure. See
-// CefSettings for additional options related to resource bundle loading. The
-// functions of this structure may be called on multiple threads.
+/// Structure used to implement a custom resource bundle structure. See
+/// CefSettings for additional options related to resource bundle loading. The
+/// functions of this structure may be called on multiple threads.
 ///
 
 type cCResourceBundleHandlerT C.cef_resource_bundle_handler_t
@@ -22706,10 +23383,10 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called to retrieve a localized translation for the specified |string_id|.
-// To provide the translation set |string| to the translation string and
-// return true (1). To use the default translation return false (0). Include
-// cef_pack_strings.h for a listing of valid string ID values.
+// / Called to retrieve a localized translation for the specified |string_id|.
+// / To provide the translation set |string| to the translation string and
+// / return true (1). To use the default translation return false (0). Include
+// / cef_pack_strings.h for a listing of valid string ID values.
 // /
 type GetLocalizedStringHandler interface {
 	GetLocalizedString(
@@ -22719,12 +23396,12 @@ type GetLocalizedStringHandler interface {
 }
 
 // /
-// Called to retrieve data for the specified scale independent |resource_id|.
-// To provide the resource data set |data| and |data_size| to the data pointer
-// and size respectively and return true (1). To use the default resource data
-// return false (0). The resource data will not be copied and must remain
-// resident in memory. Include cef_pack_resources.h for a listing of valid
-// resource ID values.
+// / Called to retrieve data for the specified scale independent |resource_id|.
+// / To provide the resource data set |data| and |data_size| to the data
+// / pointer and size respectively and return true (1). To use the default
+// / resource data return false (0). The resource data will not be copied and
+// / must remain resident in memory. Include cef_pack_resources.h for a listing
+// / of valid resource ID values.
 // /
 type GetDataResourceHandler interface {
 	GetDataResource(
@@ -22734,12 +23411,12 @@ type GetDataResourceHandler interface {
 }
 
 // /
-// Called to retrieve data for the specified |resource_id| nearest the scale
-// factor |scale_factor|. To provide the resource data set |data| and
-// |data_size| to the data pointer and size respectively and return true (1).
-// To use the default resource data return false (0). The resource data will
-// not be copied and must remain resident in memory. Include
-// cef_pack_resources.h for a listing of valid resource ID values.
+// / Called to retrieve data for the specified |resource_id| nearest the scale
+// / factor |scale_factor|. To provide the resource data set |data| and
+// / |data_size| to the data pointer and size respectively and return true (1).
+// / To use the default resource data return false (0). The resource data will
+// / not be copied and must remain resident in memory. Include
+// / cef_pack_resources.h for a listing of valid resource ID values.
 // /
 type GetDataResourceForScaleHandler interface {
 	GetDataResourceForScale(
@@ -22846,7 +23523,7 @@ func (resource_bundle_handler *CResourceBundleHandlerT) Handler() interface{} {
 // cef_resource_handler_capi.h, include/capi/cef_resource_handler_capi.h:71:3,
 
 ///
-// Callback for asynchronous continuation of cef_resource_handler_t::skip().
+/// Callback for asynchronous continuation of cef_resource_handler_t::skip().
 ///
 
 type cCResourceSkipCallbackT C.cef_resource_skip_callback_t
@@ -22924,10 +23601,10 @@ func (resource_skip_callback *CResourceSkipCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Callback for asynchronous continuation of skip(). If |bytes_skipped| &gt; 0
-// then either skip() will be called again until the requested number of bytes
-// have been skipped or the request will proceed. If |bytes_skipped| &lt;= 0 the
-// request will fail with ERR_REQUEST_RANGE_NOT_SATISFIABLE.
+// / Callback for asynchronous continuation of skip(). If |bytes_skipped| &gt; 0
+// / then either skip() will be called again until the requested number of
+// / bytes have been skipped or the request will proceed. If |bytes_skipped| &lt;=
+// / 0 the request will fail with ERR_REQUEST_RANGE_NOT_SATISFIABLE.
 // /
 func (self *CResourceSkipCallbackT) Cont(
 	bytes_skipped int64,
@@ -22938,7 +23615,7 @@ func (self *CResourceSkipCallbackT) Cont(
 }
 
 ///
-// Callback for asynchronous continuation of cef_resource_handler_t::read().
+/// Callback for asynchronous continuation of cef_resource_handler_t::read().
 ///
 
 type cCResourceReadCallbackT C.cef_resource_read_callback_t
@@ -23016,11 +23693,11 @@ func (resource_read_callback *CResourceReadCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Callback for asynchronous continuation of read(). If |bytes_read| == 0 the
-// response will be considered complete. If |bytes_read| &gt; 0 then read() will
-// be called again until the request is complete (based on either the result
-// or the expected content length). If |bytes_read| &lt; 0 then the request will
-// fail and the |bytes_read| value will be treated as the error code.
+// / Callback for asynchronous continuation of read(). If |bytes_read| == 0 the
+// / response will be considered complete. If |bytes_read| &gt; 0 then read() will
+// / be called again until the request is complete (based on either the result
+// / or the expected content length). If |bytes_read| &lt; 0 then the request will
+// / fail and the |bytes_read| value will be treated as the error code.
 // /
 func (self *CResourceReadCallbackT) Cont(
 	bytes_read int,
@@ -23031,8 +23708,9 @@ func (self *CResourceReadCallbackT) Cont(
 }
 
 ///
-// Structure used to implement a custom request handler structure. The functions
-// of this structure will be called on the IO thread unless otherwise indicated.
+/// Structure used to implement a custom request handler structure. The
+/// functions of this structure will be called on the IO thread unless otherwise
+/// indicated.
 ///
 
 type cCResourceHandlerT C.cef_resource_handler_t
@@ -23110,14 +23788,14 @@ func (resource_handler *CResourceHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Open the response stream. To handle the request immediately set
-// |handle_request| to true (1) and return true (1). To decide at a later time
-// set |handle_request| to false (0), return true (1), and execute |callback|
-// to continue or cancel the request. To cancel the request immediately set
-// |handle_request| to true (1) and return false (0). This function will be
-// called in sequence but not from a dedicated thread. For backwards
-// compatibility set |handle_request| to false (0) and return false (0) and
-// the ProcessRequest function will be called.
+// / Open the response stream. To handle the request immediately set
+// / |handle_request| to true (1) and return true (1). To decide at a later
+// / time set |handle_request| to false (0), return true (1), and execute
+// / |callback| to continue or cancel the request. To cancel the request
+// / immediately set |handle_request| to true (1) and return false (0). This
+// / function will be called in sequence but not from a dedicated thread. For
+// / backwards compatibility set |handle_request| to false (0) and return false
+// / (0) and the ProcessRequest function will be called.
 // /
 type OpenHandler interface {
 	Open(
@@ -23128,13 +23806,13 @@ type OpenHandler interface {
 }
 
 // /
-// Begin processing the request. To handle the request return true (1) and
-// call cef_callback_t::cont() once the response header information is
-// available (cef_callback_t::cont() can also be called from inside this
-// function if header information is available immediately). To cancel the
-// request return false (0).
-//
-// WARNING: This function is deprecated. Use Open instead.
+// / Begin processing the request. To handle the request return true (1) and
+// / call cef_callback_t::cont() once the response header information is
+// / available (cef_callback_t::cont() can also be called from inside this
+// / function if header information is available immediately). To cancel the
+// / request return false (0).
+// /
+// / WARNING: This function is deprecated. Use Open instead.
 // /
 type ProcessRequestHandler interface {
 	ProcessRequest(
@@ -23145,19 +23823,19 @@ type ProcessRequestHandler interface {
 }
 
 // /
-// Retrieve response header information. If the response length is not known
-// set |response_length| to -1 and read_response() will be called until it
-// returns false (0). If the response length is known set |response_length| to
-// a positive value and read_response() will be called until it returns false
-// (0) or the specified number of bytes have been read. Use the |response|
-// object to set the mime type, http status code and other optional header
-// values. To redirect the request to a new URL set |redirectUrl| to the new
-// URL. |redirectUrl| can be either a relative or fully qualified URL. It is
-// also possible to set |response| to a redirect http status code and pass the
-// new URL via a Location header. Likewise with |redirectUrl| it is valid to
-// set a relative or fully qualified URL as the Location header value. If an
-// error occured while setting up the request you can call set_error() on
-// |response| to indicate the error condition.
+// / Retrieve response header information. If the response length is not known
+// / set |response_length| to -1 and read_response() will be called until it
+// / returns false (0). If the response length is known set |response_length|
+// / to a positive value and read_response() will be called until it returns
+// / false (0) or the specified number of bytes have been read. Use the
+// / |response| object to set the mime type, http status code and other
+// / optional header values. To redirect the request to a new URL set
+// / |redirectUrl| to the new URL. |redirectUrl| can be either a relative or
+// / fully qualified URL. It is also possible to set |response| to a redirect
+// / http status code and pass the new URL via a Location header. Likewise with
+// / |redirectUrl| it is valid to set a relative or fully qualified URL as the
+// / Location header value. If an error occured while setting up the request
+// / you can call set_error() on |response| to indicate the error condition.
 // /
 type GetResponseHeadersHandler interface {
 	GetResponseHeaders(
@@ -23167,13 +23845,13 @@ type GetResponseHeadersHandler interface {
 }
 
 // /
-// Skip response data when requested by a Range header. Skip over and discard
-// |bytes_to_skip| bytes of response data. If data is available immediately
-// set |bytes_skipped| to the number of bytes skipped and return true (1). To
-// read the data at a later time set |bytes_skipped| to 0, return true (1) and
-// execute |callback| when the data is available. To indicate failure set
-// |bytes_skipped| to &lt; 0 (e.g. -2 for ERR_FAILED) and return false (0). This
-// function will be called in sequence but not from a dedicated thread.
+// / Skip response data when requested by a Range header. Skip over and discard
+// / |bytes_to_skip| bytes of response data. If data is available immediately
+// / set |bytes_skipped| to the number of bytes skipped and return true (1). To
+// / read the data at a later time set |bytes_skipped| to 0, return true (1)
+// / and execute |callback| when the data is available. To indicate failure set
+// / |bytes_skipped| to &lt; 0 (e.g. -2 for ERR_FAILED) and return false (0). This
+// / function will be called in sequence but not from a dedicated thread.
 // /
 type SkipHandler interface {
 	Skip(
@@ -23184,17 +23862,17 @@ type SkipHandler interface {
 }
 
 // /
-// Read response data. If data is available immediately copy up to
-// |bytes_to_read| bytes into |data_out|, set |bytes_read| to the number of
-// bytes copied, and return true (1). To read the data at a later time keep a
-// pointer to |data_out|, set |bytes_read| to 0, return true (1) and execute
-// |callback| when the data is available (|data_out| will remain valid until
-// the callback is executed). To indicate response completion set |bytes_read|
-// to 0 and return false (0). To indicate failure set |bytes_read| to &lt; 0
-// (e.g. -2 for ERR_FAILED) and return false (0). This function will be called
-// in sequence but not from a dedicated thread. For backwards compatibility
-// set |bytes_read| to -1 and return false (0) and the ReadResponse function
-// will be called.
+// / Read response data. If data is available immediately copy up to
+// / |bytes_to_read| bytes into |data_out|, set |bytes_read| to the number of
+// / bytes copied, and return true (1). To read the data at a later time keep a
+// / pointer to |data_out|, set |bytes_read| to 0, return true (1) and execute
+// / |callback| when the data is available (|data_out| will remain valid until
+// / the callback is executed). To indicate response completion set
+// / |bytes_read| to 0 and return false (0). To indicate failure set
+// / |bytes_read| to &lt; 0 (e.g. -2 for ERR_FAILED) and return false (0). This
+// / function will be called in sequence but not from a dedicated thread. For
+// / backwards compatibility set |bytes_read| to -1 and return false (0) and
+// / the ReadResponse function will be called.
 // /
 type CResourceHandlerTReadHandler interface {
 	Read(
@@ -23205,7 +23883,7 @@ type CResourceHandlerTReadHandler interface {
 }
 
 // /
-// Request processing has been canceled.
+// / Request processing has been canceled.
 // /
 type CancelHandler interface {
 	Cancel(
@@ -23337,12 +24015,12 @@ func (resource_handler *CResourceHandlerT) Handler() interface{} {
 	return resource_handler_handlers.handler[cp]
 }
 
-// cef_resource_request_handler_capi.h, include/capi/cef_resource_request_handler_capi.h:208:3,
+// cef_resource_request_handler_capi.h, include/capi/cef_resource_request_handler_capi.h:209:3,
 
 ///
-// Implement this structure to handle events related to browser requests. The
-// functions of this structure will be called on the IO thread unless otherwise
-// indicated.
+/// Implement this structure to handle events related to browser requests. The
+/// functions of this structure will be called on the IO thread unless otherwise
+/// indicated.
 ///
 
 type cCResourceRequestHandlerT C.cef_resource_request_handler_t
@@ -23420,12 +24098,12 @@ func (resource_request_handler *CResourceRequestHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Called on the IO thread before a resource request is loaded. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. To
-// optionally filter cookies for the request return a
-// cef_cookie_access_filter_t object. The |request| object cannot not be
-// modified in this callback.
+// / Called on the IO thread before a resource request is loaded. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t. To
+// / optionally filter cookies for the request return a
+// / cef_cookie_access_filter_t object. The |request| object cannot not be
+// / modified in this callback.
 // /
 type GetCookieAccessFilterHandler interface {
 	GetCookieAccessFilter(
@@ -23437,15 +24115,15 @@ type GetCookieAccessFilterHandler interface {
 }
 
 // /
-// Called on the IO thread before a resource request is loaded. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. To redirect
-// or change the resource load optionally modify |request|. Modification of
-// the request URL will be treated as a redirect. Return RV_CONTINUE to
-// continue the request immediately. Return RV_CONTINUE_ASYNC and call
-// cef_callback_t functions at a later time to continue or cancel the request
-// asynchronously. Return RV_CANCEL to cancel the request immediately.
-//
+// / Called on the IO thread before a resource request is loaded. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t. To
+// / redirect or change the resource load optionally modify |request|.
+// / Modification of the request URL will be treated as a redirect. Return
+// / RV_CONTINUE to continue the request immediately. Return RV_CONTINUE_ASYNC
+// / and call cef_callback_t functions at a later time to continue or cancel
+// / the request asynchronously. Return RV_CANCEL to cancel the request
+// / immediately.
 // /
 type OnBeforeResourceLoadHandler interface {
 	OnBeforeResourceLoad(
@@ -23458,12 +24136,12 @@ type OnBeforeResourceLoadHandler interface {
 }
 
 // /
-// Called on the IO thread before a resource is loaded. The |browser| and
-// |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. To allow the
-// resource to load using the default network loader return NULL. To specify a
-// handler for the resource return a cef_resource_handler_t object. The
-// |request| object cannot not be modified in this callback.
+// / Called on the IO thread before a resource is loaded. The |browser| and
+// / |frame| values represent the source of the request, and may be NULL for
+// / requests originating from service workers or cef_urlrequest_t. To allow
+// / the resource to load using the default network loader return NULL. To
+// / specify a handler for the resource return a cef_resource_handler_t object.
+// / The |request| object cannot not be modified in this callback.
 // /
 type GetResourceHandlerHandler interface {
 	GetResourceHandler(
@@ -23475,14 +24153,14 @@ type GetResourceHandlerHandler interface {
 }
 
 // /
-// Called on the IO thread when a resource load is redirected. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. The
-// |request| parameter will contain the old URL and other request-related
-// information. The |response| parameter will contain the response that
-// resulted in the redirect. The |new_url| parameter will contain the new URL
-// and can be changed if desired. The |request| and |response| objects cannot
-// be modified in this callback.
+// / Called on the IO thread when a resource load is redirected. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t. The
+// / |request| parameter will contain the old URL and other request-related
+// / information. The |response| parameter will contain the response that
+// / resulted in the redirect. The |new_url| parameter will contain the new URL
+// / and can be changed if desired. The |request| and |response| objects cannot
+// / be modified in this callback.
 // /
 type OnResourceRedirectHandler interface {
 	OnResourceRedirect(
@@ -23495,17 +24173,18 @@ type OnResourceRedirectHandler interface {
 }
 
 // /
-// Called on the IO thread when a resource response is received. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. To allow the
-// resource load to proceed without modification return false (0). To redirect
-// or retry the resource load optionally modify |request| and return true (1).
-// Modification of the request URL will be treated as a redirect. Requests
-// handled using the default network loader cannot be redirected in this
-// callback. The |response| object cannot be modified in this callback.
-//
-// WARNING: Redirecting using this function is deprecated. Use
-// OnBeforeResourceLoad or GetResourceHandler to perform redirects.
+// / Called on the IO thread when a resource response is received. The
+// / |browser| and |frame| values represent the source of the request, and may
+// / be NULL for requests originating from service workers or cef_urlrequest_t.
+// / To allow the resource load to proceed without modification return false
+// / (0). To redirect or retry the resource load optionally modify |request|
+// / and return true (1). Modification of the request URL will be treated as a
+// / redirect. Requests handled using the default network loader cannot be
+// / redirected in this callback. The |response| object cannot be modified in
+// / this callback.
+// /
+// / WARNING: Redirecting using this function is deprecated. Use
+// / OnBeforeResourceLoad or GetResourceHandler to perform redirects.
 // /
 type OnResourceResponseHandler interface {
 	OnResourceResponse(
@@ -23518,11 +24197,11 @@ type OnResourceResponseHandler interface {
 }
 
 // /
-// Called on the IO thread to optionally filter resource response content. The
-// |browser| and |frame| values represent the source of the request, and may
-// be NULL for requests originating from service workers or cef_urlrequest_t.
-// |request| and |response| represent the request and response respectively
-// and cannot be modified in this callback.
+// / Called on the IO thread to optionally filter resource response content.
+// / The |browser| and |frame| values represent the source of the request, and
+// / may be NULL for requests originating from service workers or
+// / cef_urlrequest_t. |request| and |response| represent the request and
+// / response respectively and cannot be modified in this callback.
 // /
 type GetResourceResponseFilterHandler interface {
 	GetResourceResponseFilter(
@@ -23535,20 +24214,20 @@ type GetResourceResponseFilterHandler interface {
 }
 
 // /
-// Called on the IO thread when a resource load has completed. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. |request|
-// and |response| represent the request and response respectively and cannot
-// be modified in this callback. |status| indicates the load completion
-// status. |received_content_length| is the number of response bytes actually
-// read. This function will be called for all requests, including requests
-// that are aborted due to CEF shutdown or destruction of the associated
-// browser. In cases where the associated browser is destroyed this callback
-// may arrive after the cef_life_span_handler_t::OnBeforeClose callback for
-// that browser. The cef_frame_t::IsValid function can be used to test for
-// this situation, and care should be taken not to call |browser| or |frame|
-// functions that modify state (like LoadURL, SendProcessMessage, etc.) if the
-// frame is invalid.
+// / Called on the IO thread when a resource load has completed. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t.
+// / |request| and |response| represent the request and response respectively
+// / and cannot be modified in this callback. |status| indicates the load
+// / completion status. |received_content_length| is the number of response
+// / bytes actually read. This function will be called for all requests,
+// / including requests that are aborted due to CEF shutdown or destruction of
+// / the associated browser. In cases where the associated browser is destroyed
+// / this callback may arrive after the cef_life_span_handler_t::OnBeforeClose
+// / callback for that browser. The cef_frame_t::IsValid function can be used
+// / to test for this situation, and care should be taken not to call |browser|
+// / or |frame| functions that modify state (like LoadURL, SendProcessMessage,
+// / etc.) if the frame is invalid.
 // /
 type OnResourceLoadCompleteHandler interface {
 	OnResourceLoadComplete(
@@ -23563,14 +24242,14 @@ type OnResourceLoadCompleteHandler interface {
 }
 
 // /
-// Called on the IO thread to handle requests for URLs with an unknown
-// protocol component. The |browser| and |frame| values represent the source
-// of the request, and may be NULL for requests originating from service
-// workers or cef_urlrequest_t. |request| cannot be modified in this callback.
-// Set |allow_os_execution| to true (1) to attempt execution via the
-// registered OS protocol handler, if any. SECURITY WARNING: YOU SHOULD USE
-// THIS METHOD TO ENFORCE RESTRICTIONS BASED ON SCHEME, HOST OR OTHER URL
-// ANALYSIS BEFORE ALLOWING OS EXECUTION.
+// / Called on the IO thread to handle requests for URLs with an unknown
+// / protocol component. The |browser| and |frame| values represent the source
+// / of the request, and may be NULL for requests originating from service
+// / workers or cef_urlrequest_t. |request| cannot be modified in this
+// / callback. Set |allow_os_execution| to true (1) to attempt execution via
+// / the registered OS protocol handler, if any. SECURITY WARNING: YOU SHOULD
+// / USE THIS METHOD TO ENFORCE RESTRICTIONS BASED ON SCHEME, HOST OR OTHER URL
+// / ANALYSIS BEFORE ALLOWING OS EXECUTION.
 // /
 type OnProtocolExecutionHandler interface {
 	OnProtocolExecution(
@@ -23726,9 +24405,9 @@ func (resource_request_handler *CResourceRequestHandlerT) Handler() interface{} 
 }
 
 ///
-// Implement this structure to filter cookies that may be sent or received from
-// resource requests. The functions of this structure will be called on the IO
-// thread unless otherwise indicated.
+/// Implement this structure to filter cookies that may be sent or received from
+/// resource requests. The functions of this structure will be called on the IO
+/// thread unless otherwise indicated.
 ///
 
 type cCCookieAccessFilterT C.cef_cookie_access_filter_t
@@ -23806,11 +24485,11 @@ func (cookie_access_filter *CCookieAccessFilterT) Unref() (ret bool) {
 }
 
 // /
-// Called on the IO thread before a resource request is sent. The |browser|
-// and |frame| values represent the source of the request, and may be NULL for
-// requests originating from service workers or cef_urlrequest_t. |request|
-// cannot be modified in this callback. Return true (1) if the specified
-// cookie can be sent with the request or false (0) otherwise.
+// / Called on the IO thread before a resource request is sent. The |browser|
+// / and |frame| values represent the source of the request, and may be NULL
+// / for requests originating from service workers or cef_urlrequest_t.
+// / |request| cannot be modified in this callback. Return true (1) if the
+// / specified cookie can be sent with the request or false (0) otherwise.
 // /
 type CanSendCookieHandler interface {
 	CanSendCookie(
@@ -23823,12 +24502,12 @@ type CanSendCookieHandler interface {
 }
 
 // /
-// Called on the IO thread after a resource response is received. The
-// |browser| and |frame| values represent the source of the request, and may
-// be NULL for requests originating from service workers or cef_urlrequest_t.
-// |request| cannot be modified in this callback. Return true (1) if the
-// specified cookie returned with the response can be saved or false (0)
-// otherwise.
+// / Called on the IO thread after a resource response is received. The
+// / |browser| and |frame| values represent the source of the request, and may
+// / be NULL for requests originating from service workers or cef_urlrequest_t.
+// / |request| cannot be modified in this callback. Return true (1) if the
+// / specified cookie returned with the response can be saved or false (0)
+// / otherwise.
 // /
 type CanSaveCookieHandler interface {
 	CanSaveCookie(
@@ -23928,8 +24607,8 @@ func (cookie_access_filter *CCookieAccessFilterT) Handler() interface{} {
 // cef_response_capi.h, include/capi/cef_response_capi.h:166:3,
 
 ///
-// Structure used to represent a web response. The functions of this structure
-// may be called on any thread.
+/// Structure used to represent a web response. The functions of this structure
+/// may be called on any thread.
 ///
 
 type cCResponseT C.cef_response_t
@@ -24007,7 +24686,7 @@ func (response *CResponseT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is read-only.
+// / Returns true (1) if this object is read-only.
 // /
 func (self *CResponseT) IsReadOnly() (ret bool) {
 
@@ -24018,7 +24697,7 @@ func (self *CResponseT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Get the response error code. Returns ERR_NONE if there was no error.
+// / Get the response error code. Returns ERR_NONE if there was no error.
 // /
 func (self *CResponseT) GetError() (ret CErrorcodeT) {
 
@@ -24029,8 +24708,8 @@ func (self *CResponseT) GetError() (ret CErrorcodeT) {
 }
 
 // /
-// Set the response error code. This can be used by custom scheme handlers to
-// return errors during initial request processing.
+// / Set the response error code. This can be used by custom scheme handlers to
+// / return errors during initial request processing.
 // /
 func (self *CResponseT) SetError(
 	error CErrorcodeT,
@@ -24041,7 +24720,7 @@ func (self *CResponseT) SetError(
 }
 
 // /
-// Get the response status code.
+// / Get the response status code.
 // /
 func (self *CResponseT) GetStatus() (ret bool) {
 
@@ -24052,7 +24731,7 @@ func (self *CResponseT) GetStatus() (ret bool) {
 }
 
 // /
-// Set the response status code.
+// / Set the response status code.
 // /
 func (self *CResponseT) SetStatus(
 	status int,
@@ -24063,7 +24742,7 @@ func (self *CResponseT) SetStatus(
 }
 
 // /
-// Get the response status text.
+// / Get the response status text.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetStatusText() (ret string) {
@@ -24079,7 +24758,7 @@ func (self *CResponseT) GetStatusText() (ret string) {
 }
 
 // /
-// Set the response status text.
+// / Set the response status text.
 // /
 func (self *CResponseT) SetStatusText(
 	statusText string,
@@ -24091,7 +24770,7 @@ func (self *CResponseT) SetStatusText(
 }
 
 // /
-// Get the response mime type.
+// / Get the response mime type.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetMimeType() (ret string) {
@@ -24107,7 +24786,7 @@ func (self *CResponseT) GetMimeType() (ret string) {
 }
 
 // /
-// Set the response mime type.
+// / Set the response mime type.
 // /
 func (self *CResponseT) SetMimeType(
 	mimeType string,
@@ -24119,7 +24798,7 @@ func (self *CResponseT) SetMimeType(
 }
 
 // /
-// Get the response charset.
+// / Get the response charset.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetCharset() (ret string) {
@@ -24135,7 +24814,7 @@ func (self *CResponseT) GetCharset() (ret string) {
 }
 
 // /
-// Set the response charset.
+// / Set the response charset.
 // /
 func (self *CResponseT) SetCharset(
 	charset string,
@@ -24147,7 +24826,7 @@ func (self *CResponseT) SetCharset(
 }
 
 // /
-// Get the value for the specified response header field.
+// / Get the value for the specified response header field.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetHeaderByName(
@@ -24166,9 +24845,9 @@ func (self *CResponseT) GetHeaderByName(
 }
 
 // /
-// Set the header |name| to |value|. If |overwrite| is true (1) any existing
-// values will be replaced with the new value. If |overwrite| is false (0) any
-// existing values will not be overwritten.
+// / Set the header |name| to |value|. If |overwrite| is true (1) any existing
+// / values will be replaced with the new value. If |overwrite| is false (0)
+// / any existing values will not be overwritten.
 // /
 func (self *CResponseT) SetHeaderByName(
 	name string,
@@ -24183,7 +24862,7 @@ func (self *CResponseT) SetHeaderByName(
 }
 
 // /
-// Get all response header fields.
+// / Get all response header fields.
 // /
 func (self *CResponseT) GetHeaderMap(
 	headerMap CStringMultimapT,
@@ -24194,7 +24873,7 @@ func (self *CResponseT) GetHeaderMap(
 }
 
 // /
-// Set all response header fields.
+// / Set all response header fields.
 // /
 func (self *CResponseT) SetHeaderMap(
 	headerMap CStringMultimapT,
@@ -24205,7 +24884,7 @@ func (self *CResponseT) SetHeaderMap(
 }
 
 // /
-// Get the resolved URL after redirects or changed as a result of HSTS.
+// / Get the resolved URL after redirects or changed as a result of HSTS.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CResponseT) GetUrl() (ret string) {
@@ -24221,7 +24900,7 @@ func (self *CResponseT) GetUrl() (ret string) {
 }
 
 // /
-// Set the resolved URL after redirects or changed as a result of HSTS.
+// / Set the resolved URL after redirects or changed as a result of HSTS.
 // /
 func (self *CResponseT) SetUrl(
 	url string,
@@ -24233,7 +24912,7 @@ func (self *CResponseT) SetUrl(
 }
 
 // /
-// Create a new cef_response_t object.
+// / Create a new cef_response_t object.
 // /
 func ResponseCreate() (ret *CResponseT) {
 
@@ -24246,8 +24925,8 @@ func ResponseCreate() (ret *CResponseT) {
 // cef_response_filter_capi.h, include/capi/cef_response_filter_capi.h:104:3,
 
 ///
-// Implement this structure to filter resource response content. The functions
-// of this structure will be called on the browser process IO thread.
+/// Implement this structure to filter resource response content. The functions
+/// of this structure will be called on the browser process IO thread.
 ///
 
 type cCResponseFilterT C.cef_response_filter_t
@@ -24325,8 +25004,8 @@ func (response_filter *CResponseFilterT) Unref() (ret bool) {
 }
 
 // /
-// Initialize the response filter. Will only be called a single time. The
-// filter will not be installed if this function returns false (0).
+// / Initialize the response filter. Will only be called a single time. The
+// / filter will not be installed if this function returns false (0).
 // /
 type InitFilterHandler interface {
 	InitFilter(
@@ -24335,35 +25014,35 @@ type InitFilterHandler interface {
 }
 
 // /
-// Called to filter a chunk of data. Expected usage is as follows:
-//
-//	A. Read input data from |data_in| and set |data_in_read| to the number of
-//	   bytes that were read up to a maximum of |data_in_size|. |data_in| will
-//	   be NULL if |data_in_size| is zero.
-//	B. Write filtered output data to |data_out| and set |data_out_written| to
-//	   the number of bytes that were written up to a maximum of
-//	   |data_out_size|. If no output data was written then all data must be
-//	   read from |data_in| (user must set |data_in_read| = |data_in_size|).
-//	C. Return RESPONSE_FILTER_DONE if all output data was written or
-//	   RESPONSE_FILTER_NEED_MORE_DATA if output data is still pending.
-//
-// This function will be called repeatedly until the input buffer has been
-// fully read (user sets |data_in_read| = |data_in_size|) and there is no more
-// input data to filter (the resource response is complete). This function may
-// then be called an additional time with an NULL input buffer if the user
-// filled the output buffer (set |data_out_written| = |data_out_size|) and
-// returned RESPONSE_FILTER_NEED_MORE_DATA to indicate that output data is
-// still pending.
-//
-// Calls to this function will stop when one of the following conditions is
-// met:
-//
-//	A. There is no more input data to filter (the resource response is
-//	   complete) and the user sets |data_out_written| = 0 or returns
-//	   RESPONSE_FILTER_DONE to indicate that all data has been written, or;
-//	B. The user returns RESPONSE_FILTER_ERROR to indicate an error.
-//
-// Do not keep a reference to the buffers passed to this function.
+// / Called to filter a chunk of data. Expected usage is as follows:
+// /
+// /  1. Read input data from |data_in| and set |data_in_read| to the number of
+// /     bytes that were read up to a maximum of |data_in_size|. |data_in| will
+// /     be NULL if |data_in_size| is zero.
+// /  2. Write filtered output data to |data_out| and set |data_out_written| to
+// /     the number of bytes that were written up to a maximum of
+// /     |data_out_size|. If no output data was written then all data must be
+// /     read from |data_in| (user must set |data_in_read| = |data_in_size|).
+// /  3. Return RESPONSE_FILTER_DONE if all output data was written or
+// /     RESPONSE_FILTER_NEED_MORE_DATA if output data is still pending.
+// /
+// / This function will be called repeatedly until the input buffer has been
+// / fully read (user sets |data_in_read| = |data_in_size|) and there is no
+// / more input data to filter (the resource response is complete). This
+// / function may then be called an additional time with an NULL input buffer
+// / if the user filled the output buffer (set |data_out_written| =
+// / |data_out_size|) and returned RESPONSE_FILTER_NEED_MORE_DATA to indicate
+// / that output data is still pending.
+// /
+// / Calls to this function will stop when one of the following conditions is
+// / met:
+// /
+// /  1. There is no more input data to filter (the resource response is
+// /     complete) and the user sets |data_out_written| = 0 or returns
+// /     RESPONSE_FILTER_DONE to indicate that all data has been written, or;
+// /  2. The user returns RESPONSE_FILTER_ERROR to indicate an error.
+// /
+// / Do not keep a reference to the buffers passed to this function.
 // /
 type FilterHandler interface {
 	Filter(
@@ -24460,7 +25139,7 @@ func (response_filter *CResponseFilterT) Handler() interface{} {
 // cef_scheme_capi.h, include/capi/cef_scheme_capi.h:78:3,
 
 ///
-// Structure that manages custom scheme registrations.
+/// Structure that manages custom scheme registrations.
 ///
 
 type cCSchemeRegistrarT C.cef_scheme_registrar_t
@@ -24497,14 +25176,14 @@ func newCSchemeRegistrarT(p *C.cef_scheme_registrar_t) *CSchemeRegistrarT {
 }
 
 // /
-// Register a custom scheme. This function should not be called for the built-
-// in HTTP, HTTPS, FILE, FTP, ABOUT and DATA schemes.
-//
-// See cef_scheme_options_t for possible values for |options|.
-//
-// This function may be called on any thread. It should only be called once
-// per unique |scheme_name| value. If |scheme_name| is already registered or
-// if an error occurs this function will return false (0).
+// / Register a custom scheme. This function should not be called for the
+// / built-in HTTP, HTTPS, FILE, FTP, ABOUT and DATA schemes.
+// /
+// / See cef_scheme_options_t for possible values for |options|.
+// /
+// / This function may be called on any thread. It should only be called once
+// / per unique |scheme_name| value. If |scheme_name| is already registered or
+// / if an error occurs this function will return false (0).
 // /
 func (self *CSchemeRegistrarT) AddCustomScheme(
 	scheme_name string,
@@ -24519,9 +25198,9 @@ func (self *CSchemeRegistrarT) AddCustomScheme(
 }
 
 ///
-// Structure that creates cef_resource_handler_t instances for handling scheme
-// requests. The functions of this structure will always be called on the IO
-// thread.
+/// Structure that creates cef_resource_handler_t instances for handling scheme
+/// requests. The functions of this structure will always be called on the IO
+/// thread.
 ///
 
 type cCSchemeHandlerFactoryT C.cef_scheme_handler_factory_t
@@ -24599,12 +25278,12 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Unref() (ret bool) {
 }
 
 // /
-// Return a new resource handler instance to handle the request or an NULL
-// reference to allow default handling of the request. |browser| and |frame|
-// will be the browser window and frame respectively that originated the
-// request or NULL if the request did not originate from a browser window (for
-// example, if the request came from cef_urlrequest_t). The |request| object
-// passed to this function cannot be modified.
+// / Return a new resource handler instance to handle the request or an NULL
+// / reference to allow default handling of the request. |browser| and |frame|
+// / will be the browser window and frame respectively that originated the
+// / request or NULL if the request did not originate from a browser window
+// / (for example, if the request came from cef_urlrequest_t). The |request|
+// / object passed to this function cannot be modified.
 // /
 type CreateHandler interface {
 	Create(
@@ -24691,19 +25370,19 @@ func (scheme_handler_factory *CSchemeHandlerFactoryT) Handler() interface{} {
 }
 
 // /
-// Register a scheme handler factory with the global request context. An NULL
-// |domain_name| value for a standard scheme will cause the factory to match all
-// domain names. The |domain_name| value will be ignored for non-standard
-// schemes. If |scheme_name| is a built-in scheme and no handler is returned by
-// |factory| then the built-in scheme handler factory will be called. If
-// |scheme_name| is a custom scheme then you must also implement the
-// cef_app_t::on_register_custom_schemes() function in all processes. This
-// function may be called multiple times to change or remove the factory that
-// matches the specified |scheme_name| and optional |domain_name|. Returns false
-// (0) if an error occurs. This function may be called on any thread in the
-// browser process. Using this function is equivalent to calling cef_request_con
-// text_t::cef_request_context_get_global_context()->register_scheme_handler_fac
-// tory().
+// / Register a scheme handler factory with the global request context. An NULL
+// / |domain_name| value for a standard scheme will cause the factory to match
+// / all domain names. The |domain_name| value will be ignored for non-standard
+// / schemes. If |scheme_name| is a built-in scheme and no handler is returned by
+// / |factory| then the built-in scheme handler factory will be called. If
+// / |scheme_name| is a custom scheme then you must also implement the
+// / cef_app_t::on_register_custom_schemes() function in all processes. This
+// / function may be called multiple times to change or remove the factory that
+// / matches the specified |scheme_name| and optional |domain_name|. Returns
+// / false (0) if an error occurs. This function may be called on any thread in
+// / the browser process. Using this function is equivalent to calling cef_reques
+// / t_context_t::cef_request_context_get_global_context()->register_scheme_handl
+// / er_factory().
 // /
 func RegisterSchemeHandlerFactory(
 	scheme_name string,
@@ -24725,11 +25404,11 @@ func RegisterSchemeHandlerFactory(
 }
 
 // /
-// Clear all scheme handler factories registered with the global request
-// context. Returns false (0) on error. This function may be called on any
-// thread in the browser process. Using this function is equivalent to calling c
-// ef_request_context_t::cef_request_context_get_global_context()->clear_scheme_
-// handler_factories().
+// / Clear all scheme handler factories registered with the global request
+// / context. Returns false (0) on error. This function may be called on any
+// / thread in the browser process. Using this function is equivalent to calling
+// / cef_request_context_t::cef_request_context_get_global_context()->clear_schem
+// / e_handler_factories().
 // /
 func ClearSchemeHandlerFactories() (ret bool) {
 
@@ -24742,9 +25421,9 @@ func ClearSchemeHandlerFactories() (ret bool) {
 // cef_scroll_view_capi.h, include/capi/views/cef_scroll_view_capi.h:100:3,
 
 ///
-// A ScrollView will show horizontal and/or vertical scrollbars when necessary
-// based on the size of the attached content view. Methods must be called on the
-// browser process UI thread unless otherwise indicated.
+/// A ScrollView will show horizontal and/or vertical scrollbars when necessary
+/// based on the size of the attached content view. Methods must be called on
+/// the browser process UI thread unless otherwise indicated.
 ///
 
 type cCScrollViewT C.cef_scroll_view_t
@@ -24829,8 +25508,8 @@ func (scroll_view *CScrollViewT) ToCViewT() *CViewT {
 }
 
 // /
-// Set the content View. The content View must have a specified size (e.g. via
-// cef_view_t::SetBounds or cef_view_delegate_t::GetPreferredSize).
+// / Set the content View. The content View must have a specified size (e.g.
+// / via cef_view_t::SetBounds or cef_view_delegate_t::GetPreferredSize).
 // /
 func (self *CScrollViewT) SetContentView(
 	view *CViewT,
@@ -24846,7 +25525,7 @@ func (self *CScrollViewT) SetContentView(
 }
 
 // /
-// Returns the content View.
+// / Returns the content View.
 // /
 func (self *CScrollViewT) GetContentView() (ret *CViewT) {
 
@@ -24857,7 +25536,7 @@ func (self *CScrollViewT) GetContentView() (ret *CViewT) {
 }
 
 // /
-// Returns the visible region of the content View.
+// / Returns the visible region of the content View.
 // /
 func (self *CScrollViewT) GetVisibleContentRect() (ret CRectT) {
 
@@ -24868,7 +25547,7 @@ func (self *CScrollViewT) GetVisibleContentRect() (ret CRectT) {
 }
 
 // /
-// Returns true (1) if the horizontal scrollbar is currently showing.
+// / Returns true (1) if the horizontal scrollbar is currently showing.
 // /
 func (self *CScrollViewT) HasHorizontalScrollbar() (ret bool) {
 
@@ -24879,7 +25558,7 @@ func (self *CScrollViewT) HasHorizontalScrollbar() (ret bool) {
 }
 
 // /
-// Returns the height of the horizontal scrollbar.
+// / Returns the height of the horizontal scrollbar.
 // /
 func (self *CScrollViewT) GetHorizontalScrollbarHeight() (ret bool) {
 
@@ -24890,7 +25569,7 @@ func (self *CScrollViewT) GetHorizontalScrollbarHeight() (ret bool) {
 }
 
 // /
-// Returns true (1) if the vertical scrollbar is currently showing.
+// / Returns true (1) if the vertical scrollbar is currently showing.
 // /
 func (self *CScrollViewT) HasVerticalScrollbar() (ret bool) {
 
@@ -24901,7 +25580,7 @@ func (self *CScrollViewT) HasVerticalScrollbar() (ret bool) {
 }
 
 // /
-// Returns the width of the vertical scrollbar.
+// / Returns the width of the vertical scrollbar.
 // /
 func (self *CScrollViewT) GetVerticalScrollbarWidth() (ret bool) {
 
@@ -24912,7 +25591,7 @@ func (self *CScrollViewT) GetVerticalScrollbarWidth() (ret bool) {
 }
 
 // /
-// Create a new ScrollView.
+// / Create a new ScrollView.
 // /
 func ScrollViewCreate(
 	delegate *CViewDelegateT,
@@ -24929,10 +25608,124 @@ func ScrollViewCreate(
 	return ret
 }
 
+// cef_shared_memory_region_capi.h, include/capi/cef_shared_memory_region_capi.h:73:3,
+
+///
+/// Structure that wraps platform-dependent share memory region mapping.
+///
+
+type cCSharedMemoryRegionT C.cef_shared_memory_region_t
+
+// Go type for cef_shared_memory_region_t
+type CSharedMemoryRegionT struct {
+	noCopy                  noCopy
+	pc_shared_memory_region *cCSharedMemoryRegionT
+	beUnrefed               unrefedBy
+}
+
+func (p *CSharedMemoryRegionT) Pass() (ret *CSharedMemoryRegionT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+		ret = newCSharedMemoryRegionT((*C.cef_shared_memory_region_t)(p.pc_shared_memory_region), byCef)
+	case byApi, byCef:
+		ret = p
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+
+	return ret
+}
+
+func (self *CSharedMemoryRegionT) NewRef() (newP *CSharedMemoryRegionT) {
+	if self == nil {
+		return newP
+	}
+	gop := self.pc_shared_memory_region
+	BaseAddRef(gop)
+	newP = newCSharedMemoryRegionT((*C.cef_shared_memory_region_t)(gop), byApp)
+	return newP
+}
+
+// Go type CSharedMemoryRegionT wraps cef type *C.cef_shared_memory_region_t
+func newCSharedMemoryRegionT(p *C.cef_shared_memory_region_t, unrefedBy unrefedBy) *CSharedMemoryRegionT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T398.1:")
+	pc := (*cCSharedMemoryRegionT)(p)
+	go_shared_memory_region := &CSharedMemoryRegionT{noCopy{}, pc, unrefedBy}
+	// BaseAddRef(pc)
+	runtime.SetFinalizer(go_shared_memory_region, func(g *CSharedMemoryRegionT) {
+		// same as g.Unref()
+		if g.beUnrefed == byApp && g.pc_shared_memory_region != nil {
+			Tracef(unsafe.Pointer(g.pc_shared_memory_region), "T398.2:")
+			BaseRelease(g.pc_shared_memory_region)
+		}
+	})
+
+	return go_shared_memory_region
+}
+
+// *C.cef_shared_memory_region_t has refCounted interface
+func (shared_memory_region *CSharedMemoryRegionT) HasOneRef() bool {
+	return BaseHasOneRef(shared_memory_region.pc_shared_memory_region)
+}
+
+func (p *cCSharedMemoryRegionT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (shared_memory_region *CSharedMemoryRegionT) Unref() (ret bool) {
+	if shared_memory_region == nil {
+		return
+	}
+	if shared_memory_region.beUnrefed == byApp {
+		ret = BaseRelease(shared_memory_region.pc_shared_memory_region)
+		shared_memory_region.beUnrefed = unrefed
+	}
+	shared_memory_region.pc_shared_memory_region = nil
+	return ret
+}
+
+// /
+// / Returns true (1) if the mapping is valid.
+// /
+func (self *CSharedMemoryRegionT) IsValid() (ret bool) {
+
+	cRet := C.cefingo_shared_memory_region_is_valid((*C.cef_shared_memory_region_t)(self.pc_shared_memory_region))
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Returns the size of the mapping in bytes. Returns 0 for invalid instances.
+// /
+func (self *CSharedMemoryRegionT) Size() (ret int64) {
+
+	cRet := C.cefingo_shared_memory_region_size((*C.cef_shared_memory_region_t)(self.pc_shared_memory_region))
+
+	ret = (int64)(cRet) // return GoObj
+	return ret
+}
+
+// /
+// / Returns the pointer to the memory. Returns nullptr for invalid instances.
+// / The returned pointer is only valid for the life span of this object.
+// /
+func (self *CSharedMemoryRegionT) Memory() (ret unsafe.Pointer) {
+
+	cRet := C.cefingo_shared_memory_region_memory((*C.cef_shared_memory_region_t)(self.pc_shared_memory_region))
+
+	ret = unsafe.Pointer(cRet) // return GoObj
+	return ret
+}
+
 // cef_ssl_info_capi.h, include/capi/cef_ssl_info_capi.h:71:3,
 
 ///
-// Structure representing SSL information.
+/// Structure representing SSL information.
 ///
 
 type cCSslinfoT C.cef_sslinfo_t
@@ -25010,8 +25803,8 @@ func (sslinfo *CSslinfoT) Unref() (ret bool) {
 }
 
 // /
-// Returns a bitmask containing any and all problems verifying the server
-// certificate.
+// / Returns a bitmask containing any and all problems verifying the server
+// / certificate.
 // /
 func (self *CSslinfoT) GetCertStatus() (ret CCertStatusT) {
 
@@ -25022,7 +25815,7 @@ func (self *CSslinfoT) GetCertStatus() (ret CCertStatusT) {
 }
 
 // /
-// Returns the X.509 certificate.
+// / Returns the X.509 certificate.
 // /
 func (self *CSslinfoT) GetX509certificate() (ret *CX509certificateT) {
 
@@ -25033,7 +25826,7 @@ func (self *CSslinfoT) GetX509certificate() (ret *CX509certificateT) {
 }
 
 // /
-// Returns true (1) if the certificate status represents an error.
+// / Returns true (1) if the certificate status represents an error.
 // /
 func IsCertStatusError(
 	status CCertStatusT,
@@ -25048,7 +25841,7 @@ func IsCertStatusError(
 // cef_ssl_status_capi.h, include/capi/cef_ssl_status_capi.h:89:3,
 
 ///
-// Structure representing the SSL information for a navigation entry.
+/// Structure representing the SSL information for a navigation entry.
 ///
 
 type cCSslstatusT C.cef_sslstatus_t
@@ -25126,7 +25919,7 @@ func (sslstatus *CSslstatusT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if the status is related to a secure SSL/TLS connection.
+// / Returns true (1) if the status is related to a secure SSL/TLS connection.
 // /
 func (self *CSslstatusT) IsSecureConnection() (ret bool) {
 
@@ -25137,8 +25930,8 @@ func (self *CSslstatusT) IsSecureConnection() (ret bool) {
 }
 
 // /
-// Returns a bitmask containing any and all problems verifying the server
-// certificate.
+// / Returns a bitmask containing any and all problems verifying the server
+// / certificate.
 // /
 func (self *CSslstatusT) GetCertStatus() (ret CCertStatusT) {
 
@@ -25149,7 +25942,7 @@ func (self *CSslstatusT) GetCertStatus() (ret CCertStatusT) {
 }
 
 // /
-// Returns the SSL version used for the SSL connection.
+// / Returns the SSL version used for the SSL connection.
 // /
 func (self *CSslstatusT) GetSslversion() (ret CSslVersionT) {
 
@@ -25160,7 +25953,7 @@ func (self *CSslstatusT) GetSslversion() (ret CSslVersionT) {
 }
 
 // /
-// Returns a bitmask containing the page security content status.
+// / Returns a bitmask containing the page security content status.
 // /
 func (self *CSslstatusT) GetContentStatus() (ret CSslContentStatusT) {
 
@@ -25171,7 +25964,7 @@ func (self *CSslstatusT) GetContentStatus() (ret CSslContentStatusT) {
 }
 
 // /
-// Returns the X.509 certificate.
+// / Returns the X.509 certificate.
 // /
 func (self *CSslstatusT) GetX509certificate() (ret *CX509certificateT) {
 
@@ -25181,11 +25974,11 @@ func (self *CSslstatusT) GetX509certificate() (ret *CX509certificateT) {
 	return ret
 }
 
-// cef_stream_capi.h, include/capi/cef_stream_capi.h:91:3,
+// cef_stream_capi.h, include/capi/cef_stream_capi.h:92:3,
 
 ///
-// Structure the client can implement to provide a custom stream reader. The
-// functions of this structure may be called on any thread.
+/// Structure the client can implement to provide a custom stream reader. The
+/// functions of this structure may be called on any thread.
 ///
 
 type cCReadHandlerT C.cef_read_handler_t
@@ -25263,7 +26056,7 @@ func (read_handler *CReadHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Read raw binary data.
+// / Read raw binary data.
 // /
 type CReadHandlerTReadHandler interface {
 	Read(
@@ -25275,8 +26068,9 @@ type CReadHandlerTReadHandler interface {
 }
 
 // /
-// Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
-// SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
+// / Seek to the specified offset position. |whence| may be any one of
+// / SEEK_CUR, SEEK_END or SEEK_SET. Return zero on success and non-zero on
+// / failure.
 // /
 type CReadHandlerTSeekHandler interface {
 	Seek(
@@ -25287,7 +26081,7 @@ type CReadHandlerTSeekHandler interface {
 }
 
 // /
-// Return the current offset position.
+// / Return the current offset position.
 // /
 type CReadHandlerTTellHandler interface {
 	Tell(
@@ -25296,7 +26090,7 @@ type CReadHandlerTTellHandler interface {
 }
 
 // /
-// Return non-zero if at end of file.
+// / Return non-zero if at end of file.
 // /
 type EofHandler interface {
 	Eof(
@@ -25305,9 +26099,9 @@ type EofHandler interface {
 }
 
 // /
-// Return true (1) if this handler performs work like accessing the file
-// system which may block. Used as a hint for determining the thread to access
-// the handler from.
+// / Return true (1) if this handler performs work like accessing the file
+// / system which may block. Used as a hint for determining the thread to
+// / access the handler from.
 // /
 type CReadHandlerTMayBlockHandler interface {
 	MayBlock(
@@ -25430,8 +26224,8 @@ func (read_handler *CReadHandlerT) Handler() interface{} {
 }
 
 ///
-// Structure used to read data from a stream. The functions of this structure
-// may be called on any thread.
+/// Structure used to read data from a stream. The functions of this structure
+/// may be called on any thread.
 ///
 
 type cCStreamReaderT C.cef_stream_reader_t
@@ -25509,7 +26303,7 @@ func (stream_reader *CStreamReaderT) Unref() (ret bool) {
 }
 
 // /
-// Read raw binary data.
+// / Read raw binary data.
 // /
 func (self *CStreamReaderT) Read(
 	ptr unsafe.Pointer,
@@ -25524,8 +26318,9 @@ func (self *CStreamReaderT) Read(
 }
 
 // /
-// Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
-// SEEK_END or SEEK_SET. Returns zero on success and non-zero on failure.
+// / Seek to the specified offset position. |whence| may be any one of
+// / SEEK_CUR, SEEK_END or SEEK_SET. Returns zero on success and non-zero on
+// / failure.
 // /
 func (self *CStreamReaderT) Seek(
 	offset int64,
@@ -25539,7 +26334,7 @@ func (self *CStreamReaderT) Seek(
 }
 
 // /
-// Return the current offset position.
+// / Return the current offset position.
 // /
 func (self *CStreamReaderT) Tell() (ret int64) {
 
@@ -25550,7 +26345,7 @@ func (self *CStreamReaderT) Tell() (ret int64) {
 }
 
 // /
-// Return non-zero if at end of file.
+// / Return non-zero if at end of file.
 // /
 func (self *CStreamReaderT) Eof() (ret bool) {
 
@@ -25561,9 +26356,9 @@ func (self *CStreamReaderT) Eof() (ret bool) {
 }
 
 // /
-// Returns true (1) if this reader performs work like accessing the file
-// system which may block. Used as a hint for determining the thread to access
-// the reader from.
+// / Returns true (1) if this reader performs work like accessing the file
+// / system which may block. Used as a hint for determining the thread to
+// / access the reader from.
 // /
 func (self *CStreamReaderT) MayBlock() (ret bool) {
 
@@ -25574,7 +26369,7 @@ func (self *CStreamReaderT) MayBlock() (ret bool) {
 }
 
 // /
-// Create a new cef_stream_reader_t object from a file.
+// / Create a new cef_stream_reader_t object from a file.
 // /
 func StreamReaderCreateForFile(
 	fileName string,
@@ -25588,7 +26383,7 @@ func StreamReaderCreateForFile(
 }
 
 // /
-// Create a new cef_stream_reader_t object from data.
+// / Create a new cef_stream_reader_t object from data.
 // /
 func StreamReaderCreateForData(
 	data []byte,
@@ -25604,7 +26399,7 @@ func StreamReaderCreateForData(
 }
 
 // /
-// Create a new cef_stream_reader_t object from a custom handler.
+// / Create a new cef_stream_reader_t object from a custom handler.
 // /
 func StreamReaderCreateForHandler(
 	handler *CReadHandlerT,
@@ -25622,8 +26417,8 @@ func StreamReaderCreateForHandler(
 }
 
 ///
-// Structure the client can implement to provide a custom stream writer. The
-// functions of this structure may be called on any thread.
+/// Structure the client can implement to provide a custom stream writer. The
+/// functions of this structure may be called on any thread.
 ///
 
 type cCWriteHandlerT C.cef_write_handler_t
@@ -25701,7 +26496,7 @@ func (write_handler *CWriteHandlerT) Unref() (ret bool) {
 }
 
 // /
-// Write raw binary data.
+// / Write raw binary data.
 // /
 type WriteHandler interface {
 	Write(
@@ -25713,8 +26508,9 @@ type WriteHandler interface {
 }
 
 // /
-// Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
-// SEEK_END or SEEK_SET. Return zero on success and non-zero on failure.
+// / Seek to the specified offset position. |whence| may be any one of
+// / SEEK_CUR, SEEK_END or SEEK_SET. Return zero on success and non-zero on
+// / failure.
 // /
 type CWriteHandlerTSeekHandler interface {
 	Seek(
@@ -25725,7 +26521,7 @@ type CWriteHandlerTSeekHandler interface {
 }
 
 // /
-// Return the current offset position.
+// / Return the current offset position.
 // /
 type CWriteHandlerTTellHandler interface {
 	Tell(
@@ -25734,7 +26530,7 @@ type CWriteHandlerTTellHandler interface {
 }
 
 // /
-// Flush the stream.
+// / Flush the stream.
 // /
 type FlushHandler interface {
 	Flush(
@@ -25743,9 +26539,9 @@ type FlushHandler interface {
 }
 
 // /
-// Return true (1) if this handler performs work like accessing the file
-// system which may block. Used as a hint for determining the thread to access
-// the handler from.
+// / Return true (1) if this handler performs work like accessing the file
+// / system which may block. Used as a hint for determining the thread to
+// / access the handler from.
 // /
 type CWriteHandlerTMayBlockHandler interface {
 	MayBlock(
@@ -25868,8 +26664,8 @@ func (write_handler *CWriteHandlerT) Handler() interface{} {
 }
 
 ///
-// Structure used to write data to a stream. The functions of this structure may
-// be called on any thread.
+/// Structure used to write data to a stream. The functions of this structure
+/// may be called on any thread.
 ///
 
 type cCStreamWriterT C.cef_stream_writer_t
@@ -25947,7 +26743,7 @@ func (stream_writer *CStreamWriterT) Unref() (ret bool) {
 }
 
 // /
-// Write raw binary data.
+// / Write raw binary data.
 // /
 func (self *CStreamWriterT) Write(
 	ptr unsafe.Pointer,
@@ -25962,8 +26758,9 @@ func (self *CStreamWriterT) Write(
 }
 
 // /
-// Seek to the specified offset position. |whence| may be any one of SEEK_CUR,
-// SEEK_END or SEEK_SET. Returns zero on success and non-zero on failure.
+// / Seek to the specified offset position. |whence| may be any one of
+// / SEEK_CUR, SEEK_END or SEEK_SET. Returns zero on success and non-zero on
+// / failure.
 // /
 func (self *CStreamWriterT) Seek(
 	offset int64,
@@ -25977,7 +26774,7 @@ func (self *CStreamWriterT) Seek(
 }
 
 // /
-// Return the current offset position.
+// / Return the current offset position.
 // /
 func (self *CStreamWriterT) Tell() (ret int64) {
 
@@ -25988,7 +26785,7 @@ func (self *CStreamWriterT) Tell() (ret int64) {
 }
 
 // /
-// Flush the stream.
+// / Flush the stream.
 // /
 func (self *CStreamWriterT) Flush() (ret bool) {
 
@@ -25999,9 +26796,9 @@ func (self *CStreamWriterT) Flush() (ret bool) {
 }
 
 // /
-// Returns true (1) if this writer performs work like accessing the file
-// system which may block. Used as a hint for determining the thread to access
-// the writer from.
+// / Returns true (1) if this writer performs work like accessing the file
+// / system which may block. Used as a hint for determining the thread to
+// / access the writer from.
 // /
 func (self *CStreamWriterT) MayBlock() (ret bool) {
 
@@ -26012,7 +26809,7 @@ func (self *CStreamWriterT) MayBlock() (ret bool) {
 }
 
 // /
-// Create a new cef_stream_writer_t object for a file.
+// / Create a new cef_stream_writer_t object for a file.
 // /
 func StreamWriterCreateForFile(
 	fileName string,
@@ -26026,7 +26823,7 @@ func StreamWriterCreateForFile(
 }
 
 // /
-// Create a new cef_stream_writer_t object for a custom handler.
+// / Create a new cef_stream_writer_t object for a custom handler.
 // /
 func StreamWriterCreateForHandler(
 	handler *CWriteHandlerT,
@@ -26046,7 +26843,7 @@ func StreamWriterCreateForHandler(
 // cef_string_visitor_capi.h, include/capi/cef_string_visitor_capi.h:63:3,
 
 ///
-// Implement this structure to receive string values asynchronously.
+/// Implement this structure to receive string values asynchronously.
 ///
 
 type cCStringVisitorT C.cef_string_visitor_t
@@ -26124,7 +26921,7 @@ func (string_visitor *CStringVisitorT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be executed.
+// / Method that will be executed.
 // /
 type CStringVisitorTVisitHandler interface {
 	Visit(
@@ -26210,12 +27007,12 @@ func (string_visitor *CStringVisitorT) Handler() interface{} {
 // cef_task_capi.h, include/capi/cef_task_capi.h:67:3,
 
 ///
-// Implement this structure for asynchronous task execution. If the task is
-// posted successfully and if the associated message loop is still running then
-// the execute() function will be called on the target thread. If the task fails
-// to post then the task object may be destroyed on the source thread instead of
-// the target thread. For this reason be cautious when performing work in the
-// task object destructor.
+/// Implement this structure for asynchronous task execution. If the task is
+/// posted successfully and if the associated message loop is still running then
+/// the execute() function will be called on the target thread. If the task
+/// fails to post then the task object may be destroyed on the source thread
+/// instead of the target thread. For this reason be cautious when performing
+/// work in the task object destructor.
 ///
 
 type cCTaskT C.cef_task_t
@@ -26293,7 +27090,7 @@ func (task *CTaskT) Unref() (ret bool) {
 }
 
 // /
-// Method that will be executed on the target thread.
+// / Method that will be executed on the target thread.
 // /
 type CTaskTExecuteHandler interface {
 	Execute(
@@ -26376,13 +27173,13 @@ func (task *CTaskT) Handler() interface{} {
 }
 
 ///
-// Structure that asynchronously executes tasks on the associated thread. It is
-// safe to call the functions of this structure on any thread.
-//
-// CEF maintains multiple internal threads that are used for handling different
-// types of tasks in different processes. The cef_thread_id_t definitions in
-// cef_types.h list the common CEF threads. Task runners are also available for
-// other CEF threads as appropriate (for example, V8 WebWorker threads).
+/// Structure that asynchronously executes tasks on the associated thread. It is
+/// safe to call the functions of this structure on any thread.
+///
+/// CEF maintains multiple internal threads that are used for handling different
+/// types of tasks in different processes. The cef_thread_id_t definitions in
+/// cef_types.h list the common CEF threads. Task runners are also available for
+/// other CEF threads as appropriate (for example, V8 WebWorker threads).
 ///
 
 type cCTaskRunnerT C.cef_task_runner_t
@@ -26460,8 +27257,8 @@ func (task_runner *CTaskRunnerT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is pointing to the same task runner as
-// |that| object.
+// / Returns true (1) if this object is pointing to the same task runner as
+// / |that| object.
 // /
 func (self *CTaskRunnerT) IsSame(
 	that *CTaskRunnerT,
@@ -26479,7 +27276,7 @@ func (self *CTaskRunnerT) IsSame(
 }
 
 // /
-// Returns true (1) if this task runner belongs to the current thread.
+// / Returns true (1) if this task runner belongs to the current thread.
 // /
 func (self *CTaskRunnerT) BelongsToCurrentThread() (ret bool) {
 
@@ -26490,7 +27287,7 @@ func (self *CTaskRunnerT) BelongsToCurrentThread() (ret bool) {
 }
 
 // /
-// Returns true (1) if this task runner is for the specified CEF thread.
+// / Returns true (1) if this task runner is for the specified CEF thread.
 // /
 func (self *CTaskRunnerT) BelongsToThread(
 	threadId CThreadIdT,
@@ -26503,8 +27300,8 @@ func (self *CTaskRunnerT) BelongsToThread(
 }
 
 // /
-// Post a task for execution on the thread associated with this task runner.
-// Execution will occur asynchronously.
+// / Post a task for execution on the thread associated with this task runner.
+// / Execution will occur asynchronously.
 // /
 func (self *CTaskRunnerT) PostTask(
 	task *CTaskT,
@@ -26522,10 +27319,10 @@ func (self *CTaskRunnerT) PostTask(
 }
 
 // /
-// Post a task for delayed execution on the thread associated with this task
-// runner. Execution will occur asynchronously. Delayed tasks are not
-// supported on V8 WebWorker threads and will be executed without the
-// specified delay.
+// / Post a task for delayed execution on the thread associated with this task
+// / runner. Execution will occur asynchronously. Delayed tasks are not
+// / supported on V8 WebWorker threads and will be executed without the
+// / specified delay.
 // /
 func (self *CTaskRunnerT) PostDelayedTask(
 	task *CTaskT,
@@ -26544,9 +27341,9 @@ func (self *CTaskRunnerT) PostDelayedTask(
 }
 
 // /
-// Returns the task runner for the current thread. Only CEF threads will have
-// task runners. An NULL reference will be returned if this function is called
-// on an invalid thread.
+// / Returns the task runner for the current thread. Only CEF threads will have
+// / task runners. An NULL reference will be returned if this function is called
+// / on an invalid thread.
 // /
 func TaskRunnerGetForCurrentThread() (ret *CTaskRunnerT) {
 
@@ -26557,7 +27354,7 @@ func TaskRunnerGetForCurrentThread() (ret *CTaskRunnerT) {
 }
 
 // /
-// Returns the task runner for the specified CEF thread.
+// / Returns the task runner for the specified CEF thread.
 // /
 func TaskRunnerGetForThread(
 	threadId CThreadIdT,
@@ -26570,8 +27367,8 @@ func TaskRunnerGetForThread(
 }
 
 // /
-// Returns true (1) if called on the specified thread. Equivalent to using
-// cef_task_runner_t::GetForThread(threadId)->belongs_to_current_thread().
+// / Returns true (1) if called on the specified thread. Equivalent to using
+// / cef_task_runner_t::GetForThread(threadId)->belongs_to_current_thread().
 // /
 func CurrentlyOn(
 	threadId CThreadIdT,
@@ -26584,8 +27381,8 @@ func CurrentlyOn(
 }
 
 // /
-// Post a task for execution on the specified thread. Equivalent to using
-// cef_task_runner_t::GetForThread(threadId)->PostTask(task).
+// / Post a task for execution on the specified thread. Equivalent to using
+// / cef_task_runner_t::GetForThread(threadId)->PostTask(task).
 // /
 func PostTask(
 	threadId CThreadIdT,
@@ -26604,9 +27401,9 @@ func PostTask(
 }
 
 // /
-// Post a task for delayed execution on the specified thread. Equivalent to
-// using cef_task_runner_t::GetForThread(threadId)->PostDelayedTask(task,
-// delay_ms).
+// / Post a task for delayed execution on the specified thread. Equivalent to
+// / using cef_task_runner_t::GetForThread(threadId)->PostDelayedTask(task,
+// / delay_ms).
 // /
 func PostDelayedTask(
 	threadId CThreadIdT,
@@ -26625,12 +27422,12 @@ func PostDelayedTask(
 	return ret
 }
 
-// cef_textfield_capi.h, include/capi/views/cef_textfield_capi.h:261:3,
+// cef_textfield_capi.h, include/capi/views/cef_textfield_capi.h:262:3,
 
 ///
-// A Textfield supports editing of text. This control is custom rendered with no
-// platform-specific code. Methods must be called on the browser process UI
-// thread unless otherwise indicated.
+/// A Textfield supports editing of text. This control is custom rendered with
+/// no platform-specific code. Methods must be called on the browser process UI
+/// thread unless otherwise indicated.
 ///
 
 type cCTextfieldT C.cef_textfield_t
@@ -26715,7 +27512,7 @@ func (textfield *CTextfieldT) ToCViewT() *CViewT {
 }
 
 // /
-// Sets whether the text will be displayed as asterisks.
+// / Sets whether the text will be displayed as asterisks.
 // /
 func (self *CTextfieldT) SetPasswordInput(
 	password_input int,
@@ -26726,7 +27523,7 @@ func (self *CTextfieldT) SetPasswordInput(
 }
 
 // /
-// Returns true (1) if the text will be displayed as asterisks.
+// / Returns true (1) if the text will be displayed as asterisks.
 // /
 func (self *CTextfieldT) IsPasswordInput() (ret bool) {
 
@@ -26737,7 +27534,7 @@ func (self *CTextfieldT) IsPasswordInput() (ret bool) {
 }
 
 // /
-// Sets whether the text will read-only.
+// / Sets whether the text will read-only.
 // /
 func (self *CTextfieldT) SetReadOnly(
 	read_only int,
@@ -26748,7 +27545,7 @@ func (self *CTextfieldT) SetReadOnly(
 }
 
 // /
-// Returns true (1) if the text is read-only.
+// / Returns true (1) if the text is read-only.
 // /
 func (self *CTextfieldT) IsReadOnly() (ret bool) {
 
@@ -26759,7 +27556,7 @@ func (self *CTextfieldT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Returns the currently displayed text.
+// / Returns the currently displayed text.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetText() (ret string) {
@@ -26775,8 +27572,8 @@ func (self *CTextfieldT) GetText() (ret string) {
 }
 
 // /
-// Sets the contents to |text|. The cursor will be moved to end of the text if
-// the current position is outside of the text range.
+// / Sets the contents to |text|. The cursor will be moved to end of the text
+// / if the current position is outside of the text range.
 // /
 func (self *CTextfieldT) SetText(
 	text string,
@@ -26788,7 +27585,7 @@ func (self *CTextfieldT) SetText(
 }
 
 // /
-// Appends |text| to the previously-existing text.
+// / Appends |text| to the previously-existing text.
 // /
 func (self *CTextfieldT) AppendText(
 	text string,
@@ -26800,7 +27597,7 @@ func (self *CTextfieldT) AppendText(
 }
 
 // /
-// Inserts |text| at the current cursor position replacing any selected text.
+// / Inserts |text| at the current cursor position replacing any selected text.
 // /
 func (self *CTextfieldT) InsertOrReplaceText(
 	text string,
@@ -26812,7 +27609,7 @@ func (self *CTextfieldT) InsertOrReplaceText(
 }
 
 // /
-// Returns true (1) if there is any selected text.
+// / Returns true (1) if there is any selected text.
 // /
 func (self *CTextfieldT) HasSelection() (ret bool) {
 
@@ -26823,7 +27620,7 @@ func (self *CTextfieldT) HasSelection() (ret bool) {
 }
 
 // /
-// Returns the currently selected text.
+// / Returns the currently selected text.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetSelectedText() (ret string) {
@@ -26839,9 +27636,9 @@ func (self *CTextfieldT) GetSelectedText() (ret string) {
 }
 
 // /
-// Selects all text. If |reversed| is true (1) the range will end at the
-// logical beginning of the text; this generally shows the leading portion of
-// text that overflows its display area.
+// / Selects all text. If |reversed| is true (1) the range will end at the
+// / logical beginning of the text; this generally shows the leading portion of
+// / text that overflows its display area.
 // /
 func (self *CTextfieldT) SelectAll(
 	reversed int,
@@ -26852,7 +27649,7 @@ func (self *CTextfieldT) SelectAll(
 }
 
 // /
-// Clears the text selection and sets the caret to the end.
+// / Clears the text selection and sets the caret to the end.
 // /
 func (self *CTextfieldT) ClearSelection() {
 
@@ -26861,7 +27658,7 @@ func (self *CTextfieldT) ClearSelection() {
 }
 
 // /
-// Returns the selected logical text range.
+// / Returns the selected logical text range.
 // /
 func (self *CTextfieldT) GetSelectedRange() (ret CRangeT) {
 
@@ -26872,7 +27669,7 @@ func (self *CTextfieldT) GetSelectedRange() (ret CRangeT) {
 }
 
 // /
-// Selects the specified logical text range.
+// / Selects the specified logical text range.
 // /
 func (self *CTextfieldT) SelectRange(
 	crange *CRangeT,
@@ -26883,7 +27680,7 @@ func (self *CTextfieldT) SelectRange(
 }
 
 // /
-// Returns the current cursor position.
+// / Returns the current cursor position.
 // /
 func (self *CTextfieldT) GetCursorPosition() (ret int64) {
 
@@ -26894,7 +27691,7 @@ func (self *CTextfieldT) GetCursorPosition() (ret int64) {
 }
 
 // /
-// Sets the text color.
+// / Sets the text color.
 // /
 func (self *CTextfieldT) SetTextColor(
 	color CColorT,
@@ -26905,7 +27702,7 @@ func (self *CTextfieldT) SetTextColor(
 }
 
 // /
-// Returns the text color.
+// / Returns the text color.
 // /
 func (self *CTextfieldT) GetTextColor() (ret CColorT) {
 
@@ -26916,7 +27713,7 @@ func (self *CTextfieldT) GetTextColor() (ret CColorT) {
 }
 
 // /
-// Sets the selection text color.
+// / Sets the selection text color.
 // /
 func (self *CTextfieldT) SetSelectionTextColor(
 	color CColorT,
@@ -26927,7 +27724,7 @@ func (self *CTextfieldT) SetSelectionTextColor(
 }
 
 // /
-// Returns the selection text color.
+// / Returns the selection text color.
 // /
 func (self *CTextfieldT) GetSelectionTextColor() (ret CColorT) {
 
@@ -26938,7 +27735,7 @@ func (self *CTextfieldT) GetSelectionTextColor() (ret CColorT) {
 }
 
 // /
-// Sets the selection background color.
+// / Sets the selection background color.
 // /
 func (self *CTextfieldT) SetSelectionBackgroundColor(
 	color CColorT,
@@ -26949,7 +27746,7 @@ func (self *CTextfieldT) SetSelectionBackgroundColor(
 }
 
 // /
-// Returns the selection background color.
+// / Returns the selection background color.
 // /
 func (self *CTextfieldT) GetSelectionBackgroundColor() (ret CColorT) {
 
@@ -26960,16 +27757,15 @@ func (self *CTextfieldT) GetSelectionBackgroundColor() (ret CColorT) {
 }
 
 // /
-// Sets the font list. The format is &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;,
-// where: - FONT_FAMILY_LIST is a comma-separated list of font family names, -
-// STYLES is an optional space-separated list of style names (case-sensitive
-//
-//	&quot;Bold&quot; and &quot;Italic&quot; are supported), and
-//
-// - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
-//
-// Here are examples of valid font description strings: - &quot;Arial, Helvetica,
-// Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
+// / Sets the font list. The format is &quot;&lt;FONT_FAMILY_LIST&gt;,[STYLES] &lt;SIZE&gt;&quot;,
+// / where: - FONT_FAMILY_LIST is a comma-separated list of font family names,
+// / - STYLES is an optional space-separated list of style names (case-
+// / sensitive
+// /   &quot;Bold&quot; and &quot;Italic&quot; are supported), and
+// / - SIZE is an integer font size in pixels with the suffix &quot;px&quot;.
+// /
+// / Here are examples of valid font description strings: - &quot;Arial, Helvetica,
+// / Bold Italic 14px&quot; - &quot;Arial, 14px&quot;
 // /
 func (self *CTextfieldT) SetFontList(
 	font_list string,
@@ -26981,9 +27777,9 @@ func (self *CTextfieldT) SetFontList(
 }
 
 // /
-// Applies |color| to the specified |range| without changing the default
-// color. If |range| is NULL the color will be set on the complete text
-// contents.
+// / Applies |color| to the specified |range| without changing the default
+// / color. If |range| is NULL the color will be set on the complete text
+// / contents.
 // /
 func (self *CTextfieldT) ApplyTextColor(
 	color CColorT,
@@ -26995,10 +27791,10 @@ func (self *CTextfieldT) ApplyTextColor(
 }
 
 // /
-// Applies |style| to the specified |range| without changing the default
-// style. If |add| is true (1) the style will be added, otherwise the style
-// will be removed. If |range| is NULL the style will be set on the complete
-// text contents.
+// / Applies |style| to the specified |range| without changing the default
+// / style. If |add| is true (1) the style will be added, otherwise the style
+// / will be removed. If |range| is NULL the style will be set on the complete
+// / text contents.
 // /
 func (self *CTextfieldT) ApplyTextStyle(
 	style CTextStyleT,
@@ -27011,8 +27807,8 @@ func (self *CTextfieldT) ApplyTextStyle(
 }
 
 // /
-// Returns true (1) if the action associated with the specified command id is
-// enabled. See additional comments on execute_command().
+// / Returns true (1) if the action associated with the specified command id is
+// / enabled. See additional comments on execute_command().
 // /
 func (self *CTextfieldT) IsCommandEnabled(
 	command_id CTextFieldCommandsT,
@@ -27025,7 +27821,7 @@ func (self *CTextfieldT) IsCommandEnabled(
 }
 
 // /
-// Performs the action associated with the specified command id.
+// / Performs the action associated with the specified command id.
 // /
 func (self *CTextfieldT) ExecuteCommand(
 	command_id CTextFieldCommandsT,
@@ -27036,7 +27832,7 @@ func (self *CTextfieldT) ExecuteCommand(
 }
 
 // /
-// Clears Edit history.
+// / Clears Edit history.
 // /
 func (self *CTextfieldT) ClearEditHistory() {
 
@@ -27045,8 +27841,8 @@ func (self *CTextfieldT) ClearEditHistory() {
 }
 
 // /
-// Sets the placeholder text that will be displayed when the Textfield is
-// NULL.
+// / Sets the placeholder text that will be displayed when the Textfield is
+// / NULL.
 // /
 func (self *CTextfieldT) SetPlaceholderText(
 	text string,
@@ -27058,8 +27854,8 @@ func (self *CTextfieldT) SetPlaceholderText(
 }
 
 // /
-// Returns the placeholder text that will be displayed when the Textfield is
-// NULL.
+// / Returns the placeholder text that will be displayed when the Textfield is
+// / NULL.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CTextfieldT) GetPlaceholderText() (ret string) {
@@ -27075,7 +27871,7 @@ func (self *CTextfieldT) GetPlaceholderText() (ret string) {
 }
 
 // /
-// Sets the placeholder text color.
+// / Sets the placeholder text color.
 // /
 func (self *CTextfieldT) SetPlaceholderTextColor(
 	color CColorT,
@@ -27086,7 +27882,7 @@ func (self *CTextfieldT) SetPlaceholderTextColor(
 }
 
 // /
-// Set the accessible name that will be exposed to assistive technology (AT).
+// / Set the accessible name that will be exposed to assistive technology (AT).
 // /
 func (self *CTextfieldT) SetAccessibleName(
 	name string,
@@ -27098,7 +27894,7 @@ func (self *CTextfieldT) SetAccessibleName(
 }
 
 // /
-// Create a new Textfield.
+// / Create a new Textfield.
 // /
 func TextfieldCreate(
 	delegate *CTextfieldDelegateT,
@@ -27118,9 +27914,9 @@ func TextfieldCreate(
 // cef_textfield_delegate_capi.h, include/capi/views/cef_textfield_delegate_capi.h:77:3,
 
 ///
-// Implement this structure to handle Textfield events. The functions of this
-// structure will be called on the browser process UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle Textfield events. The functions of this
+/// structure will be called on the browser process UI thread unless otherwise
+/// indicated.
 ///
 
 type cCTextfieldDelegateT C.cef_textfield_delegate_t
@@ -27205,9 +28001,9 @@ func (textfield_delegate *CTextfieldDelegateT) ToCViewDelegateT() *CViewDelegate
 }
 
 // /
-// Called when |textfield| recieves a keyboard event. |event| contains
-// information about the keyboard event. Return true (1) if the keyboard event
-// was handled or false (0) otherwise for default handling.
+// / Called when |textfield| recieves a keyboard event. |event| contains
+// / information about the keyboard event. Return true (1) if the keyboard
+// / event was handled or false (0) otherwise for default handling.
 // /
 type CTextfieldDelegateTOnKeyEventHandler interface {
 	OnKeyEvent(
@@ -27218,7 +28014,7 @@ type CTextfieldDelegateTOnKeyEventHandler interface {
 }
 
 // /
-// Called after performing a user action that may change |textfield|.
+// / Called after performing a user action that may change |textfield|.
 // /
 type OnAfterUserActionHandler interface {
 	OnAfterUserAction(
@@ -27414,9 +28210,9 @@ func (textfield_delegate *CTextfieldDelegateT) Handler() interface{} {
 // cef_trace_capi.h, include/capi/cef_trace_capi.h:69:3,
 
 ///
-// Implement this structure to receive notification when tracing has completed.
-// The functions of this structure will be called on the browser process UI
-// thread.
+/// Implement this structure to receive notification when tracing has completed.
+/// The functions of this structure will be called on the browser process UI
+/// thread.
 ///
 
 type cCEndTracingCallbackT C.cef_end_tracing_callback_t
@@ -27494,9 +28290,9 @@ func (end_tracing_callback *CEndTracingCallbackT) Unref() (ret bool) {
 }
 
 // /
-// Called after all processes have sent their trace data. |tracing_file| is
-// the path at which tracing data was written. The client is responsible for
-// deleting |tracing_file|.
+// / Called after all processes have sent their trace data. |tracing_file| is
+// / the path at which tracing data was written. The client is responsible for
+// / deleting |tracing_file|.
 // /
 type OnEndTracingCompleteHandler interface {
 	OnEndTracingComplete(
@@ -27580,21 +28376,21 @@ func (end_tracing_callback *CEndTracingCallbackT) Handler() interface{} {
 }
 
 // /
-// Start tracing events on all processes. Tracing is initialized asynchronously
-// and |callback| will be executed on the UI thread after initialization is
-// complete.
-//
-// If CefBeginTracing was called previously, or if a CefEndTracingAsync call is
-// pending, CefBeginTracing will fail and return false (0).
-//
-// |categories| is a comma-delimited list of category wildcards. A category can
-// have an optional '-' prefix to make it an excluded category. Having both
-// included and excluded categories in the same list is not supported.
-//
-// Example: "test_MyTest*" Example: "test_MyTest*,test_OtherStuff" Example:
-// "-excluded_category1,-excluded_category2"
-//
-// This function must be called on the browser process UI thread.
+// / Start tracing events on all processes. Tracing is initialized asynchronously
+// / and |callback| will be executed on the UI thread after initialization is
+// / complete.
+// /
+// / If CefBeginTracing was called previously, or if a CefEndTracingAsync call is
+// / pending, CefBeginTracing will fail and return false (0).
+// /
+// / |categories| is a comma-delimited list of category wildcards. A category can
+// / have an optional '-' prefix to make it an excluded category. Having both
+// / included and excluded categories in the same list is not supported.
+// /
+// / Examples: - "test_MyTest*" - "test_MyTest*,test_OtherStuff" -
+// / "-excluded_category1,-excluded_category2"
+// /
+// / This function must be called on the browser process UI thread.
 // /
 func BeginTracing(
 	categories string,
@@ -27614,17 +28410,17 @@ func BeginTracing(
 }
 
 // /
-// Stop tracing events on all processes.
-//
-// This function will fail and return false (0) if a previous call to
-// CefEndTracingAsync is already pending or if CefBeginTracing was not called.
-//
-// |tracing_file| is the path at which tracing data will be written and
-// |callback| is the callback that will be executed once all processes have sent
-// their trace data. If |tracing_file| is NULL a new temporary file path will be
-// used. If |callback| is NULL no trace data will be written.
-//
-// This function must be called on the browser process UI thread.
+// / Stop tracing events on all processes.
+// /
+// / This function will fail and return false (0) if a previous call to
+// / CefEndTracingAsync is already pending or if CefBeginTracing was not called.
+// /
+// / |tracing_file| is the path at which tracing data will be written and
+// / |callback| is the callback that will be executed once all processes have
+// / sent their trace data. If |tracing_file| is NULL a new temporary file path
+// / will be used. If |callback| is NULL no trace data will be written.
+// /
+// / This function must be called on the browser process UI thread.
 // /
 func EndTracing(
 	tracing_file string,
@@ -27644,9 +28440,9 @@ func EndTracing(
 }
 
 // /
-// Returns the current system trace time or, if none is defined, the current
-// high-res time. Can be used by clients to synchronize with the time
-// information in trace events.
+// / Returns the current system trace time or, if none is defined, the current
+// / high-res time. Can be used by clients to synchronize with the time
+// / information in trace events.
 // /
 func NowFromSystemTraceTime() (ret int64) {
 
@@ -27659,11 +28455,11 @@ func NowFromSystemTraceTime() (ret int64) {
 // cef_urlrequest_capi.h, include/capi/cef_urlrequest_capi.h:112:3,
 
 ///
-// Structure used to make a URL request. URL requests are not associated with a
-// browser instance so no cef_client_t callbacks will be executed. URL requests
-// can be created on any valid CEF thread in either the browser or render
-// process. Once created the functions of the URL request object must be
-// accessed on the same thread that created it.
+/// Structure used to make a URL request. URL requests are not associated with a
+/// browser instance so no cef_client_t callbacks will be executed. URL requests
+/// can be created on any valid CEF thread in either the browser or render
+/// process. Once created the functions of the URL request object must be
+/// accessed on the same thread that created it.
 ///
 
 type cCUrlrequestT C.cef_urlrequest_t
@@ -27741,8 +28537,8 @@ func (urlrequest *CUrlrequestT) Unref() (ret bool) {
 }
 
 // /
-// Returns the request object used to create this URL request. The returned
-// object is read-only and should not be modified.
+// / Returns the request object used to create this URL request. The returned
+// / object is read-only and should not be modified.
 // /
 func (self *CUrlrequestT) GetRequest() (ret *CRequestT) {
 
@@ -27753,7 +28549,7 @@ func (self *CUrlrequestT) GetRequest() (ret *CRequestT) {
 }
 
 // /
-// Returns the client.
+// / Returns the client.
 // /
 func (self *CUrlrequestT) GetClient() (ret *CUrlrequestClientT) {
 
@@ -27764,7 +28560,7 @@ func (self *CUrlrequestT) GetClient() (ret *CUrlrequestClientT) {
 }
 
 // /
-// Returns the request status.
+// / Returns the request status.
 // /
 func (self *CUrlrequestT) GetRequestStatus() (ret CUrlrequestStatusT) {
 
@@ -27775,8 +28571,8 @@ func (self *CUrlrequestT) GetRequestStatus() (ret CUrlrequestStatusT) {
 }
 
 // /
-// Returns the request error if status is UR_CANCELED or UR_FAILED, or 0
-// otherwise.
+// / Returns the request error if status is UR_CANCELED or UR_FAILED, or 0
+// / otherwise.
 // /
 func (self *CUrlrequestT) GetRequestError() (ret CErrorcodeT) {
 
@@ -27787,9 +28583,9 @@ func (self *CUrlrequestT) GetRequestError() (ret CErrorcodeT) {
 }
 
 // /
-// Returns the response, or NULL if no response information is available.
-// Response information will only be available after the upload has completed.
-// The returned object is read-only and should not be modified.
+// / Returns the response, or NULL if no response information is available.
+// / Response information will only be available after the upload has
+// / completed. The returned object is read-only and should not be modified.
 // /
 func (self *CUrlrequestT) GetResponse() (ret *CResponseT) {
 
@@ -27800,8 +28596,8 @@ func (self *CUrlrequestT) GetResponse() (ret *CResponseT) {
 }
 
 // /
-// Returns true (1) if the response body was served from the cache. This
-// includes responses for which revalidation was required.
+// / Returns true (1) if the response body was served from the cache. This
+// / includes responses for which revalidation was required.
 // /
 func (self *CUrlrequestT) ResponseWasCached() (ret bool) {
 
@@ -27812,7 +28608,7 @@ func (self *CUrlrequestT) ResponseWasCached() (ret bool) {
 }
 
 // /
-// Cancel the request.
+// / Cancel the request.
 // /
 func (self *CUrlrequestT) Cancel() {
 
@@ -27821,18 +28617,19 @@ func (self *CUrlrequestT) Cancel() {
 }
 
 // /
-// Create a new URL request that is not associated with a specific browser or
-// frame. Use cef_frame_t::CreateURLRequest instead if you want the request to
-// have this association, in which case it may be handled differently (see
-// documentation on that function). A request created with this function may
-// only originate from the browser process, and will behave as follows:
-//   - It may be intercepted by the client via CefResourceRequestHandler or
-//     CefSchemeHandlerFactory.
-//   - POST data may only contain only a single element of type PDE_TYPE_FILE
-//     or PDE_TYPE_BYTES.
-//   - If |request_context| is empty the global request context will be used.
-//
-// The |request| object will be marked as read-only after calling this function.
+// / Create a new URL request that is not associated with a specific browser or
+// / frame. Use cef_frame_t::CreateURLRequest instead if you want the request to
+// / have this association, in which case it may be handled differently (see
+// / documentation on that function). A request created with this function may
+// / only originate from the browser process, and will behave as follows:
+// /   - It may be intercepted by the client via CefResourceRequestHandler or
+// /     CefSchemeHandlerFactory.
+// /   - POST data may only contain only a single element of type PDE_TYPE_FILE
+// /     or PDE_TYPE_BYTES.
+// /   - If |request_context| is empty the global request context will be used.
+// /
+// / The |request| object will be marked as read-only after calling this
+// / function.
 // /
 func UrlrequestCreate(
 	request *CRequestT,
@@ -27862,9 +28659,9 @@ func UrlrequestCreate(
 }
 
 ///
-// Structure that should be implemented by the cef_urlrequest_t client. The
-// functions of this structure will be called on the same thread that created
-// the request unless otherwise documented.
+/// Structure that should be implemented by the cef_urlrequest_t client. The
+/// functions of this structure will be called on the same thread that created
+/// the request unless otherwise documented.
 ///
 
 type cCUrlrequestClientT C.cef_urlrequest_client_t
@@ -27942,9 +28739,9 @@ func (urlrequest_client *CUrlrequestClientT) Unref() (ret bool) {
 }
 
 // /
-// Notifies the client that the request has completed. Use the
-// cef_urlrequest_t::GetRequestStatus function to determine if the request was
-// successful or not.
+// / Notifies the client that the request has completed. Use the
+// / cef_urlrequest_t::GetRequestStatus function to determine if the request
+// / was successful or not.
 // /
 type OnRequestCompleteHandler interface {
 	OnRequestComplete(
@@ -27954,10 +28751,10 @@ type OnRequestCompleteHandler interface {
 }
 
 // /
-// Notifies the client of upload progress. |current| denotes the number of
-// bytes sent so far and |total| is the total size of uploading data (or -1 if
-// chunked upload is enabled). This function will only be called if the
-// UR_FLAG_REPORT_UPLOAD_PROGRESS flag is set on the request.
+// / Notifies the client of upload progress. |current| denotes the number of
+// / bytes sent so far and |total| is the total size of uploading data (or -1
+// / if chunked upload is enabled). This function will only be called if the
+// / UR_FLAG_REPORT_UPLOAD_PROGRESS flag is set on the request.
 // /
 type OnUploadProgressHandler interface {
 	OnUploadProgress(
@@ -27969,9 +28766,9 @@ type OnUploadProgressHandler interface {
 }
 
 // /
-// Notifies the client of download progress. |current| denotes the number of
-// bytes received up to the call and |total| is the expected total size of the
-// response (or -1 if not determined).
+// / Notifies the client of download progress. |current| denotes the number of
+// / bytes received up to the call and |total| is the expected total size of
+// / the response (or -1 if not determined).
 // /
 type OnDownloadProgressHandler interface {
 	OnDownloadProgress(
@@ -27983,9 +28780,9 @@ type OnDownloadProgressHandler interface {
 }
 
 // /
-// Called when some part of the response is read. |data| contains the current
-// bytes received since the last call. This function will not be called if the
-// UR_FLAG_NO_DOWNLOAD_DATA flag is set on the request.
+// / Called when some part of the response is read. |data| contains the current
+// / bytes received since the last call. This function will not be called if
+// / the UR_FLAG_NO_DOWNLOAD_DATA flag is set on the request.
 // /
 type OnDownloadDataHandler interface {
 	OnDownloadData(
@@ -27996,15 +28793,16 @@ type OnDownloadDataHandler interface {
 }
 
 // /
-// Called on the IO thread when the browser needs credentials from the user.
-// |isProxy| indicates whether the host is a proxy server. |host| contains the
-// hostname and |port| contains the port number. Return true (1) to continue
-// the request and call cef_auth_callback_t::cont() when the authentication
-// information is available. If the request has an associated browser/frame
-// then returning false (0) will result in a call to GetAuthCredentials on the
-// cef_request_handler_t associated with that browser, if any. Otherwise,
-// returning false (0) will cancel the request immediately. This function will
-// only be called for requests initiated from the browser process.
+// / Called on the IO thread when the browser needs credentials from the user.
+// / |isProxy| indicates whether the host is a proxy server. |host| contains
+// / the hostname and |port| contains the port number. Return true (1) to
+// / continue the request and call cef_auth_callback_t::cont() when the
+// / authentication information is available. If the request has an associated
+// / browser/frame then returning false (0) will result in a call to
+// / GetAuthCredentials on the cef_request_handler_t associated with that
+// / browser, if any. Otherwise, returning false (0) will cancel the request
+// / immediately. This function will only be called for requests initiated from
+// / the browser process.
 // /
 type CUrlrequestClientTGetAuthCredentialsHandler interface {
 	GetAuthCredentials(
@@ -28135,11 +28933,11 @@ func (urlrequest_client *CUrlrequestClientT) Handler() interface{} {
 // cef_v8_capi.h, include/capi/cef_v8_capi.h:141:3,
 
 ///
-// Structure representing a V8 context handle. V8 handles can only be accessed
-// from the thread on which they are created. Valid threads for creating a V8
-// handle include the render process main thread (TID_RENDERER) and WebWorker
-// threads. A task runner for posting tasks on the associated thread can be
-// retrieved via the cef_v8context_t::get_task_runner() function.
+/// Structure representing a V8 context handle. V8 handles can only be accessed
+/// from the thread on which they are created. Valid threads for creating a V8
+/// handle include the render process main thread (TID_RENDERER) and WebWorker
+/// threads. A task runner for posting tasks on the associated thread can be
+/// retrieved via the cef_v8context_t::get_task_runner() function.
 ///
 
 type cCV8contextT C.cef_v8context_t
@@ -28217,9 +29015,9 @@ func (v8context *CV8contextT) Unref() (ret bool) {
 }
 
 // /
-// Returns the task runner associated with this context. V8 handles can only
-// be accessed from the thread on which they are created. This function can be
-// called on any render process thread.
+// / Returns the task runner associated with this context. V8 handles can only
+// / be accessed from the thread on which they are created. This function can
+// / be called on any render process thread.
 // /
 func (self *CV8contextT) GetTaskRunner() (ret *CTaskRunnerT) {
 
@@ -28230,9 +29028,9 @@ func (self *CV8contextT) GetTaskRunner() (ret *CTaskRunnerT) {
 }
 
 // /
-// Returns true (1) if the underlying handle is valid and it can be accessed
-// on the current thread. Do not call any other functions if this function
-// returns false (0).
+// / Returns true (1) if the underlying handle is valid and it can be accessed
+// / on the current thread. Do not call any other functions if this function
+// / returns false (0).
 // /
 func (self *CV8contextT) IsValid() (ret bool) {
 
@@ -28243,8 +29041,8 @@ func (self *CV8contextT) IsValid() (ret bool) {
 }
 
 // /
-// Returns the browser for this context. This function will return an NULL
-// reference for WebWorker contexts.
+// / Returns the browser for this context. This function will return an NULL
+// / reference for WebWorker contexts.
 // /
 func (self *CV8contextT) GetBrowser() (ret *CBrowserT) {
 
@@ -28255,8 +29053,8 @@ func (self *CV8contextT) GetBrowser() (ret *CBrowserT) {
 }
 
 // /
-// Returns the frame for this context. This function will return an NULL
-// reference for WebWorker contexts.
+// / Returns the frame for this context. This function will return an NULL
+// / reference for WebWorker contexts.
 // /
 func (self *CV8contextT) GetFrame() (ret *CFrameT) {
 
@@ -28267,8 +29065,8 @@ func (self *CV8contextT) GetFrame() (ret *CFrameT) {
 }
 
 // /
-// Returns the global object for this context. The context must be entered
-// before calling this function.
+// / Returns the global object for this context. The context must be entered
+// / before calling this function.
 // /
 func (self *CV8contextT) GetGlobal() (ret *CV8valueT) {
 
@@ -28279,11 +29077,11 @@ func (self *CV8contextT) GetGlobal() (ret *CV8valueT) {
 }
 
 // /
-// Enter this context. A context must be explicitly entered before creating a
-// V8 Object, Array, Function or Date asynchronously. exit() must be called
-// the same number of times as enter() before releasing this context. V8
-// objects belong to the context in which they are created. Returns true (1)
-// if the scope was entered successfully.
+// / Enter this context. A context must be explicitly entered before creating a
+// / V8 Object, Array, Function or Date asynchronously. exit() must be called
+// / the same number of times as enter() before releasing this context. V8
+// / objects belong to the context in which they are created. Returns true (1)
+// / if the scope was entered successfully.
 // /
 func (self *CV8contextT) Enter() (ret bool) {
 
@@ -28294,8 +29092,8 @@ func (self *CV8contextT) Enter() (ret bool) {
 }
 
 // /
-// Exit this context. Call this function only after calling enter(). Returns
-// true (1) if the scope was exited successfully.
+// / Exit this context. Call this function only after calling enter(). Returns
+// / true (1) if the scope was exited successfully.
 // /
 func (self *CV8contextT) Exit() (ret bool) {
 
@@ -28306,8 +29104,8 @@ func (self *CV8contextT) Exit() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is pointing to the same handle as |that|
-// object.
+// / Returns true (1) if this object is pointing to the same handle as |that|
+// / object.
 // /
 func (self *CV8contextT) IsSame(
 	that *CV8contextT,
@@ -28325,12 +29123,12 @@ func (self *CV8contextT) IsSame(
 }
 
 // /
-// Execute a string of JavaScript code in this V8 context. The |script_url|
-// parameter is the URL where the script in question can be found, if any. The
-// |start_line| parameter is the base line number to use for error reporting.
-// On success |retval| will be set to the return value, if any, and the
-// function will return true (1). On failure |exception| will be set to the
-// exception, if any, and the function will return false (0).
+// / Execute a string of JavaScript code in this V8 context. The |script_url|
+// / parameter is the URL where the script in question can be found, if any.
+// / The |start_line| parameter is the base line number to use for error
+// / reporting. On success |retval| will be set to the return value, if any,
+// / and the function will return true (1). On failure |exception| will be set
+// / to the exception, if any, and the function will return false (0).
 // /
 func (self *CV8contextT) Eval(
 	code string,
@@ -28352,7 +29150,7 @@ func (self *CV8contextT) Eval(
 }
 
 // /
-// Returns the current (top) context object in the V8 context stack.
+// / Returns the current (top) context object in the V8 context stack.
 // /
 func V8contextGetCurrentContext() (ret *CV8contextT) {
 
@@ -28363,7 +29161,7 @@ func V8contextGetCurrentContext() (ret *CV8contextT) {
 }
 
 // /
-// Returns the entered (bottom) context object in the V8 context stack.
+// / Returns the entered (bottom) context object in the V8 context stack.
 // /
 func V8contextGetEnteredContext() (ret *CV8contextT) {
 
@@ -28374,7 +29172,7 @@ func V8contextGetEnteredContext() (ret *CV8contextT) {
 }
 
 // /
-// Returns true (1) if V8 is currently inside a context.
+// / Returns true (1) if V8 is currently inside a context.
 // /
 func V8contextInContext() (ret bool) {
 
@@ -28385,9 +29183,9 @@ func V8contextInContext() (ret bool) {
 }
 
 ///
-// Structure that should be implemented to handle V8 function calls. The
-// functions of this structure will be called on the thread associated with the
-// V8 function.
+/// Structure that should be implemented to handle V8 function calls. The
+/// functions of this structure will be called on the thread associated with the
+/// V8 function.
 ///
 
 type cCV8handlerT C.cef_v8handler_t
@@ -28465,11 +29263,11 @@ func (v8handler *CV8handlerT) Unref() (ret bool) {
 }
 
 // /
-// Handle execution of the function identified by |name|. |object| is the
-// receiver (&#39;this&#39; object) of the function. |arguments| is the list of
-// arguments passed to the function. If execution succeeds set |retval| to the
-// function return value. If execution fails set |exception| to the exception
-// that will be thrown. Return true (1) if execution was handled.
+// / Handle execution of the function identified by |name|. |object| is the
+// / receiver (&#39;this&#39; object) of the function. |arguments| is the list of
+// / arguments passed to the function. If execution succeeds set |retval| to
+// / the function return value. If execution fails set |exception| to the
+// / exception that will be thrown. Return true (1) if execution was handled.
 // /
 type CV8handlerTExecuteHandler interface {
 	Execute(
@@ -28555,10 +29353,10 @@ func (v8handler *CV8handlerT) Handler() interface{} {
 }
 
 ///
-// Structure that should be implemented to handle V8 accessor calls. Accessor
-// identifiers are registered by calling cef_v8value_t::set_value(). The
-// functions of this structure will be called on the thread associated with the
-// V8 accessor.
+/// Structure that should be implemented to handle V8 accessor calls. Accessor
+/// identifiers are registered by calling cef_v8value_t::set_value(). The
+/// functions of this structure will be called on the thread associated with the
+/// V8 accessor.
 ///
 
 type cCV8accessorT C.cef_v8accessor_t
@@ -28636,11 +29434,11 @@ func (v8accessor *CV8accessorT) Unref() (ret bool) {
 }
 
 // /
-// Handle retrieval the accessor value identified by |name|. |object| is the
-// receiver (&#39;this&#39; object) of the accessor. If retrieval succeeds set
-// |retval| to the return value. If retrieval fails set |exception| to the
-// exception that will be thrown. Return true (1) if accessor retrieval was
-// handled.
+// / Handle retrieval the accessor value identified by |name|. |object| is the
+// / receiver (&#39;this&#39; object) of the accessor. If retrieval succeeds set
+// / |retval| to the return value. If retrieval fails set |exception| to the
+// / exception that will be thrown. Return true (1) if accessor retrieval was
+// / handled.
 // /
 type GetHandler interface {
 	Get(
@@ -28651,11 +29449,11 @@ type GetHandler interface {
 }
 
 // /
-// Handle assignment of the accessor value identified by |name|. |object| is
-// the receiver (&#39;this&#39; object) of the accessor. |value| is the new value
-// being assigned to the accessor. If assignment fails set |exception| to the
-// exception that will be thrown. Return true (1) if accessor assignment was
-// handled.
+// / Handle assignment of the accessor value identified by |name|. |object| is
+// / the receiver (&#39;this&#39; object) of the accessor. |value| is the new value
+// / being assigned to the accessor. If assignment fails set |exception| to the
+// / exception that will be thrown. Return true (1) if accessor assignment was
+// / handled.
 // /
 type SetHandler interface {
 	Set(
@@ -28751,12 +29549,12 @@ func (v8accessor *CV8accessorT) Handler() interface{} {
 }
 
 ///
-// Structure that should be implemented to handle V8 interceptor calls. The
-// functions of this structure will be called on the thread associated with the
-// V8 interceptor. Interceptor's named property handlers (with first argument of
-// type CefString) are called when object is indexed by string. Indexed property
-// handlers (with first argument of type int) are called when object is indexed
-// by integer.
+/// Structure that should be implemented to handle V8 interceptor calls. The
+/// functions of this structure will be called on the thread associated with the
+/// V8 interceptor. Interceptor's named property handlers (with first argument
+/// of type CefString) are called when object is indexed by string. Indexed
+/// property handlers (with first argument of type int) are called when object
+/// is indexed by integer.
 ///
 
 type cCV8interceptorT C.cef_v8interceptor_t
@@ -28834,13 +29632,13 @@ func (v8interceptor *CV8interceptorT) Unref() (ret bool) {
 }
 
 // /
-// Handle retrieval of the interceptor value identified by |name|. |object| is
-// the receiver (&#39;this&#39; object) of the interceptor. If retrieval succeeds, set
-// |retval| to the return value. If the requested value does not exist, don&#39;t
-// set either |retval| or |exception|. If retrieval fails, set |exception| to
-// the exception that will be thrown. If the property has an associated
-// accessor, it will be called only if you don&#39;t set |retval|. Return true (1)
-// if interceptor retrieval was handled, false (0) otherwise.
+// / Handle retrieval of the interceptor value identified by |name|. |object|
+// / is the receiver (&#39;this&#39; object) of the interceptor. If retrieval succeeds,
+// / set |retval| to the return value. If the requested value does not exist,
+// / don&#39;t set either |retval| or |exception|. If retrieval fails, set
+// / |exception| to the exception that will be thrown. If the property has an
+// / associated accessor, it will be called only if you don&#39;t set |retval|.
+// / Return true (1) if interceptor retrieval was handled, false (0) otherwise.
 // /
 func (self *CV8interceptorT) GetByname(
 	name string,
@@ -28865,12 +29663,12 @@ func (self *CV8interceptorT) GetByname(
 }
 
 // /
-// Handle retrieval of the interceptor value identified by |index|. |object|
-// is the receiver (&#39;this&#39; object) of the interceptor. If retrieval succeeds,
-// set |retval| to the return value. If the requested value does not exist,
-// don&#39;t set either |retval| or |exception|. If retrieval fails, set
-// |exception| to the exception that will be thrown. Return true (1) if
-// interceptor retrieval was handled, false (0) otherwise.
+// / Handle retrieval of the interceptor value identified by |index|. |object|
+// / is the receiver (&#39;this&#39; object) of the interceptor. If retrieval succeeds,
+// / set |retval| to the return value. If the requested value does not exist,
+// / don&#39;t set either |retval| or |exception|. If retrieval fails, set
+// / |exception| to the exception that will be thrown. Return true (1) if
+// / interceptor retrieval was handled, false (0) otherwise.
 // /
 func (self *CV8interceptorT) GetByindex(
 	index int,
@@ -28894,12 +29692,12 @@ func (self *CV8interceptorT) GetByindex(
 }
 
 // /
-// Handle assignment of the interceptor value identified by |name|. |object|
-// is the receiver (&#39;this&#39; object) of the interceptor. |value| is the new
-// value being assigned to the interceptor. If assignment fails, set
-// |exception| to the exception that will be thrown. This setter will always
-// be called, even when the property has an associated accessor. Return true
-// (1) if interceptor assignment was handled, false (0) otherwise.
+// / Handle assignment of the interceptor value identified by |name|. |object|
+// / is the receiver (&#39;this&#39; object) of the interceptor. |value| is the new
+// / value being assigned to the interceptor. If assignment fails, set
+// / |exception| to the exception that will be thrown. This setter will always
+// / be called, even when the property has an associated accessor. Return true
+// / (1) if interceptor assignment was handled, false (0) otherwise.
 // /
 func (self *CV8interceptorT) SetByname(
 	name string,
@@ -28928,11 +29726,11 @@ func (self *CV8interceptorT) SetByname(
 }
 
 // /
-// Handle assignment of the interceptor value identified by |index|. |object|
-// is the receiver (&#39;this&#39; object) of the interceptor. |value| is the new
-// value being assigned to the interceptor. If assignment fails, set
-// |exception| to the exception that will be thrown. Return true (1) if
-// interceptor assignment was handled, false (0) otherwise.
+// / Handle assignment of the interceptor value identified by |index|. |object|
+// / is the receiver (&#39;this&#39; object) of the interceptor. |value| is the new
+// / value being assigned to the interceptor. If assignment fails, set
+// / |exception| to the exception that will be thrown. Return true (1) if
+// / interceptor assignment was handled, false (0) otherwise.
 // /
 func (self *CV8interceptorT) SetByindex(
 	index int,
@@ -28960,8 +29758,8 @@ func (self *CV8interceptorT) SetByindex(
 }
 
 ///
-// Structure representing a V8 exception. The functions of this structure may be
-// called on any render process thread.
+/// Structure representing a V8 exception. The functions of this structure may
+/// be called on any render process thread.
 ///
 
 type cCV8exceptionT C.cef_v8exception_t
@@ -29039,7 +29837,7 @@ func (v8exception *CV8exceptionT) Unref() (ret bool) {
 }
 
 // /
-// Returns the exception message.
+// / Returns the exception message.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetMessage() (ret string) {
@@ -29055,7 +29853,7 @@ func (self *CV8exceptionT) GetMessage() (ret string) {
 }
 
 // /
-// Returns the line of source code that the exception occurred within.
+// / Returns the line of source code that the exception occurred within.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetSourceLine() (ret string) {
@@ -29071,8 +29869,8 @@ func (self *CV8exceptionT) GetSourceLine() (ret string) {
 }
 
 // /
-// Returns the resource name for the script from where the function causing
-// the error originates.
+// / Returns the resource name for the script from where the function causing
+// / the error originates.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8exceptionT) GetScriptResourceName() (ret string) {
@@ -29088,8 +29886,8 @@ func (self *CV8exceptionT) GetScriptResourceName() (ret string) {
 }
 
 // /
-// Returns the 1-based number of the line where the error occurred or 0 if the
-// line number is unknown.
+// / Returns the 1-based number of the line where the error occurred or 0 if
+// / the line number is unknown.
 // /
 func (self *CV8exceptionT) GetLineNumber() (ret bool) {
 
@@ -29100,8 +29898,8 @@ func (self *CV8exceptionT) GetLineNumber() (ret bool) {
 }
 
 // /
-// Returns the index within the script of the first character where the error
-// occurred.
+// / Returns the index within the script of the first character where the error
+// / occurred.
 // /
 func (self *CV8exceptionT) GetStartPosition() (ret bool) {
 
@@ -29112,8 +29910,8 @@ func (self *CV8exceptionT) GetStartPosition() (ret bool) {
 }
 
 // /
-// Returns the index within the script of the last character where the error
-// occurred.
+// / Returns the index within the script of the last character where the error
+// / occurred.
 // /
 func (self *CV8exceptionT) GetEndPosition() (ret bool) {
 
@@ -29124,8 +29922,8 @@ func (self *CV8exceptionT) GetEndPosition() (ret bool) {
 }
 
 // /
-// Returns the index within the line of the first character where the error
-// occurred.
+// / Returns the index within the line of the first character where the error
+// / occurred.
 // /
 func (self *CV8exceptionT) GetStartColumn() (ret bool) {
 
@@ -29136,8 +29934,8 @@ func (self *CV8exceptionT) GetStartColumn() (ret bool) {
 }
 
 // /
-// Returns the index within the line of the last character where the error
-// occurred.
+// / Returns the index within the line of the last character where the error
+// / occurred.
 // /
 func (self *CV8exceptionT) GetEndColumn() (ret bool) {
 
@@ -29148,7 +29946,7 @@ func (self *CV8exceptionT) GetEndColumn() (ret bool) {
 }
 
 ///
-// Callback structure that is passed to cef_v8value_t::CreateArrayBuffer.
+/// Callback structure that is passed to cef_v8value_t::CreateArrayBuffer.
 ///
 
 type cCV8arrayBufferReleaseCallbackT C.cef_v8array_buffer_release_callback_t
@@ -29226,9 +30024,9 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Unref() (
 }
 
 // /
-// Called to release |buffer| when the ArrayBuffer JS object is garbage
-// collected. |buffer| is the value that was passed to CreateArrayBuffer along
-// with this object.
+// / Called to release |buffer| when the ArrayBuffer JS object is garbage
+// / collected. |buffer| is the value that was passed to CreateArrayBuffer
+// / along with this object.
 // /
 type ReleaseBufferHandler interface {
 	ReleaseBuffer(
@@ -29312,11 +30110,11 @@ func (v8array_buffer_release_callback *CV8arrayBufferReleaseCallbackT) Handler()
 }
 
 ///
-// Structure representing a V8 value handle. V8 handles can only be accessed
-// from the thread on which they are created. Valid threads for creating a V8
-// handle include the render process main thread (TID_RENDERER) and WebWorker
-// threads. A task runner for posting tasks on the associated thread can be
-// retrieved via the cef_v8context_t::get_task_runner() function.
+/// Structure representing a V8 value handle. V8 handles can only be accessed
+/// from the thread on which they are created. Valid threads for creating a V8
+/// handle include the render process main thread (TID_RENDERER) and WebWorker
+/// threads. A task runner for posting tasks on the associated thread can be
+/// retrieved via the cef_v8context_t::get_task_runner() function.
 ///
 
 type cCV8valueT C.cef_v8value_t
@@ -29394,9 +30192,9 @@ func (v8value *CV8valueT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if the underlying handle is valid and it can be accessed
-// on the current thread. Do not call any other functions if this function
-// returns false (0).
+// / Returns true (1) if the underlying handle is valid and it can be accessed
+// / on the current thread. Do not call any other functions if this function
+// / returns false (0).
 // /
 func (self *CV8valueT) IsValid() (ret bool) {
 
@@ -29407,7 +30205,7 @@ func (self *CV8valueT) IsValid() (ret bool) {
 }
 
 // /
-// True if the value type is undefined.
+// / True if the value type is undefined.
 // /
 func (self *CV8valueT) IsUndefined() (ret bool) {
 
@@ -29418,7 +30216,7 @@ func (self *CV8valueT) IsUndefined() (ret bool) {
 }
 
 // /
-// True if the value type is null.
+// / True if the value type is null.
 // /
 func (self *CV8valueT) IsNull() (ret bool) {
 
@@ -29429,7 +30227,7 @@ func (self *CV8valueT) IsNull() (ret bool) {
 }
 
 // /
-// True if the value type is bool.
+// / True if the value type is bool.
 // /
 func (self *CV8valueT) IsBool() (ret bool) {
 
@@ -29440,7 +30238,7 @@ func (self *CV8valueT) IsBool() (ret bool) {
 }
 
 // /
-// True if the value type is int.
+// / True if the value type is int.
 // /
 func (self *CV8valueT) IsInt() (ret bool) {
 
@@ -29451,7 +30249,7 @@ func (self *CV8valueT) IsInt() (ret bool) {
 }
 
 // /
-// True if the value type is unsigned int.
+// / True if the value type is unsigned int.
 // /
 func (self *CV8valueT) IsUint() (ret bool) {
 
@@ -29462,7 +30260,7 @@ func (self *CV8valueT) IsUint() (ret bool) {
 }
 
 // /
-// True if the value type is double.
+// / True if the value type is double.
 // /
 func (self *CV8valueT) IsDouble() (ret bool) {
 
@@ -29473,7 +30271,7 @@ func (self *CV8valueT) IsDouble() (ret bool) {
 }
 
 // /
-// True if the value type is Date.
+// / True if the value type is Date.
 // /
 func (self *CV8valueT) IsDate() (ret bool) {
 
@@ -29484,7 +30282,7 @@ func (self *CV8valueT) IsDate() (ret bool) {
 }
 
 // /
-// True if the value type is string.
+// / True if the value type is string.
 // /
 func (self *CV8valueT) IsString() (ret bool) {
 
@@ -29495,7 +30293,7 @@ func (self *CV8valueT) IsString() (ret bool) {
 }
 
 // /
-// True if the value type is object.
+// / True if the value type is object.
 // /
 func (self *CV8valueT) IsObject() (ret bool) {
 
@@ -29506,7 +30304,7 @@ func (self *CV8valueT) IsObject() (ret bool) {
 }
 
 // /
-// True if the value type is array.
+// / True if the value type is array.
 // /
 func (self *CV8valueT) IsArray() (ret bool) {
 
@@ -29517,7 +30315,7 @@ func (self *CV8valueT) IsArray() (ret bool) {
 }
 
 // /
-// True if the value type is an ArrayBuffer.
+// / True if the value type is an ArrayBuffer.
 // /
 func (self *CV8valueT) IsArrayBuffer() (ret bool) {
 
@@ -29528,7 +30326,7 @@ func (self *CV8valueT) IsArrayBuffer() (ret bool) {
 }
 
 // /
-// True if the value type is function.
+// / True if the value type is function.
 // /
 func (self *CV8valueT) IsFunction() (ret bool) {
 
@@ -29539,8 +30337,8 @@ func (self *CV8valueT) IsFunction() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is pointing to the same handle as |that|
-// object.
+// / Returns true (1) if this object is pointing to the same handle as |that|
+// / object.
 // /
 func (self *CV8valueT) IsSame(
 	that *CV8valueT,
@@ -29558,7 +30356,7 @@ func (self *CV8valueT) IsSame(
 }
 
 // /
-// Return a bool value.
+// / Return a bool value.
 // /
 func (self *CV8valueT) GetBoolValue() (ret bool) {
 
@@ -29569,7 +30367,7 @@ func (self *CV8valueT) GetBoolValue() (ret bool) {
 }
 
 // /
-// Return an int value.
+// / Return an int value.
 // /
 func (self *CV8valueT) GetIntValue() (ret int32) {
 
@@ -29580,7 +30378,7 @@ func (self *CV8valueT) GetIntValue() (ret int32) {
 }
 
 // /
-// Return an unsigned int value.
+// / Return an unsigned int value.
 // /
 func (self *CV8valueT) GetUintValue() (ret uint32) {
 
@@ -29591,7 +30389,7 @@ func (self *CV8valueT) GetUintValue() (ret uint32) {
 }
 
 // /
-// Return a double value.
+// / Return a double value.
 // /
 func (self *CV8valueT) GetDoubleValue() (ret float64) {
 
@@ -29602,18 +30400,18 @@ func (self *CV8valueT) GetDoubleValue() (ret float64) {
 }
 
 // /
-// Return a Date value.
+// / Return a Date value.
 // /
-func (self *CV8valueT) GetDateValue() (ret CTimeT) {
+func (self *CV8valueT) GetDateValue() (ret CBasetimeT) {
 
 	cRet := C.cefingo_v8value_get_date_value((*C.cef_v8value_t)(self.pc_v8value))
 
-	ret = (CTimeT)(cRet) // return GoObj
+	ret = (CBasetimeT)(cRet) // return GoObj
 	return ret
 }
 
 // /
-// Return a string value.
+// / Return a string value.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8valueT) GetStringValue() (ret string) {
@@ -29629,7 +30427,7 @@ func (self *CV8valueT) GetStringValue() (ret string) {
 }
 
 // /
-// Returns true (1) if this is a user created object.
+// / Returns true (1) if this is a user created object.
 // /
 func (self *CV8valueT) IsUserCreated() (ret bool) {
 
@@ -29640,8 +30438,8 @@ func (self *CV8valueT) IsUserCreated() (ret bool) {
 }
 
 // /
-// Returns true (1) if the last function call resulted in an exception. This
-// attribute exists only in the scope of the current CEF value object.
+// / Returns true (1) if the last function call resulted in an exception. This
+// / attribute exists only in the scope of the current CEF value object.
 // /
 func (self *CV8valueT) HasException() (ret bool) {
 
@@ -29652,8 +30450,8 @@ func (self *CV8valueT) HasException() (ret bool) {
 }
 
 // /
-// Returns the exception resulting from the last function call. This attribute
-// exists only in the scope of the current CEF value object.
+// / Returns the exception resulting from the last function call. This
+// / attribute exists only in the scope of the current CEF value object.
 // /
 func (self *CV8valueT) GetException() (ret *CV8exceptionT) {
 
@@ -29664,7 +30462,7 @@ func (self *CV8valueT) GetException() (ret *CV8exceptionT) {
 }
 
 // /
-// Clears the last exception and returns true (1) on success.
+// / Clears the last exception and returns true (1) on success.
 // /
 func (self *CV8valueT) ClearException() (ret bool) {
 
@@ -29675,8 +30473,8 @@ func (self *CV8valueT) ClearException() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object will re-throw future exceptions. This
-// attribute exists only in the scope of the current CEF value object.
+// / Returns true (1) if this object will re-throw future exceptions. This
+// / attribute exists only in the scope of the current CEF value object.
 // /
 func (self *CV8valueT) WillRethrowExceptions() (ret bool) {
 
@@ -29687,11 +30485,11 @@ func (self *CV8valueT) WillRethrowExceptions() (ret bool) {
 }
 
 // /
-// Set whether this object will re-throw future exceptions. By default
-// exceptions are not re-thrown. If a exception is re-thrown the current
-// context should not be accessed again until after the exception has been
-// caught and not re-thrown. Returns true (1) on success. This attribute
-// exists only in the scope of the current CEF value object.
+// / Set whether this object will re-throw future exceptions. By default
+// / exceptions are not re-thrown. If a exception is re-thrown the current
+// / context should not be accessed again until after the exception has been
+// / caught and not re-thrown. Returns true (1) on success. This attribute
+// / exists only in the scope of the current CEF value object.
 // /
 func (self *CV8valueT) SetRethrowExceptions(
 	rethrow int,
@@ -29704,7 +30502,7 @@ func (self *CV8valueT) SetRethrowExceptions(
 }
 
 // /
-// Returns true (1) if the object has a value with the specified identifier.
+// / Returns true (1) if the object has a value with the specified identifier.
 // /
 func (self *CV8valueT) HasValueBykey(
 	key string,
@@ -29718,7 +30516,7 @@ func (self *CV8valueT) HasValueBykey(
 }
 
 // /
-// Returns true (1) if the object has a value with the specified identifier.
+// / Returns true (1) if the object has a value with the specified identifier.
 // /
 func (self *CV8valueT) HasValueByindex(
 	index int,
@@ -29731,10 +30529,10 @@ func (self *CV8valueT) HasValueByindex(
 }
 
 // /
-// Deletes the value with the specified identifier and returns true (1) on
-// success. Returns false (0) if this function is called incorrectly or an
-// exception is thrown. For read-only and don&#39;t-delete values this function
-// will return true (1) even though deletion failed.
+// / Deletes the value with the specified identifier and returns true (1) on
+// / success. Returns false (0) if this function is called incorrectly or an
+// / exception is thrown. For read-only and don&#39;t-delete values this function
+// / will return true (1) even though deletion failed.
 // /
 func (self *CV8valueT) DeleteValueBykey(
 	key string,
@@ -29748,10 +30546,10 @@ func (self *CV8valueT) DeleteValueBykey(
 }
 
 // /
-// Deletes the value with the specified identifier and returns true (1) on
-// success. Returns false (0) if this function is called incorrectly, deletion
-// fails or an exception is thrown. For read-only and don&#39;t-delete values this
-// function will return true (1) even though deletion failed.
+// / Deletes the value with the specified identifier and returns true (1) on
+// / success. Returns false (0) if this function is called incorrectly,
+// / deletion fails or an exception is thrown. For read-only and don&#39;t-delete
+// / values this function will return true (1) even though deletion failed.
 // /
 func (self *CV8valueT) DeleteValueByindex(
 	index int,
@@ -29764,8 +30562,8 @@ func (self *CV8valueT) DeleteValueByindex(
 }
 
 // /
-// Returns the value with the specified identifier on success. Returns NULL if
-// this function is called incorrectly or an exception is thrown.
+// / Returns the value with the specified identifier on success. Returns NULL
+// / if this function is called incorrectly or an exception is thrown.
 // /
 func (self *CV8valueT) GetValueBykey(
 	key string,
@@ -29779,8 +30577,8 @@ func (self *CV8valueT) GetValueBykey(
 }
 
 // /
-// Returns the value with the specified identifier on success. Returns NULL if
-// this function is called incorrectly or an exception is thrown.
+// / Returns the value with the specified identifier on success. Returns NULL
+// / if this function is called incorrectly or an exception is thrown.
 // /
 func (self *CV8valueT) GetValueByindex(
 	index int,
@@ -29793,10 +30591,10 @@ func (self *CV8valueT) GetValueByindex(
 }
 
 // /
-// Associates a value with the specified identifier and returns true (1) on
-// success. Returns false (0) if this function is called incorrectly or an
-// exception is thrown. For read-only values this function will return true
-// (1) even though assignment failed.
+// / Associates a value with the specified identifier and returns true (1) on
+// / success. Returns false (0) if this function is called incorrectly or an
+// / exception is thrown. For read-only values this function will return true
+// / (1) even though assignment failed.
 // /
 func (self *CV8valueT) SetValueBykey(
 	key string,
@@ -29817,10 +30615,10 @@ func (self *CV8valueT) SetValueBykey(
 }
 
 // /
-// Associates a value with the specified identifier and returns true (1) on
-// success. Returns false (0) if this function is called incorrectly or an
-// exception is thrown. For read-only values this function will return true
-// (1) even though assignment failed.
+// / Associates a value with the specified identifier and returns true (1) on
+// / success. Returns false (0) if this function is called incorrectly or an
+// / exception is thrown. For read-only values this function will return true
+// / (1) even though assignment failed.
 // /
 func (self *CV8valueT) SetValueByindex(
 	index int,
@@ -29839,11 +30637,11 @@ func (self *CV8valueT) SetValueByindex(
 }
 
 // /
-// Registers an identifier and returns true (1) on success. Access to the
-// identifier will be forwarded to the cef_v8accessor_t instance passed to
-// cef_v8value_t::cef_v8value_create_object(). Returns false (0) if this
-// function is called incorrectly or an exception is thrown. For read-only
-// values this function will return true (1) even though assignment failed.
+// / Registers an identifier and returns true (1) on success. Access to the
+// / identifier will be forwarded to the cef_v8accessor_t instance passed to
+// / cef_v8value_t::cef_v8value_create_object(). Returns false (0) if this
+// / function is called incorrectly or an exception is thrown. For read-only
+// / values this function will return true (1) even though assignment failed.
 // /
 func (self *CV8valueT) SetValueByaccessor(
 	key string,
@@ -29859,8 +30657,8 @@ func (self *CV8valueT) SetValueByaccessor(
 }
 
 // /
-// Read the keys for the object&#39;s values into the specified vector. Integer-
-// based keys will also be returned as strings.
+// / Read the keys for the object&#39;s values into the specified vector. Integer-
+// / based keys will also be returned as strings.
 // /
 func (self *CV8valueT) GetKeys(
 	keys CStringListT,
@@ -29873,8 +30671,8 @@ func (self *CV8valueT) GetKeys(
 }
 
 // /
-// Returns the amount of externally allocated memory registered for the
-// object.
+// / Returns the amount of externally allocated memory registered for the
+// / object.
 // /
 func (self *CV8valueT) GetExternallyAllocatedMemory() (ret bool) {
 
@@ -29885,15 +30683,15 @@ func (self *CV8valueT) GetExternallyAllocatedMemory() (ret bool) {
 }
 
 // /
-// Adjusts the amount of registered external memory for the object. Used to
-// give V8 an indication of the amount of externally allocated memory that is
-// kept alive by JavaScript objects. V8 uses this information to decide when
-// to perform global garbage collection. Each cef_v8value_t tracks the amount
-// of external memory associated with it and automatically decreases the
-// global total by the appropriate amount on its destruction.
-// |change_in_bytes| specifies the number of bytes to adjust by. This function
-// returns the number of bytes associated with the object after the
-// adjustment. This function can only be called on user created objects.
+// / Adjusts the amount of registered external memory for the object. Used to
+// / give V8 an indication of the amount of externally allocated memory that is
+// / kept alive by JavaScript objects. V8 uses this information to decide when
+// / to perform global garbage collection. Each cef_v8value_t tracks the amount
+// / of external memory associated with it and automatically decreases the
+// / global total by the appropriate amount on its destruction.
+// / |change_in_bytes| specifies the number of bytes to adjust by. This
+// / function returns the number of bytes associated with the object after the
+// / adjustment. This function can only be called on user created objects.
 // /
 func (self *CV8valueT) AdjustExternallyAllocatedMemory(
 	change_in_bytes int,
@@ -29906,7 +30704,7 @@ func (self *CV8valueT) AdjustExternallyAllocatedMemory(
 }
 
 // /
-// Returns the number of elements in the array.
+// / Returns the number of elements in the array.
 // /
 func (self *CV8valueT) GetArrayLength() (ret bool) {
 
@@ -29917,8 +30715,8 @@ func (self *CV8valueT) GetArrayLength() (ret bool) {
 }
 
 // /
-// Returns the ReleaseCallback object associated with the ArrayBuffer or NULL
-// if the ArrayBuffer was not created with CreateArrayBuffer.
+// / Returns the ReleaseCallback object associated with the ArrayBuffer or NULL
+// / if the ArrayBuffer was not created with CreateArrayBuffer.
 // /
 func (self *CV8valueT) GetArrayBufferReleaseCallback() (ret *CV8arrayBufferReleaseCallbackT) {
 
@@ -29929,11 +30727,11 @@ func (self *CV8valueT) GetArrayBufferReleaseCallback() (ret *CV8arrayBufferRelea
 }
 
 // /
-// Prevent the ArrayBuffer from using it&#39;s memory block by setting the length
-// to zero. This operation cannot be undone. If the ArrayBuffer was created
-// with CreateArrayBuffer then
-// cef_v8array_buffer_release_callback_t::ReleaseBuffer will be called to
-// release the underlying buffer.
+// / Prevent the ArrayBuffer from using it&#39;s memory block by setting the length
+// / to zero. This operation cannot be undone. If the ArrayBuffer was created
+// / with CreateArrayBuffer then
+// / cef_v8array_buffer_release_callback_t::ReleaseBuffer will be called to
+// / release the underlying buffer.
 // /
 func (self *CV8valueT) NeuterArrayBuffer() (ret bool) {
 
@@ -29944,7 +30742,7 @@ func (self *CV8valueT) NeuterArrayBuffer() (ret bool) {
 }
 
 // /
-// Returns the function name.
+// / Returns the function name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8valueT) GetFunctionName() (ret string) {
@@ -29960,7 +30758,7 @@ func (self *CV8valueT) GetFunctionName() (ret string) {
 }
 
 // /
-// Returns the function handler or NULL if not a CEF-created function.
+// / Returns the function handler or NULL if not a CEF-created function.
 // /
 func (self *CV8valueT) GetFunctionHandler() (ret *CV8handlerT) {
 
@@ -29971,15 +30769,15 @@ func (self *CV8valueT) GetFunctionHandler() (ret *CV8handlerT) {
 }
 
 // /
-// Execute the function using the current V8 context. This function should
-// only be called from within the scope of a cef_v8handler_t or
-// cef_v8accessor_t callback, or in combination with calling enter() and
-// exit() on a stored cef_v8context_t reference. |object| is the receiver
-// (&#39;this&#39; object) of the function. If |object| is NULL the current context&#39;s
-// global object will be used. |arguments| is the list of arguments that will
-// be passed to the function. Returns the function return value on success.
-// Returns NULL if this function is called incorrectly or an exception is
-// thrown.
+// / Execute the function using the current V8 context. This function should
+// / only be called from within the scope of a cef_v8handler_t or
+// / cef_v8accessor_t callback, or in combination with calling enter() and
+// / exit() on a stored cef_v8context_t reference. |object| is the receiver
+// / (&#39;this&#39; object) of the function. If |object| is NULL the current context&#39;s
+// / global object will be used. |arguments| is the list of arguments that will
+// / be passed to the function. Returns the function return value on success.
+// / Returns NULL if this function is called incorrectly or an exception is
+// / thrown.
 // /
 func (self *CV8valueT) ExecuteFunction(
 	object *CV8valueT,
@@ -30008,12 +30806,12 @@ func (self *CV8valueT) ExecuteFunction(
 }
 
 // /
-// Execute the function using the specified V8 context. |object| is the
-// receiver (&#39;this&#39; object) of the function. If |object| is NULL the specified
-// context&#39;s global object will be used. |arguments| is the list of arguments
-// that will be passed to the function. Returns the function return value on
-// success. Returns NULL if this function is called incorrectly or an
-// exception is thrown.
+// / Execute the function using the specified V8 context. |object| is the
+// / receiver (&#39;this&#39; object) of the function. If |object| is NULL the
+// / specified context&#39;s global object will be used. |arguments| is the list of
+// / arguments that will be passed to the function. Returns the function return
+// / value on success. Returns NULL if this function is called incorrectly or
+// / an exception is thrown.
 // /
 func (self *CV8valueT) ExecuteFunctionWithContext(
 	context *CV8contextT,
@@ -30048,7 +30846,7 @@ func (self *CV8valueT) ExecuteFunctionWithContext(
 }
 
 // /
-// Create a new cef_v8value_t object of type undefined.
+// / Create a new cef_v8value_t object of type undefined.
 // /
 func V8valueCreateUndefined() (ret *CV8valueT) {
 
@@ -30059,7 +30857,7 @@ func V8valueCreateUndefined() (ret *CV8valueT) {
 }
 
 // /
-// Create a new cef_v8value_t object of type null.
+// / Create a new cef_v8value_t object of type null.
 // /
 func V8valueCreateNull() (ret *CV8valueT) {
 
@@ -30070,7 +30868,7 @@ func V8valueCreateNull() (ret *CV8valueT) {
 }
 
 // /
-// Create a new cef_v8value_t object of type bool.
+// / Create a new cef_v8value_t object of type bool.
 // /
 func V8valueCreateBool(
 	value int,
@@ -30083,7 +30881,7 @@ func V8valueCreateBool(
 }
 
 // /
-// Create a new cef_v8value_t object of type int.
+// / Create a new cef_v8value_t object of type int.
 // /
 func V8valueCreateInt(
 	value int32,
@@ -30096,7 +30894,7 @@ func V8valueCreateInt(
 }
 
 // /
-// Create a new cef_v8value_t object of type unsigned int.
+// / Create a new cef_v8value_t object of type unsigned int.
 // /
 func V8valueCreateUint(
 	value uint32,
@@ -30109,7 +30907,7 @@ func V8valueCreateUint(
 }
 
 // /
-// Create a new cef_v8value_t object of type double.
+// / Create a new cef_v8value_t object of type double.
 // /
 func V8valueCreateDouble(
 	value float64,
@@ -30122,23 +30920,23 @@ func V8valueCreateDouble(
 }
 
 // /
-// Create a new cef_v8value_t object of type Date. This function should only be
-// called from within the scope of a cef_render_process_handler_t,
-// cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
-// enter() and exit() on a stored cef_v8context_t reference.
+// / Create a new cef_v8value_t object of type Date. This function should only be
+// / called from within the scope of a cef_render_process_handler_t,
+// / cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
+// / enter() and exit() on a stored cef_v8context_t reference.
 // /
 func V8valueCreateDate(
-	date *CTimeT,
+	date CBasetimeT,
 ) (ret *CV8valueT) {
 
-	cRet := C.cef_v8value_create_date((*C.cef_time_t)(date))
+	cRet := C.cef_v8value_create_date((C.cef_basetime_t)(date))
 
 	ret = newCV8valueT(cRet, byApp) // return GoObj
 	return ret
 }
 
 // /
-// Create a new cef_v8value_t object of type string.
+// / Create a new cef_v8value_t object of type string.
 // /
 func V8valueCreateString(
 	value string,
@@ -30152,11 +30950,11 @@ func V8valueCreateString(
 }
 
 // /
-// Create a new cef_v8value_t object of type object with optional accessor
-// and/or interceptor. This function should only be called from within the scope
-// of a cef_render_process_handler_t, cef_v8handler_t or cef_v8accessor_t
-// callback, or in combination with calling enter() and exit() on a stored
-// cef_v8context_t reference.
+// / Create a new cef_v8value_t object of type object with optional accessor
+// / and/or interceptor. This function should only be called from within the
+// / scope of a cef_render_process_handler_t, cef_v8handler_t or cef_v8accessor_t
+// / callback, or in combination with calling enter() and exit() on a stored
+// / cef_v8context_t reference.
 // /
 func V8valueCreateObject(
 	accessor *CV8accessorT,
@@ -30180,12 +30978,12 @@ func V8valueCreateObject(
 }
 
 // /
-// Create a new cef_v8value_t object of type array with the specified |length|.
-// If |length| is negative the returned array will have length 0. This function
-// should only be called from within the scope of a
-// cef_render_process_handler_t, cef_v8handler_t or cef_v8accessor_t callback,
-// or in combination with calling enter() and exit() on a stored cef_v8context_t
-// reference.
+// / Create a new cef_v8value_t object of type array with the specified |length|.
+// / If |length| is negative the returned array will have length 0. This function
+// / should only be called from within the scope of a
+// / cef_render_process_handler_t, cef_v8handler_t or cef_v8accessor_t callback,
+// / or in combination with calling enter() and exit() on a stored
+// / cef_v8context_t reference.
 // /
 func V8valueCreateArray(
 	length int,
@@ -30198,14 +30996,14 @@ func V8valueCreateArray(
 }
 
 // /
-// Create a new cef_v8value_t object of type ArrayBuffer which wraps the
-// provided |buffer| of size |length| bytes. The ArrayBuffer is externalized,
-// meaning that it does not own |buffer|. The caller is responsible for freeing
-// |buffer| when requested via a call to cef_v8array_buffer_release_callback_t::
-// ReleaseBuffer. This function should only be called from within the scope of a
-// cef_render_process_handler_t, cef_v8handler_t or cef_v8accessor_t callback,
-// or in combination with calling enter() and exit() on a stored cef_v8context_t
-// reference.
+// / Create a new cef_v8value_t object of type ArrayBuffer which wraps the
+// / provided |buffer| of size |length| bytes. The ArrayBuffer is externalized,
+// / meaning that it does not own |buffer|. The caller is responsible for freeing
+// / |buffer| when requested via a call to
+// / cef_v8array_buffer_release_callback_t::ReleaseBuffer. This function should
+// / only be called from within the scope of a cef_render_process_handler_t,
+// / cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
+// / enter() and exit() on a stored cef_v8context_t reference.
 // /
 func V8valueCreateArrayBuffer(
 	buffer unsafe.Pointer,
@@ -30225,10 +31023,10 @@ func V8valueCreateArrayBuffer(
 }
 
 // /
-// Create a new cef_v8value_t object of type function. This function should only
-// be called from within the scope of a cef_render_process_handler_t,
-// cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
-// enter() and exit() on a stored cef_v8context_t reference.
+// / Create a new cef_v8value_t object of type function. This function should
+// / only be called from within the scope of a cef_render_process_handler_t,
+// / cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
+// / enter() and exit() on a stored cef_v8context_t reference.
 // /
 func V8valueCreateFunction(
 	name string,
@@ -30248,11 +31046,11 @@ func V8valueCreateFunction(
 }
 
 ///
-// Structure representing a V8 stack trace handle. V8 handles can only be
-// accessed from the thread on which they are created. Valid threads for
-// creating a V8 handle include the render process main thread (TID_RENDERER)
-// and WebWorker threads. A task runner for posting tasks on the associated
-// thread can be retrieved via the cef_v8context_t::get_task_runner() function.
+/// Structure representing a V8 stack trace handle. V8 handles can only be
+/// accessed from the thread on which they are created. Valid threads for
+/// creating a V8 handle include the render process main thread (TID_RENDERER)
+/// and WebWorker threads. A task runner for posting tasks on the associated
+/// thread can be retrieved via the cef_v8context_t::get_task_runner() function.
 ///
 
 type cCV8stackTraceT C.cef_v8stack_trace_t
@@ -30330,9 +31128,9 @@ func (v8stack_trace *CV8stackTraceT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if the underlying handle is valid and it can be accessed
-// on the current thread. Do not call any other functions if this function
-// returns false (0).
+// / Returns true (1) if the underlying handle is valid and it can be accessed
+// / on the current thread. Do not call any other functions if this function
+// / returns false (0).
 // /
 func (self *CV8stackTraceT) IsValid() (ret bool) {
 
@@ -30343,7 +31141,7 @@ func (self *CV8stackTraceT) IsValid() (ret bool) {
 }
 
 // /
-// Returns the number of stack frames.
+// / Returns the number of stack frames.
 // /
 func (self *CV8stackTraceT) GetFrameCount() (ret bool) {
 
@@ -30354,7 +31152,7 @@ func (self *CV8stackTraceT) GetFrameCount() (ret bool) {
 }
 
 // /
-// Returns the stack frame at the specified 0-based index.
+// / Returns the stack frame at the specified 0-based index.
 // /
 func (self *CV8stackTraceT) GetFrame(
 	index int,
@@ -30367,8 +31165,8 @@ func (self *CV8stackTraceT) GetFrame(
 }
 
 // /
-// Returns the stack trace for the currently active context. |frame_limit| is
-// the maximum number of frames that will be captured.
+// / Returns the stack trace for the currently active context. |frame_limit| is
+// / the maximum number of frames that will be captured.
 // /
 func V8stackTraceGetCurrent(
 	frame_limit int,
@@ -30381,11 +31179,11 @@ func V8stackTraceGetCurrent(
 }
 
 ///
-// Structure representing a V8 stack frame handle. V8 handles can only be
-// accessed from the thread on which they are created. Valid threads for
-// creating a V8 handle include the render process main thread (TID_RENDERER)
-// and WebWorker threads. A task runner for posting tasks on the associated
-// thread can be retrieved via the cef_v8context_t::get_task_runner() function.
+/// Structure representing a V8 stack frame handle. V8 handles can only be
+/// accessed from the thread on which they are created. Valid threads for
+/// creating a V8 handle include the render process main thread (TID_RENDERER)
+/// and WebWorker threads. A task runner for posting tasks on the associated
+/// thread can be retrieved via the cef_v8context_t::get_task_runner() function.
 ///
 
 type cCV8stackFrameT C.cef_v8stack_frame_t
@@ -30463,9 +31261,9 @@ func (v8stack_frame *CV8stackFrameT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if the underlying handle is valid and it can be accessed
-// on the current thread. Do not call any other functions if this function
-// returns false (0).
+// / Returns true (1) if the underlying handle is valid and it can be accessed
+// / on the current thread. Do not call any other functions if this function
+// / returns false (0).
 // /
 func (self *CV8stackFrameT) IsValid() (ret bool) {
 
@@ -30476,7 +31274,7 @@ func (self *CV8stackFrameT) IsValid() (ret bool) {
 }
 
 // /
-// Returns the name of the resource script that contains the function.
+// / Returns the name of the resource script that contains the function.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetScriptName() (ret string) {
@@ -30492,9 +31290,9 @@ func (self *CV8stackFrameT) GetScriptName() (ret string) {
 }
 
 // /
-// Returns the name of the resource script that contains the function or the
-// sourceURL value if the script name is undefined and its source ends with a
-// &quot;//@ sourceURL=...&quot; string.
+// / Returns the name of the resource script that contains the function or the
+// / sourceURL value if the script name is undefined and its source ends with a
+// / &quot;//@ sourceURL=...&quot; string.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetScriptNameOrSourceUrl() (ret string) {
@@ -30510,7 +31308,7 @@ func (self *CV8stackFrameT) GetScriptNameOrSourceUrl() (ret string) {
 }
 
 // /
-// Returns the name of the function.
+// / Returns the name of the function.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CV8stackFrameT) GetFunctionName() (ret string) {
@@ -30526,7 +31324,7 @@ func (self *CV8stackFrameT) GetFunctionName() (ret string) {
 }
 
 // /
-// Returns the 1-based line number for the function call or 0 if unknown.
+// / Returns the 1-based line number for the function call or 0 if unknown.
 // /
 func (self *CV8stackFrameT) GetLineNumber() (ret bool) {
 
@@ -30537,8 +31335,8 @@ func (self *CV8stackFrameT) GetLineNumber() (ret bool) {
 }
 
 // /
-// Returns the 1-based column offset on the line for the function call or 0 if
-// unknown.
+// / Returns the 1-based column offset on the line for the function call or 0
+// / if unknown.
 // /
 func (self *CV8stackFrameT) GetColumn() (ret bool) {
 
@@ -30549,7 +31347,7 @@ func (self *CV8stackFrameT) GetColumn() (ret bool) {
 }
 
 // /
-// Returns true (1) if the function was compiled using eval().
+// / Returns true (1) if the function was compiled using eval().
 // /
 func (self *CV8stackFrameT) IsEval() (ret bool) {
 
@@ -30560,7 +31358,7 @@ func (self *CV8stackFrameT) IsEval() (ret bool) {
 }
 
 // /
-// Returns true (1) if the function was called as a constructor via &quot;new&quot;.
+// / Returns true (1) if the function was called as a constructor via &quot;new&quot;.
 // /
 func (self *CV8stackFrameT) IsConstructor() (ret bool) {
 
@@ -30571,64 +31369,62 @@ func (self *CV8stackFrameT) IsConstructor() (ret bool) {
 }
 
 // /
-// Register a new V8 extension with the specified JavaScript extension code and
-// handler. Functions implemented by the handler are prototyped using the
-// keyword 'native'. The calling of a native function is restricted to the scope
-// in which the prototype of the native function is defined. This function may
-// only be called on the render process main thread.
-//
-// Example JavaScript extension code: <pre>
-//
-//	// create the 'example' global object if it doesn't already exist.
-//	if (!example)
-//	  example = {};
-//	// create the 'example.test' global object if it doesn't already exist.
-//	if (!example.test)
-//	  example.test = {};
-//	(function() {
-//	  // Define the function 'example.test.myfunction'.
-//	  example.test.myfunction = function() {
-//	    // Call CefV8Handler::Execute() with the function name 'MyFunction'
-//	    // and no arguments.
-//	    native function MyFunction();
-//	    return MyFunction();
-//	  };
-//	  // Define the getter function for parameter 'example.test.myparam'.
-//	  example.test.__defineGetter__('myparam', function() {
-//	    // Call CefV8Handler::Execute() with the function name 'GetMyParam'
-//	    // and no arguments.
-//	    native function GetMyParam();
-//	    return GetMyParam();
-//	  });
-//	  // Define the setter function for parameter 'example.test.myparam'.
-//	  example.test.__defineSetter__('myparam', function(b) {
-//	    // Call CefV8Handler::Execute() with the function name 'SetMyParam'
-//	    // and a single argument.
-//	    native function SetMyParam();
-//	    if(b) SetMyParam(b);
-//	  });
-//
-//	  // Extension definitions can also contain normal JavaScript variables
-//	  // and functions.
-//	  var myint = 0;
-//	  example.test.increment = function() {
-//	    myint += 1;
-//	    return myint;
-//	  };
-//	})();
-//
-// </pre> Example usage in the page: <pre>
-//
-//	// Call the function.
-//	example.test.myfunction();
-//	// Set the parameter.
-//	example.test.myparam = value;
-//	// Get the parameter.
-//	value = example.test.myparam;
-//	// Call another function.
-//	example.test.increment();
-//
-// </pre>
+// / Register a new V8 extension with the specified JavaScript extension code and
+// / handler. Functions implemented by the handler are prototyped using the
+// / keyword 'native'. The calling of a native function is restricted to the
+// / scope in which the prototype of the native function is defined. This
+// / function may only be called on the render process main thread.
+// /
+// / Example JavaScript extension code: <pre>
+// /   // create the 'example' global object if it doesn't already exist.
+// /   if (!example)
+// /     example = {};
+// /   // create the 'example.test' global object if it doesn't already exist.
+// /   if (!example.test)
+// /     example.test = {};
+// /   (function() {
+// /     // Define the function 'example.test.myfunction'.
+// /     example.test.myfunction = function() {
+// /       // Call CefV8Handler::Execute() with the function name 'MyFunction'
+// /       // and no arguments.
+// /       native function MyFunction();
+// /       return MyFunction();
+// /     };
+// /     // Define the getter function for parameter 'example.test.myparam'.
+// /     example.test.__defineGetter__('myparam', function() {
+// /       // Call CefV8Handler::Execute() with the function name 'GetMyParam'
+// /       // and no arguments.
+// /       native function GetMyParam();
+// /       return GetMyParam();
+// /     });
+// /     // Define the setter function for parameter 'example.test.myparam'.
+// /     example.test.__defineSetter__('myparam', function(b) {
+// /       // Call CefV8Handler::Execute() with the function name 'SetMyParam'
+// /       // and a single argument.
+// /       native function SetMyParam();
+// /       if(b) SetMyParam(b);
+// /     });
+// /
+// /     // Extension definitions can also contain normal JavaScript variables
+// /     // and functions.
+// /     var myint = 0;
+// /     example.test.increment = function() {
+// /       myint += 1;
+// /       return myint;
+// /     };
+// /   })();
+// / </pre>
+// /
+// / Example usage in the page: <pre>
+// /   // Call the function.
+// /   example.test.myfunction();
+// /   // Set the parameter.
+// /   example.test.myparam = value;
+// /   // Get the parameter.
+// /   value = example.test.myparam;
+// /   // Call another function.
+// /   example.test.increment();
+// / </pre>
 // /
 func RegisterExtension(
 	extension_name string,
@@ -30652,9 +31448,9 @@ func RegisterExtension(
 // cef_values_capi.h, include/capi/cef_values_capi.h:217:3,
 
 ///
-// Structure that wraps other data value types. Complex types (binary,
-// dictionary and list) will be referenced but not owned by this object. Can be
-// used on any process and thread.
+/// Structure that wraps other data value types. Complex types (binary,
+/// dictionary and list) will be referenced but not owned by this object. Can be
+/// used on any process and thread.
 ///
 
 type cCValueT C.cef_value_t
@@ -30732,12 +31528,12 @@ func (value *CValueT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if the underlying data is valid. This will always be true
-// (1) for simple types. For complex types (binary, dictionary and list) the
-// underlying data may become invalid if owned by another object (e.g. list or
-// dictionary) and that other object is then modified or destroyed. This value
-// object can be re-used by calling Set*() even if the underlying data is
-// invalid.
+// / Returns true (1) if the underlying data is valid. This will always be true
+// / (1) for simple types. For complex types (binary, dictionary and list) the
+// / underlying data may become invalid if owned by another object (e.g. list
+// / or dictionary) and that other object is then modified or destroyed. This
+// / value object can be re-used by calling Set*() even if the underlying data
+// / is invalid.
 // /
 func (self *CValueT) IsValid() (ret bool) {
 
@@ -30748,7 +31544,7 @@ func (self *CValueT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if the underlying data is owned by another object.
+// / Returns true (1) if the underlying data is owned by another object.
 // /
 func (self *CValueT) IsOwned() (ret bool) {
 
@@ -30759,8 +31555,8 @@ func (self *CValueT) IsOwned() (ret bool) {
 }
 
 // /
-// Returns true (1) if the underlying data is read-only. Some APIs may expose
-// read-only objects.
+// / Returns true (1) if the underlying data is read-only. Some APIs may expose
+// / read-only objects.
 // /
 func (self *CValueT) IsReadOnly() (ret bool) {
 
@@ -30771,9 +31567,9 @@ func (self *CValueT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object and |that| object have the same underlying
-// data. If true (1) modifications to this object will also affect |that|
-// object and vice-versa.
+// / Returns true (1) if this object and |that| object have the same underlying
+// / data. If true (1) modifications to this object will also affect |that|
+// / object and vice-versa.
 // /
 func (self *CValueT) IsSame(
 	that *CValueT,
@@ -30791,8 +31587,8 @@ func (self *CValueT) IsSame(
 }
 
 // /
-// Returns true (1) if this object and |that| object have an equivalent
-// underlying value but are not necessarily the same object.
+// / Returns true (1) if this object and |that| object have an equivalent
+// / underlying value but are not necessarily the same object.
 // /
 func (self *CValueT) IsEqual(
 	that *CValueT,
@@ -30810,7 +31606,7 @@ func (self *CValueT) IsEqual(
 }
 
 // /
-// Returns a copy of this object. The underlying data will also be copied.
+// / Returns a copy of this object. The underlying data will also be copied.
 // /
 func (self *CValueT) Copy() (ret *CValueT) {
 
@@ -30821,7 +31617,7 @@ func (self *CValueT) Copy() (ret *CValueT) {
 }
 
 // /
-// Returns the underlying value type.
+// / Returns the underlying value type.
 // /
 func (self *CValueT) GetType() (ret CValueTypeT) {
 
@@ -30832,7 +31628,7 @@ func (self *CValueT) GetType() (ret CValueTypeT) {
 }
 
 // /
-// Returns the underlying value as type bool.
+// / Returns the underlying value as type bool.
 // /
 func (self *CValueT) GetBool() (ret bool) {
 
@@ -30843,7 +31639,7 @@ func (self *CValueT) GetBool() (ret bool) {
 }
 
 // /
-// Returns the underlying value as type int.
+// / Returns the underlying value as type int.
 // /
 func (self *CValueT) GetInt() (ret bool) {
 
@@ -30854,7 +31650,7 @@ func (self *CValueT) GetInt() (ret bool) {
 }
 
 // /
-// Returns the underlying value as type double.
+// / Returns the underlying value as type double.
 // /
 func (self *CValueT) GetDouble() (ret float64) {
 
@@ -30865,7 +31661,7 @@ func (self *CValueT) GetDouble() (ret float64) {
 }
 
 // /
-// Returns the underlying value as type string.
+// / Returns the underlying value as type string.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CValueT) GetString() (ret string) {
@@ -30881,12 +31677,12 @@ func (self *CValueT) GetString() (ret string) {
 }
 
 // /
-// Returns the underlying value as type binary. The returned reference may
-// become invalid if the value is owned by another object or if ownership is
-// transferred to another object in the future. To maintain a reference to the
-// value after assigning ownership to a dictionary or list pass this object to
-// the set_value() function instead of passing the returned reference to
-// set_binary().
+// / Returns the underlying value as type binary. The returned reference may
+// / become invalid if the value is owned by another object or if ownership is
+// / transferred to another object in the future. To maintain a reference to
+// / the value after assigning ownership to a dictionary or list pass this
+// / object to the set_value() function instead of passing the returned
+// / reference to set_binary().
 // /
 func (self *CValueT) GetBinary() (ret *CBinaryValueT) {
 
@@ -30897,12 +31693,12 @@ func (self *CValueT) GetBinary() (ret *CBinaryValueT) {
 }
 
 // /
-// Returns the underlying value as type dictionary. The returned reference may
-// become invalid if the value is owned by another object or if ownership is
-// transferred to another object in the future. To maintain a reference to the
-// value after assigning ownership to a dictionary or list pass this object to
-// the set_value() function instead of passing the returned reference to
-// set_dictionary().
+// / Returns the underlying value as type dictionary. The returned reference
+// / may become invalid if the value is owned by another object or if ownership
+// / is transferred to another object in the future. To maintain a reference to
+// / the value after assigning ownership to a dictionary or list pass this
+// / object to the set_value() function instead of passing the returned
+// / reference to set_dictionary().
 // /
 func (self *CValueT) GetDictionary() (ret *CDictionaryValueT) {
 
@@ -30913,12 +31709,12 @@ func (self *CValueT) GetDictionary() (ret *CDictionaryValueT) {
 }
 
 // /
-// Returns the underlying value as type list. The returned reference may
-// become invalid if the value is owned by another object or if ownership is
-// transferred to another object in the future. To maintain a reference to the
-// value after assigning ownership to a dictionary or list pass this object to
-// the set_value() function instead of passing the returned reference to
-// set_list().
+// / Returns the underlying value as type list. The returned reference may
+// / become invalid if the value is owned by another object or if ownership is
+// / transferred to another object in the future. To maintain a reference to
+// / the value after assigning ownership to a dictionary or list pass this
+// / object to the set_value() function instead of passing the returned
+// / reference to set_list().
 // /
 func (self *CValueT) GetList() (ret *CListValueT) {
 
@@ -30929,8 +31725,8 @@ func (self *CValueT) GetList() (ret *CListValueT) {
 }
 
 // /
-// Sets the underlying value as type null. Returns true (1) if the value was
-// set successfully.
+// / Sets the underlying value as type null. Returns true (1) if the value was
+// / set successfully.
 // /
 func (self *CValueT) SetNull() (ret bool) {
 
@@ -30941,8 +31737,8 @@ func (self *CValueT) SetNull() (ret bool) {
 }
 
 // /
-// Sets the underlying value as type bool. Returns true (1) if the value was
-// set successfully.
+// / Sets the underlying value as type bool. Returns true (1) if the value was
+// / set successfully.
 // /
 func (self *CValueT) SetBool(
 	value bool,
@@ -30959,8 +31755,8 @@ func (self *CValueT) SetBool(
 }
 
 // /
-// Sets the underlying value as type int. Returns true (1) if the value was
-// set successfully.
+// / Sets the underlying value as type int. Returns true (1) if the value was
+// / set successfully.
 // /
 func (self *CValueT) SetInt(
 	value int,
@@ -30973,8 +31769,8 @@ func (self *CValueT) SetInt(
 }
 
 // /
-// Sets the underlying value as type double. Returns true (1) if the value was
-// set successfully.
+// / Sets the underlying value as type double. Returns true (1) if the value
+// / was set successfully.
 // /
 func (self *CValueT) SetDouble(
 	value float64,
@@ -30987,8 +31783,8 @@ func (self *CValueT) SetDouble(
 }
 
 // /
-// Sets the underlying value as type string. Returns true (1) if the value was
-// set successfully.
+// / Sets the underlying value as type string. Returns true (1) if the value
+// / was set successfully.
 // /
 func (self *CValueT) SetString(
 	value string,
@@ -31002,9 +31798,9 @@ func (self *CValueT) SetString(
 }
 
 // /
-// Sets the underlying value as type binary. Returns true (1) if the value was
-// set successfully. This object keeps a reference to |value| and ownership of
-// the underlying data remains unchanged.
+// / Sets the underlying value as type binary. Returns true (1) if the value
+// / was set successfully. This object keeps a reference to |value| and
+// / ownership of the underlying data remains unchanged.
 // /
 func (self *CValueT) SetBinary(
 	value *CBinaryValueT,
@@ -31022,9 +31818,9 @@ func (self *CValueT) SetBinary(
 }
 
 // /
-// Sets the underlying value as type dict. Returns true (1) if the value was
-// set successfully. This object keeps a reference to |value| and ownership of
-// the underlying data remains unchanged.
+// / Sets the underlying value as type dict. Returns true (1) if the value was
+// / set successfully. This object keeps a reference to |value| and ownership
+// / of the underlying data remains unchanged.
 // /
 func (self *CValueT) SetDictionary(
 	value *CDictionaryValueT,
@@ -31042,9 +31838,9 @@ func (self *CValueT) SetDictionary(
 }
 
 // /
-// Sets the underlying value as type list. Returns true (1) if the value was
-// set successfully. This object keeps a reference to |value| and ownership of
-// the underlying data remains unchanged.
+// / Sets the underlying value as type list. Returns true (1) if the value was
+// / set successfully. This object keeps a reference to |value| and ownership
+// / of the underlying data remains unchanged.
 // /
 func (self *CValueT) SetList(
 	value *CListValueT,
@@ -31062,7 +31858,7 @@ func (self *CValueT) SetList(
 }
 
 // /
-// Creates a new object.
+// / Creates a new object.
 // /
 func ValueCreate() (ret *CValueT) {
 
@@ -31073,7 +31869,8 @@ func ValueCreate() (ret *CValueT) {
 }
 
 ///
-// Structure representing a binary value. Can be used on any process and thread.
+/// Structure representing a binary value. Can be used on any process and
+/// thread.
 ///
 
 type cCBinaryValueT C.cef_binary_value_t
@@ -31151,10 +31948,10 @@ func (binary_value *CBinaryValueT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid. This object may become invalid if
-// the underlying data is owned by another object (e.g. list or dictionary)
-// and that other object is then modified or destroyed. Do not call any other
-// functions if this function returns false (0).
+// / Returns true (1) if this object is valid. This object may become invalid
+// / if the underlying data is owned by another object (e.g. list or
+// / dictionary) and that other object is then modified or destroyed. Do not
+// / call any other functions if this function returns false (0).
 // /
 func (self *CBinaryValueT) IsValid() (ret bool) {
 
@@ -31165,7 +31962,7 @@ func (self *CBinaryValueT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is currently owned by another object.
+// / Returns true (1) if this object is currently owned by another object.
 // /
 func (self *CBinaryValueT) IsOwned() (ret bool) {
 
@@ -31176,8 +31973,8 @@ func (self *CBinaryValueT) IsOwned() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object and |that| object have the same underlying
-// data.
+// / Returns true (1) if this object and |that| object have the same underlying
+// / data.
 // /
 func (self *CBinaryValueT) IsSame(
 	that *CBinaryValueT,
@@ -31195,8 +31992,8 @@ func (self *CBinaryValueT) IsSame(
 }
 
 // /
-// Returns true (1) if this object and |that| object have an equivalent
-// underlying value but are not necessarily the same object.
+// / Returns true (1) if this object and |that| object have an equivalent
+// / underlying value but are not necessarily the same object.
 // /
 func (self *CBinaryValueT) IsEqual(
 	that *CBinaryValueT,
@@ -31214,7 +32011,8 @@ func (self *CBinaryValueT) IsEqual(
 }
 
 // /
-// Returns a copy of this object. The data in this object will also be copied.
+// / Returns a copy of this object. The data in this object will also be
+// / copied.
 // /
 func (self *CBinaryValueT) Copy() (ret *CBinaryValueT) {
 
@@ -31225,7 +32023,7 @@ func (self *CBinaryValueT) Copy() (ret *CBinaryValueT) {
 }
 
 // /
-// Returns the data size.
+// / Returns the data size.
 // /
 func (self *CBinaryValueT) GetSize() (ret int64) {
 
@@ -31236,8 +32034,8 @@ func (self *CBinaryValueT) GetSize() (ret int64) {
 }
 
 // /
-// Read up to |buffer_size| number of bytes into |buffer|. Reading begins at
-// the specified byte |data_offset|. Returns the number of bytes read.
+// / Read up to |buffer_size| number of bytes into |buffer|. Reading begins at
+// / the specified byte |data_offset|. Returns the number of bytes read.
 // /
 func (self *CBinaryValueT) GetData(
 	buffer unsafe.Pointer,
@@ -31252,8 +32050,8 @@ func (self *CBinaryValueT) GetData(
 }
 
 // /
-// Creates a new object that is not owned by any other object. The specified
-// |data| will be copied.
+// / Creates a new object that is not owned by any other object. The specified
+// / |data| will be copied.
 // /
 func BinaryValueCreate(
 	data []byte,
@@ -31269,8 +32067,8 @@ func BinaryValueCreate(
 }
 
 ///
-// Structure representing a dictionary value. Can be used on any process and
-// thread.
+/// Structure representing a dictionary value. Can be used on any process and
+/// thread.
 ///
 
 type cCDictionaryValueT C.cef_dictionary_value_t
@@ -31348,10 +32146,10 @@ func (dictionary_value *CDictionaryValueT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid. This object may become invalid if
-// the underlying data is owned by another object (e.g. list or dictionary)
-// and that other object is then modified or destroyed. Do not call any other
-// functions if this function returns false (0).
+// / Returns true (1) if this object is valid. This object may become invalid
+// / if the underlying data is owned by another object (e.g. list or
+// / dictionary) and that other object is then modified or destroyed. Do not
+// / call any other functions if this function returns false (0).
 // /
 func (self *CDictionaryValueT) IsValid() (ret bool) {
 
@@ -31362,7 +32160,7 @@ func (self *CDictionaryValueT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is currently owned by another object.
+// / Returns true (1) if this object is currently owned by another object.
 // /
 func (self *CDictionaryValueT) IsOwned() (ret bool) {
 
@@ -31373,8 +32171,8 @@ func (self *CDictionaryValueT) IsOwned() (ret bool) {
 }
 
 // /
-// Returns true (1) if the values of this object are read-only. Some APIs may
-// expose read-only objects.
+// / Returns true (1) if the values of this object are read-only. Some APIs may
+// / expose read-only objects.
 // /
 func (self *CDictionaryValueT) IsReadOnly() (ret bool) {
 
@@ -31385,9 +32183,9 @@ func (self *CDictionaryValueT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object and |that| object have the same underlying
-// data. If true (1) modifications to this object will also affect |that|
-// object and vice-versa.
+// / Returns true (1) if this object and |that| object have the same underlying
+// / data. If true (1) modifications to this object will also affect |that|
+// / object and vice-versa.
 // /
 func (self *CDictionaryValueT) IsSame(
 	that *CDictionaryValueT,
@@ -31405,8 +32203,8 @@ func (self *CDictionaryValueT) IsSame(
 }
 
 // /
-// Returns true (1) if this object and |that| object have an equivalent
-// underlying value but are not necessarily the same object.
+// / Returns true (1) if this object and |that| object have an equivalent
+// / underlying value but are not necessarily the same object.
 // /
 func (self *CDictionaryValueT) IsEqual(
 	that *CDictionaryValueT,
@@ -31424,8 +32222,8 @@ func (self *CDictionaryValueT) IsEqual(
 }
 
 // /
-// Returns a writable copy of this object. If |exclude_NULL_children| is true
-// (1) any NULL dictionaries or lists will be excluded from the copy.
+// / Returns a writable copy of this object. If |exclude_NULL_children| is true
+// / (1) any NULL dictionaries or lists will be excluded from the copy.
 // /
 func (self *CDictionaryValueT) Copy(
 	exclude_empty_children int,
@@ -31438,7 +32236,7 @@ func (self *CDictionaryValueT) Copy(
 }
 
 // /
-// Returns the number of values.
+// / Returns the number of values.
 // /
 func (self *CDictionaryValueT) GetSize() (ret int64) {
 
@@ -31449,7 +32247,7 @@ func (self *CDictionaryValueT) GetSize() (ret int64) {
 }
 
 // /
-// Removes all values. Returns true (1) on success.
+// / Removes all values. Returns true (1) on success.
 // /
 func (self *CDictionaryValueT) Clear() (ret bool) {
 
@@ -31460,7 +32258,7 @@ func (self *CDictionaryValueT) Clear() (ret bool) {
 }
 
 // /
-// Returns true (1) if the current dictionary has a value for the given key.
+// / Returns true (1) if the current dictionary has a value for the given key.
 // /
 func (self *CDictionaryValueT) HasKey(
 	key string,
@@ -31474,7 +32272,7 @@ func (self *CDictionaryValueT) HasKey(
 }
 
 // /
-// Reads all keys for this dictionary into the specified vector.
+// / Reads all keys for this dictionary into the specified vector.
 // /
 func (self *CDictionaryValueT) GetKeys(
 	keys CStringListT,
@@ -31487,8 +32285,8 @@ func (self *CDictionaryValueT) GetKeys(
 }
 
 // /
-// Removes the value at the specified key. Returns true (1) is the value was
-// removed successfully.
+// / Removes the value at the specified key. Returns true (1) is the value was
+// / removed successfully.
 // /
 func (self *CDictionaryValueT) Remove(
 	key string,
@@ -31502,7 +32300,7 @@ func (self *CDictionaryValueT) Remove(
 }
 
 // /
-// Returns the value type for the specified key.
+// / Returns the value type for the specified key.
 // /
 func (self *CDictionaryValueT) GetType(
 	key string,
@@ -31516,11 +32314,11 @@ func (self *CDictionaryValueT) GetType(
 }
 
 // /
-// Returns the value at the specified key. For simple types the returned value
-// will copy existing data and modifications to the value will not modify this
-// object. For complex types (binary, dictionary and list) the returned value
-// will reference existing data and modifications to the value will modify
-// this object.
+// / Returns the value at the specified key. For simple types the returned
+// / value will copy existing data and modifications to the value will not
+// / modify this object. For complex types (binary, dictionary and list) the
+// / returned value will reference existing data and modifications to the value
+// / will modify this object.
 // /
 func (self *CDictionaryValueT) GetValue(
 	key string,
@@ -31534,7 +32332,7 @@ func (self *CDictionaryValueT) GetValue(
 }
 
 // /
-// Returns the value at the specified key as type bool.
+// / Returns the value at the specified key as type bool.
 // /
 func (self *CDictionaryValueT) GetBool(
 	key string,
@@ -31548,7 +32346,7 @@ func (self *CDictionaryValueT) GetBool(
 }
 
 // /
-// Returns the value at the specified key as type int.
+// / Returns the value at the specified key as type int.
 // /
 func (self *CDictionaryValueT) GetInt(
 	key string,
@@ -31562,7 +32360,7 @@ func (self *CDictionaryValueT) GetInt(
 }
 
 // /
-// Returns the value at the specified key as type double.
+// / Returns the value at the specified key as type double.
 // /
 func (self *CDictionaryValueT) GetDouble(
 	key string,
@@ -31576,7 +32374,7 @@ func (self *CDictionaryValueT) GetDouble(
 }
 
 // /
-// Returns the value at the specified key as type string.
+// / Returns the value at the specified key as type string.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CDictionaryValueT) GetString(
@@ -31595,8 +32393,8 @@ func (self *CDictionaryValueT) GetString(
 }
 
 // /
-// Returns the value at the specified key as type binary. The returned value
-// will reference existing data.
+// / Returns the value at the specified key as type binary. The returned value
+// / will reference existing data.
 // /
 func (self *CDictionaryValueT) GetBinary(
 	key string,
@@ -31610,9 +32408,9 @@ func (self *CDictionaryValueT) GetBinary(
 }
 
 // /
-// Returns the value at the specified key as type dictionary. The returned
-// value will reference existing data and modifications to the value will
-// modify this object.
+// / Returns the value at the specified key as type dictionary. The returned
+// / value will reference existing data and modifications to the value will
+// / modify this object.
 // /
 func (self *CDictionaryValueT) GetDictionary(
 	key string,
@@ -31626,9 +32424,9 @@ func (self *CDictionaryValueT) GetDictionary(
 }
 
 // /
-// Returns the value at the specified key as type list. The returned value
-// will reference existing data and modifications to the value will modify
-// this object.
+// / Returns the value at the specified key as type list. The returned value
+// / will reference existing data and modifications to the value will modify
+// / this object.
 // /
 func (self *CDictionaryValueT) GetList(
 	key string,
@@ -31642,12 +32440,12 @@ func (self *CDictionaryValueT) GetList(
 }
 
 // /
-// Sets the value at the specified key. Returns true (1) if the value was set
-// successfully. If |value| represents simple data then the underlying data
-// will be copied and modifications to |value| will not modify this object. If
-// |value| represents complex data (binary, dictionary or list) then the
-// underlying data will be referenced and modifications to |value| will modify
-// this object.
+// / Sets the value at the specified key. Returns true (1) if the value was set
+// / successfully. If |value| represents simple data then the underlying data
+// / will be copied and modifications to |value| will not modify this object.
+// / If |value| represents complex data (binary, dictionary or list) then the
+// / underlying data will be referenced and modifications to |value| will
+// / modify this object.
 // /
 func (self *CDictionaryValueT) SetValue(
 	key string,
@@ -31667,8 +32465,8 @@ func (self *CDictionaryValueT) SetValue(
 }
 
 // /
-// Sets the value at the specified key as type null. Returns true (1) if the
-// value was set successfully.
+// / Sets the value at the specified key as type null. Returns true (1) if the
+// / value was set successfully.
 // /
 func (self *CDictionaryValueT) SetNull(
 	key string,
@@ -31682,8 +32480,8 @@ func (self *CDictionaryValueT) SetNull(
 }
 
 // /
-// Sets the value at the specified key as type bool. Returns true (1) if the
-// value was set successfully.
+// / Sets the value at the specified key as type bool. Returns true (1) if the
+// / value was set successfully.
 // /
 func (self *CDictionaryValueT) SetBool(
 	key string,
@@ -31702,8 +32500,8 @@ func (self *CDictionaryValueT) SetBool(
 }
 
 // /
-// Sets the value at the specified key as type int. Returns true (1) if the
-// value was set successfully.
+// / Sets the value at the specified key as type int. Returns true (1) if the
+// / value was set successfully.
 // /
 func (self *CDictionaryValueT) SetInt(
 	key string,
@@ -31718,8 +32516,8 @@ func (self *CDictionaryValueT) SetInt(
 }
 
 // /
-// Sets the value at the specified key as type double. Returns true (1) if the
-// value was set successfully.
+// / Sets the value at the specified key as type double. Returns true (1) if
+// / the value was set successfully.
 // /
 func (self *CDictionaryValueT) SetDouble(
 	key string,
@@ -31734,8 +32532,8 @@ func (self *CDictionaryValueT) SetDouble(
 }
 
 // /
-// Sets the value at the specified key as type string. Returns true (1) if the
-// value was set successfully.
+// / Sets the value at the specified key as type string. Returns true (1) if
+// / the value was set successfully.
 // /
 func (self *CDictionaryValueT) SetString(
 	key string,
@@ -31751,11 +32549,11 @@ func (self *CDictionaryValueT) SetString(
 }
 
 // /
-// Sets the value at the specified key as type binary. Returns true (1) if the
-// value was set successfully. If |value| is currently owned by another object
-// then the value will be copied and the |value| reference will not change.
-// Otherwise, ownership will be transferred to this object and the |value|
-// reference will be invalidated.
+// / Sets the value at the specified key as type binary. Returns true (1) if
+// / the value was set successfully. If |value| is currently owned by another
+// / object then the value will be copied and the |value| reference will not
+// / change. Otherwise, ownership will be transferred to this object and the
+// / |value| reference will be invalidated.
 // /
 func (self *CDictionaryValueT) SetBinary(
 	key string,
@@ -31775,11 +32573,11 @@ func (self *CDictionaryValueT) SetBinary(
 }
 
 // /
-// Sets the value at the specified key as type dict. Returns true (1) if the
-// value was set successfully. If |value| is currently owned by another object
-// then the value will be copied and the |value| reference will not change.
-// Otherwise, ownership will be transferred to this object and the |value|
-// reference will be invalidated.
+// / Sets the value at the specified key as type dict. Returns true (1) if the
+// / value was set successfully. If |value| is currently owned by another
+// / object then the value will be copied and the |value| reference will not
+// / change. Otherwise, ownership will be transferred to this object and the
+// / |value| reference will be invalidated.
 // /
 func (self *CDictionaryValueT) SetDictionary(
 	key string,
@@ -31799,11 +32597,11 @@ func (self *CDictionaryValueT) SetDictionary(
 }
 
 // /
-// Sets the value at the specified key as type list. Returns true (1) if the
-// value was set successfully. If |value| is currently owned by another object
-// then the value will be copied and the |value| reference will not change.
-// Otherwise, ownership will be transferred to this object and the |value|
-// reference will be invalidated.
+// / Sets the value at the specified key as type list. Returns true (1) if the
+// / value was set successfully. If |value| is currently owned by another
+// / object then the value will be copied and the |value| reference will not
+// / change. Otherwise, ownership will be transferred to this object and the
+// / |value| reference will be invalidated.
 // /
 func (self *CDictionaryValueT) SetList(
 	key string,
@@ -31823,7 +32621,7 @@ func (self *CDictionaryValueT) SetList(
 }
 
 // /
-// Creates a new object that is not owned by any other object.
+// / Creates a new object that is not owned by any other object.
 // /
 func DictionaryValueCreate() (ret *CDictionaryValueT) {
 
@@ -31834,7 +32632,7 @@ func DictionaryValueCreate() (ret *CDictionaryValueT) {
 }
 
 ///
-// Structure representing a list value. Can be used on any process and thread.
+/// Structure representing a list value. Can be used on any process and thread.
 ///
 
 type cCListValueT C.cef_list_value_t
@@ -31912,10 +32710,10 @@ func (list_value *CListValueT) Unref() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is valid. This object may become invalid if
-// the underlying data is owned by another object (e.g. list or dictionary)
-// and that other object is then modified or destroyed. Do not call any other
-// functions if this function returns false (0).
+// / Returns true (1) if this object is valid. This object may become invalid
+// / if the underlying data is owned by another object (e.g. list or
+// / dictionary) and that other object is then modified or destroyed. Do not
+// / call any other functions if this function returns false (0).
 // /
 func (self *CListValueT) IsValid() (ret bool) {
 
@@ -31926,7 +32724,7 @@ func (self *CListValueT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object is currently owned by another object.
+// / Returns true (1) if this object is currently owned by another object.
 // /
 func (self *CListValueT) IsOwned() (ret bool) {
 
@@ -31937,8 +32735,8 @@ func (self *CListValueT) IsOwned() (ret bool) {
 }
 
 // /
-// Returns true (1) if the values of this object are read-only. Some APIs may
-// expose read-only objects.
+// / Returns true (1) if the values of this object are read-only. Some APIs may
+// / expose read-only objects.
 // /
 func (self *CListValueT) IsReadOnly() (ret bool) {
 
@@ -31949,9 +32747,9 @@ func (self *CListValueT) IsReadOnly() (ret bool) {
 }
 
 // /
-// Returns true (1) if this object and |that| object have the same underlying
-// data. If true (1) modifications to this object will also affect |that|
-// object and vice-versa.
+// / Returns true (1) if this object and |that| object have the same underlying
+// / data. If true (1) modifications to this object will also affect |that|
+// / object and vice-versa.
 // /
 func (self *CListValueT) IsSame(
 	that *CListValueT,
@@ -31969,8 +32767,8 @@ func (self *CListValueT) IsSame(
 }
 
 // /
-// Returns true (1) if this object and |that| object have an equivalent
-// underlying value but are not necessarily the same object.
+// / Returns true (1) if this object and |that| object have an equivalent
+// / underlying value but are not necessarily the same object.
 // /
 func (self *CListValueT) IsEqual(
 	that *CListValueT,
@@ -31988,7 +32786,7 @@ func (self *CListValueT) IsEqual(
 }
 
 // /
-// Returns a writable copy of this object.
+// / Returns a writable copy of this object.
 // /
 func (self *CListValueT) Copy() (ret *CListValueT) {
 
@@ -31999,8 +32797,8 @@ func (self *CListValueT) Copy() (ret *CListValueT) {
 }
 
 // /
-// Sets the number of values. If the number of values is expanded all new
-// value slots will default to type null. Returns true (1) on success.
+// / Sets the number of values. If the number of values is expanded all new
+// / value slots will default to type null. Returns true (1) on success.
 // /
 func (self *CListValueT) SetSize(
 	size int64,
@@ -32013,7 +32811,7 @@ func (self *CListValueT) SetSize(
 }
 
 // /
-// Returns the number of values.
+// / Returns the number of values.
 // /
 func (self *CListValueT) GetSize() (ret int64) {
 
@@ -32024,7 +32822,7 @@ func (self *CListValueT) GetSize() (ret int64) {
 }
 
 // /
-// Removes all values. Returns true (1) on success.
+// / Removes all values. Returns true (1) on success.
 // /
 func (self *CListValueT) Clear() (ret bool) {
 
@@ -32035,7 +32833,7 @@ func (self *CListValueT) Clear() (ret bool) {
 }
 
 // /
-// Removes the value at the specified index.
+// / Removes the value at the specified index.
 // /
 func (self *CListValueT) Remove(
 	index int64,
@@ -32048,7 +32846,7 @@ func (self *CListValueT) Remove(
 }
 
 // /
-// Returns the value type at the specified index.
+// / Returns the value type at the specified index.
 // /
 func (self *CListValueT) GetType(
 	index int64,
@@ -32061,11 +32859,11 @@ func (self *CListValueT) GetType(
 }
 
 // /
-// Returns the value at the specified index. For simple types the returned
-// value will copy existing data and modifications to the value will not
-// modify this object. For complex types (binary, dictionary and list) the
-// returned value will reference existing data and modifications to the value
-// will modify this object.
+// / Returns the value at the specified index. For simple types the returned
+// / value will copy existing data and modifications to the value will not
+// / modify this object. For complex types (binary, dictionary and list) the
+// / returned value will reference existing data and modifications to the value
+// / will modify this object.
 // /
 func (self *CListValueT) GetValue(
 	index int64,
@@ -32078,7 +32876,7 @@ func (self *CListValueT) GetValue(
 }
 
 // /
-// Returns the value at the specified index as type bool.
+// / Returns the value at the specified index as type bool.
 // /
 func (self *CListValueT) GetBool(
 	index int64,
@@ -32091,7 +32889,7 @@ func (self *CListValueT) GetBool(
 }
 
 // /
-// Returns the value at the specified index as type int.
+// / Returns the value at the specified index as type int.
 // /
 func (self *CListValueT) GetInt(
 	index int64,
@@ -32104,7 +32902,7 @@ func (self *CListValueT) GetInt(
 }
 
 // /
-// Returns the value at the specified index as type double.
+// / Returns the value at the specified index as type double.
 // /
 func (self *CListValueT) GetDouble(
 	index int64,
@@ -32117,7 +32915,7 @@ func (self *CListValueT) GetDouble(
 }
 
 // /
-// Returns the value at the specified index as type string.
+// / Returns the value at the specified index as type string.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CListValueT) GetString(
@@ -32135,8 +32933,8 @@ func (self *CListValueT) GetString(
 }
 
 // /
-// Returns the value at the specified index as type binary. The returned value
-// will reference existing data.
+// / Returns the value at the specified index as type binary. The returned
+// / value will reference existing data.
 // /
 func (self *CListValueT) GetBinary(
 	index int64,
@@ -32149,9 +32947,9 @@ func (self *CListValueT) GetBinary(
 }
 
 // /
-// Returns the value at the specified index as type dictionary. The returned
-// value will reference existing data and modifications to the value will
-// modify this object.
+// / Returns the value at the specified index as type dictionary. The returned
+// / value will reference existing data and modifications to the value will
+// / modify this object.
 // /
 func (self *CListValueT) GetDictionary(
 	index int64,
@@ -32164,9 +32962,9 @@ func (self *CListValueT) GetDictionary(
 }
 
 // /
-// Returns the value at the specified index as type list. The returned value
-// will reference existing data and modifications to the value will modify
-// this object.
+// / Returns the value at the specified index as type list. The returned value
+// / will reference existing data and modifications to the value will modify
+// / this object.
 // /
 func (self *CListValueT) GetList(
 	index int64,
@@ -32179,12 +32977,12 @@ func (self *CListValueT) GetList(
 }
 
 // /
-// Sets the value at the specified index. Returns true (1) if the value was
-// set successfully. If |value| represents simple data then the underlying
-// data will be copied and modifications to |value| will not modify this
-// object. If |value| represents complex data (binary, dictionary or list)
-// then the underlying data will be referenced and modifications to |value|
-// will modify this object.
+// / Sets the value at the specified index. Returns true (1) if the value was
+// / set successfully. If |value| represents simple data then the underlying
+// / data will be copied and modifications to |value| will not modify this
+// / object. If |value| represents complex data (binary, dictionary or list)
+// / then the underlying data will be referenced and modifications to |value|
+// / will modify this object.
 // /
 func (self *CListValueT) SetValue(
 	index int64,
@@ -32203,8 +33001,8 @@ func (self *CListValueT) SetValue(
 }
 
 // /
-// Sets the value at the specified index as type null. Returns true (1) if the
-// value was set successfully.
+// / Sets the value at the specified index as type null. Returns true (1) if
+// / the value was set successfully.
 // /
 func (self *CListValueT) SetNull(
 	index int64,
@@ -32217,8 +33015,8 @@ func (self *CListValueT) SetNull(
 }
 
 // /
-// Sets the value at the specified index as type bool. Returns true (1) if the
-// value was set successfully.
+// / Sets the value at the specified index as type bool. Returns true (1) if
+// / the value was set successfully.
 // /
 func (self *CListValueT) SetBool(
 	index int64,
@@ -32236,8 +33034,8 @@ func (self *CListValueT) SetBool(
 }
 
 // /
-// Sets the value at the specified index as type int. Returns true (1) if the
-// value was set successfully.
+// / Sets the value at the specified index as type int. Returns true (1) if the
+// / value was set successfully.
 // /
 func (self *CListValueT) SetInt(
 	index int64,
@@ -32251,8 +33049,8 @@ func (self *CListValueT) SetInt(
 }
 
 // /
-// Sets the value at the specified index as type double. Returns true (1) if
-// the value was set successfully.
+// / Sets the value at the specified index as type double. Returns true (1) if
+// / the value was set successfully.
 // /
 func (self *CListValueT) SetDouble(
 	index int64,
@@ -32266,8 +33064,8 @@ func (self *CListValueT) SetDouble(
 }
 
 // /
-// Sets the value at the specified index as type string. Returns true (1) if
-// the value was set successfully.
+// / Sets the value at the specified index as type string. Returns true (1) if
+// / the value was set successfully.
 // /
 func (self *CListValueT) SetString(
 	index int64,
@@ -32282,11 +33080,11 @@ func (self *CListValueT) SetString(
 }
 
 // /
-// Sets the value at the specified index as type binary. Returns true (1) if
-// the value was set successfully. If |value| is currently owned by another
-// object then the value will be copied and the |value| reference will not
-// change. Otherwise, ownership will be transferred to this object and the
-// |value| reference will be invalidated.
+// / Sets the value at the specified index as type binary. Returns true (1) if
+// / the value was set successfully. If |value| is currently owned by another
+// / object then the value will be copied and the |value| reference will not
+// / change. Otherwise, ownership will be transferred to this object and the
+// / |value| reference will be invalidated.
 // /
 func (self *CListValueT) SetBinary(
 	index int64,
@@ -32305,11 +33103,11 @@ func (self *CListValueT) SetBinary(
 }
 
 // /
-// Sets the value at the specified index as type dict. Returns true (1) if the
-// value was set successfully. If |value| is currently owned by another object
-// then the value will be copied and the |value| reference will not change.
-// Otherwise, ownership will be transferred to this object and the |value|
-// reference will be invalidated.
+// / Sets the value at the specified index as type dict. Returns true (1) if
+// / the value was set successfully. If |value| is currently owned by another
+// / object then the value will be copied and the |value| reference will not
+// / change. Otherwise, ownership will be transferred to this object and the
+// / |value| reference will be invalidated.
 // /
 func (self *CListValueT) SetDictionary(
 	index int64,
@@ -32328,11 +33126,11 @@ func (self *CListValueT) SetDictionary(
 }
 
 // /
-// Sets the value at the specified index as type list. Returns true (1) if the
-// value was set successfully. If |value| is currently owned by another object
-// then the value will be copied and the |value| reference will not change.
-// Otherwise, ownership will be transferred to this object and the |value|
-// reference will be invalidated.
+// / Sets the value at the specified index as type list. Returns true (1) if
+// / the value was set successfully. If |value| is currently owned by another
+// / object then the value will be copied and the |value| reference will not
+// / change. Otherwise, ownership will be transferred to this object and the
+// / |value| reference will be invalidated.
 // /
 func (self *CListValueT) SetList(
 	index int64,
@@ -32351,7 +33149,7 @@ func (self *CListValueT) SetList(
 }
 
 // /
-// Creates a new object that is not owned by any other object.
+// / Creates a new object that is not owned by any other object.
 // /
 func ListValueCreate() (ret *CListValueT) {
 
@@ -32361,13 +33159,13 @@ func ListValueCreate() (ret *CListValueT) {
 	return ret
 }
 
-// cef_view_capi.h, include/capi/views/cef_view_capi.h:404:3,
+// cef_view_capi.h, include/capi/views/cef_view_capi.h:407:3,
 
 ///
-// A View is a rectangle within the views View hierarchy. It is the base
-// structure for all Views. All size and position values are in density
-// independent pixels (DIP) unless otherwise indicated. Methods must be called
-// on the browser process UI thread unless otherwise indicated.
+/// A View is a rectangle within the views View hierarchy. It is the base
+/// structure for all Views. All size and position values are in density
+/// independent pixels (DIP) unless otherwise indicated. Methods must be called
+/// on the browser process UI thread unless otherwise indicated.
 ///
 
 type cCViewT C.cef_view_t
@@ -32445,7 +33243,7 @@ func (view *CViewT) Unref() (ret bool) {
 }
 
 // /
-// Returns this View as a BrowserView or NULL if this is not a BrowserView.
+// / Returns this View as a BrowserView or NULL if this is not a BrowserView.
 // /
 func (self *CViewT) AsBrowserView() (ret *CBrowserViewT) {
 
@@ -32456,7 +33254,7 @@ func (self *CViewT) AsBrowserView() (ret *CBrowserViewT) {
 }
 
 // /
-// Returns this View as a Button or NULL if this is not a Button.
+// / Returns this View as a Button or NULL if this is not a Button.
 // /
 func (self *CViewT) AsButton() (ret *CButtonT) {
 
@@ -32467,7 +33265,7 @@ func (self *CViewT) AsButton() (ret *CButtonT) {
 }
 
 // /
-// Returns this View as a Panel or NULL if this is not a Panel.
+// / Returns this View as a Panel or NULL if this is not a Panel.
 // /
 func (self *CViewT) AsPanel() (ret *CPanelT) {
 
@@ -32478,7 +33276,7 @@ func (self *CViewT) AsPanel() (ret *CPanelT) {
 }
 
 // /
-// Returns this View as a ScrollView or NULL if this is not a ScrollView.
+// / Returns this View as a ScrollView or NULL if this is not a ScrollView.
 // /
 func (self *CViewT) AsScrollView() (ret *CScrollViewT) {
 
@@ -32489,7 +33287,7 @@ func (self *CViewT) AsScrollView() (ret *CScrollViewT) {
 }
 
 // /
-// Returns this View as a Textfield or NULL if this is not a Textfield.
+// / Returns this View as a Textfield or NULL if this is not a Textfield.
 // /
 func (self *CViewT) AsTextfield() (ret *CTextfieldT) {
 
@@ -32500,8 +33298,8 @@ func (self *CViewT) AsTextfield() (ret *CTextfieldT) {
 }
 
 // /
-// Returns the type of this View as a string. Used primarily for testing
-// purposes.
+// / Returns the type of this View as a string. Used primarily for testing
+// / purposes.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CViewT) GetTypeString() (ret string) {
@@ -32517,10 +33315,10 @@ func (self *CViewT) GetTypeString() (ret string) {
 }
 
 // /
-// Returns a string representation of this View which includes the type and
-// various type-specific identifying attributes. If |include_children| is true
-// (1) any child Views will also be included. Used primarily for testing
-// purposes.
+// / Returns a string representation of this View which includes the type and
+// / various type-specific identifying attributes. If |include_children| is
+// / true (1) any child Views will also be included. Used primarily for testing
+// / purposes.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CViewT) ToString(
@@ -32538,7 +33336,7 @@ func (self *CViewT) ToString(
 }
 
 // /
-// Returns true (1) if this View is valid.
+// / Returns true (1) if this View is valid.
 // /
 func (self *CViewT) IsValid() (ret bool) {
 
@@ -32549,8 +33347,8 @@ func (self *CViewT) IsValid() (ret bool) {
 }
 
 // /
-// Returns true (1) if this View is currently attached to another View. A View
-// can only be attached to one View at a time.
+// / Returns true (1) if this View is currently attached to another View. A
+// / View can only be attached to one View at a time.
 // /
 func (self *CViewT) IsAttached() (ret bool) {
 
@@ -32561,7 +33359,7 @@ func (self *CViewT) IsAttached() (ret bool) {
 }
 
 // /
-// Returns true (1) if this View is the same as |that| View.
+// / Returns true (1) if this View is the same as |that| View.
 // /
 func (self *CViewT) IsSame(
 	that *CViewT,
@@ -32579,7 +33377,7 @@ func (self *CViewT) IsSame(
 }
 
 // /
-// Returns the delegate associated with this View, if any.
+// / Returns the delegate associated with this View, if any.
 // /
 func (self *CViewT) GetDelegate() (ret *CViewDelegateT) {
 
@@ -32590,7 +33388,7 @@ func (self *CViewT) GetDelegate() (ret *CViewDelegateT) {
 }
 
 // /
-// Returns the top-level Window hosting this View, if any.
+// / Returns the top-level Window hosting this View, if any.
 // /
 func (self *CViewT) GetWindow() (ret *CWindowT) {
 
@@ -32601,7 +33399,7 @@ func (self *CViewT) GetWindow() (ret *CWindowT) {
 }
 
 // /
-// Returns the ID for this View.
+// / Returns the ID for this View.
 // /
 func (self *CViewT) GetId() (ret bool) {
 
@@ -32612,8 +33410,8 @@ func (self *CViewT) GetId() (ret bool) {
 }
 
 // /
-// Sets the ID for this View. ID should be unique within the subtree that you
-// intend to search for it. 0 is the default ID for views.
+// / Sets the ID for this View. ID should be unique within the subtree that you
+// / intend to search for it. 0 is the default ID for views.
 // /
 func (self *CViewT) SetId(
 	id int,
@@ -32624,7 +33422,7 @@ func (self *CViewT) SetId(
 }
 
 // /
-// Returns the group id of this View, or -1 if not set.
+// / Returns the group id of this View, or -1 if not set.
 // /
 func (self *CViewT) GetGroupId() (ret bool) {
 
@@ -32635,9 +33433,9 @@ func (self *CViewT) GetGroupId() (ret bool) {
 }
 
 // /
-// A group id is used to tag Views which are part of the same logical group.
-// Focus can be moved between views with the same group using the arrow keys.
-// The group id is immutable once it&#39;s set.
+// / A group id is used to tag Views which are part of the same logical group.
+// / Focus can be moved between views with the same group using the arrow keys.
+// / The group id is immutable once it&#39;s set.
 // /
 func (self *CViewT) SetGroupId(
 	group_id int,
@@ -32648,7 +33446,7 @@ func (self *CViewT) SetGroupId(
 }
 
 // /
-// Returns the View that contains this View, if any.
+// / Returns the View that contains this View, if any.
 // /
 func (self *CViewT) GetParentView() (ret *CViewT) {
 
@@ -32659,9 +33457,9 @@ func (self *CViewT) GetParentView() (ret *CViewT) {
 }
 
 // /
-// Recursively descends the view tree starting at this View, and returns the
-// first child that it encounters with the given ID. Returns NULL if no
-// matching child view is found.
+// / Recursively descends the view tree starting at this View, and returns the
+// / first child that it encounters with the given ID. Returns NULL if no
+// / matching child view is found.
 // /
 func (self *CViewT) GetViewForId(
 	id int,
@@ -32674,8 +33472,8 @@ func (self *CViewT) GetViewForId(
 }
 
 // /
-// Sets the bounds (size and position) of this View. |bounds| is in parent
-// coordinates, or DIP screen coordinates if there is no parent.
+// / Sets the bounds (size and position) of this View. |bounds| is in parent
+// / coordinates, or DIP screen coordinates if there is no parent.
 // /
 func (self *CViewT) SetBounds(
 	bounds *CRectT,
@@ -32686,8 +33484,8 @@ func (self *CViewT) SetBounds(
 }
 
 // /
-// Returns the bounds (size and position) of this View in parent coordinates,
-// or DIP screen coordinates if there is no parent.
+// / Returns the bounds (size and position) of this View in parent coordinates,
+// / or DIP screen coordinates if there is no parent.
 // /
 func (self *CViewT) GetBounds() (ret CRectT) {
 
@@ -32698,8 +33496,8 @@ func (self *CViewT) GetBounds() (ret CRectT) {
 }
 
 // /
-// Returns the bounds (size and position) of this View in DIP screen
-// coordinates.
+// / Returns the bounds (size and position) of this View in DIP screen
+// / coordinates.
 // /
 func (self *CViewT) GetBoundsInScreen() (ret CRectT) {
 
@@ -32710,8 +33508,8 @@ func (self *CViewT) GetBoundsInScreen() (ret CRectT) {
 }
 
 // /
-// Sets the size of this View without changing the position. |size| in parent
-// coordinates, or DIP screen coordinates if there is no parent.
+// / Sets the size of this View without changing the position. |size| in parent
+// / coordinates, or DIP screen coordinates if there is no parent.
 // /
 func (self *CViewT) SetSize(
 	size *CSizeT,
@@ -32722,8 +33520,8 @@ func (self *CViewT) SetSize(
 }
 
 // /
-// Returns the size of this View in parent coordinates, or DIP screen
-// coordinates if there is no parent.
+// / Returns the size of this View in parent coordinates, or DIP screen
+// / coordinates if there is no parent.
 // /
 func (self *CViewT) GetSize() (ret CSizeT) {
 
@@ -32734,8 +33532,8 @@ func (self *CViewT) GetSize() (ret CSizeT) {
 }
 
 // /
-// Sets the position of this View without changing the size. |position| is in
-// parent coordinates, or DIP screen coordinates if there is no parent.
+// / Sets the position of this View without changing the size. |position| is in
+// / parent coordinates, or DIP screen coordinates if there is no parent.
 // /
 func (self *CViewT) SetPosition(
 	position *CPointT,
@@ -32746,8 +33544,8 @@ func (self *CViewT) SetPosition(
 }
 
 // /
-// Returns the position of this View. Position is in parent coordinates, or
-// DIP screen coordinates if there is no parent.
+// / Returns the position of this View. Position is in parent coordinates, or
+// / DIP screen coordinates if there is no parent.
 // /
 func (self *CViewT) GetPosition() (ret CPointT) {
 
@@ -32758,8 +33556,8 @@ func (self *CViewT) GetPosition() (ret CPointT) {
 }
 
 // /
-// Sets the insets for this View. |insets| is in parent coordinates, or DIP
-// screen coordinates if there is no parent.
+// / Sets the insets for this View. |insets| is in parent coordinates, or DIP
+// / screen coordinates if there is no parent.
 // /
 func (self *CViewT) SetInsets(
 	insets *CInsetsT,
@@ -32770,8 +33568,8 @@ func (self *CViewT) SetInsets(
 }
 
 // /
-// Returns the insets for this View in parent coordinates, or DIP screen
-// coordinates if there is no parent.
+// / Returns the insets for this View in parent coordinates, or DIP screen
+// / coordinates if there is no parent.
 // /
 func (self *CViewT) GetInsets() (ret CInsetsT) {
 
@@ -32782,9 +33580,9 @@ func (self *CViewT) GetInsets() (ret CInsetsT) {
 }
 
 // /
-// Returns the size this View would like to be if enough space is available.
-// Size is in parent coordinates, or DIP screen coordinates if there is no
-// parent.
+// / Returns the size this View would like to be if enough space is available.
+// / Size is in parent coordinates, or DIP screen coordinates if there is no
+// / parent.
 // /
 func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 
@@ -32795,8 +33593,8 @@ func (self *CViewT) GetPreferredSize() (ret CSizeT) {
 }
 
 // /
-// Size this View to its preferred size. Size is in parent coordinates, or DIP
-// screen coordinates if there is no parent.
+// / Size this View to its preferred size. Size is in parent coordinates, or
+// / DIP screen coordinates if there is no parent.
 // /
 func (self *CViewT) SizeToPreferredSize() {
 
@@ -32805,8 +33603,8 @@ func (self *CViewT) SizeToPreferredSize() {
 }
 
 // /
-// Returns the minimum size for this View. Size is in parent coordinates, or
-// DIP screen coordinates if there is no parent.
+// / Returns the minimum size for this View. Size is in parent coordinates, or
+// / DIP screen coordinates if there is no parent.
 // /
 func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 
@@ -32817,8 +33615,8 @@ func (self *CViewT) GetMinimumSize() (ret CSizeT) {
 }
 
 // /
-// Returns the maximum size for this View. Size is in parent coordinates, or
-// DIP screen coordinates if there is no parent.
+// / Returns the maximum size for this View. Size is in parent coordinates, or
+// / DIP screen coordinates if there is no parent.
 // /
 func (self *CViewT) GetMaximumSize() (ret CSizeT) {
 
@@ -32829,7 +33627,7 @@ func (self *CViewT) GetMaximumSize() (ret CSizeT) {
 }
 
 // /
-// Returns the height necessary to display this View with the provided width.
+// / Returns the height necessary to display this View with the provided width.
 // /
 func (self *CViewT) GetHeightForWidth(
 	width int,
@@ -32842,9 +33640,9 @@ func (self *CViewT) GetHeightForWidth(
 }
 
 // /
-// Indicate that this View and all parent Views require a re-layout. This
-// ensures the next call to layout() will propagate to this View even if the
-// bounds of parent Views do not change.
+// / Indicate that this View and all parent Views require a re-layout. This
+// / ensures the next call to layout() will propagate to this View even if the
+// / bounds of parent Views do not change.
 // /
 func (self *CViewT) InvalidateLayout() {
 
@@ -32853,13 +33651,13 @@ func (self *CViewT) InvalidateLayout() {
 }
 
 // /
-// Sets whether this View is visible. Windows are hidden by default and other
-// views are visible by default. This View and any parent views must be set as
-// visible for this View to be drawn in a Window. If this View is set as
-// hidden then it and any child views will not be drawn and, if any of those
-// views currently have focus, then focus will also be cleared. Painting is
-// scheduled as needed. If this View is a Window then calling this function is
-// equivalent to calling the Window show() and hide() functions.
+// / Sets whether this View is visible. Windows are hidden by default and other
+// / views are visible by default. This View and any parent views must be set
+// / as visible for this View to be drawn in a Window. If this View is set as
+// / hidden then it and any child views will not be drawn and, if any of those
+// / views currently have focus, then focus will also be cleared. Painting is
+// / scheduled as needed. If this View is a Window then calling this function
+// / is equivalent to calling the Window show() and hide() functions.
 // /
 func (self *CViewT) SetVisible(
 	visible int,
@@ -32870,12 +33668,12 @@ func (self *CViewT) SetVisible(
 }
 
 // /
-// Returns whether this View is visible. A view may be visible but still not
-// drawn in a Window if any parent views are hidden. If this View is a Window
-// then a return value of true (1) indicates that this Window is currently
-// visible to the user on-screen. If this View is not a Window then call
-// is_drawn() to determine whether this View and all parent views are visible
-// and will be drawn.
+// / Returns whether this View is visible. A view may be visible but still not
+// / drawn in a Window if any parent views are hidden. If this View is a Window
+// / then a return value of true (1) indicates that this Window is currently
+// / visible to the user on-screen. If this View is not a Window then call
+// / is_drawn() to determine whether this View and all parent views are visible
+// / and will be drawn.
 // /
 func (self *CViewT) IsVisible() (ret bool) {
 
@@ -32886,11 +33684,11 @@ func (self *CViewT) IsVisible() (ret bool) {
 }
 
 // /
-// Returns whether this View is visible and drawn in a Window. A view is drawn
-// if it and all parent views are visible. If this View is a Window then
-// calling this function is equivalent to calling is_visible(). Otherwise, to
-// determine if the containing Window is visible to the user on-screen call
-// is_visible() on the Window.
+// / Returns whether this View is visible and drawn in a Window. A view is
+// / drawn if it and all parent views are visible. If this View is a Window
+// / then calling this function is equivalent to calling is_visible().
+// / Otherwise, to determine if the containing Window is visible to the user
+// / on-screen call is_visible() on the Window.
 // /
 func (self *CViewT) IsDrawn() (ret bool) {
 
@@ -32901,9 +33699,10 @@ func (self *CViewT) IsDrawn() (ret bool) {
 }
 
 // /
-// Set whether this View is enabled. A disabled View does not receive keyboard
-// or mouse inputs. If |enabled| differs from the current value the View will
-// be repainted. Also, clears focus if the focused View is disabled.
+// / Set whether this View is enabled. A disabled View does not receive
+// / keyboard or mouse inputs. If |enabled| differs from the current value the
+// / View will be repainted. Also, clears focus if the focused View is
+// / disabled.
 // /
 func (self *CViewT) SetEnabled(
 	enabled int,
@@ -32914,7 +33713,7 @@ func (self *CViewT) SetEnabled(
 }
 
 // /
-// Returns whether this View is enabled.
+// / Returns whether this View is enabled.
 // /
 func (self *CViewT) IsEnabled() (ret bool) {
 
@@ -32925,9 +33724,9 @@ func (self *CViewT) IsEnabled() (ret bool) {
 }
 
 // /
-// Sets whether this View is capable of taking focus. It will clear focus if
-// the focused View is set to be non-focusable. This is false (0) by default
-// so that a View used as a container does not get the focus.
+// / Sets whether this View is capable of taking focus. It will clear focus if
+// / the focused View is set to be non-focusable. This is false (0) by default
+// / so that a View used as a container does not get the focus.
 // /
 func (self *CViewT) SetFocusable(
 	focusable bool,
@@ -32942,7 +33741,7 @@ func (self *CViewT) SetFocusable(
 }
 
 // /
-// Returns true (1) if this View is focusable, enabled and drawn.
+// / Returns true (1) if this View is focusable, enabled and drawn.
 // /
 func (self *CViewT) IsFocusable() (ret bool) {
 
@@ -32953,8 +33752,8 @@ func (self *CViewT) IsFocusable() (ret bool) {
 }
 
 // /
-// Return whether this View is focusable when the user requires full keyboard
-// access, even though it may not be normally focusable.
+// / Return whether this View is focusable when the user requires full keyboard
+// / access, even though it may not be normally focusable.
 // /
 func (self *CViewT) IsAccessibilityFocusable() (ret bool) {
 
@@ -32965,8 +33764,8 @@ func (self *CViewT) IsAccessibilityFocusable() (ret bool) {
 }
 
 // /
-// Request keyboard focus. If this View is focusable it will become the
-// focused View.
+// / Request keyboard focus. If this View is focusable it will become the
+// / focused View.
 // /
 func (self *CViewT) RequestFocus() {
 
@@ -32975,7 +33774,7 @@ func (self *CViewT) RequestFocus() {
 }
 
 // /
-// Sets the background color for this View.
+// / Sets the background color for this View.
 // /
 func (self *CViewT) SetBackgroundColor(
 	color CColorT,
@@ -32986,7 +33785,7 @@ func (self *CViewT) SetBackgroundColor(
 }
 
 // /
-// Returns the background color for this View.
+// / Returns the background color for this View.
 // /
 func (self *CViewT) GetBackgroundColor() (ret CColorT) {
 
@@ -32997,11 +33796,11 @@ func (self *CViewT) GetBackgroundColor() (ret CColorT) {
 }
 
 // /
-// Convert |point| from this View&#39;s coordinate system to DIP screen
-// coordinates. This View must belong to a Window when calling this function.
-// Returns true (1) if the conversion is successful or false (0) otherwise.
-// Use cef_display_t::convert_point_to_pixels() after calling this function if
-// further conversion to display-specific pixel coordinates is desired.
+// / Convert |point| from this View&#39;s coordinate system to DIP screen
+// / coordinates. This View must belong to a Window when calling this function.
+// / Returns true (1) if the conversion is successful or false (0) otherwise.
+// / Use cef_display_t::convert_point_to_pixels() after calling this function
+// / if further conversion to display-specific pixel coordinates is desired.
 // /
 func (self *CViewT) ConvertPointToScreen(
 	point *CPointT,
@@ -33014,11 +33813,12 @@ func (self *CViewT) ConvertPointToScreen(
 }
 
 // /
-// Convert |point| to this View&#39;s coordinate system from DIP screen
-// coordinates. This View must belong to a Window when calling this function.
-// Returns true (1) if the conversion is successful or false (0) otherwise.
-// Use cef_display_t::convert_point_from_pixels() before calling this function
-// if conversion from display-specific pixel coordinates is necessary.
+// / Convert |point| to this View&#39;s coordinate system from DIP screen
+// / coordinates. This View must belong to a Window when calling this function.
+// / Returns true (1) if the conversion is successful or false (0) otherwise.
+// / Use cef_display_t::convert_point_from_pixels() before calling this
+// / function if conversion from display-specific pixel coordinates is
+// / necessary.
 // /
 func (self *CViewT) ConvertPointFromScreen(
 	point *CPointT,
@@ -33031,9 +33831,9 @@ func (self *CViewT) ConvertPointFromScreen(
 }
 
 // /
-// Convert |point| from this View&#39;s coordinate system to that of the Window.
-// This View must belong to a Window when calling this function. Returns true
-// (1) if the conversion is successful or false (0) otherwise.
+// / Convert |point| from this View&#39;s coordinate system to that of the Window.
+// / This View must belong to a Window when calling this function. Returns true
+// / (1) if the conversion is successful or false (0) otherwise.
 // /
 func (self *CViewT) ConvertPointToWindow(
 	point *CPointT,
@@ -33046,9 +33846,9 @@ func (self *CViewT) ConvertPointToWindow(
 }
 
 // /
-// Convert |point| to this View&#39;s coordinate system from that of the Window.
-// This View must belong to a Window when calling this function. Returns true
-// (1) if the conversion is successful or false (0) otherwise.
+// / Convert |point| to this View&#39;s coordinate system from that of the Window.
+// / This View must belong to a Window when calling this function. Returns true
+// / (1) if the conversion is successful or false (0) otherwise.
 // /
 func (self *CViewT) ConvertPointFromWindow(
 	point *CPointT,
@@ -33061,10 +33861,10 @@ func (self *CViewT) ConvertPointFromWindow(
 }
 
 // /
-// Convert |point| from this View&#39;s coordinate system to that of |view|.
-// |view| needs to be in the same Window but not necessarily the same view
-// hierarchy. Returns true (1) if the conversion is successful or false (0)
-// otherwise.
+// / Convert |point| from this View&#39;s coordinate system to that of |view|.
+// / |view| needs to be in the same Window but not necessarily the same view
+// / hierarchy. Returns true (1) if the conversion is successful or false (0)
+// / otherwise.
 // /
 func (self *CViewT) ConvertPointToView(
 	view *CViewT,
@@ -33083,9 +33883,10 @@ func (self *CViewT) ConvertPointToView(
 }
 
 // /
-// Convert |point| to this View&#39;s coordinate system from that |view|. |view|
-// needs to be in the same Window but not necessarily the same view hierarchy.
-// Returns true (1) if the conversion is successful or false (0) otherwise.
+// / Convert |point| to this View&#39;s coordinate system from that |view|. |view|
+// / needs to be in the same Window but not necessarily the same view
+// / hierarchy. Returns true (1) if the conversion is successful or false (0)
+// / otherwise.
 // /
 func (self *CViewT) ConvertPointFromView(
 	view *CViewT,
@@ -33103,12 +33904,13 @@ func (self *CViewT) ConvertPointFromView(
 	return ret
 }
 
-// cef_view_delegate_capi.h, include/capi/views/cef_view_delegate_capi.h:142:3,
+// cef_view_delegate_capi.h, include/capi/views/cef_view_delegate_capi.h:143:3,
 
 ///
-// Implement this structure to handle view events. The functions of this
-// structure will be called on the browser process UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle view events. All size and position values
+/// are in density independent pixels (DIP) unless otherwise indicated. The
+/// functions of this structure will be called on the browser process UI thread
+/// unless otherwise indicated.
 ///
 
 type cCViewDelegateT C.cef_view_delegate_t
@@ -33186,8 +33988,8 @@ func (view_delegate *CViewDelegateT) Unref() (ret bool) {
 }
 
 // /
-// Return the preferred size for |view|. The Layout will use this information
-// to determine the display size.
+// / Return the preferred size for |view|. The Layout will use this information
+// / to determine the display size.
 // /
 type GetPreferredSizeHandler interface {
 	GetPreferredSize(
@@ -33197,7 +33999,7 @@ type GetPreferredSizeHandler interface {
 }
 
 // /
-// Return the minimum size for |view|.
+// / Return the minimum size for |view|.
 // /
 type GetMinimumSizeHandler interface {
 	GetMinimumSize(
@@ -33207,7 +34009,7 @@ type GetMinimumSizeHandler interface {
 }
 
 // /
-// Return the maximum size for |view|.
+// / Return the maximum size for |view|.
 // /
 type GetMaximumSizeHandler interface {
 	GetMaximumSize(
@@ -33217,10 +34019,10 @@ type GetMaximumSizeHandler interface {
 }
 
 // /
-// Return the height necessary to display |view| with the provided |width|. If
-// not specified the result of get_preferred_size().height will be used by
-// default. Override if |view|&#39;s preferred height depends upon the width (for
-// example, with Labels).
+// / Return the height necessary to display |view| with the provided |width|.
+// / If not specified the result of get_preferred_size().height will be used by
+// / default. Override if |view|&#39;s preferred height depends upon the width (for
+// / example, with Labels).
 // /
 type GetHeightForWidthHandler interface {
 	GetHeightForWidth(
@@ -33231,11 +34033,11 @@ type GetHeightForWidthHandler interface {
 }
 
 // /
-// Called when the parent of |view| has changed. If |view| is being added to
-// |parent| then |added| will be true (1). If |view| is being removed from
-// |parent| then |added| will be false (0). If |view| is being reparented the
-// remove notification will be sent before the add notification. Do not modify
-// the view hierarchy in this callback.
+// / Called when the parent of |view| has changed. If |view| is being added to
+// / |parent| then |added| will be true (1). If |view| is being removed from
+// / |parent| then |added| will be false (0). If |view| is being reparented the
+// / remove notification will be sent before the add notification. Do not
+// / modify the view hierarchy in this callback.
 // /
 type OnParentViewChangedHandler interface {
 	OnParentViewChanged(
@@ -33247,12 +34049,12 @@ type OnParentViewChangedHandler interface {
 }
 
 // /
-// Called when a child of |view| has changed. If |child| is being added to
-// |view| then |added| will be true (1). If |child| is being removed from
-// |view| then |added| will be false (0). If |child| is being reparented the
-// remove notification will be sent to the old parent before the add
-// notification is sent to the new parent. Do not modify the view hierarchy in
-// this callback.
+// / Called when a child of |view| has changed. If |child| is being added to
+// / |view| then |added| will be true (1). If |child| is being removed from
+// / |view| then |added| will be false (0). If |child| is being reparented the
+// / remove notification will be sent to the old parent before the add
+// / notification is sent to the new parent. Do not modify the view hierarchy
+// / in this callback.
 // /
 type OnChildViewChangedHandler interface {
 	OnChildViewChanged(
@@ -33264,7 +34066,7 @@ type OnChildViewChangedHandler interface {
 }
 
 // /
-// Called when |view| is added or removed from the cef_window_t.
+// / Called when |view| is added or removed from the cef_window_t.
 // /
 type OnWindowChangedHandler interface {
 	OnWindowChanged(
@@ -33275,7 +34077,7 @@ type OnWindowChangedHandler interface {
 }
 
 // /
-// Called when the layout of |view| has changed.
+// / Called when the layout of |view| has changed.
 // /
 type OnLayoutChangedHandler interface {
 	OnLayoutChanged(
@@ -33286,7 +34088,7 @@ type OnLayoutChangedHandler interface {
 }
 
 // /
-// Called when |view| gains focus.
+// / Called when |view| gains focus.
 // /
 type OnFocusHandler interface {
 	OnFocus(
@@ -33296,7 +34098,7 @@ type OnFocusHandler interface {
 }
 
 // /
-// Called when |view| loses focus.
+// / Called when |view| loses focus.
 // /
 type OnBlurHandler interface {
 	OnBlur(
@@ -33472,11 +34274,11 @@ func (view_delegate *CViewDelegateT) Handler() interface{} {
 // cef_window_capi.h, include/capi/views/cef_window_capi.h:337:3,
 
 ///
-// A Window is a top-level Window/widget in the Views hierarchy. By default it
-// will have a non-client area with title bar, icon and buttons that supports
-// moving and resizing. All size and position values are in density independent
-// pixels (DIP) unless otherwise indicated. Methods must be called on the
-// browser process UI thread unless otherwise indicated.
+/// A Window is a top-level Window/widget in the Views hierarchy. By default it
+/// will have a non-client area with title bar, icon and buttons that supports
+/// moving and resizing. All size and position values are in density independent
+/// pixels (DIP) unless otherwise indicated. Methods must be called on the
+/// browser process UI thread unless otherwise indicated.
 ///
 
 type cCWindowT C.cef_window_t
@@ -33561,7 +34363,7 @@ func (window *CWindowT) ToCPanelT() *CPanelT {
 }
 
 // /
-// Show the Window.
+// / Show the Window.
 // /
 func (self *CWindowT) Show() {
 
@@ -33570,7 +34372,7 @@ func (self *CWindowT) Show() {
 }
 
 // /
-// Hide the Window.
+// / Hide the Window.
 // /
 func (self *CWindowT) Hide() {
 
@@ -33579,7 +34381,7 @@ func (self *CWindowT) Hide() {
 }
 
 // /
-// Sizes the Window to |size| and centers it in the current display.
+// / Sizes the Window to |size| and centers it in the current display.
 // /
 func (self *CWindowT) CenterWindow(
 	size *CSizeT,
@@ -33590,7 +34392,7 @@ func (self *CWindowT) CenterWindow(
 }
 
 // /
-// Close the Window.
+// / Close the Window.
 // /
 func (self *CWindowT) Close() {
 
@@ -33599,7 +34401,7 @@ func (self *CWindowT) Close() {
 }
 
 // /
-// Returns true (1) if the Window has been closed.
+// / Returns true (1) if the Window has been closed.
 // /
 func (self *CWindowT) IsClosed() (ret bool) {
 
@@ -33610,7 +34412,7 @@ func (self *CWindowT) IsClosed() (ret bool) {
 }
 
 // /
-// Activate the Window, assuming it already exists and is visible.
+// / Activate the Window, assuming it already exists and is visible.
 // /
 func (self *CWindowT) Activate() {
 
@@ -33619,8 +34421,8 @@ func (self *CWindowT) Activate() {
 }
 
 // /
-// Deactivate the Window, making the next Window in the Z order the active
-// Window.
+// / Deactivate the Window, making the next Window in the Z order the active
+// / Window.
 // /
 func (self *CWindowT) Deactivate() {
 
@@ -33629,7 +34431,7 @@ func (self *CWindowT) Deactivate() {
 }
 
 // /
-// Returns whether the Window is the currently active Window.
+// / Returns whether the Window is the currently active Window.
 // /
 func (self *CWindowT) IsActive() (ret bool) {
 
@@ -33640,7 +34442,7 @@ func (self *CWindowT) IsActive() (ret bool) {
 }
 
 // /
-// Bring this Window to the top of other Windows in the Windowing system.
+// / Bring this Window to the top of other Windows in the Windowing system.
 // /
 func (self *CWindowT) BringToTop() {
 
@@ -33649,7 +34451,7 @@ func (self *CWindowT) BringToTop() {
 }
 
 // /
-// Set the Window to be on top of other Windows in the Windowing system.
+// / Set the Window to be on top of other Windows in the Windowing system.
 // /
 func (self *CWindowT) SetAlwaysOnTop(
 	on_top int,
@@ -33660,8 +34462,8 @@ func (self *CWindowT) SetAlwaysOnTop(
 }
 
 // /
-// Returns whether the Window has been set to be on top of other Windows in
-// the Windowing system.
+// / Returns whether the Window has been set to be on top of other Windows in
+// / the Windowing system.
 // /
 func (self *CWindowT) IsAlwaysOnTop() (ret bool) {
 
@@ -33672,7 +34474,7 @@ func (self *CWindowT) IsAlwaysOnTop() (ret bool) {
 }
 
 // /
-// Maximize the Window.
+// / Maximize the Window.
 // /
 func (self *CWindowT) Maximize() {
 
@@ -33681,7 +34483,7 @@ func (self *CWindowT) Maximize() {
 }
 
 // /
-// Minimize the Window.
+// / Minimize the Window.
 // /
 func (self *CWindowT) Minimize() {
 
@@ -33690,7 +34492,7 @@ func (self *CWindowT) Minimize() {
 }
 
 // /
-// Restore the Window.
+// / Restore the Window.
 // /
 func (self *CWindowT) Restore() {
 
@@ -33699,7 +34501,7 @@ func (self *CWindowT) Restore() {
 }
 
 // /
-// Set fullscreen Window state.
+// / Set fullscreen Window state.
 // /
 func (self *CWindowT) SetFullscreen(
 	fullscreen int,
@@ -33710,7 +34512,7 @@ func (self *CWindowT) SetFullscreen(
 }
 
 // /
-// Returns true (1) if the Window is maximized.
+// / Returns true (1) if the Window is maximized.
 // /
 func (self *CWindowT) IsMaximized() (ret bool) {
 
@@ -33721,7 +34523,7 @@ func (self *CWindowT) IsMaximized() (ret bool) {
 }
 
 // /
-// Returns true (1) if the Window is minimized.
+// / Returns true (1) if the Window is minimized.
 // /
 func (self *CWindowT) IsMinimized() (ret bool) {
 
@@ -33732,7 +34534,7 @@ func (self *CWindowT) IsMinimized() (ret bool) {
 }
 
 // /
-// Returns true (1) if the Window is fullscreen.
+// / Returns true (1) if the Window is fullscreen.
 // /
 func (self *CWindowT) IsFullscreen() (ret bool) {
 
@@ -33743,7 +34545,7 @@ func (self *CWindowT) IsFullscreen() (ret bool) {
 }
 
 // /
-// Set the Window title.
+// / Set the Window title.
 // /
 func (self *CWindowT) SetTitle(
 	title string,
@@ -33755,7 +34557,7 @@ func (self *CWindowT) SetTitle(
 }
 
 // /
-// Get the Window title.
+// / Get the Window title.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CWindowT) GetTitle() (ret string) {
@@ -33771,8 +34573,8 @@ func (self *CWindowT) GetTitle() (ret string) {
 }
 
 // /
-// Set the Window icon. This should be a 16x16 icon suitable for use in the
-// Windows&#39;s title bar.
+// / Set the Window icon. This should be a 16x16 icon suitable for use in the
+// / Windows&#39;s title bar.
 // /
 func (self *CWindowT) SetWindowIcon(
 	image *CImageT,
@@ -33788,7 +34590,7 @@ func (self *CWindowT) SetWindowIcon(
 }
 
 // /
-// Get the Window icon.
+// / Get the Window icon.
 // /
 func (self *CWindowT) GetWindowIcon() (ret *CImageT) {
 
@@ -33799,10 +34601,10 @@ func (self *CWindowT) GetWindowIcon() (ret *CImageT) {
 }
 
 // /
-// Set the Window App icon. This should be a larger icon for use in the host
-// environment app switching UI. On Windows, this is the ICON_BIG used in Alt-
-// Tab list and Windows taskbar. The Window icon will be used by default if no
-// Window App icon is specified.
+// / Set the Window App icon. This should be a larger icon for use in the host
+// / environment app switching UI. On Windows, this is the ICON_BIG used in
+// / Alt-Tab list and Windows taskbar. The Window icon will be used by default
+// / if no Window App icon is specified.
 // /
 func (self *CWindowT) SetWindowAppIcon(
 	image *CImageT,
@@ -33818,7 +34620,7 @@ func (self *CWindowT) SetWindowAppIcon(
 }
 
 // /
-// Get the Window App icon.
+// / Get the Window App icon.
 // /
 func (self *CWindowT) GetWindowAppIcon() (ret *CImageT) {
 
@@ -33829,33 +34631,33 @@ func (self *CWindowT) GetWindowAppIcon() (ret *CImageT) {
 }
 
 // /
-// Add a View that will be overlayed on the Window contents with absolute
-// positioning and high z-order. Positioning is controlled by |docking_mode|
-// as described below. The returned cef_overlay_controller_t object is used to
-// control the overlay. Overlays are hidden by default.
-//
-// With CEF_DOCKING_MODE_CUSTOM:
-//  1. The overlay is initially hidden, sized to |view|&#39;s preferred size, and
-//     positioned in the top-left corner.
-//  2. Optionally change the overlay position and/or size by calling
-//     CefOverlayController methods.
-//  3. Call CefOverlayController::SetVisible(true) to show the overlay.
-//  4. The overlay will be automatically re-sized if |view|&#39;s layout changes.
-//     Optionally change the overlay position and/or size when
-//     OnLayoutChanged is called on the Window&#39;s delegate to indicate a
-//     change in Window bounds.
-//
-// With other docking modes:
-//  1. The overlay is initially hidden, sized to |view|&#39;s preferred size, and
-//     positioned based on |docking_mode|.
-//  2. Call CefOverlayController::SetVisible(true) to show the overlay.
-//  3. The overlay will be automatically re-sized if |view|&#39;s layout changes
-//     and re-positioned as appropriate when the Window resizes.
-//
-// Overlays created by this function will receive a higher z-order then any
-// child Views added previously. It is therefore recommended to call this
-// function last after all other child Views have been added so that the
-// overlay displays as the top-most child of the Window.
+// / Add a View that will be overlayed on the Window contents with absolute
+// / positioning and high z-order. Positioning is controlled by |docking_mode|
+// / as described below. The returned cef_overlay_controller_t object is used
+// / to control the overlay. Overlays are hidden by default.
+// /
+// / With CEF_DOCKING_MODE_CUSTOM:
+// /   1. The overlay is initially hidden, sized to |view|&#39;s preferred size,
+// /      and positioned in the top-left corner.
+// /   2. Optionally change the overlay position and/or size by calling
+// /      CefOverlayController methods.
+// /   3. Call CefOverlayController::SetVisible(true) to show the overlay.
+// /   4. The overlay will be automatically re-sized if |view|&#39;s layout
+// /      changes. Optionally change the overlay position and/or size when
+// /      OnLayoutChanged is called on the Window&#39;s delegate to indicate a
+// /      change in Window bounds.
+// /
+// / With other docking modes:
+// /   1. The overlay is initially hidden, sized to |view|&#39;s preferred size,
+// /      and positioned based on |docking_mode|.
+// /   2. Call CefOverlayController::SetVisible(true) to show the overlay.
+// /   3. The overlay will be automatically re-sized if |view|&#39;s layout changes
+// /      and re-positioned as appropriate when the Window resizes.
+// /
+// / Overlays created by this function will receive a higher z-order then any
+// / child Views added previously. It is therefore recommended to call this
+// / function last after all other child Views have been added so that the
+// / overlay displays as the top-most child of the Window.
 // /
 func (self *CWindowT) AddOverlayView(
 	view *CViewT,
@@ -33874,9 +34676,9 @@ func (self *CWindowT) AddOverlayView(
 }
 
 // /
-// Show a menu with contents |menu_model|. |screen_point| specifies the menu
-// position in screen coordinates. |anchor_position| specifies how the menu
-// will be anchored relative to |screen_point|.
+// / Show a menu with contents |menu_model|. |screen_point| specifies the menu
+// / position in screen coordinates. |anchor_position| specifies how the menu
+// / will be anchored relative to |screen_point|.
 // /
 func (self *CWindowT) ShowMenu(
 	menu_model *CMenuModelT,
@@ -33894,7 +34696,7 @@ func (self *CWindowT) ShowMenu(
 }
 
 // /
-// Cancel the menu that is currently showing, if any.
+// / Cancel the menu that is currently showing, if any.
 // /
 func (self *CWindowT) CancelMenu() {
 
@@ -33903,8 +34705,8 @@ func (self *CWindowT) CancelMenu() {
 }
 
 // /
-// Returns the Display that most closely intersects the bounds of this Window.
-// May return NULL if this Window is not currently displayed.
+// / Returns the Display that most closely intersects the bounds of this
+// / Window. May return NULL if this Window is not currently displayed.
 // /
 func (self *CWindowT) GetDisplay() (ret *CDisplayT) {
 
@@ -33915,8 +34717,8 @@ func (self *CWindowT) GetDisplay() (ret *CDisplayT) {
 }
 
 // /
-// Returns the bounds (size and position) of this Window&#39;s client area.
-// Position is in screen coordinates.
+// / Returns the bounds (size and position) of this Window&#39;s client area.
+// / Position is in screen coordinates.
 // /
 func (self *CWindowT) GetClientAreaBoundsInScreen() (ret CRectT) {
 
@@ -33927,10 +34729,10 @@ func (self *CWindowT) GetClientAreaBoundsInScreen() (ret CRectT) {
 }
 
 // /
-// Set the regions where mouse events will be intercepted by this Window to
-// support drag operations. Call this function with an NULL vector to clear
-// the draggable regions. The draggable region bounds should be in window
-// coordinates.
+// / Set the regions where mouse events will be intercepted by this Window to
+// / support drag operations. Call this function with an NULL vector to clear
+// / the draggable regions. The draggable region bounds should be in window
+// / coordinates.
 // /
 func (self *CWindowT) SetDraggableRegions(
 	regionsCount int64,
@@ -33942,7 +34744,7 @@ func (self *CWindowT) SetDraggableRegions(
 }
 
 // /
-// Retrieve the platform window handle for this Window.
+// / Retrieve the platform window handle for this Window.
 // /
 func (self *CWindowT) GetWindowHandle() (ret CWindowHandleT) {
 
@@ -33953,11 +34755,11 @@ func (self *CWindowT) GetWindowHandle() (ret CWindowHandleT) {
 }
 
 // /
-// Simulate a key press. |key_code| is the VKEY_* value from Chromium&#39;s
-// ui/events/keycodes/keyboard_codes.h header (VK_* values on Windows).
-// |event_flags| is some combination of EVENTFLAG_SHIFT_DOWN,
-// EVENTFLAG_CONTROL_DOWN and/or EVENTFLAG_ALT_DOWN. This function is exposed
-// primarily for testing purposes.
+// / Simulate a key press. |key_code| is the VKEY_* value from Chromium&#39;s
+// / ui/events/keycodes/keyboard_codes.h header (VK_* values on Windows).
+// / |event_flags| is some combination of EVENTFLAG_SHIFT_DOWN,
+// / EVENTFLAG_CONTROL_DOWN and/or EVENTFLAG_ALT_DOWN. This function is exposed
+// / primarily for testing purposes.
 // /
 func (self *CWindowT) SendKeyPress(
 	key_code int,
@@ -33969,9 +34771,9 @@ func (self *CWindowT) SendKeyPress(
 }
 
 // /
-// Simulate a mouse move. The mouse cursor will be moved to the specified
-// (screen_x, screen_y) position. This function is exposed primarily for
-// testing purposes.
+// / Simulate a mouse move. The mouse cursor will be moved to the specified
+// / (screen_x, screen_y) position. This function is exposed primarily for
+// / testing purposes.
 // /
 func (self *CWindowT) SendMouseMove(
 	screen_x int,
@@ -33983,13 +34785,13 @@ func (self *CWindowT) SendMouseMove(
 }
 
 // /
-// Simulate mouse down and/or mouse up events. |button| is the mouse button
-// type. If |mouse_down| is true (1) a mouse down event will be sent. If
-// |mouse_up| is true (1) a mouse up event will be sent. If both are true (1)
-// a mouse down event will be sent followed by a mouse up event (equivalent to
-// clicking the mouse button). The events will be sent using the current
-// cursor position so make sure to call send_mouse_move() first to position
-// the mouse. This function is exposed primarily for testing purposes.
+// / Simulate mouse down and/or mouse up events. |button| is the mouse button
+// / type. If |mouse_down| is true (1) a mouse down event will be sent. If
+// / |mouse_up| is true (1) a mouse up event will be sent. If both are true (1)
+// / a mouse down event will be sent followed by a mouse up event (equivalent
+// / to clicking the mouse button). The events will be sent using the current
+// / cursor position so make sure to call send_mouse_move() first to position
+// / the mouse. This function is exposed primarily for testing purposes.
 // /
 func (self *CWindowT) SendMouseEvents(
 	button CMouseButtonTypeT,
@@ -34002,10 +34804,10 @@ func (self *CWindowT) SendMouseEvents(
 }
 
 // /
-// Set the keyboard accelerator for the specified |command_id|. |key_code| can
-// be any virtual key or character value. cef_window_delegate_t::OnAccelerator
-// will be called if the keyboard combination is triggered while this window
-// has focus.
+// / Set the keyboard accelerator for the specified |command_id|. |key_code|
+// / can be any virtual key or character value.
+// / cef_window_delegate_t::OnAccelerator will be called if the keyboard
+// / combination is triggered while this window has focus.
 // /
 func (self *CWindowT) SetAccelerator(
 	command_id int,
@@ -34020,7 +34822,7 @@ func (self *CWindowT) SetAccelerator(
 }
 
 // /
-// Remove the keyboard accelerator for the specified |command_id|.
+// / Remove the keyboard accelerator for the specified |command_id|.
 // /
 func (self *CWindowT) RemoveAccelerator(
 	command_id int,
@@ -34031,7 +34833,7 @@ func (self *CWindowT) RemoveAccelerator(
 }
 
 // /
-// Remove all keyboard accelerators.
+// / Remove all keyboard accelerators.
 // /
 func (self *CWindowT) RemoveAllAccelerators() {
 
@@ -34040,7 +34842,7 @@ func (self *CWindowT) RemoveAllAccelerators() {
 }
 
 // /
-// Create a new Window.
+// / Create a new Window.
 // /
 func WindowCreateTopLevel(
 	delegate *CWindowDelegateT,
@@ -34060,9 +34862,9 @@ func WindowCreateTopLevel(
 // cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:167:3,
 
 ///
-// Implement this structure to handle window events. The functions of this
-// structure will be called on the browser process UI thread unless otherwise
-// indicated.
+/// Implement this structure to handle window events. The functions of this
+/// structure will be called on the browser process UI thread unless otherwise
+/// indicated.
 ///
 
 type cCWindowDelegateT C.cef_window_delegate_t
@@ -34147,7 +34949,7 @@ func (window_delegate *CWindowDelegateT) ToCPanelDelegateT() *CPanelDelegateT {
 }
 
 // /
-// Called when |window| is created.
+// / Called when |window| is created.
 // /
 type OnWindowCreatedHandler interface {
 	OnWindowCreated(
@@ -34157,9 +34959,9 @@ type OnWindowCreatedHandler interface {
 }
 
 // /
-// Called when |window| is destroyed. Release all references to |window| and
-// do not attempt to execute any functions on |window| after this callback
-// returns.
+// / Called when |window| is destroyed. Release all references to |window| and
+// / do not attempt to execute any functions on |window| after this callback
+// / returns.
 // /
 type OnWindowDestroyedHandler interface {
 	OnWindowDestroyed(
@@ -34169,7 +34971,7 @@ type OnWindowDestroyedHandler interface {
 }
 
 // /
-// Called when |window| is activated or deactivated.
+// / Called when |window| is activated or deactivated.
 // /
 type OnWindowActivationChangedHandler interface {
 	OnWindowActivationChanged(
@@ -34180,12 +34982,12 @@ type OnWindowActivationChangedHandler interface {
 }
 
 // /
-// Return the parent for |window| or NULL if the |window| does not have a
-// parent. Windows with parents will not get a taskbar button. Set |is_menu|
-// to true (1) if |window| will be displayed as a menu, in which case it will
-// not be clipped to the parent window bounds. Set |can_activate_menu| to
-// false (0) if |is_menu| is true (1) and |window| should not be activated
-// (given keyboard focus) when displayed.
+// / Return the parent for |window| or NULL if the |window| does not have a
+// / parent. Windows with parents will not get a taskbar button. Set |is_menu|
+// / to true (1) if |window| will be displayed as a menu, in which case it will
+// / not be clipped to the parent window bounds. Set |can_activate_menu| to
+// / false (0) if |is_menu| is true (1) and |window| should not be activated
+// / (given keyboard focus) when displayed.
 // /
 type GetParentWindowHandler interface {
 	GetParentWindow(
@@ -34195,12 +34997,12 @@ type GetParentWindowHandler interface {
 }
 
 // /
-// Return the initial bounds for |window| in density independent pixel (DIP)
-// coordinates. If this function returns an NULL CefRect then
-// get_preferred_size() will be called to retrieve the size, and the window
-// will be placed on the screen with origin (0,0). This function can be used
-// in combination with cef_view_t::get_bounds_in_screen() to restore the
-// previous window bounds.
+// / Return the initial bounds for |window| in density independent pixel (DIP)
+// / coordinates. If this function returns an NULL CefRect then
+// / get_preferred_size() will be called to retrieve the size, and the window
+// / will be placed on the screen with origin (0,0). This function can be used
+// / in combination with cef_view_t::get_bounds_in_screen() to restore the
+// / previous window bounds.
 // /
 type GetInitialBoundsHandler interface {
 	GetInitialBounds(
@@ -34210,7 +35012,7 @@ type GetInitialBoundsHandler interface {
 }
 
 // /
-// Return the initial show state for |window|.
+// / Return the initial show state for |window|.
 // /
 type GetInitialShowStateHandler interface {
 	GetInitialShowState(
@@ -34220,9 +35022,9 @@ type GetInitialShowStateHandler interface {
 }
 
 // /
-// Return true (1) if |window| should be created without a frame or title bar.
-// The window will be resizable if can_resize() returns true (1). Use
-// cef_window_t::set_draggable_regions() to specify draggable regions.
+// / Return true (1) if |window| should be created without a frame or title
+// / bar. The window will be resizable if can_resize() returns true (1). Use
+// / cef_window_t::set_draggable_regions() to specify draggable regions.
 // /
 type IsFramelessHandler interface {
 	IsFrameless(
@@ -34232,7 +35034,7 @@ type IsFramelessHandler interface {
 }
 
 // /
-// Return true (1) if |window| can be resized.
+// / Return true (1) if |window| can be resized.
 // /
 type CanResizeHandler interface {
 	CanResize(
@@ -34242,7 +35044,7 @@ type CanResizeHandler interface {
 }
 
 // /
-// Return true (1) if |window| can be maximized.
+// / Return true (1) if |window| can be maximized.
 // /
 type CanMaximizeHandler interface {
 	CanMaximize(
@@ -34252,7 +35054,7 @@ type CanMaximizeHandler interface {
 }
 
 // /
-// Return true (1) if |window| can be minimized.
+// / Return true (1) if |window| can be minimized.
 // /
 type CanMinimizeHandler interface {
 	CanMinimize(
@@ -34262,8 +35064,8 @@ type CanMinimizeHandler interface {
 }
 
 // /
-// Return true (1) if |window| can be closed. This will be called for user-
-// initiated window close actions and when cef_window_t::close() is called.
+// / Return true (1) if |window| can be closed. This will be called for user-
+// / initiated window close actions and when cef_window_t::close() is called.
 // /
 type CanCloseHandler interface {
 	CanClose(
@@ -34273,9 +35075,9 @@ type CanCloseHandler interface {
 }
 
 // /
-// Called when a keyboard accelerator registered with
-// cef_window_t::SetAccelerator is triggered. Return true (1) if the
-// accelerator was handled or false (0) otherwise.
+// / Called when a keyboard accelerator registered with
+// / cef_window_t::SetAccelerator is triggered. Return true (1) if the
+// / accelerator was handled or false (0) otherwise.
 // /
 type OnAcceleratorHandler interface {
 	OnAccelerator(
@@ -34286,9 +35088,9 @@ type OnAcceleratorHandler interface {
 }
 
 // /
-// Called after all other controls in the window have had a chance to handle
-// the event. |event| contains information about the keyboard event. Return
-// true (1) if the keyboard event was handled or false (0) otherwise.
+// / Called after all other controls in the window have had a chance to handle
+// / the event. |event| contains information about the keyboard event. Return
+// / true (1) if the keyboard event was handled or false (0) otherwise.
 // /
 type CWindowDelegateTOnKeyEventHandler interface {
 	OnKeyEvent(
@@ -34595,7 +35397,7 @@ func (window_delegate *CWindowDelegateT) Handler() interface{} {
 // cef_x509_certificate_capi.h, include/capi/cef_x509_certificate_capi.h:123:3,
 
 ///
-// Structure representing the issuer or subject field of an X.509 certificate.
+/// Structure representing the issuer or subject field of an X.509 certificate.
 ///
 
 type cCX509certPrincipalT C.cef_x509cert_principal_t
@@ -34673,9 +35475,9 @@ func (x509cert_principal *CX509certPrincipalT) Unref() (ret bool) {
 }
 
 // /
-// Returns a name that can be used to represent the issuer. It tries in this
-// order: Common Name (CN), Organization Name (O) and Organizational Unit Name
-// (OU) and returns the first non-NULL one found.
+// / Returns a name that can be used to represent the issuer. It tries in this
+// / order: Common Name (CN), Organization Name (O) and Organizational Unit
+// / Name (OU) and returns the first non-NULL one found.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetDisplayName() (ret string) {
@@ -34691,7 +35493,7 @@ func (self *CX509certPrincipalT) GetDisplayName() (ret string) {
 }
 
 // /
-// Returns the common name.
+// / Returns the common name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetCommonName() (ret string) {
@@ -34707,7 +35509,7 @@ func (self *CX509certPrincipalT) GetCommonName() (ret string) {
 }
 
 // /
-// Returns the locality name.
+// / Returns the locality name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetLocalityName() (ret string) {
@@ -34723,7 +35525,7 @@ func (self *CX509certPrincipalT) GetLocalityName() (ret string) {
 }
 
 // /
-// Returns the state or province name.
+// / Returns the state or province name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetStateOrProvinceName() (ret string) {
@@ -34739,7 +35541,7 @@ func (self *CX509certPrincipalT) GetStateOrProvinceName() (ret string) {
 }
 
 // /
-// Returns the country name.
+// / Returns the country name.
 // /
 // The resulting string must be freed by calling cef_string_userfree_free().
 func (self *CX509certPrincipalT) GetCountryName() (ret string) {
@@ -34755,7 +35557,7 @@ func (self *CX509certPrincipalT) GetCountryName() (ret string) {
 }
 
 // /
-// Retrieve the list of street addresses.
+// / Retrieve the list of street addresses.
 // /
 func (self *CX509certPrincipalT) GetStreetAddresses(
 	addresses CStringListT,
@@ -34766,7 +35568,7 @@ func (self *CX509certPrincipalT) GetStreetAddresses(
 }
 
 // /
-// Retrieve the list of organization names.
+// / Retrieve the list of organization names.
 // /
 func (self *CX509certPrincipalT) GetOrganizationNames(
 	names CStringListT,
@@ -34777,7 +35579,7 @@ func (self *CX509certPrincipalT) GetOrganizationNames(
 }
 
 // /
-// Retrieve the list of organization unit names.
+// / Retrieve the list of organization unit names.
 // /
 func (self *CX509certPrincipalT) GetOrganizationUnitNames(
 	names CStringListT,
@@ -34788,7 +35590,7 @@ func (self *CX509certPrincipalT) GetOrganizationUnitNames(
 }
 
 // /
-// Retrieve the list of domain components.
+// / Retrieve the list of domain components.
 // /
 func (self *CX509certPrincipalT) GetDomainComponents(
 	components CStringListT,
@@ -34799,7 +35601,7 @@ func (self *CX509certPrincipalT) GetDomainComponents(
 }
 
 ///
-// Structure representing a X.509 certificate.
+/// Structure representing a X.509 certificate.
 ///
 
 type cCX509certificateT C.cef_x509certificate_t
@@ -34877,9 +35679,9 @@ func (x509certificate *CX509certificateT) Unref() (ret bool) {
 }
 
 // /
-// Returns the subject of the X.509 certificate. For HTTPS server certificates
-// this represents the web server.  The common name of the subject should
-// match the host name of the web server.
+// / Returns the subject of the X.509 certificate. For HTTPS server
+// / certificates this represents the web server.  The common name of the
+// / subject should match the host name of the web server.
 // /
 func (self *CX509certificateT) GetSubject() (ret *CX509certPrincipalT) {
 
@@ -34890,7 +35692,7 @@ func (self *CX509certificateT) GetSubject() (ret *CX509certPrincipalT) {
 }
 
 // /
-// Returns the issuer of the X.509 certificate.
+// / Returns the issuer of the X.509 certificate.
 // /
 func (self *CX509certificateT) GetIssuer() (ret *CX509certPrincipalT) {
 
@@ -34901,8 +35703,8 @@ func (self *CX509certificateT) GetIssuer() (ret *CX509certPrincipalT) {
 }
 
 // /
-// Returns the DER encoded serial number for the X.509 certificate. The value
-// possibly includes a leading 00 byte.
+// / Returns the DER encoded serial number for the X.509 certificate. The value
+// / possibly includes a leading 00 byte.
 // /
 func (self *CX509certificateT) GetSerialNumber() (ret *CBinaryValueT) {
 
@@ -34913,31 +35715,31 @@ func (self *CX509certificateT) GetSerialNumber() (ret *CBinaryValueT) {
 }
 
 // /
-// Returns the date before which the X.509 certificate is invalid.
-// CefTime.GetTimeT() will return 0 if no date was specified.
+// / Returns the date before which the X.509 certificate is invalid.
+// / CefBaseTime.GetTimeT() will return 0 if no date was specified.
 // /
-func (self *CX509certificateT) GetValidStart() (ret CTimeT) {
+func (self *CX509certificateT) GetValidStart() (ret CBasetimeT) {
 
 	cRet := C.cefingo_x509certificate_get_valid_start((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = (CTimeT)(cRet) // return GoObj
+	ret = (CBasetimeT)(cRet) // return GoObj
 	return ret
 }
 
 // /
-// Returns the date after which the X.509 certificate is invalid.
-// CefTime.GetTimeT() will return 0 if no date was specified.
+// / Returns the date after which the X.509 certificate is invalid.
+// / CefBaseTime.GetTimeT() will return 0 if no date was specified.
 // /
-func (self *CX509certificateT) GetValidExpiry() (ret CTimeT) {
+func (self *CX509certificateT) GetValidExpiry() (ret CBasetimeT) {
 
 	cRet := C.cefingo_x509certificate_get_valid_expiry((*C.cef_x509certificate_t)(self.pc_x509certificate))
 
-	ret = (CTimeT)(cRet) // return GoObj
+	ret = (CBasetimeT)(cRet) // return GoObj
 	return ret
 }
 
 // /
-// Returns the DER encoded data for the X.509 certificate.
+// / Returns the DER encoded data for the X.509 certificate.
 // /
 func (self *CX509certificateT) GetDerencoded() (ret *CBinaryValueT) {
 
@@ -34948,7 +35750,7 @@ func (self *CX509certificateT) GetDerencoded() (ret *CBinaryValueT) {
 }
 
 // /
-// Returns the PEM encoded data for the X.509 certificate.
+// / Returns the PEM encoded data for the X.509 certificate.
 // /
 func (self *CX509certificateT) GetPemencoded() (ret *CBinaryValueT) {
 
@@ -34959,8 +35761,8 @@ func (self *CX509certificateT) GetPemencoded() (ret *CBinaryValueT) {
 }
 
 // /
-// Returns the number of certificates in the issuer chain. If 0, the
-// certificate is self-signed.
+// / Returns the number of certificates in the issuer chain. If 0, the
+// / certificate is self-signed.
 // /
 func (self *CX509certificateT) GetIssuerChainSize() (ret int64) {
 
@@ -34971,9 +35773,9 @@ func (self *CX509certificateT) GetIssuerChainSize() (ret int64) {
 }
 
 // /
-// Returns the DER encoded data for the certificate issuer chain. If we failed
-// to encode a certificate in the chain it is still present in the array but
-// is an NULL string.
+// / Returns the DER encoded data for the certificate issuer chain. If we
+// / failed to encode a certificate in the chain it is still present in the
+// / array but is an NULL string.
 // /
 func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValueT) {
 	_chainCount := C.size_t(self.GetIssuerChainSize()) // =SizeFunc cef_x509certificate_t::get_derencoded_issuer_chain:chain
@@ -34995,9 +35797,9 @@ func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValue
 }
 
 // /
-// Returns the PEM encoded data for the certificate issuer chain. If we failed
-// to encode a certificate in the chain it is still present in the array but
-// is an NULL string.
+// / Returns the PEM encoded data for the certificate issuer chain. If we
+// / failed to encode a certificate in the chain it is still present in the
+// / array but is an NULL string.
 // /
 func (self *CX509certificateT) GetPemencodedIssuerChain() (chain []*CBinaryValueT) {
 	_chainCount := C.size_t(self.GetIssuerChainSize()) // =SizeFunc cef_x509certificate_t::get_pemencoded_issuer_chain:chain

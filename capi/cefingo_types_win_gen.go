@@ -10,7 +10,7 @@ import "C"
 // cef_types_win.h, include/internal/cef_types_win.h:60:3,
 
 // /
-// Structure representing CefExecuteProcess arguments.
+// / Structure representing CefExecuteProcess arguments.
 // /
 type CMainArgsT C.cef_main_args_t
 
@@ -28,7 +28,7 @@ func (st *CMainArgsT) SetInstance(v WinHinstance) {
 }
 
 // /
-// Structure representing window information.
+// / Structure representing window information.
 // /
 type CWindowInfoT C.cef_window_info_t
 

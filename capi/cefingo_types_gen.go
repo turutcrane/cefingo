@@ -16,12 +16,12 @@ var cefingoIfaceAccess sync.Mutex
 // cef_string_list.h, include/internal/cef_string_list.h:44:15,
 
 // /
-// CEF string maps are a set of key/value string pairs.
+// / CEF string maps are a set of key/value string pairs.
 // /
 type CStringListT C.cef_string_list_t
 
 // /
-// Allocate a new string map.
+// / Allocate a new string map.
 // /
 func StringListAlloc() (ret CStringListT) {
 
@@ -32,7 +32,7 @@ func StringListAlloc() (ret CStringListT) {
 }
 
 // /
-// Return the number of elements in the string list.
+// / Return the number of elements in the string list.
 // /
 func StringListSize(
 	list CStringListT,
@@ -45,8 +45,8 @@ func StringListSize(
 }
 
 // /
-// Retrieve the value at the specified zero-based string list index. Returns
-// true (1) if the value was successfully retrieved.
+// / Retrieve the value at the specified zero-based string list index. Returns
+// / true (1) if the value was successfully retrieved.
 // /
 func StringListValue(
 	list CStringListT,
@@ -63,7 +63,7 @@ func StringListValue(
 }
 
 // /
-// Append a new value at the end of the string list.
+// / Append a new value at the end of the string list.
 // /
 func StringListAppend(
 	list CStringListT,
@@ -76,7 +76,7 @@ func StringListAppend(
 }
 
 // /
-// Clear the string list.
+// / Clear the string list.
 // /
 func StringListClear(
 	list CStringListT,
@@ -87,7 +87,7 @@ func StringListClear(
 }
 
 // /
-// Free the string list.
+// / Free the string list.
 // /
 func StringListFree(
 	list CStringListT,
@@ -98,7 +98,7 @@ func StringListFree(
 }
 
 // /
-// Creates a copy of an existing string list.
+// / Creates a copy of an existing string list.
 // /
 func StringListCopy(
 	list CStringListT,
@@ -113,12 +113,12 @@ func StringListCopy(
 // cef_string_map.h, include/internal/cef_string_map.h:44:15,
 
 // /
-// CEF string maps are a set of key/value string pairs.
+// / CEF string maps are a set of key/value string pairs.
 // /
 type CStringMapT C.cef_string_map_t
 
 // /
-// Allocate a new string map.
+// / Allocate a new string map.
 // /
 func StringMapAlloc() (ret CStringMapT) {
 
@@ -129,7 +129,7 @@ func StringMapAlloc() (ret CStringMapT) {
 }
 
 // /
-// Return the number of elements in the string map.
+// / Return the number of elements in the string map.
 // /
 func StringMapSize(
 	cmap CStringMapT,
@@ -142,7 +142,7 @@ func StringMapSize(
 }
 
 // /
-// Return the value assigned to the specified key.
+// / Return the value assigned to the specified key.
 // /
 func StringMapFind(
 	cmap CStringMapT,
@@ -160,7 +160,7 @@ func StringMapFind(
 }
 
 // /
-// Return the key at the specified zero-based string map index.
+// / Return the key at the specified zero-based string map index.
 // /
 func StringMapKey(
 	cmap CStringMapT,
@@ -177,7 +177,7 @@ func StringMapKey(
 }
 
 // /
-// Return the value at the specified zero-based string map index.
+// / Return the value at the specified zero-based string map index.
 // /
 func StringMapValue(
 	cmap CStringMapT,
@@ -194,7 +194,7 @@ func StringMapValue(
 }
 
 // /
-// Append a new key/value pair at the end of the string map.
+// / Append a new key/value pair at the end of the string map.
 // /
 func StringMapAppend(
 	cmap CStringMapT,
@@ -211,7 +211,7 @@ func StringMapAppend(
 }
 
 // /
-// Clear the string map.
+// / Clear the string map.
 // /
 func StringMapClear(
 	cmap CStringMapT,
@@ -222,7 +222,7 @@ func StringMapClear(
 }
 
 // /
-// Free the string map.
+// / Free the string map.
 // /
 func StringMapFree(
 	cmap CStringMapT,
@@ -235,13 +235,13 @@ func StringMapFree(
 // cef_string_multimap.h, include/internal/cef_string_multimap.h:45:15,
 
 // /
-// CEF string multimaps are a set of key/value string pairs.
-// More than one value can be assigned to a single key.
+// / CEF string multimaps are a set of key/value string pairs.
+// / More than one value can be assigned to a single key.
 // /
 type CStringMultimapT C.cef_string_multimap_t
 
 // /
-// Allocate a new string multimap.
+// / Allocate a new string multimap.
 // /
 func StringMultimapAlloc() (ret CStringMultimapT) {
 
@@ -252,7 +252,7 @@ func StringMultimapAlloc() (ret CStringMultimapT) {
 }
 
 // /
-// Return the number of elements in the string multimap.
+// / Return the number of elements in the string multimap.
 // /
 func StringMultimapSize(
 	cmap CStringMultimapT,
@@ -265,7 +265,7 @@ func StringMultimapSize(
 }
 
 // /
-// Return the number of values with the specified key.
+// / Return the number of values with the specified key.
 // /
 func StringMultimapFindCount(
 	cmap CStringMultimapT,
@@ -280,7 +280,7 @@ func StringMultimapFindCount(
 }
 
 // /
-// Return the value_index-th value with the specified key.
+// / Return the value_index-th value with the specified key.
 // /
 func StringMultimapEnumerate(
 	cmap CStringMultimapT,
@@ -299,7 +299,7 @@ func StringMultimapEnumerate(
 }
 
 // /
-// Return the key at the specified zero-based string multimap index.
+// / Return the key at the specified zero-based string multimap index.
 // /
 func StringMultimapKey(
 	cmap CStringMultimapT,
@@ -316,7 +316,7 @@ func StringMultimapKey(
 }
 
 // /
-// Return the value at the specified zero-based string multimap index.
+// / Return the value at the specified zero-based string multimap index.
 // /
 func StringMultimapValue(
 	cmap CStringMultimapT,
@@ -333,7 +333,7 @@ func StringMultimapValue(
 }
 
 // /
-// Append a new key/value pair at the end of the string multimap.
+// / Append a new key/value pair at the end of the string multimap.
 // /
 func StringMultimapAppend(
 	cmap CStringMultimapT,
@@ -350,7 +350,7 @@ func StringMultimapAppend(
 }
 
 // /
-// Clear the string multimap.
+// / Clear the string multimap.
 // /
 func StringMultimapClear(
 	cmap CStringMultimapT,
@@ -361,7 +361,7 @@ func StringMultimapClear(
 }
 
 // /
-// Free the string multimap.
+// / Free the string multimap.
 // /
 func StringMultimapFree(
 	cmap CStringMultimapT,
@@ -371,16 +371,38 @@ func StringMultimapFree(
 
 }
 
-// cef_time.h, include/internal/cef_time.h:55:3,
+// cef_time.h, include/internal/cef_time.h:51:3,
 
 // /
-// Time information. Values should always be in UTC.
+// / Represents a wall clock time in UTC. Values are not guaranteed to be
+// / monotonically non-decreasing and are subject to large amounts of skew.
+// / Time is stored internally as microseconds since the Windows epoch (1601).
+// /
+// / This is equivalent of Chromium `base::Time` (see base/time/time.h).
+// /
+type CBasetimeT C.cef_basetime_t
+
+func NewCBasetimeT() *CBasetimeT {
+	s := &CBasetimeT{}
+	return s
+}
+
+func (st *CBasetimeT) Val() int64 {
+	return int64(st.val)
+}
+
+func (st *CBasetimeT) SetVal(v int64) {
+	st.val = (C.int64)(v)
+}
+
+// /
+// / Time information. Values should always be in UTC.
 // /
 type CTimeT C.cef_time_t
 
 // /
-// Converts cef_time_t to/from time_t. Returns true (1) on success and false (0)
-// on failure.
+// / Converts cef_time_t to/from time_t. Returns true (1) on success and false
+// / (0) on failure.
 // /
 func TimeToTimet(
 	cef_time *CTimeT,
@@ -407,10 +429,10 @@ func TimeFromTimet(
 }
 
 // /
-// Converts cef_time_t to/from a double which is the number of seconds since
-// epoch (Jan 1, 1970). Webkit uses this format to represent time. A value of 0
-// means "not initialized". Returns true (1) on success and false (0) on
-// failure.
+// / Converts cef_time_t to/from a double which is the number of seconds since
+// / epoch (Jan 1, 1970). Webkit uses this format to represent time. A value of 0
+// / means "not initialized". Returns true (1) on success and false (0) on
+// / failure.
 // /
 func TimeToDoublet(
 	cef_time *CTimeT,
@@ -434,7 +456,9 @@ func TimeFromDoublet(
 }
 
 // /
-// Retrieve the current system time.
+// / Retrieve the current system time. Returns true (1) on success and false (0)
+// / on failure.
+// /
 func TimeNow(
 	cef_time *CTimeT,
 ) (ret bool) {
@@ -446,7 +470,19 @@ func TimeNow(
 }
 
 // /
-// Retrieve the delta in milliseconds between two time values.
+// / Retrieve the current system time.
+// /
+func BasetimeNow() (ret CBasetimeT) {
+
+	cRet := C.cef_basetime_now()
+
+	ret = (CBasetimeT)(cRet) // return GoObj
+	return ret
+}
+
+// /
+// / Retrieve the delta in milliseconds between two time values. Returns true (1)
+// / on success and false (0) on failure.
 func TimeDelta(
 	cef_time1 *CTimeT,
 	cef_time2 *CTimeT,
@@ -459,6 +495,36 @@ func TimeDelta(
 	return ret
 }
 
+// /
+// / Converts cef_time_t to cef_basetime_t. Returns true (1) on success and
+// / false (0) on failure.
+// /
+func TimeToBasetime(
+	from *CTimeT,
+	to *CBasetimeT,
+) (ret bool) {
+
+	cRet := C.cef_time_to_basetime((*C.cef_time_t)(from), (*C.cef_basetime_t)(to))
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Converts cef_basetime_t to cef_time_t. Returns true (1) on success and
+// / false (0) on failure.
+// /
+func TimeFromBasetime(
+	from CBasetimeT,
+	to *CTimeT,
+) (ret bool) {
+
+	cRet := C.cef_time_from_basetime((C.cef_basetime_t)(from), (*C.cef_time_t)(to))
+
+	ret = cRet == 1
+	return ret
+}
+
 // cef_types.h, include/internal/cef_types.h:51:16,
 
 // 32-bit ARGB color value, not premultiplied. The color components are always
@@ -466,81 +532,81 @@ func TimeDelta(
 type CColorT C.cef_color_t
 
 // /
-// Log severity levels.
+// / Log severity levels.
 // /
 type CLogSeverityT C.cef_log_severity_t
 
 const (
 
 	///
-	// Default logging (currently INFO logging).
+	/// Default logging (currently INFO logging).
 	///
 	LogseverityDefault CLogSeverityT = C.LOGSEVERITY_DEFAULT
 
 	///
-	// Verbose logging.
+	/// Verbose logging.
 	///
 	LogseverityVerbose CLogSeverityT = C.LOGSEVERITY_VERBOSE
 
 	///
-	// DEBUG logging.
+	/// DEBUG logging.
 	///
 	LogseverityDebug CLogSeverityT = C.LOGSEVERITY_DEBUG
 
 	///
-	// INFO logging.
+	/// INFO logging.
 	///
 	LogseverityInfo CLogSeverityT = C.LOGSEVERITY_INFO
 
 	///
-	// WARNING logging.
+	/// WARNING logging.
 	///
 	LogseverityWarning CLogSeverityT = C.LOGSEVERITY_WARNING
 
 	///
-	// ERROR logging.
+	/// ERROR logging.
 	///
 	LogseverityError CLogSeverityT = C.LOGSEVERITY_ERROR
 
 	///
-	// FATAL logging.
+	/// FATAL logging.
 	///
 	LogseverityFatal CLogSeverityT = C.LOGSEVERITY_FATAL
 
 	///
-	// Disable logging to file for all messages, and to stderr for messages with
-	// severity less than FATAL.
+	/// Disable logging to file for all messages, and to stderr for messages with
+	/// severity less than FATAL.
 	///
 	LogseverityDisable CLogSeverityT = C.LOGSEVERITY_DISABLE
 )
 
 // /
-// Represents the state of a setting.
+// / Represents the state of a setting.
 // /
 type CStateT C.cef_state_t
 
 const (
 
 	///
-	// Use the default state for the setting.
+	/// Use the default state for the setting.
 	///
 	StateDefault CStateT = C.STATE_DEFAULT
 
 	///
-	// Enable or allow the setting.
+	/// Enable or allow the setting.
 	///
 	StateEnabled CStateT = C.STATE_ENABLED
 
 	///
-	// Disable or disallow the setting.
+	/// Disable or disallow the setting.
 	///
 	StateDisabled CStateT = C.STATE_DISABLED
 )
 
 // /
-// Initialization settings. Specify NULL or 0 to get the recommended default
-// values. Many of these and other settings can also configured using command-
-// line switches.
+// / Initialization settings. Specify NULL or 0 to get the recommended default
+// / values. Many of these and other settings can also configured using command-
+// / line switches.
 // /
 type CSettingsT C.cef_settings_t
 
@@ -815,8 +881,8 @@ func (st *CSettingsT) SetCookieableSchemesExcludeDefaults(v int) {
 }
 
 // /
-// Request context initialization settings. Specify NULL or 0 to get the
-// recommended default values.
+// / Request context initialization settings. Specify NULL or 0 to get the
+// / recommended default values.
 // /
 type CRequestContextSettingsT C.cef_request_context_settings_t
 
@@ -883,10 +949,10 @@ func (st *CRequestContextSettingsT) SetCookieableSchemesExcludeDefaults(v int) {
 }
 
 // /
-// Browser initialization settings. Specify NULL or 0 to get the recommended
-// default values. The consequences of using custom values may not be well
-// tested. Many of these and other settings can also configured using command-
-// line switches.
+// / Browser initialization settings. Specify NULL or 0 to get the recommended
+// / default values. The consequences of using custom values may not be well
+// / tested. Many of these and other settings can also configured using command-
+// / line switches.
 // /
 type CBrowserSettingsT C.cef_browser_settings_t
 
@@ -1113,30 +1179,30 @@ func (st *CBrowserSettingsT) SetChromeStatusBubble(v CStateT) {
 }
 
 // /
-// Return value types.
+// / Return value types.
 // /
 type CReturnValueT C.cef_return_value_t
 
 const (
 
 	///
-	// Cancel immediately.
+	/// Cancel immediately.
 	///
 	RvCancel CReturnValueT = C.RV_CANCEL
 
 	///
-	// Continue immediately.
+	/// Continue immediately.
 	///
 	RvContinue CReturnValueT = C.RV_CONTINUE
 
 	///
-	// Continue asynchronously (usually via a callback).
+	/// Continue asynchronously (usually via a callback).
 	///
 	RvContinueAsync CReturnValueT = C.RV_CONTINUE_ASYNC
 )
 
 // /
-// URL component parts.
+// / URL component parts.
 // /
 type CUrlpartsT C.cef_urlparts_t
 
@@ -1226,7 +1292,7 @@ func (st *CUrlpartsT) SetFragment(v string) {
 }
 
 // /
-// Cookie priority values.
+// / Cookie priority values.
 // /
 type CCookiePriorityT C.cef_cookie_priority_t
 
@@ -1237,7 +1303,7 @@ const (
 )
 
 // /
-// Cookie same site values.
+// / Cookie same site values.
 // /
 type CCookieSameSiteT C.cef_cookie_same_site_t
 
@@ -1249,7 +1315,7 @@ const (
 )
 
 // /
-// Cookie information.
+// / Cookie information.
 // /
 type CCookieT C.cef_cookie_t
 
@@ -1306,20 +1372,20 @@ func (st *CCookieT) SetHttponly(v int) {
 	st.httponly = (C.int)(v)
 }
 
-func (st *CCookieT) Creation() CTimeT {
-	return CTimeT(st.creation)
+func (st *CCookieT) Creation() CBasetimeT {
+	return CBasetimeT(st.creation)
 }
 
-func (st *CCookieT) SetCreation(v CTimeT) {
-	st.creation = (C.cef_time_t)(v)
+func (st *CCookieT) SetCreation(v CBasetimeT) {
+	st.creation = (C.cef_basetime_t)(v)
 }
 
-func (st *CCookieT) LastAccess() CTimeT {
-	return CTimeT(st.last_access)
+func (st *CCookieT) LastAccess() CBasetimeT {
+	return CBasetimeT(st.last_access)
 }
 
-func (st *CCookieT) SetLastAccess(v CTimeT) {
-	st.last_access = (C.cef_time_t)(v)
+func (st *CCookieT) SetLastAccess(v CBasetimeT) {
+	st.last_access = (C.cef_basetime_t)(v)
 }
 
 func (st *CCookieT) HasExpires() int {
@@ -1330,12 +1396,12 @@ func (st *CCookieT) SetHasExpires(v int) {
 	st.has_expires = (C.int)(v)
 }
 
-func (st *CCookieT) Expires() CTimeT {
-	return CTimeT(st.expires)
+func (st *CCookieT) Expires() CBasetimeT {
+	return CBasetimeT(st.expires)
 }
 
-func (st *CCookieT) SetExpires(v CTimeT) {
-	st.expires = (C.cef_time_t)(v)
+func (st *CCookieT) SetExpires(v CBasetimeT) {
+	st.expires = (C.cef_basetime_t)(v)
 }
 
 func (st *CCookieT) SameSite() CCookieSameSiteT {
@@ -1355,92 +1421,92 @@ func (st *CCookieT) SetPriority(v CCookiePriorityT) {
 }
 
 // /
-// Process termination status values.
+// / Process termination status values.
 // /
 type CTerminationStatusT C.cef_termination_status_t
 
 const (
 
 	///
-	// Non-zero exit status.
+	/// Non-zero exit status.
 	///
 	TsAbnormalTermination CTerminationStatusT = C.TS_ABNORMAL_TERMINATION
 
 	///
-	// SIGKILL or task manager kill.
+	/// SIGKILL or task manager kill.
 	///
 	TsProcessWasKilled CTerminationStatusT = C.TS_PROCESS_WAS_KILLED
 
 	///
-	// Segmentation fault.
+	/// Segmentation fault.
 	///
 	TsProcessCrashed CTerminationStatusT = C.TS_PROCESS_CRASHED
 
 	///
-	// Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
+	/// Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
 	///
 	TsProcessOom CTerminationStatusT = C.TS_PROCESS_OOM
 )
 
 // /
-// Path key values.
+// / Path key values.
 // /
 type CPathKeyT C.cef_path_key_t
 
 const (
 
 	///
-	// Current directory.
+	/// Current directory.
 	///
 	PkDirCurrent CPathKeyT = C.PK_DIR_CURRENT
 
 	///
-	// Directory containing PK_FILE_EXE.
+	/// Directory containing PK_FILE_EXE.
 	///
 	PkDirExe CPathKeyT = C.PK_DIR_EXE
 
 	///
-	// Directory containing PK_FILE_MODULE.
+	/// Directory containing PK_FILE_MODULE.
 	///
 	PkDirModule CPathKeyT = C.PK_DIR_MODULE
 
 	///
-	// Temporary directory.
+	/// Temporary directory.
 	///
 	PkDirTemp CPathKeyT = C.PK_DIR_TEMP
 
 	///
-	// Path and filename of the current executable.
+	/// Path and filename of the current executable.
 	///
 	PkFileExe CPathKeyT = C.PK_FILE_EXE
 
 	///
-	// Path and filename of the module containing the CEF code (usually the libcef
-	// module).
+	/// Path and filename of the module containing the CEF code (usually the
+	/// libcef module).
 	///
 	PkFileModule CPathKeyT = C.PK_FILE_MODULE
 
 	///
-	// "Local Settings\Application Data" directory under the user profile
-	// directory on Windows.
+	/// "Local Settings\Application Data" directory under the user profile
+	/// directory on Windows.
 	///
 	PkLocalAppData CPathKeyT = C.PK_LOCAL_APP_DATA
 
 	///
-	// "Application Data" directory under the user profile directory on Windows
-	// and "~/Library/Application Support" directory on MacOS.
+	/// "Application Data" directory under the user profile directory on Windows
+	/// and "~/Library/Application Support" directory on MacOS.
 	///
 	PkUserData CPathKeyT = C.PK_USER_DATA
 
 	///
-	// Directory containing application resources. Can be configured via
-	// CefSettings.resources_dir_path.
+	/// Directory containing application resources. Can be configured via
+	/// CefSettings.resources_dir_path.
 	///
 	PkDirResources CPathKeyT = C.PK_DIR_RESOURCES
 )
 
 // /
-// Storage types.
+// / Storage types.
 // /
 type CStorageTypeT C.cef_storage_type_t
 
@@ -1450,7 +1516,8 @@ const (
 )
 
 // /
-// Supported error code values.
+// / Supported error code values. For the complete list of error values see
+// / "include/base/internal/cef_net_error_list.h".
 // /
 type CErrorcodeT C.cef_errorcode_t
 
@@ -1517,7 +1584,7 @@ const (
 	ErrBlockedByClient       CErrorcodeT = C.ERR_BLOCKED_BY_CLIENT
 
 	///
-	// Default logging (currently INFO logging).
+	/// Default logging (currently INFO logging).
 	///
 	ErrNetworkChanged                 CErrorcodeT = C.ERR_NETWORK_CHANGED
 	ErrBlockedByAdministrator         CErrorcodeT = C.ERR_BLOCKED_BY_ADMINISTRATOR
@@ -1526,12 +1593,12 @@ const (
 	ErrUploadStreamRewindNotSupported CErrorcodeT = C.ERR_UPLOAD_STREAM_REWIND_NOT_SUPPORTED
 
 	///
-	// WARNING logging.
+	/// WARNING logging.
 	///
 	ErrContextShutDown CErrorcodeT = C.ERR_CONTEXT_SHUT_DOWN
 
 	///
-	// ERROR logging.
+	/// ERROR logging.
 	///
 	ErrBlockedByResponse     CErrorcodeT = C.ERR_BLOCKED_BY_RESPONSE
 	ErrCleartextNotPermitted CErrorcodeT = C.ERR_CLEARTEXT_NOT_PERMITTED
@@ -1541,150 +1608,190 @@ const (
 	ErrConnectionReset       CErrorcodeT = C.ERR_CONNECTION_RESET
 
 	///
-	// Use the default state for the setting.
+	/// Use the default state for the setting.
 	///
 	ErrConnectionRefused CErrorcodeT = C.ERR_CONNECTION_REFUSED
 	ErrConnectionAborted CErrorcodeT = C.ERR_CONNECTION_ABORTED
 	ErrConnectionFailed  CErrorcodeT = C.ERR_CONNECTION_FAILED
 
 	///
-	// Disable or disallow the setting.
+	/// Disable or disallow the setting.
 	///
-	ErrNameNotResolved            CErrorcodeT = C.ERR_NAME_NOT_RESOLVED
-	ErrInternetDisconnected       CErrorcodeT = C.ERR_INTERNET_DISCONNECTED
-	ErrSslProtocolError           CErrorcodeT = C.ERR_SSL_PROTOCOL_ERROR
-	ErrAddressInvalid             CErrorcodeT = C.ERR_ADDRESS_INVALID
-	ErrAddressUnreachable         CErrorcodeT = C.ERR_ADDRESS_UNREACHABLE
-	ErrSslClientAuthCertNeeded    CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NEEDED
-	ErrTunnelConnectionFailed     CErrorcodeT = C.ERR_TUNNEL_CONNECTION_FAILED
-	ErrNoSslVersionsEnabled       CErrorcodeT = C.ERR_NO_SSL_VERSIONS_ENABLED
-	ErrSslVersionOrCipherMismatch CErrorcodeT = C.ERR_SSL_VERSION_OR_CIPHER_MISMATCH
+	ErrNameNotResolved                CErrorcodeT = C.ERR_NAME_NOT_RESOLVED
+	ErrInternetDisconnected           CErrorcodeT = C.ERR_INTERNET_DISCONNECTED
+	ErrSslProtocolError               CErrorcodeT = C.ERR_SSL_PROTOCOL_ERROR
+	ErrAddressInvalid                 CErrorcodeT = C.ERR_ADDRESS_INVALID
+	ErrAddressUnreachable             CErrorcodeT = C.ERR_ADDRESS_UNREACHABLE
+	ErrSslClientAuthCertNeeded        CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NEEDED
+	ErrTunnelConnectionFailed         CErrorcodeT = C.ERR_TUNNEL_CONNECTION_FAILED
+	ErrNoSslVersionsEnabled           CErrorcodeT = C.ERR_NO_SSL_VERSIONS_ENABLED
+	ErrSslVersionOrCipherMismatch     CErrorcodeT = C.ERR_SSL_VERSION_OR_CIPHER_MISMATCH
+	ErrSslRenegotiationRequested      CErrorcodeT = C.ERR_SSL_RENEGOTIATION_REQUESTED
+	ErrProxyAuthUnsupported           CErrorcodeT = C.ERR_PROXY_AUTH_UNSUPPORTED
+	ErrBadSslClientAuthCert           CErrorcodeT = C.ERR_BAD_SSL_CLIENT_AUTH_CERT
+	ErrConnectionTimedOut             CErrorcodeT = C.ERR_CONNECTION_TIMED_OUT
+	ErrHostResolverQueueTooLarge      CErrorcodeT = C.ERR_HOST_RESOLVER_QUEUE_TOO_LARGE
+	ErrSocksConnectionFailed          CErrorcodeT = C.ERR_SOCKS_CONNECTION_FAILED
+	ErrSocksConnectionHostUnreachable CErrorcodeT = C.ERR_SOCKS_CONNECTION_HOST_UNREACHABLE
+	ErrAlpnNegotiationFailed          CErrorcodeT = C.ERR_ALPN_NEGOTIATION_FAILED
+	ErrSslNoRenegotiation             CErrorcodeT = C.ERR_SSL_NO_RENEGOTIATION
 
 	///
-	// The path to a separate executable that will be launched for sub-processes.
-	// If this value is empty on Windows or Linux then the main process executable
-	// will be used. If this value is empty on macOS then a helper executable must
-	// exist at "Contents/Frameworks/<app> Helper.app/Contents/MacOS/<app> Helper"
-	// in the top-level app bundle. See the comments on CefExecuteProcess() for
-	// details. If this value is non-empty then it must be an absolute path. Also
-	// configurable using the "browser-subprocess-path" command-line switch.
+	/// Set to true (1) to have the browser process message loop run in a separate
+	/// thread. If false (0) then the CefDoMessageLoopWork() function must be
+	/// called from your application message loop. This option is only supported
+	/// on Windows and Linux.
 	///
-	ErrSslRenegotiationRequested CErrorcodeT = C.ERR_SSL_RENEGOTIATION_REQUESTED
-	ErrProxyAuthUnsupported      CErrorcodeT = C.ERR_PROXY_AUTH_UNSUPPORTED
+	ErrWinsockUnexpectedWrittenBytes CErrorcodeT = C.ERR_WINSOCK_UNEXPECTED_WRITTEN_BYTES
+	ErrSslDecompressionFailureAlert  CErrorcodeT = C.ERR_SSL_DECOMPRESSION_FAILURE_ALERT
+	ErrSslBadRecordMacAlert          CErrorcodeT = C.ERR_SSL_BAD_RECORD_MAC_ALERT
+	ErrProxyAuthRequested            CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED
 
 	///
-	// The path to the CEF framework directory on macOS. If this value is empty
-	// then the framework must exist at "Contents/Frameworks/Chromium Embedded
-	// Framework.framework" in the top-level app bundle. If this value is
-	// non-empty then it must be an absolute path. Also configurable using the
-	// "framework-dir-path" command-line switch.
+	/// Set to true (1) to enable windowless (off-screen) rendering support. Do
+	/// not enable this value if the application does not use windowless rendering
+	/// as it may reduce rendering performance on some systems.
 	///
-	ErrBadSslClientAuthCert                CErrorcodeT = C.ERR_BAD_SSL_CLIENT_AUTH_CERT
-	ErrConnectionTimedOut                  CErrorcodeT = C.ERR_CONNECTION_TIMED_OUT
-	ErrHostResolverQueueTooLarge           CErrorcodeT = C.ERR_HOST_RESOLVER_QUEUE_TOO_LARGE
-	ErrSocksConnectionFailed               CErrorcodeT = C.ERR_SOCKS_CONNECTION_FAILED
-	ErrSocksConnectionHostUnreachable      CErrorcodeT = C.ERR_SOCKS_CONNECTION_HOST_UNREACHABLE
-	ErrAlpnNegotiationFailed               CErrorcodeT = C.ERR_ALPN_NEGOTIATION_FAILED
-	ErrSslNoRenegotiation                  CErrorcodeT = C.ERR_SSL_NO_RENEGOTIATION
-	ErrWinsockUnexpectedWrittenBytes       CErrorcodeT = C.ERR_WINSOCK_UNEXPECTED_WRITTEN_BYTES
-	ErrSslDecompressionFailureAlert        CErrorcodeT = C.ERR_SSL_DECOMPRESSION_FAILURE_ALERT
-	ErrSslBadRecordMacAlert                CErrorcodeT = C.ERR_SSL_BAD_RECORD_MAC_ALERT
-	ErrProxyAuthRequested                  CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED
 	ErrProxyConnectionFailed               CErrorcodeT = C.ERR_PROXY_CONNECTION_FAILED
 	ErrMandatoryProxyConfigurationFailed   CErrorcodeT = C.ERR_MANDATORY_PROXY_CONFIGURATION_FAILED
 	ErrPreconnectMaxSocketLimit            CErrorcodeT = C.ERR_PRECONNECT_MAX_SOCKET_LIMIT
 	ErrSslClientAuthPrivateKeyAccessDenied CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_PRIVATE_KEY_ACCESS_DENIED
 	ErrSslClientAuthCertNoPrivateKey       CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NO_PRIVATE_KEY
 	ErrProxyCertificateInvalid             CErrorcodeT = C.ERR_PROXY_CERTIFICATE_INVALID
-	ErrNameResolutionFailed                CErrorcodeT = C.ERR_NAME_RESOLUTION_FAILED
-	ErrNetworkAccessDenied                 CErrorcodeT = C.ERR_NETWORK_ACCESS_DENIED
-	ErrTemporarilyThrottled                CErrorcodeT = C.ERR_TEMPORARILY_THROTTLED
-	ErrHttpsProxyTunnelResponseRedirect    CErrorcodeT = C.ERR_HTTPS_PROXY_TUNNEL_RESPONSE_REDIRECT
-	ErrSslClientAuthSignatureFailed        CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_SIGNATURE_FAILED
-	ErrMsgTooBig                           CErrorcodeT = C.ERR_MSG_TOO_BIG
-	ErrWsProtocolError                     CErrorcodeT = C.ERR_WS_PROTOCOL_ERROR
-	ErrAddressInUse                        CErrorcodeT = C.ERR_ADDRESS_IN_USE
-	ErrSslHandshakeNotCompleted            CErrorcodeT = C.ERR_SSL_HANDSHAKE_NOT_COMPLETED
-	ErrSslBadPeerPublicKey                 CErrorcodeT = C.ERR_SSL_BAD_PEER_PUBLIC_KEY
-	ErrSslPinnedKeyNotInCertChain          CErrorcodeT = C.ERR_SSL_PINNED_KEY_NOT_IN_CERT_CHAIN
-	ErrClientAuthCertTypeUnsupported       CErrorcodeT = C.ERR_CLIENT_AUTH_CERT_TYPE_UNSUPPORTED
-	ErrSslDecryptErrorAlert                CErrorcodeT = C.ERR_SSL_DECRYPT_ERROR_ALERT
 
 	///
-	// The locale string that will be passed to WebKit. If empty the default
-	// locale of "en-US" will be used. This value is ignored on Linux where locale
-	// is determined using environment variable parsing with the precedence order:
-	// LANGUAGE, LC_ALL, LC_MESSAGES and LANG. Also configurable using the "lang"
-	// command-line switch.
+	/// The location where data for the global browser cache will be stored on
+	/// disk. If this value is non-empty then it must be an absolute path that is
+	/// either equal to or a child directory of CefSettings.root_cache_path. If
+	/// this value is empty then browsers will be created in "incognito mode"
+	/// where in-memory caches are used for storage and no data is persisted to
+	/// disk. HTML5 databases such as localStorage will only persist across
+	/// sessions if a cache path is specified. Can be overridden for individual
+	/// CefRequestContext instances via the CefRequestContextSettings.cache_path
+	/// value. When using the Chrome runtime the "default" profile will be used if
+	/// |cache_path| and |root_cache_path| have the same value.
 	///
-	ErrWsThrottleQueueTooLarge             CErrorcodeT = C.ERR_WS_THROTTLE_QUEUE_TOO_LARGE
-	ErrSslServerCertChanged                CErrorcodeT = C.ERR_SSL_SERVER_CERT_CHANGED
+	ErrNameResolutionFailed             CErrorcodeT = C.ERR_NAME_RESOLUTION_FAILED
+	ErrNetworkAccessDenied              CErrorcodeT = C.ERR_NETWORK_ACCESS_DENIED
+	ErrTemporarilyThrottled             CErrorcodeT = C.ERR_TEMPORARILY_THROTTLED
+	ErrHttpsProxyTunnelResponseRedirect CErrorcodeT = C.ERR_HTTPS_PROXY_TUNNEL_RESPONSE_REDIRECT
+	ErrSslClientAuthSignatureFailed     CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_SIGNATURE_FAILED
+	ErrMsgTooBig                        CErrorcodeT = C.ERR_MSG_TOO_BIG
+	ErrWsProtocolError                  CErrorcodeT = C.ERR_WS_PROTOCOL_ERROR
+	ErrAddressInUse                     CErrorcodeT = C.ERR_ADDRESS_IN_USE
+
+	///
+	/// To persist user preferences as a JSON file in the cache path directory set
+	/// this value to true (1). A |cache_path| value must also be specified
+	/// to enable this feature. Also configurable using the
+	/// "persist-user-preferences" command-line switch. Can be overridden for
+	/// individual CefRequestContext instances via the
+	/// CefRequestContextSettings.persist_user_preferences value.
+	///
+	ErrSslHandshakeNotCompleted      CErrorcodeT = C.ERR_SSL_HANDSHAKE_NOT_COMPLETED
+	ErrSslBadPeerPublicKey           CErrorcodeT = C.ERR_SSL_BAD_PEER_PUBLIC_KEY
+	ErrSslPinnedKeyNotInCertChain    CErrorcodeT = C.ERR_SSL_PINNED_KEY_NOT_IN_CERT_CHAIN
+	ErrClientAuthCertTypeUnsupported CErrorcodeT = C.ERR_CLIENT_AUTH_CERT_TYPE_UNSUPPORTED
+	ErrSslDecryptErrorAlert          CErrorcodeT = C.ERR_SSL_DECRYPT_ERROR_ALERT
+	ErrWsThrottleQueueTooLarge       CErrorcodeT = C.ERR_WS_THROTTLE_QUEUE_TOO_LARGE
+	ErrSslServerCertChanged          CErrorcodeT = C.ERR_SSL_SERVER_CERT_CHANGED
+
+	///
+	/// The directory and file name to use for the debug log. If empty a default
+	/// log file name and location will be used. On Windows and Linux a
+	/// "debug.log" file will be written in the main executable directory. On
+	/// MacOS a "~/Library/Logs/[app name]_debug.log" file will be written where
+	/// [app name] is the name of the main app executable. Also configurable using
+	/// the "log-file" command-line switch.
+	///
 	ErrSslUnrecognizedNameAlert            CErrorcodeT = C.ERR_SSL_UNRECOGNIZED_NAME_ALERT
 	ErrSocketSetReceiveBufferSizeError     CErrorcodeT = C.ERR_SOCKET_SET_RECEIVE_BUFFER_SIZE_ERROR
 	ErrSocketSetSendBufferSizeError        CErrorcodeT = C.ERR_SOCKET_SET_SEND_BUFFER_SIZE_ERROR
 	ErrSocketReceiveBufferSizeUnchangeable CErrorcodeT = C.ERR_SOCKET_RECEIVE_BUFFER_SIZE_UNCHANGEABLE
-
-	///
-	// Custom flags that will be used when initializing the V8 JavaScript engine.
-	// The consequences of using custom flags may not be well tested. Also
-	// configurable using the "js-flags" command-line switch.
-	///
 	ErrSocketSendBufferSizeUnchangeable    CErrorcodeT = C.ERR_SOCKET_SEND_BUFFER_SIZE_UNCHANGEABLE
 	ErrSslClientAuthCertBadFormat          CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_BAD_FORMAT
 	ErrIcannNameCollision                  CErrorcodeT = C.ERR_ICANN_NAME_COLLISION
 	ErrSslServerCertBadFormat              CErrorcodeT = C.ERR_SSL_SERVER_CERT_BAD_FORMAT
 	ErrCtSthParsingFailed                  CErrorcodeT = C.ERR_CT_STH_PARSING_FAILED
 	ErrCtSthIncomplete                     CErrorcodeT = C.ERR_CT_STH_INCOMPLETE
+
+	///
+	/// Set to true (1) to disable loading of pack files for resources and
+	/// locales. A resource bundle handler must be provided for the browser and
+	/// render processes via CefApp::GetResourceBundleHandler() if loading of pack
+	/// files is disabled. Also configurable using the "disable-pack-loading"
+	/// command- line switch.
+	///
 	ErrUnableToReuseConnectionForProxyAuth CErrorcodeT = C.ERR_UNABLE_TO_REUSE_CONNECTION_FOR_PROXY_AUTH
 	ErrCtConsistencyProofParsingFailed     CErrorcodeT = C.ERR_CT_CONSISTENCY_PROOF_PARSING_FAILED
 	ErrSslObsoleteCipher                   CErrorcodeT = C.ERR_SSL_OBSOLETE_CIPHER
 	ErrWsUpgrade                           CErrorcodeT = C.ERR_WS_UPGRADE
+	ErrReadIfReadyNotImplemented           CErrorcodeT = C.ERR_READ_IF_READY_NOT_IMPLEMENTED
+	ErrNoBufferSpace                       CErrorcodeT = C.ERR_NO_BUFFER_SPACE
+	ErrSslClientAuthNoCommonAlgorithms     CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_NO_COMMON_ALGORITHMS
 
 	///
-	// The number of stack trace frames to capture for uncaught exceptions.
-	// Specify a positive value to enable the CefRenderProcessHandler::
-	// OnUncaughtException() callback. Specify 0 (default value) and
-	// OnUncaughtException() will not be called. Also configurable using the
-	// "uncaught-exception-stack-size" command-line switch.
+	/// Background color used for the browser before a document is loaded and when
+	/// no document color is specified. The alpha component must be either fully
+	/// opaque (0xFF) or fully transparent (0x00). If the alpha component is fully
+	/// opaque then the RGB components will be used as the background color. If
+	/// the alpha component is fully transparent for a windowed browser then the
+	/// default value of opaque white be used. If the alpha component is fully
+	/// transparent for a windowless (off-screen) browser then transparent
+	/// painting will be enabled.
 	///
-	ErrReadIfReadyNotImplemented       CErrorcodeT = C.ERR_READ_IF_READY_NOT_IMPLEMENTED
-	ErrNoBufferSpace                   CErrorcodeT = C.ERR_NO_BUFFER_SPACE
-	ErrSslClientAuthNoCommonAlgorithms CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_NO_COMMON_ALGORITHMS
-	ErrEarlyDataRejected               CErrorcodeT = C.ERR_EARLY_DATA_REJECTED
-	ErrWrongVersionOnEarlyData         CErrorcodeT = C.ERR_WRONG_VERSION_ON_EARLY_DATA
-	ErrTls13DowngradeDetected          CErrorcodeT = C.ERR_TLS13_DOWNGRADE_DETECTED
-	ErrSslKeyUsageIncompatible         CErrorcodeT = C.ERR_SSL_KEY_USAGE_INCOMPATIBLE
-	ErrInvalidEchConfigList            CErrorcodeT = C.ERR_INVALID_ECH_CONFIG_LIST
-	ErrEchNotNegotiated                CErrorcodeT = C.ERR_ECH_NOT_NEGOTIATED
-	ErrEchFallbackCertificateInvalid   CErrorcodeT = C.ERR_ECH_FALLBACK_CERTIFICATE_INVALID
-	ErrCertCommonNameInvalid           CErrorcodeT = C.ERR_CERT_COMMON_NAME_INVALID
+	ErrEarlyDataRejected       CErrorcodeT = C.ERR_EARLY_DATA_REJECTED
+	ErrWrongVersionOnEarlyData CErrorcodeT = C.ERR_WRONG_VERSION_ON_EARLY_DATA
+	ErrTls13DowngradeDetected  CErrorcodeT = C.ERR_TLS13_DOWNGRADE_DETECTED
+	ErrSslKeyUsageIncompatible CErrorcodeT = C.ERR_SSL_KEY_USAGE_INCOMPATIBLE
 
 	///
-	// To persist user preferences as a JSON file in the cache path directory set
-	// this value to true (1). Can be set globally using the
-	// CefSettings.persist_user_preferences value. This value will be ignored if
-	// |cache_path| is empty or if it matches the CefSettings.cache_path value.
+	/// Comma delimited list of schemes supported by the associated
+	/// CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0)
+	/// the default schemes ("http", "https", "ws" and "wss") will also be
+	/// supported. Specifying a |cookieable_schemes_list| value and setting
+	/// |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
+	/// and saving of cookies for this manager. Can be overridden
+	/// for individual CefRequestContext instances via the
+	/// CefRequestContextSettings.cookieable_schemes_list and
+	/// CefRequestContextSettings.cookieable_schemes_exclude_defaults values.
 	///
-	ErrCertDateInvalid             CErrorcodeT = C.ERR_CERT_DATE_INVALID
-	ErrCertAuthorityInvalid        CErrorcodeT = C.ERR_CERT_AUTHORITY_INVALID
+	ErrInvalidEchConfigList CErrorcodeT = C.ERR_INVALID_ECH_CONFIG_LIST
+	ErrEchNotNegotiated     CErrorcodeT = C.ERR_ECH_NOT_NEGOTIATED
+
+	///
+	/// Request context initialization settings. Specify NULL or 0 to get the
+	/// recommended default values.
+	///
+	ErrEchFallbackCertificateInvalid CErrorcodeT = C.ERR_ECH_FALLBACK_CERTIFICATE_INVALID
+	ErrCertCommonNameInvalid         CErrorcodeT = C.ERR_CERT_COMMON_NAME_INVALID
+	ErrCertDateInvalid               CErrorcodeT = C.ERR_CERT_DATE_INVALID
+	ErrCertAuthorityInvalid          CErrorcodeT = C.ERR_CERT_AUTHORITY_INVALID
+
+	///
+	/// Comma delimited list of schemes supported by the associated
+	/// CefCookieManager. If |cookieable_schemes_exclude_defaults| is false (0)
+	/// the default schemes ("http", "https", "ws" and "wss") will also be
+	/// supported. Specifying a |cookieable_schemes_list| value and setting
+	/// |cookieable_schemes_exclude_defaults| to true (1) will disable all loading
+	/// and saving of cookies for this manager. These values will be ignored if
+	/// |cache_path| matches the CefSettings.cache_path value.
+	///
 	ErrCertContainsErrors          CErrorcodeT = C.ERR_CERT_CONTAINS_ERRORS
 	ErrCertNoRevocationMechanism   CErrorcodeT = C.ERR_CERT_NO_REVOCATION_MECHANISM
 	ErrCertUnableToCheckRevocation CErrorcodeT = C.ERR_CERT_UNABLE_TO_CHECK_REVOCATION
+	ErrCertRevoked                 CErrorcodeT = C.ERR_CERT_REVOKED
+	ErrCertInvalid                 CErrorcodeT = C.ERR_CERT_INVALID
+	ErrCertWeakSignatureAlgorithm  CErrorcodeT = C.ERR_CERT_WEAK_SIGNATURE_ALGORITHM
+	ErrCertNonUniqueName           CErrorcodeT = C.ERR_CERT_NON_UNIQUE_NAME
+	ErrCertWeakKey                 CErrorcodeT = C.ERR_CERT_WEAK_KEY
+	ErrCertNameConstraintViolation CErrorcodeT = C.ERR_CERT_NAME_CONSTRAINT_VIOLATION
+	ErrCertValidityTooLong         CErrorcodeT = C.ERR_CERT_VALIDITY_TOO_LONG
 
 	///
-	// The maximum rate in frames per second (fps) that CefRenderHandler::OnPaint
-	// will be called for a windowless browser. The actual fps may be lower if
-	// the browser cannot generate frames at the requested rate. The minimum
-	// value is 1 and the maximum value is 60 (default 30). This value can also be
-	// changed dynamically via CefBrowserHost::SetWindowlessFrameRate.
+	/// Controls the loading of fonts from remote sources. Also configurable using
+	/// the "disable-remote-fonts" command-line switch.
 	///
-	ErrCertRevoked                     CErrorcodeT = C.ERR_CERT_REVOKED
-	ErrCertInvalid                     CErrorcodeT = C.ERR_CERT_INVALID
-	ErrCertWeakSignatureAlgorithm      CErrorcodeT = C.ERR_CERT_WEAK_SIGNATURE_ALGORITHM
-	ErrCertNonUniqueName               CErrorcodeT = C.ERR_CERT_NON_UNIQUE_NAME
-	ErrCertWeakKey                     CErrorcodeT = C.ERR_CERT_WEAK_KEY
-	ErrCertNameConstraintViolation     CErrorcodeT = C.ERR_CERT_NAME_CONSTRAINT_VIOLATION
-	ErrCertValidityTooLong             CErrorcodeT = C.ERR_CERT_VALIDITY_TOO_LONG
 	ErrCertificateTransparencyRequired CErrorcodeT = C.ERR_CERTIFICATE_TRANSPARENCY_REQUIRED
 	ErrCertSymantecLegacy              CErrorcodeT = C.ERR_CERT_SYMANTEC_LEGACY
 	ErrCertKnownInterceptionBlocked    CErrorcodeT = C.ERR_CERT_KNOWN_INTERCEPTION_BLOCKED
@@ -1702,78 +1809,73 @@ const (
 	ErrUnexpectedProxyAuth             CErrorcodeT = C.ERR_UNEXPECTED_PROXY_AUTH
 	ErrEmptyResponse                   CErrorcodeT = C.ERR_EMPTY_RESPONSE
 	ErrResponseHeadersTooBig           CErrorcodeT = C.ERR_RESPONSE_HEADERS_TOO_BIG
+	ErrPacScriptFailed                 CErrorcodeT = C.ERR_PAC_SCRIPT_FAILED
+	ErrRequestRangeNotSatisfiable      CErrorcodeT = C.ERR_REQUEST_RANGE_NOT_SATISFIABLE
+	ErrMalformedIdentity               CErrorcodeT = C.ERR_MALFORMED_IDENTITY
+	ErrContentDecodingFailed           CErrorcodeT = C.ERR_CONTENT_DECODING_FAILED
+	ErrNetworkIoSuspended              CErrorcodeT = C.ERR_NETWORK_IO_SUSPENDED
 
 	///
-	// Controls whether WebGL can be used. Note that WebGL requires hardware
-	// support and may not work on all systems even when enabled. Also
-	// configurable using the "disable-webgl" command-line switch.
+	/// Background color used for the browser before a document is loaded and when
+	/// no document color is specified. The alpha component must be either fully
+	/// opaque (0xFF) or fully transparent (0x00). If the alpha component is fully
+	/// opaque then the RGB components will be used as the background color. If
+	/// the alpha component is fully transparent for a windowed browser then the
+	/// CefSettings.background_color value will be used. If the alpha component is
+	/// fully transparent for a windowless (off-screen) browser then transparent
+	/// painting will be enabled.
 	///
-	ErrPacScriptFailed            CErrorcodeT = C.ERR_PAC_SCRIPT_FAILED
-	ErrRequestRangeNotSatisfiable CErrorcodeT = C.ERR_REQUEST_RANGE_NOT_SATISFIABLE
-	ErrMalformedIdentity          CErrorcodeT = C.ERR_MALFORMED_IDENTITY
-	ErrContentDecodingFailed      CErrorcodeT = C.ERR_CONTENT_DECODING_FAILED
-
-	///
-	// Background color used for the browser before a document is loaded and when
-	// no document color is specified. The alpha component must be either fully
-	// opaque (0xFF) or fully transparent (0x00). If the alpha component is fully
-	// opaque then the RGB components will be used as the background color. If the
-	// alpha component is fully transparent for a windowed browser then the
-	// CefSettings.background_color value will be used. If the alpha component is
-	// fully transparent for a windowless (off-screen) browser then transparent
-	// painting will be enabled.
-	///
-	ErrNetworkIoSuspended                    CErrorcodeT = C.ERR_NETWORK_IO_SUSPENDED
 	ErrSynReplyNotReceived                   CErrorcodeT = C.ERR_SYN_REPLY_NOT_RECEIVED
 	ErrEncodingConversionFailed              CErrorcodeT = C.ERR_ENCODING_CONVERSION_FAILED
 	ErrUnrecognizedFtpDirectoryListingFormat CErrorcodeT = C.ERR_UNRECOGNIZED_FTP_DIRECTORY_LISTING_FORMAT
+	ErrNoSupportedProxies                    CErrorcodeT = C.ERR_NO_SUPPORTED_PROXIES
 
 	///
-	// Controls whether the Chrome status bubble will be used. Only supported with
-	// the Chrome runtime. For details about the status bubble see
-	// https://www.chromium.org/user-experience/status-bubble/
+	/// Controls whether the Chrome status bubble will be used. Only supported
+	/// with the Chrome runtime. For details about the status bubble see
+	/// https://www.chromium.org/user-experience/status-bubble/
 	///
-	ErrNoSupportedProxies CErrorcodeT = C.ERR_NO_SUPPORTED_PROXIES
-	ErrHttp2ProtocolError CErrorcodeT = C.ERR_HTTP2_PROTOCOL_ERROR
-
-	///
-	// Return value types.
-	///
+	ErrHttp2ProtocolError     CErrorcodeT = C.ERR_HTTP2_PROTOCOL_ERROR
 	ErrInvalidAuthCredentials CErrorcodeT = C.ERR_INVALID_AUTH_CREDENTIALS
+	ErrUnsupportedAuthScheme  CErrorcodeT = C.ERR_UNSUPPORTED_AUTH_SCHEME
 
 	///
-	// Cancel immediately.
+	/// Cancel immediately.
 	///
-	ErrUnsupportedAuthScheme           CErrorcodeT = C.ERR_UNSUPPORTED_AUTH_SCHEME
 	ErrEncodingDetectionFailed         CErrorcodeT = C.ERR_ENCODING_DETECTION_FAILED
 	ErrMissingAuthCredentials          CErrorcodeT = C.ERR_MISSING_AUTH_CREDENTIALS
 	ErrUnexpectedSecurityLibraryStatus CErrorcodeT = C.ERR_UNEXPECTED_SECURITY_LIBRARY_STATUS
-	ErrMisconfiguredAuthEnvironment    CErrorcodeT = C.ERR_MISCONFIGURED_AUTH_ENVIRONMENT
 
 	///
-	// URL component parts.
+	/// Continue asynchronously (usually via a callback).
 	///
-	ErrUndocumentedSecurityLibraryStatus         CErrorcodeT = C.ERR_UNDOCUMENTED_SECURITY_LIBRARY_STATUS
+	ErrMisconfiguredAuthEnvironment      CErrorcodeT = C.ERR_MISCONFIGURED_AUTH_ENVIRONMENT
+	ErrUndocumentedSecurityLibraryStatus CErrorcodeT = C.ERR_UNDOCUMENTED_SECURITY_LIBRARY_STATUS
+
+	///
+	/// URL component parts.
+	///
 	ErrResponseBodyTooBigToDrain                 CErrorcodeT = C.ERR_RESPONSE_BODY_TOO_BIG_TO_DRAIN
 	ErrResponseHeadersMultipleContentLength      CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_LENGTH
 	ErrIncompleteHttp2Headers                    CErrorcodeT = C.ERR_INCOMPLETE_HTTP2_HEADERS
 	ErrPacNotInDhcp                              CErrorcodeT = C.ERR_PAC_NOT_IN_DHCP
 	ErrResponseHeadersMultipleContentDisposition CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_DISPOSITION
 	ErrResponseHeadersMultipleLocation           CErrorcodeT = C.ERR_RESPONSE_HEADERS_MULTIPLE_LOCATION
-	ErrHttp2ServerRefusedStream                  CErrorcodeT = C.ERR_HTTP2_SERVER_REFUSED_STREAM
-	ErrHttp2PingFailed                           CErrorcodeT = C.ERR_HTTP2_PING_FAILED
-	ErrContentLengthMismatch                     CErrorcodeT = C.ERR_CONTENT_LENGTH_MISMATCH
 
 	///
-	// Path component including the first slash following the host.
+	/// Host component. This may be a hostname, an IPv4 address or an IPv6 literal
+	/// surrounded by square brackets (e.g., "[2001:db8::1]").
 	///
+	ErrHttp2ServerRefusedStream  CErrorcodeT = C.ERR_HTTP2_SERVER_REFUSED_STREAM
+	ErrHttp2PingFailed           CErrorcodeT = C.ERR_HTTP2_PING_FAILED
+	ErrContentLengthMismatch     CErrorcodeT = C.ERR_CONTENT_LENGTH_MISMATCH
 	ErrIncompleteChunkedEncoding CErrorcodeT = C.ERR_INCOMPLETE_CHUNKED_ENCODING
-	ErrQuicProtocolError         CErrorcodeT = C.ERR_QUIC_PROTOCOL_ERROR
-	ErrResponseHeadersTruncated  CErrorcodeT = C.ERR_RESPONSE_HEADERS_TRUNCATED
 
 	///
-	// Fragment (hash) identifier component (i.e., the string following the '#').
+	/// Path component including the first slash following the host.
 	///
+	ErrQuicProtocolError                  CErrorcodeT = C.ERR_QUIC_PROTOCOL_ERROR
+	ErrResponseHeadersTruncated           CErrorcodeT = C.ERR_RESPONSE_HEADERS_TRUNCATED
 	ErrQuicHandshakeFailed                CErrorcodeT = C.ERR_QUIC_HANDSHAKE_FAILED
 	ErrHttp2InadequateTransportSecurity   CErrorcodeT = C.ERR_HTTP2_INADEQUATE_TRANSPORT_SECURITY
 	ErrHttp2FlowControlError              CErrorcodeT = C.ERR_HTTP2_FLOW_CONTROL_ERROR
@@ -1781,151 +1883,110 @@ const (
 	ErrHttp2CompressionError              CErrorcodeT = C.ERR_HTTP2_COMPRESSION_ERROR
 	ErrProxyAuthRequestedWithNoConnection CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED_WITH_NO_CONNECTION
 	ErrHttp11Required                     CErrorcodeT = C.ERR_HTTP_1_1_REQUIRED
+	ErrProxyHttp11Required                CErrorcodeT = C.ERR_PROXY_HTTP_1_1_REQUIRED
 
 	///
-	// Cookie information.
+	/// Cookie information.
 	///
-	ErrProxyHttp11Required           CErrorcodeT = C.ERR_PROXY_HTTP_1_1_REQUIRED
-	ErrPacScriptTerminated           CErrorcodeT = C.ERR_PAC_SCRIPT_TERMINATED
-	ErrInvalidHttpResponse           CErrorcodeT = C.ERR_INVALID_HTTP_RESPONSE
-	ErrContentDecodingInitFailed     CErrorcodeT = C.ERR_CONTENT_DECODING_INIT_FAILED
-	ErrHttp2RstStreamNoErrorReceived CErrorcodeT = C.ERR_HTTP2_RST_STREAM_NO_ERROR_RECEIVED
-	ErrHttp2PushedStreamNotAvailable CErrorcodeT = C.ERR_HTTP2_PUSHED_STREAM_NOT_AVAILABLE
+	ErrPacScriptTerminated CErrorcodeT = C.ERR_PAC_SCRIPT_TERMINATED
 
 	///
-	// If |secure| is true the cookie will only be sent for HTTPS requests.
+	/// The cookie value.
 	///
+	ErrInvalidHttpResponse                   CErrorcodeT = C.ERR_INVALID_HTTP_RESPONSE
+	ErrContentDecodingInitFailed             CErrorcodeT = C.ERR_CONTENT_DECODING_INIT_FAILED
+	ErrHttp2RstStreamNoErrorReceived         CErrorcodeT = C.ERR_HTTP2_RST_STREAM_NO_ERROR_RECEIVED
+	ErrHttp2PushedStreamNotAvailable         CErrorcodeT = C.ERR_HTTP2_PUSHED_STREAM_NOT_AVAILABLE
 	ErrHttp2ClaimedPushedStreamResetByServer CErrorcodeT = C.ERR_HTTP2_CLAIMED_PUSHED_STREAM_RESET_BY_SERVER
 	ErrTooManyRetries                        CErrorcodeT = C.ERR_TOO_MANY_RETRIES
 	ErrHttp2StreamClosed                     CErrorcodeT = C.ERR_HTTP2_STREAM_CLOSED
 	ErrHttp2ClientRefusedStream              CErrorcodeT = C.ERR_HTTP2_CLIENT_REFUSED_STREAM
 	ErrHttp2PushedResponseDoesNotMatch       CErrorcodeT = C.ERR_HTTP2_PUSHED_RESPONSE_DOES_NOT_MATCH
 	ErrHttpResponseCodeFailure               CErrorcodeT = C.ERR_HTTP_RESPONSE_CODE_FAILURE
+	ErrQuicCertRootNotKnown                  CErrorcodeT = C.ERR_QUIC_CERT_ROOT_NOT_KNOWN
+	ErrQuicGoawayRequestCanBeRetried         CErrorcodeT = C.ERR_QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED
+	ErrTooManyAcceptChRestarts               CErrorcodeT = C.ERR_TOO_MANY_ACCEPT_CH_RESTARTS
+	ErrInconsistentIpAddressSpace            CErrorcodeT = C.ERR_INCONSISTENT_IP_ADDRESS_SPACE
+	ErrCacheMiss                             CErrorcodeT = C.ERR_CACHE_MISS
 
 	///
-	// Same site.
+	/// Non-zero exit status.
 	///
-	ErrQuicCertRootNotKnown          CErrorcodeT = C.ERR_QUIC_CERT_ROOT_NOT_KNOWN
-	ErrQuicGoawayRequestCanBeRetried CErrorcodeT = C.ERR_QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED
-	ErrTooManyAcceptChRestarts       CErrorcodeT = C.ERR_TOO_MANY_ACCEPT_CH_RESTARTS
-	ErrInconsistentIpAddressSpace    CErrorcodeT = C.ERR_INCONSISTENT_IP_ADDRESS_SPACE
-
-	///
-	// Non-zero exit status.
-	///
-	ErrCacheMiss                  CErrorcodeT = C.ERR_CACHE_MISS
 	ErrCacheReadFailure           CErrorcodeT = C.ERR_CACHE_READ_FAILURE
 	ErrCacheWriteFailure          CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
 	ErrCacheOperationNotSupported CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
 	ErrCacheOpenFailure           CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
+	ErrCacheCreateFailure         CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
+	ErrCacheRace                  CErrorcodeT = C.ERR_CACHE_RACE
+	ErrCacheChecksumReadFailure   CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
+	ErrCacheChecksumMismatch      CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
+	ErrCacheLockTimeout           CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
+	ErrCacheAuthFailureAfterRead  CErrorcodeT = C.ERR_CACHE_AUTH_FAILURE_AFTER_READ
+	ErrCacheEntryNotSuitable      CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
+	ErrCacheDoomFailure           CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
+	ErrCacheOpenOrCreateFailure   CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
+	ErrInsecureResponse           CErrorcodeT = C.ERR_INSECURE_RESPONSE
+	ErrNoPrivateKeyForCert        CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
 
 	///
-	// Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
+	/// "Local Settings\Application Data" directory under the user profile
+	/// directory on Windows.
 	///
-	ErrCacheCreateFailure CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
+	ErrAddUserCertFailed     CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
+	ErrInvalidSignedExchange CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
 
 	///
-	// Path key values.
+	/// "Application Data" directory under the user profile directory on Windows
+	/// and "~/Library/Application Support" directory on MacOS.
 	///
-	ErrCacheRace                CErrorcodeT = C.ERR_CACHE_RACE
-	ErrCacheChecksumReadFailure CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
-	ErrCacheChecksumMismatch    CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
-
-	///
-	// Directory containing PK_FILE_MODULE.
-	///
-	ErrCacheLockTimeout          CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
-	ErrCacheAuthFailureAfterRead CErrorcodeT = C.ERR_CACHE_AUTH_FAILURE_AFTER_READ
-	ErrCacheEntryNotSuitable     CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
-	ErrCacheDoomFailure          CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
-	ErrCacheOpenOrCreateFailure  CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
-	ErrInsecureResponse          CErrorcodeT = C.ERR_INSECURE_RESPONSE
-
-	///
-	// "Local Settings\Application Data" directory under the user profile
-	// directory on Windows.
-	///
-	ErrNoPrivateKeyForCert CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
-	ErrAddUserCertFailed   CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
-
-	///
-	// "Application Data" directory under the user profile directory on Windows
-	// and "~/Library/Application Support" directory on MacOS.
-	///
-	ErrInvalidSignedExchange                           CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
 	ErrInvalidWebBundle                                CErrorcodeT = C.ERR_INVALID_WEB_BUNDLE
 	ErrTrustTokenOperationFailed                       CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
 	ErrTrustTokenOperationSuccessWithoutSendingRequest CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_SUCCESS_WITHOUT_SENDING_REQUEST
+	ErrFtpFailed                                       CErrorcodeT = C.ERR_FTP_FAILED
+	ErrFtpServiceUnavailable                           CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
+	ErrFtpTransferAborted                              CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
+	ErrFtpFileBusy                                     CErrorcodeT = C.ERR_FTP_FILE_BUSY
+	ErrFtpSyntaxError                                  CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
+	ErrFtpCommandNotSupported                          CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
+	ErrFtpBadCommandSequence                           CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
+	ErrPkcs12ImportBadPassword                         CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
+	ErrPkcs12ImportFailed                              CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
+	ErrImportCaCertNotCa                               CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
+	ErrImportCertAlreadyExists                         CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
+	ErrImportCaCertFailed                              CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
+	ErrImportServerCertFailed                          CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
+	ErrPkcs12ImportInvalidMac                          CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
+	ErrPkcs12ImportInvalidFile                         CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
+	ErrPkcs12ImportUnsupported                         CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
+	ErrKeyGenerationFailed                             CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
+	ErrPrivateKeyExportFailed                          CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
 
 	///
-	// Supported error code values.
+	/// Shift key + Middle mouse button or meta/ctrl key while clicking.
 	///
-	ErrFtpFailed              CErrorcodeT = C.ERR_FTP_FAILED
-	ErrFtpServiceUnavailable  CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
-	ErrFtpTransferAborted     CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
-	ErrFtpFileBusy            CErrorcodeT = C.ERR_FTP_FILE_BUSY
-	ErrFtpSyntaxError         CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
-	ErrFtpCommandNotSupported CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
-
-	// 1 << 9 was used for CERT_STATUS_NOT_IN_DNS
-	ErrFtpBadCommandSequence CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
-
-	// 1 << 12 was used for CERT_STATUS_WEAK_DH_KEY
-	ErrPkcs12ImportBadPassword CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
-	ErrPkcs12ImportFailed      CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
-	ErrImportCaCertNotCa       CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
-	ErrImportCertAlreadyExists CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
-	ErrImportCaCertFailed      CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
-
-	///
-	// The manner in which a link click should be opened. These constants match
-	// their equivalents in Chromium's window_open_disposition.h and should not be
-	// renumbered.
-	///
-	ErrImportServerCertFailed CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
-	ErrPkcs12ImportInvalidMac CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
-
-	///
-	// Current tab. This is the default in most cases.
-	///
-	ErrPkcs12ImportInvalidFile        CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
-	ErrPkcs12ImportUnsupported        CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
-	ErrKeyGenerationFailed            CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
-	ErrPrivateKeyExportFailed         CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
 	ErrSelfSignedCertGenerationFailed CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
 	ErrCertDatabaseChanged            CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
-	ErrDnsMalformedResponse           CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
-	ErrDnsServerRequiresTcp           CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
-	ErrDnsServerFailed                CErrorcodeT = C.ERR_DNS_SERVER_FAILED
-	ErrDnsTimedOut                    CErrorcodeT = C.ERR_DNS_TIMED_OUT
-	ErrDnsCacheMiss                   CErrorcodeT = C.ERR_DNS_CACHE_MISS
 
 	///
-	// Activates an existing tab containing the url, rather than navigating.
-	// This is similar to SINGLETON_TAB, but searches across all windows from
-	// the current profile and anonymity (instead of just the current one);
-	// closes the current tab on switching if the current tab was the NTP with
-	// no session history; and behaves like CURRENT_TAB instead of
-	// NEW_FOREGROUND_TAB when no existing tab is found.
+	/// New popup window.
 	///
+	ErrDnsMalformedResponse                      CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
+	ErrDnsServerRequiresTcp                      CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
+	ErrDnsServerFailed                           CErrorcodeT = C.ERR_DNS_SERVER_FAILED
+	ErrDnsTimedOut                               CErrorcodeT = C.ERR_DNS_TIMED_OUT
+	ErrDnsCacheMiss                              CErrorcodeT = C.ERR_DNS_CACHE_MISS
 	ErrDnsSearchEmpty                            CErrorcodeT = C.ERR_DNS_SEARCH_EMPTY
 	ErrDnsSortError                              CErrorcodeT = C.ERR_DNS_SORT_ERROR
 	ErrDnsSecureResolverHostnameResolutionFailed CErrorcodeT = C.ERR_DNS_SECURE_RESOLVER_HOSTNAME_RESOLUTION_FAILED
-
-	///
-	// "Verb" of a drag-and-drop operation as negotiated between the source and
-	// destination. These constants match their equivalents in WebCore's
-	// DragActions.h and should not be renumbered.
-	///
-	ErrDnsNameHttpsOnly          CErrorcodeT = C.ERR_DNS_NAME_HTTPS_ONLY
-	ErrDnsRequestCancelled       CErrorcodeT = C.ERR_DNS_REQUEST_CANCELLED
-	ErrDnsNoMachingSupportedAlpn CErrorcodeT = C.ERR_DNS_NO_MACHING_SUPPORTED_ALPN
+	ErrDnsNameHttpsOnly                          CErrorcodeT = C.ERR_DNS_NAME_HTTPS_ONLY
+	ErrDnsRequestCancelled                       CErrorcodeT = C.ERR_DNS_REQUEST_CANCELLED
+	ErrDnsNoMachingSupportedAlpn                 CErrorcodeT = C.ERR_DNS_NO_MACHING_SUPPORTED_ALPN
 )
 
 // /
-// Supported certificate status code values. See net\cert\cert_status_flags.h
-// for more information. CERT_STATUS_NONE is new in CEF because we use an
-// enum while cert_status_flags.h uses a typedef and static const variables.
+// / Supported certificate status code values. See net\cert\cert_status_flags.h
+// / for more information. CERT_STATUS_NONE is new in CEF because we use an
+// / enum while cert_status_flags.h uses a typedef and static const variables.
 // /
 type CCertStatusT C.cef_cert_status_t
 
@@ -1961,9 +2022,9 @@ const (
 )
 
 // /
-// The manner in which a link click should be opened. These constants match
-// their equivalents in Chromium's window_open_disposition.h and should not be
-// renumbered.
+// / The manner in which a link click should be opened. These constants match
+// / their equivalents in Chromium's window_open_disposition.h and should not be
+// / renumbered.
 // /
 type CWindowOpenDispositionT C.cef_window_open_disposition_t
 
@@ -1971,70 +2032,70 @@ const (
 	WodUnknown CWindowOpenDispositionT = C.WOD_UNKNOWN
 
 	///
-	// Current tab. This is the default in most cases.
+	/// Current tab. This is the default in most cases.
 	///
 	WodCurrentTab CWindowOpenDispositionT = C.WOD_CURRENT_TAB
 
 	///
-	// Indicates that only one tab with the url should exist in the same window.
+	/// Indicates that only one tab with the url should exist in the same window.
 	///
 	WodSingletonTab CWindowOpenDispositionT = C.WOD_SINGLETON_TAB
 
 	///
-	// Shift key + Middle mouse button or meta/ctrl key while clicking.
+	/// Shift key + Middle mouse button or meta/ctrl key while clicking.
 	///
 	WodNewForegroundTab CWindowOpenDispositionT = C.WOD_NEW_FOREGROUND_TAB
 
 	///
-	// Middle mouse button or meta/ctrl key while clicking.
+	/// Middle mouse button or meta/ctrl key while clicking.
 	///
 	WodNewBackgroundTab CWindowOpenDispositionT = C.WOD_NEW_BACKGROUND_TAB
 
 	///
-	// New popup window.
+	/// New popup window.
 	///
 	WodNewPopup CWindowOpenDispositionT = C.WOD_NEW_POPUP
 
 	///
-	// Shift key while clicking.
+	/// Shift key while clicking.
 	///
 	WodNewWindow CWindowOpenDispositionT = C.WOD_NEW_WINDOW
 
 	///
-	// Alt key while clicking.
+	/// Alt key while clicking.
 	///
 	WodSaveToDisk CWindowOpenDispositionT = C.WOD_SAVE_TO_DISK
 
 	///
-	// New off-the-record (incognito) window.
+	/// New off-the-record (incognito) window.
 	///
 	WodOffTheRecord CWindowOpenDispositionT = C.WOD_OFF_THE_RECORD
 
 	///
-	// Special case error condition from the renderer.
+	/// Special case error condition from the renderer.
 	///
 	WodIgnoreAction CWindowOpenDispositionT = C.WOD_IGNORE_ACTION
 
 	///
-	// Activates an existing tab containing the url, rather than navigating.
-	// This is similar to SINGLETON_TAB, but searches across all windows from
-	// the current profile and anonymity (instead of just the current one);
-	// closes the current tab on switching if the current tab was the NTP with
-	// no session history; and behaves like CURRENT_TAB instead of
-	// NEW_FOREGROUND_TAB when no existing tab is found.
+	/// Activates an existing tab containing the url, rather than navigating.
+	/// This is similar to SINGLETON_TAB, but searches across all windows from
+	/// the current profile and anonymity (instead of just the current one);
+	/// closes the current tab on switching if the current tab was the NTP with
+	/// no session history; and behaves like CURRENT_TAB instead of
+	/// NEW_FOREGROUND_TAB when no existing tab is found.
 	///
 	WodSwitchToTab CWindowOpenDispositionT = C.WOD_SWITCH_TO_TAB
 
 	///
-	// Creates a new document picture-in-picture window showing a child WebView.
+	/// Creates a new document picture-in-picture window showing a child WebView.
 	///
 	WodNewPictureInPicture CWindowOpenDispositionT = C.WOD_NEW_PICTURE_IN_PICTURE
 )
 
 // /
-// "Verb" of a drag-and-drop operation as negotiated between the source and
-// destination. These constants match their equivalents in WebCore's
-// DragActions.h and should not be renumbered.
+// / "Verb" of a drag-and-drop operation as negotiated between the source and
+// / destination. These constants match their equivalents in WebCore's
+// / DragActions.h and should not be renumbered.
 // /
 type CDragOperationsMaskT C.cef_drag_operations_mask_t
 
@@ -2050,9 +2111,9 @@ const (
 )
 
 // /
-// Input mode of a virtual keyboard. These constants match their equivalents
-// in Chromium's text_input_mode.h and should not be renumbered.
-// See https://html.spec.whatwg.org/#input-modalities:-the-inputmode-attribute
+// / Input mode of a virtual keyboard. These constants match their equivalents
+// / in Chromium's text_input_mode.h and should not be renumbered.
+// / See https://html.spec.whatwg.org/#input-modalities:-the-inputmode-attribute
 // /
 type CTextInputModeT C.cef_text_input_mode_t
 
@@ -2070,7 +2131,7 @@ const (
 )
 
 // /
-// V8 access control values.
+// / V8 access control values.
 // /
 type CV8AccesscontrolT C.cef_v8_accesscontrol_t
 
@@ -2082,21 +2143,35 @@ const (
 )
 
 // /
-// V8 property attribute values.
+// / V8 property attribute values.
 // /
 type CV8PropertyattributeT C.cef_v8_propertyattribute_t
 
 const (
+
+	///
+	/// Writeable, Enumerable, Configurable
+	///
 	V8PropertyAttributeNone CV8PropertyattributeT = C.V8_PROPERTY_ATTRIBUTE_NONE
 
-	//   Configurable
-	V8PropertyAttributeReadonly   CV8PropertyattributeT = C.V8_PROPERTY_ATTRIBUTE_READONLY
-	V8PropertyAttributeDontenum   CV8PropertyattributeT = C.V8_PROPERTY_ATTRIBUTE_DONTENUM
+	///
+	/// Not writeable
+	///
+	V8PropertyAttributeReadonly CV8PropertyattributeT = C.V8_PROPERTY_ATTRIBUTE_READONLY
+
+	///
+	/// Not enumerable
+	///
+	V8PropertyAttributeDontenum CV8PropertyattributeT = C.V8_PROPERTY_ATTRIBUTE_DONTENUM
+
+	///
+	/// Not configurable
+	///
 	V8PropertyAttributeDontdelete CV8PropertyattributeT = C.V8_PROPERTY_ATTRIBUTE_DONTDELETE
 )
 
 // /
-// Post data elements may represent either bytes or files.
+// / Post data elements may represent either bytes or files.
 // /
 type CPostdataelementTypeT C.cef_postdataelement_type_t
 
@@ -2107,378 +2182,379 @@ const (
 )
 
 // /
-// Resource type for a request. These constants match their equivalents in
-// Chromium's ResourceType and should not be renumbered.
+// / Resource type for a request. These constants match their equivalents in
+// / Chromium's ResourceType and should not be renumbered.
 // /
 type CResourceTypeT C.cef_resource_type_t
 
 const (
 
 	///
-	// Top level page.
+	/// Top level page.
 	///
 	RtMainFrame CResourceTypeT = C.RT_MAIN_FRAME
 
 	///
-	// Frame or iframe.
+	/// Frame or iframe.
 	///
 	RtSubFrame CResourceTypeT = C.RT_SUB_FRAME
 
 	///
-	// CSS stylesheet.
+	/// CSS stylesheet.
 	///
 	RtStylesheet CResourceTypeT = C.RT_STYLESHEET
 
 	///
-	// External script.
+	/// External script.
 	///
 	RtScript CResourceTypeT = C.RT_SCRIPT
 
 	///
-	// Image (jpg/gif/png/etc).
+	/// Image (jpg/gif/png/etc).
 	///
 	RtImage CResourceTypeT = C.RT_IMAGE
 
 	///
-	// Font.
+	/// Font.
 	///
 	RtFontResource CResourceTypeT = C.RT_FONT_RESOURCE
 
 	///
-	// Some other subresource. This is the default type if the actual type is
-	// unknown.
+	/// Some other subresource. This is the default type if the actual type is
+	/// unknown.
 	///
 	RtSubResource CResourceTypeT = C.RT_SUB_RESOURCE
 
 	///
-	// Object (or embed) tag for a plugin, or a resource that a plugin requested.
+	/// Object (or embed) tag for a plugin, or a resource that a plugin requested.
 	///
 	RtObject CResourceTypeT = C.RT_OBJECT
 
 	///
-	// Media resource.
+	/// Media resource.
 	///
 	RtMedia CResourceTypeT = C.RT_MEDIA
 
 	///
-	// Main resource of a dedicated worker.
+	/// Main resource of a dedicated worker.
 	///
 	RtWorker CResourceTypeT = C.RT_WORKER
 
 	///
-	// Main resource of a shared worker.
+	/// Main resource of a shared worker.
 	///
 	RtSharedWorker CResourceTypeT = C.RT_SHARED_WORKER
 
 	///
-	// Explicitly requested prefetch.
+	/// Explicitly requested prefetch.
 	///
 	RtPrefetch CResourceTypeT = C.RT_PREFETCH
 
 	///
-	// Favicon.
+	/// Favicon.
 	///
 	RtFavicon CResourceTypeT = C.RT_FAVICON
 
 	///
-	// XMLHttpRequest.
+	/// XMLHttpRequest.
 	///
 	RtXhr CResourceTypeT = C.RT_XHR
 
 	///
-	// A request for a <ping>
+	/// A request for a "<ping>".
 	///
 	RtPing CResourceTypeT = C.RT_PING
 
 	///
-	// Main resource of a service worker.
+	/// Main resource of a service worker.
 	///
 	RtServiceWorker CResourceTypeT = C.RT_SERVICE_WORKER
 
 	///
-	// A report of Content Security Policy violations.
+	/// A report of Content Security Policy violations.
 	///
 	RtCspReport CResourceTypeT = C.RT_CSP_REPORT
 
 	///
-	// A resource that a plugin requested.
+	/// A resource that a plugin requested.
 	///
 	RtPluginResource CResourceTypeT = C.RT_PLUGIN_RESOURCE
 
 	///
-	// A main-frame service worker navigation preload request.
+	/// A main-frame service worker navigation preload request.
 	///
 	RtNavigationPreloadMainFrame CResourceTypeT = C.RT_NAVIGATION_PRELOAD_MAIN_FRAME
 
 	///
-	// A sub-frame service worker navigation preload request.
+	/// A sub-frame service worker navigation preload request.
 	///
 	RtNavigationPreloadSubFrame CResourceTypeT = C.RT_NAVIGATION_PRELOAD_SUB_FRAME
 )
 
 // /
-// Transition type for a request. Made up of one source value and 0 or more
-// qualifiers.
+// / Transition type for a request. Made up of one source value and 0 or more
+// / qualifiers.
 // /
 type CTransitionTypeT C.cef_transition_type_t
 
 const (
 
 	///
-	// Source is a link click or the JavaScript window.open function. This is
-	// also the default value for requests like sub-resource loads that are not
-	// navigations.
+	/// Source is a link click or the JavaScript window.open function. This is
+	/// also the default value for requests like sub-resource loads that are not
+	/// navigations.
 	///
 	TtLink CTransitionTypeT = C.TT_LINK
 
 	///
-	// Source is some other "explicit" navigation. This is the default value for
-	// navigations where the actual type is unknown. See also TT_DIRECT_LOAD_FLAG.
+	/// Source is some other "explicit" navigation. This is the default value for
+	/// navigations where the actual type is unknown. See also
+	/// TT_DIRECT_LOAD_FLAG.
 	///
 	TtExplicit CTransitionTypeT = C.TT_EXPLICIT
 
 	///
-	// User got to this page through a suggestion in the UI (for example, via the
-	// destinations page). Chrome runtime only.
+	/// User got to this page through a suggestion in the UI (for example, via the
+	/// destinations page). Chrome runtime only.
 	///
 	TtAutoBookmark CTransitionTypeT = C.TT_AUTO_BOOKMARK
 
 	///
-	// Source is a subframe navigation. This is any content that is automatically
-	// loaded in a non-toplevel frame. For example, if a page consists of several
-	// frames containing ads, those ad URLs will have this transition type.
-	// The user may not even realize the content in these pages is a separate
-	// frame, so may not care about the URL.
+	/// Source is a subframe navigation. This is any content that is automatically
+	/// loaded in a non-toplevel frame. For example, if a page consists of several
+	/// frames containing ads, those ad URLs will have this transition type.
+	/// The user may not even realize the content in these pages is a separate
+	/// frame, so may not care about the URL.
 	///
 	TtAutoSubframe CTransitionTypeT = C.TT_AUTO_SUBFRAME
 
 	///
-	// Source is a subframe navigation explicitly requested by the user that will
-	// generate new navigation entries in the back/forward list. These are
-	// probably more important than frames that were automatically loaded in
-	// the background because the user probably cares about the fact that this
-	// link was loaded.
+	/// Source is a subframe navigation explicitly requested by the user that will
+	/// generate new navigation entries in the back/forward list. These are
+	/// probably more important than frames that were automatically loaded in
+	/// the background because the user probably cares about the fact that this
+	/// link was loaded.
 	///
 	TtManualSubframe CTransitionTypeT = C.TT_MANUAL_SUBFRAME
 
 	///
-	// User got to this page by typing in the URL bar and selecting an entry
-	// that did not look like a URL.  For example, a match might have the URL
-	// of a Google search result page, but appear like "Search Google for ...".
-	// These are not quite the same as EXPLICIT navigations because the user
-	// didn't type or see the destination URL. Chrome runtime only.
-	// See also TT_KEYWORD.
+	/// User got to this page by typing in the URL bar and selecting an entry
+	/// that did not look like a URL.  For example, a match might have the URL
+	/// of a Google search result page, but appear like "Search Google for ...".
+	/// These are not quite the same as EXPLICIT navigations because the user
+	/// didn't type or see the destination URL. Chrome runtime only.
+	/// See also TT_KEYWORD.
 	///
 	TtGenerated CTransitionTypeT = C.TT_GENERATED
 
 	///
-	// This is a toplevel navigation. This is any content that is automatically
-	// loaded in a toplevel frame.  For example, opening a tab to show the ASH
-	// screen saver, opening the devtools window, opening the NTP after the safe
-	// browsing warning, opening web-based dialog boxes are examples of
-	// AUTO_TOPLEVEL navigations. Chrome runtime only.
+	/// This is a toplevel navigation. This is any content that is automatically
+	/// loaded in a toplevel frame.  For example, opening a tab to show the ASH
+	/// screen saver, opening the devtools window, opening the NTP after the safe
+	/// browsing warning, opening web-based dialog boxes are examples of
+	/// AUTO_TOPLEVEL navigations. Chrome runtime only.
 	///
 	TtAutoToplevel CTransitionTypeT = C.TT_AUTO_TOPLEVEL
 
 	///
-	// Source is a form submission by the user. NOTE: In some situations
-	// submitting a form does not result in this transition type. This can happen
-	// if the form uses a script to submit the contents.
+	/// Source is a form submission by the user. NOTE: In some situations
+	/// submitting a form does not result in this transition type. This can happen
+	/// if the form uses a script to submit the contents.
 	///
 	TtFormSubmit CTransitionTypeT = C.TT_FORM_SUBMIT
 
 	///
-	// Source is a "reload" of the page via the Reload function or by re-visiting
-	// the same URL. NOTE: This is distinct from the concept of whether a
-	// particular load uses "reload semantics" (i.e. bypasses cached data).
+	/// Source is a "reload" of the page via the Reload function or by re-visiting
+	/// the same URL. NOTE: This is distinct from the concept of whether a
+	/// particular load uses "reload semantics" (i.e. bypasses cached data).
 	///
 	TtReload CTransitionTypeT = C.TT_RELOAD
 
 	///
-	// The url was generated from a replaceable keyword other than the default
-	// search provider. If the user types a keyword (which also applies to
-	// tab-to-search) in the omnibox this qualifier is applied to the transition
-	// type of the generated url. TemplateURLModel then may generate an
-	// additional visit with a transition type of TT_KEYWORD_GENERATED against the
-	// url 'http://' + keyword. For example, if you do a tab-to-search against
-	// wikipedia the generated url has a transition qualifer of TT_KEYWORD, and
-	// TemplateURLModel generates a visit for 'wikipedia.org' with a transition
-	// type of TT_KEYWORD_GENERATED. Chrome runtime only.
+	/// The url was generated from a replaceable keyword other than the default
+	/// search provider. If the user types a keyword (which also applies to
+	/// tab-to-search) in the omnibox this qualifier is applied to the transition
+	/// type of the generated url. TemplateURLModel then may generate an
+	/// additional visit with a transition type of TT_KEYWORD_GENERATED against
+	/// the url 'http://' + keyword. For example, if you do a tab-to-search
+	/// against wikipedia the generated url has a transition qualifer of
+	/// TT_KEYWORD, and TemplateURLModel generates a visit for 'wikipedia.org'
+	/// with a transition type of TT_KEYWORD_GENERATED. Chrome runtime only.
 	///
 	TtKeyword CTransitionTypeT = C.TT_KEYWORD
 
 	///
-	// Corresponds to a visit generated for a keyword. See description of
-	// TT_KEYWORD for more details. Chrome runtime only.
+	/// Corresponds to a visit generated for a keyword. See description of
+	/// TT_KEYWORD for more details. Chrome runtime only.
 	///
 	TtKeywordGenerated CTransitionTypeT = C.TT_KEYWORD_GENERATED
 
 	///
-	// General mask defining the bits used for the source values.
+	/// General mask defining the bits used for the source values.
 	///
 	TtSourceMask CTransitionTypeT = C.TT_SOURCE_MASK
 
 	///
-	// Attempted to visit a URL but was blocked.
+	/// Attempted to visit a URL but was blocked.
 	///
 	TtBlockedFlag CTransitionTypeT = C.TT_BLOCKED_FLAG
 
 	///
-	// Used the Forward or Back function to navigate among browsing history.
-	// Will be ORed to the transition type for the original load.
+	/// Used the Forward or Back function to navigate among browsing history.
+	/// Will be ORed to the transition type for the original load.
 	///
 	TtForwardBackFlag CTransitionTypeT = C.TT_FORWARD_BACK_FLAG
 
 	///
-	// Loaded a URL directly via CreateBrowser, LoadURL or LoadRequest.
+	/// Loaded a URL directly via CreateBrowser, LoadURL or LoadRequest.
 	///
 	TtDirectLoadFlag CTransitionTypeT = C.TT_DIRECT_LOAD_FLAG
 
 	///
-	// User is navigating to the home page. Chrome runtime only.
+	/// User is navigating to the home page. Chrome runtime only.
 	///
 	TtHomePageFlag CTransitionTypeT = C.TT_HOME_PAGE_FLAG
 
 	///
-	// The transition originated from an external application; the exact
-	// definition of this is embedder dependent. Chrome runtime and
-	// extension system only.
+	/// The transition originated from an external application; the exact
+	/// definition of this is embedder dependent. Chrome runtime and
+	/// extension system only.
 	///
 	TtFromApiFlag CTransitionTypeT = C.TT_FROM_API_FLAG
 
 	///
-	// The beginning of a navigation chain.
+	/// The beginning of a navigation chain.
 	///
 	TtChainStartFlag CTransitionTypeT = C.TT_CHAIN_START_FLAG
 
 	///
-	// The last transition in a redirect chain.
+	/// The last transition in a redirect chain.
 	///
 	TtChainEndFlag CTransitionTypeT = C.TT_CHAIN_END_FLAG
 
 	///
-	// Redirects caused by JavaScript or a meta refresh tag on the page.
+	/// Redirects caused by JavaScript or a meta refresh tag on the page.
 	///
 	TtClientRedirectFlag CTransitionTypeT = C.TT_CLIENT_REDIRECT_FLAG
 
 	///
-	// Redirects sent from the server by HTTP headers.
+	/// Redirects sent from the server by HTTP headers.
 	///
 	TtServerRedirectFlag CTransitionTypeT = C.TT_SERVER_REDIRECT_FLAG
 
 	///
-	// Used to test whether a transition involves a redirect.
+	/// Used to test whether a transition involves a redirect.
 	///
 	TtIsRedirectMask CTransitionTypeT = C.TT_IS_REDIRECT_MASK
 
 	///
-	// General mask defining the bits used for the qualifiers.
+	/// General mask defining the bits used for the qualifiers.
 	///
 	TtQualifierMask CTransitionTypeT = C.TT_QUALIFIER_MASK
 )
 
 // /
-// Flags used to customize the behavior of CefURLRequest.
+// / Flags used to customize the behavior of CefURLRequest.
 // /
 type CUrlrequestFlagsT C.cef_urlrequest_flags_t
 
 const (
 
 	///
-	// Default behavior.
+	/// Default behavior.
 	///
 	UrFlagNone CUrlrequestFlagsT = C.UR_FLAG_NONE
 
 	///
-	// If set the cache will be skipped when handling the request. Setting this
-	// value is equivalent to specifying the "Cache-Control: no-cache" request
-	// header. Setting this value in combination with UR_FLAG_ONLY_FROM_CACHE will
-	// cause the request to fail.
+	/// If set the cache will be skipped when handling the request. Setting this
+	/// value is equivalent to specifying the "Cache-Control: no-cache" request
+	/// header. Setting this value in combination with UR_FLAG_ONLY_FROM_CACHE
+	/// will cause the request to fail.
 	///
 	UrFlagSkipCache CUrlrequestFlagsT = C.UR_FLAG_SKIP_CACHE
 
 	///
-	// If set the request will fail if it cannot be served from the cache (or some
-	// equivalent local store). Setting this value is equivalent to specifying the
-	// "Cache-Control: only-if-cached" request header. Setting this value in
-	// combination with UR_FLAG_SKIP_CACHE or UR_FLAG_DISABLE_CACHE will cause the
-	// request to fail.
+	/// If set the request will fail if it cannot be served from the cache (or
+	/// some equivalent local store). Setting this value is equivalent to
+	/// specifying the "Cache-Control: only-if-cached" request header. Setting
+	/// this value in combination with UR_FLAG_SKIP_CACHE or UR_FLAG_DISABLE_CACHE
+	/// will cause the request to fail.
 	///
 	UrFlagOnlyFromCache CUrlrequestFlagsT = C.UR_FLAG_ONLY_FROM_CACHE
 
 	///
-	// If set the cache will not be used at all. Setting this value is equivalent
-	// to specifying the "Cache-Control: no-store" request header. Setting this
-	// value in combination with UR_FLAG_ONLY_FROM_CACHE will cause the request to
-	// fail.
+	/// If set the cache will not be used at all. Setting this value is equivalent
+	/// to specifying the "Cache-Control: no-store" request header. Setting this
+	/// value in combination with UR_FLAG_ONLY_FROM_CACHE will cause the request
+	/// to fail.
 	///
 	UrFlagDisableCache CUrlrequestFlagsT = C.UR_FLAG_DISABLE_CACHE
 
 	///
-	// If set user name, password, and cookies may be sent with the request, and
-	// cookies may be saved from the response.
+	/// If set user name, password, and cookies may be sent with the request, and
+	/// cookies may be saved from the response.
 	///
 	UrFlagAllowStoredCredentials CUrlrequestFlagsT = C.UR_FLAG_ALLOW_STORED_CREDENTIALS
 
 	///
-	// If set upload progress events will be generated when a request has a body.
+	/// If set upload progress events will be generated when a request has a body.
 	///
 	UrFlagReportUploadProgress CUrlrequestFlagsT = C.UR_FLAG_REPORT_UPLOAD_PROGRESS
 
 	///
-	// If set the CefURLRequestClient::OnDownloadData method will not be called.
+	/// If set the CefURLRequestClient::OnDownloadData method will not be called.
 	///
 	UrFlagNoDownloadData CUrlrequestFlagsT = C.UR_FLAG_NO_DOWNLOAD_DATA
 
 	///
-	// If set 5XX redirect errors will be propagated to the observer instead of
-	// automatically re-tried. This currently only applies for requests
-	// originated in the browser process.
+	/// If set 5XX redirect errors will be propagated to the observer instead of
+	/// automatically re-tried. This currently only applies for requests
+	/// originated in the browser process.
 	///
 	UrFlagNoRetryOn5xx CUrlrequestFlagsT = C.UR_FLAG_NO_RETRY_ON_5XX
 
 	///
-	// If set 3XX responses will cause the fetch to halt immediately rather than
-	// continue through the redirect.
+	/// If set 3XX responses will cause the fetch to halt immediately rather than
+	/// continue through the redirect.
 	///
 	UrFlagStopOnRedirect CUrlrequestFlagsT = C.UR_FLAG_STOP_ON_REDIRECT
 )
 
 // /
-// Flags that represent CefURLRequest status.
+// / Flags that represent CefURLRequest status.
 // /
 type CUrlrequestStatusT C.cef_urlrequest_status_t
 
 const (
 
 	///
-	// Unknown status.
+	/// Unknown status.
 	///
 	UrUnknown CUrlrequestStatusT = C.UR_UNKNOWN
 
 	///
-	// Request succeeded.
+	/// Request succeeded.
 	///
 	UrSuccess CUrlrequestStatusT = C.UR_SUCCESS
 
 	///
-	// An IO request is pending, and the caller will be informed when it is
-	// completed.
+	/// An IO request is pending, and the caller will be informed when it is
+	/// completed.
 	///
 	UrIoPending CUrlrequestStatusT = C.UR_IO_PENDING
 
 	///
-	// Request was canceled programatically.
+	/// Request was canceled programatically.
 	///
 	UrCanceled CUrlrequestStatusT = C.UR_CANCELED
 
 	///
-	// Request failed for some reason.
+	/// Request failed for some reason.
 	///
 	UrFailed CUrlrequestStatusT = C.UR_FAILED
 )
 
-// Structure representing a draggable region.
+// / Structure representing a draggable region.
 // /
 type CDraggableRegionT C.cef_draggable_region_t
 
@@ -2508,171 +2584,171 @@ func (st *CDraggableRegionT) SetDraggable(v bool) {
 }
 
 // /
-// Existing process IDs.
+// / Existing process IDs.
 // /
 type CProcessIdT C.cef_process_id_t
 
 const (
 
 	///
-	// Browser process.
+	/// Browser process.
 	///
 	PidBrowser CProcessIdT = C.PID_BROWSER
 
 	///
-	// Renderer process.
+	/// Renderer process.
 	///
 	PidRenderer CProcessIdT = C.PID_RENDERER
 )
 
 // /
-// Existing thread IDs.
+// / Existing thread IDs.
 // /
 type CThreadIdT C.cef_thread_id_t
 
 const (
 
 	///
-	// The main thread in the browser. This will be the same as the main
-	// application thread if CefInitialize() is called with a
-	// CefSettings.multi_threaded_message_loop value of false. Do not perform
-	// blocking tasks on this thread. All tasks posted after
-	// CefBrowserProcessHandler::OnContextInitialized() and before CefShutdown()
-	// are guaranteed to run. This thread will outlive all other CEF threads.
+	/// The main thread in the browser. This will be the same as the main
+	/// application thread if CefInitialize() is called with a
+	/// CefSettings.multi_threaded_message_loop value of false. Do not perform
+	/// blocking tasks on this thread. All tasks posted after
+	/// CefBrowserProcessHandler::OnContextInitialized() and before CefShutdown()
+	/// are guaranteed to run. This thread will outlive all other CEF threads.
 	///
 	TidUi CThreadIdT = C.TID_UI
 
 	///
-	// Used for blocking tasks (e.g. file system access) where the user won't
-	// notice if the task takes an arbitrarily long time to complete. All tasks
-	// posted after CefBrowserProcessHandler::OnContextInitialized() and before
-	// CefShutdown() are guaranteed to run.
+	/// Used for blocking tasks like file system access where the user won't
+	/// notice if the task takes an arbitrarily long time to complete. All tasks
+	/// posted after CefBrowserProcessHandler::OnContextInitialized() and before
+	/// CefShutdown() are guaranteed to run.
 	///
 	TidFileBackground CThreadIdT = C.TID_FILE_BACKGROUND
 
 	///
-	// Used for blocking tasks (e.g. file system access) that affect UI or
-	// responsiveness of future user interactions. Do not use if an immediate
-	// response to a user interaction is expected. All tasks posted after
-	// CefBrowserProcessHandler::OnContextInitialized() and before CefShutdown()
-	// are guaranteed to run.
-	// Examples:
-	// - Updating the UI to reflect progress on a long task.
-	// - Loading data that might be shown in the UI after a future user
-	//   interaction.
+	/// Used for blocking tasks like file system access that affect UI or
+	/// responsiveness of future user interactions. Do not use if an immediate
+	/// response to a user interaction is expected. All tasks posted after
+	/// CefBrowserProcessHandler::OnContextInitialized() and before CefShutdown()
+	/// are guaranteed to run.
+	/// Examples:
+	/// - Updating the UI to reflect progress on a long task.
+	/// - Loading data that might be shown in the UI after a future user
+	///   interaction.
 	///
 	TidFileUserVisible CThreadIdT = C.TID_FILE_USER_VISIBLE
 
 	///
-	// Used for blocking tasks (e.g. file system access) that affect UI
-	// immediately after a user interaction. All tasks posted after
-	// CefBrowserProcessHandler::OnContextInitialized() and before CefShutdown()
-	// are guaranteed to run.
-	// Example: Generating data shown in the UI immediately after a click.
+	/// Used for blocking tasks like file system access that affect UI
+	/// immediately after a user interaction. All tasks posted after
+	/// CefBrowserProcessHandler::OnContextInitialized() and before CefShutdown()
+	/// are guaranteed to run.
+	/// Example: Generating data shown in the UI immediately after a click.
 	///
 	TidFileUserBlocking CThreadIdT = C.TID_FILE_USER_BLOCKING
 
 	///
-	// Used to launch and terminate browser processes.
+	/// Used to launch and terminate browser processes.
 	///
 	TidProcessLauncher CThreadIdT = C.TID_PROCESS_LAUNCHER
 
 	///
-	// Used to process IPC and network messages. Do not perform blocking tasks on
-	// this thread. All tasks posted after
-	// CefBrowserProcessHandler::OnContextInitialized() and before CefShutdown()
-	// are guaranteed to run.
+	/// Used to process IPC and network messages. Do not perform blocking tasks on
+	/// this thread. All tasks posted after
+	/// CefBrowserProcessHandler::OnContextInitialized() and before CefShutdown()
+	/// are guaranteed to run.
 	///
 	TidIo CThreadIdT = C.TID_IO
 
 	///
-	// The main thread in the renderer. Used for all WebKit and V8 interaction.
-	// Tasks may be posted to this thread after
-	// CefRenderProcessHandler::OnWebKitInitialized but are not guaranteed to
-	// run before sub-process termination (sub-processes may be killed at any time
-	// without warning).
+	/// The main thread in the renderer. Used for all WebKit and V8 interaction.
+	/// Tasks may be posted to this thread after
+	/// CefRenderProcessHandler::OnWebKitInitialized but are not guaranteed to
+	/// run before sub-process termination (sub-processes may be killed at any
+	/// time without warning).
 	///
 	TidRenderer CThreadIdT = C.TID_RENDERER
 )
 
 // /
-// Thread priority values listed in increasing order of importance.
+// / Thread priority values listed in increasing order of importance.
 // /
 type CThreadPriorityT C.cef_thread_priority_t
 
 const (
 
 	///
-	// Suitable for threads that shouldn't disrupt high priority work.
+	/// Suitable for threads that shouldn't disrupt high priority work.
 	///
 	TpBackground CThreadPriorityT = C.TP_BACKGROUND
 
 	///
-	// Default priority level.
+	/// Default priority level.
 	///
 	TpNormal CThreadPriorityT = C.TP_NORMAL
 
 	///
-	// Suitable for threads which generate data for the display (at ~60Hz).
+	/// Suitable for threads which generate data for the display (at ~60Hz).
 	///
 	TpDisplay CThreadPriorityT = C.TP_DISPLAY
 
 	///
-	// Suitable for low-latency, glitch-resistant audio.
+	/// Suitable for low-latency, glitch-resistant audio.
 	///
 	TpRealtimeAudio CThreadPriorityT = C.TP_REALTIME_AUDIO
 )
 
 // /
-// Message loop types. Indicates the set of asynchronous events that a message
-// loop can process.
+// / Message loop types. Indicates the set of asynchronous events that a message
+// / loop can process.
 // /
 type CMessageLoopTypeT C.cef_message_loop_type_t
 
 const (
 
 	///
-	// Supports tasks and timers.
+	/// Supports tasks and timers.
 	///
 	MlTypeDefault CMessageLoopTypeT = C.ML_TYPE_DEFAULT
 
 	///
-	// Supports tasks, timers and native UI events (e.g. Windows messages).
+	/// Supports tasks, timers and native UI events (e.g. Windows messages).
 	///
 	MlTypeUi CMessageLoopTypeT = C.ML_TYPE_UI
 
 	///
-	// Supports tasks, timers and asynchronous IO events.
+	/// Supports tasks, timers and asynchronous IO events.
 	///
 	MlTypeIo CMessageLoopTypeT = C.ML_TYPE_IO
 )
 
 // /
-// Windows COM initialization mode. Specifies how COM will be initialized for a
-// new thread.
+// / Windows COM initialization mode. Specifies how COM will be initialized for a
+// / new thread.
 // /
 type CComInitModeT C.cef_com_init_mode_t
 
 const (
 
 	///
-	// No COM initialization.
+	/// No COM initialization.
 	///
 	ComInitModeNone CComInitModeT = C.COM_INIT_MODE_NONE
 
 	///
-	// Initialize COM using single-threaded apartments.
+	/// Initialize COM using single-threaded apartments.
 	///
 	ComInitModeSta CComInitModeT = C.COM_INIT_MODE_STA
 
 	///
-	// Initialize COM using multi-threaded apartments.
+	/// Initialize COM using multi-threaded apartments.
 	///
 	ComInitModeMta CComInitModeT = C.COM_INIT_MODE_MTA
 )
 
 // /
-// Supported value types.
+// / Supported value types.
 // /
 type CValueTypeT C.cef_value_type_t
 
@@ -2689,7 +2765,7 @@ const (
 )
 
 // /
-// Supported JavaScript dialog types.
+// / Supported JavaScript dialog types.
 // /
 type CJsdialogTypeT C.cef_jsdialog_type_t
 
@@ -2700,9 +2776,9 @@ const (
 )
 
 // /
-// Screen information used when window rendering is disabled. This structure is
-// passed as a parameter to CefRenderHandler::GetScreenInfo and should be filled
-// in by the client.
+// / Screen information used when window rendering is disabled. This structure is
+// / passed as a parameter to CefRenderHandler::GetScreenInfo and should be
+// / filled in by the client.
 // /
 type CScreenInfoT C.cef_screen_info_t
 
@@ -2760,8 +2836,8 @@ func (st *CScreenInfoT) SetAvailableRect(v CRectT) {
 }
 
 // /
-// Supported menu IDs. Non-English translations can be provided for the
-// IDS_MENU_* strings in CefResourceBundleHandler::GetLocalizedString().
+// / Supported menu IDs. Non-English translations can be provided for the
+// / IDS_MENU_* strings in CefResourceBundleHandler::GetLocalizedString().
 // /
 type CMenuIdT C.cef_menu_id_t
 
@@ -2810,7 +2886,7 @@ const (
 )
 
 // /
-// Mouse button types.
+// / Mouse button types.
 // /
 type CMouseButtonTypeT C.cef_mouse_button_type_t
 
@@ -2821,7 +2897,7 @@ const (
 )
 
 // /
-// Structure representing mouse event information.
+// / Structure representing mouse event information.
 // /
 type CMouseEventT C.cef_mouse_event_t
 
@@ -2855,7 +2931,7 @@ func (st *CMouseEventT) SetModifiers(v uint32) {
 }
 
 // /
-// Touch points states types.
+// / Touch points states types.
 // /
 type CTouchEventTypeT C.cef_touch_event_type_t
 
@@ -2867,7 +2943,7 @@ const (
 )
 
 // /
-// The device type that caused the event.
+// / The device type that caused the event.
 // /
 type CPointerTypeT C.cef_pointer_type_t
 
@@ -2880,7 +2956,7 @@ const (
 )
 
 // /
-// Structure representing touch event information.
+// / Structure representing touch event information.
 // /
 type CTouchEventT C.cef_touch_event_t
 
@@ -2970,7 +3046,7 @@ func (st *CTouchEventT) SetPointerType(v CPointerTypeT) {
 }
 
 // /
-// Paint element types.
+// / Paint element types.
 // /
 type CPaintElementTypeT C.cef_paint_element_type_t
 
@@ -2980,7 +3056,7 @@ const (
 )
 
 // /
-// Supported event bit flags.
+// / Supported event bit flags.
 // /
 type CEventFlagsT C.cef_event_flags_t
 
@@ -2994,7 +3070,7 @@ const (
 	EventflagMiddleMouseButton CEventFlagsT = C.EVENTFLAG_MIDDLE_MOUSE_BUTTON
 	EventflagRightMouseButton  CEventFlagsT = C.EVENTFLAG_RIGHT_MOUSE_BUTTON
 
-	// Mac OS-X command key.
+	/// Mac OS-X command key.
 	EventflagCommandDown CEventFlagsT = C.EVENTFLAG_COMMAND_DOWN
 	EventflagNumLockOn   CEventFlagsT = C.EVENTFLAG_NUM_LOCK_ON
 	EventflagIsKeyPad    CEventFlagsT = C.EVENTFLAG_IS_KEY_PAD
@@ -3005,7 +3081,7 @@ const (
 )
 
 // /
-// Supported menu item types.
+// / Supported menu item types.
 // /
 type CMenuItemTypeT C.cef_menu_item_type_t
 
@@ -3019,96 +3095,96 @@ const (
 )
 
 // /
-// Supported context menu type flags.
+// / Supported context menu type flags.
 // /
 type CContextMenuTypeFlagsT C.cef_context_menu_type_flags_t
 
 const (
 
 	///
-	// No node is selected.
+	/// No node is selected.
 	///
 	CmTypeflagNone CContextMenuTypeFlagsT = C.CM_TYPEFLAG_NONE
 
 	///
-	// The top page is selected.
+	/// The top page is selected.
 	///
 	CmTypeflagPage CContextMenuTypeFlagsT = C.CM_TYPEFLAG_PAGE
 
 	///
-	// A subframe page is selected.
+	/// A subframe page is selected.
 	///
 	CmTypeflagFrame CContextMenuTypeFlagsT = C.CM_TYPEFLAG_FRAME
 
 	///
-	// A link is selected.
+	/// A link is selected.
 	///
 	CmTypeflagLink CContextMenuTypeFlagsT = C.CM_TYPEFLAG_LINK
 
 	///
-	// A media node is selected.
+	/// A media node is selected.
 	///
 	CmTypeflagMedia CContextMenuTypeFlagsT = C.CM_TYPEFLAG_MEDIA
 
 	///
-	// There is a textual or mixed selection that is selected.
+	/// There is a textual or mixed selection that is selected.
 	///
 	CmTypeflagSelection CContextMenuTypeFlagsT = C.CM_TYPEFLAG_SELECTION
 
 	///
-	// An editable element is selected.
+	/// An editable element is selected.
 	///
 	CmTypeflagEditable CContextMenuTypeFlagsT = C.CM_TYPEFLAG_EDITABLE
 )
 
 // /
-// Supported context menu media types. These constants match their equivalents
-// in Chromium's ContextMenuDataMediaType and should not be renumbered.
+// / Supported context menu media types. These constants match their equivalents
+// / in Chromium's ContextMenuDataMediaType and should not be renumbered.
 // /
 type CContextMenuMediaTypeT C.cef_context_menu_media_type_t
 
 const (
 
 	///
-	// No special node is in context.
+	/// No special node is in context.
 	///
 	CmMediatypeNone CContextMenuMediaTypeT = C.CM_MEDIATYPE_NONE
 
 	///
-	// An image node is selected.
+	/// An image node is selected.
 	///
 	CmMediatypeImage CContextMenuMediaTypeT = C.CM_MEDIATYPE_IMAGE
 
 	///
-	// A video node is selected.
+	/// A video node is selected.
 	///
 	CmMediatypeVideo CContextMenuMediaTypeT = C.CM_MEDIATYPE_VIDEO
 
 	///
-	// An audio node is selected.
+	/// An audio node is selected.
 	///
 	CmMediatypeAudio CContextMenuMediaTypeT = C.CM_MEDIATYPE_AUDIO
 
 	///
-	// An canvas node is selected.
+	/// An canvas node is selected.
 	///
 	CmMediatypeCanvas CContextMenuMediaTypeT = C.CM_MEDIATYPE_CANVAS
 
 	///
-	// A file node is selected.
+	/// A file node is selected.
 	///
 	CmMediatypeFile CContextMenuMediaTypeT = C.CM_MEDIATYPE_FILE
 
 	///
-	// A plugin node is selected.
+	/// A plugin node is selected.
 	///
 	CmMediatypePlugin CContextMenuMediaTypeT = C.CM_MEDIATYPE_PLUGIN
 )
 
 // /
-// Supported context menu media state bit flags. These constants match their
-// equivalents in Chromium's ContextMenuData::MediaFlags and should not be
-// renumbered.
+// / Supported context menu media state bit flags. These constants match their
+// / equivalents in Chromium's ContextMenuData::MediaFlags and should not be
+// / renumbered.
 // /
 type CContextMenuMediaStateFlagsT C.cef_context_menu_media_state_flags_t
 
@@ -3130,9 +3206,9 @@ const (
 )
 
 // /
-// Supported context menu edit state bit flags. These constants match their
-// equivalents in Chromium's ContextMenuDataEditFlags and should not be
-// renumbered.
+// / Supported context menu edit state bit flags. These constants match their
+// / equivalents in Chromium's ContextMenuDataEditFlags and should not be
+// / renumbered.
 // /
 type CContextMenuEditStateFlagsT C.cef_context_menu_edit_state_flags_t
 
@@ -3150,39 +3226,52 @@ const (
 )
 
 // /
-// Key event types.
+// / Supported quick menu state bit flags.
+// /
+type CQuickMenuEditStateFlagsT C.cef_quick_menu_edit_state_flags_t
+
+const (
+	QmEditflagNone        CQuickMenuEditStateFlagsT = C.QM_EDITFLAG_NONE
+	QmEditflagCanEllipsis CQuickMenuEditStateFlagsT = C.QM_EDITFLAG_CAN_ELLIPSIS
+	QmEditflagCanCut      CQuickMenuEditStateFlagsT = C.QM_EDITFLAG_CAN_CUT
+	QmEditflagCanCopy     CQuickMenuEditStateFlagsT = C.QM_EDITFLAG_CAN_COPY
+	QmEditflagCanPaste    CQuickMenuEditStateFlagsT = C.QM_EDITFLAG_CAN_PASTE
+)
+
+// /
+// / Key event types.
 // /
 type CKeyEventTypeT C.cef_key_event_type_t
 
 const (
 
 	///
-	// Notification that a key transitioned from "up" to "down".
+	/// Notification that a key transitioned from "up" to "down".
 	///
 	KeyeventRawkeydown CKeyEventTypeT = C.KEYEVENT_RAWKEYDOWN
 
 	///
-	// Notification that a key was pressed. This does not necessarily correspond
-	// to a character depending on the key and language. Use KEYEVENT_CHAR for
-	// character input.
+	/// Notification that a key was pressed. This does not necessarily correspond
+	/// to a character depending on the key and language. Use KEYEVENT_CHAR for
+	/// character input.
 	///
 	KeyeventKeydown CKeyEventTypeT = C.KEYEVENT_KEYDOWN
 
 	///
-	// Notification that a key was released.
+	/// Notification that a key was released.
 	///
 	KeyeventKeyup CKeyEventTypeT = C.KEYEVENT_KEYUP
 
 	///
-	// Notification that a character was typed. Use this for text input. Key
-	// down events may generate 0, 1, or more than one character event depending
-	// on the key, locale, and operating system.
+	/// Notification that a character was typed. Use this for text input. Key
+	/// down events may generate 0, 1, or more than one character event depending
+	/// on the key, locale, and operating system.
 	///
 	KeyeventChar CKeyEventTypeT = C.KEYEVENT_CHAR
 )
 
 // /
-// Structure representing keyboard event information.
+// / Structure representing keyboard event information.
 // /
 type CKeyEventT C.cef_key_event_t
 
@@ -3256,25 +3345,25 @@ func (st *CKeyEventT) SetFocusOnEditableField(v int) {
 }
 
 // /
-// Focus sources.
+// / Focus sources.
 // /
 type CFocusSourceT C.cef_focus_source_t
 
 const (
 
 	///
-	// The source is explicit navigation via the API (LoadURL(), etc).
+	/// The source is explicit navigation via the API (LoadURL(), etc).
 	///
 	FocusSourceNavigation CFocusSourceT = C.FOCUS_SOURCE_NAVIGATION
 
 	///
-	// The source is a system-generated focus event.
+	/// The source is a system-generated focus event.
 	///
 	FocusSourceSystem CFocusSourceT = C.FOCUS_SOURCE_SYSTEM
 )
 
 // /
-// Navigation types.
+// / Navigation types.
 // /
 type CNavigationTypeT C.cef_navigation_type_t
 
@@ -3288,10 +3377,10 @@ const (
 )
 
 // /
-// Supported XML encoding types. The parser supports ASCII, ISO-8859-1, and
-// UTF16 (LE and BE) by default. All other types must be translated to UTF8
-// before being passed to the parser. If a BOM is detected and the correct
-// decoder is available then that decoder will be used automatically.
+// / Supported XML encoding types. The parser supports ASCII, ISO-8859-1, and
+// / UTF16 (LE and BE) by default. All other types must be translated to UTF8
+// / before being passed to the parser. If a BOM is detected and the correct
+// / decoder is available then that decoder will be used automatically.
 // /
 type CXmlEncodingTypeT C.cef_xml_encoding_type_t
 
@@ -3304,7 +3393,7 @@ const (
 )
 
 // /
-// XML node types.
+// / XML node types.
 // /
 type CXmlNodeTypeT C.cef_xml_node_type_t
 
@@ -3323,7 +3412,7 @@ const (
 )
 
 // /
-// Popup window features.
+// / Popup window features.
 // /
 type CPopupFeaturesT C.cef_popup_features_t
 
@@ -3445,7 +3534,7 @@ func (st *CPopupFeaturesT) SetScrollbarsVisible(v int) {
 }
 
 // /
-// DOM document types.
+// / DOM document types.
 // /
 type CDomDocumentTypeT C.cef_dom_document_type_t
 
@@ -3457,7 +3546,7 @@ const (
 )
 
 // /
-// DOM event category flags.
+// / DOM event category flags.
 // /
 type CDomEventCategoryT C.cef_dom_event_category_t
 
@@ -3482,7 +3571,7 @@ const (
 )
 
 // /
-// DOM event processing phases.
+// / DOM event processing phases.
 // /
 type CDomEventPhaseT C.cef_dom_event_phase_t
 
@@ -3494,7 +3583,7 @@ const (
 )
 
 // /
-// DOM node types.
+// / DOM node types.
 // /
 type CDomNodeTypeT C.cef_dom_node_type_t
 
@@ -3512,36 +3601,36 @@ const (
 )
 
 // /
-// Supported file dialog modes.
+// / Supported file dialog modes.
 // /
 type CFileDialogModeT C.cef_file_dialog_mode_t
 
 const (
 
 	///
-	// Requires that the file exists before allowing the user to pick it.
+	/// Requires that the file exists before allowing the user to pick it.
 	///
 	FileDialogOpen CFileDialogModeT = C.FILE_DIALOG_OPEN
 
 	///
-	// Like Open, but allows picking multiple files to open.
+	/// Like Open, but allows picking multiple files to open.
 	///
 	FileDialogOpenMultiple CFileDialogModeT = C.FILE_DIALOG_OPEN_MULTIPLE
 
 	///
-	// Like Open, but selects a folder to open.
+	/// Like Open, but selects a folder to open.
 	///
 	FileDialogOpenFolder CFileDialogModeT = C.FILE_DIALOG_OPEN_FOLDER
 
 	///
-	// Allows picking a nonexistent file, and prompts to overwrite if the file
-	// already exists.
+	/// Allows picking a nonexistent file, and prompts to overwrite if the file
+	/// already exists.
 	///
 	FileDialogSave CFileDialogModeT = C.FILE_DIALOG_SAVE
 )
 
 // /
-// Print job color mode values.
+// / Print job color mode values.
 // /
 type CColorModelT C.cef_color_model_t
 
@@ -3570,7 +3659,7 @@ const (
 )
 
 // /
-// Print job duplex mode values.
+// / Print job duplex mode values.
 // /
 type CDuplexModeT C.cef_duplex_mode_t
 
@@ -3582,7 +3671,7 @@ const (
 )
 
 // /
-// Cursor type values.
+// / Cursor type values.
 // /
 type CCursorTypeT C.cef_cursor_type_t
 
@@ -3640,9 +3729,9 @@ const (
 )
 
 // /
-// Structure representing cursor information. |buffer| will be
-// |size.width|*|size.height|*4 bytes in size and represents a BGRA image with
-// an upper-left origin.
+// / Structure representing cursor information. |buffer| will be
+// / |size.width|*|size.height|*4 bytes in size and represents a BGRA image with
+// / an upper-left origin.
 // /
 type CCursorInfoT C.cef_cursor_info_t
 
@@ -3684,143 +3773,144 @@ func (st *CCursorInfoT) SetSize(v CSizeT) {
 }
 
 // /
-// URI unescape rules passed to CefURIDecode().
+// / URI unescape rules passed to CefURIDecode().
 // /
 type CUriUnescapeRuleT C.cef_uri_unescape_rule_t
 
 const (
 
 	///
-	// Don't unescape anything at all.
+	/// Don't unescape anything at all.
 	///
 	UuNone CUriUnescapeRuleT = C.UU_NONE
 
 	///
-	// Don't unescape anything special, but all normal unescaping will happen.
-	// This is a placeholder and can't be combined with other flags (since it's
-	// just the absence of them). All other unescape rules imply "normal" in
-	// addition to their special meaning. Things like escaped letters, digits,
-	// and most symbols will get unescaped with this mode.
+	/// Don't unescape anything special, but all normal unescaping will happen.
+	/// This is a placeholder and can't be combined with other flags (since it's
+	/// just the absence of them). All other unescape rules imply "normal" in
+	/// addition to their special meaning. Things like escaped letters, digits,
+	/// and most symbols will get unescaped with this mode.
 	///
 	UuNormal CUriUnescapeRuleT = C.UU_NORMAL
 
 	///
-	// Convert %20 to spaces. In some places where we're showing URLs, we may
-	// want this. In places where the URL may be copied and pasted out, then
-	// you wouldn't want this since it might not be interpreted in one piece
-	// by other applications.
+	/// Convert %20 to spaces. In some places where we're showing URLs, we may
+	/// want this. In places where the URL may be copied and pasted out, then
+	/// you wouldn't want this since it might not be interpreted in one piece
+	/// by other applications.
 	///
 	UuSpaces CUriUnescapeRuleT = C.UU_SPACES
 
 	///
-	// Unescapes '/' and '\\'. If these characters were unescaped, the resulting
-	// URL won't be the same as the source one. Moreover, they are dangerous to
-	// unescape in strings that will be used as file paths or names. This value
-	// should only be used when slashes don't have special meaning, like data
-	// URLs.
+	/// Unescapes '/' and '\\'. If these characters were unescaped, the resulting
+	/// URL won't be the same as the source one. Moreover, they are dangerous to
+	/// unescape in strings that will be used as file paths or names. This value
+	/// should only be used when slashes don't have special meaning, like data
+	/// URLs.
 	///
 	UuPathSeparators CUriUnescapeRuleT = C.UU_PATH_SEPARATORS
 
 	///
-	// Unescapes various characters that will change the meaning of URLs,
-	// including '%', '+', '&', '#'. Does not unescape path separators.
-	// If these characters were unescaped, the resulting URL won't be the same
-	// as the source one. This flag is used when generating final output like
-	// filenames for URLs where we won't be interpreting as a URL and want to do
-	// as much unescaping as possible.
+	/// Unescapes various characters that will change the meaning of URLs,
+	/// including '%', '+', '&', '#'. Does not unescape path separators.
+	/// If these characters were unescaped, the resulting URL won't be the same
+	/// as the source one. This flag is used when generating final output like
+	/// filenames for URLs where we won't be interpreting as a URL and want to do
+	/// as much unescaping as possible.
 	///
 	UuUrlSpecialCharsExceptPathSeparators CUriUnescapeRuleT = C.UU_URL_SPECIAL_CHARS_EXCEPT_PATH_SEPARATORS
 
 	///
-	// URL queries use "+" for space. This flag controls that replacement.
+	/// URL queries use "+" for space. This flag controls that replacement.
 	///
 	UuReplacePlusWithSpace CUriUnescapeRuleT = C.UU_REPLACE_PLUS_WITH_SPACE
 )
 
 // /
-// Options that can be passed to CefParseJSON.
+// / Options that can be passed to CefParseJSON.
 // /
 type CJsonParserOptionsT C.cef_json_parser_options_t
 
 const (
 
 	///
-	// Parses the input strictly according to RFC 4627. See comments in Chromium's
-	// base/json/json_reader.h file for known limitations/deviations from the RFC.
+	/// Parses the input strictly according to RFC 4627. See comments in
+	/// Chromium's base/json/json_reader.h file for known limitations/
+	/// deviations from the RFC.
 	///
 	JsonParserRfc CJsonParserOptionsT = C.JSON_PARSER_RFC
 
 	///
-	// Allows commas to exist after the last element in structures.
+	/// Allows commas to exist after the last element in structures.
 	///
 	JsonParserAllowTrailingCommas CJsonParserOptionsT = C.JSON_PARSER_ALLOW_TRAILING_COMMAS
 )
 
 // /
-// Options that can be passed to CefWriteJSON.
+// / Options that can be passed to CefWriteJSON.
 // /
 type CJsonWriterOptionsT C.cef_json_writer_options_t
 
 const (
 
 	///
-	// Default behavior.
+	/// Default behavior.
 	///
 	JsonWriterDefault CJsonWriterOptionsT = C.JSON_WRITER_DEFAULT
 
 	///
-	// This option instructs the writer that if a Binary value is encountered,
-	// the value (and key if within a dictionary) will be omitted from the
-	// output, and success will be returned. Otherwise, if a binary value is
-	// encountered, failure will be returned.
+	/// This option instructs the writer that if a Binary value is encountered,
+	/// the value (and key if within a dictionary) will be omitted from the
+	/// output, and success will be returned. Otherwise, if a binary value is
+	/// encountered, failure will be returned.
 	///
 	JsonWriterOmitBinaryValues CJsonWriterOptionsT = C.JSON_WRITER_OMIT_BINARY_VALUES
 
 	///
-	// This option instructs the writer to write doubles that have no fractional
-	// part as a normal integer (i.e., without using exponential notation
-	// or appending a '.0') as long as the value is within the range of a
-	// 64-bit int.
+	/// This option instructs the writer to write doubles that have no fractional
+	/// part as a normal integer (i.e., without using exponential notation
+	/// or appending a '.0') as long as the value is within the range of a
+	/// 64-bit int.
 	///
 	JsonWriterOmitDoubleTypePreservation CJsonWriterOptionsT = C.JSON_WRITER_OMIT_DOUBLE_TYPE_PRESERVATION
 
 	///
-	// Return a slightly nicer formatted json string (pads with whitespace to
-	// help with readability).
+	/// Return a slightly nicer formatted json string (pads with whitespace to
+	/// help with readability).
 	///
 	JsonWriterPrettyPrint CJsonWriterOptionsT = C.JSON_WRITER_PRETTY_PRINT
 )
 
 // /
-// Margin type for PDF printing.
+// / Margin type for PDF printing.
 // /
 type CPdfPrintMarginTypeT C.cef_pdf_print_margin_type_t
 
 const (
 
 	///
-	// Default margins.
+	/// Default margins.
 	///
 	PdfPrintMarginDefault CPdfPrintMarginTypeT = C.PDF_PRINT_MARGIN_DEFAULT
 
 	///
-	// No margins.
+	/// No margins.
 	///
 	PdfPrintMarginNone CPdfPrintMarginTypeT = C.PDF_PRINT_MARGIN_NONE
 
 	///
-	// Minimum margins.
+	/// Minimum margins.
 	///
 	PdfPrintMarginMinimum CPdfPrintMarginTypeT = C.PDF_PRINT_MARGIN_MINIMUM
 
 	///
-	// Custom margins using the |margin_*| values from cef_pdf_print_settings_t.
+	/// Custom margins using the |margin_*| values from cef_pdf_print_settings_t.
 	///
 	PdfPrintMarginCustom CPdfPrintMarginTypeT = C.PDF_PRINT_MARGIN_CUSTOM
 )
 
 // /
-// Structure representing PDF print settings.
+// / Structure representing PDF print settings.
 // /
 type CPdfPrintSettingsT C.cef_pdf_print_settings_t
 
@@ -3958,9 +4048,9 @@ func (st *CPdfPrintSettingsT) SetBackgroundsEnabled(v bool) {
 }
 
 // /
-// Supported UI scale factors for the platform. SCALE_FACTOR_NONE is used for
-// density independent resources such as string, html/js files or an image that
-// can be used for any scale factors (such as wallpapers).
+// / Supported UI scale factors for the platform. SCALE_FACTOR_NONE is used for
+// / density independent resources such as string, html/js files or an image that
+// / can be used for any scale factors (such as wallpapers).
 // /
 type CScaleFactorT C.cef_scale_factor_t
 
@@ -3978,136 +4068,136 @@ const (
 )
 
 // /
-// Policy for how the Referrer HTTP header value will be sent during navigation.
-// If the `--no-referrers` command-line flag is specified then the policy value
-// will be ignored and the Referrer value will never be sent.
-// Must be kept synchronized with net::URLRequest::ReferrerPolicy from Chromium.
+// / Policy for how the Referrer HTTP header value will be sent during
+// / navigation. If the `--no-referrers` command-line flag is specified then the
+// / policy value will be ignored and the Referrer value will never be sent. Must
+// / be kept synchronized with net::URLRequest::ReferrerPolicy from Chromium.
 // /
 type CReferrerPolicyT C.cef_referrer_policy_t
 
 const (
 
 	///
-	// Clear the referrer header if the header value is HTTPS but the request
-	// destination is HTTP. This is the default behavior.
+	/// Clear the referrer header if the header value is HTTPS but the request
+	/// destination is HTTP. This is the default behavior.
 	///
 	ReferrerPolicyClearReferrerOnTransitionFromSecureToInsecure CReferrerPolicyT = C.REFERRER_POLICY_CLEAR_REFERRER_ON_TRANSITION_FROM_SECURE_TO_INSECURE
 	ReferrerPolicyDefault                                       CReferrerPolicyT = C.REFERRER_POLICY_DEFAULT
 
 	///
-	// A slight variant on CLEAR_REFERRER_ON_TRANSITION_FROM_SECURE_TO_INSECURE:
-	// If the request destination is HTTP, an HTTPS referrer will be cleared. If
-	// the request's destination is cross-origin with the referrer (but does not
-	// downgrade), the referrer's granularity will be stripped down to an origin
-	// rather than a full URL. Same-origin requests will send the full referrer.
+	/// A slight variant on CLEAR_REFERRER_ON_TRANSITION_FROM_SECURE_TO_INSECURE:
+	/// If the request destination is HTTP, an HTTPS referrer will be cleared. If
+	/// the request's destination is cross-origin with the referrer (but does not
+	/// downgrade), the referrer's granularity will be stripped down to an origin
+	/// rather than a full URL. Same-origin requests will send the full referrer.
 	///
 	ReferrerPolicyReduceReferrerGranularityOnTransitionCrossOrigin CReferrerPolicyT = C.REFERRER_POLICY_REDUCE_REFERRER_GRANULARITY_ON_TRANSITION_CROSS_ORIGIN
 
 	///
-	// Strip the referrer down to an origin when the origin of the referrer is
-	// different from the destination's origin.
+	/// Strip the referrer down to an origin when the origin of the referrer is
+	/// different from the destination's origin.
 	///
 	ReferrerPolicyOriginOnlyOnTransitionCrossOrigin CReferrerPolicyT = C.REFERRER_POLICY_ORIGIN_ONLY_ON_TRANSITION_CROSS_ORIGIN
 
 	///
-	// Never change the referrer.
+	/// Never change the referrer.
 	///
 	ReferrerPolicyNeverClearReferrer CReferrerPolicyT = C.REFERRER_POLICY_NEVER_CLEAR_REFERRER
 
 	///
-	// Strip the referrer down to the origin regardless of the redirect location.
+	/// Strip the referrer down to the origin regardless of the redirect location.
 	///
 	ReferrerPolicyOrigin CReferrerPolicyT = C.REFERRER_POLICY_ORIGIN
 
 	///
-	// Clear the referrer when the request's referrer is cross-origin with the
-	// request's destination.
+	/// Clear the referrer when the request's referrer is cross-origin with the
+	/// request's destination.
 	///
 	ReferrerPolicyClearReferrerOnTransitionCrossOrigin CReferrerPolicyT = C.REFERRER_POLICY_CLEAR_REFERRER_ON_TRANSITION_CROSS_ORIGIN
 
 	///
-	// Strip the referrer down to the origin, but clear it entirely if the
-	// referrer value is HTTPS and the destination is HTTP.
+	/// Strip the referrer down to the origin, but clear it entirely if the
+	/// referrer value is HTTPS and the destination is HTTP.
 	///
 	ReferrerPolicyOriginClearOnTransitionFromSecureToInsecure CReferrerPolicyT = C.REFERRER_POLICY_ORIGIN_CLEAR_ON_TRANSITION_FROM_SECURE_TO_INSECURE
 
 	///
-	// Always clear the referrer regardless of the request destination.
+	/// Always clear the referrer regardless of the request destination.
 	///
 	ReferrerPolicyNoReferrer CReferrerPolicyT = C.REFERRER_POLICY_NO_REFERRER
 
-	// Always the last value in this enumeration.
+	/// Always the last value in this enumeration.
 	ReferrerPolicyLastValue CReferrerPolicyT = C.REFERRER_POLICY_LAST_VALUE
 )
 
 // /
-// Return values for CefResponseFilter::Filter().
+// / Return values for CefResponseFilter::Filter().
 // /
 type CResponseFilterStatusT C.cef_response_filter_status_t
 
 const (
 
 	///
-	// Some or all of the pre-filter data was read successfully but more data is
-	// needed in order to continue filtering (filtered output is pending).
+	/// Some or all of the pre-filter data was read successfully but more data is
+	/// needed in order to continue filtering (filtered output is pending).
 	///
 	ResponseFilterNeedMoreData CResponseFilterStatusT = C.RESPONSE_FILTER_NEED_MORE_DATA
 
 	///
-	// Some or all of the pre-filter data was read successfully and all available
-	// filtered output has been written.
+	/// Some or all of the pre-filter data was read successfully and all available
+	/// filtered output has been written.
 	///
 	ResponseFilterDone CResponseFilterStatusT = C.RESPONSE_FILTER_DONE
 
 	///
-	// An error occurred during filtering.
+	/// An error occurred during filtering.
 	///
 	ResponseFilterError CResponseFilterStatusT = C.RESPONSE_FILTER_ERROR
 )
 
 // /
-// Describes how to interpret the components of a pixel.
+// / Describes how to interpret the components of a pixel.
 // /
 type CColorTypeT C.cef_color_type_t
 
 const (
 
 	///
-	// RGBA with 8 bits per pixel (32bits total).
+	/// RGBA with 8 bits per pixel (32bits total).
 	///
 	CefColorTypeRgba8888 CColorTypeT = C.CEF_COLOR_TYPE_RGBA_8888
 
 	///
-	// BGRA with 8 bits per pixel (32bits total).
+	/// BGRA with 8 bits per pixel (32bits total).
 	///
 	CefColorTypeBgra8888 CColorTypeT = C.CEF_COLOR_TYPE_BGRA_8888
 )
 
 // /
-// Describes how to interpret the alpha component of a pixel.
+// / Describes how to interpret the alpha component of a pixel.
 // /
 type CAlphaTypeT C.cef_alpha_type_t
 
 const (
 
 	///
-	// No transparency. The alpha component is ignored.
+	/// No transparency. The alpha component is ignored.
 	///
 	CefAlphaTypeOpaque CAlphaTypeT = C.CEF_ALPHA_TYPE_OPAQUE
 
 	///
-	// Transparency with pre-multiplied alpha component.
+	/// Transparency with pre-multiplied alpha component.
 	///
 	CefAlphaTypePremultiplied CAlphaTypeT = C.CEF_ALPHA_TYPE_PREMULTIPLIED
 
 	///
-	// Transparency with post-multiplied alpha component.
+	/// Transparency with post-multiplied alpha component.
 	///
 	CefAlphaTypePostmultiplied CAlphaTypeT = C.CEF_ALPHA_TYPE_POSTMULTIPLIED
 )
 
 // /
-// Text style types. Should be kepy in sync with gfx::TextStyle.
+// / Text style types. Should be kepy in sync with gfx::TextStyle.
 // /
 type CTextStyleT C.cef_text_style_t
 
@@ -4120,60 +4210,60 @@ const (
 )
 
 // /
-// Specifies where along the main axis the CefBoxLayout child views should be
-// laid out.
+// / Specifies where along the main axis the CefBoxLayout child views should be
+// / laid out.
 // /
 type CMainAxisAlignmentT C.cef_main_axis_alignment_t
 
 const (
 
 	///
-	// Child views will be left-aligned.
+	/// Child views will be left-aligned.
 	///
 	CefMainAxisAlignmentStart CMainAxisAlignmentT = C.CEF_MAIN_AXIS_ALIGNMENT_START
 
 	///
-	// Child views will be center-aligned.
+	/// Child views will be center-aligned.
 	///
 	CefMainAxisAlignmentCenter CMainAxisAlignmentT = C.CEF_MAIN_AXIS_ALIGNMENT_CENTER
 
 	///
-	// Child views will be right-aligned.
+	/// Child views will be right-aligned.
 	///
 	CefMainAxisAlignmentEnd CMainAxisAlignmentT = C.CEF_MAIN_AXIS_ALIGNMENT_END
 )
 
 // /
-// Specifies where along the cross axis the CefBoxLayout child views should be
-// laid out.
+// / Specifies where along the cross axis the CefBoxLayout child views should be
+// / laid out.
 // /
 type CCrossAxisAlignmentT C.cef_cross_axis_alignment_t
 
 const (
 
 	///
-	// Child views will be stretched to fit.
+	/// Child views will be stretched to fit.
 	///
 	CefCrossAxisAlignmentStretch CCrossAxisAlignmentT = C.CEF_CROSS_AXIS_ALIGNMENT_STRETCH
 
 	///
-	// Child views will be left-aligned.
+	/// Child views will be left-aligned.
 	///
 	CefCrossAxisAlignmentStart CCrossAxisAlignmentT = C.CEF_CROSS_AXIS_ALIGNMENT_START
 
 	///
-	// Child views will be center-aligned.
+	/// Child views will be center-aligned.
 	///
 	CefCrossAxisAlignmentCenter CCrossAxisAlignmentT = C.CEF_CROSS_AXIS_ALIGNMENT_CENTER
 
 	///
-	// Child views will be right-aligned.
+	/// Child views will be right-aligned.
 	///
 	CefCrossAxisAlignmentEnd CCrossAxisAlignmentT = C.CEF_CROSS_AXIS_ALIGNMENT_END
 )
 
 // /
-// Settings used when initializing a CefBoxLayout.
+// / Settings used when initializing a CefBoxLayout.
 // /
 type CBoxLayoutSettingsT C.cef_box_layout_settings_t
 
@@ -4259,7 +4349,7 @@ func (st *CBoxLayoutSettingsT) SetDefaultFlex(v int) {
 }
 
 // /
-// Specifies the button display state.
+// / Specifies the button display state.
 // /
 type CButtonStateT C.cef_button_state_t
 
@@ -4271,31 +4361,31 @@ const (
 )
 
 // /
-// Specifies the horizontal text alignment mode.
+// / Specifies the horizontal text alignment mode.
 // /
 type CHorizontalAlignmentT C.cef_horizontal_alignment_t
 
 const (
 
 	///
-	// Align the text's left edge with that of its display area.
+	/// Align the text's left edge with that of its display area.
 	///
 	CefHorizontalAlignmentLeft CHorizontalAlignmentT = C.CEF_HORIZONTAL_ALIGNMENT_LEFT
 
 	///
-	// Align the text's center with that of its display area.
+	/// Align the text's center with that of its display area.
 	///
 	CefHorizontalAlignmentCenter CHorizontalAlignmentT = C.CEF_HORIZONTAL_ALIGNMENT_CENTER
 
 	///
-	// Align the text's right edge with that of its display area.
+	/// Align the text's right edge with that of its display area.
 	///
 	CefHorizontalAlignmentRight CHorizontalAlignmentT = C.CEF_HORIZONTAL_ALIGNMENT_RIGHT
 )
 
 // /
-// Specifies how a menu will be anchored for non-RTL languages. The opposite
-// position will be used for RTL languages.
+// / Specifies how a menu will be anchored for non-RTL languages. The opposite
+// / position will be used for RTL languages.
 // /
 type CMenuAnchorPositionT C.cef_menu_anchor_position_t
 
@@ -4306,7 +4396,7 @@ const (
 )
 
 // /
-// Supported color types for menu items.
+// / Supported color types for menu items.
 // /
 type CMenuColorTypeT C.cef_menu_color_type_t
 
@@ -4320,8 +4410,8 @@ const (
 	CefMenuColorCount                  CMenuColorTypeT = C.CEF_MENU_COLOR_COUNT
 )
 
-// Supported SSL version values. See net/ssl/ssl_connection_status_flags.h
-// for more information.
+// / Supported SSL version values. See net/ssl/ssl_connection_status_flags.h
+// / for more information.
 type CSslVersionT C.cef_ssl_version_t
 
 const (
@@ -4335,8 +4425,8 @@ const (
 	SslConnectionVersionQuic    CSslVersionT = C.SSL_CONNECTION_VERSION_QUIC
 )
 
-// Supported SSL content status flags. See content/public/common/ssl_status.h
-// for more information.
+// / Supported SSL content status flags. See content/public/common/ssl_status.h
+// / for more information.
 type CSslContentStatusT C.cef_ssl_content_status_t
 
 const (
@@ -4345,92 +4435,93 @@ const (
 	SslContentRanInsecureContent       CSslContentStatusT = C.SSL_CONTENT_RAN_INSECURE_CONTENT
 )
 
-// Configuration options for registering a custom scheme.
-// These values are used when calling AddCustomScheme.
+// / Configuration options for registering a custom scheme.
+// / These values are used when calling AddCustomScheme.
 type CSchemeOptionsT C.cef_scheme_options_t
 
 const (
 	CefSchemeOptionNone CSchemeOptionsT = C.CEF_SCHEME_OPTION_NONE
 
 	///
-	// If CEF_SCHEME_OPTION_STANDARD is set the scheme will be treated as a
-	// standard scheme. Standard schemes are subject to URL canonicalization and
-	// parsing rules as defined in the Common Internet Scheme Syntax RFC 1738
-	// Section 3.1 available at http://www.ietf.org/rfc/rfc1738.txt
+	/// If CEF_SCHEME_OPTION_STANDARD is set the scheme will be treated as a
+	/// standard scheme. Standard schemes are subject to URL canonicalization and
+	/// parsing rules as defined in the Common Internet Scheme Syntax RFC 1738
+	/// Section 3.1 available at http://www.ietf.org/rfc/rfc1738.txt
 	//
-	// In particular, the syntax for standard scheme URLs must be of the form:
-	// <pre>
-	//  [scheme]://[username]:[password]@[host]:[port]/[url-path]
-	// </pre> Standard scheme URLs must have a host component that is a fully
-	// qualified domain name as defined in Section 3.5 of RFC 1034 [13] and
-	// Section 2.1 of RFC 1123. These URLs will be canonicalized to
-	// "scheme://host/path" in the simplest case and
-	// "scheme://username:password@host:port/path" in the most explicit case. For
-	// example, "scheme:host/path" and "scheme:///host/path" will both be
-	// canonicalized to "scheme://host/path". The origin of a standard scheme URL
-	// is the combination of scheme, host and port (i.e., "scheme://host:port" in
-	// the most explicit case).
+	/// In particular, the syntax for standard scheme URLs must be of the form:
+	/// <pre>
+	///  [scheme]://[username]:[password]@[host]:[port]/[url-path]
+	/// </pre> Standard scheme URLs must have a host component that is a fully
+	/// qualified domain name as defined in Section 3.5 of RFC 1034 [13] and
+	/// Section 2.1 of RFC 1123. These URLs will be canonicalized to
+	/// "scheme://host/path" in the simplest case and
+	/// "scheme://username:password@host:port/path" in the most explicit case. For
+	/// example, "scheme:host/path" and "scheme:///host/path" will both be
+	/// canonicalized to "scheme://host/path". The origin of a standard scheme URL
+	/// is the combination of scheme, host and port (i.e., "scheme://host:port" in
+	/// the most explicit case).
 	//
-	// For non-standard scheme URLs only the "scheme:" component is parsed and
-	// canonicalized. The remainder of the URL will be passed to the handler as-
-	// is. For example, "scheme:///some%20text" will remain the same. Non-standard
-	// scheme URLs cannot be used as a target for form submission.
+	/// For non-standard scheme URLs only the "scheme:" component is parsed and
+	/// canonicalized. The remainder of the URL will be passed to the handler as-
+	/// is. For example, "scheme:///some%20text" will remain the same.
+	/// Non-standard scheme URLs cannot be used as a target for form submission.
 	///
 	CefSchemeOptionStandard CSchemeOptionsT = C.CEF_SCHEME_OPTION_STANDARD
 
 	///
-	// If CEF_SCHEME_OPTION_LOCAL is set the scheme will be treated with the same
-	// security rules as those applied to "file" URLs. Normal pages cannot link to
-	// or access local URLs. Also, by default, local URLs can only perform
-	// XMLHttpRequest calls to the same URL (origin + path) that originated the
-	// request. To allow XMLHttpRequest calls from a local URL to other URLs with
-	// the same origin set the CefSettings.file_access_from_file_urls_allowed
-	// value to true (1). To allow XMLHttpRequest calls from a local URL to all
-	// origins set the CefSettings.universal_access_from_file_urls_allowed value
-	// to true (1).
+	/// If CEF_SCHEME_OPTION_LOCAL is set the scheme will be treated with the same
+	/// security rules as those applied to "file" URLs. Normal pages cannot link
+	/// to or access local URLs. Also, by default, local URLs can only perform
+	/// XMLHttpRequest calls to the same URL (origin + path) that originated the
+	/// request. To allow XMLHttpRequest calls from a local URL to other URLs with
+	/// the same origin set the CefSettings.file_access_from_file_urls_allowed
+	/// value to true (1). To allow XMLHttpRequest calls from a local URL to all
+	/// origins set the CefSettings.universal_access_from_file_urls_allowed value
+	/// to true (1).
 	///
 	CefSchemeOptionLocal CSchemeOptionsT = C.CEF_SCHEME_OPTION_LOCAL
 
 	///
-	// If CEF_SCHEME_OPTION_DISPLAY_ISOLATED is set the scheme can only be
-	// displayed from other content hosted with the same scheme. For example,
-	// pages in other origins cannot create iframes or hyperlinks to URLs with the
-	// scheme. For schemes that must be accessible from other schemes don't set
-	// this, set CEF_SCHEME_OPTION_CORS_ENABLED, and use CORS
-	// "Access-Control-Allow-Origin" headers to further restrict access.
+	/// If CEF_SCHEME_OPTION_DISPLAY_ISOLATED is set the scheme can only be
+	/// displayed from other content hosted with the same scheme. For example,
+	/// pages in other origins cannot create iframes or hyperlinks to URLs with
+	/// the scheme. For schemes that must be accessible from other schemes don't
+	/// set this, set CEF_SCHEME_OPTION_CORS_ENABLED, and use CORS
+	/// "Access-Control-Allow-Origin" headers to further restrict access.
 	///
 	CefSchemeOptionDisplayIsolated CSchemeOptionsT = C.CEF_SCHEME_OPTION_DISPLAY_ISOLATED
 
 	///
-	// If CEF_SCHEME_OPTION_SECURE is set the scheme will be treated with the same
-	// security rules as those applied to "https" URLs. For example, loading this
-	// scheme from other secure schemes will not trigger mixed content warnings.
+	/// If CEF_SCHEME_OPTION_SECURE is set the scheme will be treated with the
+	/// same security rules as those applied to "https" URLs. For example, loading
+	/// this scheme from other secure schemes will not trigger mixed content
+	/// warnings.
 	///
 	CefSchemeOptionSecure CSchemeOptionsT = C.CEF_SCHEME_OPTION_SECURE
 
 	///
-	// If CEF_SCHEME_OPTION_CORS_ENABLED is set the scheme can be sent CORS
-	// requests. This value should be set in most cases where
-	// CEF_SCHEME_OPTION_STANDARD is set.
+	/// If CEF_SCHEME_OPTION_CORS_ENABLED is set the scheme can be sent CORS
+	/// requests. This value should be set in most cases where
+	/// CEF_SCHEME_OPTION_STANDARD is set.
 	///
 	CefSchemeOptionCorsEnabled CSchemeOptionsT = C.CEF_SCHEME_OPTION_CORS_ENABLED
 
 	///
-	// If CEF_SCHEME_OPTION_CSP_BYPASSING is set the scheme can bypass Content-
-	// Security-Policy (CSP) checks. This value should not be set in most cases
-	// where CEF_SCHEME_OPTION_STANDARD is set.
+	/// If CEF_SCHEME_OPTION_CSP_BYPASSING is set the scheme can bypass Content-
+	/// Security-Policy (CSP) checks. This value should not be set in most cases
+	/// where CEF_SCHEME_OPTION_STANDARD is set.
 	///
 	CefSchemeOptionCspBypassing CSchemeOptionsT = C.CEF_SCHEME_OPTION_CSP_BYPASSING
 
 	///
-	// If CEF_SCHEME_OPTION_FETCH_ENABLED is set the scheme can perform Fetch API
-	// requests.
+	/// If CEF_SCHEME_OPTION_FETCH_ENABLED is set the scheme can perform Fetch API
+	/// requests.
 	///
 	CefSchemeOptionFetchEnabled CSchemeOptionsT = C.CEF_SCHEME_OPTION_FETCH_ENABLED
 )
 
 // /
-// Structure representing a range.
+// / Structure representing a range.
 // /
 type CRangeT C.cef_range_t
 
@@ -4456,7 +4547,7 @@ func (st *CRangeT) SetTo(v int) {
 }
 
 // /
-// Composition underline style.
+// / Composition underline style.
 // /
 type CCompositionUnderlineStyleT C.cef_composition_underline_style_t
 
@@ -4468,9 +4559,9 @@ const (
 )
 
 // /
-// Structure representing IME composition underline information. This is a thin
-// wrapper around Blink's WebCompositionUnderline class and should be kept in
-// sync with that.
+// / Structure representing IME composition underline information. This is a thin
+// / wrapper around Blink's WebCompositionUnderline class and should be kept in
+// / sync with that.
 // /
 type CCompositionUnderlineT C.cef_composition_underline_t
 
@@ -4524,9 +4615,9 @@ func (st *CCompositionUnderlineT) SetStyle(v CCompositionUnderlineStyleT) {
 }
 
 // /
-// Enumerates the various representations of the ordering of audio channels.
-// Must be kept synchronized with media::ChannelLayout from Chromium.
-// See media\base\channel_layout.h
+// / Enumerates the various representations of the ordering of audio channels.
+// / Must be kept synchronized with media::ChannelLayout from Chromium.
+// / See media\base\channel_layout.h
 // /
 type CChannelLayoutT C.cef_channel_layout_t
 
@@ -4534,116 +4625,117 @@ const (
 	CefChannelLayoutNone        CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_NONE
 	CefChannelLayoutUnsupported CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_UNSUPPORTED
 
-	// Front C
+	/// Front C
 	CefChannelLayoutMono CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_MONO
 
-	// Front L, Front R
+	/// Front L, Front R
 	CefChannelLayoutStereo CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_STEREO
 
-	// Front L, Front R, Back C
+	/// Front L, Front R, Back C
 	CefChannelLayout21 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_2_1
 
-	// Front L, Front R, Front C
+	/// Front L, Front R, Front C
 	CefChannelLayoutSurround CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_SURROUND
 
-	// Front L, Front R, Front C, Back C
+	/// Front L, Front R, Front C, Back C
 	CefChannelLayout40 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_4_0
 
-	// Front L, Front R, Side L, Side R
+	/// Front L, Front R, Side L, Side R
 	CefChannelLayout22 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_2_2
 
-	// Front L, Front R, Back L, Back R
+	/// Front L, Front R, Back L, Back R
 	CefChannelLayoutQuad CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_QUAD
 
-	// Front L, Front R, Front C, Side L, Side R
+	/// Front L, Front R, Front C, Side L, Side R
 	CefChannelLayout50 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_5_0
 
-	// Front L, Front R, Front C, LFE, Side L, Side R
+	/// Front L, Front R, Front C, LFE, Side L, Side R
 	CefChannelLayout51 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_5_1
 
-	// Front L, Front R, Front C, Back L, Back R
+	/// Front L, Front R, Front C, Back L, Back R
 	CefChannelLayout50Back CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_5_0_BACK
 
-	// Front L, Front R, Front C, LFE, Back L, Back R
+	/// Front L, Front R, Front C, LFE, Back L, Back R
 	CefChannelLayout51Back CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_5_1_BACK
 
-	// Front L, Front R, Front C, Side L, Side R, Back L, Back R
+	/// Front L, Front R, Front C, Side L, Side R, Back L, Back R
 	CefChannelLayout70 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_7_0
 
-	// Front L, Front R, Front C, LFE, Side L, Side R, Back L, Back R
+	/// Front L, Front R, Front C, LFE, Side L, Side R, Back L, Back R
 	CefChannelLayout71 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_7_1
 
-	// Front L, Front R, Front C, LFE, Side L, Side R, Front LofC, Front RofC
+	/// Front L, Front R, Front C, LFE, Side L, Side R, Front LofC, Front RofC
 	CefChannelLayout71Wide CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_7_1_WIDE
 
-	// Stereo L, Stereo R
+	/// Stereo L, Stereo R
 	CefChannelLayoutStereoDownmix CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_STEREO_DOWNMIX
 
-	// Stereo L, Stereo R, LFE
+	/// Stereo L, Stereo R, LFE
 	CefChannelLayout2point1 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_2POINT1
 
-	// Stereo L, Stereo R, Front C, LFE
+	/// Stereo L, Stereo R, Front C, LFE
 	CefChannelLayout31 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_3_1
 
-	// Stereo L, Stereo R, Front C, Rear C, LFE
+	/// Stereo L, Stereo R, Front C, Rear C, LFE
 	CefChannelLayout41 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_4_1
 
-	// Stereo L, Stereo R, Front C, Side L, Side R, Back C
+	/// Stereo L, Stereo R, Front C, Side L, Side R, Back C
 	CefChannelLayout60 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_6_0
 
-	// Stereo L, Stereo R, Side L, Side R, Front LofC, Front RofC
+	/// Stereo L, Stereo R, Side L, Side R, Front LofC, Front RofC
 	CefChannelLayout60Front CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_6_0_FRONT
 
-	// Stereo L, Stereo R, Front C, Rear L, Rear R, Rear C
+	/// Stereo L, Stereo R, Front C, Rear L, Rear R, Rear C
 	CefChannelLayoutHexagonal CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_HEXAGONAL
 
-	// Stereo L, Stereo R, Front C, LFE, Side L, Side R, Rear Center
+	/// Stereo L, Stereo R, Front C, LFE, Side L, Side R, Rear Center
 	CefChannelLayout61 CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_6_1
 
-	// Stereo L, Stereo R, Front C, LFE, Back L, Back R, Rear Center
+	/// Stereo L, Stereo R, Front C, LFE, Back L, Back R, Rear Center
 	CefChannelLayout61Back CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_6_1_BACK
 
-	// Stereo L, Stereo R, Side L, Side R, Front LofC, Front RofC, LFE
+	/// Stereo L, Stereo R, Side L, Side R, Front LofC, Front RofC, LFE
 	CefChannelLayout61Front CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_6_1_FRONT
 
-	// Front L, Front R, Front C, Side L, Side R, Front LofC, Front RofC
+	/// Front L, Front R, Front C, Side L, Side R, Front LofC, Front RofC
 	CefChannelLayout70Front CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_7_0_FRONT
 
-	// Front L, Front R, Front C, LFE, Back L, Back R, Front LofC, Front RofC
+	/// Front L, Front R, Front C, LFE, Back L, Back R, Front LofC, Front RofC
 	CefChannelLayout71WideBack CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_7_1_WIDE_BACK
 
-	// Front L, Front R, Front C, Side L, Side R, Rear L, Back R, Back C.
+	/// Front L, Front R, Front C, Side L, Side R, Rear L, Back R, Back C.
 	CefChannelLayoutOctagonal CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_OCTAGONAL
 
-	// Channels are not explicitly mapped to speakers.
+	/// Channels are not explicitly mapped to speakers.
 	CefChannelLayoutDiscrete CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_DISCRETE
 
-	// Front L, Front R, Front C. Front C contains the keyboard mic audio. This
-	// layout is only intended for input for WebRTC. The Front C channel
-	// is stripped away in the WebRTC audio input pipeline and never seen outside
-	// of that.
+	/// Front L, Front R, Front C. Front C contains the keyboard mic audio. This
+	/// layout is only intended for input for WebRTC. The Front C channel
+	/// is stripped away in the WebRTC audio input pipeline and never seen outside
+	/// of that.
 	CefChannelLayoutStereoAndKeyboardMic CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_STEREO_AND_KEYBOARD_MIC
 
-	// Front L, Front R, Side L, Side R, LFE
+	/// Front L, Front R, Side L, Side R, LFE
 	CefChannelLayout41QuadSide CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_4_1_QUAD_SIDE
 
-	// Actual channel layout is specified in the bitstream and the actual channel
-	// count is unknown at Chromium media pipeline level (useful for audio
-	// pass-through mode).
+	/// Actual channel layout is specified in the bitstream and the actual channel
+	/// count is unknown at Chromium media pipeline level (useful for audio
+	/// pass-through mode).
 	CefChannelLayoutBitstream CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_BITSTREAM
 
-	// Front L, Front R, Front C, LFE, Side L, Side R,
-	// Front Height L, Front Height R, Rear Height L, Rear Height R
-	// Will be represented as six channels (5.1) due to eight channel limit
-	// kMaxConcurrentChannels
+	/// Front L, Front R, Front C, LFE, Side L, Side R,
+	/// Front Height L, Front Height R, Rear Height L, Rear Height R
+	/// Will be represented as six channels (5.1) due to eight channel limit
+	/// kMaxConcurrentChannels
 	CefChannelLayout514Downmix CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_5_1_4_DOWNMIX
 
-	// Max value, must always equal the largest entry ever logged.
+	/// Max value, must always equal the largest entry ever logged.
 	CefChannelLayoutMax CChannelLayoutT = C.CEF_CHANNEL_LAYOUT_MAX
 )
 
 // /
-// Structure representing the audio parameters for setting up the audio handler.
+// / Structure representing the audio parameters for setting up the audio
+// / handler.
 // /
 type CAudioParametersT C.cef_audio_parameters_t
 
@@ -4677,8 +4769,8 @@ func (st *CAudioParametersT) SetFramesPerBuffer(v int) {
 }
 
 // /
-// Result codes for CefMediaRouter::CreateRoute. Should be kept in sync with
-// Chromium's media_router::RouteRequestResult::ResultCode type.
+// / Result codes for CefMediaRouter::CreateRoute. Should be kept in sync with
+// / Chromium's media_router::mojom::RouteRequestResultCode type.
 // /
 type CMediaRouteCreateResultT C.cef_media_route_create_result_t
 
@@ -4693,11 +4785,10 @@ const (
 	CefMrcrCancelled              CMediaRouteCreateResultT = C.CEF_MRCR_CANCELLED
 	CefMrcrRouteAlreadyExists     CMediaRouteCreateResultT = C.CEF_MRCR_ROUTE_ALREADY_EXISTS
 	CefMrcrRouteAlreadyTerminated CMediaRouteCreateResultT = C.CEF_MRCR_ROUTE_ALREADY_TERMINATED
-	CefMrcrTotalCount             CMediaRouteCreateResultT = C.CEF_MRCR_TOTAL_COUNT
 )
 
 // /
-// Connection state for a MediaRoute object.
+// / Connection state for a MediaRoute object.
 // /
 type CMediaRouteConnectionStateT C.cef_media_route_connection_state_t
 
@@ -4710,8 +4801,8 @@ const (
 )
 
 // /
-// Icon types for a MediaSink object. Should be kept in sync with Chromium's
-// media_router::SinkIconType type.
+// / Icon types for a MediaSink object. Should be kept in sync with Chromium's
+// / media_router::SinkIconType type.
 // /
 type CMediaSinkIconTypeT C.cef_media_sink_icon_type_t
 
@@ -4728,7 +4819,7 @@ const (
 )
 
 // /
-// Device information for a MediaSink object.
+// / Device information for a MediaSink object.
 // /
 type CMediaSinkDeviceInfoT C.cef_media_sink_device_info_t
 
@@ -4762,7 +4853,7 @@ func (st *CMediaSinkDeviceInfoT) SetModelName(v string) {
 }
 
 // /
-// Represents commands available to TextField.
+// / Represents commands available to TextField.
 // /
 type CTextFieldCommandsT C.cef_text_field_commands_t
 
@@ -4776,7 +4867,7 @@ const (
 )
 
 // /
-// Supported Chrome toolbar types.
+// / Supported Chrome toolbar types.
 // /
 type CChromeToolbarTypeT C.cef_chrome_toolbar_type_t
 
@@ -4787,7 +4878,7 @@ const (
 )
 
 // /
-// Docking modes supported by CefWindow::AddOverlay.
+// / Docking modes supported by CefWindow::AddOverlay.
 // /
 type CDockingModeT C.cef_docking_mode_t
 
@@ -4800,7 +4891,7 @@ const (
 )
 
 // /
-// Show states supported by CefWindowDelegate::GetInitialShowState.
+// / Show states supported by CefWindowDelegate::GetInitialShowState.
 // /
 type CShowStateT C.cef_show_state_t
 
@@ -4811,10 +4902,208 @@ const (
 	CefShowStateFullscreen CShowStateT = C.CEF_SHOW_STATE_FULLSCREEN
 )
 
+// /
+// / Values indicating what state of the touch handle is set.
+// /
+type CTouchHandleStateFlagsT C.cef_touch_handle_state_flags_t
+
+const (
+	CefThsFlagNone        CTouchHandleStateFlagsT = C.CEF_THS_FLAG_NONE
+	CefThsFlagEnabled     CTouchHandleStateFlagsT = C.CEF_THS_FLAG_ENABLED
+	CefThsFlagOrientation CTouchHandleStateFlagsT = C.CEF_THS_FLAG_ORIENTATION
+	CefThsFlagOrigin      CTouchHandleStateFlagsT = C.CEF_THS_FLAG_ORIGIN
+	CefThsFlagAlpha       CTouchHandleStateFlagsT = C.CEF_THS_FLAG_ALPHA
+)
+
+type CTouchHandleStateT C.cef_touch_handle_state_t
+
+func NewCTouchHandleStateT() *CTouchHandleStateT {
+	s := &CTouchHandleStateT{}
+	return s
+}
+
+func (st *CTouchHandleStateT) TouchHandleId() int {
+	return int(st.touch_handle_id)
+}
+
+func (st *CTouchHandleStateT) SetTouchHandleId(v int) {
+	st.touch_handle_id = (C.int)(v)
+}
+
+func (st *CTouchHandleStateT) Flags() uint32 {
+	return uint32(st.flags)
+}
+
+func (st *CTouchHandleStateT) SetFlags(v uint32) {
+	st.flags = (C.uint32)(v)
+}
+
+func (st *CTouchHandleStateT) Enabled() int {
+	return int(st.enabled)
+}
+
+func (st *CTouchHandleStateT) SetEnabled(v int) {
+	st.enabled = (C.int)(v)
+}
+
+func (st *CTouchHandleStateT) Orientation() CHorizontalAlignmentT {
+	return CHorizontalAlignmentT(st.orientation)
+}
+
+func (st *CTouchHandleStateT) SetOrientation(v CHorizontalAlignmentT) {
+	st.orientation = (C.cef_horizontal_alignment_t)(v)
+}
+
+func (st *CTouchHandleStateT) MirrorVertical() int {
+	return int(st.mirror_vertical)
+}
+
+func (st *CTouchHandleStateT) SetMirrorVertical(v int) {
+	st.mirror_vertical = (C.int)(v)
+}
+
+func (st *CTouchHandleStateT) MirrorHorizontal() int {
+	return int(st.mirror_horizontal)
+}
+
+func (st *CTouchHandleStateT) SetMirrorHorizontal(v int) {
+	st.mirror_horizontal = (C.int)(v)
+}
+
+func (st *CTouchHandleStateT) Origin() CPointT {
+	return CPointT(st.origin)
+}
+
+func (st *CTouchHandleStateT) SetOrigin(v CPointT) {
+	st.origin = (C.cef_point_t)(v)
+}
+
+func (st *CTouchHandleStateT) Alpha() float32 {
+	return float32(st.alpha)
+}
+
+func (st *CTouchHandleStateT) SetAlpha(v float32) {
+	st.alpha = (C.float)(v)
+}
+
+// /
+// / Media access permissions used by OnRequestMediaAccessPermission.
+// /
+type CMediaAccessPermissionTypesT C.cef_media_access_permission_types_t
+
+const (
+
+	///
+	/// No permission.
+	///
+	CefMediaPermissionNone CMediaAccessPermissionTypesT = C.CEF_MEDIA_PERMISSION_NONE
+
+	///
+	/// Device audio capture permission.
+	///
+	CefMediaPermissionDeviceAudioCapture CMediaAccessPermissionTypesT = C.CEF_MEDIA_PERMISSION_DEVICE_AUDIO_CAPTURE
+
+	///
+	/// Device video capture permission.
+	///
+	CefMediaPermissionDeviceVideoCapture CMediaAccessPermissionTypesT = C.CEF_MEDIA_PERMISSION_DEVICE_VIDEO_CAPTURE
+
+	///
+	/// Desktop audio capture permission.
+	///
+	CefMediaPermissionDesktopAudioCapture CMediaAccessPermissionTypesT = C.CEF_MEDIA_PERMISSION_DESKTOP_AUDIO_CAPTURE
+
+	///
+	/// Desktop video capture permission.
+	///
+	CefMediaPermissionDesktopVideoCapture CMediaAccessPermissionTypesT = C.CEF_MEDIA_PERMISSION_DESKTOP_VIDEO_CAPTURE
+)
+
+// /
+// / Permission types used with OnShowPermissionPrompt. Some types are
+// / platform-specific or only supported with the Chrome runtime. Should be kept
+// / in sync with Chromium's permissions::RequestType type.
+// /
+type CPermissionRequestTypesT C.cef_permission_request_types_t
+
+const (
+	CefPermissionTypeNone                     CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_NONE
+	CefPermissionTypeAccessibilityEvents      CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_ACCESSIBILITY_EVENTS
+	CefPermissionTypeArSession                CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_AR_SESSION
+	CefPermissionTypeCameraPanTiltZoom        CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_CAMERA_PAN_TILT_ZOOM
+	CefPermissionTypeCameraStream             CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_CAMERA_STREAM
+	CefPermissionTypeClipboard                CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_CLIPBOARD
+	CefPermissionTypeDiskQuota                CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_DISK_QUOTA
+	CefPermissionTypeLocalFonts               CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_LOCAL_FONTS
+	CefPermissionTypeGeolocation              CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_GEOLOCATION
+	CefPermissionTypeIdleDetection            CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_IDLE_DETECTION
+	CefPermissionTypeMicStream                CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_MIC_STREAM
+	CefPermissionTypeMidiSysex                CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_MIDI_SYSEX
+	CefPermissionTypeMultipleDownloads        CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_MULTIPLE_DOWNLOADS
+	CefPermissionTypeNotifications            CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_NOTIFICATIONS
+	CefPermissionTypeProtectedMediaIdentifier CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_PROTECTED_MEDIA_IDENTIFIER
+	CefPermissionTypeRegisterProtocolHandler  CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_REGISTER_PROTOCOL_HANDLER
+	CefPermissionTypeSecurityAttestation      CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_SECURITY_ATTESTATION
+	CefPermissionTypeStorageAccess            CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_STORAGE_ACCESS
+	CefPermissionTypeU2fApiRequest            CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_U2F_API_REQUEST
+	CefPermissionTypeVrSession                CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_VR_SESSION
+	CefPermissionTypeWindowPlacement          CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_WINDOW_PLACEMENT
+)
+
+// /
+// / Permission request results.
+// /
+type CPermissionRequestResultT C.cef_permission_request_result_t
+
+const (
+
+	///
+	/// Accept the permission request as an explicit user action.
+	///
+	CefPermissionResultAccept CPermissionRequestResultT = C.CEF_PERMISSION_RESULT_ACCEPT
+
+	///
+	/// Deny the permission request as an explicit user action.
+	///
+	CefPermissionResultDeny CPermissionRequestResultT = C.CEF_PERMISSION_RESULT_DENY
+
+	///
+	/// Dismiss the permission request as an explicit user action.
+	///
+	CefPermissionResultDismiss CPermissionRequestResultT = C.CEF_PERMISSION_RESULT_DISMISS
+
+	///
+	/// Ignore the permission request. If the prompt remains unhandled (e.g.
+	/// OnShowPermissionPrompt returns false and there is no default permissions
+	/// UI) then any related promises may remain unresolved.
+	///
+	CefPermissionResultIgnore CPermissionRequestResultT = C.CEF_PERMISSION_RESULT_IGNORE
+)
+
+// /
+// / Certificate types supported by CefTestServer::CreateAndStart. The matching
+// / certificate file must exist in the "net/data/ssl/certificates" directory.
+// / See CefSetDataDirectoryForTests() for related configuration.
+// /
+type CTestCertTypeT C.cef_test_cert_type_t
+
+const (
+
+	/// Valid certificate using the IP (127.0.0.1). Loads the "ok_cert.pem" file.
+	CefTestCertOkIp CTestCertTypeT = C.CEF_TEST_CERT_OK_IP
+
+	/// Valid certificate using the domain ("localhost"). Loads the
+	/// "localhost_cert.pem" file.
+	CefTestCertOkDomain CTestCertTypeT = C.CEF_TEST_CERT_OK_DOMAIN
+
+	/// Expired certificate. Loads the "expired_cert.pem" file.
+	CefTestCertExpired CTestCertTypeT = C.CEF_TEST_CERT_EXPIRED
+)
+
 // cef_types_geometry.h, include/internal/cef_types_geometry.h:44:3,
 
 // /
-// Structure representing a point.
+// / Structure representing a point.
 // /
 type CPointT C.cef_point_t
 
@@ -4840,7 +5129,7 @@ func (st *CPointT) SetY(v int) {
 }
 
 // /
-// Structure representing a rectangle.
+// / Structure representing a rectangle.
 // /
 type CRectT C.cef_rect_t
 
@@ -4882,7 +5171,7 @@ func (st *CRectT) SetHeight(v int) {
 }
 
 // /
-// Structure representing a size.
+// / Structure representing a size.
 // /
 type CSizeT C.cef_size_t
 
@@ -4908,7 +5197,7 @@ func (st *CSizeT) SetHeight(v int) {
 }
 
 // /
-// Structure representing insets.
+// / Structure representing insets.
 // /
 type CInsetsT C.cef_insets_t
 

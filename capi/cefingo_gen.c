@@ -747,7 +747,7 @@ void cefingo_browser_host_send_external_begin_frame(
 
 void cefingo_browser_host_send_key_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_key_event_t* event
+	const cef_key_event_t* event
 )
 {
 	self->send_key_event(
@@ -758,7 +758,7 @@ void cefingo_browser_host_send_key_event(
 
 void cefingo_browser_host_send_mouse_click_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	cef_mouse_button_type_t type,
 	int mouseUp,
 	int clickCount
@@ -775,7 +775,7 @@ void cefingo_browser_host_send_mouse_click_event(
 
 void cefingo_browser_host_send_mouse_move_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	int mouseLeave
 )
 {
@@ -788,7 +788,7 @@ void cefingo_browser_host_send_mouse_move_event(
 
 void cefingo_browser_host_send_mouse_wheel_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	int deltaX,
 	int deltaY
 )
@@ -803,7 +803,7 @@ void cefingo_browser_host_send_mouse_wheel_event(
 
 void cefingo_browser_host_send_touch_event(
 	struct _cef_browser_host_t* self,
-	const struct _cef_touch_event_t* event
+	const cef_touch_event_t* event
 )
 {
 	self->send_touch_event(
@@ -907,7 +907,7 @@ void cefingo_browser_host_ime_cancel_composition(
 void cefingo_browser_host_drag_target_drag_enter(
 	struct _cef_browser_host_t* self,
 	struct _cef_drag_data_t* drag_data,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	cef_drag_operations_mask_t allowed_ops
 )
 {
@@ -921,7 +921,7 @@ void cefingo_browser_host_drag_target_drag_enter(
 
 void cefingo_browser_host_drag_target_drag_over(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event,
+	const cef_mouse_event_t* event,
 	cef_drag_operations_mask_t allowed_ops
 )
 {
@@ -943,7 +943,7 @@ void cefingo_browser_host_drag_target_drag_leave(
 
 void cefingo_browser_host_drag_target_drop(
 	struct _cef_browser_host_t* self,
-	const struct _cef_mouse_event_t* event
+	const cef_mouse_event_t* event
 )
 {
 	self->drag_target_drop(
@@ -1300,6 +1300,8 @@ cef_client_t *cefingo_construct_client(cefingo_client_wrapper_t* client)
 		cefingo_client_get_focus_handler;
 	client->body.get_frame_handler =
 		cefingo_client_get_frame_handler;
+	client->body.get_permission_handler =
+		cefingo_client_get_permission_handler;
 	client->body.get_jsdialog_handler =
 		cefingo_client_get_jsdialog_handler;
 	client->body.get_keyboard_handler =
@@ -1552,6 +1554,37 @@ void cefingo_run_context_menu_callback_cancel(
 	);
 }
 
+void cefingo_run_quick_menu_callback_cont(
+	struct _cef_run_quick_menu_callback_t* self,
+	int command_id,
+	cef_event_flags_t event_flags
+)
+{
+	self->cont(
+		self,
+		command_id,
+		event_flags
+	);
+}
+
+void cefingo_run_quick_menu_callback_cancel(
+	struct _cef_run_quick_menu_callback_t* self
+)
+{
+	self->cancel(
+		self
+	);
+}
+
+typedef int (*T_CEF_CONTEXT_MENU_HANDLER_T_RUN_QUICK_MENU)(
+	struct _cef_context_menu_handler_t*,
+	struct _cef_browser_t*,
+	struct _cef_frame_t*,
+	const cef_point_t*,
+	const cef_size_t*,
+	cef_quick_menu_edit_state_flags_t,
+	struct _cef_run_quick_menu_callback_t*
+);
 
 cef_context_menu_handler_t *cefingo_construct_context_menu_handler(cefingo_context_menu_handler_wrapper_t* context_menu_handler)
 {
@@ -1568,6 +1601,12 @@ cef_context_menu_handler_t *cefingo_construct_context_menu_handler(cefingo_conte
 		cefingo_context_menu_handler_on_context_menu_command;
 	context_menu_handler->body.on_context_menu_dismissed =
 		cefingo_context_menu_handler_on_context_menu_dismissed;
+	context_menu_handler->body.run_quick_menu =
+		(/* T_CEF_CONTEXT_MENU_HANDLER_T_RUN_QUICK_MENU */ void *)cefingo_context_menu_handler_run_quick_menu;
+	context_menu_handler->body.on_quick_menu_command =
+		cefingo_context_menu_handler_on_quick_menu_command;
+	context_menu_handler->body.on_quick_menu_dismissed =
+		cefingo_context_menu_handler_on_quick_menu_dismissed;
 
 	return (cef_context_menu_handler_t*)context_menu_handler;
 }
@@ -2057,7 +2096,7 @@ typedef int (*T_CEF_DISPLAY_HANDLER_T_ON_CURSOR_CHANGE)(
 	struct _cef_browser_t*,
 	cef_cursor_handle_t,
 	cef_cursor_type_t,
-	const struct _cef_cursor_info_t*
+	const cef_cursor_info_t*
 );
 
 cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler_wrapper_t* display_handler)
@@ -2087,6 +2126,8 @@ cef_display_handler_t *cefingo_construct_display_handler(cefingo_display_handler
 		cefingo_display_handler_on_loading_progress_change;
 	display_handler->body.on_cursor_change =
 		(/* T_CEF_DISPLAY_HANDLER_T_ON_CURSOR_CHANGE */ void *)cefingo_display_handler_on_cursor_change;
+	display_handler->body.on_media_access_change =
+		cefingo_display_handler_on_media_access_change;
 
 	return (cef_display_handler_t*)display_handler;
 }
@@ -2626,7 +2667,7 @@ int64 cefingo_download_item_get_received_bytes(
 		);
 }
 
-cef_time_t cefingo_download_item_get_start_time(
+cef_basetime_t cefingo_download_item_get_start_time(
 	struct _cef_download_item_t* self
 )
 {
@@ -2635,7 +2676,7 @@ cef_time_t cefingo_download_item_get_start_time(
 		);
 }
 
-cef_time_t cefingo_download_item_get_end_time(
+cef_basetime_t cefingo_download_item_get_end_time(
 	struct _cef_download_item_t* self
 )
 {
@@ -3714,14 +3755,14 @@ cef_jsdialog_handler_t *cefingo_construct_jsdialog_handler(cefingo_jsdialog_hand
 typedef int (*T_CEF_KEYBOARD_HANDLER_T_ON_PRE_KEY_EVENT)(
 	struct _cef_keyboard_handler_t*,
 	struct _cef_browser_t*,
-	const struct _cef_key_event_t*,
+	const cef_key_event_t*,
 	cef_event_handle_t,
 	int*
 );
 typedef int (*T_CEF_KEYBOARD_HANDLER_T_ON_KEY_EVENT)(
 	struct _cef_keyboard_handler_t*,
 	struct _cef_browser_t*,
-	const struct _cef_key_event_t*,
+	const cef_key_event_t*,
 	cef_event_handle_t
 );
 
@@ -3896,7 +3937,7 @@ typedef int (*T_CEF_LIFE_SPAN_HANDLER_T_ON_BEFORE_POPUP)(
 	const cef_string_t*,
 	cef_window_open_disposition_t,
 	int,
-	const struct _cef_popup_features_t*,
+	const cef_popup_features_t*,
 	struct _cef_window_info_t*,
 	struct _cef_client_t**,
 	struct _cef_browser_settings_t*,
@@ -4306,7 +4347,7 @@ int cefingo_menu_model_clear(
 		);
 }
 
-int cefingo_menu_model_get_count(
+size_t cefingo_menu_model_get_count(
 	struct _cef_menu_model_t* self
 )
 {
@@ -4380,7 +4421,7 @@ struct _cef_menu_model_t* cefingo_menu_model_add_sub_menu(
 
 int cefingo_menu_model_insert_separator_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->insert_separator_at(
@@ -4391,7 +4432,7 @@ int cefingo_menu_model_insert_separator_at(
 
 int cefingo_menu_model_insert_item_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id,
 	const cef_string_t* label
 )
@@ -4406,7 +4447,7 @@ int cefingo_menu_model_insert_item_at(
 
 int cefingo_menu_model_insert_check_item_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id,
 	const cef_string_t* label
 )
@@ -4421,7 +4462,7 @@ int cefingo_menu_model_insert_check_item_at(
 
 int cefingo_menu_model_insert_radio_item_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id,
 	const cef_string_t* label,
 	int group_id
@@ -4438,7 +4479,7 @@ int cefingo_menu_model_insert_radio_item_at(
 
 struct _cef_menu_model_t* cefingo_menu_model_insert_sub_menu_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id,
 	const cef_string_t* label
 )
@@ -4464,7 +4505,7 @@ int cefingo_menu_model_remove(
 
 int cefingo_menu_model_remove_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->remove_at(
@@ -4486,7 +4527,7 @@ int cefingo_menu_model_get_index_of(
 
 int cefingo_menu_model_get_command_id_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->get_command_id_at(
@@ -4497,7 +4538,7 @@ int cefingo_menu_model_get_command_id_at(
 
 int cefingo_menu_model_set_command_id_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int command_id
 )
 {
@@ -4521,7 +4562,7 @@ cef_string_userfree_t cefingo_menu_model_get_label(
 
 cef_string_userfree_t cefingo_menu_model_get_label_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->get_label_at(
@@ -4545,7 +4586,7 @@ int cefingo_menu_model_set_label(
 
 int cefingo_menu_model_set_label_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	const cef_string_t* label
 )
 {
@@ -4569,7 +4610,7 @@ cef_menu_item_type_t cefingo_menu_model_get_type(
 
 cef_menu_item_type_t cefingo_menu_model_get_type_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->get_type_at(
@@ -4591,7 +4632,7 @@ int cefingo_menu_model_get_group_id(
 
 int cefingo_menu_model_get_group_id_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->get_group_id_at(
@@ -4615,7 +4656,7 @@ int cefingo_menu_model_set_group_id(
 
 int cefingo_menu_model_set_group_id_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int group_id
 )
 {
@@ -4639,7 +4680,7 @@ struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu(
 
 struct _cef_menu_model_t* cefingo_menu_model_get_sub_menu_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->get_sub_menu_at(
@@ -4661,7 +4702,7 @@ int cefingo_menu_model_is_visible(
 
 int cefingo_menu_model_is_visible_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->is_visible_at(
@@ -4685,7 +4726,7 @@ int cefingo_menu_model_set_visible(
 
 int cefingo_menu_model_set_visible_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int visible
 )
 {
@@ -4709,7 +4750,7 @@ int cefingo_menu_model_is_enabled(
 
 int cefingo_menu_model_is_enabled_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->is_enabled_at(
@@ -4733,7 +4774,7 @@ int cefingo_menu_model_set_enabled(
 
 int cefingo_menu_model_set_enabled_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int enabled
 )
 {
@@ -4757,7 +4798,7 @@ int cefingo_menu_model_is_checked(
 
 int cefingo_menu_model_is_checked_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->is_checked_at(
@@ -4781,7 +4822,7 @@ int cefingo_menu_model_set_checked(
 
 int cefingo_menu_model_set_checked_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int checked
 )
 {
@@ -4805,7 +4846,7 @@ int cefingo_menu_model_has_accelerator(
 
 int cefingo_menu_model_has_accelerator_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->has_accelerator_at(
@@ -4835,7 +4876,7 @@ int cefingo_menu_model_set_accelerator(
 
 int cefingo_menu_model_set_accelerator_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int key_code,
 	int shift_pressed,
 	int ctrl_pressed,
@@ -4865,7 +4906,7 @@ int cefingo_menu_model_remove_accelerator(
 
 int cefingo_menu_model_remove_accelerator_at(
 	struct _cef_menu_model_t* self,
-	int index
+	size_t index
 )
 {
 	return	self->remove_accelerator_at(
@@ -4895,7 +4936,7 @@ int cefingo_menu_model_get_accelerator(
 
 int cefingo_menu_model_get_accelerator_at(
 	struct _cef_menu_model_t* self,
-	int index,
+	size_t index,
 	int* key_code,
 	int* shift_pressed,
 	int* ctrl_pressed,
@@ -5092,7 +5133,7 @@ int cefingo_navigation_entry_has_post_data(
 		);
 }
 
-cef_time_t cefingo_navigation_entry_get_completion_time(
+cef_basetime_t cefingo_navigation_entry_get_completion_time(
 	struct _cef_navigation_entry_t* self
 )
 {
@@ -5322,7 +5363,7 @@ struct _cef_fill_layout_t* cefingo_panel_set_to_fill_layout(
 
 struct _cef_box_layout_t* cefingo_panel_set_to_box_layout(
 	struct _cef_panel_t* self,
-	const struct _cef_box_layout_settings_t* settings
+	const cef_box_layout_settings_t* settings
 )
 {
 	return	self->set_to_box_layout(
@@ -5456,6 +5497,90 @@ cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wr
 		cefingo_panel_delegate_on_blur;
 
 	return (cef_panel_delegate_t*)panel_delegate;
+}
+
+void cefingo_media_access_callback_cont(
+	struct _cef_media_access_callback_t* self,
+	uint32 allowed_permissions
+)
+{
+	self->cont(
+		self,
+		allowed_permissions
+	);
+}
+
+void cefingo_media_access_callback_cancel(
+	struct _cef_media_access_callback_t* self
+)
+{
+	self->cancel(
+		self
+	);
+}
+
+void cefingo_permission_prompt_callback_cont(
+	struct _cef_permission_prompt_callback_t* self,
+	cef_permission_request_result_t result
+)
+{
+	self->cont(
+		self,
+		result
+	);
+}
+
+int cefingo_permission_handler_on_request_media_access_permission(
+	struct _cef_permission_handler_t* self,
+	struct _cef_browser_t* browser,
+	struct _cef_frame_t* frame,
+	const cef_string_t* requesting_origin,
+	uint32 requested_permissions,
+	struct _cef_media_access_callback_t* callback
+)
+{
+	return	self->on_request_media_access_permission(
+			self,
+			browser,
+			frame,
+			requesting_origin,
+			requested_permissions,
+			callback
+		);
+}
+
+int cefingo_permission_handler_on_show_permission_prompt(
+	struct _cef_permission_handler_t* self,
+	struct _cef_browser_t* browser,
+	uint64 prompt_id,
+	const cef_string_t* requesting_origin,
+	uint32 requested_permissions,
+	struct _cef_permission_prompt_callback_t* callback
+)
+{
+	return	self->on_show_permission_prompt(
+			self,
+			browser,
+			prompt_id,
+			requesting_origin,
+			requested_permissions,
+			callback
+		);
+}
+
+void cefingo_permission_handler_on_dismiss_permission_prompt(
+	struct _cef_permission_handler_t* self,
+	struct _cef_browser_t* browser,
+	uint64 prompt_id,
+	cef_permission_request_result_t result
+)
+{
+	self->on_dismiss_permission_prompt(
+		self,
+		browser,
+		prompt_id,
+		result
+	);
 }
 
 void cefingo_print_dialog_callback_cont(
@@ -5778,6 +5903,15 @@ struct _cef_list_value_t* cefingo_process_message_get_argument_list(
 		);
 }
 
+struct _cef_shared_memory_region_t* cefingo_process_message_get_shared_memory_region(
+	struct _cef_process_message_t* self
+)
+{
+	return	self->get_shared_memory_region(
+			self
+		);
+}
+
 typedef void (*T_CEF_RENDER_HANDLER_T_ON_POPUP_SIZE)(
 	struct _cef_render_handler_t*,
 	struct _cef_browser_t*,
@@ -5800,6 +5934,11 @@ typedef void (*T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT)(
 	size_t,
 	const cef_rect_t*,
 	void*
+);
+typedef void (*T_CEF_RENDER_HANDLER_T_ON_TOUCH_HANDLE_STATE_CHANGED)(
+	struct _cef_render_handler_t*,
+	struct _cef_browser_t*,
+	const cef_touch_handle_state_t*
 );
 typedef void (*T_CEF_RENDER_HANDLER_T_ON_IME_COMPOSITION_RANGE_CHANGED)(
 	struct _cef_render_handler_t*,
@@ -5840,6 +5979,10 @@ cef_render_handler_t *cefingo_construct_render_handler(cefingo_render_handler_wr
 		(/* T_CEF_RENDER_HANDLER_T_ON_PAINT */ void *)cefingo_render_handler_on_paint;
 	render_handler->body.on_accelerated_paint =
 		(/* T_CEF_RENDER_HANDLER_T_ON_ACCELERATED_PAINT */ void *)cefingo_render_handler_on_accelerated_paint;
+	render_handler->body.get_touch_handle_size =
+		cefingo_render_handler_get_touch_handle_size;
+	render_handler->body.on_touch_handle_state_changed =
+		(/* T_CEF_RENDER_HANDLER_T_ON_TOUCH_HANDLE_STATE_CHANGED */ void *)cefingo_render_handler_on_touch_handle_state_changed;
 	render_handler->body.start_dragging =
 		cefingo_render_handler_start_dragging;
 	render_handler->body.update_drag_cursor =
@@ -7081,6 +7224,33 @@ int cefingo_scroll_view_get_vertical_scrollbar_width(
 		);
 }
 
+int cefingo_shared_memory_region_is_valid(
+	struct _cef_shared_memory_region_t* self
+)
+{
+	return	self->is_valid(
+			self
+		);
+}
+
+size_t cefingo_shared_memory_region_size(
+	struct _cef_shared_memory_region_t* self
+)
+{
+	return	self->size(
+			self
+		);
+}
+
+const void* cefingo_shared_memory_region_memory(
+	struct _cef_shared_memory_region_t* self
+)
+{
+	return	self->memory(
+			self
+		);
+}
+
 cef_cert_status_t cefingo_sslinfo_get_cert_status(
 	struct _cef_sslinfo_t* self
 )
@@ -7715,7 +7885,7 @@ void cefingo_textfield_set_accessible_name(
 typedef int (*T_CEF_TEXTFIELD_DELEGATE_T_ON_KEY_EVENT)(
 	struct _cef_textfield_delegate_t*,
 	struct _cef_textfield_t*,
-	const struct _cef_key_event_t*
+	const cef_key_event_t*
 );
 
 cef_textfield_delegate_t *cefingo_construct_textfield_delegate(cefingo_textfield_delegate_wrapper_t* textfield_delegate)
@@ -8335,7 +8505,7 @@ double cefingo_v8value_get_double_value(
 		);
 }
 
-cef_time_t cefingo_v8value_get_date_value(
+cef_basetime_t cefingo_v8value_get_date_value(
 	struct _cef_v8value_t* self
 )
 {
@@ -10572,7 +10742,7 @@ void cefingo_window_remove_all_accelerators(
 typedef int (*T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT)(
 	struct _cef_window_delegate_t*,
 	struct _cef_window_t*,
-	const struct _cef_key_event_t*
+	const cef_key_event_t*
 );
 
 cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate_wrapper_t* window_delegate)
@@ -10748,7 +10918,7 @@ struct _cef_binary_value_t* cefingo_x509certificate_get_serial_number(
 		);
 }
 
-cef_time_t cefingo_x509certificate_get_valid_start(
+cef_basetime_t cefingo_x509certificate_get_valid_start(
 	struct _cef_x509certificate_t* self
 )
 {
@@ -10757,7 +10927,7 @@ cef_time_t cefingo_x509certificate_get_valid_start(
 		);
 }
 
-cef_time_t cefingo_x509certificate_get_valid_expiry(
+cef_basetime_t cefingo_x509certificate_get_valid_expiry(
 	struct _cef_x509certificate_t* self
 )
 {
