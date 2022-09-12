@@ -400,6 +400,75 @@ func (st *CBasetimeT) SetVal(v int64) {
 // /
 type CTimeT C.cef_time_t
 
+func NewCTimeT() *CTimeT {
+	s := &CTimeT{}
+	return s
+}
+
+func (st *CTimeT) Year() int {
+	return int(st.year)
+}
+
+func (st *CTimeT) SetYear(v int) {
+	st.year = (C.int)(v)
+}
+
+func (st *CTimeT) Month() int {
+	return int(st.month)
+}
+
+func (st *CTimeT) SetMonth(v int) {
+	st.month = (C.int)(v)
+}
+
+func (st *CTimeT) DayOfWeek() int {
+	return int(st.day_of_week)
+}
+
+func (st *CTimeT) SetDayOfWeek(v int) {
+	st.day_of_week = (C.int)(v)
+}
+
+func (st *CTimeT) DayOfMonth() int {
+	return int(st.day_of_month)
+}
+
+func (st *CTimeT) SetDayOfMonth(v int) {
+	st.day_of_month = (C.int)(v)
+}
+
+func (st *CTimeT) Hour() int {
+	return int(st.hour)
+}
+
+func (st *CTimeT) SetHour(v int) {
+	st.hour = (C.int)(v)
+}
+
+func (st *CTimeT) Minute() int {
+	return int(st.minute)
+}
+
+func (st *CTimeT) SetMinute(v int) {
+	st.minute = (C.int)(v)
+}
+
+func (st *CTimeT) Second() int {
+	return int(st.second)
+}
+
+func (st *CTimeT) SetSecond(v int) {
+	st.second = (C.int)(v)
+}
+
+func (st *CTimeT) Millisecond() int {
+	return int(st.millisecond)
+}
+
+func (st *CTimeT) SetMillisecond(v int) {
+	st.millisecond = (C.int)(v)
+}
+
 // /
 // / Converts cef_time_t to/from time_t. Returns true (1) on success and false
 // / (0) on failure.
