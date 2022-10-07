@@ -3867,7 +3867,9 @@ func cefingo_extension_handler_on_before_background_browser(
 		if cefp != goTmpclientOut.pc_client {
 			if goTmpclientOut.beUnrefed != byCef {
 				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+				BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
 			}
+			BaseRelease(cefp) // for byApi
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
 		}
 		*settings = C.cef_browser_settings_t(goTmpsettingsOut)
@@ -3949,7 +3951,9 @@ func cefingo_extension_handler_on_before_browser(
 		if cefp != goTmpclientOut.pc_client {
 			if goTmpclientOut.beUnrefed != byCef {
 				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+				BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
 			}
+			BaseRelease(cefp) // for byApi
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
 		}
 		*settings = C.cef_browser_settings_t(goTmpsettingsOut)
@@ -4653,7 +4657,9 @@ func cefingo_life_span_handler_on_before_popup(
 		if cefp != goTmpclientOut.pc_client {
 			if goTmpclientOut.beUnrefed != byCef {
 				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
+				BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
 			}
+			BaseRelease(cefp) // for byApi
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
 		}
 		*settings = C.cef_browser_settings_t(goTmpsettingsOut)

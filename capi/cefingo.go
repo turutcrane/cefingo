@@ -160,3 +160,8 @@ func ColorGetB(c CColorT) uint32 {
 func (rect *CRectT) IsEmpty() bool {
 	return rect.width <= 0 || rect.height <= 0
 }
+
+// CClint Pointer print for debug
+func CheckClients(msg string, c *CClientT) {
+		Logf("%s: %p, %d", msg, c.pc_client, c.beUnrefed)
+}
