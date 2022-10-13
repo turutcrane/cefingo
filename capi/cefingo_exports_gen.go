@@ -2651,6 +2651,7 @@ func cefingo_cookie_visitor_visit(
 		goTmptotal := (int)(total)
 
 		goRet, goTmpdeleteCookieOut := f.Visit(goTmpself, goTmpcookie, goTmpcount, goTmptotal)
+		// IsOutParam
 		*deleteCookie = (C.int)(goTmpdeleteCookieOut)
 
 		if goRet {
@@ -3867,7 +3868,7 @@ func cefingo_extension_handler_on_before_background_browser(
 		if cefp != goTmpclientOut.pc_client {
 			if goTmpclientOut.beUnrefed != byCef {
 				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
-				BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
+				// BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
 			}
 			BaseRelease(cefp) // for byApi
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
@@ -3881,7 +3882,7 @@ func cefingo_extension_handler_on_before_background_browser(
 		Logf("T144.12: on_before_background_browser: Noo!")
 	}
 	BaseRelease((*cCExtensionT)(extension)) // byApi
-	BaseRelease((*cCClientT)(*client))      // byApi
+	// BaseRelease((*cCClientT)(*client)) // byApi
 
 	return cRet
 }
@@ -3951,7 +3952,7 @@ func cefingo_extension_handler_on_before_browser(
 		if cefp != goTmpclientOut.pc_client {
 			if goTmpclientOut.beUnrefed != byCef {
 				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
-				BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
+				// BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
 			}
 			BaseRelease(cefp) // for byApi
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
@@ -3967,7 +3968,7 @@ func cefingo_extension_handler_on_before_browser(
 	BaseRelease((*cCExtensionT)(extension))    // byApi
 	BaseRelease((*cCBrowserT)(browser))        // byApi
 	BaseRelease((*cCBrowserT)(active_browser)) // byApi
-	BaseRelease((*cCClientT)(*client))         // byApi
+	// BaseRelease((*cCClientT)(*client)) // byApi
 
 	return cRet
 }
@@ -4350,6 +4351,7 @@ func cefingo_jsdialog_handler_on_jsdialog(
 		goTmpcallback := newCJsdialogCallbackT(callback, byApi)
 
 		goRet, goTmpsuppress_messageOut := f.OnJsdialog(goTmpself, goTmpbrowser, goTmporigin_url, goTmpdialog_type, goTmpmessage_text, goTmpdefault_prompt_text, goTmpcallback)
+		// IsOutParam
 		*suppress_message = (C.int)(goTmpsuppress_messageOut)
 
 		if goRet {
@@ -4517,6 +4519,7 @@ func cefingo_keyboard_handler_on_pre_key_event(
 		goTmpos_event := CEventHandleT(os_event)
 
 		goRet, goTmpis_keyboard_shortcutOut := f.OnPreKeyEvent(goTmpself, goTmpbrowser, goTmpevent, goTmpos_event)
+		// IsOutParam
 		*is_keyboard_shortcut = (C.int)(goTmpis_keyboard_shortcutOut)
 
 		if goRet {
@@ -4657,12 +4660,13 @@ func cefingo_life_span_handler_on_before_popup(
 		if cefp != goTmpclientOut.pc_client {
 			if goTmpclientOut.beUnrefed != byCef {
 				BaseAddRef(goTmpclientOut.pc_client) // InOut Param
-				BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
+				// BaseAddRef(goTmpclientOut.pc_client) // for Last byApi
 			}
 			BaseRelease(cefp) // for byApi
 			*client = (*C.cef_client_t)(goTmpclientOut.pc_client)
 		}
 		*settings = C.cef_browser_settings_t(goTmpsettingsOut)
+		// IsOutParam
 		if goTmpextra_infoOut != nil {
 			if goTmpextra_infoOut.beUnrefed != byCef {
 				BaseAddRef(goTmpextra_infoOut.pc_dictionary_value) // Out Param
@@ -4682,7 +4686,7 @@ func cefingo_life_span_handler_on_before_popup(
 	}
 	BaseRelease((*cCBrowserT)(browser)) // byApi
 	BaseRelease((*cCFrameT)(frame))     // byApi
-	BaseRelease((*cCClientT)(*client))  // byApi
+	// BaseRelease((*cCClientT)(*client)) // byApi
 
 	return cRet
 }
@@ -6511,6 +6515,7 @@ func cefingo_render_handler_get_root_screen_rect(
 		goTmpbrowser := newCBrowserT(browser, byApi)
 
 		goRet, goTmprectOut := f.GetRootScreenRect(goTmpself, goTmpbrowser)
+		// IsOutParam
 		*rect = (C.cef_rect_t)(goTmprectOut)
 
 		if goRet {
@@ -6550,6 +6555,7 @@ func cefingo_render_handler_get_view_rect(
 		goTmpbrowser := newCBrowserT(browser, byApi)
 
 		goTmprectOut := f.GetViewRect(goTmpself, goTmpbrowser)
+		// IsOutParam
 		*rect = (C.cef_rect_t)(goTmprectOut)
 
 	} else {
@@ -6594,7 +6600,9 @@ func cefingo_render_handler_get_screen_point(
 		goTmpviewY := (int)(viewY)
 
 		goRet, goTmpscreenXOut, goTmpscreenYOut := f.GetScreenPoint(goTmpself, goTmpbrowser, goTmpviewX, goTmpviewY)
+		// IsOutParam
 		*screenX = (C.int)(goTmpscreenXOut)
+		// IsOutParam
 		*screenY = (C.int)(goTmpscreenYOut)
 
 		if goRet {
@@ -7625,6 +7633,7 @@ func cefingo_request_context_handler_get_resource_request_handler(
 		goTmprequest_initiator := string_from_cef_string(request_initiator)
 
 		goRet, goTmpdisable_default_handlingOut := f.GetResourceRequestHandler(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpis_navigation, goTmpis_download, goTmprequest_initiator)
+		// IsOutParam
 		*disable_default_handling = 0
 		if goTmpdisable_default_handlingOut {
 			*disable_default_handling = 1
@@ -7821,6 +7830,7 @@ func cefingo_request_handler_get_resource_request_handler(
 		goTmprequest_initiator := string_from_cef_string(request_initiator)
 
 		goRet, goTmpdisable_default_handlingOut := f.GetResourceRequestHandler(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpis_navigation, goTmpis_download, goTmprequest_initiator)
+		// IsOutParam
 		*disable_default_handling = 0
 		if goTmpdisable_default_handlingOut {
 			*disable_default_handling = 1
@@ -8216,6 +8226,7 @@ func cefingo_resource_bundle_handler_get_localized_string(
 		goTmpstring_id := (int)(string_id)
 
 		goRet, goTmpstringOut := f.GetLocalizedString(goTmpself, goTmpstring_id)
+		// IsOutParam
 		set_cef_string(cstring, goTmpstringOut)
 
 		if goRet {
@@ -8259,6 +8270,7 @@ func cefingo_resource_bundle_handler_get_data_resource(
 		goTmpresource_id := (int)(resource_id)
 
 		goRet, goTmpdataOut := f.GetDataResource(goTmpself, goTmpresource_id)
+		// IsOutParam
 		*data_size = C.size_t(len(goTmpdataOut))
 		*data = (C.VOIDP)(c_calloc(*data_size, 1, "T188.8:cef_resource_bundle_handler_t::get_data_resource::data"))
 		target := (*[1 << 30]byte)(unsafe.Pointer(*data))[:*data_size:*data_size]
@@ -8308,6 +8320,7 @@ func cefingo_resource_bundle_handler_get_data_resource_for_scale(
 		goTmpscale_factor := CScaleFactorT(scale_factor)
 
 		goRet, goTmpdataOut := f.GetDataResourceForScale(goTmpself, goTmpresource_id, goTmpscale_factor)
+		// IsOutParam
 		*data_size = C.size_t(len(goTmpdataOut))
 		*data = (C.VOIDP)(c_calloc(*data_size, 1, "T188.11:cef_resource_bundle_handler_t::get_data_resource_for_scale::data"))
 		target := (*[1 << 30]byte)(unsafe.Pointer(*data))[:*data_size:*data_size]
@@ -8358,6 +8371,7 @@ func cefingo_resource_handler_open(
 		goTmpcallback := newCCallbackT(callback, byApi)
 
 		goRet, goTmphandle_requestOut := f.Open(goTmpself, goTmprequest, goTmpcallback)
+		// IsOutParam
 		*handle_request = 0
 		if goTmphandle_requestOut {
 			*handle_request = 1
@@ -8459,7 +8473,9 @@ func cefingo_resource_handler_get_response_headers(
 		goTmpresponse := newCResponseT(response, byApi)
 
 		goTmpresponse_lengthOut, goTmpredirectUrlOut := f.GetResponseHeaders(goTmpself, goTmpresponse)
+		// IsOutParam
 		*response_length = (C.int64)(goTmpresponse_lengthOut)
+		// IsOutParam
 		set_cef_string(redirectUrl, goTmpredirectUrlOut)
 
 	} else {
@@ -8503,6 +8519,7 @@ func cefingo_resource_handler_skip(
 		goTmpcallback := newCResourceSkipCallbackT(callback, byApi)
 
 		goRet, goTmpbytes_skippedOut := f.Skip(goTmpself, goTmpbytes_to_skip, goTmpcallback)
+		// IsOutParam
 		*bytes_skipped = (C.int64)(goTmpbytes_skippedOut)
 
 		if goRet {
@@ -8555,6 +8572,7 @@ func cefingo_resource_handler_read(
 		goTmpcallback := newCResourceReadCallbackT(callback, byApi)
 
 		goRet, goTmpbytes_readOut := f.Read(goTmpself, goTmpdata_out, goTmpcallback)
+		// IsOutParam
 		*bytes_read = (C.int)(goTmpbytes_readOut)
 
 		if goRet {
@@ -8795,6 +8813,7 @@ func cefingo_resource_request_handler_on_resource_redirect(
 		goTmpresponse := newCResponseT(response, byApi)
 
 		goTmpnew_urlOut := f.OnResourceRedirect(goTmpself, goTmpbrowser, goTmpframe, goTmprequest, goTmpresponse)
+		// IsOutParam
 		set_cef_string(new_url, goTmpnew_urlOut)
 
 	} else {
@@ -9022,6 +9041,7 @@ func cefingo_resource_request_handler_on_protocol_execution(
 		goTmprequest := newCRequestT(request, byApi)
 
 		goTmpallow_os_executionOut := f.OnProtocolExecution(goTmpself, goTmpbrowser, goTmpframe, goTmprequest)
+		// IsOutParam
 		*allow_os_execution = (C.int)(goTmpallow_os_executionOut)
 
 	} else {
@@ -9232,7 +9252,9 @@ func cefingo_response_filter_filter(
 		goTmpdata_out := (*[1 << 30]byte)(data_out)[:data_out_size:data_out_size]
 
 		goRet, goTmpdata_in_readOut, goTmpdata_out_writtenOut := f.Filter(goTmpself, goTmpdata_in, goTmpdata_out)
+		// IsOutParam
 		*data_in_read = (C.size_t)(goTmpdata_in_readOut)
+		// IsOutParam
 		*data_out_written = (C.size_t)(goTmpdata_out_writtenOut)
 
 		cRet = (C.cef_response_filter_status_t)(goRet)
@@ -10382,12 +10404,14 @@ func cefingo_v8handler_execute(
 		}
 
 		goRet, goTmpretvalOut, goTmpexceptionOut := f.Execute(goTmpself, goTmpname, goTmpobject, goTmparguments)
+		// IsOutParam
 		if goTmpretvalOut != nil {
 			if goTmpretvalOut.beUnrefed != byCef {
 				BaseAddRef(goTmpretvalOut.pc_v8value) // Out Param
 			}
 			*retval = (*C.cef_v8value_t)(goTmpretvalOut.pc_v8value)
 		}
+		// IsOutParam
 		set_cef_string(exception, goTmpexceptionOut)
 
 		if goRet {
@@ -10434,12 +10458,14 @@ func cefingo_v8accessor_get(
 		goTmpobject := newCV8valueT(object, byApi)
 
 		goRet, goTmpretvalOut, goTmpexceptionOut := f.Get(goTmpself, goTmpname, goTmpobject)
+		// IsOutParam
 		if goTmpretvalOut != nil {
 			if goTmpretvalOut.beUnrefed != byCef {
 				BaseAddRef(goTmpretvalOut.pc_v8value) // Out Param
 			}
 			*retval = (*C.cef_v8value_t)(goTmpretvalOut.pc_v8value)
 		}
+		// IsOutParam
 		set_cef_string(exception, goTmpexceptionOut)
 
 		if goRet {
@@ -10488,6 +10514,7 @@ func cefingo_v8accessor_set(
 		goTmpvalue := newCV8valueT(value, byApi)
 
 		goRet, goTmpexceptionOut := f.Set(goTmpself, goTmpname, goTmpobject, goTmpvalue)
+		// IsOutParam
 		set_cef_string(exception, goTmpexceptionOut)
 
 		if goRet {
@@ -11033,10 +11060,12 @@ func cefingo_window_delegate_get_parent_window(
 		goTmpwindow := newCWindowT(window, byApi)
 
 		goRet, goTmpis_menuOut, goTmpcan_activate_menuOut := f.GetParentWindow(goTmpself, goTmpwindow)
+		// IsOutParam
 		*is_menu = 0
 		if goTmpis_menuOut {
 			*is_menu = 1
 		}
+		// IsOutParam
 		*can_activate_menu = 0
 		if goTmpcan_activate_menuOut {
 			*can_activate_menu = 1

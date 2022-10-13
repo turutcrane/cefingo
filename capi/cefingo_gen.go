@@ -8133,6 +8133,7 @@ func DisplayGetCount() (ret int64) {
 // / intended to return distinct, usable displays.
 // /
 func DisplayGetAlls() (displays []*CDisplayT) {
+	// IsOutParam
 	_displaysCount := C.size_t(DisplayGetCount()) // =SizeFunc ::cef_display_get_alls:displays
 	if _displaysCount == 0 {
 		return
@@ -8141,8 +8142,9 @@ func DisplayGetAlls() (displays []*CDisplayT) {
 	tmpdisplays := unsafe.Pointer(c_calloc(_displaysCount, 8, "T254.1"))
 	defer C.free(tmpdisplays)
 
-	C.cef_display_get_alls((*C.size_t)(displaysCount), (**C.cef_display_t)(tmpdisplays))
+	C.cef_display_get_alls((*C.size_t)(displaysCount), (**C.cef_display_t)(tmpdisplays) /* IsOutParam */)
 
+	// IsOutParam
 	displays = make([]*CDisplayT, *displaysCount)
 	_tmpdisplays := (*[1 << 30](*C.cef_display_t))(unsafe.Pointer(tmpdisplays))[:*displaysCount:*displaysCount]
 	for i := C.size_t(0); i < *displaysCount; i++ {
@@ -13032,14 +13034,20 @@ func (self *CImageT) RemoveRepresentation(
 func (self *CImageT) GetRepresentationInfo(
 	scale_factor float32,
 ) (ret bool, actual_scale_factor float32, pixel_width int, pixel_height int) {
+	// IsOutParam
 	var tmpactual_scale_factor C.float
+	// IsOutParam
 	var tmppixel_width C.int
+	// IsOutParam
 	var tmppixel_height C.int
 
-	cRet := C.cefingo_image_get_representation_info((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), &tmpactual_scale_factor, &tmppixel_width, &tmppixel_height)
+	cRet := C.cefingo_image_get_representation_info((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), &tmpactual_scale_factor /* IsOutParam */, &tmppixel_width /* IsOutParam */, &tmppixel_height /* IsOutParam */)
 
+	// IsOutParam
 	actual_scale_factor = (float32)(tmpactual_scale_factor)
+	// IsOutParam
 	pixel_width = (int)(tmppixel_width)
+	// IsOutParam
 	pixel_height = (int)(tmppixel_height)
 
 	ret = cRet == 1
@@ -13059,12 +13067,16 @@ func (self *CImageT) GetAsBitmap(
 	color_type CColorTypeT,
 	alpha_type CAlphaTypeT,
 ) (ret *CBinaryValueT, pixel_width int, pixel_height int) {
+	// IsOutParam
 	var tmppixel_width C.int
+	// IsOutParam
 	var tmppixel_height C.int
 
-	cRet := C.cefingo_image_get_as_bitmap((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.cef_color_type_t)(color_type), (C.cef_alpha_type_t)(alpha_type), &tmppixel_width, &tmppixel_height)
+	cRet := C.cefingo_image_get_as_bitmap((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.cef_color_type_t)(color_type), (C.cef_alpha_type_t)(alpha_type), &tmppixel_width /* IsOutParam */, &tmppixel_height /* IsOutParam */)
 
+	// IsOutParam
 	pixel_width = (int)(tmppixel_width)
+	// IsOutParam
 	pixel_height = (int)(tmppixel_height)
 
 	ret = newCBinaryValueT(cRet, byApp) // return GoObj
@@ -13083,12 +13095,16 @@ func (self *CImageT) GetAsPng(
 	scale_factor float32,
 	with_transparency int,
 ) (ret *CBinaryValueT, pixel_width int, pixel_height int) {
+	// IsOutParam
 	var tmppixel_width C.int
+	// IsOutParam
 	var tmppixel_height C.int
 
-	cRet := C.cefingo_image_get_as_png((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.int)(with_transparency), &tmppixel_width, &tmppixel_height)
+	cRet := C.cefingo_image_get_as_png((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.int)(with_transparency), &tmppixel_width /* IsOutParam */, &tmppixel_height /* IsOutParam */)
 
+	// IsOutParam
 	pixel_width = (int)(tmppixel_width)
+	// IsOutParam
 	pixel_height = (int)(tmppixel_height)
 
 	ret = newCBinaryValueT(cRet, byApp) // return GoObj
@@ -13108,12 +13124,16 @@ func (self *CImageT) GetAsJpeg(
 	scale_factor float32,
 	quality int,
 ) (ret *CBinaryValueT, pixel_width int, pixel_height int) {
+	// IsOutParam
 	var tmppixel_width C.int
+	// IsOutParam
 	var tmppixel_height C.int
 
-	cRet := C.cefingo_image_get_as_jpeg((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.int)(quality), &tmppixel_width, &tmppixel_height)
+	cRet := C.cefingo_image_get_as_jpeg((*C.cef_image_t)(self.pc_image), (C.float)(scale_factor), (C.int)(quality), &tmppixel_width /* IsOutParam */, &tmppixel_height /* IsOutParam */)
 
+	// IsOutParam
 	pixel_width = (int)(tmppixel_width)
+	// IsOutParam
 	pixel_height = (int)(tmppixel_height)
 
 	ret = newCBinaryValueT(cRet, byApp) // return GoObj
@@ -17052,16 +17072,24 @@ func (self *CMenuModelT) RemoveAcceleratorAt(
 func (self *CMenuModelT) GetAccelerator(
 	command_id int,
 ) (ret bool, key_code int, shift_pressed int, ctrl_pressed int, alt_pressed int) {
+	// IsOutParam
 	var tmpkey_code C.int
+	// IsOutParam
 	var tmpshift_pressed C.int
+	// IsOutParam
 	var tmpctrl_pressed C.int
+	// IsOutParam
 	var tmpalt_pressed C.int
 
-	cRet := C.cefingo_menu_model_get_accelerator((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), &tmpkey_code, &tmpshift_pressed, &tmpctrl_pressed, &tmpalt_pressed)
+	cRet := C.cefingo_menu_model_get_accelerator((*C.cef_menu_model_t)(self.pc_menu_model), (C.int)(command_id), &tmpkey_code /* IsOutParam */, &tmpshift_pressed /* IsOutParam */, &tmpctrl_pressed /* IsOutParam */, &tmpalt_pressed /* IsOutParam */)
 
+	// IsOutParam
 	key_code = (int)(tmpkey_code)
+	// IsOutParam
 	shift_pressed = (int)(tmpshift_pressed)
+	// IsOutParam
 	ctrl_pressed = (int)(tmpctrl_pressed)
+	// IsOutParam
 	alt_pressed = (int)(tmpalt_pressed)
 
 	ret = cRet == 1
@@ -17075,16 +17103,24 @@ func (self *CMenuModelT) GetAccelerator(
 func (self *CMenuModelT) GetAcceleratorAt(
 	index int64,
 ) (ret bool, key_code int, shift_pressed int, ctrl_pressed int, alt_pressed int) {
+	// IsOutParam
 	var tmpkey_code C.int
+	// IsOutParam
 	var tmpshift_pressed C.int
+	// IsOutParam
 	var tmpctrl_pressed C.int
+	// IsOutParam
 	var tmpalt_pressed C.int
 
-	cRet := C.cefingo_menu_model_get_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), &tmpkey_code, &tmpshift_pressed, &tmpctrl_pressed, &tmpalt_pressed)
+	cRet := C.cefingo_menu_model_get_accelerator_at((*C.cef_menu_model_t)(self.pc_menu_model), (C.size_t)(index), &tmpkey_code /* IsOutParam */, &tmpshift_pressed /* IsOutParam */, &tmpctrl_pressed /* IsOutParam */, &tmpalt_pressed /* IsOutParam */)
 
+	// IsOutParam
 	key_code = (int)(tmpkey_code)
+	// IsOutParam
 	shift_pressed = (int)(tmpshift_pressed)
+	// IsOutParam
 	ctrl_pressed = (int)(tmpctrl_pressed)
+	// IsOutParam
 	alt_pressed = (int)(tmpalt_pressed)
 
 	ret = cRet == 1
@@ -21571,6 +21607,7 @@ func (self *CPostDataT) GetElementCount() (ret int64) {
 // / Retrieve the post data elements.
 // /
 func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
+	// IsOutParam
 	_elementsCount := C.size_t(self.GetElementCount()) // =SizeFunc cef_post_data_t::get_elements:elements
 	if _elementsCount == 0 {
 		return
@@ -21579,8 +21616,9 @@ func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
 	tmpelements := unsafe.Pointer(c_calloc(_elementsCount, 8, "T181.3"))
 	defer C.free(tmpelements)
 
-	C.cefingo_post_data_get_elements((*C.cef_post_data_t)(self.pc_post_data), (*C.size_t)(elementsCount), (**C.cef_post_data_element_t)(tmpelements))
+	C.cefingo_post_data_get_elements((*C.cef_post_data_t)(self.pc_post_data), (*C.size_t)(elementsCount), (**C.cef_post_data_element_t)(tmpelements) /* IsOutParam */)
 
+	// IsOutParam
 	elements = make([]*CPostDataElementT, *elementsCount)
 	_tmpelements := (*[1 << 30](*C.cef_post_data_element_t))(unsafe.Pointer(tmpelements))[:*elementsCount:*elementsCount]
 	for i := C.size_t(0); i < *elementsCount; i++ {
@@ -22251,10 +22289,12 @@ func (self *CRequestContextT) SetPreference(
 		BaseAddRef(value.pc_value)
 		goTmpvalue = (*C.cef_value_t)(value.pc_value)
 	}
+	// IsOutParam
 	tmpc_error := create_cef_string("")
 
-	cRet := C.cefingo_request_context_set_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t, goTmpvalue, tmpc_error.p_cef_string_t)
+	cRet := C.cefingo_request_context_set_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t, goTmpvalue, tmpc_error.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	error = string_from_cef_string(tmpc_error.p_cef_string_t)
 
 	ret = cRet == 1
@@ -29137,12 +29177,16 @@ func (self *CV8contextT) Eval(
 ) (ret bool, retval *CV8valueT, exception *CV8exceptionT) {
 	c_code := create_cef_string(code)
 	c_script_url := create_cef_string(script_url)
+	// IsOutParam
 	var tmpretval *C.cef_v8value_t
+	// IsOutParam
 	var tmpexception *C.cef_v8exception_t
 
-	cRet := C.cefingo_v8context_eval((*C.cef_v8context_t)(self.pc_v8context), c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line), &tmpretval, &tmpexception)
+	cRet := C.cefingo_v8context_eval((*C.cef_v8context_t)(self.pc_v8context), c_code.p_cef_string_t, c_script_url.p_cef_string_t, (C.int)(start_line), &tmpretval /* IsOutParam */, &tmpexception /* IsOutParam */)
 
-	retval = newCV8valueT(tmpretval, byApp)           // Out Param
+	// IsOutParam
+	retval = newCV8valueT(tmpretval, byApp) // Out Param
+	// IsOutParam
 	exception = newCV8exceptionT(tmpexception, byApp) // Out Param
 
 	ret = cRet == 1
@@ -29650,12 +29694,16 @@ func (self *CV8interceptorT) GetByname(
 		BaseAddRef(object.pc_v8value)
 		goTmpobject = (*C.cef_v8value_t)(object.pc_v8value)
 	}
+	// IsOutParam
 	var tmpretval *C.cef_v8value_t
+	// IsOutParam
 	tmpc_exception := create_cef_string("")
 
-	cRet := C.cefingo_v8interceptor_get_byname((*C.cef_v8interceptor_t)(self.pc_v8interceptor), c_name.p_cef_string_t, goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
+	cRet := C.cefingo_v8interceptor_get_byname((*C.cef_v8interceptor_t)(self.pc_v8interceptor), c_name.p_cef_string_t, goTmpobject, &tmpretval /* IsOutParam */, tmpc_exception.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	retval = newCV8valueT(tmpretval, byApp) // Out Param
+	// IsOutParam
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
@@ -29679,12 +29727,16 @@ func (self *CV8interceptorT) GetByindex(
 		BaseAddRef(object.pc_v8value)
 		goTmpobject = (*C.cef_v8value_t)(object.pc_v8value)
 	}
+	// IsOutParam
 	var tmpretval *C.cef_v8value_t
+	// IsOutParam
 	tmpc_exception := create_cef_string("")
 
-	cRet := C.cefingo_v8interceptor_get_byindex((*C.cef_v8interceptor_t)(self.pc_v8interceptor), (C.int)(index), goTmpobject, &tmpretval, tmpc_exception.p_cef_string_t)
+	cRet := C.cefingo_v8interceptor_get_byindex((*C.cef_v8interceptor_t)(self.pc_v8interceptor), (C.int)(index), goTmpobject, &tmpretval /* IsOutParam */, tmpc_exception.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	retval = newCV8valueT(tmpretval, byApp) // Out Param
+	// IsOutParam
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
@@ -29715,10 +29767,12 @@ func (self *CV8interceptorT) SetByname(
 		BaseAddRef(value.pc_v8value)
 		goTmpvalue = (*C.cef_v8value_t)(value.pc_v8value)
 	}
+	// IsOutParam
 	tmpc_exception := create_cef_string("")
 
-	cRet := C.cefingo_v8interceptor_set_byname((*C.cef_v8interceptor_t)(self.pc_v8interceptor), c_name.p_cef_string_t, goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t)
+	cRet := C.cefingo_v8interceptor_set_byname((*C.cef_v8interceptor_t)(self.pc_v8interceptor), c_name.p_cef_string_t, goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
@@ -29747,10 +29801,12 @@ func (self *CV8interceptorT) SetByindex(
 		BaseAddRef(value.pc_v8value)
 		goTmpvalue = (*C.cef_v8value_t)(value.pc_v8value)
 	}
+	// IsOutParam
 	tmpc_exception := create_cef_string("")
 
-	cRet := C.cefingo_v8interceptor_set_byindex((*C.cef_v8interceptor_t)(self.pc_v8interceptor), (C.int)(index), goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t)
+	cRet := C.cefingo_v8interceptor_set_byindex((*C.cef_v8interceptor_t)(self.pc_v8interceptor), (C.int)(index), goTmpobject, goTmpvalue, tmpc_exception.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	exception = string_from_cef_string(tmpc_exception.p_cef_string_t)
 
 	ret = cRet == 1
@@ -35778,6 +35834,7 @@ func (self *CX509certificateT) GetIssuerChainSize() (ret int64) {
 // / array but is an NULL string.
 // /
 func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValueT) {
+	// IsOutParam
 	_chainCount := C.size_t(self.GetIssuerChainSize()) // =SizeFunc cef_x509certificate_t::get_derencoded_issuer_chain:chain
 	if _chainCount == 0 {
 		return
@@ -35786,8 +35843,9 @@ func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValue
 	tmpchain := unsafe.Pointer(c_calloc(_chainCount, 8, "T234.3"))
 	defer C.free(tmpchain)
 
-	C.cefingo_x509certificate_get_derencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), (**C.cef_binary_value_t)(tmpchain))
+	C.cefingo_x509certificate_get_derencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), (**C.cef_binary_value_t)(tmpchain) /* IsOutParam */)
 
+	// IsOutParam
 	chain = make([]*CBinaryValueT, *chainCount)
 	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
 	for i := C.size_t(0); i < *chainCount; i++ {
@@ -35802,6 +35860,7 @@ func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValue
 // / array but is an NULL string.
 // /
 func (self *CX509certificateT) GetPemencodedIssuerChain() (chain []*CBinaryValueT) {
+	// IsOutParam
 	_chainCount := C.size_t(self.GetIssuerChainSize()) // =SizeFunc cef_x509certificate_t::get_pemencoded_issuer_chain:chain
 	if _chainCount == 0 {
 		return
@@ -35810,8 +35869,9 @@ func (self *CX509certificateT) GetPemencodedIssuerChain() (chain []*CBinaryValue
 	tmpchain := unsafe.Pointer(c_calloc(_chainCount, 8, "T234.4"))
 	defer C.free(tmpchain)
 
-	C.cefingo_x509certificate_get_pemencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), (**C.cef_binary_value_t)(tmpchain))
+	C.cefingo_x509certificate_get_pemencoded_issuer_chain((*C.cef_x509certificate_t)(self.pc_x509certificate), (*C.size_t)(chainCount), (**C.cef_binary_value_t)(tmpchain) /* IsOutParam */)
 
+	// IsOutParam
 	chain = make([]*CBinaryValueT, *chainCount)
 	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
 	for i := C.size_t(0); i < *chainCount; i++ {

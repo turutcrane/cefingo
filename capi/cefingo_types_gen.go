@@ -52,10 +52,12 @@ func StringListValue(
 	list CStringListT,
 	index int64,
 ) (ret bool, value string) {
+	// IsOutParam
 	tmpc_value := create_cef_string("")
 
-	cRet := C.cef_string_list_value((C.cef_string_list_t)(list), (C.size_t)(index), tmpc_value.p_cef_string_t)
+	cRet := C.cef_string_list_value((C.cef_string_list_t)(list), (C.size_t)(index), tmpc_value.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
@@ -149,10 +151,12 @@ func StringMapFind(
 	key string,
 ) (ret bool, value string) {
 	c_key := create_cef_string(key)
+	// IsOutParam
 	tmpc_value := create_cef_string("")
 
-	cRet := C.cef_string_map_find((C.cef_string_map_t)(cmap), c_key.p_cef_string_t, tmpc_value.p_cef_string_t)
+	cRet := C.cef_string_map_find((C.cef_string_map_t)(cmap), c_key.p_cef_string_t, tmpc_value.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
@@ -166,10 +170,12 @@ func StringMapKey(
 	cmap CStringMapT,
 	index int64,
 ) (ret bool, key string) {
+	// IsOutParam
 	tmpc_key := create_cef_string("")
 
-	cRet := C.cef_string_map_key((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_key.p_cef_string_t)
+	cRet := C.cef_string_map_key((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_key.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	key = string_from_cef_string(tmpc_key.p_cef_string_t)
 
 	ret = cRet == 1
@@ -183,10 +189,12 @@ func StringMapValue(
 	cmap CStringMapT,
 	index int64,
 ) (ret bool, value string) {
+	// IsOutParam
 	tmpc_value := create_cef_string("")
 
-	cRet := C.cef_string_map_value((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_value.p_cef_string_t)
+	cRet := C.cef_string_map_value((C.cef_string_map_t)(cmap), (C.size_t)(index), tmpc_value.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
@@ -288,10 +296,12 @@ func StringMultimapEnumerate(
 	value_index int64,
 ) (ret bool, value string) {
 	c_key := create_cef_string(key)
+	// IsOutParam
 	tmpc_value := create_cef_string("")
 
-	cRet := C.cef_string_multimap_enumerate((C.cef_string_multimap_t)(cmap), c_key.p_cef_string_t, (C.size_t)(value_index), tmpc_value.p_cef_string_t)
+	cRet := C.cef_string_multimap_enumerate((C.cef_string_multimap_t)(cmap), c_key.p_cef_string_t, (C.size_t)(value_index), tmpc_value.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
@@ -305,10 +315,12 @@ func StringMultimapKey(
 	cmap CStringMultimapT,
 	index int64,
 ) (ret bool, key string) {
+	// IsOutParam
 	tmpc_key := create_cef_string("")
 
-	cRet := C.cef_string_multimap_key((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_key.p_cef_string_t)
+	cRet := C.cef_string_multimap_key((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_key.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	key = string_from_cef_string(tmpc_key.p_cef_string_t)
 
 	ret = cRet == 1
@@ -322,10 +334,12 @@ func StringMultimapValue(
 	cmap CStringMultimapT,
 	index int64,
 ) (ret bool, value string) {
+	// IsOutParam
 	tmpc_value := create_cef_string("")
 
-	cRet := C.cef_string_multimap_value((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_value.p_cef_string_t)
+	cRet := C.cef_string_multimap_value((C.cef_string_multimap_t)(cmap), (C.size_t)(index), tmpc_value.p_cef_string_t /* IsOutParam */)
 
+	// IsOutParam
 	value = string_from_cef_string(tmpc_value.p_cef_string_t)
 
 	ret = cRet == 1
@@ -476,9 +490,12 @@ func (st *CTimeT) SetMillisecond(v int) {
 func TimeToTimet(
 	cef_time *CTimeT,
 ) (ret bool, ctime time.Time) {
+	// IsOutParam
 	var tmpc_ctime C.time_t
 
-	cRet := C.cef_time_to_timet((*C.cef_time_t)(cef_time), &tmpc_ctime)
+	cRet := C.cef_time_to_timet((*C.cef_time_t)(cef_time), &tmpc_ctime /* IsOutParam */)
+
+	// IsOutParam
 
 	ctime = time.Unix(int64(tmpc_ctime), 0)
 
