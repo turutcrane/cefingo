@@ -1,10 +1,10 @@
 package v8
 
 import (
+	"errors"
 	"fmt"
 	"runtime"
 
-	"github.com/pkg/errors"
 	"github.com/turutcrane/cefingo/capi"
 )
 
@@ -187,7 +187,7 @@ func (f EventHandlerFunc) Execute(self *capi.CV8handlerT,
 	arguments []*capi.CV8valueT,
 ) (sts bool, retval *capi.CV8valueT, exception string) {
 	if len(arguments) == 0 {
-		err := errors.Errorf("%s: No Arguments", name)
+		err := fmt.Errorf("%s: No Arguments", name)
 		capi.Logf("%+v", err)
 		return false, nil, ""
 	}
@@ -210,7 +210,7 @@ func NewFunction(name string, f capi.CV8handlerTExecuteHandler) Value {
 func (f Function) ExecuteFunction(object Value, args []Value) (val Value, err error) {
 
 	if !f.v8v.IsFunction() {
-		cause := errors.Errorf("Object is Not Function")
+		cause := fmt.Errorf("Object is Not Function")
 		return Value{}, cause
 	}
 
@@ -226,18 +226,18 @@ func (f Function) ExecuteFunction(object Value, args []Value) (val Value, err er
 		if v8vf.HasException() {
 			e := v8vf.GetException()
 			m := e.GetMessage()
-			err = errors.Errorf("E172: %s returns NULL and %s has Exception: %s", name, name, m)
+			err = fmt.Errorf("E172: %s returns NULL and %s has Exception: %s", name, name, m)
 		} else if object.v8v != nil && object.HasException() {
 			e := object.GetException()
 			m := e.GetMessage()
-			err = errors.Errorf("E176: %s returns NULL and (this) has Exception: %s", name, m)
+			err = fmt.Errorf("E176: %s returns NULL and (this) has Exception: %s", name, m)
 		} else {
-			err = errors.Errorf("E178: %s returns NULL", name)
+			err = fmt.Errorf("E178: %s returns NULL", name)
 		}
 	} else if ret.IsValid() {
 		val = NewValue(ret)
 	} else {
-		err = errors.Errorf("E189: %s return value is not valid", name)
+		err = fmt.Errorf("E189: %s return value is not valid", name)
 	}
 	return val, err
 }
@@ -245,7 +245,7 @@ func (f Function) ExecuteFunction(object Value, args []Value) (val Value, err er
 func (f Function) ExecuteFunctionWithContext(context Context, object Value, args []Value) (val Value, err error) {
 
 	if !f.v8v.IsFunction() {
-		cause := errors.Errorf("Object is Not Function")
+		cause := fmt.Errorf("Object is Not Function")
 		return Value{}, cause
 	}
 
@@ -261,18 +261,18 @@ func (f Function) ExecuteFunctionWithContext(context Context, object Value, args
 		if v8vf.HasException() {
 			e := v8vf.GetException()
 			m := e.GetMessage()
-			err = errors.Errorf("E172: %s returns NULL and %s has Exception: %s", name, name, m)
+			err = fmt.Errorf("E172: %s returns NULL and %s has Exception: %s", name, name, m)
 		} else if object.v8v != nil && object.HasException() {
 			e := object.GetException()
 			m := e.GetMessage()
-			err = errors.Errorf("E176: %s returns NULL and (this) has Exception: %s", name, m)
+			err = fmt.Errorf("E176: %s returns NULL and (this) has Exception: %s", name, m)
 		} else {
-			err = errors.Errorf("E178: %s returns NULL", name)
+			err = fmt.Errorf("E178: %s returns NULL", name)
 		}
 	} else if ret.IsValid() {
 		val = NewValue(ret)
 	} else {
-		err = errors.Errorf("E189: %s return value is not valid", name)
+		err = fmt.Errorf("E189: %s return value is not valid", name)
 	}
 	return val, err
 }
@@ -444,14 +444,14 @@ func (v Value) HasValueBykey(key string) bool {
 
 func (v Value) DeleteValueBykey(key string, value Value) (err error) {
 	if !v.v8v.DeleteValueBykey(key) {
-		err = errors.Errorf("Delete value Error key:%s", key)
+		err = fmt.Errorf("Delete value Error key:%s", key)
 	}
 	return err
 }
 
 func (v Value) DeleteValueByindex(index int, value Value) (err error) {
 	if !v.v8v.DeleteValueByindex(index) {
-		err = errors.Errorf("Delete value Error index:%d", index)
+		err = fmt.Errorf("Delete value Error index:%d", index)
 	}
 	return err
 }
@@ -488,21 +488,21 @@ func (v Value) GetValueByindex(index int) (rv Value, err error) {
 
 func (v Value) SetValueBykey(key string, value Value) (err error) {
 	if !v.v8v.SetValueBykey(key, value.v8v, capi.V8PropertyAttributeNone) {
-		err = errors.Errorf("Set value Error key:%s", key)
+		err = fmt.Errorf("Set value Error key:%s", key)
 	}
 	return err
 }
 
 func (v Value) SetValueBykeyWithAttribute(key string, value Value, attribute capi.CV8PropertyattributeT) (err error) {
 	if !v.v8v.SetValueBykey(key, value.v8v, attribute) {
-		err = errors.Errorf("Set value Error key:%s", key)
+		err = fmt.Errorf("Set value Error key:%s", key)
 	}
 	return err
 }
 
 func (v Value) SetValueByindex(index int, value Value) (err error) {
 	if !v.v8v.SetValueByindex(index, value.v8v) {
-		err = errors.Errorf("Set value Error key:%d", index)
+		err = fmt.Errorf("Set value Error key:%d", index)
 	}
 	return err
 }
@@ -525,7 +525,7 @@ func (f Value) ExecuteFunction(this Value, args []Value) (r Value, e error) {
 			capi.Logf("T347:x %v", e)
 		}
 	} else {
-		e = errors.Errorf("E318: <%v> is not function", f)
+		e = fmt.Errorf("E318: <%v> is not function", f)
 		capi.Logf("T350: %v", e)
 	}
 	return rv, e
@@ -541,7 +541,7 @@ func (f Value) ExecuteFunctionWithContext(context Context, this Value, args []Va
 			capi.Logf("T347:x %v", e)
 		}
 	} else {
-		e = errors.Errorf("E318: <%v> is not function", f)
+		e = fmt.Errorf("E318: <%v> is not function", f)
 		capi.Logf("T350: %v", e)
 	}
 	return rv, e
@@ -575,7 +575,7 @@ func (c Context) Eval(code string) (v Value, err error) {
 	if ok, v8v, e = c.V8context.Eval(code, "", 0); ok {
 		v = Value{v8v}
 	} else {
-		err = errors.Errorf("Eval Error<%s> %s", code, e.GetMessage())
+		err = fmt.Errorf("Eval Error<%s> %s", code, e.GetMessage())
 	}
 	return v, err
 }
