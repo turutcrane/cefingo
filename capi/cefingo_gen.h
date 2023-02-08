@@ -2202,6 +2202,39 @@ extern void cefingo_permission_handler_on_dismiss_permission_prompt(
 	cef_permission_request_result_t result
 );
 
+extern int cefingo_preference_registrar_add_preference(
+	struct _cef_preference_registrar_t* self,
+	const cef_string_t* name,
+	struct _cef_value_t* default_value
+);
+
+extern int cefingo_preference_manager_has_preference(
+	struct _cef_preference_manager_t* self,
+	const cef_string_t* name
+);
+
+extern struct _cef_value_t* cefingo_preference_manager_get_preference(
+	struct _cef_preference_manager_t* self,
+	const cef_string_t* name
+);
+
+extern struct _cef_dictionary_value_t* cefingo_preference_manager_get_all_preferences(
+	struct _cef_preference_manager_t* self,
+	int include_defaults
+);
+
+extern int cefingo_preference_manager_can_set_preference(
+	struct _cef_preference_manager_t* self,
+	const cef_string_t* name
+);
+
+extern int cefingo_preference_manager_set_preference(
+	struct _cef_preference_manager_t* self,
+	const cef_string_t* name,
+	struct _cef_value_t* value,
+	cef_string_t* error
+);
+
 extern void cefingo_print_dialog_callback_cont(
 	struct _cef_print_dialog_callback_t* self,
 	struct _cef_print_settings_t* settings
@@ -2561,33 +2594,6 @@ extern int cefingo_request_context_register_scheme_handler_factory(
 
 extern int cefingo_request_context_clear_scheme_handler_factories(
 	struct _cef_request_context_t* self
-);
-
-extern int cefingo_request_context_has_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
-);
-
-extern struct _cef_value_t* cefingo_request_context_get_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
-);
-
-extern struct _cef_dictionary_value_t* cefingo_request_context_get_all_preferences(
-	struct _cef_request_context_t* self,
-	int include_defaults
-);
-
-extern int cefingo_request_context_can_set_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
-);
-
-extern int cefingo_request_context_set_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name,
-	struct _cef_value_t* value,
-	cef_string_t* error
 );
 
 extern void cefingo_request_context_clear_certificate_exceptions(
@@ -3273,6 +3279,10 @@ extern int cefingo_v8value_is_function(
 	struct _cef_v8value_t* self
 );
 
+extern int cefingo_v8value_is_promise(
+	struct _cef_v8value_t* self
+);
+
 extern int cefingo_v8value_is_same(
 	struct _cef_v8value_t* self,
 	struct _cef_v8value_t* that
@@ -3424,6 +3434,16 @@ extern struct _cef_v8value_t* cefingo_v8value_execute_function_with_context(
 	struct _cef_v8value_t* object,
 	size_t argumentsCount,
 	struct _cef_v8value_t* const * arguments
+);
+
+extern int cefingo_v8value_resolve_promise(
+	struct _cef_v8value_t* self,
+	struct _cef_v8value_t* arg
+);
+
+extern int cefingo_v8value_reject_promise(
+	struct _cef_v8value_t* self,
+	const cef_string_t* errorMsg
 );
 
 extern int cefingo_v8stack_trace_is_valid(

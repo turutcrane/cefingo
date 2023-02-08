@@ -1057,6 +1057,8 @@ cef_browser_process_handler_t *cefingo_construct_browser_process_handler(cefingo
 		(cef_base_ref_counted_t*) browser_process_handler);
 
 	// callbacks
+	browser_process_handler->body.on_register_custom_preferences =
+		cefingo_browser_process_handler_on_register_custom_preferences;
 	browser_process_handler->body.on_context_initialized =
 		cefingo_browser_process_handler_on_context_initialized;
 	browser_process_handler->body.on_before_child_process_launch =
@@ -5583,6 +5585,78 @@ void cefingo_permission_handler_on_dismiss_permission_prompt(
 	);
 }
 
+int cefingo_preference_registrar_add_preference(
+	struct _cef_preference_registrar_t* self,
+	const cef_string_t* name,
+	struct _cef_value_t* default_value
+)
+{
+	return	self->add_preference(
+			self,
+			name,
+			default_value
+		);
+}
+
+int cefingo_preference_manager_has_preference(
+	struct _cef_preference_manager_t* self,
+	const cef_string_t* name
+)
+{
+	return	self->has_preference(
+			self,
+			name
+		);
+}
+
+struct _cef_value_t* cefingo_preference_manager_get_preference(
+	struct _cef_preference_manager_t* self,
+	const cef_string_t* name
+)
+{
+	return	self->get_preference(
+			self,
+			name
+		);
+}
+
+struct _cef_dictionary_value_t* cefingo_preference_manager_get_all_preferences(
+	struct _cef_preference_manager_t* self,
+	int include_defaults
+)
+{
+	return	self->get_all_preferences(
+			self,
+			include_defaults
+		);
+}
+
+int cefingo_preference_manager_can_set_preference(
+	struct _cef_preference_manager_t* self,
+	const cef_string_t* name
+)
+{
+	return	self->can_set_preference(
+			self,
+			name
+		);
+}
+
+int cefingo_preference_manager_set_preference(
+	struct _cef_preference_manager_t* self,
+	const cef_string_t* name,
+	struct _cef_value_t* value,
+	cef_string_t* error
+)
+{
+	return	self->set_preference(
+			self,
+			name,
+			value,
+			error
+		);
+}
+
 void cefingo_print_dialog_callback_cont(
 	struct _cef_print_dialog_callback_t* self,
 	struct _cef_print_settings_t* settings
@@ -6508,65 +6582,6 @@ int cefingo_request_context_clear_scheme_handler_factories(
 {
 	return	self->clear_scheme_handler_factories(
 			self
-		);
-}
-
-int cefingo_request_context_has_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
-)
-{
-	return	self->has_preference(
-			self,
-			name
-		);
-}
-
-struct _cef_value_t* cefingo_request_context_get_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
-)
-{
-	return	self->get_preference(
-			self,
-			name
-		);
-}
-
-struct _cef_dictionary_value_t* cefingo_request_context_get_all_preferences(
-	struct _cef_request_context_t* self,
-	int include_defaults
-)
-{
-	return	self->get_all_preferences(
-			self,
-			include_defaults
-		);
-}
-
-int cefingo_request_context_can_set_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name
-)
-{
-	return	self->can_set_preference(
-			self,
-			name
-		);
-}
-
-int cefingo_request_context_set_preference(
-	struct _cef_request_context_t* self,
-	const cef_string_t* name,
-	struct _cef_value_t* value,
-	cef_string_t* error
-)
-{
-	return	self->set_preference(
-			self,
-			name,
-			value,
-			error
 		);
 }
 
@@ -8458,6 +8473,15 @@ int cefingo_v8value_is_function(
 		);
 }
 
+int cefingo_v8value_is_promise(
+	struct _cef_v8value_t* self
+)
+{
+	return	self->is_promise(
+			self
+		);
+}
+
 int cefingo_v8value_is_same(
 	struct _cef_v8value_t* self,
 	struct _cef_v8value_t* that
@@ -8793,6 +8817,28 @@ struct _cef_v8value_t* cefingo_v8value_execute_function_with_context(
 			object,
 			argumentsCount,
 			arguments
+		);
+}
+
+int cefingo_v8value_resolve_promise(
+	struct _cef_v8value_t* self,
+	struct _cef_v8value_t* arg
+)
+{
+	return	self->resolve_promise(
+			self,
+			arg
+		);
+}
+
+int cefingo_v8value_reject_promise(
+	struct _cef_v8value_t* self,
+	const cef_string_t* errorMsg
+)
+{
+	return	self->reject_promise(
+			self,
+			errorMsg
 		);
 }
 
@@ -10739,6 +10785,11 @@ void cefingo_window_remove_all_accelerators(
 	);
 }
 
+typedef void (*T_CEF_WINDOW_DELEGATE_T_ON_WINDOW_BOUNDS_CHANGED)(
+	struct _cef_window_delegate_t*,
+	struct _cef_window_t*,
+	const cef_rect_t*
+);
 typedef int (*T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT)(
 	struct _cef_window_delegate_t*,
 	struct _cef_window_t*,
@@ -10754,10 +10805,14 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 	// callbacks
 	window_delegate->body.on_window_created =
 		cefingo_window_delegate_on_window_created;
+	window_delegate->body.on_window_closing =
+		cefingo_window_delegate_on_window_closing;
 	window_delegate->body.on_window_destroyed =
 		cefingo_window_delegate_on_window_destroyed;
 	window_delegate->body.on_window_activation_changed =
 		cefingo_window_delegate_on_window_activation_changed;
+	window_delegate->body.on_window_bounds_changed =
+		(/* T_CEF_WINDOW_DELEGATE_T_ON_WINDOW_BOUNDS_CHANGED */ void *)cefingo_window_delegate_on_window_bounds_changed;
 	window_delegate->body.get_parent_window =
 		cefingo_window_delegate_get_parent_window;
 	window_delegate->body.get_initial_bounds =

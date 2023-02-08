@@ -53,6 +53,10 @@
 		"CDictionaryValueCreate": 329,
 		"CDictionaryValueT": 223,
 		"CDirectoryExists": 352,
+		"CDisplayConvertScreenPointFromPixels": 403,
+		"CDisplayConvertScreenPointToPixels": 402,
+		"CDisplayConvertScreenRectFromPixels": 405,
+		"CDisplayConvertScreenRectToPixels": 404,
 		"CDisplayGetAlls": 254,
 		"CDisplayGetCount": 253,
 		"CDisplayGetMatchingBounds": 252,
@@ -144,6 +148,9 @@
 		"CPostDataT": 181,
 		"CPostDelayedTask": 301,
 		"CPostTask": 300,
+		"CPreferenceManagerGetGlobal": 408,
+		"CPreferenceManagerT": 407,
+		"CPreferenceRegistrarT": 406,
 		"CPrintDialogCallbackT": 171,
 		"CPrintHandlerT": 173,
 		"CPrintJobCallbackT": 172,
@@ -275,6 +282,7 @@
 		"CV8valueCreateInt": 316,
 		"CV8valueCreateNull": 314,
 		"CV8valueCreateObject": 321,
+		"CV8valueCreatePromise": 409,
 		"CV8valueCreateString": 320,
 		"CV8valueCreateUint": 317,
 		"CV8valueCreateUndefined": 313,
@@ -302,5 +310,5 @@
 		"CZipReaderCreate": 390,
 		"CZipReaderT": 389
 	},
-	"MaxTag": 401
+	"MaxTag": 409
 }

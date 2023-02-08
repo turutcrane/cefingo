@@ -569,33 +569,6 @@ func QuitMessageLoop() {
 
 }
 
-// /
-// / Set to true (1) before calling Windows APIs like TrackPopupMenu that enter a
-// / modal message loop. Set to false (0) after exiting the modal message loop.
-// /
-func SetOsmodalLoop(
-	osModalLoop bool,
-) {
-	var tmposModalLoop int
-	if osModalLoop {
-		tmposModalLoop = 1
-	}
-
-	C.cef_set_osmodal_loop(C.int(tmposModalLoop))
-
-}
-
-// /
-// / Call during process startup to enable High-DPI support on Windows 7 or
-// / newer. Older versions of Windows should be left DPI-unaware because they do
-// / not support DirectWrite and GDI fonts are kerned very badly.
-// /
-func EnableHighdpiSupport() {
-
-	C.cef_enable_highdpi_support()
-
-}
-
 // cef_audio_handler_capi.h, include/capi/cef_audio_handler_capi.h:115:3,
 
 ///
@@ -3160,7 +3133,7 @@ func BrowserHostCreateBrowserSync(
 	return ret
 }
 
-// cef_browser_process_handler_capi.h, include/capi/cef_browser_process_handler_capi.h:107:3,
+// cef_browser_process_handler_capi.h, include/capi/cef_browser_process_handler_capi.h:135:3,
 
 ///
 /// Structure used to implement browser process callbacks. The functions of this
@@ -3243,6 +3216,36 @@ func (browser_process_handler *CBrowserProcessHandlerT) Unref() (ret bool) {
 }
 
 // /
+// / Provides an opportunity to register custom preferences prior to global and
+// / request context initialization.
+// /
+// / If |type| is CEF_PREFERENCES_TYPE_GLOBAL the registered preferences can be
+// / accessed via cef_preference_manager_t::GetGlobalPreferences after
+// / OnContextInitialized is called. Global preferences are registered a single
+// / time at application startup. See related cef_settings_t.cache_path and
+// / cef_settings_t.persist_user_preferences configuration.
+// /
+// / If |type| is CEF_PREFERENCES_TYPE_REQUEST_CONTEXT the preferences can be
+// / accessed via the cef_request_context_t after
+// / cef_request_context_handler_t::OnRequestContextInitialized is called.
+// / Request context preferences are registered each time a new
+// / cef_request_context_t is created. It is intended but not required that all
+// / request contexts have the same registered preferences. See related
+// / cef_request_context_settings_t.cache_path and
+// / cef_request_context_settings_t.persist_user_preferences configuration.
+// /
+// / Do not keep a reference to the |registrar| object. This function is called
+// / on the browser process UI thread.
+// /
+type OnRegisterCustomPreferencesHandler interface {
+	OnRegisterCustomPreferences(
+		self *CBrowserProcessHandlerT,
+		ctype CPreferencesTypeT,
+		registrar *CPreferenceRegistrarT,
+	)
+}
+
+// /
 // / Called on the browser process UI thread immediately after the CEF context
 // / has been initialized.
 // /
@@ -3301,12 +3304,14 @@ type GetDefaultClientHandler interface {
 
 var browser_process_handler_handlers = struct {
 	handler                                map[*cCBrowserProcessHandlerT]interface{}
+	on_register_custom_preferences_handler map[*cCBrowserProcessHandlerT]OnRegisterCustomPreferencesHandler
 	on_context_initialized_handler         map[*cCBrowserProcessHandlerT]OnContextInitializedHandler
 	on_before_child_process_launch_handler map[*cCBrowserProcessHandlerT]OnBeforeChildProcessLaunchHandler
 	on_schedule_message_pump_work_handler  map[*cCBrowserProcessHandlerT]OnScheduleMessagePumpWorkHandler
 	get_default_client_handler             map[*cCBrowserProcessHandlerT]GetDefaultClientHandler
 }{
 	map[*cCBrowserProcessHandlerT]interface{}{},
+	map[*cCBrowserProcessHandlerT]OnRegisterCustomPreferencesHandler{},
 	map[*cCBrowserProcessHandlerT]OnContextInitializedHandler{},
 	map[*cCBrowserProcessHandlerT]OnBeforeChildProcessLaunchHandler{},
 	map[*cCBrowserProcessHandlerT]OnScheduleMessagePumpWorkHandler{},
@@ -3342,6 +3347,13 @@ func (browser_process_handler *CBrowserProcessHandlerT) bind(a interface{}) *CBr
 
 	cp := browser_process_handler.pc_browser_process_handler
 	browser_process_handler_handlers.handler[cp] = a
+
+	if h, ok := a.(OnRegisterCustomPreferencesHandler); ok {
+		browser_process_handler_handlers.on_register_custom_preferences_handler[cp] = h
+		noBind = false
+	} else {
+		delete(browser_process_handler_handlers.on_register_custom_preferences_handler, cp)
+	}
 
 	if h, ok := a.(OnContextInitializedHandler); ok {
 		browser_process_handler_handlers.on_context_initialized_handler[cp] = h
@@ -3384,6 +3396,7 @@ func unbindAllCBrowserProcessHandlerT(cp *cCBrowserProcessHandlerT) {
 	// cp := browser_process_handler.pc_browser_process_handler
 	delete(browser_process_handler_handlers.handler, cp)
 
+	delete(browser_process_handler_handlers.on_register_custom_preferences_handler, cp)
 	delete(browser_process_handler_handlers.on_context_initialized_handler, cp)
 	delete(browser_process_handler_handlers.on_before_child_process_launch_handler, cp)
 	delete(browser_process_handler_handlers.on_schedule_message_pump_work_handler, cp)
@@ -8146,11 +8159,68 @@ func DisplayGetAlls() (displays []*CDisplayT) {
 
 	// IsOutParam
 	displays = make([]*CDisplayT, *displaysCount)
-	_tmpdisplays := (*[1 << 30](*C.cef_display_t))(unsafe.Pointer(tmpdisplays))[:*displaysCount:*displaysCount]
+	// _tmpdisplays := (*[1 << 30](*C.cef_display_t))(unsafe.Pointer(tmpdisplays))[:*displaysCount:*displaysCount]
+	_tmpdisplays := unsafe.Slice((**C.cef_display_t)(tmpdisplays), *displaysCount)
 	for i := C.size_t(0); i < *displaysCount; i++ {
 		displays[i] = newCDisplayT(_tmpdisplays[i], byApp) // Out Slice Param
 	}
 	return displays
+}
+
+// /
+// / Convert |point| from DIP screen coordinates to pixel screen coordinates.
+// / This function is only used on Windows.
+// /
+func DisplayConvertScreenPointToPixels(
+	point *CPointT,
+) (ret CPointT) {
+
+	cRet := C.cef_display_convert_screen_point_to_pixels((*C.cef_point_t)(point))
+
+	ret = (CPointT)(cRet) // return GoObj
+	return ret
+}
+
+// /
+// / Convert |point| from pixel screen coordinates to DIP screen coordinates.
+// / This function is only used on Windows.
+// /
+func DisplayConvertScreenPointFromPixels(
+	point *CPointT,
+) (ret CPointT) {
+
+	cRet := C.cef_display_convert_screen_point_from_pixels((*C.cef_point_t)(point))
+
+	ret = (CPointT)(cRet) // return GoObj
+	return ret
+}
+
+// /
+// / Convert |rect| from DIP screen coordinates to pixel screen coordinates. This
+// / function is only used on Windows.
+// /
+func DisplayConvertScreenRectToPixels(
+	rect *CRectT,
+) (ret CRectT) {
+
+	cRet := C.cef_display_convert_screen_rect_to_pixels((*C.cef_rect_t)(rect))
+
+	ret = (CRectT)(cRet) // return GoObj
+	return ret
+}
+
+// /
+// / Convert |rect| from pixel screen coordinates to DIP screen coordinates. This
+// / function is only used on Windows.
+// /
+func DisplayConvertScreenRectFromPixels(
+	rect *CRectT,
+) (ret CRectT) {
+
+	cRet := C.cef_display_convert_screen_rect_from_pixels((*C.cef_rect_t)(rect))
+
+	ret = (CRectT)(cRet) // return GoObj
+	return ret
 }
 
 // cef_display_handler_capi.h, include/capi/cef_display_handler_capi.h:167:3,
@@ -19099,6 +19169,259 @@ func (self *CPermissionHandlerT) OnDismissPermissionPrompt(
 
 }
 
+// cef_preference_capi.h, include/capi/cef_preference_capi.h:73:3,
+
+///
+/// Structure that manages custom preference registrations.
+///
+
+type cCPreferenceRegistrarT C.cef_preference_registrar_t
+
+// Go type for cef_preference_registrar_t
+type CPreferenceRegistrarT struct {
+	noCopy                  noCopy
+	pc_preference_registrar *cCPreferenceRegistrarT
+}
+
+func (p *CPreferenceRegistrarT) Pass() (ret *CPreferenceRegistrarT) {
+	ret = p
+
+	return ret
+}
+
+func (self *CPreferenceRegistrarT) NewRef() (newP *CPreferenceRegistrarT) {
+	if self == nil {
+		return newP
+	}
+	newP = self
+	return newP
+}
+
+// Go type CPreferenceRegistrarT wraps cef type *C.cef_preference_registrar_t
+func newCPreferenceRegistrarT(p *C.cef_preference_registrar_t) *CPreferenceRegistrarT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T406.1:")
+	pc := (*cCPreferenceRegistrarT)(p)
+	go_preference_registrar := &CPreferenceRegistrarT{noCopy{}, pc}
+	return go_preference_registrar
+}
+
+// /
+// / Register a preference with the specified |name| and |default_value|. To
+// / avoid conflicts with built-in preferences the |name| value should contain
+// / an application-specific prefix followed by a period (e.g. &quot;myapp.value&quot;).
+// / The contents of |default_value| will be copied. The data type for the
+// / preference will be inferred from |default_value|&#39;s type and cannot be
+// / changed after registration. Returns true (1) on success. Returns false (0)
+// / if |name| is already registered or if |default_value| has an invalid type.
+// / This function must be called from within the scope of the
+// / cef_browser_process_handler_t::OnRegisterCustomPreferences callback.
+// /
+func (self *CPreferenceRegistrarT) AddPreference(
+	name string,
+	default_value *CValueT,
+) (ret bool) {
+	c_name := create_cef_string(name)
+	var goTmpdefault_value *C.cef_value_t
+	if default_value != nil {
+		BaseAddRef(default_value.pc_value)
+		goTmpdefault_value = (*C.cef_value_t)(default_value.pc_value)
+	}
+
+	cRet := C.cefingo_preference_registrar_add_preference((*C.cef_preference_registrar_t)(self.pc_preference_registrar), c_name.p_cef_string_t, goTmpdefault_value)
+
+	ret = cRet == 1
+	return ret
+}
+
+///
+/// Manage access to preferences. Many built-in preferences are registered by
+/// Chromium. Custom preferences can be registered in
+/// cef_browser_process_handler_t::OnRegisterCustomPreferences.
+///
+
+type cCPreferenceManagerT C.cef_preference_manager_t
+
+// Go type for cef_preference_manager_t
+type CPreferenceManagerT struct {
+	noCopy                noCopy
+	pc_preference_manager *cCPreferenceManagerT
+	beUnrefed             unrefedBy
+}
+
+func (p *CPreferenceManagerT) Pass() (ret *CPreferenceManagerT) {
+	switch p.beUnrefed {
+	case byApp:
+		p.beUnrefed = unrefed
+		ret = newCPreferenceManagerT((*C.cef_preference_manager_t)(p.pc_preference_manager), byCef)
+	case byApi, byCef:
+		ret = p
+	default:
+		Panicln("F725: Unsupported Ref Passed", p.beUnrefed)
+	}
+
+	return ret
+}
+
+func (self *CPreferenceManagerT) NewRef() (newP *CPreferenceManagerT) {
+	if self == nil {
+		return newP
+	}
+	gop := self.pc_preference_manager
+	BaseAddRef(gop)
+	newP = newCPreferenceManagerT((*C.cef_preference_manager_t)(gop), byApp)
+	return newP
+}
+
+// Go type CPreferenceManagerT wraps cef type *C.cef_preference_manager_t
+func newCPreferenceManagerT(p *C.cef_preference_manager_t, unrefedBy unrefedBy) *CPreferenceManagerT {
+	if p == nil {
+		return nil
+	}
+	Tracef(unsafe.Pointer(p), "T407.1:")
+	pc := (*cCPreferenceManagerT)(p)
+	go_preference_manager := &CPreferenceManagerT{noCopy{}, pc, unrefedBy}
+	// BaseAddRef(pc)
+	runtime.SetFinalizer(go_preference_manager, func(g *CPreferenceManagerT) {
+		// same as g.Unref()
+		if g.beUnrefed == byApp && g.pc_preference_manager != nil {
+			Tracef(unsafe.Pointer(g.pc_preference_manager), "T407.2:")
+			BaseRelease(g.pc_preference_manager)
+		}
+	})
+
+	return go_preference_manager
+}
+
+// *C.cef_preference_manager_t has refCounted interface
+func (preference_manager *CPreferenceManagerT) HasOneRef() bool {
+	return BaseHasOneRef(preference_manager.pc_preference_manager)
+}
+
+func (p *cCPreferenceManagerT) cast_to_p_base_ref_counted_t() *C.cef_base_ref_counted_t {
+	return (*C.cef_base_ref_counted_t)(unsafe.Pointer(p))
+}
+
+func (preference_manager *CPreferenceManagerT) Unref() (ret bool) {
+	if preference_manager == nil {
+		return
+	}
+	if preference_manager.beUnrefed == byApp {
+		ret = BaseRelease(preference_manager.pc_preference_manager)
+		preference_manager.beUnrefed = unrefed
+	}
+	preference_manager.pc_preference_manager = nil
+	return ret
+}
+
+// /
+// / Returns true (1) if a preference with the specified |name| exists. This
+// / function must be called on the browser process UI thread.
+// /
+func (self *CPreferenceManagerT) HasPreference(
+	name string,
+) (ret bool) {
+	c_name := create_cef_string(name)
+
+	cRet := C.cefingo_preference_manager_has_preference((*C.cef_preference_manager_t)(self.pc_preference_manager), c_name.p_cef_string_t)
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Returns the value for the preference with the specified |name|. Returns
+// / NULL if the preference does not exist. The returned object contains a copy
+// / of the underlying preference value and modifications to the returned
+// / object will not modify the underlying preference value. This function must
+// / be called on the browser process UI thread.
+// /
+func (self *CPreferenceManagerT) GetPreference(
+	name string,
+) (ret *CValueT) {
+	c_name := create_cef_string(name)
+
+	cRet := C.cefingo_preference_manager_get_preference((*C.cef_preference_manager_t)(self.pc_preference_manager), c_name.p_cef_string_t)
+
+	ret = newCValueT(cRet, byApp) // return GoObj
+	return ret
+}
+
+// /
+// / Returns all preferences as a dictionary. If |include_defaults| is true (1)
+// / then preferences currently at their default value will be included. The
+// / returned object contains a copy of the underlying preference values and
+// / modifications to the returned object will not modify the underlying
+// / preference values. This function must be called on the browser process UI
+// / thread.
+// /
+func (self *CPreferenceManagerT) GetAllPreferences(
+	include_defaults int,
+) (ret *CDictionaryValueT) {
+
+	cRet := C.cefingo_preference_manager_get_all_preferences((*C.cef_preference_manager_t)(self.pc_preference_manager), (C.int)(include_defaults))
+
+	ret = newCDictionaryValueT(cRet, byApp) // return GoObj
+	return ret
+}
+
+// /
+// / Returns true (1) if the preference with the specified |name| can be
+// / modified using SetPreference. As one example preferences set via the
+// / command-line usually cannot be modified. This function must be called on
+// / the browser process UI thread.
+// /
+func (self *CPreferenceManagerT) CanSetPreference(
+	name string,
+) (ret bool) {
+	c_name := create_cef_string(name)
+
+	cRet := C.cefingo_preference_manager_can_set_preference((*C.cef_preference_manager_t)(self.pc_preference_manager), c_name.p_cef_string_t)
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Set the |value| associated with preference |name|. Returns true (1) if the
+// / value is set successfully and false (0) otherwise. If |value| is NULL the
+// / preference will be restored to its default value. If setting the
+// / preference fails then |error| will be populated with a detailed
+// / description of the problem. This function must be called on the browser
+// / process UI thread.
+// /
+func (self *CPreferenceManagerT) SetPreference(
+	name string,
+	value *CValueT,
+	error string,
+) (ret bool) {
+	c_name := create_cef_string(name)
+	var goTmpvalue *C.cef_value_t
+	if value != nil {
+		BaseAddRef(value.pc_value)
+		goTmpvalue = (*C.cef_value_t)(value.pc_value)
+	}
+	c_error := create_cef_string(error)
+
+	cRet := C.cefingo_preference_manager_set_preference((*C.cef_preference_manager_t)(self.pc_preference_manager), c_name.p_cef_string_t, goTmpvalue, c_error.p_cef_string_t)
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Returns the global preference manager object.
+// /
+func PreferenceManagerGetGlobal() (ret *CPreferenceManagerT) {
+
+	cRet := C.cef_preference_manager_get_global()
+
+	ret = newCPreferenceManagerT(cRet, byApp) // return GoObj
+	return ret
+}
+
 // cef_print_handler_capi.h, include/capi/cef_print_handler_capi.h:70:3,
 
 ///
@@ -21620,7 +21943,8 @@ func (self *CPostDataT) GetElements() (elements []*CPostDataElementT) {
 
 	// IsOutParam
 	elements = make([]*CPostDataElementT, *elementsCount)
-	_tmpelements := (*[1 << 30](*C.cef_post_data_element_t))(unsafe.Pointer(tmpelements))[:*elementsCount:*elementsCount]
+	// _tmpelements := (*[1 << 30](*C.cef_post_data_element_t))(unsafe.Pointer(tmpelements))[:*elementsCount:*elementsCount]
+	_tmpelements := unsafe.Slice((**C.cef_post_data_element_t)(tmpelements), *elementsCount)
 	for i := C.size_t(0); i < *elementsCount; i++ {
 		elements[i] = newCPostDataElementT(_tmpelements[i], byApp) // Out Slice Param
 	}
@@ -22060,6 +22384,13 @@ func (request_context *CRequestContextT) Unref() (ret bool) {
 	return ret
 }
 
+// Convert to Base Class Pointer *CPreferenceManagerT
+func (request_context *CRequestContextT) ToCPreferenceManagerT() *CPreferenceManagerT {
+	p := (*C.cef_preference_manager_t)(unsafe.Pointer(request_context.pc_request_context))
+	BaseAddRef(request_context.pc_request_context)
+	return newCPreferenceManagerT(p, byApp)
+}
+
 // /
 // / Returns true (1) if this object is pointing to the same context as |that|
 // / object.
@@ -22201,104 +22532,6 @@ func (self *CRequestContextT) ClearSchemeHandlerFactories() (ret bool) {
 
 	ret = cRet == 1
 	return ret
-}
-
-// /
-// / Returns true (1) if a preference with the specified |name| exists. This
-// / function must be called on the browser process UI thread.
-// /
-func (self *CRequestContextT) HasPreference(
-	name string,
-) (ret bool) {
-	c_name := create_cef_string(name)
-
-	cRet := C.cefingo_request_context_has_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t)
-
-	ret = cRet == 1
-	return ret
-}
-
-// /
-// / Returns the value for the preference with the specified |name|. Returns
-// / NULL if the preference does not exist. The returned object contains a copy
-// / of the underlying preference value and modifications to the returned
-// / object will not modify the underlying preference value. This function must
-// / be called on the browser process UI thread.
-// /
-func (self *CRequestContextT) GetPreference(
-	name string,
-) (ret *CValueT) {
-	c_name := create_cef_string(name)
-
-	cRet := C.cefingo_request_context_get_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t)
-
-	ret = newCValueT(cRet, byApp) // return GoObj
-	return ret
-}
-
-// /
-// / Returns all preferences as a dictionary. If |include_defaults| is true (1)
-// / then preferences currently at their default value will be included. The
-// / returned object contains a copy of the underlying preference values and
-// / modifications to the returned object will not modify the underlying
-// / preference values. This function must be called on the browser process UI
-// / thread.
-// /
-func (self *CRequestContextT) GetAllPreferences(
-	include_defaults int,
-) (ret *CDictionaryValueT) {
-
-	cRet := C.cefingo_request_context_get_all_preferences((*C.cef_request_context_t)(self.pc_request_context), (C.int)(include_defaults))
-
-	ret = newCDictionaryValueT(cRet, byApp) // return GoObj
-	return ret
-}
-
-// /
-// / Returns true (1) if the preference with the specified |name| can be
-// / modified using SetPreference. As one example preferences set via the
-// / command-line usually cannot be modified. This function must be called on
-// / the browser process UI thread.
-// /
-func (self *CRequestContextT) CanSetPreference(
-	name string,
-) (ret bool) {
-	c_name := create_cef_string(name)
-
-	cRet := C.cefingo_request_context_can_set_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t)
-
-	ret = cRet == 1
-	return ret
-}
-
-// /
-// / Set the |value| associated with preference |name|. Returns true (1) if the
-// / value is set successfully and false (0) otherwise. If |value| is NULL the
-// / preference will be restored to its default value. If setting the
-// / preference fails then |error| will be populated with a detailed
-// / description of the problem. This function must be called on the browser
-// / process UI thread.
-// /
-func (self *CRequestContextT) SetPreference(
-	name string,
-	value *CValueT,
-) (ret bool, error string) {
-	c_name := create_cef_string(name)
-	var goTmpvalue *C.cef_value_t
-	if value != nil {
-		BaseAddRef(value.pc_value)
-		goTmpvalue = (*C.cef_value_t)(value.pc_value)
-	}
-	// IsOutParam
-	tmpc_error := create_cef_string("")
-
-	cRet := C.cefingo_request_context_set_preference((*C.cef_request_context_t)(self.pc_request_context), c_name.p_cef_string_t, goTmpvalue, tmpc_error.p_cef_string_t /* IsOutParam */)
-
-	// IsOutParam
-	error = string_from_cef_string(tmpc_error.p_cef_string_t)
-
-	ret = cRet == 1
-	return ret, error
 }
 
 // /
@@ -22589,7 +22822,7 @@ func CreateContextShared(
 	return ret
 }
 
-// cef_request_context_handler_capi.h, include/capi/cef_request_context_handler_capi.h:101:3,
+// cef_request_context_handler_capi.h, include/capi/cef_request_context_handler_capi.h:102:3,
 
 ///
 /// Implement this structure to provide handler implementations. The handler
@@ -30393,6 +30626,17 @@ func (self *CV8valueT) IsFunction() (ret bool) {
 }
 
 // /
+// / True if the value type is a Promise.
+// /
+func (self *CV8valueT) IsPromise() (ret bool) {
+
+	cRet := C.cefingo_v8value_is_promise((*C.cef_v8value_t)(self.pc_v8value))
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
 // / Returns true (1) if this object is pointing to the same handle as |that|
 // / object.
 // /
@@ -30846,7 +31090,8 @@ func (self *CV8valueT) ExecuteFunction(
 	}
 	argumentsCount := len(arguments)
 	tmparguments := c_calloc(C.size_t(argumentsCount), (C.size_t)(unsafe.Sizeof(arguments[0])), "T218.3:cef_v8value_t::execute_function::arguments")
-	slice := (*[1 << 30]*C.cef_v8value_t)(tmparguments)[:argumentsCount:argumentsCount]
+	// X slice := (*[1 << 30]*C.cef_v8value_t)(tmparguments)[:argumentsCount:argumentsCount]
+	slice := unsafe.Slice((**C.cef_v8value_t)(tmparguments), argumentsCount)
 	for i, v := range arguments {
 		cefp := v.pc_v8value
 		if cefp != nil {
@@ -30886,7 +31131,8 @@ func (self *CV8valueT) ExecuteFunctionWithContext(
 	}
 	argumentsCount := len(arguments)
 	tmparguments := c_calloc(C.size_t(argumentsCount), (C.size_t)(unsafe.Sizeof(arguments[0])), "T218.4:cef_v8value_t::execute_function_with_context::arguments")
-	slice := (*[1 << 30]*C.cef_v8value_t)(tmparguments)[:argumentsCount:argumentsCount]
+	// X slice := (*[1 << 30]*C.cef_v8value_t)(tmparguments)[:argumentsCount:argumentsCount]
+	slice := unsafe.Slice((**C.cef_v8value_t)(tmparguments), argumentsCount)
 	for i, v := range arguments {
 		cefp := v.pc_v8value
 		if cefp != nil {
@@ -30898,6 +31144,47 @@ func (self *CV8valueT) ExecuteFunctionWithContext(
 	cRet := C.cefingo_v8value_execute_function_with_context((*C.cef_v8value_t)(self.pc_v8value), goTmpcontext, goTmpobject, (C.size_t)(argumentsCount), (**C.cef_v8value_t)(tmparguments))
 
 	ret = newCV8valueT(cRet, byApp) // return GoObj
+	return ret
+}
+
+// /
+// / Resolve the Promise using the current V8 context. This function should
+// / only be called from within the scope of a cef_v8handler_t or
+// / cef_v8accessor_t callback, or in combination with calling enter() and
+// / exit() on a stored cef_v8context_t reference. |arg| is the argument passed
+// / to the resolved promise. Returns true (1) on success. Returns false (0) if
+// / this function is called incorrectly or an exception is thrown.
+// /
+func (self *CV8valueT) ResolvePromise(
+	arg *CV8valueT,
+) (ret bool) {
+	var goTmparg *C.cef_v8value_t
+	if arg != nil {
+		BaseAddRef(arg.pc_v8value)
+		goTmparg = (*C.cef_v8value_t)(arg.pc_v8value)
+	}
+
+	cRet := C.cefingo_v8value_resolve_promise((*C.cef_v8value_t)(self.pc_v8value), goTmparg)
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Reject the Promise using the current V8 context. This function should only
+// / be called from within the scope of a cef_v8handler_t or cef_v8accessor_t
+// / callback, or in combination with calling enter() and exit() on a stored
+// / cef_v8context_t reference. Returns true (1) on success. Returns false (0)
+// / if this function is called incorrectly or an exception is thrown.
+// /
+func (self *CV8valueT) RejectPromise(
+	errorMsg string,
+) (ret bool) {
+	c_errorMsg := create_cef_string(errorMsg)
+
+	cRet := C.cefingo_v8value_reject_promise((*C.cef_v8value_t)(self.pc_v8value), c_errorMsg.p_cef_string_t)
+
+	ret = cRet == 1
 	return ret
 }
 
@@ -31096,6 +31383,20 @@ func V8valueCreateFunction(
 	}
 
 	cRet := C.cef_v8value_create_function(c_name.p_cef_string_t, goTmphandler)
+
+	ret = newCV8valueT(cRet, byApp) // return GoObj
+	return ret
+}
+
+// /
+// / Create a new cef_v8value_t object of type Promise. This function should only
+// / be called from within the scope of a cef_render_process_handler_t,
+// / cef_v8handler_t or cef_v8accessor_t callback, or in combination with calling
+// / enter() and exit() on a stored cef_v8context_t reference.
+// /
+func V8valueCreatePromise() (ret *CV8valueT) {
+
+	cRet := C.cef_v8value_create_promise()
 
 	ret = newCV8valueT(cRet, byApp) // return GoObj
 	return ret
@@ -34915,7 +35216,7 @@ func WindowCreateTopLevel(
 	return ret
 }
 
-// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:167:3,
+// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:182:3,
 
 ///
 /// Implement this structure to handle window events. The functions of this
@@ -35015,6 +35316,16 @@ type OnWindowCreatedHandler interface {
 }
 
 // /
+// / Called when |window| is closing.
+// /
+type OnWindowClosingHandler interface {
+	OnWindowClosing(
+		self *CWindowDelegateT,
+		window *CWindowT,
+	)
+}
+
+// /
 // / Called when |window| is destroyed. Release all references to |window| and
 // / do not attempt to execute any functions on |window| after this callback
 // / returns.
@@ -35034,6 +35345,18 @@ type OnWindowActivationChangedHandler interface {
 		self *CWindowDelegateT,
 		window *CWindowT,
 		active int,
+	)
+}
+
+// /
+// / Called when |window| bounds have changed. |new_bounds| will be in DIP
+// / screen coordinates.
+// /
+type OnWindowBoundsChangedHandler interface {
+	OnWindowBoundsChanged(
+		self *CWindowDelegateT,
+		window *CWindowT,
+		new_bounds *CRectT,
 	)
 }
 
@@ -35159,8 +35482,10 @@ type CWindowDelegateTOnKeyEventHandler interface {
 var window_delegate_handlers = struct {
 	handler                              map[*cCWindowDelegateT]interface{}
 	on_window_created_handler            map[*cCWindowDelegateT]OnWindowCreatedHandler
+	on_window_closing_handler            map[*cCWindowDelegateT]OnWindowClosingHandler
 	on_window_destroyed_handler          map[*cCWindowDelegateT]OnWindowDestroyedHandler
 	on_window_activation_changed_handler map[*cCWindowDelegateT]OnWindowActivationChangedHandler
+	on_window_bounds_changed_handler     map[*cCWindowDelegateT]OnWindowBoundsChangedHandler
 	get_parent_window_handler            map[*cCWindowDelegateT]GetParentWindowHandler
 	get_initial_bounds_handler           map[*cCWindowDelegateT]GetInitialBoundsHandler
 	get_initial_show_state_handler       map[*cCWindowDelegateT]GetInitialShowStateHandler
@@ -35184,8 +35509,10 @@ var window_delegate_handlers = struct {
 }{
 	map[*cCWindowDelegateT]interface{}{},
 	map[*cCWindowDelegateT]OnWindowCreatedHandler{},
+	map[*cCWindowDelegateT]OnWindowClosingHandler{},
 	map[*cCWindowDelegateT]OnWindowDestroyedHandler{},
 	map[*cCWindowDelegateT]OnWindowActivationChangedHandler{},
+	map[*cCWindowDelegateT]OnWindowBoundsChangedHandler{},
 	map[*cCWindowDelegateT]GetParentWindowHandler{},
 	map[*cCWindowDelegateT]GetInitialBoundsHandler{},
 	map[*cCWindowDelegateT]GetInitialShowStateHandler{},
@@ -35245,6 +35572,13 @@ func (window_delegate *CWindowDelegateT) bind(a interface{}) *CWindowDelegateT {
 		delete(window_delegate_handlers.on_window_created_handler, cp)
 	}
 
+	if h, ok := a.(OnWindowClosingHandler); ok {
+		window_delegate_handlers.on_window_closing_handler[cp] = h
+		noBind = false
+	} else {
+		delete(window_delegate_handlers.on_window_closing_handler, cp)
+	}
+
 	if h, ok := a.(OnWindowDestroyedHandler); ok {
 		window_delegate_handlers.on_window_destroyed_handler[cp] = h
 		noBind = false
@@ -35257,6 +35591,13 @@ func (window_delegate *CWindowDelegateT) bind(a interface{}) *CWindowDelegateT {
 		noBind = false
 	} else {
 		delete(window_delegate_handlers.on_window_activation_changed_handler, cp)
+	}
+
+	if h, ok := a.(OnWindowBoundsChangedHandler); ok {
+		window_delegate_handlers.on_window_bounds_changed_handler[cp] = h
+		noBind = false
+	} else {
+		delete(window_delegate_handlers.on_window_bounds_changed_handler, cp)
 	}
 
 	if h, ok := a.(GetParentWindowHandler); ok {
@@ -35413,8 +35754,10 @@ func unbindAllCWindowDelegateT(cp *cCWindowDelegateT) {
 	delete(window_delegate_handlers.handler, cp)
 
 	delete(window_delegate_handlers.on_window_created_handler, cp)
+	delete(window_delegate_handlers.on_window_closing_handler, cp)
 	delete(window_delegate_handlers.on_window_destroyed_handler, cp)
 	delete(window_delegate_handlers.on_window_activation_changed_handler, cp)
+	delete(window_delegate_handlers.on_window_bounds_changed_handler, cp)
 	delete(window_delegate_handlers.get_parent_window_handler, cp)
 	delete(window_delegate_handlers.get_initial_bounds_handler, cp)
 	delete(window_delegate_handlers.get_initial_show_state_handler, cp)
@@ -35847,7 +36190,8 @@ func (self *CX509certificateT) GetDerencodedIssuerChain() (chain []*CBinaryValue
 
 	// IsOutParam
 	chain = make([]*CBinaryValueT, *chainCount)
-	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
+	// _tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
+	_tmpchain := unsafe.Slice((**C.cef_binary_value_t)(tmpchain), *chainCount)
 	for i := C.size_t(0); i < *chainCount; i++ {
 		chain[i] = newCBinaryValueT(_tmpchain[i], byApp) // Out Slice Param
 	}
@@ -35873,7 +36217,8 @@ func (self *CX509certificateT) GetPemencodedIssuerChain() (chain []*CBinaryValue
 
 	// IsOutParam
 	chain = make([]*CBinaryValueT, *chainCount)
-	_tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
+	// _tmpchain := (*[1 << 30](*C.cef_binary_value_t))(unsafe.Pointer(tmpchain))[:*chainCount:*chainCount]
+	_tmpchain := unsafe.Slice((**C.cef_binary_value_t)(tmpchain), *chainCount)
 	for i := C.size_t(0); i < *chainCount; i++ {
 		chain[i] = newCBinaryValueT(_tmpchain[i], byApp) // Out Slice Param
 	}

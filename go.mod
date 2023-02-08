@@ -1,6 +1,6 @@
 module github.com/turutcrane/cefingo
 
-go 1.16
+go 1.17
 
 require (
 	github.com/turutcrane/win32api v0.0.4
