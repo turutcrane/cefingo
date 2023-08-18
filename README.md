@@ -1,6 +1,8 @@
 # cefingo
 This is experimental go binding for CEF.
 
+This library is build with `cef_binary_115.3.15+g21130e0+chromium-115.0.5790.173_windows64'.
+
 ## Supported Environment
 * Windows 10 64bit
 * msys2/mingw64
@@ -22,9 +24,9 @@ This is experimental go binding for CEF.
 1. create cefingo.pc file on PKG_CONFIG_PATH
 
     ```.pc
-    target=C:\\path\\to\\gopath\\bin
+    target=C:/path/to/gopath/bin
     libdir=${target}
-    includedir=C:\\path\\to\\expand_dir
+    includedir=C:/path/to/expand_dir
 
     Name: cefingo
     Version: 0.1

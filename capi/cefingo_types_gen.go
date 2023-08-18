@@ -13,7 +13,7 @@ import "C"
 
 var cefingoIfaceAccess sync.Mutex
 
-// cef_string_list.h, include/internal/cef_string_list.h:44:15,
+// cef_string_list.h, include/internal/cef_string_list.h:44:36,
 
 // /
 // / CEF string maps are a set of key/value string pairs.
@@ -112,7 +112,7 @@ func StringListCopy(
 	return ret
 }
 
-// cef_string_map.h, include/internal/cef_string_map.h:44:15,
+// cef_string_map.h, include/internal/cef_string_map.h:44:35,
 
 // /
 // / CEF string maps are a set of key/value string pairs.
@@ -202,7 +202,8 @@ func StringMapValue(
 }
 
 // /
-// / Append a new key/value pair at the end of the string map.
+// / Append a new key/value pair at the end of the string map. If the key exists,
+// / overwrite the existing value with a new value w/o changing the pair order.
 // /
 func StringMapAppend(
 	cmap CStringMapT,
@@ -240,7 +241,7 @@ func StringMapFree(
 
 }
 
-// cef_string_multimap.h, include/internal/cef_string_multimap.h:45:15,
+// cef_string_multimap.h, include/internal/cef_string_multimap.h:45:40,
 
 // /
 // / CEF string multimaps are a set of key/value string pairs.
@@ -385,7 +386,7 @@ func StringMultimapFree(
 
 }
 
-// cef_time.h, include/internal/cef_time.h:51:3,
+// cef_time.h, include/internal/cef_time.h:52:3,
 
 // /
 // / Represents a wall clock time in UTC. Values are not guaranteed to be
@@ -406,7 +407,7 @@ func (st *CBasetimeT) Val() int64 {
 }
 
 func (st *CBasetimeT) SetVal(v int64) {
-	st.val = (C.int64)(v)
+	st.val = (C.int64_t)(v)
 }
 
 // /
@@ -611,7 +612,7 @@ func TimeFromBasetime(
 	return ret
 }
 
-// cef_types.h, include/internal/cef_types.h:51:16,
+// cef_types.h, include/internal/cef_types.h:55:18,
 
 // 32-bit ARGB color value, not premultiplied. The color components are always
 // in a known order. Equivalent to the SkColor type.
@@ -808,14 +809,6 @@ func (st *CSettingsT) RootCachePath() string {
 
 func (st *CSettingsT) SetRootCachePath(v string) {
 	set_cef_string(&st.root_cache_path, v)
-}
-
-func (st *CSettingsT) UserDataPath() string {
-	return string_from_cef_string(&st.user_data_path)
-}
-
-func (st *CSettingsT) SetUserDataPath(v string) {
-	set_cef_string(&st.user_data_path, v)
 }
 
 func (st *CSettingsT) PersistSessionCookies() bool {
@@ -1644,93 +1637,99 @@ const (
 	ErrFailed          CErrorcodeT = C.ERR_FAILED
 	ErrAborted         CErrorcodeT = C.ERR_ABORTED
 	ErrInvalidArgument CErrorcodeT = C.ERR_INVALID_ARGUMENT
+	ErrInvalidHandle   CErrorcodeT = C.ERR_INVALID_HANDLE
+	ErrFileNotFound    CErrorcodeT = C.ERR_FILE_NOT_FOUND
+	ErrTimedOut        CErrorcodeT = C.ERR_TIMED_OUT
+	ErrFileTooBig      CErrorcodeT = C.ERR_FILE_TOO_BIG
+	ErrUnexpected      CErrorcodeT = C.ERR_UNEXPECTED
+	ErrAccessDenied    CErrorcodeT = C.ERR_ACCESS_DENIED
 
-	// Bring in platform-specific definitions.
-	ErrInvalidHandle CErrorcodeT = C.ERR_INVALID_HANDLE
-	ErrFileNotFound  CErrorcodeT = C.ERR_FILE_NOT_FOUND
-	ErrTimedOut      CErrorcodeT = C.ERR_TIMED_OUT
-	ErrFileTooBig    CErrorcodeT = C.ERR_FILE_TOO_BIG
-
-	// Return the alpha byte from a cef_color_t value.
-	ErrUnexpected   CErrorcodeT = C.ERR_UNEXPECTED
-	ErrAccessDenied CErrorcodeT = C.ERR_ACCESS_DENIED
-
-	// Return the blue byte from a cef_color_t value.
-	ErrNotImplemented CErrorcodeT = C.ERR_NOT_IMPLEMENTED
-
-	// Return an cef_color_t value with the specified byte component values.
+	// Return the red byte from a cef_color_t value.
+	ErrNotImplemented        CErrorcodeT = C.ERR_NOT_IMPLEMENTED
 	ErrInsufficientResources CErrorcodeT = C.ERR_INSUFFICIENT_RESOURCES
 	ErrOutOfMemory           CErrorcodeT = C.ERR_OUT_OF_MEMORY
 	ErrUploadFileChanged     CErrorcodeT = C.ERR_UPLOAD_FILE_CHANGED
 	ErrSocketNotConnected    CErrorcodeT = C.ERR_SOCKET_NOT_CONNECTED
 	ErrFileExists            CErrorcodeT = C.ERR_FILE_EXISTS
 	ErrFilePathTooLong       CErrorcodeT = C.ERR_FILE_PATH_TOO_LONG
-	ErrFileNoSpace           CErrorcodeT = C.ERR_FILE_NO_SPACE
-	ErrFileVirusInfected     CErrorcodeT = C.ERR_FILE_VIRUS_INFECTED
-	ErrBlockedByClient       CErrorcodeT = C.ERR_BLOCKED_BY_CLIENT
 
-	///
-	/// Default logging (currently INFO logging).
-	///
+	// Return the high int32_t value from an int64_t value.
+	ErrFileNoSpace                    CErrorcodeT = C.ERR_FILE_NO_SPACE
+	ErrFileVirusInfected              CErrorcodeT = C.ERR_FILE_VIRUS_INFECTED
+	ErrBlockedByClient                CErrorcodeT = C.ERR_BLOCKED_BY_CLIENT
 	ErrNetworkChanged                 CErrorcodeT = C.ERR_NETWORK_CHANGED
 	ErrBlockedByAdministrator         CErrorcodeT = C.ERR_BLOCKED_BY_ADMINISTRATOR
 	ErrSocketIsConnected              CErrorcodeT = C.ERR_SOCKET_IS_CONNECTED
-	ErrBlockedEnrollmentCheckPending  CErrorcodeT = C.ERR_BLOCKED_ENROLLMENT_CHECK_PENDING
 	ErrUploadStreamRewindNotSupported CErrorcodeT = C.ERR_UPLOAD_STREAM_REWIND_NOT_SUPPORTED
+	ErrContextShutDown                CErrorcodeT = C.ERR_CONTEXT_SHUT_DOWN
+	ErrBlockedByResponse              CErrorcodeT = C.ERR_BLOCKED_BY_RESPONSE
+	ErrCleartextNotPermitted          CErrorcodeT = C.ERR_CLEARTEXT_NOT_PERMITTED
+	ErrBlockedByCsp                   CErrorcodeT = C.ERR_BLOCKED_BY_CSP
+	ErrH2OrQuicRequired               CErrorcodeT = C.ERR_H2_OR_QUIC_REQUIRED
+	ErrBlockedByOrb                   CErrorcodeT = C.ERR_BLOCKED_BY_ORB
+	ErrConnectionClosed               CErrorcodeT = C.ERR_CONNECTION_CLOSED
+	ErrConnectionReset                CErrorcodeT = C.ERR_CONNECTION_RESET
+	ErrConnectionRefused              CErrorcodeT = C.ERR_CONNECTION_REFUSED
+	ErrConnectionAborted              CErrorcodeT = C.ERR_CONNECTION_ABORTED
+	ErrConnectionFailed               CErrorcodeT = C.ERR_CONNECTION_FAILED
 
 	///
-	/// WARNING logging.
+	/// Enable or allow the setting.
 	///
-	ErrContextShutDown CErrorcodeT = C.ERR_CONTEXT_SHUT_DOWN
+	ErrNameNotResolved      CErrorcodeT = C.ERR_NAME_NOT_RESOLVED
+	ErrInternetDisconnected CErrorcodeT = C.ERR_INTERNET_DISCONNECTED
+	ErrSslProtocolError     CErrorcodeT = C.ERR_SSL_PROTOCOL_ERROR
+	ErrAddressInvalid       CErrorcodeT = C.ERR_ADDRESS_INVALID
+	ErrAddressUnreachable   CErrorcodeT = C.ERR_ADDRESS_UNREACHABLE
 
 	///
-	/// ERROR logging.
+	/// Size of this structure.
 	///
-	ErrBlockedByResponse     CErrorcodeT = C.ERR_BLOCKED_BY_RESPONSE
-	ErrCleartextNotPermitted CErrorcodeT = C.ERR_CLEARTEXT_NOT_PERMITTED
-	ErrBlockedByCsp          CErrorcodeT = C.ERR_BLOCKED_BY_CSP
-	ErrH2OrQuicRequired      CErrorcodeT = C.ERR_H2_OR_QUIC_REQUIRED
-	ErrBlockedByOrb          CErrorcodeT = C.ERR_BLOCKED_BY_ORB
-	ErrConnectionClosed      CErrorcodeT = C.ERR_CONNECTION_CLOSED
+	ErrSslClientAuthCertNeeded    CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NEEDED
+	ErrTunnelConnectionFailed     CErrorcodeT = C.ERR_TUNNEL_CONNECTION_FAILED
+	ErrNoSslVersionsEnabled       CErrorcodeT = C.ERR_NO_SSL_VERSIONS_ENABLED
+	ErrSslVersionOrCipherMismatch CErrorcodeT = C.ERR_SSL_VERSION_OR_CIPHER_MISMATCH
+	ErrSslRenegotiationRequested  CErrorcodeT = C.ERR_SSL_RENEGOTIATION_REQUESTED
+	ErrProxyAuthUnsupported       CErrorcodeT = C.ERR_PROXY_AUTH_UNSUPPORTED
+	ErrBadSslClientAuthCert       CErrorcodeT = C.ERR_BAD_SSL_CLIENT_AUTH_CERT
+	ErrConnectionTimedOut         CErrorcodeT = C.ERR_CONNECTION_TIMED_OUT
+	ErrHostResolverQueueTooLarge  CErrorcodeT = C.ERR_HOST_RESOLVER_QUEUE_TOO_LARGE
+	ErrSocksConnectionFailed      CErrorcodeT = C.ERR_SOCKS_CONNECTION_FAILED
 
 	///
-	/// Use the default state for the setting.
+	/// The path to the main bundle on macOS. If this value is empty then it
+	/// defaults to the top-level app bundle. If this value is non-empty then it
+	/// must be an absolute path. Also configurable using the "main-bundle-path"
+	/// command-line switch.
 	///
-	ErrConnectionReset   CErrorcodeT = C.ERR_CONNECTION_RESET
-	ErrConnectionRefused CErrorcodeT = C.ERR_CONNECTION_REFUSED
-	ErrConnectionAborted CErrorcodeT = C.ERR_CONNECTION_ABORTED
+	ErrSocksConnectionHostUnreachable CErrorcodeT = C.ERR_SOCKS_CONNECTION_HOST_UNREACHABLE
+	ErrAlpnNegotiationFailed          CErrorcodeT = C.ERR_ALPN_NEGOTIATION_FAILED
+	ErrSslNoRenegotiation             CErrorcodeT = C.ERR_SSL_NO_RENEGOTIATION
+	ErrWinsockUnexpectedWrittenBytes  CErrorcodeT = C.ERR_WINSOCK_UNEXPECTED_WRITTEN_BYTES
 
 	///
-	/// Disable or disallow the setting.
+	/// Set to true (1) to have the browser process message loop run in a separate
+	/// thread. If false (0) then the CefDoMessageLoopWork() function must be
+	/// called from your application message loop. This option is only supported
+	/// on Windows and Linux.
 	///
-	ErrConnectionFailed                    CErrorcodeT = C.ERR_CONNECTION_FAILED
-	ErrNameNotResolved                     CErrorcodeT = C.ERR_NAME_NOT_RESOLVED
-	ErrInternetDisconnected                CErrorcodeT = C.ERR_INTERNET_DISCONNECTED
-	ErrSslProtocolError                    CErrorcodeT = C.ERR_SSL_PROTOCOL_ERROR
-	ErrAddressInvalid                      CErrorcodeT = C.ERR_ADDRESS_INVALID
-	ErrAddressUnreachable                  CErrorcodeT = C.ERR_ADDRESS_UNREACHABLE
-	ErrSslClientAuthCertNeeded             CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NEEDED
-	ErrTunnelConnectionFailed              CErrorcodeT = C.ERR_TUNNEL_CONNECTION_FAILED
-	ErrNoSslVersionsEnabled                CErrorcodeT = C.ERR_NO_SSL_VERSIONS_ENABLED
-	ErrSslVersionOrCipherMismatch          CErrorcodeT = C.ERR_SSL_VERSION_OR_CIPHER_MISMATCH
-	ErrSslRenegotiationRequested           CErrorcodeT = C.ERR_SSL_RENEGOTIATION_REQUESTED
-	ErrProxyAuthUnsupported                CErrorcodeT = C.ERR_PROXY_AUTH_UNSUPPORTED
-	ErrBadSslClientAuthCert                CErrorcodeT = C.ERR_BAD_SSL_CLIENT_AUTH_CERT
-	ErrConnectionTimedOut                  CErrorcodeT = C.ERR_CONNECTION_TIMED_OUT
-	ErrHostResolverQueueTooLarge           CErrorcodeT = C.ERR_HOST_RESOLVER_QUEUE_TOO_LARGE
-	ErrSocksConnectionFailed               CErrorcodeT = C.ERR_SOCKS_CONNECTION_FAILED
-	ErrSocksConnectionHostUnreachable      CErrorcodeT = C.ERR_SOCKS_CONNECTION_HOST_UNREACHABLE
-	ErrAlpnNegotiationFailed               CErrorcodeT = C.ERR_ALPN_NEGOTIATION_FAILED
-	ErrSslNoRenegotiation                  CErrorcodeT = C.ERR_SSL_NO_RENEGOTIATION
-	ErrWinsockUnexpectedWrittenBytes       CErrorcodeT = C.ERR_WINSOCK_UNEXPECTED_WRITTEN_BYTES
-	ErrSslDecompressionFailureAlert        CErrorcodeT = C.ERR_SSL_DECOMPRESSION_FAILURE_ALERT
-	ErrSslBadRecordMacAlert                CErrorcodeT = C.ERR_SSL_BAD_RECORD_MAC_ALERT
-	ErrProxyAuthRequested                  CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED
-	ErrProxyConnectionFailed               CErrorcodeT = C.ERR_PROXY_CONNECTION_FAILED
-	ErrMandatoryProxyConfigurationFailed   CErrorcodeT = C.ERR_MANDATORY_PROXY_CONFIGURATION_FAILED
-	ErrPreconnectMaxSocketLimit            CErrorcodeT = C.ERR_PRECONNECT_MAX_SOCKET_LIMIT
+	ErrSslDecompressionFailureAlert      CErrorcodeT = C.ERR_SSL_DECOMPRESSION_FAILURE_ALERT
+	ErrSslBadRecordMacAlert              CErrorcodeT = C.ERR_SSL_BAD_RECORD_MAC_ALERT
+	ErrProxyAuthRequested                CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED
+	ErrProxyConnectionFailed             CErrorcodeT = C.ERR_PROXY_CONNECTION_FAILED
+	ErrMandatoryProxyConfigurationFailed CErrorcodeT = C.ERR_MANDATORY_PROXY_CONFIGURATION_FAILED
+	ErrPreconnectMaxSocketLimit          CErrorcodeT = C.ERR_PRECONNECT_MAX_SOCKET_LIMIT
+
+	///
+	/// Set to true (1) to disable configuration of browser process features using
+	/// standard CEF and Chromium command-line arguments. Configuration can still
+	/// be specified using CEF data structures or via the
+	/// CefApp::OnBeforeCommandLineProcessing() method.
+	///
 	ErrSslClientAuthPrivateKeyAccessDenied CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_PRIVATE_KEY_ACCESS_DENIED
 	ErrSslClientAuthCertNoPrivateKey       CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_CERT_NO_PRIVATE_KEY
+	ErrProxyCertificateInvalid             CErrorcodeT = C.ERR_PROXY_CERTIFICATE_INVALID
+	ErrNameResolutionFailed                CErrorcodeT = C.ERR_NAME_RESOLUTION_FAILED
 
 	///
 	/// The location where data for the global browser cache will be stored on
@@ -1744,19 +1743,7 @@ const (
 	/// value. When using the Chrome runtime the "default" profile will be used if
 	/// |cache_path| and |root_cache_path| have the same value.
 	///
-	ErrProxyCertificateInvalid CErrorcodeT = C.ERR_PROXY_CERTIFICATE_INVALID
-	ErrNameResolutionFailed    CErrorcodeT = C.ERR_NAME_RESOLUTION_FAILED
-	ErrNetworkAccessDenied     CErrorcodeT = C.ERR_NETWORK_ACCESS_DENIED
-
-	///
-	/// The root directory that all CefSettings.cache_path and
-	/// CefRequestContextSettings.cache_path values must have in common. If this
-	/// value is empty and CefSettings.cache_path is non-empty then it will
-	/// default to the CefSettings.cache_path value. If this value is non-empty
-	/// then it must be an absolute path. Failure to set this value correctly may
-	/// result in the sandbox blocking read/write access to the cache_path
-	/// directory.
-	///
+	ErrNetworkAccessDenied              CErrorcodeT = C.ERR_NETWORK_ACCESS_DENIED
 	ErrTemporarilyThrottled             CErrorcodeT = C.ERR_TEMPORARILY_THROTTLED
 	ErrHttpsProxyTunnelResponseRedirect CErrorcodeT = C.ERR_HTTPS_PROXY_TUNNEL_RESPONSE_REDIRECT
 	ErrSslClientAuthSignatureFailed     CErrorcodeT = C.ERR_SSL_CLIENT_AUTH_SIGNATURE_FAILED
@@ -1958,87 +1945,65 @@ const (
 	///
 	/// Cookie same site values.
 	///
-	ErrHttp2CompressionError              CErrorcodeT = C.ERR_HTTP2_COMPRESSION_ERROR
-	ErrProxyAuthRequestedWithNoConnection CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED_WITH_NO_CONNECTION
-	ErrHttp11Required                     CErrorcodeT = C.ERR_HTTP_1_1_REQUIRED
-	ErrProxyHttp11Required                CErrorcodeT = C.ERR_PROXY_HTTP_1_1_REQUIRED
-	ErrPacScriptTerminated                CErrorcodeT = C.ERR_PAC_SCRIPT_TERMINATED
-	ErrInvalidHttpResponse                CErrorcodeT = C.ERR_INVALID_HTTP_RESPONSE
-	ErrContentDecodingInitFailed          CErrorcodeT = C.ERR_CONTENT_DECODING_INIT_FAILED
-	ErrHttp2RstStreamNoErrorReceived      CErrorcodeT = C.ERR_HTTP2_RST_STREAM_NO_ERROR_RECEIVED
+	ErrHttp2CompressionError                                 CErrorcodeT = C.ERR_HTTP2_COMPRESSION_ERROR
+	ErrProxyAuthRequestedWithNoConnection                    CErrorcodeT = C.ERR_PROXY_AUTH_REQUESTED_WITH_NO_CONNECTION
+	ErrHttp11Required                                        CErrorcodeT = C.ERR_HTTP_1_1_REQUIRED
+	ErrProxyHttp11Required                                   CErrorcodeT = C.ERR_PROXY_HTTP_1_1_REQUIRED
+	ErrPacScriptTerminated                                   CErrorcodeT = C.ERR_PAC_SCRIPT_TERMINATED
+	ErrInvalidHttpResponse                                   CErrorcodeT = C.ERR_INVALID_HTTP_RESPONSE
+	ErrContentDecodingInitFailed                             CErrorcodeT = C.ERR_CONTENT_DECODING_INIT_FAILED
+	ErrHttp2RstStreamNoErrorReceived                         CErrorcodeT = C.ERR_HTTP2_RST_STREAM_NO_ERROR_RECEIVED
+	ErrHttp2PushedStreamNotAvailable                         CErrorcodeT = C.ERR_HTTP2_PUSHED_STREAM_NOT_AVAILABLE
+	ErrHttp2ClaimedPushedStreamResetByServer                 CErrorcodeT = C.ERR_HTTP2_CLAIMED_PUSHED_STREAM_RESET_BY_SERVER
+	ErrTooManyRetries                                        CErrorcodeT = C.ERR_TOO_MANY_RETRIES
+	ErrHttp2StreamClosed                                     CErrorcodeT = C.ERR_HTTP2_STREAM_CLOSED
+	ErrHttp2ClientRefusedStream                              CErrorcodeT = C.ERR_HTTP2_CLIENT_REFUSED_STREAM
+	ErrHttp2PushedResponseDoesNotMatch                       CErrorcodeT = C.ERR_HTTP2_PUSHED_RESPONSE_DOES_NOT_MATCH
+	ErrHttpResponseCodeFailure                               CErrorcodeT = C.ERR_HTTP_RESPONSE_CODE_FAILURE
+	ErrQuicCertRootNotKnown                                  CErrorcodeT = C.ERR_QUIC_CERT_ROOT_NOT_KNOWN
+	ErrQuicGoawayRequestCanBeRetried                         CErrorcodeT = C.ERR_QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED
+	ErrTooManyAcceptChRestarts                               CErrorcodeT = C.ERR_TOO_MANY_ACCEPT_CH_RESTARTS
+	ErrInconsistentIpAddressSpace                            CErrorcodeT = C.ERR_INCONSISTENT_IP_ADDRESS_SPACE
+	ErrCachedIpAddressSpaceBlockedByLocalNetworkAccessPolicy CErrorcodeT = C.ERR_CACHED_IP_ADDRESS_SPACE_BLOCKED_BY_LOCAL_NETWORK_ACCESS_POLICY
+	ErrCacheMiss                                             CErrorcodeT = C.ERR_CACHE_MISS
+	ErrCacheReadFailure                                      CErrorcodeT = C.ERR_CACHE_READ_FAILURE
+	ErrCacheWriteFailure                                     CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
 
 	///
-	/// If |path| is non-empty only URLs at or below the path will get the cookie
-	/// value.
+	/// Out of memory. Some platforms may use TS_PROCESS_CRASHED instead.
 	///
-	ErrHttp2PushedStreamNotAvailable         CErrorcodeT = C.ERR_HTTP2_PUSHED_STREAM_NOT_AVAILABLE
-	ErrHttp2ClaimedPushedStreamResetByServer CErrorcodeT = C.ERR_HTTP2_CLAIMED_PUSHED_STREAM_RESET_BY_SERVER
-
-	///
-	/// If |httponly| is true the cookie will only be sent for HTTP requests.
-	///
-	ErrTooManyRetries    CErrorcodeT = C.ERR_TOO_MANY_RETRIES
-	ErrHttp2StreamClosed CErrorcodeT = C.ERR_HTTP2_STREAM_CLOSED
-
-	///
-	/// The cookie creation date. This is automatically populated by the system on
-	/// cookie creation.
-	///
-	ErrHttp2ClientRefusedStream        CErrorcodeT = C.ERR_HTTP2_CLIENT_REFUSED_STREAM
-	ErrHttp2PushedResponseDoesNotMatch CErrorcodeT = C.ERR_HTTP2_PUSHED_RESPONSE_DOES_NOT_MATCH
-
-	///
-	/// The cookie expiration date is only valid if |has_expires| is true.
-	///
-	ErrHttpResponseCodeFailure       CErrorcodeT = C.ERR_HTTP_RESPONSE_CODE_FAILURE
-	ErrQuicCertRootNotKnown          CErrorcodeT = C.ERR_QUIC_CERT_ROOT_NOT_KNOWN
-	ErrQuicGoawayRequestCanBeRetried CErrorcodeT = C.ERR_QUIC_GOAWAY_REQUEST_CAN_BE_RETRIED
-	ErrTooManyAcceptChRestarts       CErrorcodeT = C.ERR_TOO_MANY_ACCEPT_CH_RESTARTS
-
-	///
-	/// Process termination status values.
-	///
-	ErrInconsistentIpAddressSpace CErrorcodeT = C.ERR_INCONSISTENT_IP_ADDRESS_SPACE
-
-	///
-	/// Non-zero exit status.
-	///
-	ErrCachedIpAddressSpaceBlockedByPrivateNetworkAccessPolicy CErrorcodeT = C.ERR_CACHED_IP_ADDRESS_SPACE_BLOCKED_BY_PRIVATE_NETWORK_ACCESS_POLICY
-	ErrCacheMiss                                               CErrorcodeT = C.ERR_CACHE_MISS
-	ErrCacheReadFailure                                        CErrorcodeT = C.ERR_CACHE_READ_FAILURE
-
-	///
-	/// Segmentation fault.
-	///
-	ErrCacheWriteFailure          CErrorcodeT = C.ERR_CACHE_WRITE_FAILURE
 	ErrCacheOperationNotSupported CErrorcodeT = C.ERR_CACHE_OPERATION_NOT_SUPPORTED
 	ErrCacheOpenFailure           CErrorcodeT = C.ERR_CACHE_OPEN_FAILURE
-	ErrCacheCreateFailure         CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
 
 	///
-	/// Current directory.
+	/// Path key values.
 	///
-	ErrCacheRace                 CErrorcodeT = C.ERR_CACHE_RACE
-	ErrCacheChecksumReadFailure  CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
-	ErrCacheChecksumMismatch     CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
-	ErrCacheLockTimeout          CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
+	ErrCacheCreateFailure       CErrorcodeT = C.ERR_CACHE_CREATE_FAILURE
+	ErrCacheRace                CErrorcodeT = C.ERR_CACHE_RACE
+	ErrCacheChecksumReadFailure CErrorcodeT = C.ERR_CACHE_CHECKSUM_READ_FAILURE
+	ErrCacheChecksumMismatch    CErrorcodeT = C.ERR_CACHE_CHECKSUM_MISMATCH
+	ErrCacheLockTimeout         CErrorcodeT = C.ERR_CACHE_LOCK_TIMEOUT
+
+	///
+	/// Path and filename of the current executable.
+	///
 	ErrCacheAuthFailureAfterRead CErrorcodeT = C.ERR_CACHE_AUTH_FAILURE_AFTER_READ
 	ErrCacheEntryNotSuitable     CErrorcodeT = C.ERR_CACHE_ENTRY_NOT_SUITABLE
+	ErrCacheDoomFailure          CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
+	ErrCacheOpenOrCreateFailure  CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
+	ErrInsecureResponse          CErrorcodeT = C.ERR_INSECURE_RESPONSE
 
 	///
-	/// Path and filename of the module containing the CEF code (usually the
-	/// libcef module).
+	/// "Application Data" directory under the user profile directory on Windows
+	/// and "~/Library/Application Support" directory on MacOS.
 	///
-	ErrCacheDoomFailure         CErrorcodeT = C.ERR_CACHE_DOOM_FAILURE
-	ErrCacheOpenOrCreateFailure CErrorcodeT = C.ERR_CACHE_OPEN_OR_CREATE_FAILURE
+	ErrNoPrivateKeyForCert CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
+	ErrAddUserCertFailed   CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
 
 	///
-	/// "Local Settings\Application Data" directory under the user profile
-	/// directory on Windows.
+	/// Directory containing application resources. Can be configured via
+	/// CefSettings.resources_dir_path.
 	///
-	ErrInsecureResponse                                CErrorcodeT = C.ERR_INSECURE_RESPONSE
-	ErrNoPrivateKeyForCert                             CErrorcodeT = C.ERR_NO_PRIVATE_KEY_FOR_CERT
-	ErrAddUserCertFailed                               CErrorcodeT = C.ERR_ADD_USER_CERT_FAILED
 	ErrInvalidSignedExchange                           CErrorcodeT = C.ERR_INVALID_SIGNED_EXCHANGE
 	ErrInvalidWebBundle                                CErrorcodeT = C.ERR_INVALID_WEB_BUNDLE
 	ErrTrustTokenOperationFailed                       CErrorcodeT = C.ERR_TRUST_TOKEN_OPERATION_FAILED
@@ -2047,56 +2012,44 @@ const (
 	ErrFtpServiceUnavailable                           CErrorcodeT = C.ERR_FTP_SERVICE_UNAVAILABLE
 	ErrFtpTransferAborted                              CErrorcodeT = C.ERR_FTP_TRANSFER_ABORTED
 	ErrFtpFileBusy                                     CErrorcodeT = C.ERR_FTP_FILE_BUSY
+	ErrFtpSyntaxError                                  CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
 
-	// 1 << 3 is reserved for ERR_CERT_CONTAINS_ERRORS (not useful with WinHTTP).
-	ErrFtpSyntaxError         CErrorcodeT = C.ERR_FTP_SYNTAX_ERROR
+	// 1 << 9 was used for CERT_STATUS_NOT_IN_DNS
 	ErrFtpCommandNotSupported CErrorcodeT = C.ERR_FTP_COMMAND_NOT_SUPPORTED
+	ErrFtpBadCommandSequence  CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
 
-	// 1 << 12 was used for CERT_STATUS_WEAK_DH_KEY
-	ErrFtpBadCommandSequence   CErrorcodeT = C.ERR_FTP_BAD_COMMAND_SEQUENCE
+	// Bits 16 to 31 are for non-error statuses.
 	ErrPkcs12ImportBadPassword CErrorcodeT = C.ERR_PKCS12_IMPORT_BAD_PASSWORD
+
+	// Bit 18 was CERT_STATUS_IS_DNSSEC
 	ErrPkcs12ImportFailed      CErrorcodeT = C.ERR_PKCS12_IMPORT_FAILED
 	ErrImportCaCertNotCa       CErrorcodeT = C.ERR_IMPORT_CA_CERT_NOT_CA
 	ErrImportCertAlreadyExists CErrorcodeT = C.ERR_IMPORT_CERT_ALREADY_EXISTS
+	ErrImportCaCertFailed      CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
+	ErrImportServerCertFailed  CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
+	ErrPkcs12ImportInvalidMac  CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
 
 	///
-	/// The manner in which a link click should be opened. These constants match
-	/// their equivalents in Chromium's window_open_disposition.h and should not be
-	/// renumbered.
+	/// Indicates that only one tab with the url should exist in the same window.
 	///
-	ErrImportCaCertFailed     CErrorcodeT = C.ERR_IMPORT_CA_CERT_FAILED
-	ErrImportServerCertFailed CErrorcodeT = C.ERR_IMPORT_SERVER_CERT_FAILED
-
-	///
-	/// Current tab. This is the default in most cases.
-	///
-	ErrPkcs12ImportInvalidMac         CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_MAC
 	ErrPkcs12ImportInvalidFile        CErrorcodeT = C.ERR_PKCS12_IMPORT_INVALID_FILE
 	ErrPkcs12ImportUnsupported        CErrorcodeT = C.ERR_PKCS12_IMPORT_UNSUPPORTED
 	ErrKeyGenerationFailed            CErrorcodeT = C.ERR_KEY_GENERATION_FAILED
 	ErrPrivateKeyExportFailed         CErrorcodeT = C.ERR_PRIVATE_KEY_EXPORT_FAILED
 	ErrSelfSignedCertGenerationFailed CErrorcodeT = C.ERR_SELF_SIGNED_CERT_GENERATION_FAILED
+	ErrCertDatabaseChanged            CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
+	ErrCertVerifierChanged            CErrorcodeT = C.ERR_CERT_VERIFIER_CHANGED
+	ErrDnsMalformedResponse           CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
 
 	///
-	/// New popup window.
-	///
-	ErrCertDatabaseChanged  CErrorcodeT = C.ERR_CERT_DATABASE_CHANGED
-	ErrDnsMalformedResponse CErrorcodeT = C.ERR_DNS_MALFORMED_RESPONSE
-
-	///
-	/// Alt key while clicking.
+	/// New off-the-record (incognito) window.
 	///
 	ErrDnsServerRequiresTcp CErrorcodeT = C.ERR_DNS_SERVER_REQUIRES_TCP
 	ErrDnsServerFailed      CErrorcodeT = C.ERR_DNS_SERVER_FAILED
 	ErrDnsTimedOut          CErrorcodeT = C.ERR_DNS_TIMED_OUT
 
 	///
-	/// Activates an existing tab containing the url, rather than navigating.
-	/// This is similar to SINGLETON_TAB, but searches across all windows from
-	/// the current profile and anonymity (instead of just the current one);
-	/// closes the current tab on switching if the current tab was the NTP with
-	/// no session history; and behaves like CURRENT_TAB instead of
-	/// NEW_FOREGROUND_TAB when no existing tab is found.
+	/// Creates a new document picture-in-picture window showing a child WebView.
 	///
 	ErrDnsCacheMiss                              CErrorcodeT = C.ERR_DNS_CACHE_MISS
 	ErrDnsSearchEmpty                            CErrorcodeT = C.ERR_DNS_SEARCH_EMPTY
@@ -2104,7 +2057,7 @@ const (
 	ErrDnsSecureResolverHostnameResolutionFailed CErrorcodeT = C.ERR_DNS_SECURE_RESOLVER_HOSTNAME_RESOLUTION_FAILED
 	ErrDnsNameHttpsOnly                          CErrorcodeT = C.ERR_DNS_NAME_HTTPS_ONLY
 	ErrDnsRequestCancelled                       CErrorcodeT = C.ERR_DNS_REQUEST_CANCELLED
-	ErrDnsNoMachingSupportedAlpn                 CErrorcodeT = C.ERR_DNS_NO_MACHING_SUPPORTED_ALPN
+	ErrDnsNoMatchingSupportedAlpn                CErrorcodeT = C.ERR_DNS_NO_MATCHING_SUPPORTED_ALPN
 )
 
 // /
@@ -3051,7 +3004,7 @@ func (st *CMouseEventT) Modifiers() uint32 {
 }
 
 func (st *CMouseEventT) SetModifiers(v uint32) {
-	st.modifiers = (C.uint32)(v)
+	st.modifiers = (C.uint32_t)(v)
 }
 
 // /
@@ -3158,7 +3111,7 @@ func (st *CTouchEventT) Modifiers() uint32 {
 }
 
 func (st *CTouchEventT) SetModifiers(v uint32) {
-	st.modifiers = (C.uint32)(v)
+	st.modifiers = (C.uint32_t)(v)
 }
 
 func (st *CTouchEventT) PointerType() CPointerTypeT {
@@ -3417,7 +3370,7 @@ func (st *CKeyEventT) Modifiers() uint32 {
 }
 
 func (st *CKeyEventT) SetModifiers(v uint32) {
-	st.modifiers = (C.uint32)(v)
+	st.modifiers = (C.uint32_t)(v)
 }
 
 func (st *CKeyEventT) WindowsKeyCode() int {
@@ -3449,7 +3402,7 @@ func (st *CKeyEventT) Character() uint16 {
 }
 
 func (st *CKeyEventT) SetCharacter(v uint16) {
-	st.character = (C.char16)(v)
+	st.character = (C.char16_t)(v)
 }
 
 func (st *CKeyEventT) UnmodifiedCharacter() uint16 {
@@ -3457,7 +3410,7 @@ func (st *CKeyEventT) UnmodifiedCharacter() uint16 {
 }
 
 func (st *CKeyEventT) SetUnmodifiedCharacter(v uint16) {
-	st.unmodified_character = (C.char16)(v)
+	st.unmodified_character = (C.char16_t)(v)
 }
 
 func (st *CKeyEventT) FocusOnEditableField() int {
@@ -3625,36 +3578,12 @@ func (st *CPopupFeaturesT) SetHeightSet(v bool) {
 	}
 }
 
-func (st *CPopupFeaturesT) MenuBarVisible() int {
-	return int(st.menuBarVisible)
+func (st *CPopupFeaturesT) IsPopup() int {
+	return int(st.isPopup)
 }
 
-func (st *CPopupFeaturesT) SetMenuBarVisible(v int) {
-	st.menuBarVisible = (C.int)(v)
-}
-
-func (st *CPopupFeaturesT) StatusBarVisible() int {
-	return int(st.statusBarVisible)
-}
-
-func (st *CPopupFeaturesT) SetStatusBarVisible(v int) {
-	st.statusBarVisible = (C.int)(v)
-}
-
-func (st *CPopupFeaturesT) ToolBarVisible() int {
-	return int(st.toolBarVisible)
-}
-
-func (st *CPopupFeaturesT) SetToolBarVisible(v int) {
-	st.toolBarVisible = (C.int)(v)
-}
-
-func (st *CPopupFeaturesT) ScrollbarsVisible() int {
-	return int(st.scrollbarsVisible)
-}
-
-func (st *CPopupFeaturesT) SetScrollbarsVisible(v int) {
-	st.scrollbarsVisible = (C.int)(v)
+func (st *CPopupFeaturesT) SetIsPopup(v int) {
+	st.isPopup = (C.int)(v)
 }
 
 // /
@@ -4647,20 +4576,20 @@ func NewCRangeT() *CRangeT {
 	return s
 }
 
-func (st *CRangeT) From() int {
-	return int(st.from)
+func (st *CRangeT) From() uint32 {
+	return uint32(st.from)
 }
 
-func (st *CRangeT) SetFrom(v int) {
-	st.from = (C.int)(v)
+func (st *CRangeT) SetFrom(v uint32) {
+	st.from = (C.uint32_t)(v)
 }
 
-func (st *CRangeT) To() int {
-	return int(st.to)
+func (st *CRangeT) To() uint32 {
+	return uint32(st.to)
 }
 
-func (st *CRangeT) SetTo(v int) {
-	st.to = (C.int)(v)
+func (st *CRangeT) SetTo(v uint32) {
+	st.to = (C.uint32_t)(v)
 }
 
 // /
@@ -4984,7 +4913,7 @@ const (
 )
 
 // /
-// / Supported Chrome toolbar types.
+// / Chrome toolbar types.
 // /
 type CChromeToolbarTypeT C.cef_chrome_toolbar_type_t
 
@@ -4992,6 +4921,56 @@ const (
 	CefCttNone     CChromeToolbarTypeT = C.CEF_CTT_NONE
 	CefCttNormal   CChromeToolbarTypeT = C.CEF_CTT_NORMAL
 	CefCttLocation CChromeToolbarTypeT = C.CEF_CTT_LOCATION
+)
+
+// /
+// / Chrome page action icon types. Should be kept in sync with Chromium's
+// / PageActionIconType type.
+// /
+type CChromePageActionIconTypeT C.cef_chrome_page_action_icon_type_t
+
+const (
+	CefCpaitBookmarkStar              CChromePageActionIconTypeT = C.CEF_CPAIT_BOOKMARK_STAR
+	CefCpaitClickToCall               CChromePageActionIconTypeT = C.CEF_CPAIT_CLICK_TO_CALL
+	CefCpaitCookieControls            CChromePageActionIconTypeT = C.CEF_CPAIT_COOKIE_CONTROLS
+	CefCpaitFileSystemAccess          CChromePageActionIconTypeT = C.CEF_CPAIT_FILE_SYSTEM_ACCESS
+	CefCpaitFind                      CChromePageActionIconTypeT = C.CEF_CPAIT_FIND
+	CefCpaitHighEfficiency            CChromePageActionIconTypeT = C.CEF_CPAIT_HIGH_EFFICIENCY
+	CefCpaitIntentPicker              CChromePageActionIconTypeT = C.CEF_CPAIT_INTENT_PICKER
+	CefCpaitLocalCardMigration        CChromePageActionIconTypeT = C.CEF_CPAIT_LOCAL_CARD_MIGRATION
+	CefCpaitManagePasswords           CChromePageActionIconTypeT = C.CEF_CPAIT_MANAGE_PASSWORDS
+	CefCpaitPaymentsOfferNotification CChromePageActionIconTypeT = C.CEF_CPAIT_PAYMENTS_OFFER_NOTIFICATION
+	CefCpaitPriceTracking             CChromePageActionIconTypeT = C.CEF_CPAIT_PRICE_TRACKING
+	CefCpaitPwaInstall                CChromePageActionIconTypeT = C.CEF_CPAIT_PWA_INSTALL
+	CefCpaitQrCodeGenerator           CChromePageActionIconTypeT = C.CEF_CPAIT_QR_CODE_GENERATOR
+	CefCpaitReaderMode                CChromePageActionIconTypeT = C.CEF_CPAIT_READER_MODE
+	CefCpaitSaveAutofillAddress       CChromePageActionIconTypeT = C.CEF_CPAIT_SAVE_AUTOFILL_ADDRESS
+	CefCpaitSaveCard                  CChromePageActionIconTypeT = C.CEF_CPAIT_SAVE_CARD
+	CefCpaitSendTabToSelf             CChromePageActionIconTypeT = C.CEF_CPAIT_SEND_TAB_TO_SELF
+	CefCpaitSharingHub                CChromePageActionIconTypeT = C.CEF_CPAIT_SHARING_HUB
+	CefCpaitSideSearch                CChromePageActionIconTypeT = C.CEF_CPAIT_SIDE_SEARCH
+	CefCpaitSmsRemoteFetcher          CChromePageActionIconTypeT = C.CEF_CPAIT_SMS_REMOTE_FETCHER
+	CefCpaitTranslate                 CChromePageActionIconTypeT = C.CEF_CPAIT_TRANSLATE
+	CefCpaitVirtualCardEnroll         CChromePageActionIconTypeT = C.CEF_CPAIT_VIRTUAL_CARD_ENROLL
+	CefCpaitVirtualCardManualFallback CChromePageActionIconTypeT = C.CEF_CPAIT_VIRTUAL_CARD_MANUAL_FALLBACK
+	CefCpaitZoom                      CChromePageActionIconTypeT = C.CEF_CPAIT_ZOOM
+	CefCpaitSaveIban                  CChromePageActionIconTypeT = C.CEF_CPAIT_SAVE_IBAN
+	CefCpaitMandatoryReauth           CChromePageActionIconTypeT = C.CEF_CPAIT_MANDATORY_REAUTH
+	CefCpaitMaxValue                  CChromePageActionIconTypeT = C.CEF_CPAIT_MAX_VALUE
+)
+
+// /
+// / Chrome toolbar button types. Should be kept in sync with CEF's internal
+// / ToolbarButtonType type.
+// /
+type CChromeToolbarButtonTypeT C.cef_chrome_toolbar_button_type_t
+
+const (
+	CefCtbtCast          CChromeToolbarButtonTypeT = C.CEF_CTBT_CAST
+	CefCtbtDownload      CChromeToolbarButtonTypeT = C.CEF_CTBT_DOWNLOAD
+	CefCtbtSendTabToSelf CChromeToolbarButtonTypeT = C.CEF_CTBT_SEND_TAB_TO_SELF
+	CefCtbtSidePanel     CChromeToolbarButtonTypeT = C.CEF_CTBT_SIDE_PANEL
+	CefCtbtMaxValue      CChromeToolbarButtonTypeT = C.CEF_CTBT_MAX_VALUE
 )
 
 // /
@@ -5052,7 +5031,7 @@ func (st *CTouchHandleStateT) Flags() uint32 {
 }
 
 func (st *CTouchHandleStateT) SetFlags(v uint32) {
-	st.flags = (C.uint32)(v)
+	st.flags = (C.uint32_t)(v)
 }
 
 func (st *CTouchHandleStateT) Enabled() int {
@@ -5150,6 +5129,7 @@ const (
 	CefPermissionTypeCameraPanTiltZoom        CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_CAMERA_PAN_TILT_ZOOM
 	CefPermissionTypeCameraStream             CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_CAMERA_STREAM
 	CefPermissionTypeClipboard                CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_CLIPBOARD
+	CefPermissionTypeTopLevelStorageAccess    CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_TOP_LEVEL_STORAGE_ACCESS
 	CefPermissionTypeDiskQuota                CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_DISK_QUOTA
 	CefPermissionTypeLocalFonts               CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_LOCAL_FONTS
 	CefPermissionTypeGeolocation              CPermissionRequestTypesT = C.CEF_PERMISSION_TYPE_GEOLOCATION
@@ -5231,6 +5211,456 @@ const (
 	/// Request context preferences registered each time a new CefRequestContext
 	/// is created.
 	CefPreferencesTypeRequestContext CPreferencesTypeT = C.CEF_PREFERENCES_TYPE_REQUEST_CONTEXT
+)
+
+// /
+// / Download interrupt reasons. Should be kept in sync with
+// / Chromium's download::DownloadInterruptReason type.
+// /
+type CDownloadInterruptReasonT C.cef_download_interrupt_reason_t
+
+const (
+	CefDownloadInterruptReasonNone CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_NONE
+
+	/// Generic file operation failure.
+	CefDownloadInterruptReasonFileFailed CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_FAILED
+
+	/// The file cannot be accessed due to security restrictions.
+	CefDownloadInterruptReasonFileAccessDenied CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_ACCESS_DENIED
+
+	/// There is not enough room on the drive.
+	CefDownloadInterruptReasonFileNoSpace CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_NO_SPACE
+
+	/// The directory or file name is too long.
+	CefDownloadInterruptReasonFileNameTooLong CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_NAME_TOO_LONG
+
+	/// The file is too large for the file system to handle.
+	CefDownloadInterruptReasonFileTooLarge CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_TOO_LARGE
+
+	/// The file contains a virus.
+	CefDownloadInterruptReasonFileVirusInfected CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_VIRUS_INFECTED
+
+	/// The file was in use. Too many files are opened at once. We have run out of
+	/// memory.
+	CefDownloadInterruptReasonFileTransientError CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_TRANSIENT_ERROR
+
+	/// The file was blocked due to local policy.
+	CefDownloadInterruptReasonFileBlocked CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_BLOCKED
+
+	/// An attempt to check the safety of the download failed due to unexpected
+	/// reasons. See http://crbug.com/153212.
+	CefDownloadInterruptReasonFileSecurityCheckFailed CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_SECURITY_CHECK_FAILED
+
+	/// An attempt was made to seek past the end of a file in opening
+	/// a file (as part of resuming a previously interrupted download).
+	CefDownloadInterruptReasonFileTooShort CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_TOO_SHORT
+
+	/// The partial file didn't match the expected hash.
+	CefDownloadInterruptReasonFileHashMismatch CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_HASH_MISMATCH
+
+	/// The source and the target of the download were the same.
+	CefDownloadInterruptReasonFileSameAsSource CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_FILE_SAME_AS_SOURCE
+
+	/// Generic network failure.
+	CefDownloadInterruptReasonNetworkFailed CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_FAILED
+
+	/// The network operation timed out.
+	CefDownloadInterruptReasonNetworkTimeout CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_TIMEOUT
+
+	/// The network connection has been lost.
+	CefDownloadInterruptReasonNetworkDisconnected CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_DISCONNECTED
+
+	/// The server has gone down.
+	CefDownloadInterruptReasonNetworkServerDown CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_SERVER_DOWN
+
+	/// The network request was invalid. This may be due to the original URL or a
+	/// redirected URL:
+	/// - Having an unsupported scheme.
+	/// - Being an invalid URL.
+	/// - Being disallowed by policy.
+	CefDownloadInterruptReasonNetworkInvalidRequest CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_NETWORK_INVALID_REQUEST
+
+	/// The server indicates that the operation has failed (generic).
+	CefDownloadInterruptReasonServerFailed CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_FAILED
+
+	/// The server does not support range requests.
+	/// Internal use only:  must restart from the beginning.
+	CefDownloadInterruptReasonServerNoRange CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_NO_RANGE
+
+	/// The server does not have the requested data.
+	CefDownloadInterruptReasonServerBadContent CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_BAD_CONTENT
+
+	/// Server didn't authorize access to resource.
+	CefDownloadInterruptReasonServerUnauthorized CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_UNAUTHORIZED
+
+	/// Server certificate problem.
+	CefDownloadInterruptReasonServerCertProblem CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_CERT_PROBLEM
+
+	/// Server access forbidden.
+	CefDownloadInterruptReasonServerForbidden CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_FORBIDDEN
+
+	/// Unexpected server response. This might indicate that the responding server
+	/// may not be the intended server.
+	CefDownloadInterruptReasonServerUnreachable CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_UNREACHABLE
+
+	/// The server sent fewer bytes than the content-length header. It may
+	/// indicate that the connection was closed prematurely, or the Content-Length
+	/// header was invalid. The download is only interrupted if strong validators
+	/// are present. Otherwise, it is treated as finished.
+	CefDownloadInterruptReasonServerContentLengthMismatch CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_CONTENT_LENGTH_MISMATCH
+
+	/// An unexpected cross-origin redirect happened.
+	CefDownloadInterruptReasonServerCrossOriginRedirect CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_SERVER_CROSS_ORIGIN_REDIRECT
+
+	/// The user canceled the download.
+	CefDownloadInterruptReasonUserCanceled CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_USER_CANCELED
+
+	/// The user shut down the browser.
+	/// Internal use only:  resume pending downloads if possible.
+	CefDownloadInterruptReasonUserShutdown CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_USER_SHUTDOWN
+
+	/// The browser crashed.
+	/// Internal use only:  resume pending downloads if possible.
+	CefDownloadInterruptReasonCrash CDownloadInterruptReasonT = C.CEF_DOWNLOAD_INTERRUPT_REASON_CRASH
+)
+
+// /
+// / Specifies the gesture commands.
+// /
+type CGestureCommandT C.cef_gesture_command_t
+
+const (
+	CefGestureCommandBack    CGestureCommandT = C.CEF_GESTURE_COMMAND_BACK
+	CefGestureCommandForward CGestureCommandT = C.CEF_GESTURE_COMMAND_FORWARD
+)
+
+// cef_types_content_settings.h, include/internal/cef_types_content_settings.h:347:3,
+
+// /
+// / Supported content setting types. Some types are platform-specific or only
+// / supported with the Chrome runtime. Should be kept in sync with Chromium's
+// / ContentSettingsType type.
+// /
+type CContentSettingTypesT C.cef_content_setting_types_t
+
+const (
+	CefContentSettingTypeCookies    CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_COOKIES
+	CefContentSettingTypeImages     CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_IMAGES
+	CefContentSettingTypeJavascript CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_JAVASCRIPT
+
+	/// This setting governs both popups and unwanted redirects like tab-unders
+	/// and framebusting.
+	CefContentSettingTypePopups                    CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_POPUPS
+	CefContentSettingTypeGeolocation               CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_GEOLOCATION
+	CefContentSettingTypeNotifications             CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_NOTIFICATIONS
+	CefContentSettingTypeAutoSelectCertificate     CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_AUTO_SELECT_CERTIFICATE
+	CefContentSettingTypeMixedscript               CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_MIXEDSCRIPT
+	CefContentSettingTypeMediastreamMic            CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_MEDIASTREAM_MIC
+	CefContentSettingTypeMediastreamCamera         CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_MEDIASTREAM_CAMERA
+	CefContentSettingTypeProtocolHandlers          CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PROTOCOL_HANDLERS
+	CefContentSettingTypeDeprecatedPpapiBroker     CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_DEPRECATED_PPAPI_BROKER
+	CefContentSettingTypeAutomaticDownloads        CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_AUTOMATIC_DOWNLOADS
+	CefContentSettingTypeMidiSysex                 CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_MIDI_SYSEX
+	CefContentSettingTypeSslCertDecisions          CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_SSL_CERT_DECISIONS
+	CefContentSettingTypeProtectedMediaIdentifier  CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PROTECTED_MEDIA_IDENTIFIER
+	CefContentSettingTypeAppBanner                 CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_APP_BANNER
+	CefContentSettingTypeSiteEngagement            CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_SITE_ENGAGEMENT
+	CefContentSettingTypeDurableStorage            CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_DURABLE_STORAGE
+	CefContentSettingTypeUsbChooserData            CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_USB_CHOOSER_DATA
+	CefContentSettingTypeBluetoothGuard            CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_BLUETOOTH_GUARD
+	CefContentSettingTypeBackgroundSync            CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_BACKGROUND_SYNC
+	CefContentSettingTypeAutoplay                  CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_AUTOPLAY
+	CefContentSettingTypeImportantSiteInfo         CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_IMPORTANT_SITE_INFO
+	CefContentSettingTypePermissionAutoblockerData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PERMISSION_AUTOBLOCKER_DATA
+	CefContentSettingTypeAds                       CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_ADS
+
+	/// Website setting which stores metadata for the subresource filter to aid in
+	/// decisions for whether or not to show the UI.
+	CefContentSettingTypeAdsData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_ADS_DATA
+
+	/// This is special-cased in the permissions layer to always allow, and as
+	/// such doesn't have associated prefs data.
+	CefContentSettingTypeMidi CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_MIDI
+
+	/// This content setting type is for caching password protection service's
+	/// verdicts of each origin.
+	CefContentSettingTypePasswordProtection CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PASSWORD_PROTECTION
+
+	/// Website setting which stores engagement data for media related to a
+	/// specific origin.
+	CefContentSettingTypeMediaEngagement CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_MEDIA_ENGAGEMENT
+
+	/// Content setting which stores whether or not the site can play audible
+	/// sound. This will not block playback but instead the user will not hear it.
+	CefContentSettingTypeSound CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_SOUND
+
+	/// Website setting which stores the list of client hints that the origin
+	/// requested the browser to remember. The browser is expected to send all
+	/// client hints in the HTTP request headers for every resource requested
+	/// from that origin.
+	CefContentSettingTypeClientHints CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_CLIENT_HINTS
+
+	/// Generic Sensor API covering ambient-light-sensor, accelerometer, gyroscope
+	/// and magnetometer are all mapped to a single content_settings_type.
+	/// Setting for the Generic Sensor API covering ambient-light-sensor,
+	/// accelerometer, gyroscope and magnetometer. These are all mapped to a
+	/// single ContentSettingsType.
+	CefContentSettingTypeSensors CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_SENSORS
+
+	/// Content setting which stores whether or not the user has granted the site
+	/// permission to respond to accessibility events, which can be used to
+	/// provide a custom accessibility experience. Requires explicit user consent
+	/// because some users may not want sites to know they're using assistive
+	/// technology.
+	CefContentSettingTypeAccessibilityEvents CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_ACCESSIBILITY_EVENTS
+
+	/// Used to store whether to allow a website to install a payment handler.
+	CefContentSettingTypePaymentHandler CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PAYMENT_HANDLER
+
+	/// Content setting which stores whether to allow sites to ask for permission
+	/// to access USB devices. If this is allowed specific device permissions are
+	/// stored under USB_CHOOSER_DATA.
+	CefContentSettingTypeUsbGuard CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_USB_GUARD
+
+	/// Nothing is stored in this setting at present. Please refer to
+	/// BackgroundFetchPermissionContext for details on how this permission
+	/// is ascertained.
+	CefContentSettingTypeBackgroundFetch CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_BACKGROUND_FETCH
+
+	/// Website setting which stores the amount of times the user has dismissed
+	/// intent picker UI without explicitly choosing an option.
+	CefContentSettingTypeIntentPickerDisplay CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_INTENT_PICKER_DISPLAY
+
+	/// Used to store whether to allow a website to detect user active/idle state.
+	CefContentSettingTypeIdleDetection CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_IDLE_DETECTION
+
+	/// Setting for enabling auto-select of all screens for getDisplayMediaSet.
+	CefContentSettingTypeGetDisplayMediaSetSelectAllScreens CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_GET_DISPLAY_MEDIA_SET_SELECT_ALL_SCREENS
+
+	/// Content settings for access to serial ports. The "guard" content setting
+	/// stores whether to allow sites to ask for permission to access a port. The
+	/// permissions granted to access particular ports are stored in the "chooser
+	/// data" website setting.
+	CefContentSettingTypeSerialGuard       CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_SERIAL_GUARD
+	CefContentSettingTypeSerialChooserData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_SERIAL_CHOOSER_DATA
+
+	/// Nothing is stored in this setting at present. Please refer to
+	/// PeriodicBackgroundSyncPermissionContext for details on how this permission
+	/// is ascertained.
+	/// This content setting is not registered because it does not require access
+	/// to any existing providers.
+	CefContentSettingTypePeriodicBackgroundSync CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PERIODIC_BACKGROUND_SYNC
+
+	/// Content setting which stores whether to allow sites to ask for permission
+	/// to do Bluetooth scanning.
+	CefContentSettingTypeBluetoothScanning CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_BLUETOOTH_SCANNING
+
+	/// Content settings for access to HID devices. The "guard" content setting
+	/// stores whether to allow sites to ask for permission to access a device.
+	/// The permissions granted to access particular devices are stored in the
+	/// "chooser data" website setting.
+	CefContentSettingTypeHidGuard       CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_HID_GUARD
+	CefContentSettingTypeHidChooserData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_HID_CHOOSER_DATA
+
+	/// Wake Lock API, which has two lock types: screen and system locks.
+	/// Currently, screen locks do not need any additional permission, and system
+	/// locks are always denied while the right UI is worked out.
+	CefContentSettingTypeWakeLockScreen CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_WAKE_LOCK_SCREEN
+	CefContentSettingTypeWakeLockSystem CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_WAKE_LOCK_SYSTEM
+
+	/// Legacy SameSite cookie behavior. This disables SameSite=Lax-by-default,
+	/// SameSite=None requires Secure, and Schemeful Same-Site, forcing the
+	/// legacy behavior wherein 1) cookies that don't specify SameSite are treated
+	/// as SameSite=None, 2) SameSite=None cookies are not required to be Secure,
+	/// and 3) schemeful same-site is not active.
+	///
+	/// This will also be used to revert to legacy behavior when future changes
+	/// in cookie handling are introduced.
+	CefContentSettingTypeLegacyCookieAccess CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_LEGACY_COOKIE_ACCESS
+
+	/// Content settings which stores whether to allow sites to ask for permission
+	/// to save changes to an original file selected by the user through the
+	/// File System Access API.
+	CefContentSettingTypeFileSystemWriteGuard CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FILE_SYSTEM_WRITE_GUARD
+
+	/// Used to store whether to allow a website to exchange data with NFC
+	/// devices.
+	CefContentSettingTypeNfc CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_NFC
+
+	/// Website setting to store permissions granted to access particular
+	/// Bluetooth devices.
+	CefContentSettingTypeBluetoothChooserData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_BLUETOOTH_CHOOSER_DATA
+
+	/// Full access to the system clipboard (sanitized read without user gesture,
+	/// and unsanitized read and write with user gesture).
+	CefContentSettingTypeClipboardReadWrite CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_CLIPBOARD_READ_WRITE
+
+	/// This is special-cased in the permissions layer to always allow, and as
+	/// such doesn't have associated prefs data.
+	CefContentSettingTypeClipboardSanitizedWrite CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_CLIPBOARD_SANITIZED_WRITE
+
+	/// This content setting type is for caching safe browsing real time url
+	/// check's verdicts of each origin.
+	CefContentSettingTypeSafeBrowsingUrlCheckData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_SAFE_BROWSING_URL_CHECK_DATA
+
+	/// Used to store whether a site is allowed to request AR or VR sessions with
+	/// the WebXr Device API.
+	CefContentSettingTypeVr CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_VR
+	CefContentSettingTypeAr CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_AR
+
+	/// Content setting which stores whether to allow site to open and read files
+	/// and directories selected through the File System Access API.
+	CefContentSettingTypeFileSystemReadGuard CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FILE_SYSTEM_READ_GUARD
+
+	/// Access to first party storage in a third-party context. Exceptions are
+	/// scoped to the combination of requesting/top-level origin, and are managed
+	/// through the Storage Access API. For the time being, this content setting
+	/// exists in parallel to third-party cookie rules stored in COOKIES.
+	CefContentSettingTypeStorageAccess CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_STORAGE_ACCESS
+
+	/// Content setting which stores whether to allow a site to control camera
+	/// movements. It does not give access to camera.
+	CefContentSettingTypeCameraPanTiltZoom CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_CAMERA_PAN_TILT_ZOOM
+
+	/// Content setting for Screen Enumeration and Screen Detail functionality.
+	/// Permits access to detailed multi-screen information, like size and
+	/// position. Permits placing fullscreen and windowed content on specific
+	/// screens. See also: https://w3c.github.io/window-placement
+	CefContentSettingTypeWindowManagement CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_WINDOW_MANAGEMENT
+
+	/// Stores whether to allow insecure websites to make local network requests.
+	/// See also: https://wicg.github.io/local-network-access
+	/// Set through enterprise policies only.
+	CefContentSettingTypeInsecureLocalNetwork CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_INSECURE_LOCAL_NETWORK
+
+	/// Content setting which stores whether or not a site can access low-level
+	/// locally installed font data using the Local Fonts Access API.
+	CefContentSettingTypeLocalFonts CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_LOCAL_FONTS
+
+	/// Stores per-origin state for permission auto-revocation (for all permission
+	/// types).
+	CefContentSettingTypePermissionAutorevocationData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PERMISSION_AUTOREVOCATION_DATA
+
+	/// Stores per-origin state of the most recently selected directory for the
+	/// use by the File System Access API.
+	CefContentSettingTypeFileSystemLastPickedDirectory CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FILE_SYSTEM_LAST_PICKED_DIRECTORY
+
+	/// Controls access to the getDisplayMedia API when {preferCurrentTab: true}
+	/// is specified.
+	CefContentSettingTypeDisplayCapture CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_DISPLAY_CAPTURE
+
+	/// Website setting to store permissions metadata granted to paths on the
+	/// local file system via the File System Access API.
+	/// |FILE_SYSTEM_WRITE_GUARD| is the corresponding "guard" setting.
+	CefContentSettingTypeFileSystemAccessChooserData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FILE_SYSTEM_ACCESS_CHOOSER_DATA
+
+	/// Stores a grant that allows a relying party to send a request for identity
+	/// information to specified identity providers, potentially through any
+	/// anti-tracking measures that would otherwise prevent it. This setting is
+	/// associated with the relying party's origin.
+	CefContentSettingTypeFederatedIdentitySharing CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FEDERATED_IDENTITY_SHARING
+
+	/// Whether to use the v8 optimized JIT for running JavaScript on the page.
+	CefContentSettingTypeJavascriptJit CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_JAVASCRIPT_JIT
+
+	/// Content setting which stores user decisions to allow loading a site over
+	/// HTTP. Entries are added by hostname when a user bypasses the HTTPS-First
+	/// Mode interstitial warning when a site does not support HTTPS. Allowed
+	/// hosts are exact hostname matches -- subdomains of a host on the allowlist
+	/// must be separately allowlisted.
+	CefContentSettingTypeHttpAllowed CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_HTTP_ALLOWED
+
+	/// Stores metadata related to form fill, such as e.g. whether user data was
+	/// autofilled on a specific website.
+	CefContentSettingTypeFormfillMetadata CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FORMFILL_METADATA
+
+	/// Setting to indicate that there is an active federated sign-in session
+	/// between a specified relying party and a specified identity provider for
+	/// a specified account. When this is present it allows access to session
+	/// management capabilities between the sites. This setting is associated
+	/// with the relying party's origin.
+	CefContentSettingTypeFederatedIdentityActiveSession CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FEDERATED_IDENTITY_ACTIVE_SESSION
+
+	/// Setting to indicate whether Chrome should automatically apply darkening to
+	/// web content.
+	CefContentSettingTypeAutoDarkWebContent CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_AUTO_DARK_WEB_CONTENT
+
+	/// Setting to indicate whether Chrome should request the desktop view of a
+	/// site instead of the mobile one.
+	CefContentSettingTypeRequestDesktopSite CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_REQUEST_DESKTOP_SITE
+
+	/// Setting to indicate whether browser should allow signing into a website
+	/// via the browser FedCM API.
+	CefContentSettingTypeFederatedIdentityApi CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FEDERATED_IDENTITY_API
+
+	/// Stores notification interactions per origin for the past 90 days.
+	/// Interactions per origin are pre-aggregated over seven-day windows: A
+	/// notification interaction or display is assigned to the last Monday
+	/// midnight in local time.
+	CefContentSettingTypeNotificationInteractions CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_NOTIFICATION_INTERACTIONS
+
+	/// Website setting which stores the last reduced accept language negotiated
+	/// for a given origin, to be used on future visits to the origin.
+	CefContentSettingTypeReducedAcceptLanguage CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_REDUCED_ACCEPT_LANGUAGE
+
+	/// Website setting which is used for NotificationPermissionReviewService to
+	/// store origin blocklist from review notification permissions feature.
+	CefContentSettingTypeNotificationPermissionReview CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_NOTIFICATION_PERMISSION_REVIEW
+
+	/// Website setting to store permissions granted to access particular devices
+	/// in private network.
+	CefContentSettingTypePrivateNetworkGuard       CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PRIVATE_NETWORK_GUARD
+	CefContentSettingTypePrivateNetworkChooserData CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_PRIVATE_NETWORK_CHOOSER_DATA
+
+	/// Website setting which stores whether the browser has observed the user
+	/// signing into an identity-provider based on observing the IdP-SignIn-Status
+	/// HTTP header.
+	CefContentSettingTypeFederatedIdentityIdentityProviderSigninStatus CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FEDERATED_IDENTITY_IDENTITY_PROVIDER_SIGNIN_STATUS
+
+	/// Website setting which is used for UnusedSitePermissionsService to
+	/// store revoked permissions of unused sites from unused site permissions
+	/// feature.
+	CefContentSettingTypeRevokedUnusedSitePermissions CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_REVOKED_UNUSED_SITE_PERMISSIONS
+
+	/// Similar to STORAGE_ACCESS, but applicable at the page-level rather than
+	/// being specific to a frame.
+	CefContentSettingTypeTopLevelStorageAccess CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_TOP_LEVEL_STORAGE_ACCESS
+
+	/// Setting to indicate whether user has opted in to allowing auto re-authn
+	/// via the FedCM API.
+	CefContentSettingTypeFederatedIdentityAutoReauthnPermission CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FEDERATED_IDENTITY_AUTO_REAUTHN_PERMISSION
+
+	/// Website setting which stores whether the user has explicitly registered
+	/// a website as an identity-provider.
+	CefContentSettingTypeFederatedIdentityIdentityProviderRegistration CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_FEDERATED_IDENTITY_IDENTITY_PROVIDER_REGISTRATION
+
+	/// Content setting which is used to indicate whether anti-abuse functionality
+	/// should be enabled.
+	CefContentSettingTypeAntiAbuse CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_ANTI_ABUSE
+
+	/// Content setting used to indicate whether third-party storage partitioning
+	/// should be enabled.
+	CefContentSettingTypeThirdPartyStoragePartitioning CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_THIRD_PARTY_STORAGE_PARTITIONING
+
+	/// Used to indicate whether HTTPS-First Mode is enabled on the hostname.
+	CefContentSettingTypeHttpsEnforced CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_HTTPS_ENFORCED
+	CefContentSettingTypeNumTypes      CContentSettingTypesT = C.CEF_CONTENT_SETTING_TYPE_NUM_TYPES
+)
+
+// /
+// / Supported content setting values. Should be kept in sync with Chromium's
+// / ContentSetting type.
+// /
+type CContentSettingValuesT C.cef_content_setting_values_t
+
+const (
+	CefContentSettingValueDefault                CContentSettingValuesT = C.CEF_CONTENT_SETTING_VALUE_DEFAULT
+	CefContentSettingValueAllow                  CContentSettingValuesT = C.CEF_CONTENT_SETTING_VALUE_ALLOW
+	CefContentSettingValueBlock                  CContentSettingValuesT = C.CEF_CONTENT_SETTING_VALUE_BLOCK
+	CefContentSettingValueAsk                    CContentSettingValuesT = C.CEF_CONTENT_SETTING_VALUE_ASK
+	CefContentSettingValueSessionOnly            CContentSettingValuesT = C.CEF_CONTENT_SETTING_VALUE_SESSION_ONLY
+	CefContentSettingValueDetectImportantContent CContentSettingValuesT = C.CEF_CONTENT_SETTING_VALUE_DETECT_IMPORTANT_CONTENT
+	CefContentSettingValueNumValues              CContentSettingValuesT = C.CEF_CONTENT_SETTING_VALUE_NUM_VALUES
 )
 
 // cef_types_geometry.h, include/internal/cef_types_geometry.h:44:3,

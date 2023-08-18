@@ -270,7 +270,7 @@ struct _cef_frame_t* cefingo_browser_get_focused_frame(
 
 struct _cef_frame_t* cefingo_browser_get_frame_byident(
 	struct _cef_browser_t* self,
-	int64 identifier
+	int64_t identifier
 )
 {
 	return	self->get_frame_byident(
@@ -511,7 +511,7 @@ void cefingo_browser_host_download_image(
 	struct _cef_browser_host_t* self,
 	const cef_string_t* image_url,
 	int is_favicon,
-	uint32 max_image_size,
+	uint32_t max_image_size,
 	int bypass_cache,
 	struct _cef_download_image_callback_t* callback
 )
@@ -1125,6 +1125,8 @@ cef_browser_view_delegate_t *cefingo_construct_browser_view_delegate(cefingo_bro
 		cefingo_browser_view_delegate_on_popup_browser_view_created;
 	browser_view_delegate->body.get_chrome_toolbar_type =
 		cefingo_browser_view_delegate_get_chrome_toolbar_type;
+	browser_view_delegate->body.on_gesture_command =
+		cefingo_browser_view_delegate_on_gesture_command;
 	browser_view_delegate->body.base.get_preferred_size =
 		cefingo_browser_view_delegate_get_preferred_size;
 	browser_view_delegate->body.base.get_minimum_size =
@@ -1336,6 +1338,54 @@ int cefingo_command_handler_on_chrome_command(
 			browser,
 			command_id,
 			disposition
+		);
+}
+
+int cefingo_command_handler_is_chrome_app_menu_item_visible(
+	struct _cef_command_handler_t* self,
+	struct _cef_browser_t* browser,
+	int command_id
+)
+{
+	return	self->is_chrome_app_menu_item_visible(
+			self,
+			browser,
+			command_id
+		);
+}
+
+int cefingo_command_handler_is_chrome_app_menu_item_enabled(
+	struct _cef_command_handler_t* self,
+	struct _cef_browser_t* browser,
+	int command_id
+)
+{
+	return	self->is_chrome_app_menu_item_enabled(
+			self,
+			browser,
+			command_id
+		);
+}
+
+int cefingo_command_handler_is_chrome_page_action_icon_visible(
+	struct _cef_command_handler_t* self,
+	cef_chrome_page_action_icon_type_t icon_type
+)
+{
+	return	self->is_chrome_page_action_icon_visible(
+			self,
+			icon_type
+		);
+}
+
+int cefingo_command_handler_is_chrome_toolbar_button_visible(
+	struct _cef_command_handler_t* self,
+	cef_chrome_toolbar_button_type_t button_type
+)
+{
+	return	self->is_chrome_toolbar_button_visible(
+			self,
+			button_type
 		);
 }
 
@@ -1997,7 +2047,7 @@ cef_dialog_handler_t *cefingo_construct_dialog_handler(cefingo_dialog_handler_wr
 	return (cef_dialog_handler_t*)dialog_handler;
 }
 
-int64 cefingo_display_get_id(
+int64_t cefingo_display_get_id(
 	struct _cef_display_t* self
 )
 {
@@ -2633,7 +2683,25 @@ int cefingo_download_item_is_canceled(
 		);
 }
 
-int64 cefingo_download_item_get_current_speed(
+int cefingo_download_item_is_interrupted(
+	struct _cef_download_item_t* self
+)
+{
+	return	self->is_interrupted(
+			self
+		);
+}
+
+cef_download_interrupt_reason_t cefingo_download_item_get_interrupt_reason(
+	struct _cef_download_item_t* self
+)
+{
+	return	self->get_interrupt_reason(
+			self
+		);
+}
+
+int64_t cefingo_download_item_get_current_speed(
 	struct _cef_download_item_t* self
 )
 {
@@ -2651,7 +2719,7 @@ int cefingo_download_item_get_percent_complete(
 		);
 }
 
-int64 cefingo_download_item_get_total_bytes(
+int64_t cefingo_download_item_get_total_bytes(
 	struct _cef_download_item_t* self
 )
 {
@@ -2660,7 +2728,7 @@ int64 cefingo_download_item_get_total_bytes(
 		);
 }
 
-int64 cefingo_download_item_get_received_bytes(
+int64_t cefingo_download_item_get_received_bytes(
 	struct _cef_download_item_t* self
 )
 {
@@ -2696,7 +2764,7 @@ cef_string_userfree_t cefingo_download_item_get_full_path(
 		);
 }
 
-uint32 cefingo_download_item_get_id(
+uint32_t cefingo_download_item_get_id(
 	struct _cef_download_item_t* self
 )
 {
@@ -3383,7 +3451,7 @@ cef_string_userfree_t cefingo_frame_get_name(
 		);
 }
 
-int64 cefingo_frame_get_identifier(
+int64_t cefingo_frame_get_identifier(
 	struct _cef_frame_t* self
 )
 {
@@ -4163,15 +4231,6 @@ cef_string_userfree_t cefingo_media_sink_get_name(
 )
 {
 	return	self->get_name(
-			self
-		);
-}
-
-cef_string_userfree_t cefingo_media_sink_get_description(
-	struct _cef_media_sink_t* self
-)
-{
-	return	self->get_description(
 			self
 		);
 }
@@ -5503,7 +5562,7 @@ cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_delegate_wr
 
 void cefingo_media_access_callback_cont(
 	struct _cef_media_access_callback_t* self,
-	uint32 allowed_permissions
+	uint32_t allowed_permissions
 )
 {
 	self->cont(
@@ -5537,7 +5596,7 @@ int cefingo_permission_handler_on_request_media_access_permission(
 	struct _cef_browser_t* browser,
 	struct _cef_frame_t* frame,
 	const cef_string_t* requesting_origin,
-	uint32 requested_permissions,
+	uint32_t requested_permissions,
 	struct _cef_media_access_callback_t* callback
 )
 {
@@ -5554,9 +5613,9 @@ int cefingo_permission_handler_on_request_media_access_permission(
 int cefingo_permission_handler_on_show_permission_prompt(
 	struct _cef_permission_handler_t* self,
 	struct _cef_browser_t* browser,
-	uint64 prompt_id,
+	uint64_t prompt_id,
 	const cef_string_t* requesting_origin,
-	uint32 requested_permissions,
+	uint32_t requested_permissions,
 	struct _cef_permission_prompt_callback_t* callback
 )
 {
@@ -5573,7 +5632,7 @@ int cefingo_permission_handler_on_show_permission_prompt(
 void cefingo_permission_handler_on_dismiss_permission_prompt(
 	struct _cef_permission_handler_t* self,
 	struct _cef_browser_t* browser,
-	uint64 prompt_id,
+	uint64_t prompt_id,
 	cef_permission_request_result_t result
 )
 {
@@ -6326,7 +6385,7 @@ cef_transition_type_t cefingo_request_get_transition_type(
 		);
 }
 
-uint64 cefingo_request_get_identifier(
+uint64_t cefingo_request_get_identifier(
 	struct _cef_request_t* self
 )
 {
@@ -6701,6 +6760,70 @@ struct _cef_media_router_t* cefingo_request_context_get_media_router(
 		);
 }
 
+struct _cef_value_t* cefingo_request_context_get_website_setting(
+	struct _cef_request_context_t* self,
+	const cef_string_t* requesting_url,
+	const cef_string_t* top_level_url,
+	cef_content_setting_types_t content_type
+)
+{
+	return	self->get_website_setting(
+			self,
+			requesting_url,
+			top_level_url,
+			content_type
+		);
+}
+
+void cefingo_request_context_set_website_setting(
+	struct _cef_request_context_t* self,
+	const cef_string_t* requesting_url,
+	const cef_string_t* top_level_url,
+	cef_content_setting_types_t content_type,
+	struct _cef_value_t* value
+)
+{
+	self->set_website_setting(
+		self,
+		requesting_url,
+		top_level_url,
+		content_type,
+		value
+	);
+}
+
+cef_content_setting_values_t cefingo_request_context_get_content_setting(
+	struct _cef_request_context_t* self,
+	const cef_string_t* requesting_url,
+	const cef_string_t* top_level_url,
+	cef_content_setting_types_t content_type
+)
+{
+	return	self->get_content_setting(
+			self,
+			requesting_url,
+			top_level_url,
+			content_type
+		);
+}
+
+void cefingo_request_context_set_content_setting(
+	struct _cef_request_context_t* self,
+	const cef_string_t* requesting_url,
+	const cef_string_t* top_level_url,
+	cef_content_setting_types_t content_type,
+	cef_content_setting_values_t value
+)
+{
+	self->set_content_setting(
+		self,
+		requesting_url,
+		top_level_url,
+		content_type,
+		value
+	);
+}
+
 typedef struct _cef_resource_request_handler_t* (*T_CEF_REQUEST_CONTEXT_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER)(
 	struct _cef_request_context_handler_t*,
 	struct _cef_browser_t*,
@@ -6767,13 +6890,6 @@ typedef int (*T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS)(
 	const cef_string_t*,
 	struct _cef_auth_callback_t*
 );
-typedef int (*T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST)(
-	struct _cef_request_handler_t*,
-	struct _cef_browser_t*,
-	const cef_string_t*,
-	int64,
-	struct _cef_callback_t*
-);
 typedef int (*T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR)(
 	struct _cef_request_handler_t*,
 	struct _cef_browser_t*,
@@ -6808,8 +6924,6 @@ cef_request_handler_t *cefingo_construct_request_handler(cefingo_request_handler
 		(/* T_CEF_REQUEST_HANDLER_T_GET_RESOURCE_REQUEST_HANDLER */ void *)cefingo_request_handler_get_resource_request_handler;
 	request_handler->body.get_auth_credentials =
 		(/* T_CEF_REQUEST_HANDLER_T_GET_AUTH_CREDENTIALS */ void *)cefingo_request_handler_get_auth_credentials;
-	request_handler->body.on_quota_request =
-		(/* T_CEF_REQUEST_HANDLER_T_ON_QUOTA_REQUEST */ void *)cefingo_request_handler_on_quota_request;
 	request_handler->body.on_certificate_error =
 		(/* T_CEF_REQUEST_HANDLER_T_ON_CERTIFICATE_ERROR */ void *)cefingo_request_handler_on_certificate_error;
 	request_handler->body.on_select_client_certificate =
@@ -6844,7 +6958,7 @@ cef_resource_bundle_handler_t *cefingo_construct_resource_bundle_handler(cefingo
 
 void cefingo_resource_skip_callback_cont(
 	struct _cef_resource_skip_callback_t* self,
-	int64 bytes_skipped
+	int64_t bytes_skipped
 )
 {
 	self->cont(
@@ -7368,7 +7482,7 @@ size_t cefingo_stream_reader_read(
 
 int cefingo_stream_reader_seek(
 	struct _cef_stream_reader_t* self,
-	int64 offset,
+	int64_t offset,
 	int whence
 )
 {
@@ -7379,7 +7493,7 @@ int cefingo_stream_reader_seek(
 		);
 }
 
-int64 cefingo_stream_reader_tell(
+int64_t cefingo_stream_reader_tell(
 	struct _cef_stream_reader_t* self
 )
 {
@@ -7451,7 +7565,7 @@ size_t cefingo_stream_writer_write(
 
 int cefingo_stream_writer_seek(
 	struct _cef_stream_writer_t* self,
-	int64 offset,
+	int64_t offset,
 	int whence
 )
 {
@@ -7462,7 +7576,7 @@ int cefingo_stream_writer_seek(
 		);
 }
 
-int64 cefingo_stream_writer_tell(
+int64_t cefingo_stream_writer_tell(
 	struct _cef_stream_writer_t* self
 )
 {
@@ -7566,7 +7680,7 @@ int cefingo_task_runner_post_task(
 int cefingo_task_runner_post_delayed_task(
 	struct _cef_task_runner_t* self,
 	struct _cef_task_t* task,
-	int64 delay_ms
+	int64_t delay_ms
 )
 {
 	return	self->post_delayed_task(
@@ -8502,7 +8616,7 @@ int cefingo_v8value_get_bool_value(
 		);
 }
 
-int32 cefingo_v8value_get_int_value(
+int32_t cefingo_v8value_get_int_value(
 	struct _cef_v8value_t* self
 )
 {
@@ -8511,7 +8625,7 @@ int32 cefingo_v8value_get_int_value(
 		);
 }
 
-uint32 cefingo_v8value_get_uint_value(
+uint32_t cefingo_v8value_get_uint_value(
 	struct _cef_v8value_t* self
 )
 {
@@ -10409,6 +10523,17 @@ void cefingo_window_show(
 	);
 }
 
+void cefingo_window_show_as_browser_modal_dialog(
+	struct _cef_window_t* self,
+	struct _cef_browser_view_t* browser_view
+)
+{
+	self->show_as_browser_modal_dialog(
+		self,
+		browser_view
+	);
+}
+
 void cefingo_window_hide(
 	struct _cef_window_t* self
 )
@@ -10708,7 +10833,7 @@ cef_window_handle_t cefingo_window_get_window_handle(
 void cefingo_window_send_key_press(
 	struct _cef_window_t* self,
 	int key_code,
-	uint32 event_flags
+	uint32_t event_flags
 )
 {
 	self->send_key_press(
@@ -10815,12 +10940,18 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 		(/* T_CEF_WINDOW_DELEGATE_T_ON_WINDOW_BOUNDS_CHANGED */ void *)cefingo_window_delegate_on_window_bounds_changed;
 	window_delegate->body.get_parent_window =
 		cefingo_window_delegate_get_parent_window;
+	window_delegate->body.is_window_modal_dialog =
+		cefingo_window_delegate_is_window_modal_dialog;
 	window_delegate->body.get_initial_bounds =
 		cefingo_window_delegate_get_initial_bounds;
 	window_delegate->body.get_initial_show_state =
 		cefingo_window_delegate_get_initial_show_state;
 	window_delegate->body.is_frameless =
 		cefingo_window_delegate_is_frameless;
+	window_delegate->body.with_standard_window_buttons =
+		cefingo_window_delegate_with_standard_window_buttons;
+	window_delegate->body.get_titlebar_height =
+		cefingo_window_delegate_get_titlebar_height;
 	window_delegate->body.can_resize =
 		cefingo_window_delegate_can_resize;
 	window_delegate->body.can_maximize =
@@ -10833,6 +10964,8 @@ cef_window_delegate_t *cefingo_construct_window_delegate(cefingo_window_delegate
 		cefingo_window_delegate_on_accelerator;
 	window_delegate->body.on_key_event =
 		(/* T_CEF_WINDOW_DELEGATE_T_ON_KEY_EVENT */ void *)cefingo_window_delegate_on_key_event;
+	window_delegate->body.on_window_fullscreen_transition =
+		cefingo_window_delegate_on_window_fullscreen_transition;
 	window_delegate->body.base.base.get_preferred_size =
 		cefingo_window_delegate_get_preferred_size;
 	window_delegate->body.base.base.get_minimum_size =
@@ -10902,17 +11035,6 @@ cef_string_userfree_t cefingo_x509cert_principal_get_country_name(
 		);
 }
 
-void cefingo_x509cert_principal_get_street_addresses(
-	struct _cef_x509cert_principal_t* self,
-	cef_string_list_t addresses
-)
-{
-	self->get_street_addresses(
-		self,
-		addresses
-	);
-}
-
 void cefingo_x509cert_principal_get_organization_names(
 	struct _cef_x509cert_principal_t* self,
 	cef_string_list_t names
@@ -10932,17 +11054,6 @@ void cefingo_x509cert_principal_get_organization_unit_names(
 	self->get_organization_unit_names(
 		self,
 		names
-	);
-}
-
-void cefingo_x509cert_principal_get_domain_components(
-	struct _cef_x509cert_principal_t* self,
-	cef_string_list_t components
-)
-{
-	self->get_domain_components(
-		self,
-		components
 	);
 }
 

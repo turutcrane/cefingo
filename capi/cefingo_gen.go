@@ -1316,7 +1316,7 @@ func (self *CBrowserT) GetFrameByident(
 	identifier int64,
 ) (ret *CFrameT) {
 
-	cRet := C.cefingo_browser_get_frame_byident((*C.cef_browser_t)(self.pc_browser), (C.int64)(identifier))
+	cRet := C.cefingo_browser_get_frame_byident((*C.cef_browser_t)(self.pc_browser), (C.int64_t)(identifier))
 
 	ret = newCFrameT(cRet, byApp) // return GoObj
 	return ret
@@ -2273,7 +2273,7 @@ func (self *CBrowserHostT) DownloadImage(
 		goTmpcallback = (*C.cef_download_image_callback_t)(callback.pc_download_image_callback)
 	}
 
-	C.cefingo_browser_host_download_image((*C.cef_browser_host_t)(self.pc_browser_host), c_image_url.p_cef_string_t, C.int(tmpis_favicon), (C.uint32)(max_image_size), C.int(tmpbypass_cache), goTmpcallback)
+	C.cefingo_browser_host_download_image((*C.cef_browser_host_t)(self.pc_browser_host), c_image_url.p_cef_string_t, C.int(tmpis_favicon), (C.uint32_t)(max_image_size), C.int(tmpbypass_cache), goTmpcallback)
 
 }
 
@@ -3614,7 +3614,7 @@ func BrowserViewGetForBrowser(
 	return ret
 }
 
-// cef_browser_view_delegate_capi.h, include/capi/views/cef_browser_view_delegate_capi.h:123:3,
+// cef_browser_view_delegate_capi.h, include/capi/views/cef_browser_view_delegate_capi.h:135:3,
 
 ///
 /// Implement this structure to handle BrowserView events. The functions of this
@@ -3777,6 +3777,21 @@ type GetChromeToolbarTypeHandler interface {
 	) (ret CChromeToolbarTypeT)
 }
 
+// /
+// / Called when |browser_view| receives a gesture command. Return true (1) to
+// / handle (or disable) a |gesture_command| or false (0) to propagate the
+// / gesture to the browser for default handling. This function will only be
+// / called with the Alloy runtime. To handle these commands with the Chrome
+// / runtime implement cef_command_handler_t::OnChromeCommand instead.
+// /
+type OnGestureCommandHandler interface {
+	OnGestureCommand(
+		self *CBrowserViewDelegateT,
+		browser_view *CBrowserViewT,
+		gesture_command CGestureCommandT,
+	) (ret bool)
+}
+
 var browser_view_delegate_handlers = struct {
 	handler                                     map[*cCBrowserViewDelegateT]interface{}
 	on_browser_created_handler                  map[*cCBrowserViewDelegateT]CBrowserViewDelegateTOnBrowserCreatedHandler
@@ -3784,6 +3799,7 @@ var browser_view_delegate_handlers = struct {
 	get_delegate_for_popup_browser_view_handler map[*cCBrowserViewDelegateT]GetDelegateForPopupBrowserViewHandler
 	on_popup_browser_view_created_handler       map[*cCBrowserViewDelegateT]OnPopupBrowserViewCreatedHandler
 	get_chrome_toolbar_type_handler             map[*cCBrowserViewDelegateT]GetChromeToolbarTypeHandler
+	on_gesture_command_handler                  map[*cCBrowserViewDelegateT]OnGestureCommandHandler
 	get_preferred_size_handler                  map[*cCBrowserViewDelegateT]GetPreferredSizeHandler
 	get_minimum_size_handler                    map[*cCBrowserViewDelegateT]GetMinimumSizeHandler
 	get_maximum_size_handler                    map[*cCBrowserViewDelegateT]GetMaximumSizeHandler
@@ -3801,6 +3817,7 @@ var browser_view_delegate_handlers = struct {
 	map[*cCBrowserViewDelegateT]GetDelegateForPopupBrowserViewHandler{},
 	map[*cCBrowserViewDelegateT]OnPopupBrowserViewCreatedHandler{},
 	map[*cCBrowserViewDelegateT]GetChromeToolbarTypeHandler{},
+	map[*cCBrowserViewDelegateT]OnGestureCommandHandler{},
 	map[*cCBrowserViewDelegateT]GetPreferredSizeHandler{},
 	map[*cCBrowserViewDelegateT]GetMinimumSizeHandler{},
 	map[*cCBrowserViewDelegateT]GetMaximumSizeHandler{},
@@ -3876,6 +3893,13 @@ func (browser_view_delegate *CBrowserViewDelegateT) bind(a interface{}) *CBrowse
 		noBind = false
 	} else {
 		delete(browser_view_delegate_handlers.get_chrome_toolbar_type_handler, cp)
+	}
+
+	if h, ok := a.(OnGestureCommandHandler); ok {
+		browser_view_delegate_handlers.on_gesture_command_handler[cp] = h
+		noBind = false
+	} else {
+		delete(browser_view_delegate_handlers.on_gesture_command_handler, cp)
 	}
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
@@ -3966,6 +3990,7 @@ func unbindAllCBrowserViewDelegateT(cp *cCBrowserViewDelegateT) {
 	delete(browser_view_delegate_handlers.get_delegate_for_popup_browser_view_handler, cp)
 	delete(browser_view_delegate_handlers.on_popup_browser_view_created_handler, cp)
 	delete(browser_view_delegate_handlers.get_chrome_toolbar_type_handler, cp)
+	delete(browser_view_delegate_handlers.on_gesture_command_handler, cp)
 	delete(browser_view_delegate_handlers.get_preferred_size_handler, cp)
 	delete(browser_view_delegate_handlers.get_minimum_size_handler, cp)
 	delete(browser_view_delegate_handlers.get_maximum_size_handler, cp)
@@ -5147,7 +5172,7 @@ func (client *CClientT) Handler() interface{} {
 	return client_handlers.handler[cp]
 }
 
-// cef_command_handler_capi.h, include/capi/cef_command_handler_capi.h:74:3,
+// cef_command_handler_capi.h, include/capi/cef_command_handler_capi.h:114:3,
 
 ///
 /// Implement this structure to handle events related to commands. The functions
@@ -5249,6 +5274,80 @@ func (self *CCommandHandlerT) OnChromeCommand(
 	}
 
 	cRet := C.cefingo_command_handler_on_chrome_command((*C.cef_command_handler_t)(self.pc_command_handler), goTmpbrowser, (C.int)(command_id), (C.cef_window_open_disposition_t)(disposition))
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Called to check if a Chrome app menu item should be visible. Values for
+// / |command_id| can be found in the cef_command_ids.h file. Only called for
+// / menu items that would be visible by default. Only used with the Chrome
+// / runtime.
+// /
+func (self *CCommandHandlerT) IsChromeAppMenuItemVisible(
+	browser *CBrowserT,
+	command_id int,
+) (ret bool) {
+	var goTmpbrowser *C.cef_browser_t
+	if browser != nil {
+		BaseAddRef(browser.pc_browser)
+		goTmpbrowser = (*C.cef_browser_t)(browser.pc_browser)
+	}
+
+	cRet := C.cefingo_command_handler_is_chrome_app_menu_item_visible((*C.cef_command_handler_t)(self.pc_command_handler), goTmpbrowser, (C.int)(command_id))
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Called to check if a Chrome app menu item should be enabled. Values for
+// / |command_id| can be found in the cef_command_ids.h file. Only called for
+// / menu items that would be enabled by default. Only used with the Chrome
+// / runtime.
+// /
+func (self *CCommandHandlerT) IsChromeAppMenuItemEnabled(
+	browser *CBrowserT,
+	command_id int,
+) (ret bool) {
+	var goTmpbrowser *C.cef_browser_t
+	if browser != nil {
+		BaseAddRef(browser.pc_browser)
+		goTmpbrowser = (*C.cef_browser_t)(browser.pc_browser)
+	}
+
+	cRet := C.cefingo_command_handler_is_chrome_app_menu_item_enabled((*C.cef_command_handler_t)(self.pc_command_handler), goTmpbrowser, (C.int)(command_id))
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Called during browser creation to check if a Chrome page action icon
+// / should be visible. Only called for icons that would be visible by default.
+// / Only used with the Chrome runtime.
+// /
+func (self *CCommandHandlerT) IsChromePageActionIconVisible(
+	icon_type CChromePageActionIconTypeT,
+) (ret bool) {
+
+	cRet := C.cefingo_command_handler_is_chrome_page_action_icon_visible((*C.cef_command_handler_t)(self.pc_command_handler), (C.cef_chrome_page_action_icon_type_t)(icon_type))
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Called during browser creation to check if a Chrome toolbar button should
+// / be visible. Only called for buttons that would be visible by default. Only
+// / used with the Chrome runtime.
+// /
+func (self *CCommandHandlerT) IsChromeToolbarButtonVisible(
+	button_type CChromeToolbarButtonTypeT,
+) (ret bool) {
+
+	cRet := C.cefingo_command_handler_is_chrome_toolbar_button_visible((*C.cef_command_handler_t)(self.pc_command_handler), (C.cef_chrome_toolbar_button_type_t)(button_type))
 
 	ret = cRet == 1
 	return ret
@@ -5515,8 +5614,7 @@ func (self *CCommandLineT) GetSwitches(
 }
 
 // /
-// / Add a switch to the end of the command line. If the switch has no value
-// / pass an NULL value string.
+// / Add a switch to the end of the command line.
 // /
 func (self *CCommandLineT) AppendSwitch(
 	name string,
@@ -5528,7 +5626,8 @@ func (self *CCommandLineT) AppendSwitch(
 }
 
 // /
-// / Add a switch with the specified value to the end of the command line.
+// / Add a switch with the specified value to the end of the command line. If
+// / the switch has no value pass an NULL value string.
 // /
 func (self *CCommandLineT) AppendSwitchWithValue(
 	name string,
@@ -7277,7 +7376,7 @@ func (delete_cookies_callback *CDeleteCookiesCallbackT) Handler() interface{} {
 // / If "AppName" is set on Windows then crash report information (metrics,
 // / database and dumps) will be stored locally on disk under the
 // / "C:\Users\[CurrentUser]\AppData\Local\[AppName]\User Data" folder. On other
-// / platforms the cef_settings_t.user_data_path value will be used.
+// / platforms the cef_settings_t.root_cache_path value will be used.
 // /
 // / If "ExternalHandler" is set on Windows then the specified exe will be
 // / launched as the crashpad-handler instead of re-launching the main process
@@ -9906,7 +10005,7 @@ func (download_handler *CDownloadHandlerT) Handler() interface{} {
 	return download_handler_handlers.handler[cp]
 }
 
-// cef_download_item_capi.h, include/capi/cef_download_item_capi.h:157:3,
+// cef_download_item_capi.h, include/capi/cef_download_item_capi.h:168:3,
 
 ///
 /// Structure used to represent a download item.
@@ -10021,13 +10120,35 @@ func (self *CDownloadItemT) IsComplete() (ret bool) {
 }
 
 // /
-// / Returns true (1) if the download has been canceled or interrupted.
+// / Returns true (1) if the download has been canceled.
 // /
 func (self *CDownloadItemT) IsCanceled() (ret bool) {
 
 	cRet := C.cefingo_download_item_is_canceled((*C.cef_download_item_t)(self.pc_download_item))
 
 	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Returns true (1) if the download has been interrupted.
+// /
+func (self *CDownloadItemT) IsInterrupted() (ret bool) {
+
+	cRet := C.cefingo_download_item_is_interrupted((*C.cef_download_item_t)(self.pc_download_item))
+
+	ret = cRet == 1
+	return ret
+}
+
+// /
+// / Returns the most recent interrupt reason.
+// /
+func (self *CDownloadItemT) GetInterruptReason() (ret CDownloadInterruptReasonT) {
+
+	cRet := C.cefingo_download_item_get_interrupt_reason((*C.cef_download_item_t)(self.pc_download_item))
+
+	ret = CDownloadInterruptReasonT(cRet) // return GoObj
 	return ret
 }
 
@@ -12144,7 +12265,7 @@ func (focus_handler *CFocusHandlerT) Handler() interface{} {
 	return focus_handler_handlers.handler[cp]
 }
 
-// cef_frame_capi.h, include/capi/cef_frame_capi.h:257:3,
+// cef_frame_capi.h, include/capi/cef_frame_capi.h:249:3,
 
 ///
 /// Structure used to represent a frame in the browser window. When used in the
@@ -12521,23 +12642,15 @@ func (self *CFrameT) VisitDom(
 
 // /
 // / Create a new URL request that will be treated as originating from this
-// / frame and the associated browser. This request may be intercepted by the
-// / client via cef_resource_request_handler_t or cef_scheme_handler_factory_t.
-// / Use cef_urlrequest_t::Create instead if you do not want the request to
-// / have this association, in which case it may be handled differently (see
-// / documentation on that function). Requests may originate from both the
-// / browser process and the render process.
-// /
-// / For requests originating from the browser process:
+// / frame and the associated browser. Use cef_urlrequest_t::Create instead if
+// / you do not want the request to have this association, in which case it may
+// / be handled differently (see documentation on that function). A request
+// / created with this function may only originate from the browser process,
+// / and will behave as follows:
+// /   - It may be intercepted by the client via CefResourceRequestHandler or
+// /     CefSchemeHandlerFactory.
 // /   - POST data may only contain a single element of type PDE_TYPE_FILE or
 // /     PDE_TYPE_BYTES.
-// /
-// / For requests originating from the render process:
-// /   - POST data may only contain a single element of type PDE_TYPE_BYTES.
-// /   - If the response contains Content-Disposition or Mime-Type header
-// /     values that would not normally be rendered then the response may
-// /     receive special handling inside the browser (for example, via the
-// /     file download code path instead of the URL request code path).
 // /
 // / The |request| object will be marked as read-only after calling this
 // / function.
@@ -15540,22 +15653,6 @@ func (self *CMediaSinkT) GetName() (ret string) {
 }
 
 // /
-// / Returns the description of this sink.
-// /
-// The resulting string must be freed by calling cef_string_userfree_free().
-func (self *CMediaSinkT) GetDescription() (ret string) {
-
-	cRet := C.cefingo_media_sink_get_description((*C.cef_media_sink_t)(self.pc_media_sink))
-
-	s := string_from_cef_string(cRet)
-	if cRet != nil {
-		C.cef_string_userfree_free(cRet)
-	}
-	ret = s
-	return ret
-}
-
-// /
 // / Returns the icon type for this sink.
 // /
 func (self *CMediaSinkT) GetIconType() (ret CMediaSinkIconTypeT) {
@@ -17877,7 +17974,7 @@ func (self *CNavigationEntryT) GetSslstatus() (ret *CSslstatusT) {
 // / qualified |source_origin| URL (like http://www.example.com) will be allowed
 // / access to all resources hosted on the specified |target_protocol| and
 // / |target_domain|. If |target_domain| is non-NULL and
-// / |allow_target_subdomains| if false (0) only exact domain matches will be
+// / |allow_target_subdomains| is false (0) only exact domain matches will be
 // / allowed. If |target_domain| contains a top- level domain component (like
 // / "example.com") and |allow_target_subdomains| is true (1) sub-domain matches
 // / will be allowed. If |target_domain| is NULL and |allow_target_subdomains| if
@@ -18884,7 +18981,7 @@ func (self *CMediaAccessCallbackT) Cont(
 	allowed_permissions uint32,
 ) {
 
-	C.cefingo_media_access_callback_cont((*C.cef_media_access_callback_t)(self.pc_media_access_callback), (C.uint32)(allowed_permissions))
+	C.cefingo_media_access_callback_cont((*C.cef_media_access_callback_t)(self.pc_media_access_callback), (C.uint32_t)(allowed_permissions))
 
 }
 
@@ -19103,7 +19200,7 @@ func (self *CPermissionHandlerT) OnRequestMediaAccessPermission(
 		goTmpcallback = (*C.cef_media_access_callback_t)(callback.pc_media_access_callback)
 	}
 
-	cRet := C.cefingo_permission_handler_on_request_media_access_permission((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, goTmpframe, c_requesting_origin.p_cef_string_t, (C.uint32)(requested_permissions), goTmpcallback)
+	cRet := C.cefingo_permission_handler_on_request_media_access_permission((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, goTmpframe, c_requesting_origin.p_cef_string_t, (C.uint32_t)(requested_permissions), goTmpcallback)
 
 	ret = cRet == 1
 	return ret
@@ -19139,7 +19236,7 @@ func (self *CPermissionHandlerT) OnShowPermissionPrompt(
 		goTmpcallback = (*C.cef_permission_prompt_callback_t)(callback.pc_permission_prompt_callback)
 	}
 
-	cRet := C.cefingo_permission_handler_on_show_permission_prompt((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, (C.uint64)(prompt_id), c_requesting_origin.p_cef_string_t, (C.uint32)(requested_permissions), goTmpcallback)
+	cRet := C.cefingo_permission_handler_on_show_permission_prompt((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, (C.uint64_t)(prompt_id), c_requesting_origin.p_cef_string_t, (C.uint32_t)(requested_permissions), goTmpcallback)
 
 	ret = cRet == 1
 	return ret
@@ -19165,7 +19262,7 @@ func (self *CPermissionHandlerT) OnDismissPermissionPrompt(
 		goTmpbrowser = (*C.cef_browser_t)(browser.pc_browser)
 	}
 
-	C.cefingo_permission_handler_on_dismiss_permission_prompt((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, (C.uint64)(prompt_id), (C.cef_permission_request_result_t)(result))
+	C.cefingo_permission_handler_on_dismiss_permission_prompt((*C.cef_permission_handler_t)(self.pc_permission_handler), goTmpbrowser, (C.uint64_t)(prompt_id), (C.cef_permission_request_result_t)(result))
 
 }
 
@@ -22199,7 +22296,7 @@ func PostDataElementCreate() (ret *CPostDataElementT) {
 	return ret
 }
 
-// cef_request_context_capi.h, include/capi/cef_request_context_capi.h:74:3,
+// cef_request_context_capi.h, include/capi/cef_request_context_capi.h:75:3,
 
 ///
 /// Callback structure for cef_request_context_t::ResolveHost.
@@ -22767,6 +22864,105 @@ func (self *CRequestContextT) GetMediaRouter(
 }
 
 // /
+// / Returns the current value for |content_type| that applies for the
+// / specified URLs. If both URLs are NULL the default value will be returned.
+// / Returns nullptr if no value is configured. Must be called on the browser
+// / process UI thread.
+// /
+func (self *CRequestContextT) GetWebsiteSetting(
+	requesting_url string,
+	top_level_url string,
+	content_type CContentSettingTypesT,
+) (ret *CValueT) {
+	c_requesting_url := create_cef_string(requesting_url)
+	c_top_level_url := create_cef_string(top_level_url)
+
+	cRet := C.cefingo_request_context_get_website_setting((*C.cef_request_context_t)(self.pc_request_context), c_requesting_url.p_cef_string_t, c_top_level_url.p_cef_string_t, (C.cef_content_setting_types_t)(content_type))
+
+	ret = newCValueT(cRet, byApp) // return GoObj
+	return ret
+}
+
+// /
+// / Sets the current value for |content_type| for the specified URLs in the
+// / default scope. If both URLs are NULL, and the context is not incognito,
+// / the default value will be set. Pass nullptr for |value| to remove the
+// / default value for this content type.
+// /
+// / WARNING: Incorrect usage of this function may cause instability or
+// / security issues in Chromium. Make sure that you first understand the
+// / potential impact of any changes to |content_type| by reviewing the related
+// / source code in Chromium. For example, if you plan to modify
+// / CEF_CONTENT_SETTING_TYPE_POPUPS, first review and understand the usage of
+// / ContentSettingsType::POPUPS in Chromium:
+// / https://source.chromium.org/search?q=ContentSettingsType::POPUPS
+// /
+func (self *CRequestContextT) SetWebsiteSetting(
+	requesting_url string,
+	top_level_url string,
+	content_type CContentSettingTypesT,
+	value *CValueT,
+) {
+	c_requesting_url := create_cef_string(requesting_url)
+	c_top_level_url := create_cef_string(top_level_url)
+	var goTmpvalue *C.cef_value_t
+	if value != nil {
+		BaseAddRef(value.pc_value)
+		goTmpvalue = (*C.cef_value_t)(value.pc_value)
+	}
+
+	C.cefingo_request_context_set_website_setting((*C.cef_request_context_t)(self.pc_request_context), c_requesting_url.p_cef_string_t, c_top_level_url.p_cef_string_t, (C.cef_content_setting_types_t)(content_type), goTmpvalue)
+
+}
+
+// /
+// / Returns the current value for |content_type| that applies for the
+// / specified URLs. If both URLs are NULL the default value will be returned.
+// / Returns CEF_CONTENT_SETTING_VALUE_DEFAULT if no value is configured. Must
+// / be called on the browser process UI thread.
+// /
+func (self *CRequestContextT) GetContentSetting(
+	requesting_url string,
+	top_level_url string,
+	content_type CContentSettingTypesT,
+) (ret CContentSettingValuesT) {
+	c_requesting_url := create_cef_string(requesting_url)
+	c_top_level_url := create_cef_string(top_level_url)
+
+	cRet := C.cefingo_request_context_get_content_setting((*C.cef_request_context_t)(self.pc_request_context), c_requesting_url.p_cef_string_t, c_top_level_url.p_cef_string_t, (C.cef_content_setting_types_t)(content_type))
+
+	ret = CContentSettingValuesT(cRet) // return GoObj
+	return ret
+}
+
+// /
+// / Sets the current value for |content_type| for the specified URLs in the
+// / default scope. If both URLs are NULL, and the context is not incognito,
+// / the default value will be set. Pass CEF_CONTENT_SETTING_VALUE_DEFAULT for
+// / |value| to use the default value for this content type.
+// /
+// / WARNING: Incorrect usage of this function may cause instability or
+// / security issues in Chromium. Make sure that you first understand the
+// / potential impact of any changes to |content_type| by reviewing the related
+// / source code in Chromium. For example, if you plan to modify
+// / CEF_CONTENT_SETTING_TYPE_POPUPS, first review and understand the usage of
+// / ContentSettingsType::POPUPS in Chromium:
+// / https://source.chromium.org/search?q=ContentSettingsType::POPUPS
+// /
+func (self *CRequestContextT) SetContentSetting(
+	requesting_url string,
+	top_level_url string,
+	content_type CContentSettingTypesT,
+	value CContentSettingValuesT,
+) {
+	c_requesting_url := create_cef_string(requesting_url)
+	c_top_level_url := create_cef_string(top_level_url)
+
+	C.cefingo_request_context_set_content_setting((*C.cef_request_context_t)(self.pc_request_context), c_requesting_url.p_cef_string_t, c_top_level_url.p_cef_string_t, (C.cef_content_setting_types_t)(content_type), (C.cef_content_setting_values_t)(value))
+
+}
+
+// /
 // / Returns the global context object.
 // /
 func RequestContextGetGlobalContext() (ret *CRequestContextT) {
@@ -23312,25 +23508,6 @@ type CRequestHandlerTGetAuthCredentialsHandler interface {
 }
 
 // /
-// / Called on the IO thread when JavaScript requests a specific storage quota
-// / size via the webkitStorageInfo.requestQuota function. |origin_url| is the
-// / origin of the page making the request. |new_size| is the requested quota
-// / size in bytes. Return true (1) to continue the request and call
-// / cef_callback_t functions either in this function or at a later time to
-// / grant or deny the request. Return false (0) to cancel the request
-// / immediately.
-// /
-type OnQuotaRequestHandler interface {
-	OnQuotaRequest(
-		self *CRequestHandlerT,
-		browser *CBrowserT,
-		origin_url string,
-		new_size int64,
-		callback *CCallbackT,
-	) (ret bool)
-}
-
-// /
 // / Called on the UI thread to handle requests for URLs with an invalid SSL
 // / certificate. Return true (1) and call cef_callback_t functions either in
 // / this function or at a later time to continue or cancel the request. Return
@@ -23415,7 +23592,6 @@ var request_handler_handlers = struct {
 	on_open_urlfrom_tab_handler                 map[*cCRequestHandlerT]OnOpenUrlfromTabHandler
 	get_resource_request_handler_handler        map[*cCRequestHandlerT]CRequestHandlerTGetResourceRequestHandlerHandler
 	get_auth_credentials_handler                map[*cCRequestHandlerT]CRequestHandlerTGetAuthCredentialsHandler
-	on_quota_request_handler                    map[*cCRequestHandlerT]OnQuotaRequestHandler
 	on_certificate_error_handler                map[*cCRequestHandlerT]OnCertificateErrorHandler
 	on_select_client_certificate_handler        map[*cCRequestHandlerT]OnSelectClientCertificateHandler
 	on_render_view_ready_handler                map[*cCRequestHandlerT]OnRenderViewReadyHandler
@@ -23427,7 +23603,6 @@ var request_handler_handlers = struct {
 	map[*cCRequestHandlerT]OnOpenUrlfromTabHandler{},
 	map[*cCRequestHandlerT]CRequestHandlerTGetResourceRequestHandlerHandler{},
 	map[*cCRequestHandlerT]CRequestHandlerTGetAuthCredentialsHandler{},
-	map[*cCRequestHandlerT]OnQuotaRequestHandler{},
 	map[*cCRequestHandlerT]OnCertificateErrorHandler{},
 	map[*cCRequestHandlerT]OnSelectClientCertificateHandler{},
 	map[*cCRequestHandlerT]OnRenderViewReadyHandler{},
@@ -23493,13 +23668,6 @@ func (request_handler *CRequestHandlerT) bind(a interface{}) *CRequestHandlerT {
 		delete(request_handler_handlers.get_auth_credentials_handler, cp)
 	}
 
-	if h, ok := a.(OnQuotaRequestHandler); ok {
-		request_handler_handlers.on_quota_request_handler[cp] = h
-		noBind = false
-	} else {
-		delete(request_handler_handlers.on_quota_request_handler, cp)
-	}
-
 	if h, ok := a.(OnCertificateErrorHandler); ok {
 		request_handler_handlers.on_certificate_error_handler[cp] = h
 		noBind = false
@@ -23552,7 +23720,6 @@ func unbindAllCRequestHandlerT(cp *cCRequestHandlerT) {
 	delete(request_handler_handlers.on_open_urlfrom_tab_handler, cp)
 	delete(request_handler_handlers.get_resource_request_handler_handler, cp)
 	delete(request_handler_handlers.get_auth_credentials_handler, cp)
-	delete(request_handler_handlers.on_quota_request_handler, cp)
 	delete(request_handler_handlers.on_certificate_error_handler, cp)
 	delete(request_handler_handlers.on_select_client_certificate_handler, cp)
 	delete(request_handler_handlers.on_render_view_ready_handler, cp)
@@ -23883,7 +24050,7 @@ func (self *CResourceSkipCallbackT) Cont(
 	bytes_skipped int64,
 ) {
 
-	C.cefingo_resource_skip_callback_cont((*C.cef_resource_skip_callback_t)(self.pc_resource_skip_callback), (C.int64)(bytes_skipped))
+	C.cefingo_resource_skip_callback_cont((*C.cef_resource_skip_callback_t)(self.pc_resource_skip_callback), (C.int64_t)(bytes_skipped))
 
 }
 
@@ -26600,7 +26767,7 @@ func (self *CStreamReaderT) Seek(
 	whence int,
 ) (ret bool) {
 
-	cRet := C.cefingo_stream_reader_seek((*C.cef_stream_reader_t)(self.pc_stream_reader), (C.int64)(offset), (C.int)(whence))
+	cRet := C.cefingo_stream_reader_seek((*C.cef_stream_reader_t)(self.pc_stream_reader), (C.int64_t)(offset), (C.int)(whence))
 
 	ret = cRet == 1
 	return ret
@@ -27040,7 +27207,7 @@ func (self *CStreamWriterT) Seek(
 	whence int,
 ) (ret bool) {
 
-	cRet := C.cefingo_stream_writer_seek((*C.cef_stream_writer_t)(self.pc_stream_writer), (C.int64)(offset), (C.int)(whence))
+	cRet := C.cefingo_stream_writer_seek((*C.cef_stream_writer_t)(self.pc_stream_writer), (C.int64_t)(offset), (C.int)(whence))
 
 	ret = cRet == 1
 	return ret
@@ -27607,7 +27774,7 @@ func (self *CTaskRunnerT) PostDelayedTask(
 		goTmptask = (*C.cef_task_t)(task.pc_task)
 	}
 
-	cRet := C.cefingo_task_runner_post_delayed_task((*C.cef_task_runner_t)(self.pc_task_runner), goTmptask, (C.int64)(delay_ms))
+	cRet := C.cefingo_task_runner_post_delayed_task((*C.cef_task_runner_t)(self.pc_task_runner), goTmptask, (C.int64_t)(delay_ms))
 
 	ret = cRet == 1
 	return ret
@@ -27689,7 +27856,7 @@ func PostDelayedTask(
 		goTmptask = (*C.cef_task_t)(task.pc_task)
 	}
 
-	cRet := C.cef_post_delayed_task((C.cef_thread_id_t)(threadId), goTmptask, (C.int64)(delay_ms))
+	cRet := C.cef_post_delayed_task((C.cef_thread_id_t)(threadId), goTmptask, (C.int64_t)(delay_ms))
 
 	ret = cRet == 1
 	return ret
@@ -31230,7 +31397,7 @@ func V8valueCreateInt(
 	value int32,
 ) (ret *CV8valueT) {
 
-	cRet := C.cef_v8value_create_int((C.int32)(value))
+	cRet := C.cef_v8value_create_int((C.int32_t)(value))
 
 	ret = newCV8valueT(cRet, byApp) // return GoObj
 	return ret
@@ -31243,7 +31410,7 @@ func V8valueCreateUint(
 	value uint32,
 ) (ret *CV8valueT) {
 
-	cRet := C.cef_v8value_create_uint((C.uint32)(value))
+	cRet := C.cef_v8value_create_uint((C.uint32_t)(value))
 
 	ret = newCV8valueT(cRet, byApp) // return GoObj
 	return ret
@@ -34628,7 +34795,7 @@ func (view_delegate *CViewDelegateT) Handler() interface{} {
 	return view_delegate_handlers.handler[cp]
 }
 
-// cef_window_capi.h, include/capi/views/cef_window_capi.h:337:3,
+// cef_window_capi.h, include/capi/views/cef_window_capi.h:354:3,
 
 ///
 /// A Window is a top-level Window/widget in the Views hierarchy. By default it
@@ -34725,6 +34892,30 @@ func (window *CWindowT) ToCPanelT() *CPanelT {
 func (self *CWindowT) Show() {
 
 	C.cefingo_window_show((*C.cef_window_t)(self.pc_window))
+
+}
+
+// /
+// / Show the Window as a browser modal dialog relative to |browser_view|. A
+// / parent Window must be returned via
+// / cef_window_delegate_t::get_parent_window() and |browser_view| must belong
+// / to that parent Window. While this Window is visible, |browser_view| will
+// / be disabled while other controls in the parent Window remain enabled.
+// / Navigating or destroying the |browser_view| will close this Window
+// / automatically. Alternately, use show() and return true (1) from
+// / cef_window_delegate_t::is_window_modal_dialog() for a window modal dialog
+// / where all controls in the parent Window are disabled.
+// /
+func (self *CWindowT) ShowAsBrowserModalDialog(
+	browser_view *CBrowserViewT,
+) {
+	var goTmpbrowser_view *C.cef_browser_view_t
+	if browser_view != nil {
+		BaseAddRef(browser_view.pc_browser_view)
+		goTmpbrowser_view = (*C.cef_browser_view_t)(browser_view.pc_browser_view)
+	}
+
+	C.cefingo_window_show_as_browser_modal_dialog((*C.cef_window_t)(self.pc_window), goTmpbrowser_view)
 
 }
 
@@ -35123,7 +35314,7 @@ func (self *CWindowT) SendKeyPress(
 	event_flags uint32,
 ) {
 
-	C.cefingo_window_send_key_press((*C.cef_window_t)(self.pc_window), (C.int)(key_code), (C.uint32)(event_flags))
+	C.cefingo_window_send_key_press((*C.cef_window_t)(self.pc_window), (C.int)(key_code), (C.uint32_t)(event_flags))
 
 }
 
@@ -35216,7 +35407,7 @@ func WindowCreateTopLevel(
 	return ret
 }
 
-// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:182:3,
+// cef_window_delegate_capi.h, include/capi/views/cef_window_delegate_capi.h:224:3,
 
 ///
 /// Implement this structure to handle window events. The functions of this
@@ -35376,6 +35567,22 @@ type GetParentWindowHandler interface {
 }
 
 // /
+// / Return true (1) if |window| should be created as a window modal dialog.
+// / Only called when a Window is returned via get_parent_window() with
+// / |is_menu| set to false (0). All controls in the parent Window will be
+// / disabled while |window| is visible. This functionality is not supported by
+// / all Linux window managers. Alternately, use
+// / cef_window_t::show_as_browser_modal_dialog() for a browser modal dialog
+// / that works on all platforms.
+// /
+type IsWindowModalDialogHandler interface {
+	IsWindowModalDialog(
+		self *CWindowDelegateT,
+		window *CWindowT,
+	) (ret bool)
+}
+
+// /
 // / Return the initial bounds for |window| in density independent pixel (DIP)
 // / coordinates. If this function returns an NULL CefRect then
 // / get_preferred_size() will be called to retrieve the size, and the window
@@ -35409,6 +35616,32 @@ type IsFramelessHandler interface {
 	IsFrameless(
 		self *CWindowDelegateT,
 		window *CWindowT,
+	) (ret bool)
+}
+
+// /
+// / Return true (1) if |window| should be created with standard window buttons
+// / like close, minimize and zoom. This function is only supported on macOS.
+// /
+type WithStandardWindowButtonsHandler interface {
+	WithStandardWindowButtons(
+		self *CWindowDelegateT,
+		window *CWindowT,
+	) (ret bool)
+}
+
+// /
+// / Return whether the titlebar height should be overridden, and sets the
+// / height of the titlebar in |titlebar_height|. On macOS, it can also be used
+// / to adjust the vertical position of the traffic light buttons in frameless
+// / windows. The buttons will be positioned halfway down the titlebar at a
+// / height of |titlebar_height| / 2.
+// /
+type GetTitlebarHeightHandler interface {
+	GetTitlebarHeight(
+		self *CWindowDelegateT,
+		window *CWindowT,
+		titlebar_height *float32,
 	) (ret bool)
 }
 
@@ -35479,33 +35712,51 @@ type CWindowDelegateTOnKeyEventHandler interface {
 	) (ret bool)
 }
 
+// /
+// / Called when the |window| is transitioning to or from fullscreen mode. The
+// / transition occurs in two stages, with |is_competed| set to false (0) when
+// / the transition starts and true (1) when the transition completes. This
+// / function is only supported on macOS.
+// /
+type OnWindowFullscreenTransitionHandler interface {
+	OnWindowFullscreenTransition(
+		self *CWindowDelegateT,
+		window *CWindowT,
+		is_completed int,
+	)
+}
+
 var window_delegate_handlers = struct {
-	handler                              map[*cCWindowDelegateT]interface{}
-	on_window_created_handler            map[*cCWindowDelegateT]OnWindowCreatedHandler
-	on_window_closing_handler            map[*cCWindowDelegateT]OnWindowClosingHandler
-	on_window_destroyed_handler          map[*cCWindowDelegateT]OnWindowDestroyedHandler
-	on_window_activation_changed_handler map[*cCWindowDelegateT]OnWindowActivationChangedHandler
-	on_window_bounds_changed_handler     map[*cCWindowDelegateT]OnWindowBoundsChangedHandler
-	get_parent_window_handler            map[*cCWindowDelegateT]GetParentWindowHandler
-	get_initial_bounds_handler           map[*cCWindowDelegateT]GetInitialBoundsHandler
-	get_initial_show_state_handler       map[*cCWindowDelegateT]GetInitialShowStateHandler
-	is_frameless_handler                 map[*cCWindowDelegateT]IsFramelessHandler
-	can_resize_handler                   map[*cCWindowDelegateT]CanResizeHandler
-	can_maximize_handler                 map[*cCWindowDelegateT]CanMaximizeHandler
-	can_minimize_handler                 map[*cCWindowDelegateT]CanMinimizeHandler
-	can_close_handler                    map[*cCWindowDelegateT]CanCloseHandler
-	on_accelerator_handler               map[*cCWindowDelegateT]OnAcceleratorHandler
-	on_key_event_handler                 map[*cCWindowDelegateT]CWindowDelegateTOnKeyEventHandler
-	get_preferred_size_handler           map[*cCWindowDelegateT]GetPreferredSizeHandler
-	get_minimum_size_handler             map[*cCWindowDelegateT]GetMinimumSizeHandler
-	get_maximum_size_handler             map[*cCWindowDelegateT]GetMaximumSizeHandler
-	get_height_for_width_handler         map[*cCWindowDelegateT]GetHeightForWidthHandler
-	on_parent_view_changed_handler       map[*cCWindowDelegateT]OnParentViewChangedHandler
-	on_child_view_changed_handler        map[*cCWindowDelegateT]OnChildViewChangedHandler
-	on_window_changed_handler            map[*cCWindowDelegateT]OnWindowChangedHandler
-	on_layout_changed_handler            map[*cCWindowDelegateT]OnLayoutChangedHandler
-	on_focus_handler                     map[*cCWindowDelegateT]OnFocusHandler
-	on_blur_handler                      map[*cCWindowDelegateT]OnBlurHandler
+	handler                                 map[*cCWindowDelegateT]interface{}
+	on_window_created_handler               map[*cCWindowDelegateT]OnWindowCreatedHandler
+	on_window_closing_handler               map[*cCWindowDelegateT]OnWindowClosingHandler
+	on_window_destroyed_handler             map[*cCWindowDelegateT]OnWindowDestroyedHandler
+	on_window_activation_changed_handler    map[*cCWindowDelegateT]OnWindowActivationChangedHandler
+	on_window_bounds_changed_handler        map[*cCWindowDelegateT]OnWindowBoundsChangedHandler
+	get_parent_window_handler               map[*cCWindowDelegateT]GetParentWindowHandler
+	is_window_modal_dialog_handler          map[*cCWindowDelegateT]IsWindowModalDialogHandler
+	get_initial_bounds_handler              map[*cCWindowDelegateT]GetInitialBoundsHandler
+	get_initial_show_state_handler          map[*cCWindowDelegateT]GetInitialShowStateHandler
+	is_frameless_handler                    map[*cCWindowDelegateT]IsFramelessHandler
+	with_standard_window_buttons_handler    map[*cCWindowDelegateT]WithStandardWindowButtonsHandler
+	get_titlebar_height_handler             map[*cCWindowDelegateT]GetTitlebarHeightHandler
+	can_resize_handler                      map[*cCWindowDelegateT]CanResizeHandler
+	can_maximize_handler                    map[*cCWindowDelegateT]CanMaximizeHandler
+	can_minimize_handler                    map[*cCWindowDelegateT]CanMinimizeHandler
+	can_close_handler                       map[*cCWindowDelegateT]CanCloseHandler
+	on_accelerator_handler                  map[*cCWindowDelegateT]OnAcceleratorHandler
+	on_key_event_handler                    map[*cCWindowDelegateT]CWindowDelegateTOnKeyEventHandler
+	on_window_fullscreen_transition_handler map[*cCWindowDelegateT]OnWindowFullscreenTransitionHandler
+	get_preferred_size_handler              map[*cCWindowDelegateT]GetPreferredSizeHandler
+	get_minimum_size_handler                map[*cCWindowDelegateT]GetMinimumSizeHandler
+	get_maximum_size_handler                map[*cCWindowDelegateT]GetMaximumSizeHandler
+	get_height_for_width_handler            map[*cCWindowDelegateT]GetHeightForWidthHandler
+	on_parent_view_changed_handler          map[*cCWindowDelegateT]OnParentViewChangedHandler
+	on_child_view_changed_handler           map[*cCWindowDelegateT]OnChildViewChangedHandler
+	on_window_changed_handler               map[*cCWindowDelegateT]OnWindowChangedHandler
+	on_layout_changed_handler               map[*cCWindowDelegateT]OnLayoutChangedHandler
+	on_focus_handler                        map[*cCWindowDelegateT]OnFocusHandler
+	on_blur_handler                         map[*cCWindowDelegateT]OnBlurHandler
 }{
 	map[*cCWindowDelegateT]interface{}{},
 	map[*cCWindowDelegateT]OnWindowCreatedHandler{},
@@ -35514,15 +35765,19 @@ var window_delegate_handlers = struct {
 	map[*cCWindowDelegateT]OnWindowActivationChangedHandler{},
 	map[*cCWindowDelegateT]OnWindowBoundsChangedHandler{},
 	map[*cCWindowDelegateT]GetParentWindowHandler{},
+	map[*cCWindowDelegateT]IsWindowModalDialogHandler{},
 	map[*cCWindowDelegateT]GetInitialBoundsHandler{},
 	map[*cCWindowDelegateT]GetInitialShowStateHandler{},
 	map[*cCWindowDelegateT]IsFramelessHandler{},
+	map[*cCWindowDelegateT]WithStandardWindowButtonsHandler{},
+	map[*cCWindowDelegateT]GetTitlebarHeightHandler{},
 	map[*cCWindowDelegateT]CanResizeHandler{},
 	map[*cCWindowDelegateT]CanMaximizeHandler{},
 	map[*cCWindowDelegateT]CanMinimizeHandler{},
 	map[*cCWindowDelegateT]CanCloseHandler{},
 	map[*cCWindowDelegateT]OnAcceleratorHandler{},
 	map[*cCWindowDelegateT]CWindowDelegateTOnKeyEventHandler{},
+	map[*cCWindowDelegateT]OnWindowFullscreenTransitionHandler{},
 	map[*cCWindowDelegateT]GetPreferredSizeHandler{},
 	map[*cCWindowDelegateT]GetMinimumSizeHandler{},
 	map[*cCWindowDelegateT]GetMaximumSizeHandler{},
@@ -35607,6 +35862,13 @@ func (window_delegate *CWindowDelegateT) bind(a interface{}) *CWindowDelegateT {
 		delete(window_delegate_handlers.get_parent_window_handler, cp)
 	}
 
+	if h, ok := a.(IsWindowModalDialogHandler); ok {
+		window_delegate_handlers.is_window_modal_dialog_handler[cp] = h
+		noBind = false
+	} else {
+		delete(window_delegate_handlers.is_window_modal_dialog_handler, cp)
+	}
+
 	if h, ok := a.(GetInitialBoundsHandler); ok {
 		window_delegate_handlers.get_initial_bounds_handler[cp] = h
 		noBind = false
@@ -35626,6 +35888,20 @@ func (window_delegate *CWindowDelegateT) bind(a interface{}) *CWindowDelegateT {
 		noBind = false
 	} else {
 		delete(window_delegate_handlers.is_frameless_handler, cp)
+	}
+
+	if h, ok := a.(WithStandardWindowButtonsHandler); ok {
+		window_delegate_handlers.with_standard_window_buttons_handler[cp] = h
+		noBind = false
+	} else {
+		delete(window_delegate_handlers.with_standard_window_buttons_handler, cp)
+	}
+
+	if h, ok := a.(GetTitlebarHeightHandler); ok {
+		window_delegate_handlers.get_titlebar_height_handler[cp] = h
+		noBind = false
+	} else {
+		delete(window_delegate_handlers.get_titlebar_height_handler, cp)
 	}
 
 	if h, ok := a.(CanResizeHandler); ok {
@@ -35668,6 +35944,13 @@ func (window_delegate *CWindowDelegateT) bind(a interface{}) *CWindowDelegateT {
 		noBind = false
 	} else {
 		delete(window_delegate_handlers.on_key_event_handler, cp)
+	}
+
+	if h, ok := a.(OnWindowFullscreenTransitionHandler); ok {
+		window_delegate_handlers.on_window_fullscreen_transition_handler[cp] = h
+		noBind = false
+	} else {
+		delete(window_delegate_handlers.on_window_fullscreen_transition_handler, cp)
 	}
 
 	if h, ok := a.(GetPreferredSizeHandler); ok {
@@ -35759,15 +36042,19 @@ func unbindAllCWindowDelegateT(cp *cCWindowDelegateT) {
 	delete(window_delegate_handlers.on_window_activation_changed_handler, cp)
 	delete(window_delegate_handlers.on_window_bounds_changed_handler, cp)
 	delete(window_delegate_handlers.get_parent_window_handler, cp)
+	delete(window_delegate_handlers.is_window_modal_dialog_handler, cp)
 	delete(window_delegate_handlers.get_initial_bounds_handler, cp)
 	delete(window_delegate_handlers.get_initial_show_state_handler, cp)
 	delete(window_delegate_handlers.is_frameless_handler, cp)
+	delete(window_delegate_handlers.with_standard_window_buttons_handler, cp)
+	delete(window_delegate_handlers.get_titlebar_height_handler, cp)
 	delete(window_delegate_handlers.can_resize_handler, cp)
 	delete(window_delegate_handlers.can_maximize_handler, cp)
 	delete(window_delegate_handlers.can_minimize_handler, cp)
 	delete(window_delegate_handlers.can_close_handler, cp)
 	delete(window_delegate_handlers.on_accelerator_handler, cp)
 	delete(window_delegate_handlers.on_key_event_handler, cp)
+	delete(window_delegate_handlers.on_window_fullscreen_transition_handler, cp)
 	delete(window_delegate_handlers.get_preferred_size_handler, cp)
 	delete(window_delegate_handlers.get_minimum_size_handler, cp)
 	delete(window_delegate_handlers.get_maximum_size_handler, cp)
@@ -35793,7 +36080,7 @@ func (window_delegate *CWindowDelegateT) Handler() interface{} {
 	return window_delegate_handlers.handler[cp]
 }
 
-// cef_x509_certificate_capi.h, include/capi/cef_x509_certificate_capi.h:123:3,
+// cef_x509_certificate_capi.h, include/capi/cef_x509_certificate_capi.h:109:3,
 
 ///
 /// Structure representing the issuer or subject field of an X.509 certificate.
@@ -35956,17 +36243,6 @@ func (self *CX509certPrincipalT) GetCountryName() (ret string) {
 }
 
 // /
-// / Retrieve the list of street addresses.
-// /
-func (self *CX509certPrincipalT) GetStreetAddresses(
-	addresses CStringListT,
-) {
-
-	C.cefingo_x509cert_principal_get_street_addresses((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal), (C.cef_string_list_t)(addresses))
-
-}
-
-// /
 // / Retrieve the list of organization names.
 // /
 func (self *CX509certPrincipalT) GetOrganizationNames(
@@ -35985,17 +36261,6 @@ func (self *CX509certPrincipalT) GetOrganizationUnitNames(
 ) {
 
 	C.cefingo_x509cert_principal_get_organization_unit_names((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal), (C.cef_string_list_t)(names))
-
-}
-
-// /
-// / Retrieve the list of domain components.
-// /
-func (self *CX509certPrincipalT) GetDomainComponents(
-	components CStringListT,
-) {
-
-	C.cefingo_x509cert_principal_get_domain_components((*C.cef_x509cert_principal_t)(self.pc_x509cert_principal), (C.cef_string_list_t)(components))
 
 }
 

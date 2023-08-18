@@ -7,7 +7,7 @@
 // size_t offsetof(type， member);
 
 typedef struct _cefingo_ref_counter {
-	int64 ref_count;
+	int64_t ref_count;
 } cefingo_ref_counter;
 
 #define CEFINGO_REF_COUNTER_WRAPPER(body_t, wapper_name) \

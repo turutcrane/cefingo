@@ -99,7 +99,7 @@ extern struct _cef_frame_t* cefingo_browser_get_focused_frame(
 
 extern struct _cef_frame_t* cefingo_browser_get_frame_byident(
 	struct _cef_browser_t* self,
-	int64 identifier
+	int64_t identifier
 );
 
 extern struct _cef_frame_t* cefingo_browser_get_frame(
@@ -197,7 +197,7 @@ extern void cefingo_browser_host_download_image(
 	struct _cef_browser_host_t* self,
 	const cef_string_t* image_url,
 	int is_favicon,
-	uint32 max_image_size,
+	uint32_t max_image_size,
 	int bypass_cache,
 	struct _cef_download_image_callback_t* callback
 );
@@ -513,6 +513,28 @@ extern int cefingo_command_handler_on_chrome_command(
 	cef_window_open_disposition_t disposition
 );
 
+extern int cefingo_command_handler_is_chrome_app_menu_item_visible(
+	struct _cef_command_handler_t* self,
+	struct _cef_browser_t* browser,
+	int command_id
+);
+
+extern int cefingo_command_handler_is_chrome_app_menu_item_enabled(
+	struct _cef_command_handler_t* self,
+	struct _cef_browser_t* browser,
+	int command_id
+);
+
+extern int cefingo_command_handler_is_chrome_page_action_icon_visible(
+	struct _cef_command_handler_t* self,
+	cef_chrome_page_action_icon_type_t icon_type
+);
+
+extern int cefingo_command_handler_is_chrome_toolbar_button_visible(
+	struct _cef_command_handler_t* self,
+	cef_chrome_toolbar_button_type_t button_type
+);
+
 extern int cefingo_command_line_is_valid(
 	struct _cef_command_line_t* self
 );
@@ -760,7 +782,7 @@ extern void cefingo_file_dialog_callback_cancel(
 CEFINGO_REF_COUNTER_WRAPPER(cef_dialog_handler_t, cefingo_dialog_handler_wrapper_t);
 extern cef_dialog_handler_t *cefingo_construct_dialog_handler(cefingo_dialog_handler_wrapper_t* dialog_handler);
 
-extern int64 cefingo_display_get_id(
+extern int64_t cefingo_display_get_id(
 	struct _cef_display_t* self
 );
 
@@ -1002,7 +1024,15 @@ extern int cefingo_download_item_is_canceled(
 	struct _cef_download_item_t* self
 );
 
-extern int64 cefingo_download_item_get_current_speed(
+extern int cefingo_download_item_is_interrupted(
+	struct _cef_download_item_t* self
+);
+
+extern cef_download_interrupt_reason_t cefingo_download_item_get_interrupt_reason(
+	struct _cef_download_item_t* self
+);
+
+extern int64_t cefingo_download_item_get_current_speed(
 	struct _cef_download_item_t* self
 );
 
@@ -1010,11 +1040,11 @@ extern int cefingo_download_item_get_percent_complete(
 	struct _cef_download_item_t* self
 );
 
-extern int64 cefingo_download_item_get_total_bytes(
+extern int64_t cefingo_download_item_get_total_bytes(
 	struct _cef_download_item_t* self
 );
 
-extern int64 cefingo_download_item_get_received_bytes(
+extern int64_t cefingo_download_item_get_received_bytes(
 	struct _cef_download_item_t* self
 );
 
@@ -1030,7 +1060,7 @@ extern cef_string_userfree_t cefingo_download_item_get_full_path(
 	struct _cef_download_item_t* self
 );
 
-extern uint32 cefingo_download_item_get_id(
+extern uint32_t cefingo_download_item_get_id(
 	struct _cef_download_item_t* self
 );
 
@@ -1297,7 +1327,7 @@ extern cef_string_userfree_t cefingo_frame_get_name(
 	struct _cef_frame_t* self
 );
 
-extern int64 cefingo_frame_get_identifier(
+extern int64_t cefingo_frame_get_identifier(
 	struct _cef_frame_t* self
 );
 
@@ -1592,10 +1622,6 @@ extern cef_string_userfree_t cefingo_media_sink_get_id(
 );
 
 extern cef_string_userfree_t cefingo_media_sink_get_name(
-	struct _cef_media_sink_t* self
-);
-
-extern cef_string_userfree_t cefingo_media_sink_get_description(
 	struct _cef_media_sink_t* self
 );
 
@@ -2165,7 +2191,7 @@ extern cef_panel_delegate_t *cefingo_construct_panel_delegate(cefingo_panel_dele
 
 extern void cefingo_media_access_callback_cont(
 	struct _cef_media_access_callback_t* self,
-	uint32 allowed_permissions
+	uint32_t allowed_permissions
 );
 
 extern void cefingo_media_access_callback_cancel(
@@ -2182,23 +2208,23 @@ extern int cefingo_permission_handler_on_request_media_access_permission(
 	struct _cef_browser_t* browser,
 	struct _cef_frame_t* frame,
 	const cef_string_t* requesting_origin,
-	uint32 requested_permissions,
+	uint32_t requested_permissions,
 	struct _cef_media_access_callback_t* callback
 );
 
 extern int cefingo_permission_handler_on_show_permission_prompt(
 	struct _cef_permission_handler_t* self,
 	struct _cef_browser_t* browser,
-	uint64 prompt_id,
+	uint64_t prompt_id,
 	const cef_string_t* requesting_origin,
-	uint32 requested_permissions,
+	uint32_t requested_permissions,
 	struct _cef_permission_prompt_callback_t* callback
 );
 
 extern void cefingo_permission_handler_on_dismiss_permission_prompt(
 	struct _cef_permission_handler_t* self,
 	struct _cef_browser_t* browser,
-	uint64 prompt_id,
+	uint64_t prompt_id,
 	cef_permission_request_result_t result
 );
 
@@ -2479,7 +2505,7 @@ extern cef_transition_type_t cefingo_request_get_transition_type(
 	struct _cef_request_t* self
 );
 
-extern uint64 cefingo_request_get_identifier(
+extern uint64_t cefingo_request_get_identifier(
 	struct _cef_request_t* self
 );
 
@@ -2649,6 +2675,36 @@ extern struct _cef_media_router_t* cefingo_request_context_get_media_router(
 	struct _cef_completion_callback_t* callback
 );
 
+extern struct _cef_value_t* cefingo_request_context_get_website_setting(
+	struct _cef_request_context_t* self,
+	const cef_string_t* requesting_url,
+	const cef_string_t* top_level_url,
+	cef_content_setting_types_t content_type
+);
+
+extern void cefingo_request_context_set_website_setting(
+	struct _cef_request_context_t* self,
+	const cef_string_t* requesting_url,
+	const cef_string_t* top_level_url,
+	cef_content_setting_types_t content_type,
+	struct _cef_value_t* value
+);
+
+extern cef_content_setting_values_t cefingo_request_context_get_content_setting(
+	struct _cef_request_context_t* self,
+	const cef_string_t* requesting_url,
+	const cef_string_t* top_level_url,
+	cef_content_setting_types_t content_type
+);
+
+extern void cefingo_request_context_set_content_setting(
+	struct _cef_request_context_t* self,
+	const cef_string_t* requesting_url,
+	const cef_string_t* top_level_url,
+	cef_content_setting_types_t content_type,
+	cef_content_setting_values_t value
+);
+
 CEFINGO_REF_COUNTER_WRAPPER(cef_request_context_handler_t, cefingo_request_context_handler_wrapper_t);
 extern cef_request_context_handler_t *cefingo_construct_request_context_handler(cefingo_request_context_handler_wrapper_t* request_context_handler);
 
@@ -2665,7 +2721,7 @@ extern cef_resource_bundle_handler_t *cefingo_construct_resource_bundle_handler(
 
 extern void cefingo_resource_skip_callback_cont(
 	struct _cef_resource_skip_callback_t* self,
-	int64 bytes_skipped
+	int64_t bytes_skipped
 );
 
 extern void cefingo_resource_read_callback_cont(
@@ -2855,11 +2911,11 @@ extern size_t cefingo_stream_reader_read(
 
 extern int cefingo_stream_reader_seek(
 	struct _cef_stream_reader_t* self,
-	int64 offset,
+	int64_t offset,
 	int whence
 );
 
-extern int64 cefingo_stream_reader_tell(
+extern int64_t cefingo_stream_reader_tell(
 	struct _cef_stream_reader_t* self
 );
 
@@ -2883,11 +2939,11 @@ extern size_t cefingo_stream_writer_write(
 
 extern int cefingo_stream_writer_seek(
 	struct _cef_stream_writer_t* self,
-	int64 offset,
+	int64_t offset,
 	int whence
 );
 
-extern int64 cefingo_stream_writer_tell(
+extern int64_t cefingo_stream_writer_tell(
 	struct _cef_stream_writer_t* self
 );
 
@@ -2927,7 +2983,7 @@ extern int cefingo_task_runner_post_task(
 extern int cefingo_task_runner_post_delayed_task(
 	struct _cef_task_runner_t* self,
 	struct _cef_task_t* task,
-	int64 delay_ms
+	int64_t delay_ms
 );
 
 extern void cefingo_textfield_set_password_input(
@@ -3292,11 +3348,11 @@ extern int cefingo_v8value_get_bool_value(
 	struct _cef_v8value_t* self
 );
 
-extern int32 cefingo_v8value_get_int_value(
+extern int32_t cefingo_v8value_get_int_value(
 	struct _cef_v8value_t* self
 );
 
-extern uint32 cefingo_v8value_get_uint_value(
+extern uint32_t cefingo_v8value_get_uint_value(
 	struct _cef_v8value_t* self
 );
 
@@ -4140,6 +4196,11 @@ extern void cefingo_window_show(
 	struct _cef_window_t* self
 );
 
+extern void cefingo_window_show_as_browser_modal_dialog(
+	struct _cef_window_t* self,
+	struct _cef_browser_view_t* browser_view
+);
+
 extern void cefingo_window_hide(
 	struct _cef_window_t* self
 );
@@ -4276,7 +4337,7 @@ extern cef_window_handle_t cefingo_window_get_window_handle(
 extern void cefingo_window_send_key_press(
 	struct _cef_window_t* self,
 	int key_code,
-	uint32 event_flags
+	uint32_t event_flags
 );
 
 extern void cefingo_window_send_mouse_move(
@@ -4333,11 +4394,6 @@ extern cef_string_userfree_t cefingo_x509cert_principal_get_country_name(
 	struct _cef_x509cert_principal_t* self
 );
 
-extern void cefingo_x509cert_principal_get_street_addresses(
-	struct _cef_x509cert_principal_t* self,
-	cef_string_list_t addresses
-);
-
 extern void cefingo_x509cert_principal_get_organization_names(
 	struct _cef_x509cert_principal_t* self,
 	cef_string_list_t names
@@ -4346,11 +4402,6 @@ extern void cefingo_x509cert_principal_get_organization_names(
 extern void cefingo_x509cert_principal_get_organization_unit_names(
 	struct _cef_x509cert_principal_t* self,
 	cef_string_list_t names
-);
-
-extern void cefingo_x509cert_principal_get_domain_components(
-	struct _cef_x509cert_principal_t* self,
-	cef_string_list_t components
 );
 
 extern struct _cef_x509cert_principal_t* cefingo_x509certificate_get_subject(

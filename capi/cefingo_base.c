@@ -64,7 +64,7 @@ void CEF_CALLBACK cefingo_add_ref(cef_base_ref_counted_t* self)
 	cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
 
 	// counter->ref_count++;
-	int64 count = __atomic_add_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
+	int64_t count = __atomic_add_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
 	if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "T64: 0x%llx +count: %d", self, count);
 }
 
@@ -77,7 +77,7 @@ extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self)
 {
 	cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
 	// counter->ref_count--;
-	int64 count = __atomic_sub_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
+	int64_t count = __atomic_sub_fetch(&counter->ref_count, 1, __ATOMIC_SEQ_CST);
 
 	if (count >= 0) {
 		if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "T83: 0x%llx -count: %d", self, count);
@@ -98,7 +98,7 @@ extern int CEF_CALLBACK cefingo_release(cef_base_ref_counted_t* self)
 int CEF_CALLBACK cefingo_has_one_ref(cef_base_ref_counted_t* self)
 {
 	cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
-	int64 count = __atomic_load_n(&counter->ref_count, __ATOMIC_SEQ_CST);
+	int64_t count = __atomic_load_n(&counter->ref_count, __ATOMIC_SEQ_CST);
 
 	if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "T98: 0x%llx has-one: %d", self, count);
 	return (count == 1 ? 1 : 0);
@@ -110,7 +110,7 @@ int CEF_CALLBACK cefingo_has_one_ref(cef_base_ref_counted_t* self)
 int CEF_CALLBACK cefingo_has_at_least_one_ref(cef_base_ref_counted_t* self)
 {
 	cefingo_ref_counter *counter = (cefingo_ref_counter *)(((void *)self) + self->size);
-	int64 count = __atomic_load_n(&counter->ref_count, __ATOMIC_SEQ_CST);
+	int64_t count = __atomic_load_n(&counter->ref_count, __ATOMIC_SEQ_CST);
 
 	if (REF_COUNT_LOG_OUTPUT) cefingo_cslogf(self, __func__, "T110: 0x%llx has-one: %d", self, count);
 	return (count > 0 ? 1 : 0);
